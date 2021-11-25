@@ -420,45 +420,56 @@ class App {
     }
 
     createEntitySchemas (catalogSchemas) {
-        var monacoSchemas = [];
+        var schemaMap = {};
         for (var catalogSchema of catalogSchemas) {
             var jsonSchemas     = catalogSchema.jsonSchemas;
             var database        = catalogSchema.id;
-
+            // add all schemas and their definitions to schemaMap and map them to an uri like:
+            //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
+            //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json#/definitions/PocStore
             for (var schemaPath in jsonSchemas) {
                 var schema      = jsonSchemas[schemaPath];
-                var url         = database + "/" + schemaPath;
+                var uri         = "http://" + database + "/" + schemaPath;
                 var schemaEntry = {
-                    uri:   "http://" + url,
+                    uri:    uri,
                     schema: schema            
                 }
-                monacoSchemas.push(schemaEntry);
-                if (schemaPath != catalogSchema.schemaPath)
-                    continue;
-                var dbSchema        = jsonSchemas[catalogSchema.schemaPath];
-                var dbType          = dbSchema.definitions[catalogSchema.schemaName];
-                var containers      = dbType.properties;
-                // create schema for every container using its type in "additionalProperties"
-                // e.g. { "$ref": "./Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json#/definitions/Order" }
-                for (var containerName in containers) {
-                    var container   = containers[containerName];
-                    var contSchema  = container.additionalProperties;
-
-                    // e.g. http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json#/definitions/Order
-                    var uri = "http://" + database + contSchema.$ref.substring(1);
-                    
-                    // e.g. entity://main_db.orders.json
-                    var url = `entity://${database}.${containerName}.json`;
-                    var schemaEntry = {                        
+                schemaMap[uri] = schemaEntry;
+                const definitions = schema.definitions;
+                for (var definitionName in definitions) {
+                    var definition  = this.getResolvedType(definitions[definitionName], schemaPath);
+                    var uri         = "http://" + database + "/" + schemaPath + "#/definitions/" + definitionName;
+                    var schemaEntry = {
                         uri:    uri,
-                        schema: contSchema,
-                        fileMatch: [url] // associate with our model
+                        schema: definition            
                     }
-                    monacoSchemas.push(schemaEntry);
+                    schemaMap[uri] = schemaEntry;
                 }
             }
+            // add a "fileMatch" property to all container entity type schemas used for editor validation
+            var dbSchema        = jsonSchemas[catalogSchema.schemaPath];
+            var dbType          = dbSchema.definitions[catalogSchema.schemaName];
+            var containers      = dbType.properties;
+            for (var containerName in containers) {
+                const container = containers[containerName];
+                var containerType = this.getResolvedType(container.additionalProperties, catalogSchema.schemaName);
+                var uri = "http://" + database + containerType.$ref.substring(1);
+                const schema = schemaMap[uri];
+                var url = `entity://${database}.${containerName}.json`;
+                schema.fileMatch = [url];
+            }
         }
+        var monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
+    }
+
+    getResolvedType (type, schemaPath) {
+        var $ref = type.$ref;
+        if (!$ref)
+            return type;
+        if ($ref[0] != "#")
+            return type;
+        return { $ref: "./" + schemaPath + $ref };
     }
 
     getEntityType(schema, container) {
@@ -498,6 +509,7 @@ class App {
             this.selectedEntity.classList = "selected";
             this.entityIdentity.command = command;
             this.entityIdentity.database = database;
+            // this.setCommandParam(database, command, "");
         }
         for (const command in commands) {
             var liCommand = document.createElement('li');
@@ -656,17 +668,30 @@ class App {
     entityModel;
     entityModels = {};
 
-    setEntityValue (database, container, value) {
-        var url = `entity://${database}.${container}.json`;
+    getModel (url) {
         this.entityModel = this.entityModels[url];
         if (!this.entityModel) {
             var entityUri   = monaco.Uri.parse(url);
             this.entityModel = monaco.editor.createModel(null, "json", entityUri);
             this.entityModels[url] = this.entityModel;
         }
-        this.entityEditor.setModel (this.entityModel);
-        this.entityModel.setValue(value);
+        return this.entityModel;
     }
+
+    setEntityValue (database, container, value) {
+        var url = `entity://${database}.${container}.json`;
+        var model = this.getModel(url)
+        model.setValue(value);
+        this.entityEditor.setModel (model);
+    }
+
+    setCommandParam (database, command, value) {
+        var url = `command://${database}.${command}.param.json`;
+        var model = this.getModel(url)
+        model.setValue(value);
+        this.commandValueEditor.setModel (model);
+    }
+
 
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
@@ -805,14 +830,14 @@ class App {
         }
         // --- create command value editor
         {
-            this.commandValueModel   = monaco.editor.createModel(null, "json");
             this.commandValueEditor = monaco.editor.create(commandValue, { });
-            this.commandValueEditor.setModel(this.commandValueModel);
+            // this.commandValueModel   = monaco.editor.createModel(null, "json");
+            // this.commandValueEditor.setModel(this.commandValueModel);
             this.commandValueEditor.updateOptions({
                 lineNumbers:    "off",
                 minimap:        { enabled: false }
             });
-            this.commandValueEditor.setValue("{}");
+            //this.commandValueEditor.setValue("{}");
         }
         this.commandResponseModel = monaco.editor.createModel(null, "json");
 
