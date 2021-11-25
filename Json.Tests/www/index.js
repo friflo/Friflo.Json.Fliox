@@ -446,21 +446,45 @@ class App {
                     schemaMap[uri] = schemaEntry;
                 }
             }
-            // add a "fileMatch" property to all container entity type schemas used for editor validation
-            var dbSchema        = jsonSchemas[catalogSchema.schemaPath];
-            var dbType          = dbSchema.definitions[catalogSchema.schemaName];
-            var containers      = dbType.properties;
-            for (var containerName in containers) {
-                const container = containers[containerName];
-                var containerType = this.getResolvedType(container.additionalProperties, catalogSchema.schemaName);
-                var uri = "http://" + database + containerType.$ref.substring(1);
-                const schema = schemaMap[uri];
-                var url = `entity://${database}.${containerName}.json`;
-                schema.fileMatch = [url];
-            }
+            this.addFileMatcher(database, catalogSchema, schemaMap);
         }
         var monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
+    }
+
+    // add a "fileMatch" property to all container entity type schemas used for editor validation
+    addFileMatcher(database, catalogSchema, schemaMap) {
+        var jsonSchemas     = catalogSchema.jsonSchemas;
+        var schemaName      = catalogSchema.schemaName;
+        var schemaPath      = catalogSchema.schemaPath;
+        var dbSchema        = jsonSchemas[schemaPath];
+        var dbType          = dbSchema.definitions[schemaName];
+        var containers      = dbType.properties;
+        for (var containerName in containers) {
+            const container     = containers[containerName];
+            var containerType   = this.getResolvedType(container.additionalProperties, schemaPath);
+            var uri = "http://" + database + containerType.$ref.substring(1);
+            const schema = schemaMap[uri];
+            var url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
+            schema.fileMatch = [url]; // requires a lower case string
+        }
+        var commandType     = dbSchema.definitions[schemaName + "Service"];
+        var commands        = commandType.commands;
+        for (var commandName in commands) {
+            const command   = commands[commandName];
+            var paramType   = this.getResolvedType(command.command[0], schemaPath);
+            var url = `command://${database}.${commandName.toLocaleLowerCase()}.json`;
+            if (paramType.$ref) {
+                var uri = "http://" + database + paramType.$ref.substring(1);
+                const schema = schemaMap[uri];
+                schema.fileMatch = [url]; // requires a lower case string
+            } else {
+                /* const schema = {
+
+                }
+                schema.fileMatch = [url]; */
+            }
+        }
     }
 
     getResolvedType (type, schemaPath) {
@@ -509,7 +533,7 @@ class App {
             this.selectedEntity.classList = "selected";
             this.entityIdentity.command = command;
             this.entityIdentity.database = database;
-            // this.setCommandParam(database, command, "");
+            this.setCommandParam(database, command, "{}");
         }
         for (const command in commands) {
             var liCommand = document.createElement('li');
@@ -686,7 +710,7 @@ class App {
     }
 
     setCommandParam (database, command, value) {
-        var url = `command://${database}.${command}.param.json`;
+        var url = `command://${database}.${command}.json`;
         var model = this.getModel(url)
         model.setValue(value);
         this.commandValueEditor.setModel (model);
