@@ -29,6 +29,7 @@
             --background:   #f9f9f9;
             --background2:  #ffffff;
             --background3:  #f0f0f0;
+            --command-bar:  #d9d9ff;
         }
         [data-theme="dark"] {
             --selected-color: #0000ff80;
@@ -39,6 +40,7 @@
             --background:   #000;
             --background2:  #1e1e1e;
             --background3:  #000;
+            --command-bar:  #5f5f92;
         }
         .dropbtn {
             background-color: lightgrey;
@@ -267,7 +269,7 @@
             <button type="button" onclick="app.saveEntity()" title="Save (Ctrl+S)">Save</button>
           </span>
           <span style="display: none;" id="explorerCommandButtons">
-            <button type="button" onclick="app.executeCommand()" title="execute command">POST</button>
+            <button type="button" onclick="app.executeCommand()" title="POST command (Ctrl+Alt+P)"">POST</button>
           </span>
         </td>
       </tr>
@@ -301,8 +303,9 @@
         <td style="display: grid; border-left: 0px;">
           <span style="display: inline-flex;">
             <div id="commandValueContainer" style="width: 100%; display: none;">
-                <div id="commandValue" style="height: 500px; border: 0px solid; border-right: 5px solid var(--background3);"></div>
+                <div id="commandValue" style="height: 500px; border: 0px solid; border-right: 0px solid var(--background3);"></div>
             </div>
+            <div id="commandParamBar" class="vbar" style="min-width: 5px; width: 5px; background-color: var(--command-bar);"></div>
             <div style="width: 100%;">
               <div id="entityContainer" style="height: 500px; border: 0px solid;"></div>
             </div>

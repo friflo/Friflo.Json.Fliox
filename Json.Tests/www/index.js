@@ -538,6 +538,7 @@ class App {
     listCommands (database, commands) {
         this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
+        commandParamBar.style.display = "";
         this.layoutEditors();
         this.entityModel?.setValue("");
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
@@ -579,6 +580,7 @@ class App {
     async loadEntities (database, container, schema) {
         this.showExplorerButtons("entity");
         commandValueContainer.style.display = "none";
+        commandParamBar.style.display = "none";
         this.layoutEditors();
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
@@ -813,6 +815,7 @@ class App {
     requestContainer        = document.getElementById("requestContainer");
     responseContainer       = document.getElementById("responseContainer")
     commandValueContainer   = document.getElementById("commandValueContainer");
+    commandParamBar         = document.getElementById("commandParamBar");
     commandValue            = document.getElementById("commandValue");
     entityContainer         = document.getElementById("entityContainer");
 
@@ -829,6 +832,8 @@ class App {
 
     async setupEditors ()
     {
+        commandParamBar.style.display = "none";
+        
         // --- setup JSON Schema for monaco
         var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
         var responseUri     = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
@@ -924,7 +929,7 @@ class App {
     addTableResize () {
         var tdElm;
         var startOffset;
-        const selector = document.querySelectorAll("table td");
+        const selector = document.querySelectorAll("table td, span div");
 
         Array.prototype.forEach.call(selector, (td) =>
         {
