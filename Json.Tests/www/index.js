@@ -75,7 +75,7 @@ class App {
                 case "error":
                     clt = data.clt;
                     cltElement.innerText  = clt ?? " - ";
-                    const content = this.formatResponse(e.data);
+                    const content = this.formatJson(this.formatResponses, e.data);
                     this.responseModel.setValue(content)
                     responseState.innerHTML = `· ${duration} ms`;
                     break;
@@ -177,7 +177,7 @@ class App {
         try {
             const response = await this.postRequest(jsonRequest, "POST");
             let content = await response.text;
-            content = this.formatResponse(content);
+            content = this.formatJson(this.formatResponses, content);
             duration = new Date().getTime() - start;
             this.responseModel.setValue(content);
         } catch(error) {
@@ -592,7 +592,7 @@ class App {
         }
         const response = await this.restRequest(method, value, database, null, null, `command=${command}`);
         let content = await response.text();
-        content = this.formatResponse(content);
+        content = this.formatJson(this.formatResponses, content);
         this.entityEditor.setValue(content);
     }
 
@@ -712,7 +712,7 @@ class App {
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, database, container, id);        
         let content   = await response.text();
-        content = this.formatResponse(content);
+        content = this.formatJson(this.formatEntities, content);
         entityId.innerHTML = entityLink;
         if (!response.ok) {
             this.setEntityValue(database, container, content);
@@ -968,11 +968,13 @@ class App {
         };
     }
 
+    formatEntities  = false;
     formatResponses = true;
 
     setConfig(key, value) {
         this[key] = value;
-        const elem = document.getElementById("formatResponsesCheckbox");
+        const elem = document.getElementById(key);
+        elem.value   = value;
         elem.checked = value;
         document.cookie = `${key}=${value};`;
     }
@@ -990,11 +992,12 @@ class App {
     }
 
     loadConfig() {
+        this.initConfigValue("formatEntities");
         this.initConfigValue("formatResponses");
     }
 
-    formatResponse(text) {
-        if (this.formatResponses) {
+    formatJson(format, text) {
+        if (format) {
             try {
                 // const action = editor.getAction("editor.action.formatDocument");
                 // action.run();
