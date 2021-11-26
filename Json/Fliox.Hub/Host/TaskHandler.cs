@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -56,7 +57,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var catalog = new Catalog {
                 id              = command.DatabaseName,
                 databaseType    = databaseInfo.databaseType,
-                containers      = databaseInfo.containers
+                containers      = databaseInfo.containers,
+                commands        = databaseInfo.commands
             };
             return catalog;
         }
@@ -86,7 +88,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
+        
+        internal string[] GetCommands() {
+            var result = new string[commands.Count];
+            int n = 0;
+            foreach (var pair in commands) { result[n++] = pair.Key; }
+            return result;
+        }
 
+
+        
         protected static bool AuthorizeTask(SyncRequestTask task, MessageContext messageContext, out SyncTaskResult error) {
             var authorizer = messageContext.authState.authorizer;
             if (authorizer.Authorize(task, messageContext)) {

@@ -88,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                         id              = databaseName,
                         databaseType    = databaseInfo.databaseType,
                         containers      = databaseInfo.containers,
+                        commands        = databaseInfo.commands,
                     };
                     catalogs.Upsert(catalog);
                 }
@@ -129,7 +130,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var catalog = new Catalog {
                     id              = pair.Key,
                     databaseType    = databaseInfo.databaseType,
-                    containers      = databaseInfo.containers
+                    containers      = databaseInfo.containers,
+                    commands        = databaseInfo.commands
                 };
                 catalogs.Add(catalog);
             }

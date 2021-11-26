@@ -4,6 +4,7 @@ export class Catalog {
     id            : string;
     databaseType  : string;
     containers    : string[];
+    commands      : string[];
 }
 
 export class CatalogSchema {

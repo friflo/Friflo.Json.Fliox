@@ -7,12 +7,14 @@
             "properties": {
                 "id":           { "type": "string" },
                 "databaseType": { "type": "string" },
-                "containers":   { "type": "array", "items": { "type": "string" } }
+                "containers":   { "type": "array", "items": { "type": "string" } },
+                "commands":     { "type": "array", "items": { "type": "string" } }
             },
             "required": [
                 "id",
                 "databaseType",
-                "containers"
+                "containers",
+                "commands"
             ],
             "additionalProperties": false
         },
