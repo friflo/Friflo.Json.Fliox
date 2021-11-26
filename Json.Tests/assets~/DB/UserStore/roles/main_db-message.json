@@ -2,7 +2,7 @@
     "id": "main_db-message",
     "description": "Allow sending the specified messages and subscribing to messages. Commands are messages too",
     "rights": [
-        { "type": "message",           "names":   ["test-mess*"] },
-        { "type": "subscribeMessage",  "names":   ["test-sub*"] }
+        { "type": "message",          "names": ["test-mess*"] },
+        { "type": "subscribeMessage", "names": ["test-sub*"] }
     ]
 }
