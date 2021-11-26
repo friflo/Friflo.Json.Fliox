@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Main
         ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db</item>
         ///   <item> Expose the server Monitor as an extension database to get statistics about requests and tasks executed by users and clients </item>
         ///   <item> Adding a database schema to validate records written to the default database and exposing it as JSON Schema </item>
-        ///   <item> Adding a web playground to send and validate arbitrary requests to the Fliox server </item>
+        ///   <item> Adding a web App to with database Explorer and Playground to send and validate arbitrary requests to the Fliox.Hub server </item>
         /// </list>
         ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
