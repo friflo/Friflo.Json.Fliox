@@ -560,16 +560,20 @@ class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    getCommandLabel(database, command, signature) {
+    getCommandTags(database, command, signature) {
         /* var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
         var ref = dbSchema.properties[container].additionalProperties["$ref"];
         var lastSlashPos = ref.lastIndexOf('/');
         return ref.substring(lastSlashPos + 1); */
         var param   = this.getTypeLabel(signature[0]);
         var result  = this.getTypeLabel(signature[1]);
+        var link    = `command=${command}`;
         var name    = `${command}(${param}) : ${result}`;
         var url     = `./rest/${database}?command=${command}`;
-        return `<a title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+        return {
+            link:   `<a title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
+            label:  `<span>${name}</span>`
+        }
     }
 
     async sendCommand(method) {
@@ -594,9 +598,12 @@ class App {
         commandParamBar.style.display = "";
         this.layoutEditors();
         this.entityModel?.setValue("");
-        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        readEntities.innerHTML   = ` <i style="opacity: 0.5;">commands</i>`;
-        commandId.innerHTML      = ""
+        const commandSignature      = document.getElementById("commandSignature");
+        const commandLink           = document.getElementById("commandLink");        
+        readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
+        readEntities.innerHTML      = ` <i style="opacity: 0.5;">commands</i>`;
+        commandSignature.innerHTML  = "";
+        commandLink.innerHTML       = "";
 
         var ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
@@ -611,8 +618,9 @@ class App {
             const command   = this.selectedEntity.innerText;
             const signature = commands[command].command;
             const def       = Object.keys(signature[0]).length  == 0 ? "null" : "{}";
-            const label     = this.getCommandLabel(database, command, signature);
-            commandId.innerHTML             = label;
+            const tags      = this.getCommandTags(database, command, signature);
+            commandSignature.innerHTML      = tags.label;
+            commandLink.innerHTML           = tags.link;
             this.selectedEntity.classList   = "selected";
             this.entityIdentity.command     = command;
             this.entityIdentity.database    = database;
