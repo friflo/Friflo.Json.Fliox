@@ -75,7 +75,8 @@ class App {
                 case "error":
                     clt = data.clt;
                     cltElement.innerText  = clt ?? " - ";
-                    this.responseModel.setValue(e.data)
+                    const content = this.formatResponse(e.data);
+                    this.responseModel.setValue(content)
                     responseState.innerHTML = `· ${duration} ms`;
                     break;
                 case "ev":
@@ -175,7 +176,8 @@ class App {
         var duration;
         try {
             const response = await this.postRequest(jsonRequest, "POST");
-            const content = await response.text;
+            let content = await response.text;
+            content = this.formatResponse(content);
             duration = new Date().getTime() - start;
             this.responseModel.setValue(content);
         } catch(error) {
@@ -674,7 +676,8 @@ class App {
         entityId.innerHTML      = `${entityLink} <span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, database, container, id);        
-        const content   = await response.text();
+        let content   = await response.text();
+        content = this.formatResponse(content);
         entityId.innerHTML = entityLink;
         if (!response.ok) {
             this.setEntityValue(database, container, content);
@@ -685,12 +688,13 @@ class App {
     }
 
     async executeCommand() {
-        var value = this.commandValueEditor.getValue();
+        const value = this.commandValueEditor.getValue();
         const database = this.entityIdentity.database;
         const command  = this.entityIdentity.command;
-        var response = await this.restRequest("POST", value, database, null, null, `command=${command}`);
-        var body = await response.text();
-        this.entityEditor.setValue(body);
+        const response = await this.restRequest("POST", value, database, null, null, `command=${command}`);
+        let content = await response.text();
+        content = this.formatResponse(content);
+        this.entityEditor.setValue(content);
     }
 
     async saveEntity () {
@@ -939,9 +943,18 @@ class App {
         };
     }
 
-    formatDocument(editor) {
-        const action = editor.getAction("editor.action.formatDocument");
-        action.run();
+    formatResponse(text) {
+        const formatResponses = document.getElementById("formatResponses");
+        if (formatResponses.checked) {
+            try {
+                // const action = editor.getAction("editor.action.formatDocument");
+                // action.run();
+                const obj = JSON.parse(text);
+                return JSON.stringify(obj, null, 4);
+            }
+            catch (error) {}            
+        }
+        return text;
     }
 
     layoutEditors () {
