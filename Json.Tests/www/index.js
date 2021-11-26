@@ -568,11 +568,10 @@ class App {
         var param   = this.getTypeLabel(signature[0]);
         var result  = this.getTypeLabel(signature[1]);
         var link    = `command=${command}`;
-        var name    = `${command}(${param}) : ${result}`;
         var url     = `./rest/${database}?command=${command}`;
         return {
-            link:   `<a title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
-            label:  `<span>${name}</span>`
+            link:   `<a id="commandAnchor" title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
+            label:  `<span style="opacity: 0.5;">param:</span> <span>${param}</span>&nbsp; <span style="opacity: 0.5;">result:</span> <span>${result}</span>`
         }
     }
 
@@ -581,9 +580,11 @@ class App {
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
         if (!method) {
+            const commandAnchor =  document.getElementById("commandAnchor");
             let commandValue = value == "null" ? "" : `&value=${value}`;
             const path = this.getRestPath( database, null, null, `command=${command}${commandValue}`)
-            window.open(path, '_blank');
+            commandAnchor.href = path;
+            // window.open(path, '_blank');
             return;
         }
         const response = await this.restRequest(method, value, database, null, null, `command=${command}`);
