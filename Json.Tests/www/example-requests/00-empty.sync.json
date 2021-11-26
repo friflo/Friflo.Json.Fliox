@@ -2,6 +2,8 @@
   "msg":   "sync",
   "tasks":  [],
   "info": [
-    "sync request without any tasks is valid"
+    "sync requests without any tasks are valid.",
+    "Multiple tasks can be executed in a single request.",
+    "Enables batches of read / write operations on multiple containers."
   ]
 }
