@@ -208,7 +208,7 @@ class App {
                     event.preventDefault();
                 }
                 if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                    this.executeCommand();
+                    this.sendCommand("POST");
                     event.preventDefault();
                 }
                 break;
@@ -298,13 +298,17 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    async restRequest (method, body, database, container, id, query) {
+    getRestPath(database, container, id, query) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (id)         path = `${path}/${id}`;
         if (query)      path = `${path}?${query}`;
-        
-        let init = {        
+        return path;
+    }
+
+    async restRequest (method, body, database, container, id, query) {
+        const path = this.getRestPath(database, container, id, query);        
+        const init = {        
             method:  method,
             headers: { 'Content-Type': 'application/json' },
             body:    body
@@ -564,8 +568,24 @@ class App {
         var param   = this.getTypeLabel(signature[0]);
         var result  = this.getTypeLabel(signature[1]);
         var name    = `${command}(${param}) : ${result}`;
-        var href    = `./rest/${database}?command=${command}`;
-        return `<a title="command" href="${href}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+        var url     = `./rest/${database}?command=${command}`;
+        return `<a title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+    }
+
+    async sendCommand(method) {
+        const value     = this.commandValueEditor.getValue();
+        const database  = this.entityIdentity.database;
+        const command   = this.entityIdentity.command;
+        if (!method) {
+            let commandValue = value == "null" ? "" : `&value=${value}`;
+            const path = this.getRestPath( database, null, null, `command=${command}${commandValue}`)
+            window.open(path, '_blank');
+            return;
+        }
+        const response = await this.restRequest(method, value, database, null, null, `command=${command}`);
+        let content = await response.text();
+        content = this.formatResponse(content);
+        this.entityEditor.setValue(content);
     }
 
     listCommands (database, commands) {
@@ -688,16 +708,6 @@ class App {
         }
         // console.log(entityJson);
         this.setEntityValue(database, container, content);
-    }
-
-    async executeCommand() {
-        const value = this.commandValueEditor.getValue();
-        const database = this.entityIdentity.database;
-        const command  = this.entityIdentity.command;
-        const response = await this.restRequest("POST", value, database, null, null, `command=${command}`);
-        let content = await response.text();
-        content = this.formatResponse(content);
-        this.entityEditor.setValue(content);
     }
 
     async saveEntity () {
