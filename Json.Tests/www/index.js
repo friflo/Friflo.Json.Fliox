@@ -561,10 +561,11 @@ class App {
         var ref = dbSchema.properties[container].additionalProperties["$ref"];
         var lastSlashPos = ref.lastIndexOf('/');
         return ref.substring(lastSlashPos + 1); */
-        var param  = this.getTypeLabel(signature.command[0]);
-        var result = this.getTypeLabel(signature.command[1]);
-        var name   = `${command}(${param}) : ${result}`;
-        return `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+        var param   = this.getTypeLabel(signature[0]);
+        var result  = this.getTypeLabel(signature[1]);
+        var name    = `${command}(${param}) : ${result}`;
+        var href    = `./rest/${database}?command=${command}`;
+        return `<a title="command" href="${href}" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
     listCommands (database, commands) {
@@ -587,13 +588,15 @@ class App {
             if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
             this.selectedEntity = selectedElement;
 
-            const command = this.selectedEntity.innerText;
-            const label = this.getCommandLabel(database, command, commands[command]);
+            const command   = this.selectedEntity.innerText;
+            const signature = commands[command].command;
+            const def       = Object.keys(signature[0]).length  == 0 ? "null" : "{}";
+            const label     = this.getCommandLabel(database, command, signature);
             commandId.innerHTML             = label;
             this.selectedEntity.classList   = "selected";
             this.entityIdentity.command     = command;
             this.entityIdentity.database    = database;
-            this.setCommandParam (database, command, "{}");
+            this.setCommandParam (database, command, def);
             this.setCommandResult(database, command);
         }
         for (const command in commands) {
