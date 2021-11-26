@@ -11,6 +11,7 @@
     <script type="module">
         import { app } from  "./index.js";
         window.app = app;
+        app.loadConfig();
         app.setTheme();
         app.initUserToken();
         app.loadExampleRequestList();
@@ -352,8 +353,8 @@
     <div class="settings">
       <ul>
         <li>
-          <input type="checkbox" id="formatResponses" checked>
-          <label for="formatResponses">Format responses</label>
+          <input type="checkbox" id="formatResponsesCheckbox" onclick="app.setConfig('formatResponses', checked)">
+          <label for="formatResponsesCheckbox">Format responses</label>
         </li>
       </ul>
     </div>

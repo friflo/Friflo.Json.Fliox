@@ -339,6 +339,9 @@ class App {
     }
 
     setTheme () {
+        var format = this.getCookie("format-responses");
+
+
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.setAttribute('data-theme', 'dark');
             this.monacoTheme = "vs-dark";
@@ -965,9 +968,33 @@ class App {
         };
     }
 
+    formatResponses = true;
+
+    setConfig(key, value) {
+        this[key] = value;
+        const elem = document.getElementById("formatResponsesCheckbox");
+        elem.checked = value;
+        document.cookie = `${key}=${value};`;
+    }
+
+    initConfigValue(key) {
+        var valueStr = this.getCookie(key);
+        if (valueStr == undefined) {
+            this.setConfig(key, this[key]);
+            return;
+        }
+        try {
+            const value = JSON.parse(valueStr);
+            this.setConfig(key, value);
+        } catch (e) { }
+    }
+
+    loadConfig() {
+        this.initConfigValue("formatResponses");
+    }
+
     formatResponse(text) {
-        const formatResponses = document.getElementById("formatResponses");
-        if (formatResponses.checked) {
+        if (this.formatResponses) {
             try {
                 // const action = editor.getAction("editor.action.formatDocument");
                 // action.run();
