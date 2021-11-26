@@ -939,6 +939,11 @@ class App {
         };
     }
 
+    formatDocument(editor) {
+        const action = editor.getAction("editor.action.formatDocument");
+        action.run();
+    }
+
     layoutEditors () {
         // console.log("layoutEditors - activeTab: " + activeTab)
         switch (activeTab) {
