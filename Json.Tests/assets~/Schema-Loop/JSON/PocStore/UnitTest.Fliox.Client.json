@@ -27,9 +27,9 @@
             "type": "object",
             "commands": {
                 "TestCommand":   { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
-                "Catalog":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogDatabase" }] },
-                "CatalogSchema": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogSchema" }] },
-                "CatalogList":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogList" }] },
+                "Catalog":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbInfo" }] },
+                "CatalogSchema": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" }] },
+                "CatalogList":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" }] },
                 "Echo":          { "command": [{  }, {  }] }
             }
         },

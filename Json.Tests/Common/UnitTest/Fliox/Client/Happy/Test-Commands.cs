@@ -57,8 +57,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json", schemaResult.schemaPath);
             
             var listResult = catalogList.Result;
-            AreEqual(1,                 listResult.catalogs.Count);
-            var catalog0 = listResult.catalogs[0];
+            AreEqual(1,                 listResult.databases.Count);
+            var catalog0 = listResult.databases[0];
             AreEqual(6,                 catalog0.containers.Length);
             AreEqual("MemoryDatabase",  catalog0.databaseType);
         }
@@ -80,8 +80,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsNull(                     schemaResult);
             
             var listResult = catalogList.Result;
-            AreEqual(1,                 listResult.catalogs.Count);
-            var catalog0 = listResult.catalogs[0];
+            AreEqual(1,                 listResult.databases.Count);
+            var catalog0 = listResult.databases[0];
             AreEqual(1,                 catalog0.containers.Length);
             AreEqual("MemoryDatabase",  catalog0.databaseType);
         }

@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override CatalogDatabase GetCatalogDatabase() {
-            return stateDB.GetCatalogDatabase();
+        public override DbInfo GetDbInfo() {
+            return stateDB.GetDbInfo();
         }
         
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
@@ -81,10 +81,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             foreach (var pair in databases) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
-                if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
-                    var databaseInfo    = database.GetCatalogDatabase();
+                if (ClusterDB.FindTask(nameof(this.databases), tasks)) {
+                    var databaseInfo    = database.GetDbInfo();
                     databaseInfo.id     = databaseName;
-                    catalogs.Upsert(databaseInfo);
+                    this.databases.Upsert(databaseInfo);
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var schema = CreateCatalogSchema(database, databaseName);
@@ -94,12 +94,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        internal static CatalogSchema CreateCatalogSchema (EntityDatabase database, string databaseName) {
+        internal static DbSchema CreateCatalogSchema (EntityDatabase database, string databaseName) {
             var databaseSchema = database.Schema;
             if (databaseSchema == null)
                 return null;
             var jsonSchemas = databaseSchema.GetJsonSchemas();
-            var schema = new CatalogSchema {
+            var schema = new DbSchema {
                 id          = databaseName,
                 schemaName  = databaseSchema.Name,
                 schemaPath  = databaseSchema.Path,
@@ -108,16 +108,16 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return schema;
         }
         
-        internal static CatalogList CatalogList (FlioxHub hub) {
+        internal static DbList GetDbList (FlioxHub hub) {
             var databases = hub.GetDatabases();
-            var catalogs = new List<CatalogDatabase>(databases.Count);
+            var catalogs = new List<DbInfo>(databases.Count);
             foreach (var pair in databases) {
                 var database        = pair.Value;
-                var databaseInfo    = database.GetCatalogDatabase();
+                var databaseInfo    = database.GetDbInfo();
                 databaseInfo.id     = pair.Key;
                 catalogs.Add(databaseInfo);
             }
-            return new CatalogList{ catalogs = catalogs };
+            return new DbList{ databases = catalogs };
         }
     }
 }

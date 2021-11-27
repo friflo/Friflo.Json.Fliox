@@ -40,32 +40,32 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>        (Echo));    // todo add handler via scanning TaskHandler
-            AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     CatalogDatabase>  (Catalog));
-            AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     CatalogSchema>    (CatalogSchema));
-            AddCommandHandler(StdCommand.CatalogList,   new CommandHandler<Empty,     CatalogList>      (CatalogList));
+            AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>(Echo));    // todo add handler via scanning TaskHandler
+            AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     DbInfo>   (Catalog));
+            AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     DbSchema> (GetDbSchema));
+            AddCommandHandler(StdCommand.CatalogList,   new CommandHandler<Empty,     DbList>   (DbList));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private static CatalogDatabase Catalog (Command<Empty> command) {
+        private static DbInfo Catalog (Command<Empty> command) {
             var database        = command.Database;  
-            var databaseInfo    = database.GetCatalogDatabase();
+            var databaseInfo    = database.GetDbInfo();
             databaseInfo.id     = command.DatabaseName;
             return databaseInfo;
         }
         
-        private static CatalogSchema CatalogSchema (Command<Empty> command) {
+        private static DbSchema GetDbSchema (Command<Empty> command) {
             var database        = command.Database;  
             var databaseName    = command.DatabaseName;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static CatalogList CatalogList (Command<Empty> command) {
+        private static DbList DbList (Command<Empty> command) {
             var hub = command.Hub;
-            return ClusterStore.CatalogList(hub);
+            return ClusterStore.GetDbList(hub);
         }
         
         internal bool TryGetCommand(string name, out CommandCallback command) {

@@ -369,18 +369,18 @@ class App {
 
     async loadCluster () {
         const tasks = [
-            { "task": "query", "container": "catalogs",  "filter":{ "op": "true" }},
+            { "task": "query", "container": "databases", "filter":{ "op": "true" }},
             { "task": "query", "container": "schemas",   "filter":{ "op": "true" }}
         ];
-        catalogExplorer.innerHTML = 'read catalogs <span class="spinner"></span>';
-        const response = await this.postRequestTasks("cluster", tasks, "catalogs");
+        catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
+        const response = await this.postRequestTasks("cluster", tasks, "databases");
         const content = response.json;
         var error = this.getTaskError (content, 0);
         if (error) {
             catalogExplorer.innerHTML = this.errorAsHtml(error);
             return 
         }
-        const catalogs  = content.containers[0].entities;
+        const databases = content.containers[0].entities;
         const schemas   = content.containers[1].entities;
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
@@ -391,13 +391,13 @@ class App {
             this.selectedCatalog.classList = "selected";
             const database = selectedElement.innerText;
             var schema  = schemas.find(s => s.id == database);
-            var catalog = catalogs.find(c => c.id == database);
+            var catalog = databases.find(c => c.id == database);
             catalogSchema.innerHTML  = this.schemaLink(database, schema)
             this.listCommands(database, catalog, schema);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
-        for (var catalog of catalogs) {
+        for (var catalog of databases) {
             var liCatalog = document.createElement('li');
             var catalogLabel = document.createElement('div');
             catalogLabel.innerText = catalog.id;
