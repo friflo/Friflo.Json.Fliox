@@ -568,7 +568,7 @@ class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    schemaLess = '(schema less)';
+    schemaLess = '<span style="opacity:0.5">(schema less)</span>';
 
     getCommandTags(database, command, signature) {
         let label = this.schemaLess;
@@ -662,7 +662,7 @@ class App {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
     
-        entityType.innerText     = this.getEntityType (schema, container);
+        entityType.innerHTML     = this.getEntityType (schema, container);
         catalogSchema.innerHTML  = this.schemaLink(database, schema);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}/</a>`;
         var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}/</a>`;
