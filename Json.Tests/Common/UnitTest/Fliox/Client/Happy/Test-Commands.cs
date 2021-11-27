@@ -42,48 +42,56 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertCommandsSchema(PocStore store) {
-            var catalog         = store.DbContainers();
+            var containers      = store.DbContainers();
+            var commands        = store.DbCommands();
             var catalogSchema   = store.DbSchema();
-            var catalogList     = store.DbList();
+            var dbList          = store.DbList();
             await store.SyncTasks();
             
-            var catalogResult = catalog.Result;
-            AreEqual(6,                 catalogResult.containers.Length);
-            AreEqual("MemoryDatabase",  catalogResult.databaseType);
+            var containersResult = containers.Result;
+            AreEqual(6,                 containersResult.containers.Length);
+            AreEqual("MemoryDatabase",  containersResult.databaseType);
             
             var schemaResult = catalogSchema.Result;
             AreEqual(9,                 schemaResult.jsonSchemas.Count);
             AreEqual("PocStore",        schemaResult.schemaName);
             AreEqual("Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json", schemaResult.schemaPath);
             
-            var listResult = catalogList.Result;
-            AreEqual(1,                 listResult.databases.Count);
-            var catalog0 = listResult.databases[0];
+            var dbListResult = dbList.Result;
+            AreEqual(1,                 dbListResult.databases.Count);
+            var catalog0 = dbListResult.databases[0];
             AreEqual(6,                 catalog0.containers.Length);
             AreEqual("MemoryDatabase",  catalog0.databaseType);
+            
+            var commandsResult = commands.Result;
+            AreEqual(6,                 commandsResult.commands.Length);
         }
         
         private static async Task AssertCommands(PocStore store) {
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
             
-            var catalog         = store.DbContainers();
+            var containers       = store.DbContainers();
+            var commands        = store.DbCommands();
             var catalogSchema   = store.DbSchema();
-            var catalogList     = store.DbList();
+            var dbList          = store.DbList();
             await store.SyncTasks();
             
-            var catalogResult = catalog.Result;
-            AreEqual(1,                 catalogResult.containers.Length);
-            AreEqual("MemoryDatabase",  catalogResult.databaseType);
+            var containersResult = containers.Result;
+            AreEqual(1,                 containersResult.containers.Length);
+            AreEqual("MemoryDatabase",  containersResult.databaseType);
             
             var schemaResult = catalogSchema.Result;
             IsNull(                     schemaResult);
             
-            var listResult = catalogList.Result;
-            AreEqual(1,                 listResult.databases.Count);
-            var catalog0 = listResult.databases[0];
+            var dbListResult = dbList.Result;
+            AreEqual(1,                 dbListResult.databases.Count);
+            var catalog0 = dbListResult.databases[0];
             AreEqual(1,                 catalog0.containers.Length);
             AreEqual("MemoryDatabase",  catalog0.databaseType);
+            
+            var commandsResult = commands.Result;
+            AreEqual(6,                 commandsResult.commands.Length);
         }
     }
 }
