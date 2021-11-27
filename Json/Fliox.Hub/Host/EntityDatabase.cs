@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(containerList);
         }
             
-        public virtual async Task<DbContainers> GetDbContainers() {
+        public async Task<DbContainers> GetDbContainers() {
             int n = 0;
             string[] containerList;
             if (Schema != null) {

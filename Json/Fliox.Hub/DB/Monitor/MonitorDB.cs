@@ -68,8 +68,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        public override Task<DbContainers>  GetDbContainers()   =>  stateDB.GetDbContainers();
-        public override DbCommands          GetDbCommands()     =>  stateDB.GetDbCommands();
+        public  override Task<string[]>  GetContainers() =>  stateDB.GetContainers();
+        public  override DbCommands      GetDbCommands() =>  stateDB.GetDbCommands();
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
