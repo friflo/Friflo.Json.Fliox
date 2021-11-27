@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override DatabaseInfo GetDatabaseInfo() {
-            return stateDB.GetDatabaseInfo();
+        public override CatalogDatabase GetCatalogDatabase() {
+            return stateDB.GetCatalogDatabase();
         }
         
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
@@ -82,14 +82,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
-                    var databaseInfo    = database.GetDatabaseInfo();
-                    var catalog = new Catalog {
-                        id              = databaseName,
-                        databaseType    = databaseInfo.databaseType,
-                        containers      = databaseInfo.containers,
-                        commands        = databaseInfo.commands,
-                    };
-                    catalogs.Upsert(catalog);
+                    var databaseInfo    = database.GetCatalogDatabase();
+                    databaseInfo.id     = databaseName;
+                    catalogs.Upsert(databaseInfo);
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var schema = CreateCatalogSchema(database, databaseName);
@@ -115,17 +110,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal static CatalogList CatalogList (FlioxHub hub) {
             var databases = hub.GetDatabases();
-            var catalogs = new List<Catalog>(databases.Count);
+            var catalogs = new List<CatalogDatabase>(databases.Count);
             foreach (var pair in databases) {
                 var database        = pair.Value;
-                var databaseInfo    = database.GetDatabaseInfo();
-                var catalog = new Catalog {
-                    id              = pair.Key,
-                    databaseType    = databaseInfo.databaseType,
-                    containers      = databaseInfo.containers,
-                    commands        = databaseInfo.commands
-                };
-                catalogs.Add(catalog);
+                var databaseInfo    = database.GetCatalogDatabase();
+                databaseInfo.id     = pair.Key;
+                catalogs.Add(databaseInfo);
             }
             return new CatalogList{ catalogs = catalogs };
         }

@@ -11,13 +11,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     public partial class ClusterStore : FlioxClient
     {
-        public  readonly    EntitySet <string, Catalog>         catalogs;
+        public  readonly    EntitySet <string, CatalogDatabase> catalogs;
         public  readonly    EntitySet <string, CatalogSchema>   schemas;
         
         public ClusterStore (FlioxHub hub, string database = null) : base(hub, database) { }
     }
     
-    public class Catalog {
+    public class CatalogDatabase {
         [Fri.Required]  public  string                          id;
         [Fri.Required]  public  string                          databaseType;
         [Fri.Required]  public  string[]                        containers;
@@ -37,6 +37,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     // --- commands
     public class CatalogList {
-        [Fri.Required]  public  List<Catalog>                   catalogs;
+        [Fri.Required]  public  List<CatalogDatabase>           catalogs;
     }
 }

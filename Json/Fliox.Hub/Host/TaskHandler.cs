@@ -40,26 +40,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>    (Echo));    // todo add handler via scanning TaskHandler
-            AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     Catalog>      (Catalog));
-            AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     CatalogSchema>(CatalogSchema));
-            AddCommandHandler(StdCommand.CatalogList,   new CommandHandler<Empty,     CatalogList>  (CatalogList));
+            AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>        (Echo));    // todo add handler via scanning TaskHandler
+            AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     CatalogDatabase>  (Catalog));
+            AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     CatalogSchema>    (CatalogSchema));
+            AddCommandHandler(StdCommand.CatalogList,   new CommandHandler<Empty,     CatalogList>      (CatalogList));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private static Catalog Catalog (Command<Empty> command) {
+        private static CatalogDatabase Catalog (Command<Empty> command) {
             var database        = command.Database;  
-            var databaseInfo    = database.GetDatabaseInfo();
-            var catalog = new Catalog {
-                id              = command.DatabaseName,
-                databaseType    = databaseInfo.databaseType,
-                containers      = databaseInfo.containers,
-                commands        = databaseInfo.commands
-            };
-            return catalog;
+            var databaseInfo    = database.GetCatalogDatabase();
+            databaseInfo.id     = command.DatabaseName;
+            return databaseInfo;
         }
         
         private static CatalogSchema CatalogSchema (Command<Empty> command) {

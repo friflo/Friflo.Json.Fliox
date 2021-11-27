@@ -21,7 +21,7 @@
             "type": "object",
             "commands": {
                 "AuthenticateUser": { "command": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }] },
-                "Catalog":          { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/Catalog" }] },
+                "Catalog":          { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogDatabase" }] },
                 "CatalogSchema":    { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogSchema" }] },
                 "CatalogList":      { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogList" }] },
                 "Echo":             { "command": [{  }, {  }] }

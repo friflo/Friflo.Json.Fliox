@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Stats;
@@ -67,8 +68,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        public override DatabaseInfo GetDatabaseInfo() {
-            return stateDB.GetDatabaseInfo();
+        public override CatalogDatabase GetCatalogDatabase() {
+            return stateDB.GetCatalogDatabase();
         }
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {

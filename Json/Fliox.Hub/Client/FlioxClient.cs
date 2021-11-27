@@ -244,7 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public CommandTask<TCommand>        Echo<TCommand>(TCommand command) =>
                                                                 SendCommand<TCommand,TCommand>  (StdCommand.Echo, command);
-        public CommandTask<Catalog>         Catalog()       =>  SendCommand<Catalog>            (StdCommand.Catalog);
+        public CommandTask<CatalogDatabase>         Catalog()       =>  SendCommand<CatalogDatabase>            (StdCommand.Catalog);
         public CommandTask<CatalogSchema>   CatalogSchema() =>  SendCommand<CatalogSchema>      (StdCommand.CatalogSchema);
         public CommandTask<CatalogList>     CatalogList()   =>  SendCommand<CatalogList>        (StdCommand.CatalogList);
 
