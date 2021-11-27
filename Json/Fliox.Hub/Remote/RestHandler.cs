@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (path.Length == RestBase.Length) {
                 // ------------------    GET            (no path)
                 if (context.method == "GET") { 
-                    await Command(context, ClusterDB.Name, StdCommand.CatalogList, new JsonValue()); 
+                    await Command(context, ClusterDB.Name, StdCommand.DbList, new JsonValue()); 
                     return true;
                 }
                 context.WriteError("invalid request", "access to root only applicable with GET", 400);
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
-                await Command(context, resource[0], StdCommand.Catalog, new JsonValue()); 
+                await Command(context, resource[0], StdCommand.DbInfo, new JsonValue()); 
                 return true;
             }
             // ------------------    GET            /database/container

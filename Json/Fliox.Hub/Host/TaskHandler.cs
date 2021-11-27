@@ -41,23 +41,23 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public TaskHandler () {
             AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>(Echo));    // todo add handler via scanning TaskHandler
-            AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     DbInfo>   (Catalog));
-            AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     DbSchema> (GetDbSchema));
-            AddCommandHandler(StdCommand.CatalogList,   new CommandHandler<Empty,     DbList>   (DbList));
+            AddCommandHandler(StdCommand.DbInfo,        new CommandHandler<Empty,     DbInfo>   (DbInfo));
+            AddCommandHandler(StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema> (DbSchema));
+            AddCommandHandler(StdCommand.DbList,        new CommandHandler<Empty,     DbList>   (DbList));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private static DbInfo Catalog (Command<Empty> command) {
+        private static DbInfo DbInfo (Command<Empty> command) {
             var database        = command.Database;  
             var databaseInfo    = database.GetDbInfo();
             databaseInfo.id     = command.DatabaseName;
             return databaseInfo;
         }
         
-        private static DbSchema GetDbSchema (Command<Empty> command) {
+        private static DbSchema DbSchema (Command<Empty> command) {
             var database        = command.Database;  
             var databaseName    = command.DatabaseName;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
