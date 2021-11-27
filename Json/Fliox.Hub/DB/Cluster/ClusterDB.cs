@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override DbInfo GetDbInfo() {
-            return stateDB.GetDbInfo();
+        public override DbContainers GetDbContainers() {
+            return stateDB.GetDbContainers();
         }
         
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 if (ClusterDB.FindTask(nameof(databases), tasks)) {
-                    var databaseInfo    = database.GetDbInfo();
+                    var databaseInfo    = database.GetDbContainers();
                     databaseInfo.id     = databaseName;
                     databases.Upsert(databaseInfo);
                 }
@@ -110,10 +110,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal static DbList GetDbList (FlioxHub hub) {
             var databases = hub.GetDatabases();
-            var catalogs = new List<DbInfo>(databases.Count);
+            var catalogs = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
                 var database        = pair.Value;
-                var databaseInfo    = database.GetDbInfo();
+                var databaseInfo    = database.GetDbContainers();
                 databaseInfo.id     = pair.Key;
                 catalogs.Add(databaseInfo);
             }

@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return container;
         }
         
-        public virtual DbInfo GetDbInfo() {
+        public virtual DbContainers GetDbContainers() {
             int n = 0;
             string[] containerList;
             if (Schema != null) {
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var commands = handler.GetCommands();
             var databaseType = GetType().Name;
-            return new DbInfo {
+            return new DbContainers {
                 databaseType    = databaseType,
                 containers      = containerList,
                 commands        = commands

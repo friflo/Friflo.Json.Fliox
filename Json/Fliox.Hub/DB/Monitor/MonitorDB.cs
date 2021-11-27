@@ -68,8 +68,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        public override DbInfo GetDbInfo() {
-            return stateDB.GetDbInfo();
+        public override DbContainers GetDbContainers() {
+            return stateDB.GetDbContainers();
         }
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {

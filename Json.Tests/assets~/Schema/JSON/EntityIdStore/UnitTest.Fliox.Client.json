@@ -32,10 +32,10 @@
         "EntityIdStoreService": {
             "type": "object",
             "commands": {
-                "DbInfo":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbInfo" }] },
-                "DbSchema": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" }] },
-                "DbList":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" }] },
-                "Echo":     { "command": [{  }, {  }] }
+                "DbContainers": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" }] },
+                "DbSchema":     { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" }] },
+                "DbList":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" }] },
+                "Echo":         { "command": [{  }, {  }] }
             }
         }
     }

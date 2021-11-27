@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
-                await Command(context, resource[0], StdCommand.DbInfo, new JsonValue()); 
+                await Command(context, resource[0], StdCommand.DbContainers, new JsonValue()); 
                 return true;
             }
             // ------------------    GET            /database/container

@@ -242,11 +242,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        public CommandTask<TCommand>   Echo<TCommand>(TCommand command) =>
-                                                        SendCommand<TCommand,TCommand>  (StdCommand.Echo, command);
-        public CommandTask<DbInfo>     DbInfo()     =>  SendCommand<DbInfo>             (StdCommand.DbInfo);
-        public CommandTask<DbSchema>   DbSchema()   =>  SendCommand<DbSchema>           (StdCommand.DbSchema);
-        public CommandTask<DbList>     DbList()     =>  SendCommand<DbList>             (StdCommand.DbList);
+        public CommandTask<TCommand>        Echo<TCommand>(TCommand command) =>
+                                                                SendCommand<TCommand,TCommand>  (StdCommand.Echo, command);
+        public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<DbContainers>       (StdCommand.DbContainers);
+        public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<DbSchema>           (StdCommand.DbSchema);
+        public CommandTask<DbList>          DbList()        =>  SendCommand<DbList>             (StdCommand.DbList);
 
         // Declared only to generate command in Schema 
         internal CommandTask<JsonValue> Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of Echo command");
