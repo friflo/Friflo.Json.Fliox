@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
@@ -93,29 +91,22 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     catalogs.Upsert(catalog);
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
-                    var schema = CreateCatalogSchema(databaseInfo, databaseName);
+                    var schema = CreateCatalogSchema(database, databaseName);
                     if (schema != null)
                         schemas.Upsert(schema);
                 }
             }
         }
         
-        internal static CatalogSchema CreateCatalogSchema (DatabaseInfo databaseInfo, string databaseName) {
-            if (databaseInfo.schema == null)
+        internal static CatalogSchema CreateCatalogSchema (EntityDatabase database, string databaseName) {
+            var databaseSchema = database.Schema;
+            if (databaseSchema == null)
                 return null;
-            var typeSchema  = databaseInfo.schema.typeSchema;
-            var schemaType  = typeSchema.RootType;
-            var entityTypes = typeSchema.GetEntityTypes();
-            var generator   = new Generator(typeSchema, ".json", null, entityTypes);
-            JsonSchemaGenerator.Generate(generator);
-            var jsonSchemas = new Dictionary<string, JsonValue>();
-            foreach (var pair in generator.files) {
-                jsonSchemas.Add(pair.Key,new JsonValue(pair.Value));
-            }
+            var jsonSchemas = databaseSchema.GetJsonSchemas();
             var schema = new CatalogSchema {
                 id          = databaseName,
-                schemaName  = schemaType.Name,
-                schemaPath  = schemaType.Path + generator.fileExt,
+                schemaName  = databaseSchema.Name,
+                schemaPath  = databaseSchema.Path,
                 jsonSchemas = jsonSchemas
             };
             return schema;

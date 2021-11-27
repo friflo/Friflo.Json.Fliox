@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -67,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var database        = command.Database;  
             var databaseName    = command.DatabaseName;
             var databaseInfo    = database.GetDatabaseInfo();
-            return ClusterStore.CreateCatalogSchema(databaseInfo, databaseName);
+            return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
         private static CatalogList CatalogList (Command<Empty> command) {

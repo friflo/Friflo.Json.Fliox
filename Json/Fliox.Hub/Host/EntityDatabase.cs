@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Host
@@ -119,7 +118,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             var commands = handler.GetCommands();
             var databaseType = GetType().Name;
             return new DatabaseInfo {
-                schema          = Schema,
                 databaseType    = databaseType,
                 containers      = containerList,
                 commands        = commands
@@ -132,7 +130,6 @@ namespace Friflo.Json.Fliox.Hub.Host
 
 public class DatabaseInfo {
     public string[]         containers;
-    public DatabaseSchema   schema;
     public string           databaseType;
     public string[]         commands;
 }

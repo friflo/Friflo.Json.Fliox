@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
@@ -48,8 +49,12 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class DatabaseSchema : IDisposable
     {
         internal readonly   TypeSchema                          typeSchema;
-        private  readonly   Dictionary<string, ValidationType>  containerTypes = new Dictionary<string, ValidationType>();
-        private  readonly   List<ValidationSet>                 validationSets = new List<ValidationSet>();
+        private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
+        private  readonly   List<ValidationSet>                 validationSets  = new List<ValidationSet>();
+        private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
+        
+        internal            string                              Name => typeSchema.RootType.Name;
+        internal            string                              Path => typeSchema.RootType.Path + ".json";
         
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
@@ -127,6 +132,21 @@ namespace Friflo.Json.Fliox.Hub.Host
             entities.RemoveRange(pos,   count);
             entityKeys.RemoveRange(pos, count);
             return null;
+        }
+        
+        internal Dictionary<string, JsonValue> GetJsonSchemas() {
+            var schemas = jsonSchemas;
+            if (schemas != null)
+                return schemas;
+            var entityTypes = typeSchema.GetEntityTypes();
+            var generator   = new Generator(typeSchema, ".json", null, entityTypes);
+            JsonSchemaGenerator.Generate(generator);
+            schemas = new Dictionary<string, JsonValue>();
+            foreach (var pair in generator.files) {
+                schemas.Add(pair.Key,new JsonValue(pair.Value));
+            }
+            jsonSchemas = schemas;
+            return schemas;
         }
     }
  
