@@ -539,6 +539,8 @@ class App {
     }
 
     getEntityType(schema, container) {
+        if (!schema)
+            return this.schemaLess;
         var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
         var ref = dbSchema.properties[container].additionalProperties["$ref"];
         var lastSlashPos = ref.lastIndexOf('/');
@@ -566,8 +568,10 @@ class App {
         return result = result == "{}" ? "any" : result;
     }
 
+    schemaLess = '(schema less)';
+
     getCommandTags(database, command, signature) {
-        let label = "";
+        let label = this.schemaLess;
         if (signature) {
             const param   = this.getTypeLabel(signature[0]);
             const result  = this.getTypeLabel(signature[1]);
@@ -646,7 +650,7 @@ class App {
     }
 
     schemaLink(database, schema) {
-        const name = schema ? schema.schemaName : "no schema";
+        const name = schema ? schema.schemaName : this.schemaLess;
         return `<a title="database schema" href="./rest/${database}?command=DbSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
@@ -657,11 +661,9 @@ class App {
         this.layoutEditors();
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-        if (schema) {
-            const entityLabel = this.getEntityType (schema, container);            
-            entityType.innerText  = entityLabel;
-            catalogSchema.innerHTML  = this.schemaLink(database, schema)
-        }
+    
+        entityType.innerText     = this.getEntityType (schema, container);
+        catalogSchema.innerHTML  = this.schemaLink(database, schema);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}/</a>`;
         var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}/</a>`;
         readEntities.innerHTML   = `${containerLink} <span class="spinner"></span>`;
