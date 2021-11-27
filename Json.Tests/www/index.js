@@ -390,10 +390,10 @@ class App {
             this.selectedCatalog = selectedElement;
             this.selectedCatalog.classList = "selected";
             const database = selectedElement.innerText;
-            var schema = schemas.find(s => s.id == database);
+            var schema  = schemas.find(s => s.id == database);
+            var catalog = catalogs.find(c => c.id == database);
             catalogSchema.innerHTML  = this.schemaLink(database, schema)
-            var service = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"];
-            this.listCommands(database, service.commands);
+            this.listCommands(database, catalog, schema);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
@@ -564,17 +564,17 @@ class App {
     }
 
     getCommandTags(database, command, signature) {
-        /* var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
-        var ref = dbSchema.properties[container].additionalProperties["$ref"];
-        var lastSlashPos = ref.lastIndexOf('/');
-        return ref.substring(lastSlashPos + 1); */
-        var param   = this.getTypeLabel(signature[0]);
-        var result  = this.getTypeLabel(signature[1]);
+        let label = "";
+        if (signature) {
+            const param   = this.getTypeLabel(signature[0]);
+            const result  = this.getTypeLabel(signature[1]);
+            label = `<span style="opacity: 0.5;">param:</span> <span>${param}</span>&nbsp; <span style="opacity: 0.5;">result:</span> <span>${result}</span>`
+        }
         var link    = `command=${command}`;
         var url     = `./rest/${database}?command=${command}`;
         return {
             link:   `<a id="commandAnchor" title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
-            label:  `<span style="opacity: 0.5;">param:</span> <span>${param}</span>&nbsp; <span style="opacity: 0.5;">result:</span> <span>${result}</span>`
+            label:  label
         }
     }
 
@@ -596,7 +596,7 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    listCommands (database, commands) {
+    listCommands (database, catalog, schema) {
         this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";
@@ -619,19 +619,21 @@ class App {
             if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
             this.selectedEntity = selectedElement;
 
-            const command   = this.selectedEntity.innerText;
-            const signature = commands[command].command;
-            const def       = Object.keys(signature[0]).length  == 0 ? "null" : "{}";
-            const tags      = this.getCommandTags(database, command, signature);
+            const commandName   = this.selectedEntity.innerText;
+            const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
+            const signature     = service ? service.commands[commandName].command : null
+            const def           = signature ? Object.keys(signature[0]).length  == 0 ? "null" : "{}" : "null";
+            const tags          = this.getCommandTags(database, commandName, signature);
             commandSignature.innerHTML      = tags.label;
             commandLink.innerHTML           = tags.link;
+
             this.selectedEntity.classList   = "selected";
-            this.entityIdentity.command     = command;
+            this.entityIdentity.command     = commandName;
             this.entityIdentity.database    = database;
-            this.setCommandParam (database, command, def);
-            this.setCommandResult(database, command);
+            this.setCommandParam (database, commandName, def);
+            this.setCommandResult(database, commandName);
         }
-        for (const command in commands) {
+        for (const command of catalog.commands) {
             var liCommand = document.createElement('li');
             liCommand.innerText = command;
             ulCommands.append(liCommand);
@@ -641,7 +643,8 @@ class App {
     }
 
     schemaLink(database, schema) {
-        return `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
+        const name = schema ? schema.schemaName : "no schema";
+        return `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
     async loadEntities (database, container, schema) {
