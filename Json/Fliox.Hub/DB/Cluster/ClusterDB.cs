@@ -77,14 +77,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public partial class ClusterStore
     {
         internal void UpdateCatalogs(FlioxHub hub, List<SyncRequestTask> tasks) {
-            var databases = hub.GetDatabases();
-            foreach (var pair in databases) {
+            var hubDbs = hub.GetDatabases();
+            foreach (var pair in hubDbs) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
-                if (ClusterDB.FindTask(nameof(this.databases), tasks)) {
+                if (ClusterDB.FindTask(nameof(databases), tasks)) {
                     var databaseInfo    = database.GetDbInfo();
                     databaseInfo.id     = databaseName;
-                    this.databases.Upsert(databaseInfo);
+                    databases.Upsert(databaseInfo);
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var schema = CreateCatalogSchema(database, databaseName);
