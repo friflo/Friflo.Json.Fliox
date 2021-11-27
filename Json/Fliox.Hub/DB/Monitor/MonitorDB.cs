@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Stats;
@@ -27,7 +26,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         private  readonly   DatabaseSchema      databaseSchema; // not really required as db is readonly - but enables exposing schema
 
         public   override   string              ToString() => name;
-        public   override   DatabaseSchema      Schema { get => stateDB.Schema; set => throw new InvalidOperationException(); }
 
         public const string Name = "monitor";
         
@@ -39,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             typeSchema      = new NativeTypeSchema(typeof(MonitorStore));
             databaseSchema  = new DatabaseSchema(typeSchema);
             stateDB         = new MemoryDatabase();
-            stateDB.Schema  = databaseSchema;
+            Schema          = databaseSchema;
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
 
@@ -67,9 +65,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 await monitor.TrySyncTasks().ConfigureAwait(false);
             }
         }
-        
-        public  override Task<string[]>  GetContainers() =>  stateDB.GetContainers();
-        public  override DbCommands      GetDbCommands() =>  stateDB.GetDbCommands();
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {

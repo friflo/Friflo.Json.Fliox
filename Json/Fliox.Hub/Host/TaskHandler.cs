@@ -54,9 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static async Task<DbContainers> DbContainers (Command<Empty> command) {
             var database        = command.Database;  
-            var databaseInfo    = await database.GetDbContainers().ConfigureAwait(false);
-            databaseInfo.id     = command.DatabaseName;
-            return databaseInfo;
+            var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
+            dbContainers.id     = command.DatabaseName;
+            return dbContainers;
         }
         
         private static DbCommands DbCommands (Command<Empty> command) {

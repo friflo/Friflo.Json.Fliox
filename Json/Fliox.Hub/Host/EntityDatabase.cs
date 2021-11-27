@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
-        public  virtual     DatabaseSchema      Schema          { get; set; }
+        public              DatabaseSchema      Schema          { get; set; }
         
         /// <summary>
         /// A mapping function used to assign a custom container name.
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return container;
         }
         
-        public virtual Task<string[]> GetContainers() {
+        protected virtual Task<string[]> GetContainers() {
             var containerList = new string[containers.Count];
             int n = 0;
             foreach (var container in containers) {
@@ -111,19 +111,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             
         public async Task<DbContainers> GetDbContainers() {
             string[] containerList;
-            if (Schema != null) {
-                containerList = Schema.GetContainers();
+            var schema = Schema;
+            if (schema != null) {
+                containerList = schema.GetContainers();
             } else {
                 containerList = await GetContainers().ConfigureAwait(false);
             }
-            var databaseType = GetType().Name;
-            return new DbContainers {
-                databaseType    = databaseType,
-                containers      = containerList
-            };
+            return new DbContainers { containers = containerList, databaseType = GetType().Name };
         }
         
-        public virtual DbCommands GetDbCommands() {
+        public DbCommands GetDbCommands() {
             var commands = handler.GetCommands();
             return new DbCommands {
                 commands        = commands

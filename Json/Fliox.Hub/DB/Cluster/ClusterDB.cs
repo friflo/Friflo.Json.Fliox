@@ -22,7 +22,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         private  readonly   DatabaseSchema      databaseSchema; // not really required as db is readonly - but enables exposing schema
 
         public   override   string              ToString() => name;
-        public   override   DatabaseSchema      Schema { get => stateDB.Schema; set => throw new InvalidOperationException(); }
 
         public const string Name = "cluster";
         
@@ -34,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             typeSchema      = new NativeTypeSchema(typeof(ClusterStore));
             databaseSchema  = new DatabaseSchema(typeSchema);
             stateDB         = new MemoryDatabase();
-            stateDB.Schema  = databaseSchema;
+            Schema          = databaseSchema;
             clusterHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
 
@@ -59,9 +58,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override Task<string[]>  GetContainers() =>  stateDB.GetContainers();
-        public override DbCommands      GetDbCommands() =>  stateDB.GetDbCommands();
-
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)
@@ -81,9 +77,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 if (ClusterDB.FindTask(nameof(databases), tasks)) {
-                    var databaseInfo    = await database.GetDbContainers().ConfigureAwait(false);;
-                    databaseInfo.id     = databaseName;
-                    databases.Upsert(databaseInfo);
+                    var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);;
+                    dbContainers.id     = databaseName;
+                    databases.Upsert(dbContainers);
                 }
                 if (ClusterDB.FindTask(nameof(commands), tasks)) {
                     var dbCommands  = database.GetDbCommands();
@@ -117,9 +113,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             var catalogs = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
                 var database        = pair.Value;
-                var databaseInfo    = await database.GetDbContainers().ConfigureAwait(false);
-                databaseInfo.id     = pair.Key;
-                catalogs.Add(databaseInfo);
+                var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
+                dbContainers.id     = pair.Key;
+                catalogs.Add(dbContainers);
             }
             return new DbList{ databases = catalogs };
         }

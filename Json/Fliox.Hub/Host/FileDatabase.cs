@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new FileContainer(name, this, databaseFolder, pretty);
         }
         
-        public override Task<string[]> GetContainers() {
+        protected override Task<string[]> GetContainers() {
             var directories = Directory.GetDirectories(databaseFolder);
             var result = new string[directories.Length];
             for (int n = 0; n < directories.Length; n++) {
