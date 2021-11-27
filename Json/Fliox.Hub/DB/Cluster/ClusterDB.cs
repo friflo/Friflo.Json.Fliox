@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             foreach (var pair in databases) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
-                var databaseInfo    = database.GetDatabaseInfo();
                 if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
+                    var databaseInfo    = database.GetDatabaseInfo();
                     var catalog = new Catalog {
                         id              = databaseName,
                         databaseType    = databaseInfo.databaseType,
