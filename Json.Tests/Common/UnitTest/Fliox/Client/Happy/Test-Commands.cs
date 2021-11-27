@@ -42,9 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertCommandsSchema(PocStore store) {
-            var catalog         = store.Catalog();
-            var catalogSchema   = store.CatalogSchema();
-            var catalogList     = store.CatalogList();
+            var catalog         = store.DbInfo();
+            var catalogSchema   = store.DbSchema();
+            var catalogList     = store.DbList();
             await store.SyncTasks();
             
             var catalogResult = catalog.Result;
@@ -67,9 +67,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
             
-            var catalog         = store.Catalog();
-            var catalogSchema   = store.CatalogSchema();
-            var catalogList     = store.CatalogList();
+            var catalog         = store.DbInfo();
+            var catalogSchema   = store.DbSchema();
+            var catalogList     = store.DbList();
             await store.SyncTasks();
             
             var catalogResult = catalog.Result;

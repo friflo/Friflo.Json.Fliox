@@ -13,9 +13,9 @@ export abstract class UserStore {
 
 export interface UserStoreService {
     AuthenticateUser (value: AuthenticateUser) : AuthenticateUserResult;
-    Catalog          (value: any) : DbInfo;
-    CatalogSchema    (value: any) : DbSchema;
-    CatalogList      (value: any) : DbList;
+    DbInfo           (value: any) : DbInfo;
+    DbSchema         (value: any) : DbSchema;
+    DbList           (value: any) : DbList;
     Echo             (value: any) : any;
 }
 

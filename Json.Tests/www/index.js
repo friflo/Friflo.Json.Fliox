@@ -644,7 +644,7 @@ class App {
 
     schemaLink(database, schema) {
         const name = schema ? schema.schemaName : "no schema";
-        return `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
+        return `<a title="database schema" href="./rest/${database}?command=DbSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
     async loadEntities (database, container, schema) {
