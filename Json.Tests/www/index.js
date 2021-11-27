@@ -295,6 +295,7 @@ class App {
             "user":     defaultUser.value,
             "token":    defaultToken.value
         });
+        tag = tag ? tag : "";
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
@@ -369,21 +370,21 @@ class App {
 
     async loadCluster () {
         const tasks = [
-            { "task": "query", "container": "databases", "filter":{ "op": "true" }},
-            { "task": "query", "container": "schemas",   "filter":{ "op": "true" }},
-            { "task": "query", "container": "commands",  "filter":{ "op": "true" }}
+            { "task": "query", "container": "containers", "filter":{ "op": "true" }},
+            { "task": "query", "container": "schemas",    "filter":{ "op": "true" }},
+            { "task": "query", "container": "commands",   "filter":{ "op": "true" }}
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response = await this.postRequestTasks("cluster", tasks, "databases");
+        const response = await this.postRequestTasks("cluster", tasks);
         const content = response.json;
         var error = this.getTaskError (content, 0);
         if (error) {
             catalogExplorer.innerHTML = this.errorAsHtml(error);
             return 
         }
-        const databases = content.containers[0].entities;
-        const schemas   = content.containers[1].entities;
-        const commands  = content.containers[2].entities;
+        const containers    = content.containers[0].entities;
+        const schemas       = content.containers[1].entities;
+        const commands      = content.containers[2].entities;
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
             var path = ev.composedPath();
@@ -392,15 +393,14 @@ class App {
             this.selectedCatalog = selectedElement;
             this.selectedCatalog.classList = "selected";
             const database = selectedElement.innerText;
-            var schema      = schemas.find  (s => s.id == database);
-            var catalog     = databases.find(c => c.id == database);
-            var dbCommands  = commands.find (c => c.id == database);
+            var schema      = schemas.find   (s => s.id == database);
+            var dbCommands  = commands.find  (c => c.id == database);
             catalogSchema.innerHTML  = this.schemaLink(database, schema)
-            this.listCommands(database, catalog, dbCommands, schema);
+            this.listCommands(database, dbCommands, schema);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
-        for (var catalog of databases) {
+        for (var catalog of containers) {
             var liCatalog = document.createElement('li');
             var catalogLabel = document.createElement('div');
             catalogLabel.innerText = catalog.id;
@@ -599,7 +599,7 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    listCommands (database, catalog, dbCommands, schema) {
+    listCommands (database, dbCommands, schema) {
         this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";

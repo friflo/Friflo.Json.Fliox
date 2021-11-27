@@ -76,10 +76,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             foreach (var pair in hubDbs) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
-                if (ClusterDB.FindTask(nameof(databases), tasks)) {
+                if (ClusterDB.FindTask(nameof(containers), tasks)) {
                     var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);;
                     dbContainers.id     = databaseName;
-                    databases.Upsert(dbContainers);
+                    containers.Upsert(dbContainers);
                 }
                 if (ClusterDB.FindTask(nameof(commands), tasks)) {
                     var dbCommands  = database.GetDbCommands();
