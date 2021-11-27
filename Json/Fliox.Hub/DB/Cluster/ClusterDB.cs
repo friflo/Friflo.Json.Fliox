@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         private  readonly   DatabaseSchema      databaseSchema; // not really required as db is readonly - but enables exposing schema
 
         public   override   string              ToString() => name;
+        public   override   DatabaseSchema      Schema { get => stateDB.Schema; set => throw new InvalidOperationException(); }
 
         public const string Name = "cluster";
         
