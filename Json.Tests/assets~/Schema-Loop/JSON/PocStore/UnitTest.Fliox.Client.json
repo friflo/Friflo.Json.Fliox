@@ -28,6 +28,7 @@
             "commands": {
                 "TestCommand":  { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
                 "DbContainers": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" }] },
+                "DbCommands":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" }] },
                 "DbSchema":     { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" }] },
                 "DbList":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" }] },
                 "Echo":         { "command": [{  }, {  }] }

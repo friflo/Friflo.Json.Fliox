@@ -116,11 +116,16 @@ namespace Friflo.Json.Fliox.Hub.Host
                     containerList[n++] = container.Key;
                 }
             }
-            var commands = handler.GetCommands();
             var databaseType = GetType().Name;
             return new DbContainers {
                 databaseType    = databaseType,
-                containers      = containerList,
+                containers      = containerList
+            };
+        }
+        
+        public virtual DbCommands GetDbCommands() {
+            var commands = handler.GetCommands();
+            return new DbCommands {
                 commands        = commands
             };
         }

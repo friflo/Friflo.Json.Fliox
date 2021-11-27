@@ -370,7 +370,8 @@ class App {
     async loadCluster () {
         const tasks = [
             { "task": "query", "container": "databases", "filter":{ "op": "true" }},
-            { "task": "query", "container": "schemas",   "filter":{ "op": "true" }}
+            { "task": "query", "container": "schemas",   "filter":{ "op": "true" }},
+            { "task": "query", "container": "commands",  "filter":{ "op": "true" }}
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await this.postRequestTasks("cluster", tasks, "databases");
@@ -382,6 +383,7 @@ class App {
         }
         const databases = content.containers[0].entities;
         const schemas   = content.containers[1].entities;
+        const commands  = content.containers[2].entities;
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
             var path = ev.composedPath();
@@ -390,10 +392,11 @@ class App {
             this.selectedCatalog = selectedElement;
             this.selectedCatalog.classList = "selected";
             const database = selectedElement.innerText;
-            var schema  = schemas.find(s => s.id == database);
-            var catalog = databases.find(c => c.id == database);
+            var schema      = schemas.find  (s => s.id == database);
+            var catalog     = databases.find(c => c.id == database);
+            var dbCommands  = commands.find (c => c.id == database);
             catalogSchema.innerHTML  = this.schemaLink(database, schema)
-            this.listCommands(database, catalog, schema);
+            this.listCommands(database, catalog, dbCommands, schema);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
@@ -596,7 +599,7 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    listCommands (database, catalog, schema) {
+    listCommands (database, catalog, dbCommands, schema) {
         this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";
@@ -633,7 +636,7 @@ class App {
             this.setCommandParam (database, commandName, def);
             this.setCommandResult(database, commandName);
         }
-        for (const command of catalog.commands) {
+        for (const command of dbCommands.commands) {
             var liCommand = document.createElement('li');
             liCommand.innerText = command;
             ulCommands.append(liCommand);

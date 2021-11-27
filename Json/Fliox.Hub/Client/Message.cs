@@ -116,14 +116,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Echoes the value specified in <see cref="FlioxClient.SendCommand{TCommand,TResult}(string,TCommand)"/> in <see cref="CommandTask.ResultJson"/>
         /// </summary>
-        public const string Echo        = "Echo";
+        public const string Echo            = "Echo";
         
         // --- Db*
-        public const string DbContainers      = "DbContainers";
+        public const string DbContainers    = "DbContainers";
+
+        public const string DbCommands      = "DbCommands";
+
+        public const string DbSchema        = "DbSchema";
         
-        public const string DbSchema    = "DbSchema";
-        
-        public const string DbList      = "DbList";
+        public const string DbList          = "DbList";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);

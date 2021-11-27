@@ -3,10 +3,12 @@
 export abstract class ClusterStore {
     databases  : { [key: string]: DbContainers };
     schemas    : { [key: string]: DbSchema };
+    commands   : { [key: string]: DbCommands };
 }
 
 export interface ClusterStoreService {
     DbContainers (value: any) : DbContainers;
+    DbCommands   (value: any) : DbCommands;
     DbSchema     (value: any) : DbSchema;
     DbList       (value: any) : DbList;
     Echo         (value: any) : any;
@@ -16,7 +18,6 @@ export class DbContainers {
     id            : string;
     databaseType  : string;
     containers    : string[];
-    commands      : string[];
 }
 
 export class DbSchema {
@@ -24,6 +25,11 @@ export class DbSchema {
     schemaName   : string;
     schemaPath   : string;
     jsonSchemas  : { [key: string]: any };
+}
+
+export class DbCommands {
+    id        : string;
+    commands  : string[];
 }
 
 export class DbList {

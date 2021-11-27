@@ -22,6 +22,7 @@
             "commands": {
                 "AuthenticateUser": { "command": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }] },
                 "DbContainers":     { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" }] },
+                "DbCommands":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" }] },
                 "DbSchema":         { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" }] },
                 "DbList":           { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" }] },
                 "Echo":             { "command": [{  }, {  }] }

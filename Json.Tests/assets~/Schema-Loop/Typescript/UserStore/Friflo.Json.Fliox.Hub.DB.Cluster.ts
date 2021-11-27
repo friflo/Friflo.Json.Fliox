@@ -4,7 +4,11 @@ export class DbContainers {
     id            : string;
     databaseType  : string;
     containers    : string[];
-    commands      : string[];
+}
+
+export class DbCommands {
+    id        : string;
+    commands  : string[];
 }
 
 export class DbSchema {

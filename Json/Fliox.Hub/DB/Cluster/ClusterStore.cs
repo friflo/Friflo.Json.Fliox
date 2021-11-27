@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     {
         public  readonly    EntitySet <string, DbContainers>    databases;
         public  readonly    EntitySet <string, DbSchema>        schemas;
+        public  readonly    EntitySet <string, DbCommands>      commands;
         
         public ClusterStore (FlioxHub hub, string database = null) : base(hub, database) { }
     }
@@ -21,6 +22,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Fri.Required]  public  string                          id;
         [Fri.Required]  public  string                          databaseType;
         [Fri.Required]  public  string[]                        containers;
+                        
+        public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+    }
+    public class DbCommands {
+        [Fri.Required]  public  string                          id;
         [Fri.Required]  public  string[]                        commands;
                         
         public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");

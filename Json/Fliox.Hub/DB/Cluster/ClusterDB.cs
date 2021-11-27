@@ -59,10 +59,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override DbContainers GetDbContainers() {
-            return stateDB.GetDbContainers();
-        }
-        
+        public override DbContainers    GetDbContainers()   =>  stateDB.GetDbContainers();
+        public override DbCommands      GetDbCommands()     =>  stateDB.GetDbCommands();
+
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)
@@ -85,6 +84,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     var databaseInfo    = database.GetDbContainers();
                     databaseInfo.id     = databaseName;
                     databases.Upsert(databaseInfo);
+                }
+                if (ClusterDB.FindTask(nameof(commands), tasks)) {
+                    var dbCommands  = database.GetDbCommands();
+                    dbCommands.id   = databaseName;
+                    commands.Upsert(dbCommands);
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var schema = CreateCatalogSchema(database, databaseName);
