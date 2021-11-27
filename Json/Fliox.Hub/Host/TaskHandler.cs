@@ -65,7 +65,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static CatalogSchema CatalogSchema (Command<Empty> command) {
             var database        = command.Database;  
             var databaseName    = command.DatabaseName;
-            var databaseInfo    = database.GetDatabaseInfo();
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
