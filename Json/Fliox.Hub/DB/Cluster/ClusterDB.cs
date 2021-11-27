@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
                 var cluster = pooled.instance;
                 var tasks = syncRequest.tasks;
-                cluster.UpdateCatalogs  (hub, tasks);
+                await cluster.UpdateCatalogs  (hub, tasks).ConfigureAwait(false);
                 
                 await cluster.SyncTasks().ConfigureAwait(false);
             }

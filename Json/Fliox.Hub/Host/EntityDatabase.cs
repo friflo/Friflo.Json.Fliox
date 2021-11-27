@@ -110,15 +110,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
             
         public async Task<DbContainers> GetDbContainers() {
-            int n = 0;
             string[] containerList;
             if (Schema != null) {
-                var rootType = Schema.typeSchema.RootType;
-                var fields = rootType.Fields;
-                containerList = new string [fields.Count];
-                foreach (var field in fields) {
-                    containerList[n++] = field.name;
-                }
+                containerList = Schema.GetContainers();
             } else {
                 containerList = await GetContainers().ConfigureAwait(false);
             }

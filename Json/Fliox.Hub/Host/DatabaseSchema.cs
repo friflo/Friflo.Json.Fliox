@@ -148,6 +148,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             jsonSchemas = schemas;
             return schemas;
         }
+        
+        public string[] GetContainers() {
+            var rootType = typeSchema.RootType;
+            var fields = rootType.Fields;
+            var containerList = new string [fields.Count];
+            int n = 0;
+            foreach (var field in fields) {
+                containerList[n++] = field.name;
+            }
+            return containerList;
+        }
     }
  
 }
