@@ -40,20 +40,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>(Echo));    // todo add handler via scanning TaskHandler
-            AddCommandHandler(StdCommand.DbContainers,  new CommandHandler<Empty,     DbContainers> (DbContainers));
-            AddCommandHandler(StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>   (DbCommands));
-            AddCommandHandler(StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>     (DbSchema));
-            AddCommandHandler(StdCommand.DbList,        new CommandHandler<Empty,     DbList>       (DbList));
+            // todo add handler via scanning TaskHandler
+            AddCommandHandler       (StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>(Echo));
+            AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
+            AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
+            AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
+            AddCommandHandlerAsync  (StdCommand.DbList,        new CommandHandler<Empty,     Task<DbList>>      (DbList));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private static DbContainers DbContainers (Command<Empty> command) {
+        private static async Task<DbContainers> DbContainers (Command<Empty> command) {
             var database        = command.Database;  
-            var databaseInfo    = database.GetDbContainers();
+            var databaseInfo    = await database.GetDbContainers().ConfigureAwait(false);
             databaseInfo.id     = command.DatabaseName;
             return databaseInfo;
         }
@@ -71,9 +72,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static DbList DbList (Command<Empty> command) {
+        private static async Task<DbList> DbList (Command<Empty> command) {
             var hub = command.Hub;
-            return ClusterStore.GetDbList(hub);
+            return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }
         
         internal bool TryGetCommand(string name, out CommandCallback command) {

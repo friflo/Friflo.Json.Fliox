@@ -100,7 +100,16 @@ namespace Friflo.Json.Fliox.Hub.Host
             return container;
         }
         
-        public virtual DbContainers GetDbContainers() {
+        public virtual Task<string[]> GetContainers() {
+            var containerList = new string[containers.Count];
+            int n = 0;
+            foreach (var container in containers) {
+                containerList[n++] = container.Key;
+            }
+            return Task.FromResult(containerList);
+        }
+            
+        public virtual async Task<DbContainers> GetDbContainers() {
             int n = 0;
             string[] containerList;
             if (Schema != null) {
@@ -111,10 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     containerList[n++] = field.name;
                 }
             } else {
-                containerList = new string[containers.Count];
-                foreach (var container in containers) {
-                    containerList[n++] = container.Key;
-                }
+                containerList = await GetContainers().ConfigureAwait(false);
             }
             var databaseType = GetType().Name;
             return new DbContainers {

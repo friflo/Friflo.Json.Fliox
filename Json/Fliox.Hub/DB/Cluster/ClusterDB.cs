@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        public override DbContainers    GetDbContainers()   =>  stateDB.GetDbContainers();
-        public override DbCommands      GetDbCommands()     =>  stateDB.GetDbCommands();
+        public override Task<DbContainers>  GetDbContainers()   =>  stateDB.GetDbContainers();
+        public override DbCommands          GetDbCommands()     =>  stateDB.GetDbCommands();
 
         internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
@@ -75,13 +75,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public partial class ClusterStore
     {
-        internal void UpdateCatalogs(FlioxHub hub, List<SyncRequestTask> tasks) {
+        internal async Task UpdateCatalogs(FlioxHub hub, List<SyncRequestTask> tasks) {
             var hubDbs = hub.GetDatabases();
             foreach (var pair in hubDbs) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 if (ClusterDB.FindTask(nameof(databases), tasks)) {
-                    var databaseInfo    = database.GetDbContainers();
+                    var databaseInfo    = await database.GetDbContainers().ConfigureAwait(false);;
                     databaseInfo.id     = databaseName;
                     databases.Upsert(databaseInfo);
                 }
@@ -112,12 +112,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return schema;
         }
         
-        internal static DbList GetDbList (FlioxHub hub) {
+        internal static async Task<DbList> GetDbList (FlioxHub hub) {
             var databases = hub.GetDatabases();
             var catalogs = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
                 var database        = pair.Value;
-                var databaseInfo    = database.GetDbContainers();
+                var databaseInfo    = await database.GetDbContainers().ConfigureAwait(false);
                 databaseInfo.id     = pair.Key;
                 catalogs.Add(databaseInfo);
             }

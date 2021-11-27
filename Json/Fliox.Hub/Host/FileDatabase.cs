@@ -31,6 +31,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return new FileContainer(name, this, databaseFolder, pretty);
         }
+        
+        public override Task<string[]> GetContainers() {
+            var directories = Directory.GetDirectories(databaseFolder);
+            var result = new string[directories.Length];
+            for (int n = 0; n < directories.Length; n++) {
+                result[n] = directories[n].Substring(databaseFolder.Length);
+            }
+            return Task.FromResult(result);
+        }
     }
     
     public sealed class FileContainer : EntityContainer
