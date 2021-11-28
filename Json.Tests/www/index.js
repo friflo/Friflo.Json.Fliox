@@ -995,7 +995,7 @@ class App {
 
     formatEntities  = false;
     formatResponses = true;
-    activeTab       = "explorer";
+    activeTab       = "playground";
 
     setConfig(key, value) {
         this[key] = value;
