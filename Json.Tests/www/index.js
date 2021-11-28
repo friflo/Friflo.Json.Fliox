@@ -364,7 +364,7 @@ class App {
         }
         this.layoutEditors();
         if (tabName != "settings") {
-            document.cookie = `activeTab=${tabName};`;
+            this.setConfig("activeTab", tabName);
         }
     }
 
@@ -1004,11 +1004,15 @@ class App {
             elem.value   = value;
             elem.checked = value;
         }
-        document.cookie = `${key}=${value};`;
+        window.localStorage.setItem(key, value);
+    }
+
+    getConfig(key) {
+        return window.localStorage.getItem(key);
     }
 
     initConfigValue(key) {
-        var valueStr = this.getCookie(key);
+        var valueStr = this.getConfig(key);
         if (valueStr == undefined) {
             this.setConfig(key, this[key]);
             return;
@@ -1046,8 +1050,10 @@ class App {
                 this.responseEditor?.layout();
                 break;
             case "explorer":
-                commandValue.children[0].style.width = "100px"; // required to shrink width
-                entityContainer.children[0].style.width = "100px"; // required to shrink width
+                var commandElem =  commandValue.children[0];
+                if (commandElem)   commandElem.style.width = "100px"; // required to shrink width
+                const entityElem = entityContainer.children[0]
+                if (entityElem)    entityElem.style.width = "100px"; // required to shrink width
                 this.commandValueEditor?.layout();
                 this.entityEditor?.layout();
                 break;
