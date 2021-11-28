@@ -363,6 +363,9 @@ class App {
             }
         }
         this.layoutEditors();
+        if (tabName != "settings") {
+            document.cookie = `activeTab=${tabName};`;
+        }
     }
 
     selectedCatalog;
@@ -992,12 +995,15 @@ class App {
 
     formatEntities  = false;
     formatResponses = true;
+    activeTab       = "explorer";
 
     setConfig(key, value) {
         this[key] = value;
         const elem = document.getElementById(key);
-        elem.value   = value;
-        elem.checked = value;
+        if (elem) {
+            elem.value   = value;
+            elem.checked = value;
+        }
         document.cookie = `${key}=${value};`;
     }
 
@@ -1016,6 +1022,7 @@ class App {
     loadConfig() {
         this.initConfigValue("formatEntities");
         this.initConfigValue("formatResponses");
+        this.initConfigValue("activeTab");
     }
 
     formatJson(format, text) {
