@@ -619,14 +619,17 @@ class App {
         var ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
             var path = ev.composedPath();
-            const selectedElement = path[0];
+            let selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
-            if (selectedElement.tagName.toLowerCase() != "li")
-                return;
-            if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
-            this.selectedEntity = selectedElement;
 
-            const commandName   = this.selectedEntity.innerText;
+            const tagName = selectedElement.tagName;
+            if (tagName == "SPAN" || tagName == "DIV") {
+                selectedElement = path[1];
+            }
+            const commandName = selectedElement.children[0].innerText;
+            if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
+                this.selectedEntity = selectedElement;
+
             const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
             const signature     = service ? service.commands[commandName].command : null
             const def           = signature ? Object.keys(signature[0]).length  == 0 ? "null" : "{}" : "null";
@@ -639,10 +642,20 @@ class App {
             this.entityIdentity.database    = database;
             this.setCommandParam (database, commandName, def);
             this.setCommandResult(database, commandName);
+            if (tagName == "DIV") {
+                this.sendCommand("POST");
+            }
         }
         for (const command of dbCommands.commands) {
             var liCommand = document.createElement('li');
-            liCommand.innerText = command;
+            var commandLabel = document.createElement('span');
+            commandLabel.innerText = command;
+            liCommand.appendChild(commandLabel);
+            var runCommand = document.createElement('div');
+            runCommand.innerText    = "run";
+            runCommand.classList    = "command";
+            liCommand.appendChild(runCommand);
+
             ulCommands.append(liCommand);
         }
         entityExplorer.innerText = ""

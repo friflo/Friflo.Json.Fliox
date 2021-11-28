@@ -121,9 +121,12 @@
         .catalogs li div:hover      { text-decoration:underline; }
 
         .entities > ul              { padding-left: 0px; }
-        .entities li                { cursor: pointer; list-style:none; }
+        .entities li                { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
         .entities li.selected       { background-color: var(--selected-color); }
         .entities li:hover          { text-decoration:underline; }
+        .entities li:hover .command { visibility: visible; }
+        .command                    { visibility: hidden; }
+        .command:hover              { background-color:green; color: white; padding-left: 2px; padding-right: 2px; }
 
         .settings li                { list-style: none; }
 
