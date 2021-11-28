@@ -41,7 +41,25 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public abstract     StandardTypes           StandardTypes   { get; }
         
         public abstract     TypeDef                 RootType        { get; }
-        
+
+        private             Dictionary<TypeDefKey, TypeDef> typeDefMap;
+
+        public              TypeDef                 FindTypeDef(string @namespace, string name) {
+            if (typeDefMap == null) {
+                typeDefMap = new Dictionary<TypeDefKey, TypeDef>(Types.Count);
+                var types = Types;
+                foreach (var typeDef in types) {
+                    bool isNamedType = typeDef.IsClass || typeDef.IsStruct || typeDef.IsEnum || typeDef.IsService;  
+                    if (!isNamedType)
+                        continue;
+                    var key = new TypeDefKey(typeDef.Namespace, typeDef.Name);
+                    typeDefMap.Add(key, typeDef);
+                }
+            }
+            var key2 = new TypeDefKey(@namespace, name);
+            return typeDefMap[key2];
+        }
+
         public ICollection<TypeDef> GetEntityTypes() {
             var list = new List<TypeDef>(RootType.Fields.Count);
             foreach (var field in RootType.Fields) {
@@ -62,6 +80,29 @@ namespace Friflo.Json.Fliox.Schema.Definition
                     typeField.MarkDerivedField();
                 }
             }
+        }
+    }
+    
+    internal class TypeDefKey
+    {
+        private readonly    string  @namespace;
+        private readonly    string  name;
+        
+        internal TypeDefKey(string @namespace, string name) {
+            this.@namespace = @namespace;
+            this.name       = name;
+        }
+
+        public override string ToString() => $"{@namespace}.{name}";
+
+        public override int GetHashCode() {
+            return @namespace.GetHashCode() ^ name.GetHashCode();
+        }
+
+        public override bool Equals(object obj) {
+            // ReSharper disable once PossibleNullReferenceException
+            var other = (TypeDefKey)obj; // boxes - doesnt matter
+            return @namespace == other.@namespace && name == other.name;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Schema.Native
     {
         public   override   ICollection<TypeDef>    Types           { get; }
         public   override   StandardTypes           StandardTypes   { get; }
-        public   override   TypeDef                 RootType       { get; }
+        public   override   TypeDef                 RootType        { get; }
         
         public              TypeDef                 TypeAsTypeDef(Type type) => nativeTypes[type];
 

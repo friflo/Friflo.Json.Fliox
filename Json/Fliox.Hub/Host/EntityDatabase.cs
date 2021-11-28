@@ -121,7 +121,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public DbCommands GetDbCommands() {
-            var commands = handler.GetCommands();
+            string[] commands;
+            var schema = Schema;
+            if (schema != null) {
+                commands = schema.GetCommands();
+            } else {
+                commands = handler.GetCommands();
+            }
             return new DbCommands { commands = commands };
         }
 

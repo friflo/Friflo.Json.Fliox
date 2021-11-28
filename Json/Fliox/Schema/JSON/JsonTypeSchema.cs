@@ -24,8 +24,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
-        private static readonly  JsonValue JsonObject = new JsonValue ("\"object\"");
-        
         public JsonTypeSchema(List<JsonSchema> schemaList, string rootType = null) {
             typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonSchema schema in schemaList) {
