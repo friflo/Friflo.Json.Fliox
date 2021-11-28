@@ -122,8 +122,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public DbCommands GetDbCommands() {
             string[] commands;
+            // ReSharper disable once RedundantAssignment
             var schema = Schema;
-            if (schema != null) {
+            // for now get commands always from handler
+            if (false) { // schema != null) {
                 commands = schema.GetCommands();
             } else {
                 commands = handler.GetCommands();
