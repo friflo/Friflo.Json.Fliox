@@ -122,9 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public DbCommands GetDbCommands() {
             var commands = handler.GetCommands();
-            return new DbCommands {
-                commands        = commands
-            };
+            return new DbCommands { commands = commands };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
