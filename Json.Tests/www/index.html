@@ -73,13 +73,13 @@
             cursor: default;
             font-size: 14px;
         }
-        .dropdown-content a {
+        .dropdown-content div {
             color: black;
             padding: 2px 6px;
             text-decoration: none;
             display: block;
         }
-        .dropdown-content a:hover           { background-color: #ddd;}
+        .dropdown-content div:hover           { background-color: #ddd;}
         .dropdown:hover .dropdown-content   { display: block;}
         .dropdown:hover .dropbtn            { background-color: grey;}
 
@@ -204,13 +204,13 @@
       <div class="dropdown">
         <button class="dropbtn">▼</button>
         <div class="dropdown-content">
-          <a onclick="app.selectUser(this)">admin</a>
-          <a onclick="app.selectUser(this)">cluster-admin</a>
-          <a onclick="app.selectUser(this)">poc-admin</a>
-          <a onclick="app.selectUser(this)">poc-readonly</a>
-          <a onclick="app.selectUser(this)">monitor-admin</a>
-          <a onclick="app.selectUser(this)">user-admin</a>
-          <a onclick="app.selectUser(this)">user-readonly</a>
+          <div onclick="app.selectUser(this)">admin</div>
+          <div onclick="app.selectUser(this)">cluster-admin</div>
+          <div onclick="app.selectUser(this)">poc-admin</div>
+          <div onclick="app.selectUser(this)">poc-readonly</div>
+          <div onclick="app.selectUser(this)">monitor-admin</div>
+          <div onclick="app.selectUser(this)">user-admin</div>
+          <div onclick="app.selectUser(this)">user-readonly</div>
         </div>
       </div>
     </span>
