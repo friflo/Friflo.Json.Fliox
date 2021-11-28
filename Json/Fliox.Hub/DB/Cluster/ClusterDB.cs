@@ -60,10 +60,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             }
         }
         
-        internal static bool FindTask(string container, string databaseName, List<SyncRequestTask> tasks) {
+        internal static bool FindTask(string container, JsonKey dbKey, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container) {
-                    var dbKey = new JsonKey(databaseName);
                     return read.sets.Any(set => set.ids.Contains(dbKey));
                 }
                 if (task is QueryEntities query && query.container == container)
@@ -80,17 +79,18 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             foreach (var pair in hubDbs) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
-                if (ClusterDB.FindTask(nameof(containers), databaseName, tasks)) {
+                var dbKey           = new JsonKey(databaseName);
+                if (ClusterDB.FindTask(nameof(containers), dbKey, tasks)) {
                     var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);;
                     dbContainers.id     = databaseName;
                     containers.Upsert(dbContainers);
                 }
-                if (ClusterDB.FindTask(nameof(commands), databaseName, tasks)) {
+                if (ClusterDB.FindTask(nameof(commands), dbKey, tasks)) {
                     var dbCommands  = database.GetDbCommands();
                     dbCommands.id   = databaseName;
                     commands.Upsert(dbCommands);
                 }
-                if (ClusterDB.FindTask(nameof(schemas),databaseName, tasks)) {
+                if (ClusterDB.FindTask(nameof(schemas),dbKey, tasks)) {
                     var schema = CreateCatalogSchema(database, databaseName);
                     if (schema != null)
                         schemas.Upsert(schema);
