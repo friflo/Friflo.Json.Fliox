@@ -652,7 +652,7 @@ class App {
             commandLabel.innerText = command;
             liCommand.appendChild(commandLabel);
             var runCommand = document.createElement('div');
-            runCommand.innerHTML    = "&nbsp;&nbsp;▶&nbsp;";
+            runCommand.innerHTML    = "&nbsp;&nbsp;▶&nbsp;&nbsp;";
             runCommand.classList    = "command";
             runCommand.title        = "POST command"
             liCommand.appendChild(runCommand);

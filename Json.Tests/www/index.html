@@ -124,9 +124,9 @@
         .entities li                { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
         .entities li.selected       { background-color: var(--selected-color); }
         .entities li:hover          { background-color: var(--background3); }
-        .entities li:hover .command { visibility: visible;  }
-        .command                    { visibility: hidden; }
-        .command:hover              { background-color:green; color: white; padding-left: 2px; padding-right: 2px; }
+        .entities li:hover .command { display: block;  }
+        .command                    { display: none; padding-left: 2px; padding-right: 2px; font-size: 13px; }
+        .command:hover              { background-color:green; color: white;  }
 
         .settings li                { list-style: none; }
 
