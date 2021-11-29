@@ -615,9 +615,18 @@ class App {
         const commandSignature      = document.getElementById("commandSignature");
         const commandLink           = document.getElementById("commandLink");        
         readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        readEntities.innerHTML      = ` <i style="opacity: 0.5;">commands</i>`;
+        readEntities.innerHTML      = "";
         commandSignature.innerHTML  = "";
         commandLink.innerHTML       = "";
+
+        var ulDatabase  = document.createElement('ul');
+        ulDatabase.classList = "database"
+        var commandLabel = document.createElement('div');
+        commandLabel.innerHTML = '<small style="opacity:0.5"><i>&nbsp;&nbsp;&nbsp;commands</i></small>';
+        ulDatabase.append(commandLabel)
+
+        var liCommands  = document.createElement('li');
+        ulDatabase.appendChild(liCommands);
 
         var ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
@@ -651,7 +660,7 @@ class App {
         }
         for (const command of dbCommands.commands) {
             var liCommand = document.createElement('li');
-            var commandLabel = document.createElement('span');
+            var commandLabel = document.createElement('div');
             commandLabel.innerText = command;
             liCommand.appendChild(commandLabel);
             var runCommand = document.createElement('div');
@@ -663,7 +672,8 @@ class App {
             ulCommands.append(liCommand);
         }
         entityExplorer.innerText = ""
-        entityExplorer.appendChild(ulCommands);
+        liCommands.append(ulCommands);
+        entityExplorer.appendChild(ulDatabase);
     }
 
     schemaLink(database, schema) {
@@ -697,6 +707,7 @@ class App {
         }
         const ids = content.tasks[0].ids;
         var ulIds = document.createElement('ul');
+        ulIds.classList = "entities"
         ulIds.onclick = (ev) => {
             var path = ev.composedPath();
             const selectedElement = path[0];

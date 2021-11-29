@@ -112,7 +112,7 @@
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; }
 
-        .catalogs > ul              { padding-left: 0px; }
+        .catalogs > ul              { padding-left: 0px; padding-right: 0px;}
         .catalogs > ul > li > ul    { margin-top: 0px; margin-left: 0px; }
         .catalogs li                { list-style:none; }
         .catalogs li div            { cursor: pointer; }
@@ -120,11 +120,18 @@
         .catalogs li div.selected   { background-color: var(--selected-color); }
         .catalogs li div:hover      { background-color: var(--background3); }
 
-        .entities > ul              { padding-left: 0px; }
+        .entities                   { padding-left: 0px; }
         .entities li                { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
         .entities li.selected       { background-color: var(--selected-color); }
         .entities li:hover          { background-color: var(--background3); }
-        .entities li:hover .command { display: block;  }
+
+        .database                           { padding-left: 0px; margin-right: 0px; }
+        .database li > ul                   { padding-left: 0px; margin-top: 0px; margin-left: 0px; }
+        .database li ul li                  { padding-left: 0px; cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
+        .database li ul li.selected         { background-color: var(--selected-color); }
+        .database li ul li:hover            { background-color: var(--background3); }
+        .database li ul li:hover .command   { display: block;  }
+
         .command                    { display: none; padding-left: 2px; padding-right: 2px; font-size: 12px; }
         .command:hover              { background-color:#090; color: white;  }
         .command:active             { background-color:#0c0; }
@@ -328,7 +335,7 @@
         </td>
         <td class="vbar"></td>
         <td style="width: 200px; border-left: 0px; border-right: 0px; background-color: var(--background2);">
-          <div class="entities" id="entityExplorer"  style="width: 200px; display: block; overflow: auto; white-space:nowrap; height: 500px;"></div>
+          <div id="entityExplorer"  style="width: 200px; display: block; overflow: auto; white-space:nowrap; height: 500px;"></div>
         </td>
         <td class="vbar"></td>
         <td style="display: grid; border-left: 0px;">
