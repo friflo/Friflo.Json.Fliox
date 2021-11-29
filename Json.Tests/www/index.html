@@ -112,18 +112,25 @@
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; }
 
-        .catalogs > ul              { padding-left: 0px; padding-right: 0px;}
-        .catalogs > ul > li > ul    { margin-top: 0px; margin-left: 0px; }
+
+
+        .caret                      { display: inline-block; width: 12px; cursor: default; text-align: center; font-size: 10px;}
+        .caret:hover                { font-weight: bold; }
+
+        .catalogs > ul              { padding-left: 0px; padding-right: 0px; }
+        .catalogs > ul > li > ul    { margin-top: 0px; margin-left: 0px; display: none; }
+        .catalogs > ul > li.active > ul    { display: block; }
+        .catalogs > ul > li.active > div > div    { -ms-transform: rotate(90deg); -webkit-transform: rotate(90deg); transform: rotate(90deg) }
         .catalogs li                { list-style:none; }
-        .catalogs li div            { cursor: pointer; }
+        .catalogs li          { cursor: pointer; }
         .catalogs ul li div.selected{ background-color: var(--selected-color); }
         .catalogs li div.selected   { background-color: var(--selected-color); }
-        .catalogs li div:hover      { background-color: var(--background3); }
+        .catalogs ul li div:hover      { background-color: var(--background3); }
 
         .entities                   { padding-left: 0px; }
         .entities li                { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
         .entities li.selected       { background-color: var(--selected-color); }
-        .entities li:hover          { background-color: var(--background3); }
+       /* .entities li:hover          { background-color: var(--background3); } */
 
         .database                           { padding-left: 0px; margin-right: 0px; }
         .database li > ul                   { padding-left: 0px; margin-top: 0px; margin-left: 0px; }

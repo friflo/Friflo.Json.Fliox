@@ -392,9 +392,13 @@ class App {
         ulCatalogs.onclick = (ev) => {
             var path = ev.composedPath();
             const selectedElement = path[0];
+            if (selectedElement.tagName.toLowerCase() != "span") {
+                path[2].classList.toggle("active");
+                return;
+            }
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-            this.selectedCatalog = selectedElement;
-            this.selectedCatalog.classList = "selected";
+            this.selectedCatalog = path[1];
+            this.selectedCatalog.classList.add("selected");
             const databaseName = selectedElement.innerText;
             var schema      = schemas.find   (s => s.id == databaseName);
             var dbCommands  = commands.find  (c => c.id == databaseName);
@@ -406,9 +410,16 @@ class App {
         }
         for (var dbContainer of dbContainers) {
             var liCatalog       = document.createElement('li');
-            var catalogLabel    = document.createElement('div');
+            var liDatabase     = document.createElement('div');
+            var catalogCaret    = document.createElement('div');
+            catalogCaret.innerText = "❯";
+            catalogCaret.classList = "caret";
+            var catalogLabel    = document.createElement('span');
             catalogLabel.innerText = dbContainer.id;
-            liCatalog.append(catalogLabel)
+            catalogLabel.style = ""
+            liDatabase.append(catalogCaret)
+            liDatabase.append(catalogLabel)
+            liCatalog.appendChild(liDatabase);
             ulCatalogs.append(liCatalog);
 
             var ulContainers = document.createElement('ul');
@@ -421,9 +432,9 @@ class App {
                     return;
                 if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
                 this.selectedCatalog = selectedElement;
-                this.selectedCatalog.classList = "selected";
+                this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText;
-                const databaseName  = path[3].childNodes[0].innerText;
+                const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
                 var schema = schemas.find(s => s.id == databaseName);
                 this.loadEntities(databaseName, containerName, schema);
             }
@@ -652,7 +663,7 @@ class App {
             commandSignature.innerHTML      = tags.label;
             commandLink.innerHTML           = tags.link;
 
-            this.selectedEntity.classList   = "selected";
+            this.selectedEntity.classList.add("selected");
             this.entityIdentity.command     = commandName;
             this.entityIdentity.database    = database;
             this.setCommandParam (database, commandName, def);
@@ -721,7 +732,7 @@ class App {
             this.selectedEntity = selectedElement;
 
             const entityId = this.selectedEntity.innerText;
-            this.selectedEntity.classList = "selected";
+            this.selectedEntity.classList.add("selected");
             this.loadEntity(database, container, entityId);
         }
         for (var id of ids) {
