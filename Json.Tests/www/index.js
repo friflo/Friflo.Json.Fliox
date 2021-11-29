@@ -385,7 +385,7 @@ class App {
             catalogExplorer.innerHTML = this.errorAsHtml(error);
             return 
         }
-        const containers    = content.containers[0].entities;
+        const dbContainers  = content.containers[0].entities;
         const schemas       = content.containers[1].entities;
         const commands      = content.containers[2].entities;
         var ulCatalogs = document.createElement('ul');
@@ -395,45 +395,45 @@ class App {
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
             this.selectedCatalog = selectedElement;
             this.selectedCatalog.classList = "selected";
-            const database = selectedElement.innerText;
-            var schema      = schemas.find   (s => s.id == database);
-            var dbCommands  = commands.find  (c => c.id == database);
-            catalogSchema.innerHTML  = this.schemaLink(database, schema)
-            this.listCommands(database, dbCommands, schema);
+            const databaseName = selectedElement.innerText;
+            var schema      = schemas.find   (s => s.id == databaseName);
+            var dbCommands  = commands.find  (c => c.id == databaseName);
+            var dbContainer = dbContainers.find  (c => c.id == databaseName);
+            catalogSchema.innerHTML  = this.schemaLink(databaseName, schema)
+            this.listCommands(databaseName, dbCommands, schema, dbContainer);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
-        for (var catalog of containers) {
-            var liCatalog = document.createElement('li');
-            var catalogLabel = document.createElement('div');
-            catalogLabel.innerText = catalog.id;
+        for (var dbContainer of dbContainers) {
+            var liCatalog       = document.createElement('li');
+            var catalogLabel    = document.createElement('div');
+            catalogLabel.innerText = dbContainer.id;
             liCatalog.append(catalogLabel)
             ulCatalogs.append(liCatalog);
-            if (catalog.containers.length > 0) {
-                var ulContainers = document.createElement('ul');
-                ulContainers.onclick = (ev) => {
-                    ev.stopPropagation();
-                    var path = ev.composedPath();
-                    const selectedElement = path[0];
-                    // in case of a multiline text selection selectedElement is the parent
-                    if (selectedElement.tagName.toLowerCase() != "div")
-                        return;
-                    if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-                    this.selectedCatalog = selectedElement;
-                    this.selectedCatalog.classList = "selected";
-                    const container = this.selectedCatalog.innerText;
-                    const database  = path[3].childNodes[0].innerText;
-                    var schema = schemas.find(s => s.id == database);
-                    this.loadEntities(database, container, schema);
-                }
-                liCatalog.append(ulContainers);
-                for (const container of catalog.containers) {
-                    var liContainer = document.createElement('li');
-                    var containerLabel = document.createElement('div');
-                    containerLabel.innerText = container;
-                    liContainer.append(containerLabel)
-                    ulContainers.append(liContainer);
-                }
+
+            var ulContainers = document.createElement('ul');
+            ulContainers.onclick = (ev) => {
+                ev.stopPropagation();
+                var path = ev.composedPath();
+                const selectedElement = path[0];
+                // in case of a multiline text selection selectedElement is the parent
+                if (selectedElement.tagName.toLowerCase() != "div")
+                    return;
+                if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
+                this.selectedCatalog = selectedElement;
+                this.selectedCatalog.classList = "selected";
+                const containerName = this.selectedCatalog.innerText;
+                const databaseName  = path[3].childNodes[0].innerText;
+                var schema = schemas.find(s => s.id == databaseName);
+                this.loadEntities(databaseName, containerName, schema);
+            }
+            liCatalog.append(ulContainers);
+            for (const containerName of dbContainer.containers) {
+                var liContainer = document.createElement('li');
+                var containerLabel = document.createElement('div');
+                containerLabel.innerText = containerName;
+                liContainer.append(containerLabel)
+                ulContainers.append(liContainer);
             }
         }
         this.createEntitySchemas(schemas)
@@ -606,7 +606,7 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    listCommands (database, dbCommands, schema) {
+    listCommands (database, dbCommands, schema, dbContainer) {
         this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";
@@ -621,6 +621,9 @@ class App {
 
         var ulDatabase  = document.createElement('ul');
         ulDatabase.classList = "database"
+        var typeLabel = document.createElement('div');
+        typeLabel.innerHTML = `<small style="opacity:0.5"><i>type </i>${dbContainer.databaseType}</small>`;
+        ulDatabase.append(typeLabel)
         var commandLabel = document.createElement('div');
         commandLabel.innerHTML = '<small style="opacity:0.5"><i>&nbsp;&nbsp;&nbsp;commands</i></small>';
         ulDatabase.append(commandLabel)
