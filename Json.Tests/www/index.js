@@ -409,8 +409,13 @@ class App {
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
+        let firstDatabase = true;
         for (var dbContainer of dbContainers) {
             var liCatalog       = document.createElement('li');
+            if (firstDatabase) {
+                firstDatabase = false;
+                liCatalog.classList.add("active");
+            }
             var liDatabase     = document.createElement('div');
             var catalogCaret    = document.createElement('div');
             catalogCaret.innerText = "❯";
