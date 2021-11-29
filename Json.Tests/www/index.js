@@ -392,14 +392,14 @@ class App {
         ulCatalogs.onclick = (ev) => {
             var path = ev.composedPath();
             const selectedElement = path[0];
-            if (selectedElement.tagName.toLowerCase() != "span") {
+            if (selectedElement.classList.contains("caret")) {
                 path[2].classList.toggle("active");
                 return;
             }
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-            this.selectedCatalog = path[1];
-            this.selectedCatalog.classList.add("selected");
-            const databaseName = selectedElement.innerText;
+            this.selectedCatalog =selectedElement;
+            selectedElement.classList.add("selected");
+            const databaseName = selectedElement.childNodes[1].innerText;
             var schema      = schemas.find   (s => s.id == databaseName);
             var dbCommands  = commands.find  (c => c.id == databaseName);
             var dbContainer = dbContainers.find  (c => c.id == databaseName);
@@ -416,7 +416,7 @@ class App {
             catalogCaret.classList = "caret";
             var catalogLabel    = document.createElement('span');
             catalogLabel.innerText = dbContainer.id;
-            catalogLabel.style = ""
+            catalogLabel.style = "pointer-events: none;"
             liDatabase.append(catalogCaret)
             liDatabase.append(catalogLabel)
             liCatalog.appendChild(liDatabase);
