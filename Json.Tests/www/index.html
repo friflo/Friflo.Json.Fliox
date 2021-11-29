@@ -32,10 +32,11 @@
             --background:   #f9f9f9;
             --background2:  #ffffff;
             --background3:  #f0f0f0;
+            --item-hover:   #e8e8e8;
             --command-bar:  #d9d9ff;
         }
         [data-theme="dark"] {
-            --selected-color: #0000ff80;
+            --selected-color: #44fa;
             --tab-color:    #303030;
             --tab-hover:    #606060;
             --tab-border:   #404040;
@@ -43,6 +44,7 @@
             --background:   #000;
             --background2:  #1e1e1e;
             --background3:  #000;
+            --item-hover:   #444;
             --command-bar:  #5f5f92;
         }
         /* dark mode color for firefox */
@@ -125,18 +127,18 @@
         .catalogs li          { cursor: pointer; }
         .catalogs ul li div.selected{ background-color: var(--selected-color); }
         .catalogs li div.selected   { background-color: var(--selected-color); }
-        .catalogs ul li div:hover      { background-color: var(--background3); }
+        .catalogs ul li div:hover      { background-color: var(--item-hover); }
 
         .entities                   { padding-left: 0px; }
         .entities li                { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
         .entities li.selected       { background-color: var(--selected-color); }
-       /* .entities li:hover          { background-color: var(--background3); } */
+        .entities li:hover          { background-color: var(--item-hover); }
 
         .database                           { padding-left: 0px; margin-right: 0px; }
         .database li > ul                   { padding-left: 0px; margin-top: 0px; margin-left: 0px; }
         .database li ul li                  { padding-left: 0px; cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
         .database li ul li.selected         { background-color: var(--selected-color); }
-        .database li ul li:hover            { background-color: var(--background3); }
+        .database li ul li:hover            { background-color: var(--item-hover); }
         .database li ul li:hover .command   { display: block;  }
 
         .command                    { display: none; padding-left: 2px; padding-right: 2px; font-size: 12px; }
