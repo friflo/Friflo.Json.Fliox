@@ -396,6 +396,7 @@ class App {
                 path[2].classList.toggle("active");
                 return;
             }
+            path[1].classList.add("active");
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
