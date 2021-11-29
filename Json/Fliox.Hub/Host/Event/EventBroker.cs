@@ -25,6 +25,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   ConcurrentDictionary<JsonKey, EventSubscriber>  subscribers;
         internal readonly   bool                                            background;
 
+        private const string MissingEventTarget = "subscribing events requires an eventTarget. E.g a WebSocket as a target for push events.";
+
         public EventBroker (bool background, SharedEnv env = null) {
             sharedEnv       = env ?? SharedEnv.Default;
             jsonEvaluator   = new JsonEvaluator();
@@ -62,20 +64,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal void SubscribeMessage(SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget) {
+        internal bool SubscribeMessage(SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
+            if (eventTarget == null) {
+                error = MissingEventTarget; 
+                return false;
+            }
+            error = null;
             EventSubscriber subscriber;
             var remove = subscribe.remove;
             var prefix = Protocol.Tasks.SubscribeMessage.GetPrefix(subscribe.name);
             if (remove.HasValue && remove.Value) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
-                    return;
+                    return true;
                 if (prefix == null) {
                     subscriber.messageSubscriptions.Remove(subscribe.name);
                 } else {
                     subscriber.messagePrefixSubscriptions.Remove(prefix);
                 }
                 RemoveEmptySubscriber(subscriber, clientId);
-                return;
+                return true;
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
             if (prefix == null) {
@@ -83,19 +90,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             } else {
                 subscriber.messagePrefixSubscriptions.Add(prefix);
             }
+            return true;
         }
 
-        internal void SubscribeChanges (SubscribeChanges subscribe, in JsonKey clientId, IEventTarget eventTarget) {
+        internal bool SubscribeChanges (SubscribeChanges subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
+            if (eventTarget == null) {
+                error = MissingEventTarget; 
+                return false;
+            }
+            error = null;
             EventSubscriber subscriber;
             if (subscribe.changes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
-                    return;
+                    return true;
                 subscriber.changeSubscriptions.Remove(subscribe.container);
                 RemoveEmptySubscriber(subscriber, clientId);
-                return;
+                return true;
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
             subscriber.changeSubscriptions[subscribe.container] = subscribe;
+            return true;
         }
         
         private EventSubscriber GetOrCreateSubscriber(in JsonKey clientId, IEventTarget eventTarget) {
@@ -198,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private const bool SerializeRemoteEvents = true; // set to false for development
+        private static bool SerializeRemoteEvents = true; // set to false for development
 
         /// Optimization: For remote connections the tasks are serialized to <see cref="EventMessage.tasksJson"/>.
         /// Benefits of doing this:

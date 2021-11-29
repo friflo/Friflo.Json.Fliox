@@ -28,14 +28,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
-            var eventTarget = messageContext.eventTarget;
-            if (eventTarget == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
             if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, messageContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
-            eventBroker.SubscribeMessage(this, messageContext.clientId, eventTarget);
+            var eventTarget = messageContext.eventTarget;
+            if (!eventBroker.SubscribeMessage(this, messageContext.clientId, eventTarget, out error))
+                return Task.FromResult<SyncTaskResult>(InvalidTask(error));
+            
             return Task.FromResult<SyncTaskResult>(new SubscribeMessageResult());
         }
         
