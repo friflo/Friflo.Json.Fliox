@@ -120,12 +120,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new DbContainers { containers = containerList, databaseType = GetType().Name };
         }
         
+        private static readonly bool ExposeSchemaCommands = false;  // for now get commands always from handler
+        
         public DbCommands GetDbCommands() {
             string[] commands;
-            // ReSharper disable once RedundantAssignment
             var schema = Schema;
-            // for now get commands always from handler
-            if (false) { // schema != null) {
+            if (ExposeSchemaCommands && schema != null) {
                 commands = schema.GetCommands();
             } else {
                 commands = handler.GetCommands();
