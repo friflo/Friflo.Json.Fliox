@@ -2,10 +2,10 @@
   "msg": "sync",
   "database": "cluster",
   "tasks": [
-    { "task": "query", "container": "catalogs", "filter":{ "op": "true" }}
+    { "task": "query", "container": "containers", "filter":{ "op": "true" }},
+    { "task": "query", "container": "commands",   "filter":{ "op": "true" }}
   ],
   "info": [
-    "provide infos about hosted databases",
-    "query all catalogs from cluster"
+    "list all hosted databases, their containers & commands"
   ]
 }
