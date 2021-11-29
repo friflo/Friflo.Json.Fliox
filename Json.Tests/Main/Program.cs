@@ -35,18 +35,24 @@ namespace Friflo.Json.Tests.Main
         }
         
         /// <summary>
-        /// This method is intended to be a blueprint of a <see cref="HttpHostHub"/> utilizing all features available
-        /// via HTTP and WebSockets. These features are:
+        /// This method is a blueprint showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
+        /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
+        /// <list type="bullet">
+        ///   <item> By <b>HttpListener</b> see <see cref="FlioxServer"/> </item>
+        ///   <item> By <b>Kestrel</b> see <see cref="Startup.Configure"/></item>
+        /// </list>
+        /// <br/>
+        /// The features of a <see cref="HttpHostHub"/> instance are:
         /// <list type="bullet">
         ///   <item> Providing all common database operations to query, read, create, updates and delete records</item>
         ///   <item> Expose access to the service in two ways:<br/>
         ///     1. POST via a single path ./ enabling execution of multiple tasks in a single request<br/>
-        ///     2. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./database/container/id
+        ///     2. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id
         ///   </item>
-        ///   <item> Enabling Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
-        ///   <item> Enabling user authentication and authorization of tasks requested by a user </item>
+        ///   <item> Enable Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
+        ///   <item> Enable user authentication and authorization of tasks requested by a user </item>
         ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db</item>
-        ///   <item> Expose the server Monitor as an extension database to get statistics about requests and tasks executed by users and clients </item>
+        ///   <item> Expose server Monitoring as an extension database to get statistics about requests and tasks executed by users and clients </item>
         ///   <item> Adding a database schema to validate records written to the default database and exposing it as JSON Schema </item>
         ///   <item> Adding a web App to with database Explorer and Playground to send and validate arbitrary requests to the Fliox.Hub server </item>
         /// </list>
