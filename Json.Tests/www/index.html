@@ -147,6 +147,9 @@
 
         .settings li                { list-style: none; }
 
+        .reload                     { cursor:pointer; opacity:0.5; }
+        .reload::after              { content: "⭮"; margin-left: 10px; }    /* using ::after avoids getting copied to clipboard */
+
         .spinner {
             border:         3px solid #f3f3f3;
             border-top:     3px solid #3498db;
@@ -154,7 +157,8 @@
             width:          8px;
             height:         8px;
             animation:      spin 1s linear infinite;
-            display:inline-block
+            display:        inline-block;
+            margin-left:    10px;
         }
         @keyframes spin {
             0%      { transform: rotate(0deg); }

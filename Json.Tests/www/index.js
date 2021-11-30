@@ -715,12 +715,12 @@ class App {
         entityType.innerHTML     = p.entityTypeName;
         catalogSchema.innerHTML  = p.schemaLink;
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
-        const containerLink        = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>&nbsp;&nbsp;`;
+        const containerLink        = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
         const response = await this.postRequestTasks(p.database, tasks, p.container);
 
         const content = response.json;
-        const reload = `<span title='reload container' style='cursor:pointer; opacity:0.5' onclick='app.loadEntities(${JSON.stringify(p)})'>⭮</span>`
+        const reload = `<span class="reload" title='reload container' onclick='app.loadEntities(${JSON.stringify(p)})'></span>`
         entityId.innerHTML      = "";
         writeResult.innerHTML   = "";        
         readEntities.innerHTML  = containerLink + reload;
@@ -768,13 +768,13 @@ class App {
             container:  p.container,
             entityId:   p.id
         };
-        var entityLink          = `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>&nbsp;&nbsp;`
+        var entityLink          = `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        
         let content   = await response.text();
         content = this.formatJson(this.formatEntities, content);
-        const reload = `<span title='reload entity' style='cursor:pointer; opacity:0.5' onclick='app.loadEntity(${JSON.stringify(p)})'>⭮</span>`
+        const reload = `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)})'></span>`
         entityId.innerHTML = entityLink + reload;
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
