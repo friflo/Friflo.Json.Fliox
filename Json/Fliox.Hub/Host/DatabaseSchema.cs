@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var rootType    = typeSchema.RootType;
             var serviceName = rootType.Name + "Service";
             var serviceType = typeSchema.FindTypeDef(rootType.Namespace, serviceName);
-            var fields      = serviceType.Messages;
+            var fields      = serviceType.Commands;
             var result      = new string [fields.Count];
             int n = 0;
             foreach (var field in fields) {

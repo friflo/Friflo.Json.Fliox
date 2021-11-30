@@ -116,15 +116,15 @@ namespace Friflo.Json.Fliox.Schema.Native
                 var commands = CommandUtils.GetCommandTypes(typeDef.native);
                 if (commands != null) {
                     var commandTypeDef = new NativeTypeDef (typeDef.Name + "Service", typeDef.Namespace) {
-                        messages = new List<MessageDef>(commands.Length)
+                        commands = new List<CommandDef>(commands.Length)
                     };
                     var index = types.IndexOf(typeDef);
                     types.Insert(index + 1, commandTypeDef);
                     foreach (var command in commands) {
                         var valueType   = nativeTypes[command.valueType];
                         var resultType  = nativeTypes[command.resultType];
-                        var messageDef  = new MessageDef(command.name, valueType, resultType);
-                        commandTypeDef.messages.Add(messageDef);
+                        var commandDef  = new CommandDef(command.name, valueType, resultType);
+                        commandTypeDef.commands.Add(commandDef);
                     }
                 }
                 if (typeDef.Discriminant != null) {

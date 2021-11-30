@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  abstract    List<FieldDef>      Fields          { get; }
         
         public  abstract    bool                IsService       { get; }
-        public  abstract    List<MessageDef>    Messages        { get; }
+        public  abstract    List<CommandDef>    Commands        { get; }
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
         public  abstract    UnionType           UnionType       { get; }
@@ -115,19 +115,19 @@ namespace Friflo.Json.Fliox.Schema.Definition
     }
     
     /// <summary>
-    /// <see cref="MessageDef"/> is used to specify the interface of a command (= RPC) within a service.
+    /// <see cref="CommandDef"/> is used to specify the interface of a command (= RPC) within a service.
     /// The structure of a command consists of its <see cref="name"/> its command <see cref="param"/> type and its
     /// command <see cref="result"/> type. The command <see cref="param"/> type specify the parameters and
     /// when a command is executed it returns an object of the given <see cref="result"/> type.
     /// </summary>
-    public sealed class MessageDef {
+    public sealed class CommandDef {
         public  readonly    string          name;
         public  readonly    TypeDef         param;
         public  readonly    TypeDef         result;
 
         public  override    string          ToString() => name;
         
-        public MessageDef(string name, TypeDef param, TypeDef result) {
+        public CommandDef(string name, TypeDef param, TypeDef result) {
             this.name       = name;
             this.param      = param;
             this.result     = result;

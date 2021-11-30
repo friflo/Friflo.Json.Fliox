@@ -22,7 +22,7 @@
                 "isAbstract":           { "type": ["boolean", "null"] },
                 "type":                 { "type": ["string", "null"] },
                 "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object" },
-                "commands":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object" },
+                "commands":             { "additionalProperties": { "$ref": "#/definitions/CommandType" }, "type": "object" },
                 "isStruct":             { "type": ["boolean", "null"] },
                 "required":             { "type": ["array", "null"], "items": { "type": "string" } },
                 "additionalProperties": { "type": "boolean" },
@@ -62,7 +62,7 @@
             },
             "additionalProperties": false
         },
-        "MessageType": {
+        "CommandType": {
             "type": "object",
             "properties": {
                 "param":  { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },

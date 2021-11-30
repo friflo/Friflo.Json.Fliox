@@ -173,19 +173,19 @@ namespace Friflo.Json.Fliox.Schema
         
         private EmitType EmitServiceType(TypeDef type, StringBuilder sb) {
             var     context     = new TypeContext (generator, null, type);
-            var     messages    = type.Messages;
+            var     commands    = type.Commands;
             bool    firstField  = true;
-            int maxFieldName    = messages.MaxLength(field => field.name.Length);
+            int maxFieldName    = commands.MaxLength(field => field.name.Length);
             sb.AppendLine($"        \"{type.Name}\": {{");
             sb.AppendLine($"            \"type\": \"object\",");
             sb.AppendLine($"            \"commands\": {{");
-            foreach (var message in messages) {
-                var commandParam    = GetTypeName(message.param,  context, true);
-                var commandResult   = GetTypeName(message.result, context, true);
-                var indent = Indent(maxFieldName, message.name);
+            foreach (var command in commands) {
+                var commandParam    = GetTypeName(command.param,  context, true);
+                var commandResult   = GetTypeName(command.result, context, true);
+                var indent = Indent(maxFieldName, command.name);
                 Delimiter(sb, Next, ref firstField);
-                var command = $"\"param\": {{ {commandParam} }}, \"result\": {{ {commandResult} }}";
-                sb.Append($"                \"{message.name}\":{indent} {{ {command} }}");
+                var signature = $"\"param\": {{ {commandParam} }}, \"result\": {{ {commandResult} }}";
+                sb.Append($"                \"{command.name}\":{indent} {{ {signature} }}");
             }
             sb.AppendLine("\n            }");
             sb.Append     ("        }");

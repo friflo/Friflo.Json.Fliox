@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
         // --- TypeDef
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsClass         => fields != null;
-        public   override   bool                IsService       => messages != null;
+        public   override   bool                IsService       => commands != null;
         public   override   bool                IsStruct        => isStruct;
         public   override   List<FieldDef>      Fields          => fields;
-        public   override   List<MessageDef>    Messages        => messages;
+        public   override   List<CommandDef>    Commands        => commands;
         public   override   UnionType           UnionType       => unionType;
         public   override   bool                IsAbstract      => isAbstract; 
         public   override   string              Discriminant    => discriminant;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         // --- private
         internal            JsonTypeDef         baseType;
         internal            List<FieldDef>      fields;
-        internal            List<MessageDef>    messages;
+        internal            List<CommandDef>    commands;
         internal            UnionType           unionType;
         internal            string              discriminant;
         internal            string              discriminator;

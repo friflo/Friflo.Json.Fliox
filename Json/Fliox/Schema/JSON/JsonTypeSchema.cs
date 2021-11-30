@@ -80,11 +80,11 @@ namespace Friflo.Json.Fliox.Schema.JSON
                             }
                             var commands      = type.commands;
                             if (commands != null) {
-                                typeDef.messages = new List<MessageDef>(commands.Count);
+                                typeDef.commands = new List<CommandDef>(commands.Count);
                                 foreach (var msgPair in commands) {
                                     string      messageName = msgPair.Key;
-                                    MessageType message     = msgPair.Value;
-                                    SetMessage(typeDef, messageName, message, context);
+                                    CommandType command     = msgPair.Value;
+                                    SetCommand(typeDef, messageName, command, context);
                                 }
                             }
                         }
@@ -189,12 +189,12 @@ namespace Friflo.Json.Fliox.Schema.JSON
             typeDef.fields.Add(fieldDef);
         }
         
-        private static void SetMessage (JsonTypeDef typeDef, string messageName, MessageType field, in JsonTypeContext context) {
-            field.name      = messageName;
+        private static void SetCommand (JsonTypeDef typeDef, string commandName, CommandType field, in JsonTypeContext context) {
+            field.name      = commandName;
             var valueType   = FindFieldType(null, field.param,  context);
             var resultType  = FindFieldType(null, field.result, context);
-            var messageDef  = new MessageDef(messageName, valueType, resultType);
-            typeDef.messages.Add(messageDef);
+            var commandDef  = new CommandDef(commandName, valueType, resultType);
+            typeDef.commands.Add(commandDef);
         }
         
         private static TypeDef FindTypeFromJson (FieldType field, JsonValue jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {

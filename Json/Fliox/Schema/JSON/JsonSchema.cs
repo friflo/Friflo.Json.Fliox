@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         // public  SchemaType?                  type; // todo use this
         public  string                          type; // null or SchemaType
         public  Dictionary<string, FieldType>   properties;
-        public  Dictionary<string, MessageType> commands;
+        public  Dictionary<string, CommandType> commands;
         public  bool?                           isStruct;
         public  List<string>                    required;
         public  bool                            additionalProperties;
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string  ToString() => name;
     }
     
-    public sealed class MessageType
+    public sealed class CommandType
     {
         [Fri.Ignore]
         public  string          name;
