@@ -416,11 +416,12 @@ class App {
                 firstDatabase = false;
                 liCatalog.classList.add("active");
             }
-            var liDatabase     = document.createElement('div');
-            var catalogCaret    = document.createElement('div');
-            catalogCaret.classList = "caret";
-            var catalogLabel    = document.createElement('span');
-            catalogLabel.innerText = dbContainer.id;
+            var liDatabase          = document.createElement('div');
+            var catalogCaret        = document.createElement('div');
+            catalogCaret.classList  = "caret";
+            var catalogLabel        = document.createElement('span');
+            catalogLabel.innerText  = dbContainer.id;
+            liDatabase.title        = "database";
             catalogLabel.style = "pointer-events: none;"
             liDatabase.append(catalogCaret)
             liDatabase.append(catalogLabel)
@@ -448,8 +449,9 @@ class App {
             }
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
-                var liContainer = document.createElement('li');
-                var containerLabel = document.createElement('div');
+                var liContainer     = document.createElement('li');
+                liContainer.title   = "container";
+                var containerLabel  = document.createElement('div');
                 containerLabel.innerHTML = "&nbsp;" + containerName;
                 liContainer.append(containerLabel)
                 ulContainers.append(liContainer);
@@ -597,7 +599,7 @@ class App {
         if (signature) {
             const param   = this.getTypeLabel(signature.param);
             const result  = this.getTypeLabel(signature.result);
-            label = `<span title="command parameter"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result">${result}</span>`
+            label = `<span title="command parameter type"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result type">${result}</span>`
         }
         var link    = `command=${command}`;
         var url     = `./rest/${database}?command=${command}`;
@@ -644,7 +646,7 @@ class App {
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
         ulDatabase.append(typeLabel)
         var commandLabel = document.createElement('div');
-        commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer"><small style="opacity:0.5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;commands</small></a>`;
+        commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer"><small style="opacity:0.5" title="all database commands">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;commands</small></a>`;
         ulDatabase.append(commandLabel)
 
         var liCommands  = document.createElement('li');
