@@ -13,12 +13,12 @@ export abstract class UserStore {
 }
 
 export interface UserStoreService {
-    AuthenticateUser (value: AuthenticateUser) : AuthenticateUserResult;
-    DbContainers     (value: any) : DbContainers;
-    DbCommands       (value: any) : DbCommands;
-    DbSchema         (value: any) : DbSchema;
-    DbList           (value: any) : DbList;
-    Echo             (value: any) : any;
+    AuthenticateUser (param: AuthenticateUser) : AuthenticateUserResult;
+    DbContainers     (param: any) : DbContainers;
+    DbCommands       (param: any) : DbCommands;
+    DbSchema         (param: any) : DbSchema;
+    DbList           (param: any) : DbList;
+    Echo             (param: any) : any;
 }
 
 export class AuthenticateUser {

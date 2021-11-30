@@ -17,12 +17,12 @@ export abstract class MonitorStore {
 }
 
 export interface MonitorStoreService {
-    ClearStats   (value: ClearStats) : ClearStatsResult;
-    DbContainers (value: any) : DbContainers;
-    DbCommands   (value: any) : DbCommands;
-    DbSchema     (value: any) : DbSchema;
-    DbList       (value: any) : DbList;
-    Echo         (value: any) : any;
+    ClearStats   (param: ClearStats) : ClearStatsResult;
+    DbContainers (param: any) : DbContainers;
+    DbCommands   (param: any) : DbCommands;
+    DbSchema     (param: any) : DbSchema;
+    DbList       (param: any) : DbList;
+    Echo         (param: any) : any;
 }
 
 export class HostInfo {

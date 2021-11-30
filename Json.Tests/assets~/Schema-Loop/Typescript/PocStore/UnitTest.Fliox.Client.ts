@@ -39,12 +39,12 @@ export abstract class PocStore {
 }
 
 export interface PocStoreService {
-    TestCommand  (value: TestCommand) : boolean;
-    DbContainers (value: any) : DbContainers;
-    DbCommands   (value: any) : DbCommands;
-    DbSchema     (value: any) : DbSchema;
-    DbList       (value: any) : DbList;
-    Echo         (value: any) : any;
+    TestCommand  (param: TestCommand) : boolean;
+    DbContainers (param: any) : DbContainers;
+    DbCommands   (param: any) : DbCommands;
+    DbSchema     (param: any) : DbSchema;
+    DbList       (param: any) : DbList;
+    Echo         (param: any) : any;
 }
 
 export class OrderItem {

@@ -151,10 +151,10 @@ namespace Friflo.Json.Fliox.Schema
             sb.AppendLine($"export interface {type.Name} {{");
             int maxFieldName    = messages.MaxLength(field => field.name.Length);
             foreach (var message in type.Messages) {
-                var commandValue    = GetTypeName(message.value,  context);
+                var commandParam    = GetTypeName(message.param,  context);
                 var commandResult   = GetTypeName(message.result, context);
                 var indent = Indent(maxFieldName, message.name);
-                var command = $"(value: {commandValue}) : {commandResult}";
+                var command = $"(param: {commandParam}) : {commandResult}";
                 sb.AppendLine($"    {message.name}{indent} {command};");
             }
             sb.AppendLine("}");

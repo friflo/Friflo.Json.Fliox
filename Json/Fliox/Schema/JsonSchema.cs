@@ -180,11 +180,11 @@ namespace Friflo.Json.Fliox.Schema
             sb.AppendLine($"            \"type\": \"object\",");
             sb.AppendLine($"            \"commands\": {{");
             foreach (var message in messages) {
-                var commandValue    = GetTypeName(message.value,  context, true);
+                var commandParam    = GetTypeName(message.param,  context, true);
                 var commandResult   = GetTypeName(message.result, context, true);
                 var indent = Indent(maxFieldName, message.name);
                 Delimiter(sb, Next, ref firstField);
-                var command = $"\"command\": [{{ {commandValue} }}, {{ {commandResult} }}]";
+                var command = $"\"command\": [{{ {commandParam} }}, {{ {commandResult} }}]";
                 sb.Append($"                \"{message.name}\":{indent} {{ {command} }}");
             }
             sb.AppendLine("\n            }");
