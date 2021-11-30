@@ -598,7 +598,7 @@ class App {
         if (signature) {
             const param   = this.getTypeLabel(signature.param);
             const result  = this.getTypeLabel(signature.result);
-            label = `<span style="opacity: 0.5;">param:</span> <span>${param}</span>&nbsp; <span style="opacity: 0.5;">result:</span> <span>${result}</span>`
+            label = `<span style="opacity: 0.5;">(param:</span> <span>${param}</span>)<span style="opacity: 0.5;"> : </span><span>${result}</span>`
         }
         var link    = `command=${command}`;
         var url     = `./rest/${database}?command=${command}`;
