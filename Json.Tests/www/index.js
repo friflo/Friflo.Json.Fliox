@@ -720,10 +720,10 @@ class App {
         const response = await this.postRequestTasks(p.database, tasks, p.container);
 
         const content = response.json;
-        const refreshButton = `<span title='reload container' style='cursor:pointer; opacity:0.5' onclick='app.loadEntities(${JSON.stringify(p)})'>⭮</span>`
+        const reload = `<span title='reload container' style='cursor:pointer; opacity:0.5' onclick='app.loadEntities(${JSON.stringify(p)})'>⭮</span>`
         entityId.innerHTML      = "";
         writeResult.innerHTML   = "";        
-        readEntities.innerHTML  = containerLink + refreshButton;
+        readEntities.innerHTML  = containerLink + reload;
         const error = this.getTaskError (content, 0);
         if (error) {
             entityExplorer.innerHTML = this.errorAsHtml(error);
@@ -743,7 +743,8 @@ class App {
 
             const entityId = this.selectedEntity.innerText;
             this.selectedEntity.classList.add("selected");
-            this.loadEntity(p.database, p.container, entityId);
+            const params = { database: p.database, container: p.container, id: entityId };
+            this.loadEntity(params);
         }
         for (var id of ids) {
             var liId = document.createElement('li');
@@ -761,25 +762,26 @@ class App {
         command:    undefined
     }
 
-    async loadEntity (database, container, id) {
+    async loadEntity (p) {
         this.entityIdentity = {
-            database:   database,
-            container:  container,
-            entityId:   id
+            database:   p.database,
+            container:  p.container,
+            entityId:   p.id
         };
-        var entityLink          = `<a title="entity id" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`
-        entityId.innerHTML      = `${entityLink} <span class="spinner"></span>`;
+        var entityLink          = `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>&nbsp;&nbsp;`
+        entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
-        const response  = await this.restRequest("GET", null, database, container, id);        
+        const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        
         let content   = await response.text();
         content = this.formatJson(this.formatEntities, content);
-        entityId.innerHTML = entityLink;
+        const reload = `<span title='reload entity' style='cursor:pointer; opacity:0.5' onclick='app.loadEntity(${JSON.stringify(p)})'>⭮</span>`
+        entityId.innerHTML = entityLink + reload;
         if (!response.ok) {
-            this.setEntityValue(database, container, content);
+            this.setEntityValue(p.database, p.container, content);
             return;
         }
         // console.log(entityJson);
-        this.setEntityValue(database, container, content);
+        this.setEntityValue(p.database, p.container, content);
     }
 
     async saveEntity () {
