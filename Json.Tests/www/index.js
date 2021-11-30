@@ -853,9 +853,34 @@ class App {
 
     setEntityValue (database, container, value) {
         var url = `entity://${database}.${container}.json`;
-        var model = this.getModel(url)
+        var model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
+        try {
+            // this.decorateJson(this.entityEditor, value);
+        } catch (error) {        }      
+    }
+
+    decorateJson(editor, value) {
+        JSON.parse(value);  // early out on invalid JSON
+        // [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
+        // bundle.js created fom npm module 'json-to-ast' via:
+        // [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
+        const ast = parse(value, { loc: true });
+        console.log ("AST", ast);
+        
+        // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
+        var decorations = editor.deltaDecorations(
+            [], // oldDecorations
+            [   // newDecorations
+                {                    
+                    range: new monaco.Range(7, 25, 7, 34),
+                    options: {
+                        inlineClassName: 'refLinkDecoration'
+                    }
+                }
+            ]
+        );  
     }
 
     setCommandParam (database, command, value) {
@@ -1011,6 +1036,9 @@ class App {
                 lineNumbers:    "off",
                 minimap:        { enabled: false }
             });
+            /* this.entityEditor.onMouseDown(function (e) {
+                console.log('mousedown - ', e);
+            }); */
         }
         // --- create command value editor
         {

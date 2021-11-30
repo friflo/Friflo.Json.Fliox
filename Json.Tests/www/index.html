@@ -7,7 +7,7 @@
     <meta name="color-scheme" content="dark light">
     <link rel="icon" href="/Json-Fliox-53x43.svg" type="image/x-icon">
     <title>Json.Fliox.Hub</title>
-
+    <!-- <script src='bundle.js'></script> -->
     <script type="module">
         import { app } from  "./index.js";
         window.app = app;
@@ -18,9 +18,16 @@
         app.loadCluster();
         app.addTableResize();
         app.openTab(app.getConfig("activeTab"));
-
     </script>
     <style>
+        .refLinkDecoration {
+	        /* color: red !important; */
+	        cursor: pointer;
+	        text-decoration: underline;
+	        font-weight: bold;
+	        /* font-style: oblique; */
+        }
+
         :root {
             --vbar-width: 4px;
             /* light */
