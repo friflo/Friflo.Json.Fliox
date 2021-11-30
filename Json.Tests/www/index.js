@@ -442,7 +442,10 @@ class App {
                 const containerName = this.selectedCatalog.innerText;
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
                 var schema = schemas.find(s => s.id == databaseName);
-                this.loadEntities(databaseName, containerName, schema);
+                const entityTypeName    = this.getEntityType (schema, containerName);
+                const schemaLink        = this.schemaLink(databaseName, schema);
+                var params = { database: databaseName, container: containerName, entityTypeName, schemaLink };
+                this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
@@ -701,35 +704,36 @@ class App {
         return `<a title="database schema" href="./rest/${database}?command=DbSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
-    async loadEntities (database, container, schema) {
+    async loadEntities (p) {
         this.setEditorHeader("entity");
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
-        this.setEntityValue(database, container, "");
-        const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
+        this.setEntityValue(p.database, p.container, "");
+        const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
     
-        entityType.innerHTML     = this.getEntityType (schema, container);
-        catalogSchema.innerHTML  = this.schemaLink(database, schema);
-        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}/</a>`;
-        var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}/</a>`;
-        readEntities.innerHTML   = `${containerLink} <span class="spinner"></span>`;
-        const response = await this.postRequestTasks(database, tasks, container);
+        entityType.innerHTML     = p.entityTypeName;
+        catalogSchema.innerHTML  = p.schemaLink;
+        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
+        const containerLink        = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>&nbsp;&nbsp;`;
+        readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
+        const response = await this.postRequestTasks(p.database, tasks, p.container);
 
         const content = response.json;
+        const refreshButton = `<span title='reload container' style='cursor:pointer; opacity:0.5' onclick='app.loadEntities(${JSON.stringify(p)})'>⭮</span>`
         entityId.innerHTML      = "";
-        writeResult.innerHTML   = "";
-        readEntities.innerHTML  = containerLink;
-        var error = this.getTaskError (content, 0);
+        writeResult.innerHTML   = "";        
+        readEntities.innerHTML  = containerLink + refreshButton;
+        const error = this.getTaskError (content, 0);
         if (error) {
             entityExplorer.innerHTML = this.errorAsHtml(error);
             return;
         }
         const ids = content.tasks[0].ids;
-        var ulIds = document.createElement('ul');
+        const ulIds = document.createElement('ul');
         ulIds.classList = "entities"
         ulIds.onclick = (ev) => {
-            var path = ev.composedPath();
+            const path = ev.composedPath();
             const selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
             if (selectedElement.tagName.toLowerCase() != "li")
@@ -739,7 +743,7 @@ class App {
 
             const entityId = this.selectedEntity.innerText;
             this.selectedEntity.classList.add("selected");
-            this.loadEntity(database, container, entityId);
+            this.loadEntity(p.database, p.container, entityId);
         }
         for (var id of ids) {
             var liId = document.createElement('li');
