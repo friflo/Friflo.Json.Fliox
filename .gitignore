@@ -23,3 +23,5 @@ riderModule.iml
 
 *.sync.resp.md
 *.sync.resp.json
+
+Json.Tests/www/bundle.js
