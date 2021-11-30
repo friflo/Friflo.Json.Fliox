@@ -418,7 +418,6 @@ class App {
             }
             var liDatabase     = document.createElement('div');
             var catalogCaret    = document.createElement('div');
-            catalogCaret.innerText = "❯";
             catalogCaret.classList = "caret";
             var catalogLabel    = document.createElement('span');
             catalogLabel.innerText = dbContainer.id;
@@ -439,7 +438,7 @@ class App {
                 if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
                 this.selectedCatalog = selectedElement;
                 this.selectedCatalog.classList.add("selected");
-                const containerName = this.selectedCatalog.innerText;
+                const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
                 var schema = schemas.find(s => s.id == databaseName);
                 const entityTypeName    = this.getEntityType (schema, containerName);
@@ -451,7 +450,7 @@ class App {
             for (const containerName of dbContainer.containers) {
                 var liContainer = document.createElement('li');
                 var containerLabel = document.createElement('div');
-                containerLabel.innerText = containerName;
+                containerLabel.innerHTML = "&nbsp;" + containerName;
                 liContainer.append(containerLabel)
                 ulContainers.append(liContainer);
             }
