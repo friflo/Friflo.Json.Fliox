@@ -567,13 +567,13 @@ class App {
         return ref.substring(lastSlashPos + 1);
     }
 
-    showExplorerButtons(show) {
+    setEditorHeader(show) {
         var displayEntity  = show == "entity" ? "" : "none";
         var displayCommand = show == "command" ? "" : "none";
-        document.getElementById("explorerButtonsEntity") .style.display = displayEntity;        
-        document.getElementById("explorerButtonsCommand").style.display = displayCommand;
-        document.getElementById("editorButtonsEntity") .style.display = displayEntity;        
-        document.getElementById("editorButtonsCommand").style.display = displayCommand;
+        document.getElementById("entityTools")  .style.display = displayEntity;        
+        document.getElementById("entityHeader") .style.display = displayEntity;        
+        document.getElementById("commandTools") .style.display = displayCommand;
+        document.getElementById("commandHeader").style.display = displayCommand;
     }
 
     getTypeLabel(type) {
@@ -624,7 +624,7 @@ class App {
     }
 
     listCommands (database, dbCommands, schema, dbContainer) {
-        this.showExplorerButtons("command");
+        this.setEditorHeader("command");
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";
         this.layoutEditors();
@@ -702,7 +702,7 @@ class App {
     }
 
     async loadEntities (database, container, schema) {
-        this.showExplorerButtons("entity");
+        this.setEditorHeader("entity");
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
