@@ -518,7 +518,7 @@ class App {
         for (var commandName in commands) {
             const command   = commands[commandName];
             // assign file matcher for command param
-            var paramType   = this.getResolvedType(command.command[0], schemaPath);
+            var paramType   = this.getResolvedType(command.param, schemaPath);
             var url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (paramType.$ref) {
                 var uri = "http://" + database + paramType.$ref.substring(1);
@@ -534,7 +534,7 @@ class App {
                 schemaMap[uri] = schema;
             }
             // assign file matcher for command result
-            var resultType   = this.getResolvedType(command.command[1], schemaPath);
+            var resultType   = this.getResolvedType(command.result, schemaPath);
             var url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (resultType.$ref) {
                 var uri = "http://" + database + resultType.$ref.substring(1);
@@ -596,8 +596,8 @@ class App {
     getCommandTags(database, command, signature) {
         let label = this.schemaLess;
         if (signature) {
-            const param   = this.getTypeLabel(signature[0]);
-            const result  = this.getTypeLabel(signature[1]);
+            const param   = this.getTypeLabel(signature.param);
+            const result  = this.getTypeLabel(signature.result);
             label = `<span style="opacity: 0.5;">param:</span> <span>${param}</span>&nbsp; <span style="opacity: 0.5;">result:</span> <span>${result}</span>`
         }
         var link    = `command=${command}`;
@@ -666,8 +666,8 @@ class App {
                 this.selectedEntity = selectedElement;
 
             const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
-            const signature     = service ? service.commands[commandName].command : null
-            const def           = signature ? Object.keys(signature[0]).length  == 0 ? "null" : "{}" : "null";
+            const signature     = service ? service.commands[commandName] : null
+            const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
             const tags          = this.getCommandTags(database, commandName, signature);
             commandSignature.innerHTML      = tags.label;
             commandLink.innerHTML           = tags.link;

@@ -124,7 +124,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
     {
         [Fri.Ignore]
         public  string          name;
-        public  List<FieldType> command; // tuple for command [<argument type>, <result type>]
+        public  FieldType       param;
+        public  FieldType       result;
 
         public override string  ToString() => name;
     }

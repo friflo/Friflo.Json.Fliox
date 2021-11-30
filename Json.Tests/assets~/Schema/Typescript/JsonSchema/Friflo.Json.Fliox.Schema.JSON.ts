@@ -41,6 +41,7 @@ export class FieldType {
 }
 
 export class MessageType {
-    command? : FieldType[] | null;
+    param?  : FieldType | null;
+    result? : FieldType | null;
 }
 

@@ -26,12 +26,12 @@
         "PocStoreService": {
             "type": "object",
             "commands": {
-                "TestCommand":  { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
-                "DbContainers": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" }] },
-                "DbCommands":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" }] },
-                "DbSchema":     { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" }] },
-                "DbList":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" }] },
-                "Echo":         { "command": [{  }, {  }] }
+                "TestCommand":  { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
+                "DbContainers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
+                "DbCommands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
+                "DbSchema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
+                "DbList":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" } },
+                "Echo":         { "param": {  }, "result": {  } }
             }
         },
         "OrderItem": {

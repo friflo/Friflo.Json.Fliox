@@ -191,8 +191,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private static void SetMessage (JsonTypeDef typeDef, string messageName, MessageType field, in JsonTypeContext context) {
             field.name      = messageName;
-            var valueType   = FindFieldType(null, field.command[0], context);
-            var resultType  = FindFieldType(null, field.command[1], context);
+            var valueType   = FindFieldType(null, field.param,  context);
+            var resultType  = FindFieldType(null, field.result, context);
             var messageDef  = new MessageDef(messageName, valueType, resultType);
             typeDef.messages.Add(messageDef);
         }

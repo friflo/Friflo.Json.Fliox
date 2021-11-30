@@ -65,7 +65,8 @@
         "MessageType": {
             "type": "object",
             "properties": {
-                "command": { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } }
+                "param":  { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "result": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] }
             },
             "additionalProperties": false
         }
