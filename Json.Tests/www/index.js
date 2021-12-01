@@ -71,23 +71,23 @@ class App {
             var data = JSON.parse(e.data);
             // console.log('server:', e.data);
             switch (data.msg) {
-                case "resp":
-                case "error":
-                    clt = data.clt;
-                    cltElement.innerText  = clt ?? " - ";
-                    const content = this.formatJson(this.formatResponses, e.data);
-                    this.responseModel.setValue(content)
-                    responseState.innerHTML = `· ${duration} ms`;
-                    break;
-                case "ev":
-                    subscriptionCount.innerText = ++subCount;
-                    subSeq = data.seq;
-                    // multiple clients can use the same WebSocket. Use the latest
-                    if (clt == data.clt) {
-                        subscriptionSeq.innerText   = subSeq ? subSeq : " - ";
-                        ackElement.innerText        = subSeq ? subSeq : " - ";
-                    }
-                    break;
+            case "resp":
+            case "error":
+                clt = data.clt;
+                cltElement.innerText  = clt ?? " - ";
+                const content = this.formatJson(this.formatResponses, e.data);
+                this.responseModel.setValue(content)
+                responseState.innerHTML = `· ${duration} ms`;
+                break;
+            case "ev":
+                subscriptionCount.innerText = ++subCount;
+                subSeq = data.seq;
+                // multiple clients can use the same WebSocket. Use the latest
+                if (clt == data.clt) {
+                    subscriptionSeq.innerText   = subSeq ? subSeq : " - ";
+                    ackElement.innerText        = subSeq ? subSeq : " - ";
+                }
+                break;
             }
         };
     }
@@ -189,29 +189,29 @@ class App {
 
     onKeyDown (event) {
         switch (activeTab) {
-            case "playground":
-                if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
-                    this.sendSyncRequest();
-                    event.preventDefault();
-                }
-                if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                    this.postSyncRequest();
-                    event.preventDefault();
-                }
-                if (event.code == 'KeyS' && event.ctrlKey) {
-                    // event.preventDefault(); // avoid accidentally opening "Save As" dialog
-                }
-                break;
-            case "explorer":
-                if (event.code == 'KeyS' && event.ctrlKey) {
-                    this.saveEntity()
-                    event.preventDefault();
-                }
-                if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                    this.sendCommand("POST");
-                    event.preventDefault();
-                }
-                break;
+        case "playground":
+            if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
+                this.sendSyncRequest();
+                event.preventDefault();
+            }
+            if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+                this.postSyncRequest();
+                event.preventDefault();
+            }
+            if (event.code == 'KeyS' && event.ctrlKey) {
+                // event.preventDefault(); // avoid accidentally opening "Save As" dialog
+            }
+            break;
+        case "explorer":
+            if (event.code == 'KeyS' && event.ctrlKey) {
+                this.saveEntity()
+                event.preventDefault();
+            }
+            if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+                this.sendCommand("POST");
+                event.preventDefault();
+            }
+            break;
         }
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
     }
@@ -513,10 +513,10 @@ class App {
     resolveNodeRefs(jsonSchemas, schema, node) {
         const nodeType = typeof node;
         switch (nodeType) {
-          case "array":
+        case "array":
             console.log("array"); // todo remove
             return;
-          case "object":
+        case "object":
             const ref = node.$ref;
             if (ref) {
                 if (ref[0] == "#") {
@@ -929,26 +929,28 @@ class App {
     decorationsFromAst(ast, decorations, schema) {
         for (const child of ast.children) {
             switch (child.type) {
-              case "Object":
+            case "Object":
                 this.decorationsFromAst(child, decorations, schema);
                 break;
-              case "Array":
+            case "Array":
                 break;
-              case "Property":
+            case "Property":
                 // if (child.key.value == "employees") debugger;
                 const property = schema.properties[child.key.value];
                 if (!property)
                     continue;
                 const value = child.value;
+
                 switch (value.type) {
-                  case "Literal":
+                case "Literal":
                     if (property.rel && value.value !== null) {
                         this.decorateValue(decorations, value);
                     }
                     break;
-                  case "Array":
-                    if (property.items && property.items.resolvedDef) {
-                        this.decorationsFromAst(value, decorations, property.items.resolvedDef);
+                case "Array":
+                    var resolvedDef = property.items?.resolvedDef;
+                    if (resolvedDef) {
+                        this.decorationsFromAst(value, decorations, resolvedDef);
                     }
                     if (property.rel) {
                         for (const item of value.children) {
@@ -967,7 +969,7 @@ class App {
     decorateValue(decorations, value) {
         const start = value.loc.start;
         const end   = value.loc.end;
-        const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
+        const range = new monaco.Range(start.line, start.column, end.line, end.column);
         decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
     }
 
@@ -1198,18 +1200,18 @@ class App {
     layoutEditors () {
         // console.log("layoutEditors - activeTab: " + activeTab)
         switch (activeTab) {
-            case "playground":
-                this.requestEditor?.layout();
-                this.responseEditor?.layout();
-                break;
-            case "explorer":
-                var commandElem =  commandValue.children[0];
-                if (commandElem)   commandElem.style.width = "100px"; // required to shrink width
-                const entityElem = entityContainer.children[0]
-                if (entityElem)    entityElem.style.width = "100px"; // required to shrink width
-                this.commandValueEditor?.layout();
-                this.entityEditor?.layout();
-                break;
+        case "playground":
+            this.requestEditor?.layout();
+            this.responseEditor?.layout();
+            break;
+        case "explorer":
+            var commandElem =  commandValue.children[0];
+            if (commandElem)   commandElem.style.width = "100px"; // required to shrink width
+            const entityElem = entityContainer.children[0]
+            if (entityElem)    entityElem.style.width = "100px"; // required to shrink width
+            this.commandValueEditor?.layout();
+            this.entityEditor?.layout();
+            break;
         }
     }
 
