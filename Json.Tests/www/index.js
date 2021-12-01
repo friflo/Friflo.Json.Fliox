@@ -533,7 +533,7 @@ class App {
             for (const propertyName in node) {
                 if (propertyName == "resolvedDef")
                     continue;
-                // if (propertyName == "items") debugger;
+                // if (propertyName == "employees") debugger;
                 const property = node[propertyName];
                 this.resolveNodeRefs(jsonSchemas, schema, property);
             }
@@ -935,29 +935,40 @@ class App {
               case "Array":
                 break;
               case "Property":
+                // if (child.key.value == "employees") debugger;
                 const property = schema.properties[child.key.value];
                 if (!property)
                     continue;
                 const value = child.value;
                 switch (value.type) {
                   case "Literal":
-                  case "Number": // todo check
                     if (property.rel && value.value !== null) {
-                        const start = value.loc.start;
-                        const end   = value.loc.end;
-                        const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
-                        decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
+                        this.decorateValue(decorations, value);
                     }
                     break;
                   case "Array":
-                    if (property.items && property.items.$ref) {
+                    if (property.items && property.items.resolvedDef) {
                         this.decorationsFromAst(value, decorations, property.items.resolvedDef);
+                    }
+                    if (property.rel) {
+                        for (const item of value.children) {
+                            if (item.type == "Literal") {
+                                this.decorateValue(decorations, item);
+                            }
+                        }
                     }
                     break;
                 }
                 break;
             }
         }
+    }
+
+    decorateValue(decorations, value) {
+        const start = value.loc.start;
+        const end   = value.loc.end;
+        const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
+        decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
     }
 
     setCommandParam (database, command, value) {
