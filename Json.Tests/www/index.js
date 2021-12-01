@@ -932,19 +932,28 @@ class App {
               case "Object":
                 this.decorationsFromAst(child, decorations, schema);
                 break;
+              case "Array":
+                break;
               case "Property":
                 const property = schema.properties[child.key.value];
                 if (!property)
                     continue;
                 const value = child.value;
-                if (property.rel && value.value !== null) {
-                    const start = value.loc.start;
-                    const end   = value.loc.end;
-                    const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
-                    decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
-                }
-                if (value.type == "Array" && property.items && property.items.$ref) {
-                    this.decorationsFromAst(value, decorations, property.items.resolvedDef);
+                switch (value.type) {
+                  case "Literal":
+                  case "Number": // todo check
+                    if (property.rel && value.value !== null) {
+                        const start = value.loc.start;
+                        const end   = value.loc.end;
+                        const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
+                        decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
+                    }
+                    break;
+                  case "Array":
+                    if (property.items && property.items.$ref) {
+                        this.decorationsFromAst(value, decorations, property.items.resolvedDef);
+                    }
+                    break;
                 }
                 break;
             }
