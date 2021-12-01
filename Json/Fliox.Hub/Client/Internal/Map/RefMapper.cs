@@ -38,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         
         public  override    string              DataTypeName()          { return $"Ref<{typeof(TKey).Name},{typeof(T).Name}>"; }
         public  override    TypeMapper          GetUnderlyingMapper()   => keyMapper;
+        public  override    Type                RelationType()          => typeof(T);
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :

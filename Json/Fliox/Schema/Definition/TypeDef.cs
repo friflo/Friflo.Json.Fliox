@@ -85,10 +85,22 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  readonly    bool            isNullableElement;  
         public  readonly    TypeDef         ownerType;
         public              bool            IsDerivedField { get; private set; }
+        public  readonly    TypeDef         relationType;
 
         public  override    string          ToString() => name;
         
-        public FieldDef(string name, bool required, bool isKey, bool isAutoIncrement, TypeDef type, bool isArray, bool isDictionary, bool isNullableElement, TypeDef ownerType) {
+        public FieldDef(
+            string      name,
+            bool        required,
+            bool        isKey,
+            bool        isAutoIncrement,
+            TypeDef     type,
+            bool        isArray,
+            bool        isDictionary,
+            bool        isNullableElement,
+            TypeDef     ownerType,
+            TypeDef     relationType)
+        {
             this.name               = name;
             this.required           = required;
             this.isKey              = isKey;
@@ -98,6 +110,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             this.isDictionary       = isDictionary;
             this.isNullableElement  = isNullableElement;
             this.ownerType          = ownerType;
+            this.relationType       = relationType;
         }
         
         internal void MarkDerivedField() {

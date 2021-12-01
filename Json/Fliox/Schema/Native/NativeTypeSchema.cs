@@ -106,10 +106,13 @@ namespace Friflo.Json.Fliox.Schema.Native
                         } else {
                             type            = nativeTypes[nonNullableType];
                         }
-                        var required = propField.required || !isNullable;
-                        var isKey    = propField.isKey;
+                        var required        = propField.required || !isNullable;
+                        var isKey           = propField.isKey;
+                        var relationType    = propField.fieldType.RelationType();
+                        TypeDef relation    = relationType == null ? null : nativeTypes[relationType];  
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
-                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef);
+                        
+                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef, relation);
                         typeDef.fields.Add(fieldDef);
                     }
                 }
