@@ -504,31 +504,40 @@ class App {
 
     resolveRefs(jsonSchemas) {
         for (const schemaPath in jsonSchemas) {
+            // if (schemaPath == "Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json") debugger;
             const schema      = jsonSchemas[schemaPath];
             this.resolveNodeRefs(jsonSchemas, schema, schema);
         }
     }
 
     resolveNodeRefs(jsonSchemas, schema, node) {
-        if (typeof node != "object" )
+        const nodeType = typeof node;
+        switch (nodeType) {
+          case "array":
+            console.log("array"); // todo remove
             return;
-        const ref = node.$ref;
-        if (ref) {
-            if (ref[0] == "#") {
-                const localName = ref.substring("#/definitions/".length);
-                node.resolvedDef = schema.definitions[localName];
-                return;
+          case "object":
+            const ref = node.$ref;
+            if (ref) {
+                if (ref[0] == "#") {
+                    const localName = ref.substring("#/definitions/".length);
+                    node.resolvedDef = schema.definitions[localName];
+                } else {
+                    const localNamePos = ref.indexOf ("#");
+                    const schemaPath = ref.substring(2, localNamePos); // start after './'
+                    const localName = ref.substring(localNamePos + "#/definitions/".length);
+                    const globalSchema = jsonSchemas[schemaPath];
+                    node.resolvedDef = globalSchema.definitions[localName];
+                }
             }
-            const localNamePos = ref.indexOf ("#");
-            const schemaPath = ref.substring(2, localNamePos); // start after './'
-            const localName = ref.substring(localNamePos + "#/definitions/".length);
-            const globalSchema = jsonSchemas[schemaPath];
-            node.resolvedDef = globalSchema.definitions[localName];
+            for (const propertyName in node) {
+                if (propertyName == "resolvedDef")
+                    continue;
+                // if (propertyName == "items") debugger;
+                const property = node[propertyName];
+                this.resolveNodeRefs(jsonSchemas, schema, property);
+            }
             return;
-        }
-        for (const propertyName in node) {
-            const property = node[propertyName];
-            this.resolveNodeRefs(jsonSchemas, schema, property);
         }
     }
 
@@ -919,9 +928,12 @@ class App {
 
     decorationsFromAst(ast, decorations, schema) {
         for (const child of ast.children) {
-            const key   = child.key;
-            if (key.type == "Identifier") {
-                const property = schema.properties[key.value];
+            switch (child.type) {
+              case "Object":
+                this.decorationsFromAst(child, decorations, schema);
+                break;
+              case "Property":
+                const property = schema.properties[child.key.value];
                 if (!property)
                     continue;
                 const value = child.value;
@@ -932,8 +944,9 @@ class App {
                     decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
                 }
                 if (value.type == "Array" && property.items && property.items.$ref) {
-                    // this.decorationsFromAst(value, decorations, property.items.resolvedDef);
+                    this.decorationsFromAst(value, decorations, property.items.resolvedDef);
                 }
+                break;
             }
         }
     }
