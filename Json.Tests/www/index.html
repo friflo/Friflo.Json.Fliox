@@ -34,7 +34,7 @@
             --item-hover:   #e8e8e8;
             --command-bar:  #d9d9ff;
             --link-color:   #0451a5;
-            --link-deco:    #0451a520;
+            --link-deco:    #00000020;
             
         }
         [data-theme="dark"] {
@@ -49,12 +49,14 @@
             --item-hover:   #444;
             --command-bar:  #5f5f92;
             --link-color:   #ce9178;
-            --link-deco:    #ce917850;
+            --link-deco:    #ffffff40;
         }
 
-        .refLinkDecoration          { cursor: pointer; font-weight: bold; color: var(--link-color) !important; text-decoration-color: var(--link-deco) !important;
-                                      text-decoration: underline; text-decoration-thickness: 2px; }
-        .refLinkDecoration:hover    { text-decoration-color: var(--link-color) !important; }
+        /* text-decoration: underline;      text-decoration-color: var(--link-deco) !important;
+           text-decoration-thickness: 2px;  color: color: var(--link-color) !important */
+        .refLinkDecoration          { cursor: pointer;  text-decoration: underline; text-decoration-thickness: 2px;
+                                      text-decoration-color: var(--link-deco) !important;    }
+        .refLinkDecoration:hover    { text-decoration-color: unset !important; }
 
         /* dark mode color for firefox */
         @media(prefers-color-scheme: dark) {
