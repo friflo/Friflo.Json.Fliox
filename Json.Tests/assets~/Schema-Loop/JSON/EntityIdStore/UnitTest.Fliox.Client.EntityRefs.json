@@ -19,8 +19,8 @@
                 "byteEntity":      { "$ref": "./Standard.json#/definitions/uint8", "rel": { "$ref": "./UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity" } },
                 "byteNullEntity":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/uint8" }], "rel": { "$ref": "./UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity" } },
                 "customIdEntity":  { "type": ["string", "null"], "rel": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity" } },
-                "intEntities":     { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } },
-                "intNullEntities": { "type": ["array", "null"], "items": { "oneOf": [{ "type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }]} }
+                "intEntities":     { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" }, "rel": { "$ref": "./UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity" } },
+                "intNullEntities": { "type": ["array", "null"], "items": { "oneOf": [{ "type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }]}, "rel": { "$ref": "./UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity" } }
             },
             "required": [
                 "id",

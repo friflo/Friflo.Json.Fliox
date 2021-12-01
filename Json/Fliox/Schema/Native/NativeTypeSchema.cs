@@ -94,22 +94,25 @@ namespace Friflo.Json.Fliox.Schema.Native
                         var isDictionary    = fieldMapper.IsDictionary;
                         NativeTypeDef type;
                         bool isNullableElement = false;
+                        Type    relationType;
                         if (isArray || isDictionary) {
-                            var elementMapper = fieldMapper.GetElementMapper().GetUnderlyingMapper();
-                            if(elementMapper.isValueType && elementMapper.isNullable) {
-                                IsNullableMapper(elementMapper, out var nonNullableElementType);
+                            var elementMapper       = fieldMapper.GetElementMapper();
+                            var underlyingMapper    = elementMapper.GetUnderlyingMapper();
+                            if(underlyingMapper.isValueType && underlyingMapper.isNullable) {
+                                IsNullableMapper(underlyingMapper, out var nonNullableElementType);
                                 type = nativeTypes[nonNullableElementType];
                                 isNullableElement = true;
                             } else {
-                                type = nativeTypes[elementMapper.type];
+                                type = nativeTypes[underlyingMapper.type];
                             }
+                            relationType    = elementMapper.RelationType();
                         } else {
                             type            = nativeTypes[nonNullableType];
+                            relationType    = propField.fieldType.RelationType();
                         }
                         var required        = propField.required || !isNullable;
                         var isKey           = propField.isKey;
-                        var relationType    = propField.fieldType.RelationType();
-                        TypeDef relation    = relationType == null ? null : nativeTypes[relationType];  
+                        var relation        = relationType == null ? null : nativeTypes[relationType];  
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
                         
                         var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef, relation);
