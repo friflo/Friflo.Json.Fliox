@@ -907,12 +907,7 @@ class App {
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
         const oldDecorations = [];
         const newDecorations = [
-            {                    
-                range: new monaco.Range(7, 13, 7, 22),
-                options: {
-                    inlineClassName: 'refLinkDecoration'
-                }
-            }
+            // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
         this.decorationsFromAst(ast, newDecorations, schema);
         var decorations = editor.deltaDecorations(oldDecorations, newDecorations);
@@ -920,7 +915,18 @@ class App {
 
     decorationsFromAst(ast, decorations, schema) {
         for (const child of ast.children) {
-            const c = child;
+            const key   = child.key;
+            const value = child.value
+            if (key.type == "Identifier" && value.value !== null) {
+                const property = schema.properties[key.value];
+                if (property.rel) {
+                    console.log("property", property);
+                    const start = value.loc.start;
+                    const end   = value.loc.end;
+                    const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
+                    decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
+                }
+            }
         }
     }
 
