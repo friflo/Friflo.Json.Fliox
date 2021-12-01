@@ -890,10 +890,14 @@ class App {
         var model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
+        if (value == "")
+            return;
         var schema = this.allMonacoSchemas.find(schema => schema.fileMatch?.includes(url));
         try {
             this.decorateJson(this.entityEditor, value, schema.resolvedDef);
-        } catch (error) {        }      
+        } catch (error) {
+            console.error("decorateJson", error);
+        }
     }
 
     decorateJson(editor, value, schema) {
@@ -902,7 +906,7 @@ class App {
         // bundle.js created fom npm module 'json-to-ast' via:
         // [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
         const ast = parse(value, { loc: true });
-        console.log ("AST", ast);
+        // console.log ("AST", ast);
         
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
         const oldDecorations = [];
@@ -916,15 +920,19 @@ class App {
     decorationsFromAst(ast, decorations, schema) {
         for (const child of ast.children) {
             const key   = child.key;
-            const value = child.value
-            if (key.type == "Identifier" && value.value !== null) {
+            if (key.type == "Identifier") {
                 const property = schema.properties[key.value];
-                if (property.rel) {
-                    console.log("property", property);
+                if (!property)
+                    continue;
+                const value = child.value;
+                if (property.rel && value.value !== null) {
                     const start = value.loc.start;
                     const end   = value.loc.end;
                     const range = new monaco.Range(start.line, start.column + 1, end.line, end.column - 1);
                     decorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
+                }
+                if (value.type == "Array" && property.items && property.items.$ref) {
+                    // this.decorationsFromAst(value, decorations, property.items.resolvedDef);
                 }
             }
         }
