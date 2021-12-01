@@ -20,10 +20,6 @@
         app.openTab(app.getConfig("activeTab"));
     </script>
     <style>
-        .refLinkDecoration          { cursor: pointer; font-weight: bold; }
-        .refLinkDecoration:hover    { text-decoration: underline; }
-        
-
         :root {
             --vbar-width: 4px;
             /* light */
@@ -37,6 +33,9 @@
             --background3:  #f0f0f0;
             --item-hover:   #e8e8e8;
             --command-bar:  #d9d9ff;
+            --link-color:   #0451a5;
+            --link-deco:    #0451a520;
+            
         }
         [data-theme="dark"] {
             --selected-color: #44fa;
@@ -49,7 +48,14 @@
             --background3:  #000;
             --item-hover:   #444;
             --command-bar:  #5f5f92;
+            --link-color:   #ce9178;
+            --link-deco:    #ce917850;
         }
+
+        .refLinkDecoration          { cursor: pointer; font-weight: bold; color: var(--link-color) !important; text-decoration-color: var(--link-deco) !important;
+                                      text-decoration: underline; text-decoration-thickness: 2px; }
+        .refLinkDecoration:hover    { text-decoration-color: var(--link-color) !important; }
+
         /* dark mode color for firefox */
         @media(prefers-color-scheme: dark) {
             body        { background-color: #000; color: #fff; }
