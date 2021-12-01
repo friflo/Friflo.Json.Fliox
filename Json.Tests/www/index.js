@@ -474,28 +474,62 @@ class App {
                 var schema      = jsonSchemas[schemaPath];
                 var uri         = "http://" + database + "/" + schemaPath;
                 var schemaEntry = {
-                    uri:        uri,
-                    schema:     schema,
-                    fileMatch:  [] // can have multiple in case schema is used by multiple editor models
+                    uri:            uri,
+                    schema:         schema,
+                    fileMatch:      [], // can have multiple in case schema is used by multiple editor models
+                    resolvedDef:    schema // not part of monaco > DiagnosticsOptions.schemas
                 }
                 schemaMap[uri] = schemaEntry;
                 const definitions = schema.definitions;
                 for (var definitionName in definitions) {
+                    const definition = definitions[definitionName];
                     var path    = "/" + schemaPath + "#/definitions/" + definitionName;
                     var uri     = "http://" + database + path;
                     // add reference for definitionName pointing to definition in current schemaPath
                     var definitionEntry = {
-                        uri:        uri,
-                        schema:     { $ref: "." + path },
-                        fileMatch:  [] // can have multiple in case schema is used by multiple editor models
+                        uri:            uri,
+                        schema:         { $ref: "." + path },
+                        fileMatch:      [], // can have multiple in case schema is used by multiple editor models
+                        resolvedDef:    definition // not part of monaco > DiagnosticsOptions.schemas
                     }
                     schemaMap[uri] = definitionEntry;
                 }
             }
+            this.resolveRefs(jsonSchemas);
             this.addFileMatcher(database, dbSchema, schemaMap);
         }
         var monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
+    }
+
+    resolveRefs(jsonSchemas) {
+        for (const schemaPath in jsonSchemas) {
+            const schema      = jsonSchemas[schemaPath];
+            this.resolveNodeRefs(jsonSchemas, schema, schema);
+        }
+    }
+
+    resolveNodeRefs(jsonSchemas, schema, node) {
+        if (typeof node != "object" )
+            return;
+        const ref = node.$ref;
+        if (ref) {
+            if (ref[0] == "#") {
+                const localName = ref.substring("#/definitions/".length);
+                node.resolvedDef = schema.definitions[localName];
+                return;
+            }
+            const localNamePos = ref.indexOf ("#");
+            const schemaPath = ref.substring(2, localNamePos); // start after './'
+            const localName = ref.substring(localNamePos + "#/definitions/".length);
+            const globalSchema = jsonSchemas[schemaPath];
+            node.resolvedDef = globalSchema.definitions[localName];
+            return;
+        }
+        for (const propertyName in node) {
+            const property = node[propertyName];
+            this.resolveNodeRefs(jsonSchemas, schema, property);
+        }
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
@@ -858,7 +892,7 @@ class App {
         this.entityEditor.setModel (model);
         var schema = this.allMonacoSchemas.find(schema => schema.fileMatch?.includes(url));
         try {
-            this.decorateJson(this.entityEditor, value, schema.schema);
+            this.decorateJson(this.entityEditor, value, schema.resolvedDef);
         } catch (error) {        }      
     }
 
@@ -975,7 +1009,7 @@ class App {
 
     addSchemas (monacoSchemas) {
         this.allMonacoSchemas.push(...monacoSchemas);
-        // [DiagnosticsOptions | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.DiagnosticsOptions.html
+        // [LanguageServiceDefaults | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.LanguageServiceDefaults.html
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: this.allMonacoSchemas
