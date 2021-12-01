@@ -386,7 +386,7 @@ class App {
             return 
         }
         const dbContainers  = content.containers[0].entities;
-        const schemas       = content.containers[1].entities;
+        const dbSchemas       = content.containers[1].entities;
         const commands      = content.containers[2].entities;
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
@@ -401,7 +401,7 @@ class App {
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
             const databaseName = selectedElement.childNodes[1].innerText;
-            var schema      = schemas.find   (s => s.id == databaseName);
+            var schema      = dbSchemas.find   (s => s.id == databaseName);
             var dbCommands  = commands.find  (c => c.id == databaseName);
             var dbContainer = dbContainers.find  (c => c.id == databaseName);
             catalogSchema.innerHTML  = this.schemaLink(databaseName, schema)
@@ -441,7 +441,7 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
-                var schema = schemas.find(s => s.id == databaseName);
+                var schema = dbSchemas.find(s => s.id == databaseName);
                 const entityTypeName    = this.getEntityType (schema, containerName);
                 const schemaLink        = this.schemaLink(databaseName, schema);
                 var params = { database: databaseName, container: containerName, entityTypeName, schemaLink };
@@ -457,16 +457,16 @@ class App {
                 ulContainers.append(liContainer);
             }
         }
-        this.createEntitySchemas(schemas)
+        this.createEntitySchemas(dbSchemas)
         catalogExplorer.textContent = "";
         catalogExplorer.appendChild(ulCatalogs);
     }
 
-    createEntitySchemas (catalogSchemas) {
+    createEntitySchemas (dbSchemas) {
         var schemaMap = {};
-        for (var catalogSchema of catalogSchemas) {
-            var jsonSchemas     = catalogSchema.jsonSchemas;
-            var database        = catalogSchema.id;
+        for (var dbSchema of dbSchemas) {
+            var jsonSchemas     = dbSchema.jsonSchemas;
+            var database        = dbSchema.id;
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json#/definitions/PocStore
@@ -492,17 +492,17 @@ class App {
                     schemaMap[uri] = definitionEntry;
                 }
             }
-            this.addFileMatcher(database, catalogSchema, schemaMap);
+            this.addFileMatcher(database, dbSchema, schemaMap);
         }
         var monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
-    addFileMatcher(database, catalogSchema, schemaMap) {
-        var jsonSchemas     = catalogSchema.jsonSchemas;
-        var schemaName      = catalogSchema.schemaName;
-        var schemaPath      = catalogSchema.schemaPath;
+    addFileMatcher(database, dbSchema, schemaMap) {
+        var jsonSchemas     = dbSchema.jsonSchemas;
+        var schemaName      = dbSchema.schemaName;
+        var schemaPath      = dbSchema.schemaPath;
         var dbSchema        = jsonSchemas[schemaPath];
         var dbType          = dbSchema.definitions[schemaName];
         var containers      = dbType.properties;
@@ -526,7 +526,7 @@ class App {
                 const schema = schemaMap[uri];
                 schema.fileMatch.push(url); // requires a lower case string
             } else {
-                // uri if never referenced - create an arbitrary unique uri
+                // uri is never referenced - create an arbitrary unique uri
                 var uri = "http://" + database + "/command/param" + commandName;
                 const schema = {
                     schema:     paramType,
@@ -542,7 +542,7 @@ class App {
                 const schema = schemaMap[uri];
                 schema.fileMatch.push(url); // requires a lower case string
             } else {
-                // uri if never referenced - create an arbitrary unique uri
+                // uri is never referenced - create an arbitrary unique uri
                 var uri = "http://" + database + "/command/result" + commandName;
                 const schema = {
                     schema:     resultType,
@@ -856,12 +856,13 @@ class App {
         var model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
+        var schema = this.allMonacoSchemas.find(schema => schema.fileMatch?.includes(url));
         try {
-            // this.decorateJson(this.entityEditor, value);
+            this.decorateJson(this.entityEditor, value, schema.schema);
         } catch (error) {        }      
     }
 
-    decorateJson(editor, value) {
+    decorateJson(editor, value, schema) {
         JSON.parse(value);  // early out on invalid JSON
         // [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
         // bundle.js created fom npm module 'json-to-ast' via:
@@ -870,17 +871,23 @@ class App {
         console.log ("AST", ast);
         
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
-        var decorations = editor.deltaDecorations(
-            [], // oldDecorations
-            [   // newDecorations
-                {                    
-                    range: new monaco.Range(7, 25, 7, 34),
-                    options: {
-                        inlineClassName: 'refLinkDecoration'
-                    }
+        const oldDecorations = [];
+        const newDecorations = [
+            {                    
+                range: new monaco.Range(7, 13, 7, 22),
+                options: {
+                    inlineClassName: 'refLinkDecoration'
                 }
-            ]
-        );  
+            }
+        ];
+        this.decorationsFromAst(ast, newDecorations, schema);
+        var decorations = editor.deltaDecorations(oldDecorations, newDecorations);
+    }
+
+    decorationsFromAst(ast, decorations, schema) {
+        for (const child of ast.children) {
+            const c = child;
+        }
     }
 
     setCommandParam (database, command, value) {
