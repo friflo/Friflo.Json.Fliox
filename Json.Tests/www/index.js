@@ -462,18 +462,22 @@ class App {
         catalogExplorer.appendChild(ulCatalogs);
     }
 
+    databaseSchemas = {};
+
     createEntitySchemas (dbSchemas) {
         var schemaMap = {};
         for (var dbSchema of dbSchemas) {
             var jsonSchemas     = dbSchema.jsonSchemas;
             var database        = dbSchema.id;
-            const containerMap  = {};
+            const containerRefs = {};
             const rootSchema    = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
             const containers    = rootSchema.properties;
             for (const containerName in containers) {
                 const container = containers[containerName];
-                containerMap[container.additionalProperties.$ref] = containerName;
+                containerRefs[container.additionalProperties.$ref] = containerName;
             }
+            this.databaseSchemas[database] = dbSchema;
+            dbSchema.containerSchemas = {}
 
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
@@ -494,9 +498,11 @@ class App {
                     var path            = "/" + schemaPath + "#/definitions/" + definitionName;
                     var schemaId        = "." + path
                     var uri             = "http://" + database + path;
-                    var containerType   = containerMap[schemaId]
-                    if (containerType) {
-                        definition.containerName = containerType;
+                    var containerName   = containerRefs[schemaId]
+                    if (containerName) {
+                        definition.containerName    = containerName;
+                        definition.databaseName     = dbSchema.id;
+                        dbSchema.containerSchemas[containerName] = definition;
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
                     var definitionEntry = {
@@ -914,15 +920,15 @@ class App {
         this.entityEditor.setModel (model);
         if (value == "")
             return;
-        var schema = this.allMonacoSchemas.find(schema => schema.fileMatch?.includes(url));
+        var containerSchema = this.allMonacoSchemas.find(schema => schema.fileMatch?.includes(url));
         try {
-            this.decorateJson(this.entityEditor, value, schema.resolvedDef);
+            this.decorateJson(this.entityEditor, value, containerSchema.resolvedDef);
         } catch (error) {
             console.error("decorateJson", error);
         }
     }
 
-    decorateJson(editor, value, schema) {
+    decorateJson(editor, value, containerSchema) {
         JSON.parse(value);  // early out on invalid JSON
         // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
         // 2.) bundle.js created fom npm module 'json-to-ast' via:
@@ -937,11 +943,12 @@ class App {
         const newDecorations = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
-        this.addRelationsFromAst(ast, schema, (value, resolvedDef) => {
-            const start = value.loc.start;
-            const end   = value.loc.end;
-            const range = new monaco.Range(start.line, start.column, end.line, end.column);
-            newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration' }});
+        this.addRelationsFromAst(ast, containerSchema, (value, resolvedDef) => {
+            const start         = value.loc.start;
+            const end           = value.loc.end;
+            const range         = new monaco.Range(start.line, start.column, end.line, end.column);
+            const hoverMessage  = [ { value: `container: ${resolvedDef.databaseName}/${resolvedDef.containerName}`} ];
+            newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
         });
         var decorations = editor.deltaDecorations(oldDecorations, newDecorations);
     }
@@ -1141,8 +1148,22 @@ class App {
                 lineNumbers:    "off",
                 minimap:        { enabled: false }
             });
-            this.entityEditor.onMouseDown(function (e) {
-                console.log('mousedown - ', e);
+            this.entityEditor.onMouseDown((e) => {
+                // console.log('mousedown - ', e);
+                const value             = this.entityEditor.getValue(); 
+                const ast               = parse(value, { loc: true });
+                const databaseSchema    = this.databaseSchemas[this.entityIdentity.database];
+                const containerSchema   = databaseSchema.containerSchemas[this.entityIdentity.container];
+                const column            = e.target.position.column;
+                const line              = e.target.position.lineNumber;
+                let clickedResolvedDef;
+                this.addRelationsFromAst(ast, containerSchema, (value, resolvedDef) => {
+                    const start = value.loc.start;
+                    const end   = value.loc.end;
+                    if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
+                        console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
+                    }
+                });
             });
         }
         // --- create command value editor
