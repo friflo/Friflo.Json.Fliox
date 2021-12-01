@@ -150,8 +150,9 @@ namespace Friflo.Json.Fliox.Schema
                     requiredFields.Add(field.name);
                 var keyStr  = field.isKey           ? ", \"isKey\": true" : "";
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
+                var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{keyStr}{autoStr} }}");
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{keyStr}{autoStr}{relStr} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");
@@ -220,6 +221,13 @@ namespace Friflo.Json.Fliox.Schema
             if (type == standard.Boolean)
                 return $"\"type\": {Opt(required, "boolean")}";
             return Ref(type, required, context);
+        }
+        
+        private static string GetRelation(FieldDef field, TypeContext context) {
+            if (field.relationType == null)
+                return "";
+            var rel = GetTypeName(field.relationType, context, true);
+            return $", \"rel\": {{ {rel} }}";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

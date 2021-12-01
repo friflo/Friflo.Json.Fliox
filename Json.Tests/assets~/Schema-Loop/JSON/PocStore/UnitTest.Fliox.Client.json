@@ -37,7 +37,7 @@
         "OrderItem": {
             "type": "object",
             "properties": {
-                "article": { "type": "string" },
+                "article": { "type": "string", "rel": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" } },
                 "amount":  { "$ref": "./Standard.json#/definitions/int32" },
                 "name":    { "type": ["string", "null"] }
             },
@@ -74,7 +74,7 @@
             "extends": { "$ref": "#/definitions/OrderItem" },
             "properties": {
                 "derivedVal": { "$ref": "./Standard.json#/definitions/int32" },
-                "article":    { "type": "string" },
+                "article":    { "type": "string", "rel": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" } },
                 "amount":     { "$ref": "./Standard.json#/definitions/int32" },
                 "name":       { "type": ["string", "null"] }
             },
