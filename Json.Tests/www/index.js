@@ -467,6 +467,14 @@ class App {
         for (var dbSchema of dbSchemas) {
             var jsonSchemas     = dbSchema.jsonSchemas;
             var database        = dbSchema.id;
+            const containerMap  = {};
+            const rootSchema    = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
+            const containers    = rootSchema.properties;
+            for (const containerName in containers) {
+                const container = containers[containerName];
+                containerMap[container.additionalProperties.$ref] = containerName;
+            }
+
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json#/definitions/PocStore
@@ -483,12 +491,17 @@ class App {
                 const definitions = schema.definitions;
                 for (var definitionName in definitions) {
                     const definition = definitions[definitionName];
-                    var path    = "/" + schemaPath + "#/definitions/" + definitionName;
-                    var uri     = "http://" + database + path;
+                    var path            = "/" + schemaPath + "#/definitions/" + definitionName;
+                    var schemaId        = "." + path
+                    var uri             = "http://" + database + path;
+                    var containerType   = containerMap[schemaId]
+                    if (containerType) {
+                        definition.containerName = containerType;
+                    }
                     // add reference for definitionName pointing to definition in current schemaPath
                     var definitionEntry = {
                         uri:            uri,
-                        schema:         { $ref: "." + path },
+                        schema:         { $ref: schemaId },
                         fileMatch:      [], // can have multiple in case schema is used by multiple editor models
                         resolvedDef:    definition // not part of monaco > DiagnosticsOptions.schemas
                     }
@@ -924,7 +937,7 @@ class App {
         const newDecorations = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
-        this.addRelationsFromAst(ast, schema, (value) => {
+        this.addRelationsFromAst(ast, schema, (value, resolvedDef) => {
             const start = value.loc.start;
             const end   = value.loc.end;
             const range = new monaco.Range(start.line, start.column, end.line, end.column);
@@ -950,8 +963,9 @@ class App {
 
                 switch (value.type) {
                 case "Literal":
-                    if (property.rel && value.value !== null) {
-                        addRelation (value);
+                    var rel = property.rel;
+                    if (rel && value.value !== null) {
+                        addRelation (value, rel.resolvedDef);
                     }
                     break;
                 case "Array":
@@ -959,10 +973,11 @@ class App {
                     if (resolvedDef) {
                         this.addRelationsFromAst(value, resolvedDef, addRelation);
                     }
-                    if (property.rel) {
+                    var rel = property.rel;
+                    if (rel) {
                         for (const item of value.children) {
                             if (item.type == "Literal") {
-                                addRelation(item);
+                                addRelation(item, rel.resolvedDef);
                             }
                         }
                     }
@@ -1126,9 +1141,9 @@ class App {
                 lineNumbers:    "off",
                 minimap:        { enabled: false }
             });
-            /* this.entityEditor.onMouseDown(function (e) {
+            this.entityEditor.onMouseDown(function (e) {
                 console.log('mousedown - ', e);
-            }); */
+            });
         }
         // --- create command value editor
         {
