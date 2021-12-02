@@ -980,6 +980,8 @@ class App {
     }
 
     addRelationsFromAst(ast, schema, addRelation) {
+        if (!ast.children) // ast is a 'Literal'
+            return;
         for (const child of ast.children) {
             switch (child.type) {
             case "Object":
@@ -1315,7 +1317,7 @@ class App {
         });
 
         document.addEventListener('mousemove', (e) => {
-        if (tdElm) {
+        if (tdElm && tdElm.style) {
             var width = startOffset + e.pageX + 'px'
             tdElm.style.width = width;
             var elem = tdElm.children[0];
