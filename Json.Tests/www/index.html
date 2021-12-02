@@ -164,8 +164,9 @@
 
         .settings li                { list-style: none; }
 
-        .reload                     { cursor:pointer; opacity:0.5; }
+        .reload                     { cursor:pointer; opacity:0.5; user-select: none; }
         .reload::after              { content: "⭮"; margin-left: 10px; }    /* using ::after avoids getting copied to clipboard */
+        .reload:active              { background-color: var(--tab-hover); }
 
         .spinner {
             border:         3px solid #f3f3f3;
