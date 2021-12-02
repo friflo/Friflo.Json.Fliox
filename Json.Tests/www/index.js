@@ -782,9 +782,6 @@ class App {
     async loadEntities (p) {
         // if (p.clearSelection) this.setEditorHeader();
         
-        commandValueContainer.style.display = "none";
-        commandParamBar.style.display = "none";
-        this.layoutEditors();
         const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
 
         catalogSchema.innerHTML  = this.schemaLink(p.database);
@@ -843,6 +840,10 @@ class App {
     }
 
     async loadEntity (p, preserveHistory) {
+        commandValueContainer.style.display = "none";
+        commandParamBar.style.display = "none";
+        this.layoutEditors();
+
         if (!preserveHistory) {
             this.entityHistory[++this.entityHistoryPos] = {...p};
             this.entityHistory.length = this.entityHistoryPos + 1;
