@@ -475,7 +475,7 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
-                var params = { database: databaseName, container: containerName, clearSelection: true };
+                var params = { database: databaseName, container: containerName };
                 this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
@@ -721,17 +721,8 @@ class App {
     }
 
     listCommands (database, dbCommands, dbContainer) {
-        this.setEditorHeader();
-        commandValueContainer.style.display = "";
-        commandParamBar.style.display = "";
-        this.layoutEditors();
-        this.entityModel?.setValue("");
-        const commandSignature      = document.getElementById("commandSignature");
-        const commandLink           = document.getElementById("commandLink");        
         readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         readEntities.innerHTML      = "";
-        commandSignature.innerHTML  = "";
-        commandLink.innerHTML       = "";
 
         var ulDatabase  = document.createElement('ul');
         ulDatabase.classList = "database"
@@ -789,9 +780,8 @@ class App {
     }
 
     async loadEntities (p) {
-        if (p.clearSelection) {
-            this.setEditorHeader();
-        }
+        // if (p.clearSelection) this.setEditorHeader();
+        
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
@@ -854,7 +844,7 @@ class App {
 
     async loadEntity (p, preserveHistory) {
         if (!preserveHistory) {
-            this.entityHistory[++this.entityHistoryPos] = p;
+            this.entityHistory[++this.entityHistoryPos] = {...p};
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
         this.entityIdentity = {
@@ -865,7 +855,7 @@ class App {
         this.setEditorHeader("entity");
         const schema            = this.databaseSchemas[p.database];
         entityType.innerHTML    = this.getEntityType (schema, p.container);
-        const containerRoute    = { database: p.database, container: p.container }          
+        const containerRoute    = { database: p.database, container: p.container }
         let entityLink          = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${p.container}</a>`;
         entityLink             += `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
@@ -873,7 +863,7 @@ class App {
         const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        
         let content   = await response.text();
         content = this.formatJson(this.formatEntities, content);
-        const reload = `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)})'></span>`
+        const reload = `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`
         entityId.innerHTML = entityLink + reload;
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
@@ -1053,6 +1043,10 @@ class App {
     }
 
     showCommand(database, commandName) {
+        commandValueContainer.style.display = "";
+        commandParamBar.style.display = "";        
+        this.layoutEditors();
+
         const schema        = this.databaseSchemas[database];
         const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
         const signature     = service ? service.commands[commandName] : null
