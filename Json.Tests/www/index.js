@@ -856,7 +856,7 @@ class App {
         };
         this.setEditorHeader("entity");
         const schema            = this.databaseSchemas[p.database];
-        entityType.innerHTML    = schema ? this.getEntityType (schema, p.container) : "";
+        entityType.innerHTML    = this.getEntityType (schema, p.container);
         var entityLink          = `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
