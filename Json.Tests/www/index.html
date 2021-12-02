@@ -58,6 +58,9 @@
                                       text-decoration-color: var(--link-deco) !important;    }
         .refLinkDecoration:hover    { text-decoration-color: unset !important; }
 
+        .navigate       { cursor: pointer; font-size: 14px; height: 20px; width: 20px; text-align: center; user-select: none; }
+        .navigate:hover { background-color: var(--tab-hover); }
+
         /* dark mode color for firefox */
         @media(prefers-color-scheme: dark) {
             body        { background-color: #000; color: #fff; }
@@ -318,7 +321,10 @@
           <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
         </td>
         <td class="vbar2"></td>
-        <td style="overflow:auto;white-space:nowrap; height: 23px;">
+        <td style="display:flex; overflow:auto;white-space:nowrap; height: 23px;">
+          <div class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
+          <div class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
+          &nbsp;
           <span id="entityTools" style="display: none;">
             <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
             <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>

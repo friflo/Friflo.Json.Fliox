@@ -842,7 +842,21 @@ class App {
         command:    undefined
     }
 
-    async loadEntity (p) {
+    entityHistoryPos    = -1;
+    entityHistory       = [];
+
+    navigateEntity(pos) {
+        if (pos < 0 || pos >= this.entityHistory.length)
+            return;
+        this.entityHistoryPos = pos;
+        this.loadEntity(this.entityHistory[pos], true);
+    }
+
+    async loadEntity (p, preserveHistory) {
+        if (!preserveHistory) {
+            this.entityHistory[++this.entityHistoryPos] = p;
+            this.entityHistory.length = this.entityHistoryPos + 1;
+        }
         this.entityIdentity = {
             database:   p.database,
             container:  p.container,
