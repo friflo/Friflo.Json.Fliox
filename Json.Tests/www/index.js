@@ -765,7 +765,7 @@ class App {
             this.entityIdentity.database    = database;
             this.setCommandParam (database, commandName, def);
             this.setCommandResult(database, commandName);
-            if (tagName == "DIV") {
+            if (path[0].classList.contains("command")) {
                 this.sendCommand("POST");
             }
         }
