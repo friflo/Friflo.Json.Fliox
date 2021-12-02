@@ -436,10 +436,9 @@ class App {
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
             const databaseName = selectedElement.childNodes[1].innerText;
-            var schema      = dbSchemas.find   (s => s.id == databaseName);
             var dbCommands  = commands.find  (c => c.id == databaseName);
             var dbContainer = dbContainers.find  (c => c.id == databaseName);
-            catalogSchema.innerHTML  = this.schemaLink(databaseName, schema)
+            catalogSchema.innerHTML  = this.schemaLink(databaseName)
             this.listCommands(databaseName, dbCommands, dbContainer);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
@@ -476,9 +475,7 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
-                var schema          = dbSchemas.find(s => s.id == databaseName);
-                const schemaLink    = this.schemaLink(databaseName, schema);
-                var params = { database: databaseName, container: containerName, schemaLink };
+                var params = { database: databaseName, container: containerName };
                 this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
@@ -785,8 +782,9 @@ class App {
         entityExplorer.appendChild(ulDatabase);
     }
 
-    schemaLink(database, schema) {
-        const name = schema ? schema.schemaName : this.schemaLess;
+    schemaLink(database) {
+        const schema    = this.databaseSchemas[database];
+        const name      = schema ? schema.schemaName : this.schemaLess;
         return `<a title="database schema" href="./rest/${database}?command=DbSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
@@ -797,10 +795,10 @@ class App {
         this.layoutEditors();
         this.setEntityValue(p.database, p.container, "");
         const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
-    
-        catalogSchema.innerHTML  = p.schemaLink;
+
+        catalogSchema.innerHTML  = this.schemaLink(p.database);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
-        const containerLink        = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
+        const containerLink      = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
         const response = await this.postRequestTasks(p.database, tasks, p.container);
 
