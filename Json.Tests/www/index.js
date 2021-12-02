@@ -228,17 +228,31 @@ class App {
             }
             break;
         case "explorer":
-            if (event.code == 'KeyS' && event.ctrlKey) {
-                this.saveEntity()
-                event.preventDefault();
-            }
-            if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                this.sendCommand("POST");
-                event.preventDefault();
-            }
-            break;
+            switch (event.code) {
+                case 'KeyS':
+                    if (event.ctrlKey)
+                        this.execute(event, () => this.saveEntity());
+                    break;
+                case 'KeyP':
+                    if (event.ctrlKey && event.altKey)
+                        this.execute(event, () => this.sendCommand("POST"));
+                    break;
+                case 'ArrowLeft':
+                    if (event.altKey)
+                        this.execute(event, () => this.navigateEntity(this.entityHistoryPos - 1));
+                    break;        
+                case 'ArrowRight':
+                    if (event.altKey)
+                        this.execute(event, () => this.navigateEntity(this.entityHistoryPos + 1));
+                    break;        
+                }
         }
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
+    }
+
+    execute(event, lambda) {
+        lambda();
+        event.preventDefault();
     }
 
     // --------------------------------------- example requests ---------------------------------------
