@@ -466,10 +466,9 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
-                var schema = dbSchemas.find(s => s.id == databaseName);
-                const entityTypeName    = this.getEntityType (schema, containerName);
-                const schemaLink        = this.schemaLink(databaseName, schema);
-                var params = { database: databaseName, container: containerName, entityTypeName, schemaLink };
+                var schema          = dbSchemas.find(s => s.id == databaseName);
+                const schemaLink    = this.schemaLink(databaseName, schema);
+                var params = { database: databaseName, container: containerName, schemaLink };
                 this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
@@ -715,7 +714,7 @@ class App {
     }
 
     listCommands (database, dbCommands, schema, dbContainer) {
-        this.setEditorHeader("command");
+        this.setEditorHeader();
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";
         this.layoutEditors();
@@ -741,6 +740,7 @@ class App {
 
         var ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
+            this.setEditorHeader("command");
             var path = ev.composedPath();
             let selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
@@ -792,14 +792,13 @@ class App {
     }
 
     async loadEntities (p) {
-        this.setEditorHeader("entity");
+        this.setEditorHeader();
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
         this.setEntityValue(p.database, p.container, "");
         const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
     
-        entityType.innerHTML     = p.entityTypeName;
         catalogSchema.innerHTML  = p.schemaLink;
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink        = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
@@ -855,6 +854,9 @@ class App {
             container:  p.container,
             entityId:   p.id
         };
+        this.setEditorHeader("entity");
+        const schema            = this.databaseSchemas[p.database];
+        entityType.innerHTML    = schema ? this.getEntityType (schema, p.container) : "";
         var entityLink          = `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";

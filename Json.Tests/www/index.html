@@ -318,8 +318,8 @@
           <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
         </td>
         <td class="vbar2"></td>
-        <td style="overflow:auto;white-space:nowrap">
-          <span id="entityTools">
+        <td style="overflow:auto;white-space:nowrap; height: 23px;">
+          <span id="entityTools" style="display: none;">
             <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
             <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
             &nbsp;&nbsp;
@@ -345,7 +345,7 @@
         </td>
         <td class="vbar2"></td>
         <td style="overflow:auto;white-space:nowrap">
-          <span id="entityHeader">
+          <span id="entityHeader" style="display: none;">
             <small id="entityId">entity id</small>
           </span>
           <span id="commandHeader" style="display: none;" >
