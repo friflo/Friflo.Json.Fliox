@@ -475,7 +475,7 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
-                var params = { database: databaseName, container: containerName };
+                var params = { database: databaseName, container: containerName, clearSelection: true };
                 this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
@@ -789,11 +789,12 @@ class App {
     }
 
     async loadEntities (p) {
-        this.setEditorHeader();
+        if (p.clearSelection) {
+            this.setEditorHeader();
+        }
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
-        this.setEntityValue(p.database, p.container, "");
         const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
 
         catalogSchema.innerHTML  = this.schemaLink(p.database);
@@ -804,7 +805,6 @@ class App {
 
         const content = response.json;
         const reload = `<span class="reload" title='reload container' onclick='app.loadEntities(${JSON.stringify(p)})'></span>`
-        entityId.innerHTML      = "";
         writeResult.innerHTML   = "";        
         readEntities.innerHTML  = containerLink + reload;
         const error = this.getTaskError (content, 0);
@@ -851,7 +851,9 @@ class App {
         this.setEditorHeader("entity");
         const schema            = this.databaseSchemas[p.database];
         entityType.innerHTML    = this.getEntityType (schema, p.container);
-        var entityLink          = `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
+        const containerRoute    = { database: p.database, container: p.container }          
+        let entityLink          = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${p.container}</a>`;
+        entityLink             += `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        
