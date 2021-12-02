@@ -846,25 +846,27 @@ class App {
     entityHistoryPos    = -1;
     entityHistory       = [];
 
+    storeCursor() {
+        if (this.entityHistoryPos < 0)
+            return;
+        this.entityHistory[this.entityHistoryPos].selection    = this.entityEditor.getSelection();
+    }
+
     navigateEntity(pos) {
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
-        const cursor = this.entityEditor.getSelection()
-        // console.log("get cursor", cursor);
-        this.entityHistory[this.entityHistoryPos].cursor = cursor;
+        this.storeCursor();
         this.entityHistoryPos = pos;
         const entry = this.entityHistory[pos]
-        this.loadEntity(entry.route, true, entry.cursor);
+        this.loadEntity(entry.route, true, entry.selection);
     }
 
-    async loadEntity (p, preserveHistory, cursor) {
+    async loadEntity (p, preserveHistory, selection) {
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
         if (!preserveHistory) {
-            if (this.entityHistoryPos >= 0) {
-                this.entityHistory[this.entityHistoryPos].cursor = this.entityEditor.getSelection();
-            }
+            this.storeCursor();
             this.entityHistory[++this.entityHistoryPos] = { route: {...p} };
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
@@ -892,10 +894,7 @@ class App {
         }
         // console.log(entityJson);
         this.setEntityValue(p.database, p.container, content);
-        if (cursor) {
-            // console.log("cursor", cursor);
-            this.entityEditor.setSelection(cursor);
-        }
+        if (selection)  this.entityEditor.setSelection(selection);        
         this.entityEditor.focus();
     }
 
