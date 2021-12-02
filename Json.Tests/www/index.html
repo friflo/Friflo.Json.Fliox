@@ -322,20 +322,21 @@
         </td>
         <td class="vbar2"></td>
         <td style="display:flex; overflow:auto;white-space:nowrap; height: 23px;">
+          <span style="min-width: 350px;">
+            <span id="entityTools" style="display: none;">
+              <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
+              <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
+              &nbsp;&nbsp;
+              <small id="entityType" title="entity type"><span style="opacity: 0.4;">entity type</span></small>
+            </span>
+            <span id="commandTools" style="display: none;">
+              <button type="button" onclick="app.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
+              &nbsp;
+              <small id="commandSignature">command</small>
+            </span>
+          </span>
           <div class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
           <div class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
-          &nbsp;
-          <span id="entityTools" style="display: none;">
-            <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
-            <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
-            &nbsp;&nbsp;
-            <small id="entityType" title="entity type"><span style="opacity: 0.4;">entity type</span></small>
-          </span>
-          <span id="commandTools" style="display: none;">
-            <button type="button" onclick="app.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
-            &nbsp;
-            <small id="commandSignature">command</small>
-        </span>
         </td>
       </tr>
 
