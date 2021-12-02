@@ -947,9 +947,12 @@ class App {
         this.entityEditor.setModel (model);
         if (value == "")
             return;
-        var containerSchema = this.allMonacoSchemas.find(schema => schema.fileMatch?.includes(url));
+        var databaseSchema = this.databaseSchemas[database];
+        if (!databaseSchema)
+            return;
         try {
-            this.decorateJson(this.entityEditor, value, containerSchema.resolvedDef);
+            const containerSchema = databaseSchema.containerSchemas[container];
+            this.decorateJson(this.entityEditor, value, containerSchema);
         } catch (error) {
             console.error("decorateJson", error);
         }
