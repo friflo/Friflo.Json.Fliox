@@ -889,6 +889,7 @@ class App {
     }
 
     async saveEntity () {
+        const database  = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
         let id;
@@ -901,7 +902,7 @@ class App {
         }
         writeResult.innerHTML = 'save <span class="spinner"></span>';
 
-        const response = await this.restRequest("PUT", jsonValue, this.entityIdentity.database, container, id);
+        const response = await this.restRequest("PUT", jsonValue, database, container, id);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
@@ -919,6 +920,8 @@ class App {
             ulIds.append(liId);
             this.setSelectedEntity(liId);
             liId.scrollIntoView();
+            this.entityHistory[++this.entityHistoryPos] = { database: database, container: container, id:id };
+            this.entityHistory.length = this.entityHistoryPos + 1;
         }
     }
 
