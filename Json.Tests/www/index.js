@@ -440,7 +440,7 @@ class App {
             var dbCommands  = commands.find  (c => c.id == databaseName);
             var dbContainer = dbContainers.find  (c => c.id == databaseName);
             catalogSchema.innerHTML  = this.schemaLink(databaseName, schema)
-            this.listCommands(databaseName, dbCommands, schema, dbContainer);
+            this.listCommands(databaseName, dbCommands, dbContainer);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
         }
@@ -723,7 +723,7 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    listCommands (database, dbCommands, schema, dbContainer) {
+    listCommands (database, dbCommands, dbContainer) {
         this.setEditorHeader();
         commandValueContainer.style.display = "";
         commandParamBar.style.display = "";
@@ -762,17 +762,8 @@ class App {
             const commandName = selectedElement.children[0].innerText;
             this.setSelectedEntity(selectedElement);
 
-            const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
-            const signature     = service ? service.commands[commandName] : null
-            const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
-            const tags          = this.getCommandTags(database, commandName, signature);
-            commandSignature.innerHTML      = tags.label;
-            commandLink.innerHTML           = tags.link;
+            this.showCommand(database, commandName);
 
-            this.entityIdentity.command     = commandName;
-            this.entityIdentity.database    = database;
-            this.setCommandParam (database, commandName, def);
-            this.setCommandResult(database, commandName);
             if (path[0].classList.contains("command")) {
                 this.sendCommand("POST");
             }
@@ -1047,6 +1038,20 @@ class App {
         this.entityEditor.setModel (model);
     }
 
+    showCommand(database, commandName) {
+        const schema        = this.databaseSchemas[database];
+        const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
+        const signature     = service ? service.commands[commandName] : null
+        const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
+        const tags          = this.getCommandTags(database, commandName, signature);
+        commandSignature.innerHTML      = tags.label;
+        commandLink.innerHTML           = tags.link;
+
+        this.entityIdentity.command     = commandName;
+        this.entityIdentity.database    = database;
+        this.setCommandParam (database, commandName, def);
+        this.setCommandResult(database, commandName);
+    }
 
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
