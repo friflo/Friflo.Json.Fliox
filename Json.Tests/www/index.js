@@ -394,7 +394,17 @@ class App {
     }
 
     selectedCatalog;
-    selectedEntity;
+    selectedEntity = {
+        elem: null
+    }
+
+    setSelectedEntity(elem) {
+        if (this.selectedEntity.elem) {
+            this.selectedEntity.elem.classList.remove("selected");
+        }
+        this.selectedEntity.elem = elem;
+        this.selectedEntity.elem.classList.add("selected");
+    }
 
     async loadCluster () {
         const tasks = [
@@ -750,8 +760,7 @@ class App {
                 selectedElement = path[1];
             }
             const commandName = selectedElement.children[0].innerText;
-            if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
-                this.selectedEntity = selectedElement;
+            this.setSelectedEntity(selectedElement);
 
             const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
             const signature     = service ? service.commands[commandName] : null
@@ -760,7 +769,6 @@ class App {
             commandSignature.innerHTML      = tags.label;
             commandLink.innerHTML           = tags.link;
 
-            this.selectedEntity.classList.add("selected");
             this.entityIdentity.command     = commandName;
             this.entityIdentity.database    = database;
             this.setCommandParam (database, commandName, def);
@@ -824,11 +832,8 @@ class App {
             // in case of a multiline text selection selectedElement is the parent
             if (selectedElement.tagName.toLowerCase() != "li")
                 return;
-            if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
-            this.selectedEntity = selectedElement;
-
-            const entityId = this.selectedEntity.innerText;
-            this.selectedEntity.classList.add("selected");
+            this.setSelectedEntity(selectedElement);
+            const entityId = selectedElement.innerText;
             const params = { database: p.database, container: p.container, id: entityId };
             this.loadEntity(params);
         }
@@ -897,15 +902,13 @@ class App {
         if (this.entityIdentity.entityId != id) {
             this.entityIdentity.entityId = id;
             entityId.innerHTML = id;
-            if (this.selectedEntity)
-                this.selectedEntity.classList.remove("selected");
             var liId = document.createElement('li');
             liId.innerText = id;
             liId.classList = "selected";
             const ulIds= entityExplorer.querySelector("ul");
             ulIds.append(liId);
-            this.selectedEntity = liId;
-            this.selectedEntity.scrollIntoView();
+            this.setSelectedEntity(liId);
+            liId.scrollIntoView();
         }
     }
 
