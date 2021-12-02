@@ -947,7 +947,8 @@ class App {
             const start         = value.loc.start;
             const end           = value.loc.end;
             const range         = new monaco.Range(start.line, start.column, end.line, end.column);
-            const hoverMessage  = [ { value: `container: ${resolvedDef.databaseName}/${resolvedDef.containerName}`} ];
+            const markdownText  = `${resolvedDef.databaseName}/${resolvedDef.containerName}  \nFollow: (ctrl + click)`;
+            const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
         });
         var decorations = editor.deltaDecorations(oldDecorations, newDecorations);
@@ -1149,6 +1150,8 @@ class App {
                 minimap:        { enabled: false }
             });
             this.entityEditor.onMouseDown((e) => {
+                if (!e.event.ctrlKey)
+                    return;
                 // console.log('mousedown - ', e);
                 const value             = this.entityEditor.getValue(); 
                 const ast               = parse(value, { loc: true });
@@ -1156,14 +1159,20 @@ class App {
                 const containerSchema   = databaseSchema.containerSchemas[this.entityIdentity.container];
                 const column            = e.target.position.column;
                 const line              = e.target.position.lineNumber;
-                let clickedResolvedDef;
+                let entity;
                 this.addRelationsFromAst(ast, containerSchema, (value, resolvedDef) => {
+                    if (entity)
+                        return;
                     const start = value.loc.start;
                     const end   = value.loc.end;
                     if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
-                        console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
+                        // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
+                        entity = { database: resolvedDef.databaseName, container: resolvedDef.containerName, id: value.value };
                     }
                 });
+                if (entity) {
+                    this.loadEntity(entity);
+                }
             });
         }
         // --- create command value editor
