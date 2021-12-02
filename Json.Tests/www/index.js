@@ -849,17 +849,23 @@ class App {
     navigateEntity(pos) {
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
+        const cursor = this.entityEditor.getPosition()
+        // console.log("get cursor", cursor);
+        this.entityHistory[this.entityHistoryPos].cursor = cursor;
         this.entityHistoryPos = pos;
-        this.loadEntity(this.entityHistory[pos], true);
+        const entry = this.entityHistory[pos]
+        this.loadEntity(entry.route, true, entry.cursor);
     }
 
-    async loadEntity (p, preserveHistory) {
+    async loadEntity (p, preserveHistory, cursor) {
         commandValueContainer.style.display = "none";
         commandParamBar.style.display = "none";
         this.layoutEditors();
-
         if (!preserveHistory) {
-            this.entityHistory[++this.entityHistoryPos] = {...p};
+            if (this.entityHistoryPos >= 0) {
+                this.entityHistory[this.entityHistoryPos].cursor = this.entityEditor.getPosition();
+            }
+            this.entityHistory[++this.entityHistoryPos] = { route: {...p} };
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
         this.entityIdentity = {
@@ -886,6 +892,11 @@ class App {
         }
         // console.log(entityJson);
         this.setEntityValue(p.database, p.container, content);
+        if (cursor) {
+            // console.log("cursor", cursor);
+            this.entityEditor.setPosition(cursor);
+        }
+        this.entityEditor.focus();
     }
 
     async saveEntity () {
@@ -920,7 +931,7 @@ class App {
             ulIds.append(liId);
             this.setSelectedEntity(liId);
             liId.scrollIntoView();
-            this.entityHistory[++this.entityHistoryPos] = { database: database, container: container, id:id };
+            this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, id:id }};
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
     }
