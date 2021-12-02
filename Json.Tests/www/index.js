@@ -849,7 +849,7 @@ class App {
     navigateEntity(pos) {
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
-        const cursor = this.entityEditor.getPosition()
+        const cursor = this.entityEditor.getSelection()
         // console.log("get cursor", cursor);
         this.entityHistory[this.entityHistoryPos].cursor = cursor;
         this.entityHistoryPos = pos;
@@ -863,7 +863,7 @@ class App {
         this.layoutEditors();
         if (!preserveHistory) {
             if (this.entityHistoryPos >= 0) {
-                this.entityHistory[this.entityHistoryPos].cursor = this.entityEditor.getPosition();
+                this.entityHistory[this.entityHistoryPos].cursor = this.entityEditor.getSelection();
             }
             this.entityHistory[++this.entityHistoryPos] = { route: {...p} };
             this.entityHistory.length = this.entityHistoryPos + 1;
@@ -894,7 +894,7 @@ class App {
         this.setEntityValue(p.database, p.container, content);
         if (cursor) {
             // console.log("cursor", cursor);
-            this.entityEditor.setPosition(cursor);
+            this.entityEditor.setSelection(cursor);
         }
         this.entityEditor.focus();
     }
