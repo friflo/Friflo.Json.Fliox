@@ -187,7 +187,32 @@ class App {
         responseState.innerHTML = `· ${duration} ms`;
     }
 
+    lastCtrlKey;
+    refLinkDecoration;
+
+    applyCtrlKey(event) {
+        if (this.lastCtrlKey == event.ctrlKey)
+            return;
+        this.lastCtrlKey = event.ctrlKey;
+        if (!this.refLinkDecoration) {
+            const cssRules = document.styleSheets[0].cssRules;
+            for (let n = 0; n < cssRules.length; n++) {
+                if (cssRules[n].selectorText == ".refLinkDecoration:hover")
+                    this.refLinkDecoration = cssRules[n];
+            }
+        }
+        this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
+    }
+
+    onKeyUp (event) {
+        if (event.code == "ControlLeft")
+            this.applyCtrlKey(event);
+    }
+
     onKeyDown (event) {
+        if (event.code == "ControlLeft")
+            this.applyCtrlKey(event);
+
         switch (activeTab) {
         case "playground":
             if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
@@ -1308,3 +1333,4 @@ class App {
 
 export const app = new App();
 window.addEventListener("keydown", event => app.onKeyDown(event), true);
+window.addEventListener("keyup", event => app.onKeyUp(event), true);
