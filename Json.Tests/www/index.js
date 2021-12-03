@@ -298,7 +298,7 @@ class App {
         }
     }
     // --------------------------------------- Explorer ---------------------------------------
-    monacoTheme = "light";
+  
 
     async postRequest (request, tag) {
         let init = {        
@@ -376,16 +376,6 @@ class App {
 
     errorAsHtml (error) {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
-    }
-
-    setTheme () {
-        var format = this.getCookie("format-responses");
-
-
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            this.monacoTheme = "vs-dark";
-        }
     }
 
     openTab (tabName) {
@@ -1193,7 +1183,7 @@ class App {
             this.requestEditor.updateOptions({
                 lineNumbers:    "off",
                 minimap:        { enabled: false },
-                theme:          this.monacoTheme,
+                theme:          window.appConfig.monacoTheme,
             });
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel (this.requestModel);

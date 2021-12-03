@@ -7,12 +7,19 @@
     <meta name="color-scheme" content="dark light">
     <link rel="icon" href="/Json-Fliox-53x43.svg" type="image/x-icon">
     <title>Json.Fliox.Hub</title>
+    <script>
+        // handle dark mode before everything else to avoid flickering
+        window.appConfig = { monacoTheme: "light" };
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            window.appConfig.monacoTheme = "vs-dark";
+        }
+    </script>
     <script src='bundle.js'></script> <!-- todo: load deferred -->
     <script type="module">
         import { app } from  "./index.js";
         window.app = app;
         app.loadConfig();
-        app.setTheme();
         app.initUserToken();
         app.loadExampleRequestList();
         app.loadCluster();
@@ -63,7 +70,7 @@
 
         /* dark mode color for firefox */
         @media(prefers-color-scheme: dark) {
-            body        { background-color: #000; color: #fff; }
+            body  { background-color: #000; color: #fff; }
             a:visited   { color: rgb(208, 173, 240) }
             a           { color: rgb(158, 158, 255) }
         }
