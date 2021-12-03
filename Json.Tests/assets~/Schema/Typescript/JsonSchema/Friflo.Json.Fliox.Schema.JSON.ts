@@ -38,7 +38,7 @@ export class FieldType {
     additionalProperties? : FieldType | null;
     isKey?                : boolean | null;
     isAutoIncrement?      : boolean | null;
-    rel?                  : TypeRef | null;
+    rel?                  : string | null;
 }
 
 export class CommandType {

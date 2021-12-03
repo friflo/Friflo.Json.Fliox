@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public  bool?           isAutoIncrement;
         
         [Fri.Property(Name =    "rel")]
-        public  TypeRef         relation;
+        public  string          relation;
         
         public override string  ToString() => name;
     }

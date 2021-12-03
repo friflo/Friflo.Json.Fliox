@@ -120,10 +120,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             return name;
         }
         
-        public Type GetRelationAttributeType() {
+        public string GetRelationAttributeType() {
             foreach (var attr in customAttributes) {
                 if (attr.AttributeType == typeof(Fri.RelationAttribute))
-                    return (Type)attr.ConstructorArguments[0].Value;
+                    return (string)attr.ConstructorArguments[0].Value;
             }
             return null;
         }

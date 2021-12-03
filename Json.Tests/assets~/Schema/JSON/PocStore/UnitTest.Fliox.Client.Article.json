@@ -8,7 +8,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "name":     { "type": "string" },
-                "producer": { "type": ["string", "null"], "rel": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" } }
+                "producer": { "type": ["string", "null"], "rel": "producers" }
             },
             "required": [
                 "id",

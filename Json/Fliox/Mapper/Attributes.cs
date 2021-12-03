@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
         public sealed class RelationAttribute : Attribute {
-            public RelationAttribute (Type instance) {}
+            public RelationAttribute (string instance) {}
         }
     }
     

@@ -59,7 +59,7 @@
                 "additionalProperties": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
                 "isKey":                { "type": ["boolean", "null"] },
                 "isAutoIncrement":      { "type": ["boolean", "null"] },
-                "rel":                  { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/TypeRef" }] }
+                "rel":                  { "type": ["string", "null"] }
             },
             "additionalProperties": false
         },

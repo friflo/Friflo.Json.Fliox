@@ -7,7 +7,7 @@
             "type": "object",
             "properties": {
                 "id":    { "type": "string" },
-                "roles": { "type": ["array", "null"], "items": { "type": "string" }, "rel": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role" } }
+                "roles": { "type": ["array", "null"], "items": { "type": "string" }, "rel": "roles" }
             },
             "required": [
                 "id"

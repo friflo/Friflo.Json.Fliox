@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             }
             var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
-            TypeDef relation    = field.relation == null ? null : FindRef(field.relation.reference, context);
+            var relation        = field.relation;
             
             var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, isArray, isDictionary, isNullableElement, typeDef, relation);
             typeDef.fields.Add(fieldDef);

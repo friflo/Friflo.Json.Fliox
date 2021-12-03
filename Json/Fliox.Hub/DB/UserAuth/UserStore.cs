@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     // -------------------------------------- models ---------------------------------------
     public class UserPermission {
         [Fri.Required]  public  JsonKey         id;
-        [Fri.Relation(typeof(Role))]
+        [Fri.Relation(nameof(UserStore.roles))]
                         public  List<string>    roles;
 
         public override         string ToString() => JsonSerializer.Serialize(this);

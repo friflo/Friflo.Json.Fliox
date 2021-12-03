@@ -41,6 +41,7 @@ namespace Friflo.Json.Fliox.Schema
     /// </summary>
     public sealed class NativeTypeOptions
     {
+        public  readonly    Type                    rootType;
         public  readonly    ICollection<Type>       rootTypes;
         /// <summary>the file extension of the generated files</summary>
         public              string                  fileExt;
@@ -53,10 +54,11 @@ namespace Friflo.Json.Fliox.Schema
         public              Func<TypeDef, string>   getPath;
         
         
-        public NativeTypeOptions (Type rootType) : this (new List<Type> { rootType }) { }
+        public NativeTypeOptions (Type rootType) : this (new List<Type> { rootType }, rootType) { }
         
-        public NativeTypeOptions (ICollection<Type> rootTypes) {
+        public NativeTypeOptions (ICollection<Type> rootTypes, Type rootType = null) {
             this.rootTypes  = rootTypes ?? throw new ArgumentException("rootTypes must not be null");
+            this.rootType   = rootType;
         }
     }
     

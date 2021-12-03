@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Map.Obj;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -23,7 +24,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
 
-        public NativeTypeSchema (Type rootType) : this (new [] { rootType }){
+        public NativeTypeSchema (Type rootType) : this (new [] { rootType }, rootType){
             var rootTypeDef = TypeAsTypeDef(rootType);
             if (rootTypeDef == null)
                 throw new InvalidOperationException($"rootType not found: {rootType}");
@@ -32,10 +33,11 @@ namespace Friflo.Json.Fliox.Schema.Native
             RootType = rootTypeDef;
         }
 
-        public NativeTypeSchema (ICollection<Type> typeList) {
+        public NativeTypeSchema (ICollection<Type> typeList, Type rootType = null) {
           using (var typeStore = new TypeStore()) {
             typeStore.AddMappers(typeList);
             var typeMappers = typeStore.GetTypeMappers();
+            TypeMapper rootTypeMapper = rootType == null ? null : typeMappers[rootType];
 
             // Collect all types into containers to simplify further processing
             nativeTypes     = new Dictionary<Type, NativeTypeDef>(typeMappers.Count);
@@ -110,10 +112,10 @@ namespace Friflo.Json.Fliox.Schema.Native
                             type            = nativeTypes[nonNullableType];
                             relationType    = propField.fieldType.RelationType();
                         }
-                        relationType        = relationType ?? propField.GetRelationAttributeType();
+                        string relation     = ContainerFromType(rootTypeMapper, relationType);
+                        relation            = relation ?? propField.GetRelationAttributeType();
                         var required        = propField.required || !isNullable;
                         var isKey           = propField.isKey;
-                        var relation        = relationType == null ? null : nativeTypes[relationType];  
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
                         
                         var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef, relation);
@@ -212,6 +214,18 @@ namespace Friflo.Json.Fliox.Schema.Native
             }
             nonNullableType = mapper.type;
             return isNullable;
+        }
+        
+        private static string ContainerFromType(TypeMapper rootTypeMapper, Type relationType) {
+            if (rootTypeMapper == null || relationType == null)
+                return null;
+            foreach (var field in rootTypeMapper.propFields.fields) {
+                var elementMapper = field.fieldType.GetElementMapper();
+                if (elementMapper.type == relationType) {
+                    return field.name;
+                } 
+            }
+            return null;
         }
         
         public ICollection<TypeDef> TypesAsTypeDefs(ICollection<Type> types) {

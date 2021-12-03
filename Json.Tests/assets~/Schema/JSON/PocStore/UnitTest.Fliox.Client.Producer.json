@@ -8,7 +8,7 @@
             "properties": {
                 "id":        { "type": "string" },
                 "name":      { "type": "string" },
-                "employees": { "type": ["array", "null"], "items": { "type": "string" }, "rel": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" } }
+                "employees": { "type": ["array", "null"], "items": { "type": "string" }, "rel": "employees" }
             },
             "required": [
                 "id",
