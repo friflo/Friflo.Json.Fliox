@@ -1233,27 +1233,10 @@ class App {
                 if (!e.event.ctrlKey)
                     return;
                 // console.log('mousedown - ', e);
-                const value             = this.entityEditor.getValue(); 
-                const ast               = parse(value, { loc: true });
-                const database          = this.entityIdentity.database;
-                const databaseSchema    = this.databaseSchemas[database];
-                const containerSchema   = databaseSchema.containerSchemas[this.entityIdentity.container];
-                const column            = e.target.position.column;
-                const line              = e.target.position.lineNumber;
-                let entity;
-                this.addRelationsFromAst(ast, containerSchema, (value, container) => {
-                    if (entity)
-                        return;
-                    const start = value.loc.start;
-                    const end   = value.loc.end;
-                    if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
-                        // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                        entity = { database: database, container: container, id: value.value };
-                    }
-                });
-                if (entity) {
-                    this.loadEntity(entity);
-                }
+                const value     = this.entityEditor.getValue();
+                const column    = e.target.position.column;
+                const line      = e.target.position.lineNumber;
+                window.setTimeout(() => { this.tryFollowLink(value, column, line) }, 1);
             });
         }
         // --- create command value editor
@@ -1272,6 +1255,33 @@ class App {
         window.onresize = () => {
             this.layoutEditors();        
         };
+    }
+
+    tryFollowLink(value, column, line) {
+        try {
+            JSON.parse(value);  // early out invalid JSON
+            const ast               = parse(value, { loc: true });
+            const database          = this.entityIdentity.database;
+            const databaseSchema    = this.databaseSchemas[database];
+            const containerSchema   = databaseSchema.containerSchemas[this.entityIdentity.container];
+
+            let entity;
+            this.addRelationsFromAst(ast, containerSchema, (value, container) => {
+                if (entity)
+                    return;
+                const start = value.loc.start;
+                const end   = value.loc.end;
+                if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
+                    // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
+                    entity = { database: database, container: container, id: value.value };
+                }
+            });
+            if (entity) {
+                this.loadEntity(entity);
+            }
+        } catch (error) {
+            writeResult.innerHTML = `<span style="color:#FF8C00">Follow link failed: ${error}</code>`;
+        }
     }
 
     formatEntities  = false;
