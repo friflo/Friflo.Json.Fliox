@@ -110,6 +110,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                             type            = nativeTypes[nonNullableType];
                             relationType    = propField.fieldType.RelationType();
                         }
+                        relationType        = relationType ?? propField.GetRelationAttributeType();
                         var required        = propField.required || !isNullable;
                         var isKey           = propField.isKey;
                         var relation        = relationType == null ? null : nativeTypes[relationType];  

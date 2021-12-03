@@ -60,6 +60,11 @@ namespace Friflo.Json.Fliox.Mapper
         public sealed class EnumValueAttribute : Attribute {
             public string       Name        { get; set; }
         }
+        
+        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+        public sealed class RelationAttribute : Attribute {
+            public RelationAttribute (Type instance) {}
+        }
     }
     
 

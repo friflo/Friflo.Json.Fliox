@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Utils;
@@ -27,13 +28,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public              Bytes           firstMember;        // don't mutate
         public              Bytes           subSeqMember;       // don't mutate
         //
-        internal readonly   FieldInfo               field;
-        internal readonly   PropertyInfo            property;
-        private  readonly   MethodInfo              getMethod;
-        private  readonly   Func<object, object>    getLambda;
-        // private  readonly   Delegate             getDelegate;
-        private  readonly   MethodInfo              setMethod;
-        private  readonly   Action<object, object>  setLambda;
+        internal readonly   FieldInfo                           field;
+        internal readonly   PropertyInfo                        property;
+        private  readonly   IEnumerable<CustomAttributeData>    customAttributes;
+        private  readonly   MethodInfo                          getMethod;
+        private  readonly   Func<object, object>                getLambda;
+        // private  readonly   Delegate                         getDelegate;
+        private  readonly   MethodInfo                          setMethod;
+        private  readonly   Action<object, object>              setLambda;
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required)
@@ -48,6 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             //
             this.field      = field;
             this.property   = property;
+            customAttributes= field != null ? field.CustomAttributes : property.CustomAttributes;
             this.getMethod  = property != null ? property.GetGetMethod(true) : null;
             this.setMethod  = property != null ? property.GetSetMethod(true) : null;
             if (property != null) {
@@ -58,9 +61,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 var setLambdaExp    = DelegateUtils.CreateSetLambda<object,object>(property);
                 getLambda           = getLambdaExp.Compile();
                 setLambda           = setLambdaExp.Compile();
-                isKey = FieldQuery.IsKey(property.CustomAttributes);
+                isKey = FieldQuery.IsKey(customAttributes);
             } else {
-                isKey = FieldQuery.IsKey(field.CustomAttributes);
+                isKey = FieldQuery.IsKey(customAttributes);
             }
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
@@ -115,6 +118,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         public override string ToString() {
             return name;
+        }
+        
+        public Type GetRelationAttributeType() {
+            foreach (var attr in customAttributes) {
+                if (attr.AttributeType == typeof(Fri.RelationAttribute))
+                    return (Type)attr.ConstructorArguments[0].Value;
+            }
+            return null;
         }
     }
 }
