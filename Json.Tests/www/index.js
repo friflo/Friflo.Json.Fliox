@@ -545,8 +545,6 @@ class App {
                     var uri             = "http://" + database + path;
                     var containerName   = containerRefs[schemaId]
                     if (containerName) {
-                        definition.containerName    = containerName;
-                        definition.databaseName     = dbSchema.id;
                         dbSchema.containerSchemas[containerName] = definition;
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
@@ -977,14 +975,14 @@ class App {
         if (!databaseSchema)
             return;
         try {
-            const containerSchema = databaseSchema.containerSchemas[container];
-            this.decorateJson(this.entityEditor, value, containerSchema);
+            const containerSchema   = databaseSchema.containerSchemas[container];
+            this.decorateJson(this.entityEditor, value, containerSchema, database);
         } catch (error) {
             console.error("decorateJson", error);
         }
     }
 
-    decorateJson(editor, value, containerSchema) {
+    decorateJson(editor, value, containerSchema, database) {
         JSON.parse(value);  // early out on invalid JSON
         // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
         // 2.) bundle.js created fom npm module 'json-to-ast' via:
@@ -999,11 +997,11 @@ class App {
         const newDecorations = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
-        this.addRelationsFromAst(ast, containerSchema, (value, resolvedDef) => {
+        this.addRelationsFromAst(ast, containerSchema, (value, container) => {
             const start         = value.loc.start;
             const end           = value.loc.end;
             const range         = new monaco.Range(start.line, start.column, end.line, end.column);
-            const markdownText  = `${resolvedDef.databaseName}/${resolvedDef.containerName}  \nFollow: (ctrl + click)`;
+            const markdownText  = `${database}/${container}  \nFollow: (ctrl + click)`;
             const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
         });
@@ -1031,7 +1029,7 @@ class App {
                 case "Literal":
                     var rel = property.rel;
                     if (rel && value.value !== null) {
-                        addRelation (value, rel.resolvedDef);
+                        addRelation (value, rel);
                     }
                     break;
                 case "Array":
@@ -1043,7 +1041,7 @@ class App {
                     if (rel) {
                         for (const item of value.children) {
                             if (item.type == "Literal") {
-                                addRelation(item, rel.resolvedDef);
+                                addRelation(item, rel);
                             }
                         }
                     }
@@ -1231,19 +1229,20 @@ class App {
                 // console.log('mousedown - ', e);
                 const value             = this.entityEditor.getValue(); 
                 const ast               = parse(value, { loc: true });
-                const databaseSchema    = this.databaseSchemas[this.entityIdentity.database];
+                const database          = this.entityIdentity.database;
+                const databaseSchema    = this.databaseSchemas[database];
                 const containerSchema   = databaseSchema.containerSchemas[this.entityIdentity.container];
                 const column            = e.target.position.column;
                 const line              = e.target.position.lineNumber;
                 let entity;
-                this.addRelationsFromAst(ast, containerSchema, (value, resolvedDef) => {
+                this.addRelationsFromAst(ast, containerSchema, (value, container) => {
                     if (entity)
                         return;
                     const start = value.loc.start;
                     const end   = value.loc.end;
                     if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
                         // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                        entity = { database: resolvedDef.databaseName, container: resolvedDef.containerName, id: value.value };
+                        entity = { database: database, container: container, id: value.value };
                     }
                 });
                 if (entity) {
