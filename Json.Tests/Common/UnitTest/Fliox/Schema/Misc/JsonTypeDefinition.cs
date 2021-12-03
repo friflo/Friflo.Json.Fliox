@@ -196,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
         }
         
         public static Generator Generate(NativeTypeOptions options, string name) {
-            var schema      = new NativeTypeSchema(options.rootTypes, options.rootType);
+            var schema      = new NativeTypeSchema(options.types, options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".json", options.replacements, sepTypes, options.getPath);
             Generate(generator, name);

@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Schema
     public sealed partial class TypescriptGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootTypes, options.rootType);
+            var schema      = new NativeTypeSchema(options.types, options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".ts", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Schema
     public sealed partial class JsonSchemaGenerator
     {
         public static Generator Generate (NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootTypes, options.rootType);
+            var schema      = new NativeTypeSchema(options.types, options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".json", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Schema
     public sealed partial class CSharpGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootTypes, options.rootType);
+            var schema      = new NativeTypeSchema(options.types, options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".cs", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Schema
     public partial class KotlinGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootTypes, options.rootType);
+            var schema      = new NativeTypeSchema(options.types, options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".kt", options.replacements, sepTypes, options.getPath);
             Generate(generator);
