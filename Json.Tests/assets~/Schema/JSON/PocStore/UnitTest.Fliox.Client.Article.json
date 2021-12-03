@@ -8,7 +8,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "name":     { "type": "string" },
-                "producer": { "type": ["string", "null"], "rel": "producers" }
+                "producer": { "type": ["string", "null"], "relation": "producers" }
             },
             "required": [
                 "id",

@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///     <item><see cref="JsonType.isAbstract"/></item>
     ///     <item><see cref="JsonType.commands"/></item>
     ///     <item><see cref="FieldType.isKey"/></item>
+    ///     <item><see cref="FieldType.relation"/></item>
     /// </list>
     /// The restriction of <see cref="JsonSchema"/> are:
     /// <list type="bullet">
@@ -117,7 +118,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public  bool?           isKey;
         public  bool?           isAutoIncrement;
         
-        [Fri.Property(Name =    "rel")]
         public  string          relation;
         
         public override string  ToString() => name;

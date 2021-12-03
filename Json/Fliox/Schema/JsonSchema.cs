@@ -226,7 +226,7 @@ namespace Friflo.Json.Fliox.Schema
         private static string GetRelation(FieldDef field, TypeContext context) {
             if (field.relation == null)
                 return "";
-            return $", \"rel\": \"{field.relation }\"";
+            return $", \"relation\": \"{field.relation }\"";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

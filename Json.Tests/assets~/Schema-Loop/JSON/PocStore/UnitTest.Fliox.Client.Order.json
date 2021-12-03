@@ -7,7 +7,7 @@
             "type": "object",
             "properties": {
                 "id":       { "type": "string" },
-                "customer": { "type": ["string", "null"], "rel": "customers" },
+                "customer": { "type": ["string", "null"], "relation": "customers" },
                 "created":  { "$ref": "./Standard.json#/definitions/DateTime" },
                 "items":    { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/OrderItem" } }
             },

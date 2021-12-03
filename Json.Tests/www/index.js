@@ -1027,9 +1027,9 @@ class App {
 
                 switch (value.type) {
                 case "Literal":
-                    var rel = property.rel;
-                    if (rel && value.value !== null) {
-                        addRelation (value, rel);
+                    var relation = property.relation;
+                    if (relation && value.value !== null) {
+                        addRelation (value, relation);
                     }
                     break;
                 case "Array":
@@ -1037,11 +1037,11 @@ class App {
                     if (resolvedDef) {
                         this.addRelationsFromAst(value, resolvedDef, addRelation);
                     }
-                    var rel = property.rel;
-                    if (rel) {
+                    var relation = property.relation;
+                    if (relation) {
                         for (const item of value.children) {
                             if (item.type == "Literal") {
-                                addRelation(item, rel);
+                                addRelation(item, relation);
                             }
                         }
                     }
