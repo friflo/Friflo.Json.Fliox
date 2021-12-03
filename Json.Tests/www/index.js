@@ -1032,6 +1032,12 @@ class App {
                         addRelation (value, relation);
                     }
                     break;
+                case "Object":
+                    var resolvedDef = property.resolvedDef;
+                    if (resolvedDef) {
+                        this.addRelationsFromAst(value, resolvedDef, addRelation);
+                    }
+                    break;
                 case "Array":
                     var resolvedDef = property.items?.resolvedDef;
                     if (resolvedDef) {
