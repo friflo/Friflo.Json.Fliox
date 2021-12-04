@@ -19,11 +19,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class RestHandler : IRequestHandler
     {
-        private     const string    RestBase = "/rest";
-        private     readonly        FlioxHub    hub;
+        private     const       string      RestBase = "/rest";
+        private     readonly    FlioxHub    hub;
+        private     readonly    Pool        pool;
         
         public RestHandler (FlioxHub    hub) {
-            this.hub = hub;
+            this.hub    = hub;
+            pool        = hub.sharedEnv.Pool;
         }
             
         public async Task<bool> HandleRequest(RequestContext context) {
@@ -66,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var queryValue = queryParams["value"];
                     value = new JsonValue(queryValue);
                 }
-                if (!IsValidJson(hub.sharedEnv, value, out string error)) {
+                if (!IsValidJson(pool, value, out string error)) {
                     context.WriteError(GetErrorType(command), error, 400);
                     return true;
                 }
@@ -115,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return true;
                 }
                 var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                if (!IsValidJson(hub.sharedEnv, value, out string error)) {
+                if (!IsValidJson(pool, value, out string error)) {
                     context.WriteError("PUT error", error, 400);
                     return true;
                 }
@@ -136,11 +138,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
         
-        private static bool IsValidJson (SharedEnv sharedEnv, JsonValue value, out string error) {
+        private static bool IsValidJson (Pool pool, JsonValue value, out string error) {
             error = null;
             if (value.IsNull())
                 return true;
-            using (var pooled = sharedEnv.Pool.TypeValidator.Get()) {
+            using (var pooled = pool.TypeValidator.Get()) {
                 var validator = pooled.instance;
                 if (!validator.ValidateJson(value, out error)) {
                     return false;
@@ -176,7 +178,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             foreach (var pair in entityMap) {
                 entities.Add(pair.Value.Json);
             }
-            using (var pooled = hub.sharedEnv.Pool.ObjectMapper.Get()) {
+            using (var pooled = pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 var entityArray = writer.WriteAsArray(entities);
                 var response = new JsonValue(entityArray);
@@ -189,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var queryFilter = queryParams["query-filter"];
             if (queryFilter == null)
                 return Operation.FilterTrue;
-            using (var pooled = hub.sharedEnv.Pool.ObjectMapper.Get()) {
+            using (var pooled = pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
                 var filter = reader.Read<FilterOperation>(queryFilter);
                 if (!reader.Error.ErrSet)
@@ -254,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 database = null;
             var entityId = new JsonKey(id);
             keyName = keyName ?? "id";
-            using (var pooled = hub.sharedEnv.Pool.EntityProcessor.Get()) {
+            using (var pooled = pool.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 if (!processor.GetEntityKey(value, keyName, out JsonKey key, out string entityError)) {
                     context.WriteError("PUT error", entityError, 400);
@@ -332,8 +334,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 userId      = new JsonKey(userId),
                 token       = token
             };
-            var pool            = new Pool(hub.sharedEnv);
-            var messageContext  = new MessageContext(pool, null);
+            var localPool       = new Pool(hub.sharedEnv);
+            var messageContext  = new MessageContext(localPool, null);
             var result = await hub.ExecuteSync(synRequest, messageContext);
             
             var error = result.error;
