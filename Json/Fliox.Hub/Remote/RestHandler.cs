@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var reader = pooled.instance.reader;
                     filter = reader.Read<FilterOperation>(queryFilter);
                     if (reader.Error.ErrSet) {
-                        context.WriteError("query error", reader.Error.ToString(), 400);
+                        context.WriteError("query filter error", reader.Error.ToString(), 400);
                         return;
                     }
                 }
