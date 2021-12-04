@@ -1,0 +1,114 @@
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+using System.Text;
+
+namespace Friflo.Json.Fliox.Transform.Query.Parser
+{
+    // ------------------------------------ Token ------------------------------------
+    public readonly struct TokenList
+    {
+        public  readonly Token[] items;
+        
+        public TokenList (Token[] items) {
+            this.items = items;
+        }
+
+        public override string ToString() {
+            var sb = new StringBuilder();
+            foreach (var item in items) {
+                sb.Append(item.ToString());
+            }
+            return sb.ToString();
+        }
+    }
+    
+    public readonly struct Token {
+        public  readonly    TokenType   type;
+        public  readonly    string      str;
+        public  readonly    long        lng;
+        public  readonly    double      dbl;
+
+        internal Token (TokenType type, string str = null) {
+            this.type   = type;
+            this.str    = str;
+            this.lng    = 0;
+            this.dbl    = 0;
+        }
+        
+        internal Token (long lng) {
+            this.type   = TokenType.Long;
+            this.lng    = lng;
+            this.str    = null;
+            this.dbl    = 0;
+        }
+
+        internal Token (double dbl) {
+            this.type   = TokenType.Double;
+            this.dbl    = dbl;
+            this.lng    = 0;
+            this.str    = null;
+        }
+
+        public override string ToString() {
+            switch (type) {
+                case TokenType.Symbol:  return str;
+                case TokenType.Long:    return lng.ToString();
+                case TokenType.Double:  return dbl.ToString();
+                //
+                case TokenType.Add:             return "+";
+                case TokenType.Sub:             return "-";
+                case TokenType.Mul:             return "*";
+                case TokenType.Div:             return "/";
+                //
+                case TokenType.Greater:         return ">";
+                case TokenType.GreaterOrEqual:  return ">=";
+                case TokenType.Lower:           return "<";
+                case TokenType.LowerOrEqual:    return "<=";
+                case TokenType.Not:             return "!";
+                case TokenType.NotEquals:       return "!=";
+                //
+                case TokenType.Dot:             return ".";
+                case TokenType.BracketOpen:     return "(";
+                case TokenType.BracketClose:    return ")";
+                //
+                case TokenType.Equals:          return "==";
+                case TokenType.Arrow:           return "=>";
+                //
+                case TokenType.Error:           return "ERROR";
+                case TokenType.End:             return "END";
+                //
+                default:                        return "---";
+            }
+        }
+    }
+    
+    public enum TokenType
+    {
+        Symbol,
+        Long,
+        Double,
+        //
+        Add,            // +
+        Sub,            // -
+        Mul,            // *
+        Div,            // /
+        //
+        Greater,        // >
+        GreaterOrEqual, // >=
+        Lower,          // <
+        LowerOrEqual,   // <=
+        Not,            // !
+        NotEquals,      // !=
+        //
+        Dot,            // .
+        BracketOpen,    // (
+        BracketClose,   // )
+        //
+        Equals,         // ==
+        Arrow,          // =>
+        //
+        Error,
+        End,
+    }
+}
