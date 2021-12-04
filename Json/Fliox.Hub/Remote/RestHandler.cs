@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Web;
 using Friflo.Json.Fliox.Hub.Client;
@@ -42,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return false;
             }
             var method          = context.method;
-            var queryKeyValues  = HttpUtility.ParseQueryString(context.query);
-            var command         = queryKeyValues["command"];
-            var message         = queryKeyValues["message"];
+            var queryParams  = HttpUtility.ParseQueryString(context.query);
+            var command         = queryParams["command"];
+            var message         = queryParams["message"];
             var isGet           = method == "GET";
             var isPost          = method == "POST";
             var resourcePath    = path.Substring(RestBase.Length + 1);
@@ -62,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (isPost) {
                     value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 } else {
-                    var queryValue = queryKeyValues["value"];
+                    var queryValue = queryParams["value"];
                     value = new JsonValue(queryValue);
                 }
                 if (!IsValidJson(hub.sharedEnv, value, out string error)) {
@@ -91,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             // ------------------    GET            /database/container
             if (isGet && resource.Length == 2) {
-                await GetEntities(context, resource[0], resource[1]); 
+                await GetEntities(context, resource[0], resource[1], queryParams);
                 return true;
             }
             // ------------------    GET / DELETE   /database/container/id
@@ -118,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.WriteError("PUT error", error, 400);
                     return true;
                 }
-                var keyName = queryKeyValues["keyName"];
+                var keyName = queryParams["keyName"];
                 await UpsertEntity(context, resource[0], resource[1], resource[2], keyName, value);
                 return true;
             }
@@ -153,10 +154,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
-        private async Task GetEntities(RequestContext context, string database, string container) {
+        private async Task GetEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
             if (database == EntityDatabase.MainDB)
                 database = null;
-            var queryEntities   = new QueryEntities{ container = container, filter = Operation.FilterTrue };
+            // reserved query parameter "filter" for alternative short query expression
+            var queryFilter = queryParams["query-filter"];
+            FilterOperation filter = Operation.FilterTrue;
+            if (queryFilter != null) {
+                using (var pooled = hub.sharedEnv.Pool.ObjectMapper.Get()) {
+                    var reader = pooled.instance.reader;
+                    filter = reader.Read<FilterOperation>(queryFilter);
+                    if (reader.Error.ErrSet) {
+                        context.WriteError("query error", reader.Error.ToString(), 400);
+                        return;
+                    }
+                }
+            }
+            var queryEntities   = new QueryEntities{ container = container, filter = filter };
             var restResult      = await ExecuteTask(context, database, queryEntities);
             
             if (restResult.taskResult == null)
