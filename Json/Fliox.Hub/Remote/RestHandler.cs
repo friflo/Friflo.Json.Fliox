@@ -157,19 +157,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task GetEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
             if (database == EntityDatabase.MainDB)
                 database = null;
-            // reserved query parameter "filter" for alternative short query expression
-            var queryFilter = queryParams["query-filter"];
-            FilterOperation filter = Operation.FilterTrue;
-            if (queryFilter != null) {
-                using (var pooled = hub.sharedEnv.Pool.ObjectMapper.Get()) {
-                    var reader = pooled.instance.reader;
-                    filter = reader.Read<FilterOperation>(queryFilter);
-                    if (reader.Error.ErrSet) {
-                        context.WriteError("query filter error", reader.Error.ToString(), 400);
-                        return;
-                    }
-                }
-            }
+            var filter = CreateFilter(context, queryParams);
+            if (filter == null)
+                return;
             var queryEntities   = new QueryEntities{ container = container, filter = filter };
             var restResult      = await ExecuteTask(context, database, queryEntities);
             
@@ -191,6 +181,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var entityArray = writer.WriteAsArray(entities);
                 var response = new JsonValue(entityArray);
                 context.Write(response, 0, "application/json", 200);
+            }
+        }
+        
+        private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
+            // reserved query parameter "filter" for alternative short query expression
+            var queryFilter = queryParams["query-filter"];
+            if (queryFilter == null)
+                return Operation.FilterTrue;
+            using (var pooled = hub.sharedEnv.Pool.ObjectMapper.Get()) {
+                var reader = pooled.instance.reader;
+                var filter = reader.Read<FilterOperation>(queryFilter);
+                if (!reader.Error.ErrSet)
+                    return filter;
+                context.WriteError("query filter error", reader.Error.ToString(), 400);
+                return null;
             }
         }
         
