@@ -13,12 +13,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestLexer() {
             var lexer = new QueryLexer();
-            string error;
-            var result = lexer.Tokenize("1", out error);
-            AreEqual("1", result.ToString());
-            
-            result = lexer.Tokenize("+", out error);
-            AreEqual("+", result.ToString());
+            AssertToken(lexer, ".");
+            AssertToken(lexer, "(");
+            AssertToken(lexer, ")");
+            //
+            AssertToken(lexer,  "1");
+            AssertToken(lexer, "-1");
+            AssertToken(lexer, "+1", "1");
+            //
+            AssertToken(lexer, "+");
+            AssertToken(lexer, "-");
+            AssertToken(lexer, "*");
+            AssertToken(lexer, "/");
+            //
+            AssertToken(lexer, "<");
+            AssertToken(lexer, ">");
+            AssertToken(lexer, "<=");
+            AssertToken(lexer, ">=");
+            AssertToken(lexer, "!");
+            AssertToken(lexer, "!=");
+            //
+            AssertToken(lexer, "||");
+            AssertToken(lexer, "&&");
+            AssertToken(lexer, "==");
+            AssertToken(lexer, "=>");
+        }
+        
+        private static void AssertToken (QueryLexer lexer, string str, string expect = null) {
+            var result = lexer.Tokenize(str, out string _);
+            AreEqual(1,     result.items.Length);
+            expect = expect ?? str;
+            AreEqual(expect,   result.ToString());
         }
     }
 }

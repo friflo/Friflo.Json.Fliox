@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
@@ -54,7 +55,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             switch (type) {
                 case TokenType.Symbol:  return str;
                 case TokenType.Long:    return lng.ToString();
-                case TokenType.Double:  return dbl.ToString();
+                case TokenType.Double:  return dbl.ToString(CultureInfo.InvariantCulture);
                 //
                 case TokenType.Add:             return "+";
                 case TokenType.Sub:             return "-";
@@ -71,6 +72,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Dot:             return ".";
                 case TokenType.BracketOpen:     return "(";
                 case TokenType.BracketClose:    return ")";
+                //
+                case TokenType.Or:              return "||";
+                case TokenType.And:             return "&&";
                 //
                 case TokenType.Equals:          return "==";
                 case TokenType.Arrow:           return "=>";
@@ -104,6 +108,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Dot,            // .
         BracketOpen,    // (
         BracketClose,   // )
+        //
+        Or,             // ||
+        And,            // &&
         //
         Equals,         // ==
         Arrow,          // =>

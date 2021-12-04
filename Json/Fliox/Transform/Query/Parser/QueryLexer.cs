@@ -57,11 +57,29 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                             pos++; return new Token(TokenType.NotEquals);
                     }
                     return new Token(TokenType.Not);
-                case '=':
+                case '=':   pos++;
                     c = NextChar(operation, pos);
-                    if (c == '=')   return new Token(TokenType.Equals);
-                    if (c == '>')   return new Token(TokenType.Arrow);
+                    if (c == '=') {
+                            pos++; return new Token(TokenType.Equals);
+                    }
+                    if (c == '>') {
+                            pos++; return new Token(TokenType.Arrow);
+                    }
                     error = $"unexpected character: '${(char)c}'";
+                    return new Token(TokenType.Error);
+                case '|':   pos++;
+                    c = NextChar(operation, pos);
+                    if (c == '|') {
+                            pos++; return new Token(TokenType.Or);
+                    }
+                    error = $"expect character '|'. was: '${(char)c}'";
+                    return new Token(TokenType.Error);
+                case '&':   pos++;
+                    c = NextChar(operation, pos);
+                    if (c == '&') {
+                            pos++; return new Token(TokenType.And);
+                    }
+                    error = $"expect character '&'. was: '${(char)c}'";
                     return new Token(TokenType.Error);
                 case -1:
                     return new Token(TokenType.End);
