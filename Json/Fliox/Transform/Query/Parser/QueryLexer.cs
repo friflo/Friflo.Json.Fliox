@@ -81,6 +81,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     }
                     error = $"expect character '&'. was: '${(char)c}'";
                     return new Token(TokenType.Error);
+                case '"':   pos++;
+                    return GetString(operation, ref pos, out error);
                 case -1:
                     return new Token(TokenType.End);
                 default:
@@ -124,15 +126,35 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static Token GetNumber(bool negative, string operation, ref int pos, out string error) {
             error = null;
             int start = pos++;
-            int c;
-            do {
-                c = NextChar(operation, pos);
+            while (true) {
+                int c = NextChar(operation, pos);
+                if ('0' <= c && c <= '9') {
+                    pos++;
+                    continue;
+                }
+                var str = operation.Substring(start, pos - start);
+                long lng = long.Parse(str);
+                lng = negative ? -lng : lng;
+                return new Token(lng);
             }
-            while ('0' <= c && c <= '9');
-            var str = operation.Substring(start, pos - start);
-            long lng = long.Parse(str);
-            lng = negative ? -lng : lng;
-            return new Token(lng);
+        }
+        
+        private static Token GetString(string operation, ref int pos, out string error) {
+            int start = pos;
+            while (true) {
+                int c = NextChar(operation, pos);
+                if (c == -1) {
+                    error = "missing string terminator '\"'";
+                    return new Token(TokenType.Error);
+                }
+                if (c == '"') {
+                    error = null;
+                    var str = operation.Substring(start, pos - start);
+                    pos++;
+                    return new Token(TokenType.String, str);
+                }
+                pos++;
+            }
         }
     }
 }

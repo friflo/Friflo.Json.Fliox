@@ -18,6 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken(lexer, ")");
             //
             AssertToken(lexer,  "1");
+            AssertToken(lexer,  "123");
             AssertToken(lexer, "-1");
             AssertToken(lexer, "+1", 1, "1");
             //
@@ -39,6 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken(lexer, "=>");
             
             AssertToken(lexer, "abc");
+            AssertToken(lexer, "\"xyz\"");
 
             AssertToken(lexer, "a=>!!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
         }
