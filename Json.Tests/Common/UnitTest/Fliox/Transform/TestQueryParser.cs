@@ -40,9 +40,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken(lexer, "=>");
             
             AssertToken(lexer, "abc");
-            AssertToken(lexer, "\"xyz\"");
+            AssertToken(lexer, "'xyz'");
+            
+            AssertToken(lexer, "1+1",   3);
+            AssertToken(lexer, "a-1",   3);
+            AssertToken(lexer, "(1)-1", 5);
+            
+            AssertToken(lexer, "a.Contains('xyz')", 6);
 
-            AssertToken(lexer, "a=>!!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
+            AssertToken(lexer, "a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
         }
         
         private static void AssertToken (QueryLexer lexer, string str, int len = 1, string expect = null) {

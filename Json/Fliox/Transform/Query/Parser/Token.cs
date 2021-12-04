@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Symbol:  return str;
                 case TokenType.Long:    return lng.ToString();
                 case TokenType.Double:  return dbl.ToString(CultureInfo.InvariantCulture);
-                case TokenType.String:  return $"\"{str}\"";
+                case TokenType.String:  return $"'{str}'";
                 //
                 case TokenType.Add:             return "+";
                 case TokenType.Sub:             return "-";
@@ -90,6 +90,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     
     public enum TokenType
     {
+        Start,
+        //
         Symbol,
         Long,
         Double,

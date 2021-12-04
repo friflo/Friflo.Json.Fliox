@@ -10,29 +10,35 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private const int End = -1;
         
         public TokenList Tokenize(string operation, out string error) {
-            var     tokens  = new List<Token>();
-            int     pos     = 0;
+            var     tokens      = new List<Token>();
+            int     pos         = 0;
+            var     lastType    = TokenType.Start;
             while (true) {
-                var token = GetToken(operation, ref pos, out error);
+                var token = GetToken(lastType, operation, ref pos, out error);
                 if (token.type == TokenType.End)
                     return new TokenList(tokens.ToArray());
+                lastType = token.type;
                 tokens.Add(token);
             }
         }
         
-        private static Token GetToken(string operation, ref int pos, out string error) {
+        private static Token GetToken(TokenType lastType, string operation, ref int pos, out string error) {
             int c = NextChar(operation, pos);
             error = null;
             switch (c) {
                 case '+':   pos++;
-                    c = NextChar(operation, pos);
-                    if ('0' <= c && c <= '9')
-                        return GetNumber(false, operation, ref pos, out error);
+                    if (!IsOperand(lastType)) {
+                        c = NextChar(operation, pos);
+                        if ('0' <= c && c <= '9')
+                            return GetNumber(false, operation, ref pos, out error);
+                    }
                     return new Token(TokenType.Add);
                 case '-':   pos++;
-                    c = NextChar(operation, pos);
-                    if ('0' <= c && c <= '9')
-                        return GetNumber(true, operation, ref pos, out error);
+                    if (!IsOperand(lastType)) {
+                        c = NextChar(operation, pos);
+                        if ('0' <= c && c <= '9')
+                            return GetNumber(true, operation, ref pos, out error);
+                    }
                     return new Token(TokenType.Sub);
                 case '*':   pos++; return new Token(TokenType.Mul);
                 case '/':   pos++; return new Token(TokenType.Div);
@@ -81,7 +87,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     }
                     error = $"expect character '&'. was: '${(char)c}'";
                     return new Token(TokenType.Error);
-                case '"':   pos++;
+                case '\'':   pos++;
                     return GetString(operation, ref pos, out error);
                 case -1:
                     return new Token(TokenType.End);
@@ -95,6 +101,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return operation[pos];
             }
             return -1;
+        }
+        
+        private static bool IsOperand(TokenType type) {
+            return type == TokenType.Symbol || type == TokenType.Long || type == TokenType.Double || type == TokenType.BracketClose;
         }
 
         private static Token GetSymbol(int c, string operation, ref int pos, out string error) {
@@ -147,7 +157,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = "missing string terminator '\"'";
                     return new Token(TokenType.Error);
                 }
-                if (c == '"') {
+                if (c == '\'') {
                     error = null;
                     var str = operation.Substring(start, pos - start);
                     pos++;
