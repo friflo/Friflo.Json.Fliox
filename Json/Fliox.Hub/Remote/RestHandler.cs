@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return false;
             }
             var method          = context.method;
-            var queryParams  = HttpUtility.ParseQueryString(context.query);
+            var queryParams     = HttpUtility.ParseQueryString(context.query);
             var command         = queryParams["command"];
             var message         = queryParams["message"];
             var isGet           = method == "GET";
