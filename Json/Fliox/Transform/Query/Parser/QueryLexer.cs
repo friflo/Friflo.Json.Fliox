@@ -100,7 +100,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return GetNumber (false, operation, ref pos, out error);
             }
             if (IsChar(c)) {
-                
+                var start = pos;
+                while (true) {
+                    pos++;
+                    c = NextChar(operation, pos);
+                    if (IsChar(c))
+                        continue;
+                    var str = operation.Substring(start, pos - start);
+                    error = null;
+                    return new Token(TokenType.Symbol, str);
+                }
             }
             error = $"unexpected character: '${(char)c}'";
             return default;

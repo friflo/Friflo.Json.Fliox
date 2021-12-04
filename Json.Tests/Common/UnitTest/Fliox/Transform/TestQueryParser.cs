@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             //
             AssertToken(lexer,  "1");
             AssertToken(lexer, "-1");
-            AssertToken(lexer, "+1", "1");
+            AssertToken(lexer, "+1", 1, "1");
             //
             AssertToken(lexer, "+");
             AssertToken(lexer, "-");
@@ -37,11 +37,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken(lexer, "&&");
             AssertToken(lexer, "==");
             AssertToken(lexer, "=>");
+            
+            AssertToken(lexer, "abc");
+
+            AssertToken(lexer, "a=>!!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
         }
         
-        private static void AssertToken (QueryLexer lexer, string str, string expect = null) {
+        private static void AssertToken (QueryLexer lexer, string str, int len = 1, string expect = null) {
             var result = lexer.Tokenize(str, out string _);
-            AreEqual(1,     result.items.Length);
+            AreEqual(len,     result.items.Length);
             expect = expect ?? str;
             AreEqual(expect,   result.ToString());
         }
