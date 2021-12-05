@@ -135,11 +135,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("true || false || true", op.Linq);
                 That(op, Is.TypeOf<Or>());
                 AreEqual(3, ((Or)op).operands.Count);
-            } {
-                /* var op = parser.Parse("true||1<2||4>3", out error);
-                AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
-                That(op, Is.TypeOf<Or>());
-                AreEqual(3, ((Or)op).operands.Count); */
             }
         }
         
@@ -161,6 +156,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
                 That(op, Is.TypeOf<Or>());
                 AreEqual(3, ((Or)op).operands.Count); */
+            }
+        }
+        
+        // [Test]
+        public static void TestNested() {
+            var parser = new QueryParser();
+            string error;
+            {
+                var op = parser.Parse("true||1<2", out error);
+                AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
+                That(op, Is.TypeOf<Or>());
+                AreEqual(3, ((Or)op).operands.Count);
             }
         }
     }

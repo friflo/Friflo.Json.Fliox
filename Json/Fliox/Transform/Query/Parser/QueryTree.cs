@@ -3,11 +3,22 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
+    // example:  true || 1 < 2
+    //
+    //  1: true     2: ||       3: 1        4: <        5: 2                
+    //
+    //                  true       true        true        true
+    //                /           /           /           /
+    //  true        ||          ||          ||   1      ||  1 
+    //                            \           \ /        \ /
+    //                             1           <          <
+    //                                                     \
+    //                                                      2
     internal static class QueryTree
     {
         internal static Node CreateTree(Token[] tokens, out string error) {
-            int     pos = 0;
-            Node    root = new Node(default);
+            int     pos     = 0;
+            Node    root    = new Node(default);
             Node    node = root;
             error = null;
             while (pos < tokens.Length) {
