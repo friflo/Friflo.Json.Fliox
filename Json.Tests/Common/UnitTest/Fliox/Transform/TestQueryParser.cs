@@ -59,5 +59,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             expect = expect ?? str;
             AreEqual(expect,   result.ToString());
         }
+        
+        [Test]
+        public static void TestParser() {
+            var parser = new QueryParser();
+            string error;
+            {
+                var op = parser.Parse("1", out error);
+                AreEqual("1", op.Linq);
+            } {
+                var op = parser.Parse("1.2", out error);
+                AreEqual("1.2", op.Linq);
+            } {
+                var op = parser.Parse("'abc'", out error);
+                AreEqual("'abc'", op.Linq);
+            }
+        }
     }
 }
