@@ -64,6 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestParser() {
             var parser = new QueryParser();
             string error;
+            // --- literals
             {
                 var op = parser.Parse("1", out error);
                 AreEqual("1", op.Linq);
@@ -73,6 +74,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = parser.Parse("'abc'", out error);
                 AreEqual("'abc'", op.Linq);
+            }
+            // --- arithmetic operations
+            {
+                var op = parser.Parse("1+2", out error);
+                AreEqual("1 + 2", op.Linq);
+            } {
+                var op = parser.Parse("1-2", out error);
+                AreEqual("1 - 2", op.Linq);
+            } {
+                var op = parser.Parse("1*2", out error);
+                AreEqual("1 * 2", op.Linq);
+            } {
+                var op = parser.Parse("1/2", out error);
+                AreEqual("1 / 2", op.Linq);
+            }
+            // --- comparison operation
+            {
+                var op = parser.Parse("1<2", out error);
+                AreEqual("1 < 2", op.Linq);
+            } {
+                var op = parser.Parse("1<=2", out error);
+                AreEqual("1 <= 2", op.Linq);
+            } {
+                var op = parser.Parse("1>2", out error);
+                AreEqual("1 > 2", op.Linq);
+            } {
+                var op = parser.Parse("1>=2", out error);
+                AreEqual("1 >= 2", op.Linq);
+            } {
+                var op = parser.Parse("1==2", out error);
+                AreEqual("1 == 2", op.Linq);
+            } {
+                var op = parser.Parse("1!=2", out error);
+                AreEqual("1 != 2", op.Linq);
             }
         }
     }

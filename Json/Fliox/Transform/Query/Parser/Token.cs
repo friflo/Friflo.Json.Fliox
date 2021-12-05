@@ -65,8 +65,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 //
                 case TokenType.Greater:         return ">";
                 case TokenType.GreaterOrEqual:  return ">=";
-                case TokenType.Lower:           return "<";
-                case TokenType.LowerOrEqual:    return "<=";
+                case TokenType.Less:            return "<";
+                case TokenType.LessOrEqual:     return "<=";
                 case TokenType.Not:             return "!";
                 case TokenType.NotEquals:       return "!=";
                 //
@@ -104,8 +104,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         //
         Greater,        // >
         GreaterOrEqual, // >=
-        Lower,          // <
-        LowerOrEqual,   // <=
+        Less,           // <
+        LessOrEqual,    // <=
         Not,            // !
         NotEquals,      // !=
         //

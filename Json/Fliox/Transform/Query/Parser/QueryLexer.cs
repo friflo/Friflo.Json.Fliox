@@ -55,9 +55,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case '<':   pos++;
                     c = NextChar(operation, pos);
                     if (c == '=') {
-                            pos++; return new Token(TokenType.LowerOrEqual);
+                            pos++; return new Token(TokenType.LessOrEqual);
                     }
-                    return new Token(TokenType.Lower);
+                    return new Token(TokenType.Less);
                 case '!':   pos++;
                     c = NextChar(operation, pos);
                     if (c == '=') {
