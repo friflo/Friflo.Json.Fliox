@@ -21,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("-456");
             AssertToken("+1", 1, "1");
             AssertToken( "1.23");
+            AssertToken( "-4.56");
             //
             AssertToken("+");
             AssertToken("-");
