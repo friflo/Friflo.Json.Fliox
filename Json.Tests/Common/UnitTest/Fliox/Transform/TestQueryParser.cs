@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = parser.Parse("null", out error);
                 That(op, Is.TypeOf<NullLiteral>());
             }
-            /*
+            
             // --- arithmetic operations
             {
                 var op = parser.Parse("1+2", out error);
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = parser.Parse("1!=2", out error);
                 AreEqual("1 != 2", op.Linq);
-            } */
+            }
         }
         
         // [Test]

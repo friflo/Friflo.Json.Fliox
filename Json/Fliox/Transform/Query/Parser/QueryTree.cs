@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
@@ -6,15 +7,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         internal static Node CreateTree(Token[] tokens, out string error) {
             int     pos = 0;
-            Node    node = new Node(default);
+            Node    root = new Node(default);
+            Node    node = root;
             error = null;
             while (pos < tokens.Length) {
-                node  = GetNode(node, tokens, ref pos, out error);
+                GetNode(ref node, tokens, ref pos, out error);
             }
             return node;
         }
 
-        private static Node GetNode(in Node node, Token[] tokens, ref int pos, out string error) {
+        private static void GetNode(ref Node node, Token[] tokens, ref int pos, out string error) {
             var token = tokens[pos];
             switch (token.type) {
                 // --- binary tokens
@@ -29,20 +31,33 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.LessOrEqual:
                 case TokenType.Equals:
                 case TokenType.NotEquals:
-                    return GetRight(node, tokens, ref pos, out error);
+                    AddBinary(ref node, tokens, ref pos, out error);
+                    return;
             
                 // --- unary tokens
-                case TokenType.String:  pos++; error = null; return new Node(token);
-                case TokenType.Double:  pos++; error = null; return new Node(token);
-                case TokenType.Long:    pos++; error = null; return new Node(token);
+                case TokenType.String:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                case TokenType.Double:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                case TokenType.Long:    AddUnary(ref node, tokens, ref pos, out error);     return;
             
-                case TokenType.Symbol:  pos++; error = null; return new Node(token);
+                case TokenType.Symbol:  AddUnary(ref node, tokens, ref pos, out error);     return;
             }
             error = "ERROR";
-            return null;
         }
         
-        private static Node GetRight(in Node node, Token[] tokens, ref int pos, out string error) {
+        private static void AddUnary(ref Node node, Token[] tokens, ref int pos, out string error) {
+            //    return Error("missing left operand for +", out error);
+            var token = tokens[pos];
+            pos++;
+            error = null;
+            var newNode = new Node(token);
+            if (node.Count == 0) {
+                node = newNode;                
+            } else {
+                node.operands.Add(newNode);
+            }
+        }
+
+        private static void AddBinary(ref Node node, Token[] tokens, ref int pos, out string error) {
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
@@ -50,7 +65,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             var newNode = new Node(token);
             newNode.operands.Add(node);
-            return newNode;
+            node = newNode;
         }
 
         private static Node Error (string message, out string error) {
@@ -59,13 +74,24 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
+    // todo - check: change to struct
     internal class Node {
         internal            Token       operation;
         internal readonly   List<Node>  operands;
         
         internal            int         Count           => operands.Count;        
         internal            Node        this[int index] => operands[index];
-        public   override   string      ToString()      => operation.ToString();
+        public   override   string      ToString() {
+            var sb = new StringBuilder();
+            sb.Append(operation.ToString());
+            sb.Append(" (");
+            foreach (var operand in operands) {
+                sb.Append(' ');
+                sb.Append(operand.operation.ToString());
+            }
+            sb.Append(")");
+            return sb.ToString();
+        }
 
         internal Node (Token operation) {
             this.operation = operation;
