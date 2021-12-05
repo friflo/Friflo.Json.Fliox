@@ -122,8 +122,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        // [Test]
-        public static void TestLogicalOperations() {
+        [Test]
+        public static void TestOr() {
             var parser = new QueryParser();
             string error;
             // --- literals
@@ -131,8 +131,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = parser.Parse("true||false", out error);
                 AreEqual("true || false", op.Linq);
             } {
-                var op = parser.Parse("true||1<2||4>3", out error);
+                var op = parser.Parse("true||false||true", out error);
+                AreEqual("true || false || true", op.Linq);
+                That(op, Is.TypeOf<Or>());
+                AreEqual(3, ((Or)op).operands.Count);
+            } {
+                /* var op = parser.Parse("true||1<2||4>3", out error);
                 AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
+                That(op, Is.TypeOf<Or>());
+                AreEqual(3, ((Or)op).operands.Count); */
+            }
+        }
+        
+        [Test]
+        public static void TestAnd() {
+            var parser = new QueryParser();
+            string error;
+            // --- literals
+            {
+                var op = parser.Parse("true&&false", out error);
+                AreEqual("true && false", op.Linq);
+            } {
+                var op = parser.Parse("true&&false&&true", out error);
+                AreEqual("true && false && true", op.Linq);
+                That(op, Is.TypeOf<And>());
+                AreEqual(3, ((And)op).operands.Count);
+            } {
+                /* var op = parser.Parse("true&&1<2&&4>3", out error);
+                AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
+                That(op, Is.TypeOf<Or>());
+                AreEqual(3, ((Or)op).operands.Count); */
             }
         }
     }

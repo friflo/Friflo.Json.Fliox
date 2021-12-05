@@ -19,6 +19,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void GetNode(ref Node node, Token[] tokens, ref int pos, out string error) {
             var token = tokens[pos];
             switch (token.type) {
+                // --- unary tokens
+                case TokenType.String:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                case TokenType.Double:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                case TokenType.Long:    AddUnary(ref node, tokens, ref pos, out error);     return;
+                case TokenType.Symbol:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                
                 // --- binary tokens
                 case TokenType.Add:
                 case TokenType.Sub:
@@ -33,13 +39,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.NotEquals:
                     AddBinary(ref node, tokens, ref pos, out error);
                     return;
-            
-                // --- unary tokens
-                case TokenType.String:  AddUnary(ref node, tokens, ref pos, out error);     return;
-                case TokenType.Double:  AddUnary(ref node, tokens, ref pos, out error);     return;
-                case TokenType.Long:    AddUnary(ref node, tokens, ref pos, out error);     return;
-            
-                case TokenType.Symbol:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                
+                // --- arity tokens
+                case TokenType.Or:
+                case TokenType.And:
+                    if (node.operation.type == token.type) {
+                        pos++;
+                        error = null;
+                        return;
+                    }
+                    AddArity(ref node, tokens, ref pos, out error);
+                    return;
             }
             error = "ERROR";
         }
@@ -67,10 +77,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             newNode.operands.Add(node);
             node = newNode;
         }
-
-        private static Node Error (string message, out string error) {
-            error = message;
-            return default;
+        
+        private static void AddArity(ref Node node, Token[] tokens, ref int pos, out string error) {
+            // if (node.Count == 0)
+            //    return Error("missing left operand for +", out error);
+            var token = tokens[pos];
+            pos++;
+            error = null;
+            var newNode = new Node(token);
+            newNode.operands.Add(node);
+            node = newNode;
         }
     }
     

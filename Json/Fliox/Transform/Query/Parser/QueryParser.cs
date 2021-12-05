@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
 // ReSharper disable SuggestBaseTypeForParameter
@@ -17,7 +18,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Operation GetOperation(Node node, out string error) {
             error = null;
-            BinsaryOperands bin;
+            BinaryOperands bin;
             
             switch (node.operation.type)
             {
@@ -34,6 +35,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             case TokenType.Equals:          bin = Bin(node, out error); return new Equal                (bin.left, bin.right);
             case TokenType.NotEquals:       bin = Bin(node, out error); return new NotEqual             (bin.left, bin.right);
             
+            // --- arity tokens
+            case TokenType.Or:
+                var filterOperands  = FilterOperands(node, out error); 
+                return new Or (filterOperands);
+            case TokenType.And:
+                filterOperands      = FilterOperands(node, out error); 
+                return new And (filterOperands);
+
             // --- unary tokens
             case TokenType.String:          return new StringLiteral(node.operation.str);
             case TokenType.Double:          return new DoubleLiteral(node.operation.dbl);
@@ -59,16 +68,32 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static BinsaryOperands Bin(in Node node, out string error) {
+        private static BinaryOperands Bin(in Node node, out string error) {
             if (node.Count != 2) {
                 error = "expect two operands";
-                return new BinsaryOperands();
+                return new BinaryOperands();
             }
             error       = null;
             var left    = GetOperation(node[0], out error);
             var right   = GetOperation(node[1], out error);
-            return new BinsaryOperands { left = left, right = right };
+            return new BinaryOperands { left = left, right = right };
         }
+        
+        private static List<FilterOperation> FilterOperands(in Node node, out string error) {
+            var operands = new List<FilterOperation> (node.Count);
+            for (int n = 0; n < node.operands.Count; n++) {
+                var operand = GetOperation(node[n], out error);
+                if (operand is FilterOperation filterOperand) {
+                    operands.Add(filterOperand);
+                } else {
+                    error = "invalid filter operand";
+                    return null;
+                }
+            }
+            error = null;
+            return operands;
+        }
+        
         
         /* private Operation Error (string message, out string error) {
             error = message;
@@ -76,7 +101,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         } */
     }
     
-    internal struct BinsaryOperands {
+    internal struct BinaryOperands {
         internal Operation left;
         internal Operation right;
     }
