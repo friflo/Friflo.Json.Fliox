@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -74,6 +75,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = parser.Parse("'abc'", out error);
                 AreEqual("'abc'", op.Linq);
+            } {
+                var op = parser.Parse("true", out error);
+                That(op, Is.TypeOf<TrueLiteral>());
+            } {
+                var op = parser.Parse("false", out error);
+                That(op, Is.TypeOf<FalseLiteral>());
+            } {
+                var op = parser.Parse("null", out error);
+                That(op, Is.TypeOf<NullLiteral>());
             }
             // --- arithmetic operations
             {

@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             
             switch (token.type)
             {
-            // --- binary operations
+            // --- binary tokens
             case TokenType.Add:             right = GetRight(tokens, ref pos, op, out error); return new Add        (op, right);
             case TokenType.Sub:             right = GetRight(tokens, ref pos, op, out error); return new Subtract   (op, right);
             case TokenType.Mul:             right = GetRight(tokens, ref pos, op, out error); return new Multiply   (op, right);
@@ -39,10 +39,26 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             case TokenType.Equals:          right = GetRight(tokens, ref pos, op, out error); return new Equal              (op, right);
             case TokenType.NotEquals:       right = GetRight(tokens, ref pos, op, out error); return new NotEqual           (op, right);
             
-            // --- unary operations
+            // --- unary tokens
             case TokenType.String:  pos++; return new StringLiteral(token.str);
             case TokenType.Double:  pos++; return new DoubleLiteral(token.dbl);
             case TokenType.Long:    pos++; return new LongLiteral(token.lng);
+            
+            case TokenType.Symbol:
+                pos++;
+                if (token.str == "true")    return new TrueLiteral();
+                if (token.str == "false")   return new FalseLiteral();
+                if (token.str == "null")    return new NullLiteral();
+                error = $"unexpected symbol: {token.str}";
+                return null;
+            
+            // --- group tokens
+            /*case TokenType.BracketOpen:
+                pos++;
+                if (op is Field) {}
+                var first = GetOperation(tokens, ref pos, null, out error);
+                
+                break; */
             default:
                 error = "unexpected token";
                 return null;
