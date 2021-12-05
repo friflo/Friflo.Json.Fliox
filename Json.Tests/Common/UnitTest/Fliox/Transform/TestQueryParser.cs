@@ -85,6 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = parser.Parse("null", out error);
                 That(op, Is.TypeOf<NullLiteral>());
             }
+            /*
             // --- arithmetic operations
             {
                 var op = parser.Parse("1+2", out error);
@@ -118,6 +119,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = parser.Parse("1!=2", out error);
                 AreEqual("1 != 2", op.Linq);
+            } */
+        }
+        
+        // [Test]
+        public static void TestLogicalOperations() {
+            var parser = new QueryParser();
+            string error;
+            // --- literals
+            {
+                var op = parser.Parse("true||false", out error);
+                AreEqual("true || false", op.Linq);
+            } {
+                var op = parser.Parse("true||1<2||4>3", out error);
+                AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
             }
         }
     }

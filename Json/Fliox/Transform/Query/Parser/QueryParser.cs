@@ -9,47 +9,41 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     public sealed class QueryParser
     {
         public Operation Parse (string operation, out string error) {
-            var result      = QueryLexer.Tokenize (operation, out error);
-            var tokens      = result.items;
-            var pos         = 0;
-            Operation op    = null;
-            while (pos < tokens.Length) {
-                op      = GetOperation (tokens, ref pos, op, out error);
-            }
+            var result  = QueryLexer.Tokenize (operation,   out error);
+            var node    = QueryTree.CreateTree(result.items,out error);
+            var op      = GetOperation (node,               out error);
             return op;
         }
         
-        private Operation GetOperation(Token[] tokens, ref int pos, Operation op, out string error) {
-            var token = tokens[pos];
-            Operation right;
+        private static Operation GetOperation(Node node, out string error) {
             error = null;
+            BinsaryOperands bin;
             
-            switch (token.type)
+            switch (node.operation.type)
             {
             // --- binary tokens
-            case TokenType.Add:             right = GetRight(tokens, ref pos, op, out error); return new Add        (op, right);
-            case TokenType.Sub:             right = GetRight(tokens, ref pos, op, out error); return new Subtract   (op, right);
-            case TokenType.Mul:             right = GetRight(tokens, ref pos, op, out error); return new Multiply   (op, right);
-            case TokenType.Div:             right = GetRight(tokens, ref pos, op, out error); return new Divide     (op, right);
+            case TokenType.Add:             bin = Bin(node, out error); return new Add                  (bin.left, bin.right);
+            case TokenType.Sub:             bin = Bin(node, out error); return new Subtract             (bin.left, bin.right);
+            case TokenType.Mul:             bin = Bin(node, out error); return new Multiply             (bin.left, bin.right);
+            case TokenType.Div:             bin = Bin(node, out error); return new Divide               (bin.left, bin.right);
             //
-            case TokenType.Greater:         right = GetRight(tokens, ref pos, op, out error); return new GreaterThan        (op, right);
-            case TokenType.GreaterOrEqual:  right = GetRight(tokens, ref pos, op, out error); return new GreaterThanOrEqual (op, right);
-            case TokenType.Less:            right = GetRight(tokens, ref pos, op, out error); return new LessThan           (op, right);
-            case TokenType.LessOrEqual:     right = GetRight(tokens, ref pos, op, out error); return new LessThanOrEqual    (op, right);
-            case TokenType.Equals:          right = GetRight(tokens, ref pos, op, out error); return new Equal              (op, right);
-            case TokenType.NotEquals:       right = GetRight(tokens, ref pos, op, out error); return new NotEqual           (op, right);
+            case TokenType.Greater:         bin = Bin(node, out error); return new GreaterThan          (bin.left, bin.right);
+            case TokenType.GreaterOrEqual:  bin = Bin(node, out error); return new GreaterThanOrEqual   (bin.left, bin.right);
+            case TokenType.Less:            bin = Bin(node, out error); return new LessThan             (bin.left, bin.right);
+            case TokenType.LessOrEqual:     bin = Bin(node, out error); return new LessThanOrEqual      (bin.left, bin.right);
+            case TokenType.Equals:          bin = Bin(node, out error); return new Equal                (bin.left, bin.right);
+            case TokenType.NotEquals:       bin = Bin(node, out error); return new NotEqual             (bin.left, bin.right);
             
             // --- unary tokens
-            case TokenType.String:  pos++; return new StringLiteral(token.str);
-            case TokenType.Double:  pos++; return new DoubleLiteral(token.dbl);
-            case TokenType.Long:    pos++; return new LongLiteral(token.lng);
+            case TokenType.String:          return new StringLiteral(node.operation.str);
+            case TokenType.Double:          return new DoubleLiteral(node.operation.dbl);
+            case TokenType.Long:            return new LongLiteral  (node.operation.lng);
             
             case TokenType.Symbol:
-                pos++;
-                if (token.str == "true")    return new TrueLiteral();
-                if (token.str == "false")   return new FalseLiteral();
-                if (token.str == "null")    return new NullLiteral();
-                error = $"unexpected symbol: {token.str}";
+                if (node.operation.str == "true")    return new TrueLiteral();
+                if (node.operation.str == "false")   return new FalseLiteral();
+                if (node.operation.str == "null")    return new NullLiteral();
+                error = $"unexpected symbol: {node.operation.str}";
                 return null;
             
             // --- group tokens
@@ -65,15 +59,26 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private Operation GetRight(Token[] tokens, ref int pos, Operation left, out string error) {
-            if (left == null) return Error("missing left operand for +", out error);
-            pos++;
-            return GetOperation(tokens, ref pos, null, out error);
+        private static BinsaryOperands Bin(in Node node, out string error) {
+            if (node.Count != 2) {
+                error = "expect two operands";
+                return new BinsaryOperands();
+            }
+            error       = null;
+            var left    = GetOperation(node[0], out error);
+            var right   = GetOperation(node[1], out error);
+            return new BinsaryOperands { left = left, right = right };
         }
-
-        private Operation Error (string message, out string error) {
+        
+        /* private Operation Error (string message, out string error) {
             error = message;
             return null;
-        }
+        } */
     }
+    
+    internal struct BinsaryOperands {
+        internal Operation left;
+        internal Operation right;
+    }
+
 }

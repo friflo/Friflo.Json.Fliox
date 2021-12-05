@@ -86,6 +86,43 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 default:                        return "---";
             }
         }
+        
+        // [C# - Operators Precedence] https://www.tutorialspoint.com/csharp/csharp_operators_precedence.htm
+        internal int Precedence(TokenType type) {
+            switch (type) {
+                case TokenType.Symbol:          return -1;
+                case TokenType.Long:            return -1;
+                case TokenType.Double:          return -1;
+                case TokenType.String:          return -1;
+                case TokenType.Not:             return -1;
+                //
+                case TokenType.Mul:             return  2;
+                case TokenType.Div:             return  2;
+                case TokenType.Add:             return  1;
+                case TokenType.Sub:             return  1;
+                //
+                case TokenType.Greater:         return  2;
+                case TokenType.GreaterOrEqual:  return  2;
+                case TokenType.Less:            return  2;
+                case TokenType.LessOrEqual:     return  2;
+                case TokenType.NotEquals:       return  1;
+                case TokenType.Equals:          return  1;
+                //
+                case TokenType.BracketOpen:     return  3;
+                case TokenType.BracketClose:    return -1;
+                case TokenType.Dot:             return -1;
+                //
+                case TokenType.And:             return  2;
+                case TokenType.Or:              return  1;
+                //
+                case TokenType.Arrow:           return -1;
+                //
+                case TokenType.Error:           return -1;
+                case TokenType.End:             return -1;
+                //
+                default:                        return 0;
+            }
+        }
     }
     
     public enum TokenType
