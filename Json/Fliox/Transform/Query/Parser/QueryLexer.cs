@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
@@ -89,7 +90,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new Token(TokenType.Error);
                 case '\'':   pos++;
                     return GetString(operation, ref pos, out error);
-                case -1:
+                case End:
                     return new Token(TokenType.End);
                 default:
                     return GetSymbol(c, operation, ref pos, out error);
@@ -100,7 +101,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (pos < operation.Length) {
                 return operation[pos];
             }
-            return -1;
+            return End;
         }
         
         private static bool IsOperand(TokenType type) {
@@ -134,26 +135,42 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static Token GetNumber(bool negative, string operation, ref int pos, out string error) {
-            error = null;
-            int start = pos++;
+            int     start = pos++;
+            bool    isFloat = false;
             while (true) {
                 int c = NextChar(operation, pos);
                 if ('0' <= c && c <= '9') {
                     pos++;
                     continue;
                 }
-                var str = operation.Substring(start, pos - start);
-                long lng = long.Parse(str);
-                lng = negative ? -lng : lng;
-                return new Token(lng);
+                if ('.' == c) {
+                    if (isFloat) {
+                        error = "invalid floating point number";
+                        return new Token(TokenType.Error);
+                    }
+                    pos++;
+                    isFloat = true;
+                    continue;
+                }
+                break;
             }
+            error = null;
+            var str = operation.Substring(start, pos - start);
+            if (isFloat) {
+                double dbl = double.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+                dbl = negative ? -dbl : dbl;
+                return new Token(dbl);
+            }
+            long lng = long.Parse(str);
+            lng = negative ? -lng : lng;
+            return new Token(lng);
         }
         
         private static Token GetString(string operation, ref int pos, out string error) {
             int start = pos;
             while (true) {
                 int c = NextChar(operation, pos);
-                if (c == -1) {
+                if (c == End) {
                     error = "missing string terminator '\"'";
                     return new Token(TokenType.Error);
                 }
