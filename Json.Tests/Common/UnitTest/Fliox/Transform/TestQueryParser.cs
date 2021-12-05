@@ -12,48 +12,48 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     {
         [Test]
         public static void TestLexer() {
-            var lexer = new QueryLexer();
-            AssertToken(lexer, ".");
-            AssertToken(lexer, "(");
-            AssertToken(lexer, ")");
+            AssertToken(".");
+            AssertToken("(");
+            AssertToken(")");
             //
-            AssertToken(lexer,  "1");
-            AssertToken(lexer,  "123");
-            AssertToken(lexer, "-456");
-            AssertToken(lexer, "+1", 1, "1");
-            AssertToken(lexer,  "1.23");
+            AssertToken( "1");
+            AssertToken( "123");
+            AssertToken("-456");
+            AssertToken("+1", 1, "1");
+            AssertToken( "1.23");
             //
-            AssertToken(lexer, "+");
-            AssertToken(lexer, "-");
-            AssertToken(lexer, "*");
-            AssertToken(lexer, "/");
+            AssertToken("+");
+            AssertToken("-");
+            AssertToken("*");
+            AssertToken("/");
             //
-            AssertToken(lexer, "<");
-            AssertToken(lexer, ">");
-            AssertToken(lexer, "<=");
-            AssertToken(lexer, ">=");
-            AssertToken(lexer, "!");
-            AssertToken(lexer, "!=");
+            AssertToken("<");
+            AssertToken(">");
+            AssertToken("<=");
+            AssertToken(">=");
+            AssertToken("!");
+            AssertToken("!=");
             //
-            AssertToken(lexer, "||");
-            AssertToken(lexer, "&&");
-            AssertToken(lexer, "==");
-            AssertToken(lexer, "=>");
+            AssertToken("||");
+            AssertToken("&&");
+            AssertToken("==");
+            AssertToken("=>");
             
-            AssertToken(lexer, "abc");
-            AssertToken(lexer, "'xyz'");
+            AssertToken("abc");
+            AssertToken("'xyz'");
+            AssertToken("'☀🌎♥👋'");
             
-            AssertToken(lexer, "1+1",   3);
-            AssertToken(lexer, "a-1",   3);
-            AssertToken(lexer, "(1)-1", 5);
+            AssertToken("1+1",   3);
+            AssertToken("a-1",   3);
+            AssertToken("(1)-1", 5);
             
-            AssertToken(lexer, "a.Contains('xyz')", 6);
+            AssertToken("a.Contains('xyz')", 6);
 
-            AssertToken(lexer, "a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
+            AssertToken("a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
         }
         
-        private static void AssertToken (QueryLexer lexer, string str, int len = 1, string expect = null) {
-            var result = lexer.Tokenize(str, out string _);
+        private static void AssertToken (string str, int len = 1, string expect = null) {
+            var result = QueryLexer.Tokenize(str, out string _);
             AreEqual(len,     result.items.Length);
             expect = expect ?? str;
             AreEqual(expect,   result.ToString());

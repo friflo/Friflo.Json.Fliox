@@ -5,10 +5,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public sealed class QueryParser
     {
-        private readonly QueryLexer lexer = new QueryLexer();
-        
         public Operation Parse (string operation) {
-            lexer.Tokenize (operation, out string error);
+            QueryLexer.Tokenize (operation, out string error);
             return null;
         }
     }

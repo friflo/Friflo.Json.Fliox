@@ -6,11 +6,11 @@ using System.Globalization;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    public sealed class QueryLexer
+    public static class QueryLexer
     {
         private const int End = -1;
         
-        public TokenList Tokenize(string operation, out string error) {
+        public static TokenList Tokenize(string operation, out string error) {
             var     tokens      = new List<Token>();
             int     pos         = 0;
             var     lastType    = TokenType.Start;
