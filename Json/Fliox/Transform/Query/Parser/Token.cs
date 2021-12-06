@@ -5,6 +5,8 @@ using System;
 using System.Globalization;
 using System.Text;
 
+using static Friflo.Json.Fliox.Transform.Query.Parser.Arity;
+
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     // ------------------------------------ Token ------------------------------------
@@ -98,36 +100,36 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         // [C# - Operators Precedence] https://www.tutorialspoint.com/csharp/csharp_operators_precedence.htm
         private static TokenShape[] CreateTokenShapes() {
             var tempShapes = new [] {
-                //             name,             operands, precedence
-                new TokenShape(TokenType.Mul,           2, 2),
-                new TokenShape(TokenType.Div,           2, 2),
-                new TokenShape(TokenType.Add,           2, 3),
-                new TokenShape(TokenType.Sub,           2, 3),
+                //             name,                    arity,  precedence
+                new TokenShape(TokenType.Mul,           Binary, 2),
+                new TokenShape(TokenType.Div,           Binary, 2),
+                new TokenShape(TokenType.Add,           Binary, 3),
+                new TokenShape(TokenType.Sub,           Binary, 3),
                 //
-                new TokenShape(TokenType.Greater,       2, 4),
-                new TokenShape(TokenType.GreaterOrEqual,2, 4),
-                new TokenShape(TokenType.Less,          2, 4),
-                new TokenShape(TokenType.LessOrEqual,   2, 4),
-                new TokenShape(TokenType.NotEquals,     2, 5),
-                new TokenShape(TokenType.Equals,        2, 5),
+                new TokenShape(TokenType.Greater,       Binary, 4),
+                new TokenShape(TokenType.GreaterOrEqual,Binary, 4),
+                new TokenShape(TokenType.Less,          Binary, 4),
+                new TokenShape(TokenType.LessOrEqual,   Binary, 4),
+                new TokenShape(TokenType.NotEquals,     Binary, 5),
+                new TokenShape(TokenType.Equals,        Binary, 5),
                 //
-                new TokenShape(TokenType.And,          -1, 6),
-                new TokenShape(TokenType.Or,           -1, 7),
+                new TokenShape(TokenType.And,           NAry,  6),
+                new TokenShape(TokenType.Or,            NAry,  7),
                 //
-                new TokenShape(TokenType.Symbol,        1, 1),
-                new TokenShape(TokenType.Long,          1, 1),
-                new TokenShape(TokenType.Double,        1, 1),
-                new TokenShape(TokenType.String,        1, 1),
+                new TokenShape(TokenType.Symbol,        Unary,  1),
+                new TokenShape(TokenType.Long,          Unary,  1),
+                new TokenShape(TokenType.Double,        Unary,  1),
+                new TokenShape(TokenType.String,        Unary,  1),
                 //
-                new TokenShape(TokenType.BracketOpen,   1, 1),
-                new TokenShape(TokenType.BracketClose,  1, 1),
-                new TokenShape(TokenType.Not,           1, 1),
-                new TokenShape(TokenType.Dot,           1, 1),
+                new TokenShape(TokenType.BracketOpen,   Unary,  1),
+                new TokenShape(TokenType.BracketClose,  Unary,  1),
+                new TokenShape(TokenType.Not,           Unary,  1),
+                new TokenShape(TokenType.Dot,           Unary,  1),
                 //
-                new TokenShape(TokenType.Arrow,         2, 1),
-                new TokenShape(TokenType.Error,         0,-1),
-                new TokenShape(TokenType.End,           0,-1),
-                new TokenShape(TokenType.Start,         0,-1),
+                new TokenShape(TokenType.Arrow,         Binary, 1),
+                new TokenShape(TokenType.Error,         Undef, -1),
+                new TokenShape(TokenType.End,           Undef, -1),
+                new TokenShape(TokenType.Start,         Undef, -1),
             };
             var count = Enum.GetNames(typeof(TokenType)).Length;
             if (count != tempShapes.Length)
@@ -151,16 +153,23 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     
     internal readonly struct TokenShape {
         internal readonly   TokenType   type;
-        internal readonly   int         operands;
+        internal readonly   Arity       arity;
         internal readonly   int         precedence;
 
-        public override string ToString() => $"{type,-14} operands: {operands}, precedence: {precedence}";
+        public override string ToString() => $"{type,-14} arity: {arity}, precedence: {precedence}";
 
-        internal TokenShape (TokenType type, int operands, int precedence) {
+        internal TokenShape (TokenType type, Arity arity, int precedence) {
             this.type       = type;
-            this.operands   = operands;
+            this.arity      = arity;
             this.precedence = precedence;
         }
+    }
+    
+    internal enum Arity {
+        Undef,
+        Unary,
+        Binary,
+        NAry
     }
     
     public enum TokenType

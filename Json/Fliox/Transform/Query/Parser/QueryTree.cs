@@ -14,6 +14,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     //                            b         +   b       +   b       
     //                                                   \
     //                                                    c
+    // For understanding:
+    // operator with lowest precedence (+) is root.
+    // Sounds irritating on first look but make sense in design of expression trees.
+    //
     internal static class QueryTree
     {
         internal static QueryNode CreateTree(Token[] tokens, out string error) {
@@ -29,42 +33,26 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         private static void GetNode(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
             var token = tokens[pos];
-            switch (token.type) {
-                // --- unary tokens
-                case TokenType.String:  
-                case TokenType.Double:
-                case TokenType.Long:
-                case TokenType.Symbol:
-                    AddUnary(ref node, tokens, ref pos, out error);
+            var shape = Token.Shape(token.type);
+            switch (shape.arity) {
+                case Arity.Unary:
+                    AddUnary (ref node, tokens, ref pos, out error);
                     return;
-                
-                // --- binary tokens
-                case TokenType.Add:
-                case TokenType.Sub:
-                case TokenType.Mul:
-                case TokenType.Div:       
-                //
-                case TokenType.Greater:         
-                case TokenType.GreaterOrEqual:
-                case TokenType.Less:  
-                case TokenType.LessOrEqual:
-                case TokenType.Equals:
-                case TokenType.NotEquals:
+                case Arity.Binary:
                     AddBinary(ref node, tokens, ref pos, out error);
                     return;
-                
-                // --- arity tokens
-                case TokenType.Or:
-                case TokenType.And:
+                case Arity.NAry:
                     if (node.operation.type == token.type) {
                         pos++;
                         error = null;
                         return;
                     }
-                    AddArity(ref node, tokens, ref pos, out error);
+                    AddArity (ref node, tokens, ref pos, out error);
+                    return;
+                default:
+                    error = $"Invalid arity for token: {token}";
                     return;
             }
-            error = "ERROR";
         }
         
         private static void AddUnary(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
