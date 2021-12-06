@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return op;
         }
         
-        private static Operation GetOperation(Node node, out string error) {
+        private static Operation GetOperation(QueryNode node, out string error) {
             error = null;
             BinaryOperands bin;
             
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static BinaryOperands Bin(in Node node, out string error) {
+        private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.Count != 2) {
                 error = "expect two operands";
                 return new BinaryOperands();
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new BinaryOperands { left = left, right = right };
         }
         
-        private static List<FilterOperation> FilterOperands(in Node node, out string error) {
+        private static List<FilterOperation> FilterOperands(in QueryNode node, out string error) {
             var operands = new List<FilterOperation> (node.Count);
             for (int n = 0; n < node.operands.Count; n++) {
                 var operand = GetOperation(node[n], out error);

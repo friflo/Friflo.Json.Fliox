@@ -16,10 +16,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     //                                                    c
     internal static class QueryTree
     {
-        internal static Node CreateTree(Token[] tokens, out string error) {
-            int     pos     = 0;
-            Node    root    = new Node(default);
-            Node    node = root;
+        internal static QueryNode CreateTree(Token[] tokens, out string error) {
+            int         pos     = 0;
+            QueryNode   root    = new QueryNode(default);
+            QueryNode   node = root;
             error = null;
             while (pos < tokens.Length) {
                 GetNode(ref node, tokens, ref pos, out error);
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return node;
         }
 
-        private static void GetNode(ref Node node, Token[] tokens, ref int pos, out string error) {
+        private static void GetNode(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
             var token = tokens[pos];
             switch (token.type) {
                 // --- unary tokens
@@ -67,12 +67,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = "ERROR";
         }
         
-        private static void AddUnary(ref Node node, Token[] tokens, ref int pos, out string error) {
+        private static void AddUnary(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
             pos++;
             error = null;
-            var newNode = new Node(token);
+            var newNode = new QueryNode(token);
             if (node.Count == 0) {
                 node = newNode;                
             } else {
@@ -80,37 +80,38 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
 
-        private static void AddBinary(ref Node node, Token[] tokens, ref int pos, out string error) {
+        private static void AddBinary(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
             pos++;
             error = null;
-            var newNode = new Node(token);
+            var newNode = new QueryNode(token);
             newNode.operands.Add(node);
             node = newNode;
         }
         
-        private static void AddArity(ref Node node, Token[] tokens, ref int pos, out string error) {
+        private static void AddArity(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
             pos++;
             error = null;
-            var newNode = new Node(token);
+            var newNode = new QueryNode(token);
             newNode.operands.Add(node);
             node = newNode;
         }
     }
     
     // todo - check: change to struct
-    internal class Node {
-        internal            Token       operation;
-        internal readonly   List<Node>  operands;
+    internal class QueryNode {
+        internal            Token           operation;
+        internal readonly   List<QueryNode> operands;
         
-        internal            int         Count           => operands.Count;        
-        internal            Node        this[int index] => operands[index];
-        public   override   string      ToString() {
+        internal            int             Count           => operands.Count;        
+        internal            QueryNode       this[int index] => operands[index];
+        
+        public   override   string          ToString() {
             var sb = new StringBuilder();
             sb.Append(operation.ToString());
             sb.Append(" (");
@@ -124,9 +125,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return sb.ToString();
         }
 
-        internal Node (Token operation) {
+        internal QueryNode (Token operation) {
             this.operation = operation;
-            operands = new List<Node>();
+            operands = new List<QueryNode>();
         }
     } 
 }
