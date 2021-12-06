@@ -31,8 +31,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             while (pos < tokens.Length) {
                 GetNode(stack, tokens, ref pos, out error);
             }
-            if (stack.Count != 1)
+            if (stack.Count == 0)
                 throw new InvalidOperationException("invalid stack count");
+            while (stack.Count > 1)
+                stack.Pop();
             var result = stack.Peek();
             return result;
         }
@@ -71,17 +73,35 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void AddBinary(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
-            var node = stack.Pop();
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
             pos++;
             error = null;
             var newNode = new QueryNode(token);
+            AddNode(stack, newNode);
+        }
+
+        private static void AddNode(Stack<QueryNode> stack, QueryNode newNode) {
+            var node = stack.Peek();
+            var token = newNode.operation;
+            var current  = Token.Shape(token.type);
+            if (current.arity != Arity.Unary) {
+                var previous = Token.Shape(node.operation.type);
+                if (previous.arity != Arity.Unary) {
+                    if (current.precedence < previous.precedence) {
+                        newNode.operands.Add(node.operands[1]);
+                        node.operands[1] = newNode;
+                        stack.Push(newNode);
+                        return;
+                    }
+                }
+            }
+            stack.Pop();
             newNode.operands.Add(node);
             stack.Push(newNode);
         }
-        
+
         private static void AddNAry(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
             var node = stack.Peek();
             // if (node.Count == 0)

@@ -154,11 +154,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = QueryParser.Parse("a*b+c", out _);
                 AreEqual("a * b + c", op.Linq);
                 That(op, Is.TypeOf<Add>());
-            } /* {
+            } {
                 var op = QueryParser.Parse("a+b*c", out _);
                 AreEqual("a + b * c", op.Linq);
                 That(op, Is.TypeOf<Add>());
-            } */
+            }
         }
     }
 }
