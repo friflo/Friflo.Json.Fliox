@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             sb.Append(operation.ToString());
             if (arity == Arity.Unary)
                 return;
-            sb.Append("{");
+            sb.Append(" {");
             if (operands.Count > 0) {
                 operands[0].AppendLabel(sb);
             }

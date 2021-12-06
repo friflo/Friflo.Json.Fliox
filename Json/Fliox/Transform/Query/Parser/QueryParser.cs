@@ -16,6 +16,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return op;
         }
         
+        public static Operation OperationFromNode (QueryNode node, out string error) {
+            var op      = GetOperation (node, out error);
+            return op;
+        }
+        
         private static Operation GetOperation(QueryNode node, out string error) {
             error = null;
             BinaryOperands bin;

@@ -151,17 +151,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestNested() {
             {
-                var op = QueryTree.CreateTree("a*b+c", out _);
-                AreEqual("+{*{a, b}, c}", op.ToString());
+                var node    = QueryTree.CreateTree("a*b+c", out _);
+                AreEqual("+ {* {a, b}, c}", node.ToString());
+                var op      = QueryParser.OperationFromNode(node, out _);
+                AreEqual("a * b + c", op.ToString());
             } {
-                var op = QueryTree.CreateTree("a+b*c", out _);
-                AreEqual("+{a, *{b, c}}", op.ToString());
+                var node    = QueryTree.CreateTree("a+b*c", out _);
+                AreEqual("+ {a, * {b, c}}", node.ToString());
+                var op  = QueryParser.OperationFromNode(node, out _);
+                AreEqual("a + b * c", op.ToString());
             } {
-                var op = QueryTree.CreateTree("true&&false&&1<2", out _);
-                AreEqual("&&{true, false, <{1, 2}}", op.ToString());
+                var node    = QueryTree.CreateTree("true&&false&&1<2", out _);
+                AreEqual("&& {true, false, < {1, 2}}", node.ToString());
+                var op      = QueryParser.OperationFromNode(node, out _);
+                AreEqual("true && false && 1 < 2", op.ToString());
             } {
-                var op = QueryTree.CreateTree("true||1+2*3<10", out _);
-                AreEqual("||{true, <{+{1, *{2, 3}}, 10}}", op.ToString());
+                var node    = QueryTree.CreateTree("true||1+2*3<10", out _);
+                AreEqual("|| {true, < {+ {1, * {2, 3}}, 10}}", node.ToString());
+                var op      = QueryParser.OperationFromNode(node, out _);
+                AreEqual("true || 1 + 2 * 3 < 10", op.ToString());
             }
         }
     }
