@@ -154,16 +154,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        // [Test]
+        [Test]
         public static void TestNested() {
             var parser = new QueryParser();
             string error;
             {
                 var op = parser.Parse("a*b+c", out error);
-                AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
+                AreEqual("a * b + c", op.Linq);
                 That(op, Is.TypeOf<Add>());
-                AreEqual(3, ((Or)op).operands.Count);
-            }
+            } /* {
+                var op = parser.Parse("a+b*c", out error);
+                AreEqual("a + b * c", op.Linq);
+                That(op, Is.TypeOf<Add>());
+            } */
         }
     }
 }

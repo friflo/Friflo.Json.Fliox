@@ -49,11 +49,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             case TokenType.Long:            return new LongLiteral  (node.operation.lng);
             
             case TokenType.Symbol:
-                if (node.operation.str == "true")    return new TrueLiteral();
-                if (node.operation.str == "false")   return new FalseLiteral();
-                if (node.operation.str == "null")    return new NullLiteral();
-                error = $"unexpected symbol: {node.operation.str}";
-                return null;
+                var symbol = node.operation.str; 
+                if (symbol == "true")    return new TrueLiteral();
+                if (symbol == "false")   return new FalseLiteral();
+                if (symbol == "null")    return new NullLiteral();
+                return new Field(symbol);
             
             // --- group tokens
             /*case TokenType.BracketOpen:
