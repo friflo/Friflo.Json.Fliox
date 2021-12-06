@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Globalization;
 using System.Text;
 
@@ -87,41 +88,66 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
+        private  static readonly    TokenShape[]    TokenShapes = CreateTokenShapes();
+        internal static             TokenShape      Shape(TokenType type) => TokenShapes[(int)type];
+        
         // [C# - Operators Precedence] https://www.tutorialspoint.com/csharp/csharp_operators_precedence.htm
-        internal int Precedence(TokenType type) {
-            switch (type) {
-                case TokenType.Symbol:          return -1;
-                case TokenType.Long:            return -1;
-                case TokenType.Double:          return -1;
-                case TokenType.String:          return -1;
-                case TokenType.Not:             return -1;
+        private static TokenShape[] CreateTokenShapes() {
+            var tempShapes = new [] {
+                //             name,             operands, precedence
+                new TokenShape(TokenType.Mul,           2, 2),
+                new TokenShape(TokenType.Div,           2, 2),
+                new TokenShape(TokenType.Add,           2, 3),
+                new TokenShape(TokenType.Sub,           2, 3),
                 //
-                case TokenType.Mul:             return  2;
-                case TokenType.Div:             return  2;
-                case TokenType.Add:             return  1;
-                case TokenType.Sub:             return  1;
+                new TokenShape(TokenType.Greater,       2, 4),
+                new TokenShape(TokenType.GreaterOrEqual,2, 4),
+                new TokenShape(TokenType.Less,          2, 4),
+                new TokenShape(TokenType.LessOrEqual,   2, 4),
+                new TokenShape(TokenType.NotEquals,     2, 5),
+                new TokenShape(TokenType.Equals,        2, 5),
                 //
-                case TokenType.Greater:         return  2;
-                case TokenType.GreaterOrEqual:  return  2;
-                case TokenType.Less:            return  2;
-                case TokenType.LessOrEqual:     return  2;
-                case TokenType.NotEquals:       return  1;
-                case TokenType.Equals:          return  1;
+                new TokenShape(TokenType.And,          -1, 6),
+                new TokenShape(TokenType.Or,           -1, 7),
                 //
-                case TokenType.BracketOpen:     return  3;
-                case TokenType.BracketClose:    return -1;
-                case TokenType.Dot:             return -1;
+                new TokenShape(TokenType.Symbol,        1, 1),
+                new TokenShape(TokenType.Long,          1, 1),
+                new TokenShape(TokenType.Double,        1, 1),
+                new TokenShape(TokenType.String,        1, 1),
                 //
-                case TokenType.And:             return  2;
-                case TokenType.Or:              return  1;
+                new TokenShape(TokenType.BracketOpen,   1, 1),
+                new TokenShape(TokenType.BracketClose,  1, 1),
+                new TokenShape(TokenType.Not,           1, 1),
+                new TokenShape(TokenType.Dot,           1, 1),
                 //
-                case TokenType.Arrow:           return -1;
-                //
-                case TokenType.Error:           return -1;
-                case TokenType.End:             return -1;
-                //
-                default:                        return 0;
+                new TokenShape(TokenType.Arrow,         1, 1),
+                new TokenShape(TokenType.Error,         1, 1),
+                new TokenShape(TokenType.End,           1, 1),
+            };
+            var count = Enum.GetNames(typeof(TokenType)).Length;
+            if (count != tempShapes.Length)
+                throw new InvalidOperationException("Invalid token shape length");
+            var shapes = new TokenShape[count];
+            for (int n = 0; n < count; n++) {
+                var shape = tempShapes[n];
+                var index = (int)shape.type; 
+                shapes[index] = shape;
             }
+            return shapes;
+        }
+    }
+    
+    internal readonly struct TokenShape {
+        internal readonly   TokenType   type;
+        internal readonly   int         operands;
+        internal readonly   int         precedence;
+
+        public override string ToString() => $"{type} - operands: {operands}, precedence: {precedence}";
+
+        internal TokenShape (TokenType type, int operands, int precedence) {
+            this.type       = type;
+            this.operands   = operands;
+            this.precedence = precedence;
         }
     }
     

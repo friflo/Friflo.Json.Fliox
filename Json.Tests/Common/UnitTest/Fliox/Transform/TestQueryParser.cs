@@ -151,11 +151,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("true && false && true", op.Linq);
                 That(op, Is.TypeOf<And>());
                 AreEqual(3, ((And)op).operands.Count);
-            } {
-                /* var op = parser.Parse("true&&1<2&&4>3", out error);
-                AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
-                That(op, Is.TypeOf<Or>());
-                AreEqual(3, ((Or)op).operands.Count); */
             }
         }
         
@@ -164,9 +159,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var parser = new QueryParser();
             string error;
             {
-                var op = parser.Parse("true||1<2", out error);
+                var op = parser.Parse("a*b+c", out error);
                 AreEqual("true || 1 < 2 || 4 > 3", op.Linq);
-                That(op, Is.TypeOf<Or>());
+                That(op, Is.TypeOf<Add>());
                 AreEqual(3, ((Or)op).operands.Count);
             }
         }
