@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         error = null;
                         return;
                     }
-                    AddArity (ref node, tokens, ref pos, out error);
+                    AddNAry (ref node, tokens, ref pos, out error);
                     return;
                 default:
                     error = $"Invalid arity for token: {token}";
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             node = newNode;
         }
         
-        private static void AddArity(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static void AddNAry(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
@@ -101,16 +101,24 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         public   override   string          ToString() {
             var sb = new StringBuilder();
+            AppendLabel(sb);
+            return sb.ToString();
+        }
+        
+        private void AppendLabel (StringBuilder sb) {
             sb.Append(operation.ToString());
-            sb.Append(" (");
-            if (operands.Count > 0)
-                sb.Append(operands[0].operation.ToString());
+            var shape = Token.Shape(operation.type);
+            if (shape.arity == Arity.Unary)
+                return;
+            sb.Append("(");
+            if (operands.Count > 0) {
+                operands[0].AppendLabel(sb);
+            }
             for (int n = 1; n < operands.Count; n++) {
                 sb.Append(", ");
-                sb.Append(operands[n].operation.ToString());
+                operands[n].AppendLabel(sb);
             }
             sb.Append(")");
-            return sb.ToString();
         }
 
         internal QueryNode (Token operation) {
