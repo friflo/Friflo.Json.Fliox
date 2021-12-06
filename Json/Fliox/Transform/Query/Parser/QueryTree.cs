@@ -24,10 +24,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     internal static class QueryTree
     {
         internal static QueryNode CreateTree(Token[] tokens, out string error) {
-            int         pos     = 0;
-            QueryNode   node    = null;
-            error   = null;
-            var stack = new Stack<QueryNode>();
+            error       = null;
+            int pos     = 0;
+            var stack   = new Stack<QueryNode>();
             while (pos < tokens.Length) {
                 GetNode(stack, tokens, ref pos, out error);
             }
