@@ -75,18 +75,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
-            error = null;
-            var newNode = new QueryNode(token);
-            
-            var node    = stack.Peek();
-            var last    = node.operands.Count - 1;
+            error           = null;
+            var newNode     = new QueryNode(token);
+            var node        = stack.Peek();
             var precedence  = newNode.precedence;
             if (newNode.arity != Arity.Unary && node.arity != Arity.Unary) {
                 while (true) {
                     if (precedence < node.precedence) {
                         // replace last operand of stack.Head
-                        newNode.operands.Add(node.operands[last]);
-                        node.operands[last] = newNode;
+                        var nodeOperands    = node.operands; 
+                        var last            = nodeOperands.Count - 1;
+                        newNode.operands.Add(nodeOperands[last]);
+                        nodeOperands[last] = newNode;
                         stack.Push(newNode);
                         return;
                     }
