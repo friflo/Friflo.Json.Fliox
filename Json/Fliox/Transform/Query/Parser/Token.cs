@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal readonly   int         operands;
         internal readonly   int         precedence;
 
-        public override string ToString() => $"{type} - operands: {operands}, precedence: {precedence}";
+        public override string ToString() => $"{type,-14} operands: {operands}, precedence: {precedence}";
 
         internal TokenShape (TokenType type, int operands, int precedence) {
             this.type       = type;
