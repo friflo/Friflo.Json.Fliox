@@ -88,8 +88,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private  static readonly    TokenShape[]    TokenShapes = CreateTokenShapes();
+        private  static readonly    TokenShape[]    TokenShapes;
         internal static             TokenShape      Shape(TokenType type) => TokenShapes[(int)type];
+        
+        static Token() {
+            TokenShapes = CreateTokenShapes();
+        }
         
         // [C# - Operators Precedence] https://www.tutorialspoint.com/csharp/csharp_operators_precedence.htm
         private static TokenShape[] CreateTokenShapes() {
@@ -120,9 +124,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 new TokenShape(TokenType.Not,           1, 1),
                 new TokenShape(TokenType.Dot,           1, 1),
                 //
-                new TokenShape(TokenType.Arrow,         1, 1),
-                new TokenShape(TokenType.Error,         1, 1),
-                new TokenShape(TokenType.End,           1, 1),
+                new TokenShape(TokenType.Arrow,         2, 1),
+                new TokenShape(TokenType.Error,         0,-1),
+                new TokenShape(TokenType.End,           0,-1),
+                new TokenShape(TokenType.Start,         0,-1),
             };
             var count = Enum.GetNames(typeof(TokenType)).Length;
             if (count != tempShapes.Length)
@@ -131,6 +136,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             for (int n = 0; n < count; n++) {
                 var shape = tempShapes[n];
                 var index = (int)shape.type; 
+                shapes[index] = shape;
+            }
+            for (int n = 0; n < count; n++) {
+                var shape = shapes[n];
+                var index = (int)shape.type;
+                if (index != n)
+                    throw new InvalidOperationException($"Invalid shape[{n}]. Was {shape.type}");
                 shapes[index] = shape;
             }
             return shapes;

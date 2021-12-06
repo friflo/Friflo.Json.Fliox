@@ -31,10 +31,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var token = tokens[pos];
             switch (token.type) {
                 // --- unary tokens
-                case TokenType.String:  AddUnary(ref node, tokens, ref pos, out error);     return;
-                case TokenType.Double:  AddUnary(ref node, tokens, ref pos, out error);     return;
-                case TokenType.Long:    AddUnary(ref node, tokens, ref pos, out error);     return;
-                case TokenType.Symbol:  AddUnary(ref node, tokens, ref pos, out error);     return;
+                case TokenType.String:  
+                case TokenType.Double:
+                case TokenType.Long:
+                case TokenType.Symbol:
+                    AddUnary(ref node, tokens, ref pos, out error);
+                    return;
                 
                 // --- binary tokens
                 case TokenType.Add:
