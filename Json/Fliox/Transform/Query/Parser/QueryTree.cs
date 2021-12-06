@@ -114,9 +114,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var sb = new StringBuilder();
             sb.Append(operation.ToString());
             sb.Append(" (");
-            foreach (var operand in operands) {
-                sb.Append(' ');
-                sb.Append(operand.operation.ToString());
+            if (operands.Count > 0)
+                sb.Append(operands[0].operation.ToString());
+            for (int n = 1; n < operands.Count; n++) {
+                sb.Append(", ");
+                sb.Append(operands[n].operation.ToString());
             }
             sb.Append(")");
             return sb.ToString();
