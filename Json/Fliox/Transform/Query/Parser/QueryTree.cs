@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var node    = stack.Peek();
             var last    = node.operands.Count - 1;
             var precedence  = newNode.precedence;
-            if (newNode.arity != Arity.Unary) {
-                if (node.arity != Arity.Unary) {
+            if (newNode.arity != Arity.Unary && node.arity != Arity.Unary) {
+                while (true) {
                     if (precedence < node.precedence) {
                         // replace last operand of stack.Head
                         newNode.operands.Add(node.operands[last]);
@@ -90,9 +90,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         stack.Push(newNode);
                         return;
                     }
+                    stack.Pop();
+                    if (stack.Count == 0)
+                        break;
+                    node = stack.Peek();
                 }
-            }
-            stack.Pop();
+            } else {
+                stack.Pop();    
+            }            
             newNode.operands.Add(node);
             stack.Push(newNode);
         }
