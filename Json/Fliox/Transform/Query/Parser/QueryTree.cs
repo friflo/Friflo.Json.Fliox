@@ -1,5 +1,5 @@
-using System.Collections.Generic;
-using System.Text;
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
@@ -42,11 +42,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     AddBinary(ref node, tokens, ref pos, out error);
                     return;
                 case Arity.NAry:
-                    if (node.operation.type == token.type) {
-                        pos++;
-                        error = null;
-                        return;
-                    }
                     AddNAry (ref node, tokens, ref pos, out error);
                     return;
                 default:
@@ -83,6 +78,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
+            if (node.operation.type == token.type) {
+                // || &&  are allowed having multiple operators 
+                pos++;
+                error = null;
+                return;
+            }
             pos++;
             error = null;
             var newNode = new QueryNode(token);
@@ -90,40 +91,4 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             node = newNode;
         }
     }
-    
-    // todo - check: change to struct
-    internal class QueryNode {
-        internal            Token           operation;
-        internal readonly   List<QueryNode> operands;
-        
-        internal            int             Count           => operands.Count;        
-        internal            QueryNode       this[int index] => operands[index];
-        
-        public   override   string          ToString() {
-            var sb = new StringBuilder();
-            AppendLabel(sb);
-            return sb.ToString();
-        }
-        
-        private void AppendLabel (StringBuilder sb) {
-            sb.Append(operation.ToString());
-            var shape = Token.Shape(operation.type);
-            if (shape.arity == Arity.Unary)
-                return;
-            sb.Append("(");
-            if (operands.Count > 0) {
-                operands[0].AppendLabel(sb);
-            }
-            for (int n = 1; n < operands.Count; n++) {
-                sb.Append(", ");
-                operands[n].AppendLabel(sb);
-            }
-            sb.Append(")");
-        }
-
-        internal QueryNode (Token operation) {
-            this.operation = operation;
-            operands = new List<QueryNode>();
-        }
-    } 
 }
