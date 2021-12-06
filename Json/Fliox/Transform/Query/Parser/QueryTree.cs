@@ -89,8 +89,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 var previous = Token.Shape(node.operation.type);
                 if (previous.arity != Arity.Unary) {
                     if (current.precedence < previous.precedence) {
-                        newNode.operands.Add(node.operands[1]);
-                        node.operands[1] = newNode;
+                        // replace last operand of stack.Head
+                        var last = node.operands.Count - 1;
+                        newNode.operands.Add(node.operands[last]);
+                        node.operands[last] = newNode;
                         stack.Push(newNode);
                         return;
                     }

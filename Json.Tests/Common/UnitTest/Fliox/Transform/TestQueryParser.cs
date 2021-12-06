@@ -158,7 +158,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = QueryParser.Parse("a+b*c", out _);
                 AreEqual("a + b * c", op.Linq);
                 That(op, Is.TypeOf<Add>());
-            }
+            } {
+                var op = QueryParser.Parse("true&&false&&1<2", out _);
+                AreEqual("true && false && 1 < 2", op.Linq);
+                That(op, Is.TypeOf<And>());
+                AreEqual(3, ((And)op).operands.Count);
+            } /* {
+                var op = QueryParser.Parse("true||1+2*3<10", out _);
+                AreEqual("true && false && 1 < 2", op.Linq);
+                That(op, Is.TypeOf<And>());
+                AreEqual(3, ((And)op).operands.Count);
+            } */
         }
     }
 }
