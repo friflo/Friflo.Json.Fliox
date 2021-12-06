@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    internal class QueryNode {
+    public class QueryNode {
         internal            Token           operation;
         internal readonly   List<QueryNode> operands;
         internal readonly   Arity           arity;

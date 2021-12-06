@@ -151,23 +151,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestNested() {
             {
-                var op = QueryParser.Parse("a*b+c", out _);
-                AreEqual("a * b + c", op.Linq);
-                That(op, Is.TypeOf<Add>());
+                var op = QueryTree.CreateTree("a*b+c", out _);
+                AreEqual("+(*(a, b), c)", op.ToString());
             } {
-                var op = QueryParser.Parse("a+b*c", out _);
-                AreEqual("a + b * c", op.Linq);
-                That(op, Is.TypeOf<Add>());
+                var op = QueryTree.CreateTree("a+b*c", out _);
+                AreEqual("+(a, *(b, c))", op.ToString());
             } {
-                var op = QueryParser.Parse("true&&false&&1<2", out _);
-                AreEqual("true && false && 1 < 2", op.Linq);
-                That(op, Is.TypeOf<And>());
-                AreEqual(3, ((And)op).operands.Count);
+                var op = QueryTree.CreateTree("true&&false&&1<2", out _);
+                AreEqual("&&(true, false, <(1, 2))", op.ToString());
             } /* {
-                var op = QueryParser.Parse("true||1+2*3<10", out _);
-                AreEqual("true && false && 1 < 2", op.Linq);
-                That(op, Is.TypeOf<And>());
-                AreEqual(3, ((And)op).operands.Count);
+                var op = QueryTree.CreateTree("true||1+2*3<10", out _);
+                AreEqual("||(true, <(+(1, *(2, 3)), 10)", op.ToString());
             } */
         }
     }

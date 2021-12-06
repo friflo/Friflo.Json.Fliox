@@ -21,8 +21,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     // operator with lowest precedence (+) is root.
     // Sounds irritating on first look but make sense in design of expression trees.
     //
-    internal static class QueryTree
+    public static class QueryTree
     {
+        public static QueryNode CreateTree (string operation, out string error) {
+            var result  = QueryLexer.Tokenize (operation,   out error);
+            var node    = CreateTree(result.items,out error);
+            return node;
+        }
+
         internal static QueryNode CreateTree(Token[] tokens, out string error) {
             error       = null;
             int pos     = 0;
