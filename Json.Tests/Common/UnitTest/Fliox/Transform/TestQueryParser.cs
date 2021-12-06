@@ -63,75 +63,71 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestParser() {
-            var parser = new QueryParser();
-            string error;
             // --- literals
             {
-                var op = parser.Parse("1", out error);
+                var op = QueryParser.Parse("1", out _);
                 AreEqual("1", op.Linq);
             } {
-                var op = parser.Parse("1.2", out error);
+                var op = QueryParser.Parse("1.2", out _);
                 AreEqual("1.2", op.Linq);
             } {
-                var op = parser.Parse("'abc'", out error);
+                var op = QueryParser.Parse("'abc'", out _);
                 AreEqual("'abc'", op.Linq);
             } {
-                var op = parser.Parse("true", out error);
+                var op = QueryParser.Parse("true", out _);
                 That(op, Is.TypeOf<TrueLiteral>());
             } {
-                var op = parser.Parse("false", out error);
+                var op = QueryParser.Parse("false", out _);
                 That(op, Is.TypeOf<FalseLiteral>());
             } {
-                var op = parser.Parse("null", out error);
+                var op = QueryParser.Parse("null", out _);
                 That(op, Is.TypeOf<NullLiteral>());
             }
             
             // --- arithmetic operations
             {
-                var op = parser.Parse("1+2", out error);
+                var op = QueryParser.Parse("1+2", out _);
                 AreEqual("1 + 2", op.Linq);
             } {
-                var op = parser.Parse("1-2", out error);
+                var op = QueryParser.Parse("1-2", out _);
                 AreEqual("1 - 2", op.Linq);
             } {
-                var op = parser.Parse("1*2", out error);
+                var op = QueryParser.Parse("1*2", out _);
                 AreEqual("1 * 2", op.Linq);
             } {
-                var op = parser.Parse("1/2", out error);
+                var op = QueryParser.Parse("1/2", out _);
                 AreEqual("1 / 2", op.Linq);
             }
             // --- comparison operation
             {
-                var op = parser.Parse("1<2", out error);
+                var op = QueryParser.Parse("1<2", out _);
                 AreEqual("1 < 2", op.Linq);
             } {
-                var op = parser.Parse("1<=2", out error);
+                var op = QueryParser.Parse("1<=2", out _);
                 AreEqual("1 <= 2", op.Linq);
             } {
-                var op = parser.Parse("1>2", out error);
+                var op = QueryParser.Parse("1>2", out _);
                 AreEqual("1 > 2", op.Linq);
             } {
-                var op = parser.Parse("1>=2", out error);
+                var op = QueryParser.Parse("1>=2", out _);
                 AreEqual("1 >= 2", op.Linq);
             } {
-                var op = parser.Parse("1==2", out error);
+                var op = QueryParser.Parse("1==2", out _);
                 AreEqual("1 == 2", op.Linq);
             } {
-                var op = parser.Parse("1!=2", out error);
+                var op = QueryParser.Parse("1!=2", out _);
                 AreEqual("1 != 2", op.Linq);
             }
         }
         
         [Test]
         public static void TestOr() {
-            var parser = new QueryParser();
-            string error;
             // --- literals
             {
-                var op = parser.Parse("true||false", out error);
+                var op = QueryParser.Parse("true||false", out _);
                 AreEqual("true || false", op.Linq);
             } {
-                var op = parser.Parse("true||false||true", out error);
+                var op = QueryParser.Parse("true||false||true", out _);
                 AreEqual("true || false || true", op.Linq);
                 That(op, Is.TypeOf<Or>());
                 AreEqual(3, ((Or)op).operands.Count);
@@ -140,14 +136,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestAnd() {
-            var parser = new QueryParser();
-            string error;
             // --- literals
             {
-                var op = parser.Parse("true&&false", out error);
+                var op = QueryParser.Parse("true&&false", out _);
                 AreEqual("true && false", op.Linq);
             } {
-                var op = parser.Parse("true&&false&&true", out error);
+                var op = QueryParser.Parse("true&&false&&true", out _);
                 AreEqual("true && false && true", op.Linq);
                 That(op, Is.TypeOf<And>());
                 AreEqual(3, ((And)op).operands.Count);
@@ -156,14 +150,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestNested() {
-            var parser = new QueryParser();
-            string error;
             {
-                var op = parser.Parse("a*b+c", out error);
+                var op = QueryParser.Parse("a*b+c", out _);
                 AreEqual("a * b + c", op.Linq);
                 That(op, Is.TypeOf<Add>());
             } /* {
-                var op = parser.Parse("a+b*c", out error);
+                var op = QueryParser.Parse("a+b*c", out _);
                 AreEqual("a + b * c", op.Linq);
                 That(op, Is.TypeOf<Add>());
             } */

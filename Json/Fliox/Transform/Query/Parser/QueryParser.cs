@@ -7,9 +7,9 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    public sealed class QueryParser
+    public static class QueryParser
     {
-        public Operation Parse (string operation, out string error) {
+        public static Operation Parse (string operation, out string error) {
             var result  = QueryLexer.Tokenize (operation,   out error);
             var node    = QueryTree.CreateTree(result.items,out error);
             var op      = GetOperation (node,               out error);
