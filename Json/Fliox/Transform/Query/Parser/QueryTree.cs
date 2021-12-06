@@ -23,47 +23,44 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal static QueryNode CreateTree(Token[] tokens, out string error) {
             int         pos     = 0;
             QueryNode   root    = new QueryNode(default);
-            QueryNode   node = root;
+            QueryNode   node    = root;
             error = null;
             while (pos < tokens.Length) {
-                GetNode(ref node, tokens, ref pos, out error);
+                node = GetNode(node, tokens, ref pos, out error);
             }
             return node;
         }
 
-        private static void GetNode(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static QueryNode GetNode(QueryNode node, Token[] tokens, ref int pos, out string error) {
             var token = tokens[pos];
             var shape = Token.Shape(token.type);
             switch (shape.arity) {
                 case Arity.Unary:
-                    AddUnary (ref node, tokens, ref pos, out error);
-                    return;
+                    return AddUnary (node, tokens, ref pos, out error);
                 case Arity.Binary:
-                    AddBinary(ref node, tokens, ref pos, out error);
-                    return;
+                    return AddBinary(node, tokens, ref pos, out error);
                 case Arity.NAry:
-                    AddNAry (ref node, tokens, ref pos, out error);
-                    return;
+                    return AddNAry (node, tokens, ref pos, out error);
                 default:
                     error = $"Invalid arity for token: {token}";
-                    return;
+                    return default;
             }
         }
         
-        private static void AddUnary(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static QueryNode AddUnary(QueryNode node, Token[] tokens, ref int pos, out string error) {
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
             pos++;
             error = null;
             var newNode = new QueryNode(token);
             if (node.Count == 0) {
-                node = newNode;                
-            } else {
-                node.operands.Add(newNode);
+                return newNode;                
             }
+            node.operands.Add(newNode);
+            return node;
         }
 
-        private static void AddBinary(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static QueryNode AddBinary(QueryNode node, Token[] tokens, ref int pos, out string error) {
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
@@ -71,10 +68,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             var newNode = new QueryNode(token);
             newNode.operands.Add(node);
-            node = newNode;
+            return newNode;
         }
         
-        private static void AddNAry(ref QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static QueryNode AddNAry(QueryNode node, Token[] tokens, ref int pos, out string error) {
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
@@ -82,13 +79,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 // || &&  are allowed having multiple operators 
                 pos++;
                 error = null;
-                return;
+                return node;
             }
             pos++;
             error = null;
             var newNode = new QueryNode(token);
             newNode.operands.Add(node);
-            node = newNode;
+            return newNode;
         }
     }
 }
