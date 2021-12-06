@@ -28,7 +28,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             int pos     = 0;
             var stack   = new Stack<QueryNode>();
             while (pos < tokens.Length) {
-                GetNode(stack, tokens, ref pos, out error);
+                var token = tokens[pos++];
+                GetNode(stack, token, out error);
             }
             if (stack.Count == 0)
                 throw new InvalidOperationException("invalid stack count");
@@ -38,18 +39,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return result;
         }
 
-        private static void GetNode(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
-            var token = tokens[pos];
+        private static void GetNode(Stack<QueryNode> stack, in Token token, out string error) {
             var shape = Token.Shape(token.type);
             switch (shape.arity) {
                 case Arity.Unary:
-                    AddUnary (stack, tokens, ref pos, out error);
+                    AddUnary (stack, token, out error);
                     return;
                 case Arity.Binary:
-                    AddBinary(stack, tokens, ref pos, out error);
+                    AddBinary(stack, token, out error);
                     return;
                 case Arity.NAry:
-                    AddNAry  (stack, tokens, ref pos, out error);
+                    AddNAry  (stack, token, out error);
                     return;
                 default:
                     error = $"Invalid arity for token: {token}";
@@ -57,10 +57,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static void AddUnary(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
-            //    return Error("missing left operand for +", out error);
-            var token = tokens[pos];
-            pos++;
+        private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {
             error = null;
             var newNode = new QueryNode(token);
             if (stack.Count == 0) {
@@ -71,23 +68,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             node.operands.Add(newNode);
         }
 
-        private static void AddBinary(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
-            // if (node.Count == 0)
-            //    return Error("missing left operand for +", out error);
-            var token = tokens[pos];
-            pos++;
+        private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
             error = null;
             var newNode = new QueryNode(token);
-            AddNode(stack, newNode);
-        }
-
-        private static void AddNode(Stack<QueryNode> stack, QueryNode newNode) {
-            var node        = stack.Peek();
+            
+            var node    = stack.Peek();
+            var last    = node.operands.Count - 1;
+            var precedence  = newNode.precedence;
             if (newNode.arity != Arity.Unary) {
                 if (node.arity != Arity.Unary) {
-                    if (newNode.precedence < node.precedence) {
+                    if (precedence < node.precedence) {
                         // replace last operand of stack.Head
-                        var last = node.operands.Count - 1;
                         newNode.operands.Add(node.operands[last]);
                         node.operands[last] = newNode;
                         stack.Push(newNode);
@@ -100,19 +91,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             stack.Push(newNode);
         }
 
-        private static void AddNAry(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
+        private static void AddNAry(Stack<QueryNode> stack, in Token token, out string error) {
             var node = stack.Peek();
-            // if (node.Count == 0)
-            //    return Error("missing left operand for +", out error);
-            var token = tokens[pos];
             if (node.operation.type == token.type) {
                 // || &&  are allowed having multiple operators 
-                pos++;
                 error = null;
                 return;
             }
             stack.Pop();
-            pos++;
             error = null;
             var newNode = new QueryNode(token);
             newNode.operands.Add(node);
