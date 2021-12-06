@@ -3,17 +3,17 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    // example:  true || 1 < 2
+    // example:  a * b + c   (5 tokens)
     //
-    //  1: true     2: ||       3: 1        4: <        5: 2                
-    //
-    //                  true       true        true        true
-    //                /           /           /           /
-    //  true        ||          ||          ||   1      ||  1 
-    //                            \           \ /        \ /
-    //                             1           <          <
-    //                                                     \
-    //                                                      2
+    //  a (1)       * (2)       b (3)       + (4)       c (5)
+    //             
+    //                a           a             a           a
+    //               /           /             /           /
+    //  a           *           *             *           *
+    //                           \           / \         / \  
+    //                            b         +   b       +   b       
+    //                                                   \
+    //                                                    c
     internal static class QueryTree
     {
         internal static Node CreateTree(Token[] tokens, out string error) {
