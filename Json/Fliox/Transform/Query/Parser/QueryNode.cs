@@ -6,10 +6,11 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    // todo - check: change to struct
     internal class QueryNode {
         internal            Token           operation;
         internal readonly   List<QueryNode> operands;
+        internal readonly   Arity           arity;
+        internal readonly   int             precedence;
         
         internal            int             Count           => operands.Count;        
         internal            QueryNode       this[int index] => operands[index];
@@ -22,8 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private void AppendLabel (StringBuilder sb) {
             sb.Append(operation.ToString());
-            var shape = Token.Shape(operation.type);
-            if (shape.arity == Arity.Unary)
+            if (arity == Arity.Unary)
                 return;
             sb.Append("(");
             if (operands.Count > 0) {
@@ -37,8 +37,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         internal QueryNode (Token operation) {
-            this.operation = operation;
-            operands = new List<QueryNode>();
+            this.operation  = operation;
+            operands        = new List<QueryNode>();
+            var shape       = Token.Shape(operation.type);
+            arity           = shape.arity;
+            precedence      = shape.precedence;
         }
     } 
 }

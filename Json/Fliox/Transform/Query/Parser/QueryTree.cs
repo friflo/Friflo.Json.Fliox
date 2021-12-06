@@ -82,13 +82,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void AddNode(Stack<QueryNode> stack, QueryNode newNode) {
-            var node = stack.Peek();
-            var token = newNode.operation;
-            var current  = Token.Shape(token.type);
-            if (current.arity != Arity.Unary) {
-                var previous = Token.Shape(node.operation.type);
-                if (previous.arity != Arity.Unary) {
-                    if (current.precedence < previous.precedence) {
+            var node        = stack.Peek();
+            if (newNode.arity != Arity.Unary) {
+                if (node.arity != Arity.Unary) {
+                    if (newNode.precedence < node.precedence) {
                         // replace last operand of stack.Head
                         var last = node.operands.Count - 1;
                         newNode.operands.Add(node.operands[last]);
