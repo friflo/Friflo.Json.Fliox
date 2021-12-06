@@ -1,6 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     // example:  a * b + c   (5 tokens)
@@ -22,45 +25,53 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         internal static QueryNode CreateTree(Token[] tokens, out string error) {
             int         pos     = 0;
-            QueryNode   root    = new QueryNode(default);
-            QueryNode   node    = root;
-            error = null;
+            QueryNode   node    = null;
+            error   = null;
+            var stack = new Stack<QueryNode>();
             while (pos < tokens.Length) {
-                node = GetNode(node, tokens, ref pos, out error);
+                GetNode(stack, tokens, ref pos, out error);
             }
-            return node;
+            if (stack.Count != 1)
+                throw new InvalidOperationException("invalid stack count");
+            var result = stack.Peek();
+            return result;
         }
 
-        private static QueryNode GetNode(QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static void GetNode(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
             var token = tokens[pos];
             var shape = Token.Shape(token.type);
             switch (shape.arity) {
                 case Arity.Unary:
-                    return AddUnary (node, tokens, ref pos, out error);
+                    AddUnary (stack, tokens, ref pos, out error);
+                    return;
                 case Arity.Binary:
-                    return AddBinary(node, tokens, ref pos, out error);
+                    AddBinary(stack, tokens, ref pos, out error);
+                    return;
                 case Arity.NAry:
-                    return AddNAry (node, tokens, ref pos, out error);
+                    AddNAry  (stack, tokens, ref pos, out error);
+                    return;
                 default:
                     error = $"Invalid arity for token: {token}";
-                    return default;
+                    return;
             }
         }
         
-        private static QueryNode AddUnary(QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static void AddUnary(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
             pos++;
             error = null;
             var newNode = new QueryNode(token);
-            if (node.Count == 0) {
-                return newNode;                
+            if (stack.Count == 0) {
+                stack.Push(newNode);
+                return;                
             }
+            var node = stack.Peek();
             node.operands.Add(newNode);
-            return node;
         }
 
-        private static QueryNode AddBinary(QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static void AddBinary(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
+            var node = stack.Pop();
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
@@ -68,10 +79,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             var newNode = new QueryNode(token);
             newNode.operands.Add(node);
-            return newNode;
+            stack.Push(newNode);
         }
         
-        private static QueryNode AddNAry(QueryNode node, Token[] tokens, ref int pos, out string error) {
+        private static void AddNAry(Stack<QueryNode> stack, Token[] tokens, ref int pos, out string error) {
+            var node = stack.Peek();
             // if (node.Count == 0)
             //    return Error("missing left operand for +", out error);
             var token = tokens[pos];
@@ -79,13 +91,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 // || &&  are allowed having multiple operators 
                 pos++;
                 error = null;
-                return node;
+                return;
             }
+            stack.Pop();
             pos++;
             error = null;
             var newNode = new QueryNode(token);
             newNode.operands.Add(node);
-            return newNode;
+            stack.Push(newNode);
         }
     }
 }
