@@ -30,14 +30,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case '+':   pos++;
                     if (!IsOperand(lastType)) {
                         c = NextChar(operation, pos);
-                        if ('0' <= c && c <= '9')
+                        if (IsDigit(c))
                             return GetNumber(false, operation, ref pos, out error);
                     }
                     return new Token(TokenType.Add);
                 case '-':   pos++;
                     if (!IsOperand(lastType)) {
                         c = NextChar(operation, pos);
-                        if ('0' <= c && c <= '9')
+                        if (IsDigit(c))
                             return GetNumber(true, operation, ref pos, out error);
                     }
                     return new Token(TokenType.Sub);
@@ -104,12 +104,22 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return End;
         }
         
+        private static bool IsChar(int c) {
+            return  'a' <= c && c <= 'z' ||
+                    'A' <= c && c <= 'Z' ||
+                    '_' == c;
+        }
+        
+        private static bool IsDigit(int c) {
+            return  '0' <= c && c <= '9';
+        }
+        
         private static bool IsOperand(TokenType type) {
             return type == TokenType.Symbol || type == TokenType.Long || type == TokenType.Double || type == TokenType.BracketClose;
         }
 
         private static Token GetSymbol(int c, string operation, ref int pos, out string error) {
-            if ('0' <= c && c <= '9') {
+            if (IsDigit(c)) {
                 return GetNumber (false, operation, ref pos, out error);
             }
             if (IsChar(c)) {
@@ -128,18 +138,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static bool IsChar(int c) {
-            return  'a' <= c && c <= 'z' ||
-                    'A' <= c && c <= 'Z' ||
-                    '_' == c;
-        }
-
         private static Token GetNumber(bool negative, string operation, ref int pos, out string error) {
             int     start = pos++;
             bool    isFloat = false;
             while (true) {
                 int c = NextChar(operation, pos);
-                if ('0' <= c && c <= '9') {
+                if (IsDigit(c)) {
                     pos++;
                     continue;
                 }
