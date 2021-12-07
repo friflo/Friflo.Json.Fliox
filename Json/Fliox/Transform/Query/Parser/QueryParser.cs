@@ -22,7 +22,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetOperation(QueryNode node, out string error) {
-            error = null;
             BinaryOperands bin;
             
             switch (node.operation.type)
@@ -49,12 +48,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return new And (filterOperands);
 
             // --- unary tokens
-            case TokenType.String:          return new StringLiteral(node.operation.str);
-            case TokenType.Double:          return new DoubleLiteral(node.operation.dbl);
-            case TokenType.Long:            return new LongLiteral  (node.operation.lng);
+            case TokenType.String:          error = null;   return new StringLiteral(node.operation.str);
+            case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
+            case TokenType.Long:            error = null;   return new LongLiteral  (node.operation.lng);
             
             case TokenType.Symbol:
-                var symbol = node.operation.str; 
+                error = null;
+                var symbol = node.operation.str;
                 if (symbol == "true")    return new TrueLiteral();
                 if (symbol == "false")   return new FalseLiteral();
                 if (symbol == "null")    return new NullLiteral();
@@ -75,23 +75,29 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.OperandCount != 2) {
-                error = "expect two operands";
+                error = $"operation expect two operands. was: {node}";
                 return new BinaryOperands();
             }
-            error       = null;
             var left    = GetOperation(node.GetOperand(0), out error);
             var right   = GetOperation(node.GetOperand(1), out error);
             return new BinaryOperands { left = left, right = right };
         }
         
         private static List<FilterOperation> FilterOperands(in QueryNode node, out string error) {
+            if (node.OperandCount < 2) {
+                error = $"expect at minimum two operands. Was: {node}";
+                return null;
+            }
             var operands = new List<FilterOperation> (node.OperandCount);
             for (int n = 0; n < node.OperandCount; n++) {
-                var operand = GetOperation(node.GetOperand(n), out error);
-                if (operand is FilterOperation filterOperand) {
-                    operands.Add(filterOperand);
+                var operand     = node.GetOperand(n);
+                var operation   = GetOperation(operand, out error);
+                if (error != null)
+                    return null;
+                if (operation is FilterOperation filterOperation) {
+                    operands.Add(filterOperation);
                 } else {
-                    error = "invalid filter operand";
+                    error = $"expect boolean filter operand. Was: {operation}";
                     return null;
                 }
             }
