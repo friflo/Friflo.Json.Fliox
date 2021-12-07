@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Not,            // !
         NotEquals,      // !=
         //
-        Dot,            // .
+    //  Dot,            // .
         BracketOpen,    // (
         BracketClose,   // )
         //

@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new Token(TokenType.Sub);
                 case '*':   return new Token(TokenType.Mul);
                 case '/':   return new Token(TokenType.Div);
-                case '.':   return new Token(TokenType.Dot);
+            //  case '.':   return new Token(TokenType.Dot);
                 case '(':   return new Token(TokenType.BracketOpen);
                 case ')':   return new Token(TokenType.BracketClose);
                 case '>':   
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static bool IsChar(int c) {
             return  'a' <= c && c <= 'z' ||
                     'A' <= c && c <= 'Z' ||
-                    '_' == c;
+                    '_' == c || '.' == c;
         }
         
         private static bool IsDigit(int c) {

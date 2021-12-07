@@ -43,6 +43,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("=>");
             
             AssertToken("abc");
+            AssertToken(".abc");
+            AssertToken("abc.xyz");
             AssertToken("'xyz'");
             AssertToken("'☀🌎♥👋'");
             
@@ -50,9 +52,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("a-1",   3);
             AssertToken("(1)-1", 5);
             
-            AssertToken("a.Contains('xyz')", 6);
+            AssertToken("a.Contains('xyz')", 4);
 
-            AssertToken("a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2))", 42);
+            AssertToken("a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2||false))", 42); // must be 42 in any case :)
         }
         
         private static void AssertToken (string str, int len = 1, string expect = null) {
@@ -236,6 +238,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }  {
                 QueryParser.Parse("1.23.4", out error);
                 AreEqual("invalid floating point number: 1.23.", error);
+            }
+        }
+        
+        [Test]
+        public static void TestQueryMisc() {
+            {
+                var op = QueryParser.Parse(".name=='Smartphone'", out _);
+                AreEqual(".name == 'Smartphone'", op.ToString());
             }
         }
     }
