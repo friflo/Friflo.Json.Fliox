@@ -114,8 +114,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 new TokenShape(TokenType.NotEquals,     Binary, 5),
                 new TokenShape(TokenType.Equals,        Binary, 5),
                 //
-                new TokenShape(TokenType.And,           NAry,  6),
-                new TokenShape(TokenType.Or,            NAry,  7),
+                new TokenShape(TokenType.And,           NAry,   6),
+                new TokenShape(TokenType.Or,            NAry,   7),
                 //
                 new TokenShape(TokenType.Symbol,        Unary,  1),
                 new TokenShape(TokenType.Long,          Unary,  1),
