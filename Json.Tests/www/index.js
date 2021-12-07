@@ -789,11 +789,14 @@ class App {
     runFilter(event) {
         // console.log(event);
         if (event.code == 'Enter') {
-
+            var filter  = entityFilter.value;
+            var query   = filter == "" ? null : `filter=${filter}`;
+            var params  = { database: this.filter.database, container: this.filter.container };
+            this.loadEntities(params, query);
         }
     }
 
-    async loadEntities (p) {
+    async loadEntities (p, query) {
         // if (p.clearSelection) this.setEditorHeader();
         this.filter.database     = p.database;
         this.filter.container    = p.container;
@@ -804,7 +807,7 @@ class App {
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink      = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
-        const response           = await this.restRequest("GET", null, p.database, p.container);
+        const response           = await this.restRequest("GET", null, p.database, p.container, null, query);
 
         const reload = `<span class="reload" title='reload container' onclick='app.loadEntities(${JSON.stringify(p)})'></span>`
         writeResult.innerHTML   = "";        
