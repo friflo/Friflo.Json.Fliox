@@ -77,43 +77,54 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
             error           = null;
             var newNode     = new QueryNode(token);
+            PushNode(stack, newNode);
+        }
+        
+        /// <summary>
+        /// Push <see cref="newNode"/> to the stack.
+        /// In case <see cref="newNode"/> is not unary it:
+        /// <list type="bullet">
+        ///   <item> either replaces the last operand of an operation with lower precedence </item>
+        ///   <item> or gets the new stack root and add the old root as an operand </item>
+        /// </list>
+        /// </summary>
+        private static void PushNode(Stack<QueryNode> stack, QueryNode newNode) {
             var node        = stack.Peek();
             var precedence  = newNode.precedence;
-            if (newNode.arity != Arity.Unary && node.arity != Arity.Unary) {
-                while (true) {
-                    if (precedence < node.precedence) {
-                        // replace last operand of stack.Head
-                        var nodeOperands    = node.operands; 
-                        var last            = nodeOperands.Count - 1;
-                        newNode.operands.Add(nodeOperands[last]);
-                        nodeOperands[last] = newNode;
-                        stack.Push(newNode);
-                        return;
-                    }
-                    stack.Pop();
-                    if (stack.Count == 0)
-                        break;
-                    node = stack.Peek();
+            if (newNode.arity == Arity.Unary || node.arity == Arity.Unary) {
+                stack.Pop();
+                newNode.operands.Add(node);
+                stack.Push(newNode);
+                return;
+            }
+            while (true) {
+                if (precedence < node.precedence) {
+                    // replace operand of stack.Head
+                    var nodeOperands    = node.operands; 
+                    var last            = nodeOperands.Count - 1;
+                    newNode.operands.Add(nodeOperands[last]);
+                    nodeOperands[last] = newNode;
+                    stack.Push(newNode);
+                    return;
                 }
-            } else {
-                stack.Pop();    
-            }            
+                stack.Pop();
+                if (stack.Count == 0)
+                    break;
+                node = stack.Peek();
+            }
             newNode.operands.Add(node);
             stack.Push(newNode);
         }
 
         private static void AddNAry(Stack<QueryNode> stack, in Token token, out string error) {
+            error = null;
             var node = stack.Peek();
             if (node.operation.type == token.type) {
                 // || &&  are allowed having multiple operators 
-                error = null;
                 return;
             }
-            stack.Pop();
-            error = null;
             var newNode = new QueryNode(token);
-            newNode.operands.Add(node);
-            stack.Push(newNode);
+            PushNode(stack, newNode);
         }
     }
 }
