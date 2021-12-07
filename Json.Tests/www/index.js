@@ -790,7 +790,7 @@ class App {
         // console.log(event);
         if (event.code == 'Enter') {
             var filter  = entityFilter.value;
-            var query   = filter == "" ? null : `filter=${filter}`;
+            var query   = filter == "" ? null : `filter=${encodeURIComponent(filter)}`;
             var params  = { database: this.filter.database, container: this.filter.container };
             this.loadEntities(params, query);
         }
