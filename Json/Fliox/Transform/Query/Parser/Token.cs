@@ -9,7 +9,6 @@ using static Friflo.Json.Fliox.Transform.Query.Parser.Arity;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    // ------------------------------------ Token ------------------------------------
     public readonly struct TokenList
     {
         public  readonly Token[] items;
@@ -27,6 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
+    // ------------------------------------ Token ------------------------------------
     public readonly struct Token {
         public  readonly    TokenType   type;
         public  readonly    string      str;
