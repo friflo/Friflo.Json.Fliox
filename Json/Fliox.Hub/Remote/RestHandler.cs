@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Parser;
 
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -187,15 +188,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
-            // reserved query parameter "filter" for alternative short query expression
+            var filter = queryParams["filter"];
+            if (filter != null) {
+                var filterOp = QueryParser.Parse(filter, out string error);
+                if (error != null) {
+                    context.WriteError("query filter error", error, 400);
+                    return null;
+                }
+                return (FilterOperation)filterOp;
+            }
             var queryFilter = queryParams["query-filter"];
-            if (queryFilter == null)
+            if (queryFilter == null) {
                 return Operation.FilterTrue;
+            }
             using (var pooled = pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
-                var filter = reader.Read<FilterOperation>(queryFilter);
+                var filterOp = reader.Read<FilterOperation>(queryFilter);
                 if (!reader.Error.ErrSet)
-                    return filter;
+                    return filterOp;
                 context.WriteError("query filter error", reader.Error.ToString(), 400);
                 return null;
             }
