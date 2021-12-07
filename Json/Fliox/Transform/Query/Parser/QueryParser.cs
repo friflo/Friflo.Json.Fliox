@@ -14,6 +14,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var result  = QueryLexer.Tokenize (operation,   out error);
             if (error != null)
                 return null;
+            if (result.items.Length == 0) {
+                error = "operation string is empty";
+                return null;
+            }
             var node    = QueryTree.CreateTree(result.items,out error);
             var op      = GetOperation (node,               out error);
             return op;

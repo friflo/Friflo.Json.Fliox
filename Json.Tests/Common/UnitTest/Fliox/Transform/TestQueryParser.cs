@@ -192,6 +192,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryErrors() {
             string error;
             {
+                QueryParser.Parse("", out error);
+                AreEqual("operation string is empty", error);
+            } {
                 QueryParser.Parse("true < false", out error);
                 AreEqual("operation < must not use boolean operands", error);
             } {
