@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             var left    = GetOperation(node.GetOperand(0), out error);
             var right   = GetOperation(node.GetOperand(1), out error);
-            return new BinaryOperands { left = left, right = right };
+            return new BinaryOperands (left, right);
         }
         
         private static List<FilterOperation> FilterOperands(in QueryNode node, out string error) {
@@ -106,9 +106,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
-    internal struct BinaryOperands {
-        internal Operation left;
-        internal Operation right;
+    internal readonly struct BinaryOperands {
+        internal readonly Operation left;
+        internal readonly Operation right;
+        
+        internal BinaryOperands(Operation left, Operation right) {
+            this.left   = left;
+            this.right  = right;
+        }
     }
 
 }
