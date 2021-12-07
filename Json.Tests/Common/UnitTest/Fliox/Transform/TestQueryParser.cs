@@ -150,6 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestNested() {
+            // note: the operation with lowest precedence is always on the beginning of node.ToString()
             {
                 var node    = QueryTree.CreateTree("a * b + c", out _);
                 AreEqual("+ {* {a, b}, c}", node.ToString());
