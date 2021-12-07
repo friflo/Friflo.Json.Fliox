@@ -169,7 +169,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 result.Error = databaseError;
                 return result;
             }
-            var linq = command.filter.Linq;
+            var linq = command.filterJson.Linq;
             if (queryErrors.TryGetValue(linq, out var func)) {
                 return func();
             }

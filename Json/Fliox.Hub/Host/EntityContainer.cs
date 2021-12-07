@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         protected QueryEntitiesResult FilterEntities(QueryEntities command, Dictionary <JsonKey, EntityValue> entities, MessageContext messageContext) {
-            var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
+            var jsonFilter      = new JsonFilter(command.filterJson); // filter can be reused
             var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             using (var pooled = messageContext.pool.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooled.instance;

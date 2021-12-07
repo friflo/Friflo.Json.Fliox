@@ -4,7 +4,7 @@
     {
       "task":       "query",
       "container":  "articles",
-      "filter": {
+      "filterJson": {
         "op":"equal", "left": {"op":"field",  "name":  ".name"},
                       "right":{"op":"string", "value": "Smartphone"}
       }

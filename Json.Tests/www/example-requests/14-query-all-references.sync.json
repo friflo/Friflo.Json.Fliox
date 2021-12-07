@@ -4,7 +4,7 @@
     {
       "task":       "query",
       "container":  "articles",
-      "filter":     { "op":"true" },
+      "filterJson": { "op":"true" },
       "references": [
         {
           "selector": ".producer",

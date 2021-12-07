@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Required]  public  string              container;
                         public  string              keyName;
                         public  bool?               isIntKey;
-        [Fri.Required]  public  FilterOperation     filter;
+        [Fri.Required]  public  FilterOperation     filterJson;
         [Fri.Ignore]    public  string              filterLinq;
                         public  List<References>    references;
         
@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
-            if (filter == null)
-                return MissingField(nameof(filter));
+            if (filterJson == null)
+                return MissingField(nameof(filterJson));
             if (!ValidReferences(references, out var error))
                 return error;
             var entityContainer = database.GetOrCreateContainer(container);

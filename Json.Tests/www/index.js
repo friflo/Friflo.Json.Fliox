@@ -412,9 +412,9 @@ class App {
 
     async loadCluster () {
         const tasks = [
-            { "task": "query", "container": "containers", "filter":{ "op": "true" }},
-            { "task": "query", "container": "schemas",    "filter":{ "op": "true" }},
-            { "task": "query", "container": "commands",   "filter":{ "op": "true" }}
+            { "task": "query", "container": "containers", "filterJson":{ "op": "true" }},
+            { "task": "query", "container": "schemas",    "filterJson":{ "op": "true" }},
+            { "task": "query", "container": "commands",   "filterJson":{ "op": "true" }}
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await this.postRequestTasks("cluster", tasks);
@@ -782,8 +782,8 @@ class App {
     }
 
     filter = {
-        database,
-        container
+        database:   undefined,
+        container:  undefined
     }
 
     runFilter(event) {
@@ -795,10 +795,10 @@ class App {
 
     async loadEntities (p) {
         // if (p.clearSelection) this.setEditorHeader();
-        filter.database     = p.database;
-        filter.container    = p.container;
+        this.filter.database     = p.database;
+        this.filter.container    = p.container;
         
-        const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
+        const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
 
         catalogSchema.innerHTML  = this.schemaLink(p.database);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
