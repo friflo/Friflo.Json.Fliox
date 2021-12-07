@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
+// ReSharper disable InconsistentNaming
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
@@ -55,10 +56,19 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             case TokenType.Symbol:
                 error = null;
                 var symbol = node.operation.str;
-                if (symbol == "true")    return new TrueLiteral();
-                if (symbol == "false")   return new FalseLiteral();
-                if (symbol == "null")    return new NullLiteral();
-                return new Field(symbol);
+                switch (symbol) {
+                    case "true":    return new TrueLiteral();
+                    case "false":   return new FalseLiteral();
+                    case "null":    return new NullLiteral();
+                    case "if":
+                    case "else":
+                    case "while":
+                    case "do":
+                    case "for":
+                        error = $"expression must not use conditional statement: {symbol}";
+                        return null;
+                    default:        return new Field(symbol);
+                }
             
             // --- group tokens
             /*case TokenType.BracketOpen:
@@ -68,24 +78,30 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 
                 break; */
             default:
-                error = "unexpected token";
+                error = $"unexpected operation {node.operation}";
                 return null;
             }
         }
         
         private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.OperandCount != 2) {
-                error = $"operation expect two operands. was: {node}";
-                return new BinaryOperands();
+                error = $"operation {node.operation} expect two operands";
+                return default;
             }
-            var left    = GetOperation(node.GetOperand(0), out error);
-            var right   = GetOperation(node.GetOperand(1), out error);
+            var operand_0 = node.GetOperand(0);
+            var operand_1 = node.GetOperand(1);
+            var left    = GetOperation(operand_0, out error);
+            var right   = GetOperation(operand_1, out error);
+            if (left is FilterOperation || right is FilterOperation) {
+                error = $"operation {node.operation.ToString()} must not use boolean operands";
+                return default;
+            }
             return new BinaryOperands (left, right);
         }
         
         private static List<FilterOperation> FilterOperands(in QueryNode node, out string error) {
             if (node.OperandCount < 2) {
-                error = $"expect at minimum two operands. Was: {node}";
+                error = $"expect at minimum two operands for operation {node.operation}";
                 return null;
             }
             var operands = new List<FilterOperation> (node.OperandCount);
@@ -97,7 +113,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (operation is FilterOperation filterOperation) {
                     operands.Add(filterOperation);
                 } else {
-                    error = $"expect boolean filter operand. Was: {operation}";
+                    error = $"operation {node.operation} expect boolean operands. Got: {operation}";
                     return null;
                 }
             }
@@ -115,5 +131,4 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             this.right  = right;
         }
     }
-
 }

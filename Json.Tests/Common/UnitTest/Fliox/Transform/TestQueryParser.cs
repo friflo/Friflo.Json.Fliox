@@ -6,7 +6,8 @@ using Friflo.Json.Fliox.Transform.Query.Parser;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
-
+// ReSharper disable InlineOutVariableDeclaration
+// ReSharper disable TooWideLocalVariableScope
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
     public static class TestQueryParser
@@ -184,6 +185,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("|| {&& {true, false}, true}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("true && false || true", op.ToString());
+            }
+        }
+        
+        [Test]
+        public static void TestQueryErrors() {
+            string error;
+            {
+                QueryParser.Parse("true < false", out error);
+                AreEqual("operation < must not use boolean operands", error);
+            } {
+                QueryParser.Parse("1 < 3 > 2", out error);
+                AreEqual("operation > must not use boolean operands", error);
+            } {
+                QueryParser.Parse("true ||", out error);
+                AreEqual("expect at minimum two operands for operation ||", error);
+            } {
+                QueryParser.Parse("true || 1", out error);
+                AreEqual("operation || expect boolean operands. Got: 1", error);
+            } {
+                QueryParser.Parse("1+", out error);
+                AreEqual("operation + expect two operands", error);
+            } {
+                QueryParser.Parse("if", out error);
+                AreEqual("expression must not use conditional statement: if", error);
             }
         }
     }
