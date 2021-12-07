@@ -781,8 +781,22 @@ class App {
         return `<a title="database schema" href="./rest/${database}?command=DbSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
+    filter = {
+        database,
+        container
+    }
+
+    runFilter(event) {
+        // console.log(event);
+        if (event.code == 'Enter') {
+
+        }
+    }
+
     async loadEntities (p) {
         // if (p.clearSelection) this.setEditorHeader();
+        filter.database     = p.database;
+        filter.container    = p.container;
         
         const tasks =  [{ "task": "query", "container": p.container, "filter":{ "op": "true" }}];
 
