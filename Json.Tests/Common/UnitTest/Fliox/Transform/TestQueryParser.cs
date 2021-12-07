@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public static class TestQueryParser
     {
         [Test]
-        public static void TestLexer() {
+        public static void TestQueryLexer() {
             AssertToken(".");
             AssertToken("(");
             AssertToken(")");
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestParser() {
+        public static void TestQueryBasicParser() {
             // --- literals
             {
                 var op = QueryParser.Parse("1", out _);
@@ -121,8 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestOr() {
-            // --- literals
+        public static void TestQueryOr() {
             {
                 var op = QueryParser.Parse("true || false", out _);
                 AreEqual("true || false", op.Linq);
@@ -135,8 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestAnd() {
-            // --- literals
+        public static void TestQueryAnd() {
             {
                 var op = QueryParser.Parse("true && false", out _);
                 AreEqual("true && false", op.Linq);
@@ -149,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestNested() {
+        public static void TestQueryPrecedence() {
             // note: the operation with lowest precedence is always on the beginning of node.ToString()
             {
                 var node    = QueryTree.CreateTree("a * b + c", out _);
