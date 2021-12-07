@@ -798,25 +798,25 @@ class App {
         this.filter.database     = p.database;
         this.filter.container    = p.container;
         
-        const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
+        // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
 
         catalogSchema.innerHTML  = this.schemaLink(p.database);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink      = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
-        const response = await this.postRequestTasks(p.database, tasks, p.container);
+        const response           = await this.restRequest("GET", null, p.database, p.container);
 
-        const content = response.json;
         const reload = `<span class="reload" title='reload container' onclick='app.loadEntities(${JSON.stringify(p)})'></span>`
         writeResult.innerHTML   = "";        
         readEntities.innerHTML  = containerLink + reload;
-        const error = this.getTaskError (content, 0);
-        if (error) {
+        if (!response.ok) {
+            const error = await response.text();
             entityExplorer.innerHTML = this.errorAsHtml(error);
             return;
         }
-        const ids = content.tasks[0].ids;
-        const ulIds = document.createElement('ul');
+        let     content = await response.json();
+        const   ids     = content.map(entity => entity.id);
+        const   ulIds   = document.createElement('ul');
         ulIds.classList = "entities"
         ulIds.onclick = (ev) => {
             const path = ev.composedPath();
