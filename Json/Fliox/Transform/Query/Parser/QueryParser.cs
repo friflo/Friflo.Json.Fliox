@@ -104,12 +104,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             return operands;
         }
-        
-        
-        /* private Operation Error (string message, out string error) {
-            error = message;
-            return null;
-        } */
     }
     
     internal struct BinaryOperands {
