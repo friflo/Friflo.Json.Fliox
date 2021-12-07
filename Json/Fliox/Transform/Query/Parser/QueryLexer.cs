@@ -16,27 +16,33 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var     lastType    = TokenType.Start;
             while (true) {
                 var token = GetToken(lastType, operation, ref pos, out error);
-                if (token.type == TokenType.End)
-                    return new TokenList(tokens.ToArray());
-                lastType = token.type;
-                tokens.Add(token);
+                switch (token.type) {
+                    case TokenType.End:
+                        return new TokenList(tokens.ToArray());
+                    case TokenType.Whitespace:
+                        break;
+                    default:
+                        lastType = token.type;
+                        tokens.Add(token);
+                        break;
+                }
             }
         }
         
         private static Token GetToken(TokenType lastType, string operation, ref int pos, out string error) {
-            int c = NextChar(operation, pos);
+            int c = GetChar(operation, pos);
             error = null;
             switch (c) {
                 case '+':   pos++;
                     if (!IsOperand(lastType)) {
-                        c = NextChar(operation, pos);
+                        c = GetChar(operation, pos);
                         if (IsDigit(c))
                             return GetNumber(false, operation, ref pos, out error);
                     }
                     return new Token(TokenType.Add);
                 case '-':   pos++;
                     if (!IsOperand(lastType)) {
-                        c = NextChar(operation, pos);
+                        c = GetChar(operation, pos);
                         if (IsDigit(c))
                             return GetNumber(true, operation, ref pos, out error);
                     }
@@ -47,25 +53,25 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case '(':   pos++; return new Token(TokenType.BracketOpen);
                 case ')':   pos++; return new Token(TokenType.BracketClose);
                 case '>':   pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.GreaterOrEqual);
                     }
                     return new Token(TokenType.Greater);
                 case '<':   pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.LessOrEqual);
                     }
                     return new Token(TokenType.Less);
                 case '!':   pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.NotEquals);
                     }
                     return new Token(TokenType.Not);
                 case '=':   pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.Equals);
                     }
@@ -75,14 +81,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"unexpected character: '${(char)c}'";
                     return new Token(TokenType.Error);
                 case '|':   pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (c == '|') {
                             pos++; return new Token(TokenType.Or);
                     }
                     error = $"expect character '|'. was: '${(char)c}'";
                     return new Token(TokenType.Error);
                 case '&':   pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (c == '&') {
                             pos++; return new Token(TokenType.And);
                     }
@@ -90,6 +96,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new Token(TokenType.Error);
                 case '\'':   pos++;
                     return GetString(operation, ref pos, out error);
+                case ' ':
+                case '\t':
+                case '\r':
+                case '\n':
+                    pos++;
+                    return GetWhitespace(operation, ref pos);
                 case End:
                     return new Token(TokenType.End);
                 default:
@@ -97,7 +109,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
 
-        private static int NextChar(string operation, int pos) {
+        private static int GetChar(string operation, int pos) {
             if (pos < operation.Length) {
                 return operation[pos];
             }
@@ -126,7 +138,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 var start = pos;
                 while (true) {
                     pos++;
-                    c = NextChar(operation, pos);
+                    c = GetChar(operation, pos);
                     if (IsChar(c))
                         continue;
                     var str = operation.Substring(start, pos - start);
@@ -142,7 +154,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             int     start = pos++;
             bool    isFloat = false;
             while (true) {
-                int c = NextChar(operation, pos);
+                int c = GetChar(operation, pos);
                 if (IsDigit(c)) {
                     pos++;
                     continue;
@@ -173,7 +185,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static Token GetString(string operation, ref int pos, out string error) {
             int start = pos;
             while (true) {
-                int c = NextChar(operation, pos);
+                int c = GetChar(operation, pos);
                 if (c == End) {
                     error = "missing string terminator '\"'";
                     return new Token(TokenType.Error);
@@ -185,6 +197,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new Token(TokenType.String, str);
                 }
                 pos++;
+            }
+        }
+        
+        private static Token GetWhitespace(string operation, ref int pos) {
+            while (true) {
+                int c = GetChar(operation, pos);
+                switch (c) {
+                    case ' ':   case '\t':  case '\r':  case '\n':
+                        pos++;
+                        continue;
+                }
+                return new Token(TokenType.Whitespace);
             }
         }
     }

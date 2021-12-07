@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Arrow,          // =>
         //
         Error,
+        Whitespace,
         End,
     }
 }
