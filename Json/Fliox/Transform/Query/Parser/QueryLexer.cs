@@ -30,47 +30,47 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Token GetToken(TokenType lastType, string operation, ref int pos, out string error) {
-            int c = GetChar(operation, pos);
+            int c = GetChar(operation, pos++);
             error = null;
             switch (c) {
-                case '+':   pos++;
+                case '+':
                     if (!IsOperand(lastType)) {
                         c = GetChar(operation, pos);
                         if (IsDigit(c))
                             return GetNumber(false, operation, ref pos, out error);
                     }
                     return new Token(TokenType.Add);
-                case '-':   pos++;
+                case '-':
                     if (!IsOperand(lastType)) {
                         c = GetChar(operation, pos);
                         if (IsDigit(c))
                             return GetNumber(true, operation, ref pos, out error);
                     }
                     return new Token(TokenType.Sub);
-                case '*':   pos++; return new Token(TokenType.Mul);
-                case '/':   pos++; return new Token(TokenType.Div);
-                case '.':   pos++; return new Token(TokenType.Dot);
-                case '(':   pos++; return new Token(TokenType.BracketOpen);
-                case ')':   pos++; return new Token(TokenType.BracketClose);
-                case '>':   pos++;
+                case '*':   return new Token(TokenType.Mul);
+                case '/':   return new Token(TokenType.Div);
+                case '.':   return new Token(TokenType.Dot);
+                case '(':   return new Token(TokenType.BracketOpen);
+                case ')':   return new Token(TokenType.BracketClose);
+                case '>':   
                     c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.GreaterOrEqual);
                     }
                     return new Token(TokenType.Greater);
-                case '<':   pos++;
+                case '<':
                     c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.LessOrEqual);
                     }
                     return new Token(TokenType.Less);
-                case '!':   pos++;
+                case '!':
                     c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.NotEquals);
                     }
                     return new Token(TokenType.Not);
-                case '=':   pos++;
+                case '=':
                     c = GetChar(operation, pos);
                     if (c == '=') {
                             pos++; return new Token(TokenType.Equals);
@@ -80,31 +80,32 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     }
                     error = $"unexpected character: '${(char)c}'";
                     return new Token(TokenType.Error);
-                case '|':   pos++;
+                case '|':
                     c = GetChar(operation, pos);
                     if (c == '|') {
                             pos++; return new Token(TokenType.Or);
                     }
                     error = $"expect character '|'. was: '${(char)c}'";
                     return new Token(TokenType.Error);
-                case '&':   pos++;
+                case '&':
                     c = GetChar(operation, pos);
                     if (c == '&') {
                             pos++; return new Token(TokenType.And);
                     }
                     error = $"expect character '&'. was: '${(char)c}'";
                     return new Token(TokenType.Error);
-                case '\'':   pos++;
+                case '\'':
                     return GetString(operation, ref pos, out error);
                 case ' ':
                 case '\t':
                 case '\r':
                 case '\n':
-                    pos++;
                     return GetWhitespace(operation, ref pos);
                 case End:
+                    pos--;
                     return new Token(TokenType.End);
                 default:
+                    pos--;
                     return GetSymbol(c, operation, ref pos, out error);
             }
         }
