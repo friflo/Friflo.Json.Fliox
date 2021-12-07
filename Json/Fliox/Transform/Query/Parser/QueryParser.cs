@@ -12,6 +12,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         public static Operation Parse (string operation, out string error) {
             var result  = QueryLexer.Tokenize (operation,   out error);
+            if (error != null)
+                return null;
             var node    = QueryTree.CreateTree(result.items,out error);
             var op      = GetOperation (node,               out error);
             return op;

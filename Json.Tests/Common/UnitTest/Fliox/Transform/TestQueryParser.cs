@@ -211,5 +211,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("expression must not use conditional statement: if", error);
             }
         }
+        
+        [Test]
+        public static void TestLexerErrors() {
+            string error;
+            {
+                QueryParser.Parse("=+", out error);
+                AreEqual("unexpected character '+' after '='. Use == or =>", error);
+            } {
+                QueryParser.Parse("|x", out error);
+                AreEqual("unexpected character 'x' after '|'. Use ||", error);
+            } {
+                QueryParser.Parse("&x", out error);
+                AreEqual("unexpected character 'x' after '&'. Use &&", error);
+            } {
+                QueryParser.Parse("#", out error);
+                AreEqual("unexpected character: '#'", error);
+            } {
+                QueryParser.Parse("'abc", out error);
+                AreEqual("missing string terminator ' for: abc", error);
+            }  {
+                QueryParser.Parse("1.23.4", out error);
+                AreEqual("invalid floating point number: 1.23.", error);
+            }
+        }
     }
 }

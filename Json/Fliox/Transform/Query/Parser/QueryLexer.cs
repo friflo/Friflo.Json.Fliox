@@ -21,6 +21,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         return new TokenList(tokens.ToArray());
                     case TokenType.Whitespace:
                         break;
+                    case TokenType.Error:
+                        return default;
                     default:
                         lastType = token.type;
                         tokens.Add(token);
@@ -78,21 +80,21 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     if (c == '>') {
                             pos++; return new Token(TokenType.Arrow);
                     }
-                    error = $"unexpected character: '${(char)c}'";
+                    error = $"unexpected character '{(char)c}' after '='. Use == or =>";
                     return new Token(TokenType.Error);
                 case '|':
                     c = GetChar(operation, pos);
                     if (c == '|') {
                             pos++; return new Token(TokenType.Or);
                     }
-                    error = $"expect character '|'. was: '${(char)c}'";
+                    error = $"unexpected character '{(char)c}' after '|'. Use ||";
                     return new Token(TokenType.Error);
                 case '&':
                     c = GetChar(operation, pos);
                     if (c == '&') {
                             pos++; return new Token(TokenType.And);
                     }
-                    error = $"expect character '&'. was: '${(char)c}'";
+                    error = $"unexpected character '{(char)c}' after '&'. Use &&";
                     return new Token(TokenType.Error);
                 case '\'':
                     return GetString(operation, ref pos, out error);
@@ -147,8 +149,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new Token(TokenType.Symbol, str);
                 }
             }
-            error = $"unexpected character: '${(char)c}'";
-            return default;
+            error = $"unexpected character: '{(char)c}'";
+            return new Token(TokenType.Error);
         }
         
         private static Token GetNumber(bool negative, string operation, ref int pos, out string error) {
@@ -161,11 +163,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     continue;
                 }
                 if ('.' == c) {
+                    pos++;
                     if (isFloat) {
-                        error = "invalid floating point number";
+                        var flt = operation.Substring(start, pos - start);
+                        error = $"invalid floating point number: {flt}";
                         return new Token(TokenType.Error);
                     }
-                    pos++;
                     isFloat = true;
                     continue;
                 }
@@ -188,7 +191,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             while (true) {
                 int c = GetChar(operation, pos);
                 if (c == End) {
-                    error = "missing string terminator '\"'";
+                    var str = operation.Substring(start, pos - start);
+                    error = $"missing string terminator ' for: {str}";
                     return new Token(TokenType.Error);
                 }
                 if (c == '\'') {
