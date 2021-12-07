@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return;                
             }
             var node = stack.Peek();
-            node.operands.Add(newNode);
+            node.AddOperand(newNode);
         }
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
@@ -93,17 +93,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var precedence  = newNode.precedence;
             if (newNode.arity == Arity.Unary || node.arity == Arity.Unary) {
                 stack.Pop();
-                newNode.operands.Add(node);
+                newNode.AddOperand(node);
                 stack.Push(newNode);
                 return;
             }
             while (true) {
                 if (precedence < node.precedence) {
                     // replace operand of stack.Head
-                    var nodeOperands    = node.operands; 
-                    var last            = nodeOperands.Count - 1;
-                    newNode.operands.Add(nodeOperands[last]);
-                    nodeOperands[last] = newNode;
+                    var last = node.OperandCount - 1;
+                    newNode.AddOperand(node.GetOperand(last));
+                    node.SetOperand(last, newNode);
                     stack.Push(newNode);
                     return;
                 }
@@ -112,7 +111,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     break;
                 node = stack.Peek();
             }
-            newNode.operands.Add(node);
+            newNode.AddOperand(node);
             stack.Push(newNode);
         }
 

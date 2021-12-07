@@ -8,19 +8,22 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public class QueryNode {
         internal            Token           operation;
-        internal readonly   List<QueryNode> operands;
         internal readonly   Arity           arity;
         internal readonly   int             precedence;
         
-        internal            int             Count           => operands.Count;        
-        internal            QueryNode       this[int index] => operands[index];
+        private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
+        
+        internal            int             OperandCount                            => operands.Count;        
+        internal            QueryNode       GetOperand(int index)                   => operands[index];
+        internal            void            SetOperand(int index, QueryNode node)   => operands[index] = node;
+        internal            void            AddOperand(QueryNode node)              => operands.Add(node);
         
         public   override   string          ToString() {
             var sb = new StringBuilder();
             AppendLabel(sb);
             return sb.ToString();
         }
-        
+
         private void AppendLabel (StringBuilder sb) {
             sb.Append(operation.ToString());
             if (arity == Arity.Unary)
