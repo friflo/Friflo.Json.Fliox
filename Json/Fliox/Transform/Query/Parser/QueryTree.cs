@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// In case <see cref="newNode"/> is not unary it:
         /// <list type="bullet">
         ///   <item> either replaces the last operand of an operation with lower precedence </item>
-        ///   <item> or gets the new stack root and add the old root as an operand </item>
+        ///   <item> or gets the new stack root and add the old root as first operand </item>
         /// </list>
         /// </summary>
         private static void PushNode(Stack<QueryNode> stack, QueryNode newNode) {
