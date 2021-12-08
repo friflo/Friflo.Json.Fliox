@@ -112,14 +112,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             BinaryOperands  bin;
             switch (method) {
                 // --- aggregate operations
-                case "Min":     l = Lambda(field, node, out error);    return new Min    (l.field, l.arg, l.operand);
-                case "Max":     l = Lambda(field, node, out error);    return new Max    (l.field, l.arg, l.operand);
-                case "Sum":     l = Lambda(field, node, out error);    return new Sum    (l.field, l.arg, l.operand);
-                case "Average": l = Lambda(field, node, out error);    return new Average(l.field, l.arg, l.operand);
+                case "Min":     l = Lambda(field, node, out error); return new Min    (l.field, l.arg, l.operand);
+                case "Max":     l = Lambda(field, node, out error); return new Max    (l.field, l.arg, l.operand);
+                case "Sum":     l = Lambda(field, node, out error); return new Sum    (l.field, l.arg, l.operand);
+                case "Average": l = Lambda(field, node, out error); return new Average(l.field, l.arg, l.operand);
                 
                 // --- quantify  operations
-                case "Any":     l = Lambda(field, node, out error);    return new Any    (l.field, l.arg, (FilterOperation)l.operand);
-                case "Count":   error = null;                   return new Count(null);
+                case "Any":     l = Lambda(field, node, out error); return new Any       (l.field, l.arg, (FilterOperation)l.operand);
+                case "Count":   l = Lambda(field, node, out error); return new CountWhere(l.field, l.arg, (FilterOperation)l.operand);
                 
                 // --- string operations
                 case "Contains":    bin = Params(field, node, out error);   return new Contains     (bin.left, bin.right);

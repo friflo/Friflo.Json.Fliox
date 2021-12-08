@@ -279,13 +279,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = QueryParser.Parse(".children.Average(child => child.age)", out _);
                 AreEqual(".children.Average(child => child.age)", op.ToString());
-            } /*{
-                var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
-                AreEqual(".children.Min(child => child.age)", op.ToString());
+            }
+        }
+        
+        [Test]
+        public static void TestQueryQuantityMethods() {
+            {
+                var node = QueryTree.CreateTree(".children.Any(child => child.age == 20)", out _);
+                AreEqual(".children.Any {child, == {child.age, 20}}", node.ToString());
+                var op = QueryParser.OperationFromNode(node, out _);
+                AreEqual(".children.Any(child => child.age == 20)", op.ToString());
             } {
-                var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
-                AreEqual(".children.Min(child => child.age)", op.ToString());
-            }*/
+                var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
+                AreEqual(".children.Count {child, == {child.age, 20}}", node.ToString());
+                var op = QueryParser.OperationFromNode(node, out _);
+                AreEqual(".children.Count(child => child.age == 20)", op.ToString());
+            }
         }
         
         [Test]
