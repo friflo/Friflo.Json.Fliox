@@ -96,8 +96,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     }
                     error = $"unexpected character '{(char)c}' after '&'. Use &&";
                     return new Token(TokenType.Error);
+                case '"':
                 case '\'':
-                    return GetString(operation, ref pos, out error);
+                    return GetString(operation, c, ref pos, out error);
                 case ' ':
                 case '\t':
                 case '\r':
@@ -186,7 +187,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new Token(lng);
         }
         
-        private static Token GetString(string operation, ref int pos, out string error) {
+        private static Token GetString(string operation, int terminator, ref int pos, out string error) {
             int start = pos;
             while (true) {
                 int c = GetChar(operation, pos);
@@ -195,7 +196,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"missing string terminator ' for: {str}";
                     return new Token(TokenType.Error);
                 }
-                if (c == '\'') {
+                if (c == terminator) {
                     error = null;
                     var str = operation.Substring(start, pos - start);
                     pos++;
