@@ -233,11 +233,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("=> can be used only as lambda in functions. Was used by: 1", error);
             } {
                 QueryParser.Parse(".children.Any(=> child.age)", out error);
-                AreEqual("=> expect a preceding lambda argument. Was used in: .children.Any()", error);
-            } /* {
-                QueryParser.Parse(".children.Foo(-1 => child.age)", out error);
-                AreEqual("lambda argument must by a symbol name.", error);
-            } */
+                AreEqual("=> expect one preceding lambda argument. Was used in: .children.Any()", error);
+            } {
+                QueryParser.Parse(".children.Any(child foo => child.age)", out error);
+                AreEqual("=> expect one preceding lambda argument. Was used in: .children.Any()", error);
+            } {
+                QueryParser.Parse(".children.Any(-1 => child.age)", out error);
+                AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any()", error);
+            }
         }
         
         [Test]

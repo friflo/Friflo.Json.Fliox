@@ -101,19 +101,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"=> can be used only as lambda in functions. Was used by: {head.operation}";
                     return;
                 }
-                if (head.OperandCount == 0) {
-                    error = $"=> expect a preceding lambda argument. Was used in: {head.operation}()";
+                if (head.OperandCount != 1) {
+                    error = $"=> expect one preceding lambda argument. Was used in: {head.operation}()";
                     return;
                 }
-                if (head.OperandCount > 1) {
-                    error = $"=> expect a preceding lambda argument. Was used in: {head.operation}()"; // todo
+                var lambdaArg = head.GetOperand(0);
+                if (lambdaArg.operation.type != TokenType.Symbol) {
+                    error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation}()";
                     return;
                 }
-                /* if (head.operation.type != TokenType.Symbol) {
-                    error = $"=> lambda argument must by a symbol name. Was: {head.operation}";
-                    return;
-                } */
-                // arrow operands are added to parent function. So the => itself is not added as a new node. 
+                // success
+                // note: arrow operands are added to parent function. So the => itself is not added as a new node. 
                 return;
             }
             var newNode     = new QueryNode(token);
