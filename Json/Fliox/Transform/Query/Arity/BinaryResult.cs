@@ -18,6 +18,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
         }
 
         public override string ToString() => $"({left}, {right})";
+        
+        internal bool BothOperandsDefined(out Scalar result) {
+            result = Operation.False;
+            return left.type != ScalarType.Undefined && right.type != ScalarType.Undefined;
+        }
     }
     
     internal struct BinaryResultEnumerator : IEnumerator<BinaryPair>

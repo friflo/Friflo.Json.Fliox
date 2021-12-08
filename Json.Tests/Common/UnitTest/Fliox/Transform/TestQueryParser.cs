@@ -1,6 +1,8 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 using NUnit.Framework;
@@ -359,5 +361,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(".name == 'Smartphone'", op.ToString());
             }
         }
+        
+        // ------------------------ evaluate operations ------------------------ 
+        [Test]
+        public static void TestFilterUndefinedScalar() {
+            using (var eval = new JsonEvaluator()) {
+                // use an aggregate (Max) of an empty array and compare it to a scalar
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) == 1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) != 1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) <  1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) <= 1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) >  1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) >= 1", eval);
+            }
+        }
+        
+        private static void AssertFilterUndefinedScalar(string operation, JsonEvaluator eval) {
+            var json    = @"{ ""items"": [] }";
+            var op      = (FilterOperation)QueryParser.Parse(operation, out _);
+            var filter  = new JsonFilter(op);
+            var result  = eval.Filter(new JsonValue(json), filter);
+            IsFalse(result);
+        } 
     }
 }

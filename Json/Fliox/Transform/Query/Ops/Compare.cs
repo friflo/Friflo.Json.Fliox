@@ -38,7 +38,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                evalResult.Add(pair.left.CompareTo(pair.right) == 0 ? True : False);
+                if (pair.BothOperandsDefined(out Scalar result))
+                    result = pair.left.CompareTo(pair.right) == 0 ? True : False;
+                evalResult.Add(result);
             }
             return evalResult;
         }
@@ -55,7 +57,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                evalResult.Add(pair.left.CompareTo(pair.right) != 0 ? True : False);
+                if (pair.BothOperandsDefined(out Scalar result))
+                    result = pair.left.CompareTo(pair.right) != 0 ? True : False;
+                evalResult.Add(result);
             }
             return evalResult;
         }
@@ -73,7 +77,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                evalResult.Add(pair.left.CompareTo(pair.right) < 0 ? True : False);
+                if (pair.BothOperandsDefined(out Scalar result))
+                    result = pair.left.CompareTo(pair.right) < 0 ? True : False;
+                evalResult.Add(result);
             }
             return evalResult;
         }
@@ -90,7 +96,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                evalResult.Add(pair.left.CompareTo(pair.right) <= 0 ? True : False);
+                if (pair.BothOperandsDefined(out Scalar result))
+                    result = pair.left.CompareTo(pair.right) <= 0 ? True : False;
+                evalResult.Add(result);
             }
             return evalResult;
         }
@@ -107,7 +115,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                evalResult.Add(pair.left.CompareTo(pair.right) > 0 ? True : False);
+                if (pair.BothOperandsDefined(out Scalar result))
+                    result = pair.left.CompareTo(pair.right) > 0 ? True : False;
+                evalResult.Add(result);
             }
             return evalResult;
         }
@@ -124,7 +134,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                evalResult.Add(pair.left.CompareTo(pair.right) >= 0 ? True : False);
+                if (pair.BothOperandsDefined(out Scalar result))
+                    result = pair.left.CompareTo(pair.right) >= 0 ? True : False;
+                evalResult.Add(result);
             }
             return evalResult;
         }
