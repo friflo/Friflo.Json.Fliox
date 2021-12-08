@@ -51,6 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("1+1",   3);
             AssertToken("a-1",   3);
             AssertToken("(1)-1", 5);
+            AssertToken("o=>o.name", 3);
             
             AssertToken("a.Contains('xyz')", 4);
 
@@ -266,6 +267,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         [Test]
         public static void TestQueryMethods() {
+            {
+                var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
+                AreEqual(".children.Min(child => child.age)", op.ToString());
+            }
             /* {
                 var op = QueryParser.Parse(".name.StartsWith('Smartphone')", out _);
                 AreEqual(".name.StartsWith('Smart')", op.ToString());

@@ -61,8 +61,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     if (token.type == TokenType.BracketOpen) {
                         var last = stack.Peek();
                         if (last.operation.type == TokenType.Symbol) {
+                            // the bracket converts the symbol to function with 0 or 1 parameter.
+                            // 0: .children.Count()
+                            // 1: .children.Min(child => child.age)
+                            // => so it becomes NAry
                             last.isFunction = true;
+                            last.arity      = Arity.NAry;
                         }
+                        error = null;    
+                        return;
                     }
                     error = $"Invalid arity for token: {token}";
                     return;
@@ -74,7 +81,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var newNode = new QueryNode(token);
             if (stack.Count == 0) {
                 stack.Push(newNode);
-                return;                
+                return;
             }
             var node = stack.Peek();
             node.AddOperand(newNode);
@@ -82,6 +89,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
             error           = null;
+            if (token.type == TokenType.Arrow) {
+                var head = stack.Peek();
+                if (head.isFunction) {
+                    // arrow operands are added to parent function. So the => itself is not added as a new node. 
+                    return;
+                }
+                error = $"=> can be used only in functions. Was used in: {head.operation}";
+                return;
+            }
             var newNode     = new QueryNode(token);
             PushNode(stack, newNode);
         }

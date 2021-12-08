@@ -8,8 +8,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public class QueryNode {
         internal readonly   Token           operation;
-        internal readonly   Arity           arity;
         internal readonly   int             precedence;
+        internal            Arity           arity;
         internal            bool            isFunction;
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 

@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (node.isFunction) {
                     return GetFunction(node, out error);
                 }
-                return GetSymbol(node, out error);
+                return GetField(node, out error);
         // no case TokenType.BracketOpen:  -> is never added as QueryNode
             default:
                 error = $"unexpected operation {node.operation}";
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Operation GetSymbol(QueryNode node, out string error) {
+        private static Operation GetField(QueryNode node, out string error) {
             var symbol = node.operation.str;
             error = null;
             switch (symbol) {
@@ -106,15 +106,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         return null;
                 }
             }
-            var method = symbol.Substring(lastDot + 1);
-            FilterOperation filter;
+            string method   = symbol.Substring(lastDot + 1);
+            string field    = symbol.Substring(0, lastDot);
+            Lambda l;
             BinaryOperands  bin;
             switch (method) {
-                case "Any":         filter = Filter(node, out error);   return new Any  (null, null, filter);
-                case "Min":         filter = Filter(node, out error);   return new Min  (null, null, filter);
-                case "Max":         filter = Filter(node, out error);   return new Max  (null, null, filter);
-                case "Sum":         filter = Filter(node, out error);   return new Sum  (null, null, filter);
-                case "Count":       error = null;                       return new Count(null);
+                case "Any":     l = Lambda(field, node, out error);    return new Any  (l.field, l.arg, (FilterOperation)l.operand);
+                case "Min":     l = Lambda(field, node, out error);    return new Min  (l.field, l.arg, l.operand);
+                case "Max":     l = Lambda(field, node, out error);    return new Max  (l.field, l.arg, l.operand);
+                case "Sum":     l = Lambda(field, node, out error);    return new Sum  (l.field, l.arg, l.operand);
+                case "Count":   error = null;                   return new Count(null);
                 
                 // --- string operations
                 case "Contains":    bin = Bin(node, out error);     return new Contains     (bin.left, bin.right);
@@ -136,11 +137,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return GetOperation(operand, out error);
         }
         
-        private static FilterOperation Filter(in QueryNode node, out string error) {
+        private static Lambda Lambda(string fieldName, in QueryNode node, out string error) {
             error = null;
-            return null;
+            var field       = new Field(fieldName);
+            var argOperand  = node.GetOperand(0);
+            var fcnOperand  = node.GetOperand(1);
+            var arg         = argOperand.operation.str;
+            var fcn         = GetOperation(fcnOperand, out error);
+            return new Lambda(field, arg, fcn);
         }
-
         
         private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.OperandCount != 2) {
@@ -182,12 +187,24 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     }
     
     internal readonly struct BinaryOperands {
-        internal readonly Operation left;
-        internal readonly Operation right;
+        internal readonly   Operation   left;
+        internal readonly   Operation   right;
         
         internal BinaryOperands(Operation left, Operation right) {
             this.left   = left;
             this.right  = right;
+        }
+    }
+    
+    internal readonly struct Lambda {
+        internal readonly   Field       field;
+        internal readonly   string      arg; 
+        internal readonly   Operation   operand;
+        
+        internal Lambda(Field field, string arg, Operation operand) {
+            this.field      = field;
+            this.arg        = arg;
+            this.operand    = operand;
         }
     }
 }
