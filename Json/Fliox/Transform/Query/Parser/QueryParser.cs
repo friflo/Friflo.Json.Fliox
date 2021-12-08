@@ -59,23 +59,21 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
             case TokenType.Long:            error = null;   return new LongLiteral  (node.operation.lng);
             
-            case TokenType.Symbol:                          return FromSymbol(node, out error);
-            // --- group tokens
-            /*case TokenType.BracketOpen:
-                pos++;
-                if (op is Field) {}
-                var first = GetOperation(tokens, ref pos, null, out error);
-                
-                break; */
+            case TokenType.Symbol:
+                if (node.isFunction) {
+                    return GetFunction(node, out error);
+                }
+                return GetSymbol(node, out error);
+        // no case TokenType.BracketOpen:  -> is never added as QueryNode
             default:
                 error = $"unexpected operation {node.operation}";
                 return null;
             }
         }
         
-        private static Operation FromSymbol(QueryNode node, out string error) {
-            error = null;
+        private static Operation GetSymbol(QueryNode node, out string error) {
             var symbol = node.operation.str;
+            error = null;
             switch (symbol) {
                 case "true":    return new TrueLiteral();
                 case "false":   return new FalseLiteral();
@@ -87,9 +85,62 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "for":
                     error = $"expression must not use conditional statement: {symbol}";
                     return null;
-                default:        return new Field(symbol);
+            }
+            return new Field(symbol);
+        }
+        
+        private static Operation GetFunction(QueryNode node, out string error) {
+            var symbol  = node.operation.str;
+            var lastDot = symbol.LastIndexOf('.');
+            if (lastDot == -1) {
+                Operation operand;
+                switch (symbol) {
+                    case "Abs":     operand = Operand(node, out error);     return new Abs      (operand);
+                    case "Ceiling": operand = Operand(node, out error);     return new Ceiling  (operand);
+                    case "Floor":   operand = Operand(node, out error);     return new Floor    (operand);
+                    case "Exp":     operand = Operand(node, out error);     return new Exp      (operand);
+                    case "Log":     operand = Operand(node, out error);     return new Log      (operand);
+                    case "Sqrt":    operand = Operand(node, out error);     return new Sqrt     (operand);
+                    default:
+                        error = $"unknown function: {symbol}";
+                        return null;
+                }
+            }
+            var method = symbol.Substring(lastDot + 1);
+            FilterOperation filter;
+            BinaryOperands  bin;
+            switch (method) {
+                case "Any":         filter = Filter(node, out error);   return new Any  (null, null, filter);
+                case "Min":         filter = Filter(node, out error);   return new Min  (null, null, filter);
+                case "Max":         filter = Filter(node, out error);   return new Max  (null, null, filter);
+                case "Sum":         filter = Filter(node, out error);   return new Sum  (null, null, filter);
+                case "Count":       error = null;                       return new Count(null);
+                
+                // --- string operations
+                case "Contains":    bin = Bin(node, out error);     return new Contains     (bin.left, bin.right);
+                case "StartsWith":  bin = Bin(node, out error);     return new StartsWith   (bin.left, bin.right);
+                case "EndsWith":    bin = Bin(node, out error);     return new EndsWith     (bin.left, bin.right);
+                default:
+                    error = $"unknown method: {method}";
+                    return null;
             }
         }
+        
+        private static Operation Operand(in QueryNode node, out string error) {
+            if (node.OperandCount != 1) {
+                error = $"operation {node.operation} expect one operand";
+                return default;
+            }
+            error = null;
+            var operand = node.GetOperand(0);
+            return GetOperation(operand, out error);
+        }
+        
+        private static FilterOperation Filter(in QueryNode node, out string error) {
+            error = null;
+            return null;
+        }
+
         
         private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.OperandCount != 2) {

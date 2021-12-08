@@ -242,14 +242,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
+        public static void TestArithmeticFunction() {
+            {
+                var op = QueryParser.Parse("Abs(-1)", out _);
+                AreEqual("Abs(-1)", op.ToString());
+            }  {
+                var op = QueryParser.Parse("Ceiling(2.5)", out _);
+                AreEqual("Ceiling(2.5)", op.ToString());
+            }  {
+                var op = QueryParser.Parse("Floor(2.5)", out _);
+                AreEqual("Floor(2.5)", op.ToString());
+            } {
+                var op = QueryParser.Parse("Exp(2.5)", out _);
+                AreEqual("Exp(2.5)", op.ToString());
+            } {
+                var op = QueryParser.Parse("Log(2.5)", out _);
+                AreEqual("Log(2.5)", op.ToString());
+            }  {
+                var op = QueryParser.Parse("Log(2.5)", out _);
+                AreEqual("Log(2.5)", op.ToString());
+            }
+        }
+        
+        [Test]
+        public static void TestQueryMethods() {
+            /* {
+                var op = QueryParser.Parse(".name.StartsWith('Smartphone')", out _);
+                AreEqual(".name.StartsWith('Smart')", op.ToString());
+            } */
+        }
+        
+        [Test]
         public static void TestQueryMisc() {
             {
                 var op = QueryParser.Parse(".name=='Smartphone'", out _);
                 AreEqual(".name == 'Smartphone'", op.ToString());
-            } /* {
-                var op = QueryParser.Parse(".name.StartsWith('Smartphone')", out _);
-                AreEqual(".name.StartsWith('Smart')", op.ToString());
-            } */
+            }
         }
     }
 }

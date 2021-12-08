@@ -7,9 +7,10 @@ using System.Text;
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public class QueryNode {
-        internal            Token           operation;
+        internal readonly   Token           operation;
         internal readonly   Arity           arity;
         internal readonly   int             precedence;
+        internal            bool            isFunction;
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
         

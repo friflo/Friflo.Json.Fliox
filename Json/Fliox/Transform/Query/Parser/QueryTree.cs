@@ -58,6 +58,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     AddNAry  (stack, token, out error);
                     return;
                 default:
+                    if (token.type == TokenType.BracketOpen) {
+                        var last = stack.Peek();
+                        if (last.operation.type == TokenType.Symbol) {
+                            last.isFunction = true;
+                        }
+                    }
                     error = $"Invalid arity for token: {token}";
                     return;
             }
