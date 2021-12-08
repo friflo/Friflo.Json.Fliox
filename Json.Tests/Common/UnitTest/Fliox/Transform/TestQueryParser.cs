@@ -215,6 +215,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 QueryParser.Parse("if", out error);
                 AreEqual("expression must not use conditional statement: if", error);
+            } {
+                QueryParser.Parse(".children.Foo(child => child.age)", out error);
+                AreEqual("unknown method: Foo used by: .children.Foo", error);
             }
         }
         

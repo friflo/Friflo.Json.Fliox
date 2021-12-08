@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             string field    = symbol.Substring(0, lastDot);
             Aggregate       l;
             Quantify        q;
-            BinaryOperands  bin;
+            BinaryOperands  b;
             switch (method) {
                 // --- aggregate operations
                 case "Min":     l = Aggregate(field, node, out error);  return new Min       (l.field, l.arg, l.operand);
@@ -141,11 +141,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "Count":   q = Quantify(field, node, out error);   return new CountWhere(q.field, q.arg, q.filter);
                 
                 // --- string operations
-                case "Contains":    bin = Params(field, node, out error);   return new Contains     (bin.left, bin.right);
-                case "StartsWith":  bin = Params(field, node, out error);   return new StartsWith   (bin.left, bin.right);
-                case "EndsWith":    bin = Params(field, node, out error);   return new EndsWith     (bin.left, bin.right);
+                case "Contains":    b = Params(field, node, out error); return new Contains  (b.left, b.right);
+                case "StartsWith":  b = Params(field, node, out error); return new StartsWith(b.left, b.right);
+                case "EndsWith":    b = Params(field, node, out error); return new EndsWith  (b.left, b.right);
                 default:
-                    error = $"unknown method: {method}";
+                    error = $"unknown method: {method} used by: {symbol}";
                     return null;
             }
         }
