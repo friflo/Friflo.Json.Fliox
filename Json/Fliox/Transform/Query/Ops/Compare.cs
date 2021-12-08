@@ -4,6 +4,7 @@
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     // -------------------------------------- comparison operations --------------------------------------

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable EmptyConstructor
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     // --- literals

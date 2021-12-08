@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable MemberCanBeProtected.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     // ------------------------------------ binary arithmetic operations ------------------------------------

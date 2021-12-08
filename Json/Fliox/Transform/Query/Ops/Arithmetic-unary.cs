@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable MemberCanBeProtected.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     // ------------------------------------ unary arithmetic operations ------------------------------------

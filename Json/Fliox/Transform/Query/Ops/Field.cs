@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ConvertToAutoProperty
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     internal readonly struct EvalCx
