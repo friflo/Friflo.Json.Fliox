@@ -94,28 +94,33 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
-            error           = null;
             if (token.type == TokenType.Arrow) {
-                var head = stack.Peek();
-                if (!head.isFunction) {
-                    error = $"=> can be used only as lambda in functions. Was used by: {head.operation}";
-                    return;
-                }
-                if (head.OperandCount != 1) {
-                    error = $"=> expect one preceding lambda argument. Was used in: {head.operation}()";
-                    return;
-                }
-                var lambdaArg = head.GetOperand(0);
-                if (lambdaArg.operation.type != TokenType.Symbol) {
-                    error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation}()";
-                    return;
-                }
-                // success
-                // note: arrow operands are added to parent function. So the => itself is not added as a new node. 
+                HandleArrow(stack, out error);
                 return;
             }
+            error           = null;
             var newNode     = new QueryNode(token);
             PushNode(stack, newNode);
+        }
+        
+        private static void HandleArrow(Stack<QueryNode> stack, out string error) {
+            var head = stack.Peek();
+            if (!head.isFunction) {
+                error = $"=> can be used only as lambda in functions. Was used by: {head.operation}";
+                return;
+            }
+            if (head.OperandCount != 1) {
+                error = $"=> expect one preceding lambda argument. Was used in: {head.operation}()";
+                return;
+            }
+            var lambdaArg = head.GetOperand(0);
+            if (lambdaArg.operation.type != TokenType.Symbol) {
+                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation}()";
+                return;
+            }
+            error = null;
+            // success
+            // note: arrow operands are added to parent function. So the => itself is not added as a new node. 
         }
         
         /// <summary>
