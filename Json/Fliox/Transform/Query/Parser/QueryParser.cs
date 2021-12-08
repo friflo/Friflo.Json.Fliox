@@ -59,23 +59,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
             case TokenType.Long:            error = null;   return new LongLiteral  (node.operation.lng);
             
-            case TokenType.Symbol:
-                error = null;
-                var symbol = node.operation.str;
-                switch (symbol) {
-                    case "true":    return new TrueLiteral();
-                    case "false":   return new FalseLiteral();
-                    case "null":    return new NullLiteral();
-                    case "if":
-                    case "else":
-                    case "while":
-                    case "do":
-                    case "for":
-                        error = $"expression must not use conditional statement: {symbol}";
-                        return null;
-                    default:        return new Field(symbol);
-                }
-            
+            case TokenType.Symbol:                          return FromSymbol(node, out error);
             // --- group tokens
             /*case TokenType.BracketOpen:
                 pos++;
@@ -86,6 +70,24 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             default:
                 error = $"unexpected operation {node.operation}";
                 return null;
+            }
+        }
+        
+        private static Operation FromSymbol(QueryNode node, out string error) {
+            error = null;
+            var symbol = node.operation.str;
+            switch (symbol) {
+                case "true":    return new TrueLiteral();
+                case "false":   return new FalseLiteral();
+                case "null":    return new NullLiteral();
+                case "if":
+                case "else":
+                case "while":
+                case "do":
+                case "for":
+                    error = $"expression must not use conditional statement: {symbol}";
+                    return null;
+                default:        return new Field(symbol);
             }
         }
         

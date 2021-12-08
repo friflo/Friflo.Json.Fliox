@@ -246,7 +246,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var op = QueryParser.Parse(".name=='Smartphone'", out _);
                 AreEqual(".name == 'Smartphone'", op.ToString());
-            }
+            } /* {
+                var op = QueryParser.Parse(".name.StartsWith('Smartphone')", out _);
+                AreEqual(".name.StartsWith('Smart')", op.ToString());
+            } */
         }
     }
 }
