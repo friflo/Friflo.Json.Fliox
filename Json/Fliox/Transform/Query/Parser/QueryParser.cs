@@ -108,19 +108,20 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             string method   = symbol.Substring(lastDot + 1);
             string field    = symbol.Substring(0, lastDot);
-            Lambda l;
+            Aggregate       l;
+            Quantify        q;
             BinaryOperands  bin;
             switch (method) {
                 // --- aggregate operations
-                case "Min":     l = Lambda(field, node, out error); return new Min    (l.field, l.arg, l.operand);
-                case "Max":     l = Lambda(field, node, out error); return new Max    (l.field, l.arg, l.operand);
-                case "Sum":     l = Lambda(field, node, out error); return new Sum    (l.field, l.arg, l.operand);
-                case "Average": l = Lambda(field, node, out error); return new Average(l.field, l.arg, l.operand);
+                case "Min":     l = Aggregate(field, node, out error);  return new Min       (l.field, l.arg, l.operand);
+                case "Max":     l = Aggregate(field, node, out error);  return new Max       (l.field, l.arg, l.operand);
+                case "Sum":     l = Aggregate(field, node, out error);  return new Sum       (l.field, l.arg, l.operand);
+                case "Average": l = Aggregate(field, node, out error);  return new Average   (l.field, l.arg, l.operand);
                 
                 // --- quantify  operations
-                case "Any":     l = Lambda(field, node, out error); return new Any       (l.field, l.arg, (FilterOperation)l.operand);
-                case "All":     l = Lambda(field, node, out error); return new All       (l.field, l.arg, (FilterOperation)l.operand);
-                case "Count":   l = Lambda(field, node, out error); return new CountWhere(l.field, l.arg, (FilterOperation)l.operand);
+                case "Any":     q = Quantify(field, node, out error);   return new Any       (q.field, q.arg, q.filter);
+                case "All":     q = Quantify(field, node, out error);   return new All       (q.field, q.arg, q.filter);
+                case "Count":   q = Quantify(field, node, out error);   return new CountWhere(q.field, q.arg, q.filter);
                 
                 // --- string operations
                 case "Contains":    bin = Params(field, node, out error);   return new Contains     (bin.left, bin.right);
@@ -142,14 +143,28 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return GetOperation(operand, out error);
         }
         
-        private static Lambda Lambda(string fieldName, in QueryNode node, out string error) {
+        private static Aggregate Aggregate(string fieldName, in QueryNode node, out string error) {
             error = null;
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
             var fcnOperand  = node.GetOperand(1);
             var arg         = argOperand.operation.str;
             var fcn         = GetOperation(fcnOperand, out error);
-            return new Lambda(field, arg, fcn);
+            return new Aggregate(field, arg, fcn);
+        }
+        
+        private static Quantify Quantify(string fieldName, in QueryNode node, out string error) {
+            var field       = new Field(fieldName);
+            var argOperand  = node.GetOperand(0);
+            var fcnOperand  = node.GetOperand(1);
+            var arg         = argOperand.operation.str;
+            var fcn         = GetOperation(fcnOperand, out error);
+            if (fcn is FilterOperation filter) {
+                error = null;
+                return new Quantify(field, arg, filter);
+            }
+            error = $"quantify operation {node.operation}() expect boolean lambda body. Was: {fcn}";
+            return default;
         }
         
         private static BinaryOperands Params(string fieldName, in QueryNode node, out string error) {
@@ -209,15 +224,27 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
-    internal readonly struct Lambda {
+    internal readonly struct Aggregate {
         internal readonly   Field       field;
         internal readonly   string      arg; 
         internal readonly   Operation   operand;
         
-        internal Lambda(Field field, string arg, Operation operand) {
+        internal Aggregate(Field field, string arg, Operation operand) {
             this.field      = field;
             this.arg        = arg;
             this.operand    = operand;
+        }
+    }
+    
+    internal readonly struct Quantify {
+        internal readonly   Field           field;
+        internal readonly   string          arg; 
+        internal readonly   FilterOperation filter;
+        
+        internal Quantify(Field field, string arg, FilterOperation filter) {
+            this.field      = field;
+            this.arg        = arg;
+            this.filter     = filter;
         }
     }
 }
