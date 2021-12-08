@@ -27,13 +27,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         private void AppendLabel (StringBuilder sb) {
             sb.Append(operation.ToString());
-            if (arity == Arity.Unary)
+            var operandsCount = operands.Count;
+            if (operandsCount == 0)
                 return;
             sb.Append(" {");
-            if (operands.Count > 0) {
+            if (operandsCount > 0) {
                 operands[0].AppendLabel(sb);
             }
-            for (int n = 1; n < operands.Count; n++) {
+            for (int n = 1; n < operandsCount; n++) {
                 sb.Append(", ");
                 operands[n].AppendLabel(sb);
             }

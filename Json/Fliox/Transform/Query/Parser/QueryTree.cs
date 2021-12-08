@@ -74,6 +74,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         return;
                     }
                     if (token.type == TokenType.BracketClose) {
+                        var head = stack.Peek();
+                        // A closing bracket causes the head node to be used as an Unary node.
+                        // So its last operand will not be used as the left operand for subsequent Binary operands.
+                        head.arity = Arity.Unary;
                         error = null;
                         return;
                     }

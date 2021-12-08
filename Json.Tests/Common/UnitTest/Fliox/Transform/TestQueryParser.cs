@@ -330,9 +330,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(".children.Count {child, == {child.age, 20}}", node.ToString());
                 var op = QueryParser.OperationFromNode(node, out _);
                 AreEqual(".children.Count(child => child.age == 20)", op.ToString());
+            } {
+                var node = QueryTree.CreateTree(".items.Max(item => item.amount) > 1", out _);
+                AreEqual("> {.items.Max {item, item.amount}, 1}", node.ToString());
+                var op = QueryParser.OperationFromNode(node, out _);
+                AreEqual(".items.Max(item => item.amount) > 1", op.ToString());
             }
         }
-        
+
         [Test]
         public static void TestQueryStringMethods() {
             {
