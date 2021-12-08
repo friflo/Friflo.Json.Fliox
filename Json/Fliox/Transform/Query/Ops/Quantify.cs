@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         // is set always to the same value in Eval() so it can be reused
         [Fri.Ignore]
-        internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        private  readonly       EvalResult      evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         public CountWhere() { }
         public CountWhere(Field field, string arg, FilterOperation predicate)  {
