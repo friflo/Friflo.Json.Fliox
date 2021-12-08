@@ -219,7 +219,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestQueryQuantityErrors() {
+        public static void TestQueryQuantifyErrors() {
             string error;
             QueryParser.Parse(".children.Any(child => child.age)", out error);
             AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age", error);
