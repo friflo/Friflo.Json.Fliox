@@ -57,6 +57,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new And (filterOperands);
 
                 // --- unary tokens
+                case TokenType.Not:
+                    var unary = Unary(node, out error);
+                    return new Not(unary.operand);
                 case TokenType.String:          error = null;   return new StringLiteral(node.operation.str);
                 case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
                 case TokenType.Long:            error = null;   return new LongLiteral  (node.operation.lng);
@@ -181,6 +184,20 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var fcn         = GetOperation(fcnOperand, out error);
             return new BinaryOperands(field, fcn);
         }
+        
+        private static UnaryOp Unary(in QueryNode node, out string error) {
+            if (node.OperandCount != 1) {
+                error = $"operation {node.operation} expect one operand";
+                return default;
+            }
+            var operand_0  = node.GetOperand(0);
+            var operand    = GetOperation(operand_0, out error);
+            if (operand is FilterOperation filterOperand) {
+                return new UnaryOp (filterOperand);
+            }
+            error = $"operation {node.operation.ToString()} must use a boolean operand";
+            return default;
+        }
 
         private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.OperandCount != 2) {
@@ -220,6 +237,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return operands;
         }
     }
+    
+    internal readonly struct UnaryOp {
+        internal readonly   FilterOperation   operand;
+        
+        internal UnaryOp(FilterOperation operand) {
+            this.operand = operand;
+        }
+    }
+    
     
     internal readonly struct BinaryOperands {
         internal readonly   Operation   left;
