@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "Log":     operand = Operand(node, out error);     return new Log      (operand);
                 case "Sqrt":    operand = Operand(node, out error);     return new Sqrt     (operand);
                 default:
-                    error = $"unknown function: {symbol}";
+                    error = $"unknown function: {symbol}()";
                     return null;
             }
         }
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "StartsWith":  b = Params(field, node, out error); return new StartsWith(b.left, b.right);
                 case "EndsWith":    b = Params(field, node, out error); return new EndsWith  (b.left, b.right);
                 default:
-                    error = $"unknown method: {method} used by: {symbol}";
+                    error = $"unknown method: {method}() used by: {symbol}";
                     return null;
             }
         }
