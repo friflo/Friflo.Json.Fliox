@@ -18,8 +18,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = "operation string is empty";
                 return null;
             }
-            var node    = QueryTree.CreateTree(result.items,out error);
-            var op      = GetOperation (node,               out error);
+            var node = QueryTree.CreateTree(result.items,out error);
+            if (error != null)
+                return null;
+            var op = GetOperation (node,               out error);
             return op;
         }
         

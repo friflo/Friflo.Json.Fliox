@@ -221,10 +221,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryQuantityErrors() {
             string error;
+            QueryParser.Parse(".children.Any(child => child.age)", out error);
+            AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age", error);
+        }
+        
+        [Test]
+        public static void TestQueryArrowErrors() {
+            string error;
             {
-                QueryParser.Parse(".children.Any(child => child.age)", out error);
-                AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age", error);
-            }
+                QueryParser.Parse("1 => 2", out error);
+                AreEqual("=> can be used only as lambda in functions. Was used by: 1", error);
+            } {
+                QueryParser.Parse(".children.Any(=> child.age)", out error);
+                AreEqual("=> expect a preceding lambda argument. Was used in: .children.Any()", error);
+            } /* {
+                QueryParser.Parse(".children.Foo(-1 => child.age)", out error);
+                AreEqual("lambda argument must by a symbol name.", error);
+            } */
         }
         
         [Test]

@@ -36,6 +36,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             while (pos < tokens.Length) {
                 var token = tokens[pos++];
                 GetNode(stack, token, out error);
+                if (error != null)
+                    return null;
             }
             if (stack.Count == 0)
                 throw new InvalidOperationException("invalid stack count");
@@ -71,7 +73,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         error = null;    
                         return;
                     }
-                    error = $"Invalid arity for token: {token}";
+                    if (token.type == TokenType.BracketClose) {
+                        error = null;
+                        return;
+                    }
+                    error = $"Unexpected query token: {token}";
                     return;
             }
         }
@@ -91,11 +97,23 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error           = null;
             if (token.type == TokenType.Arrow) {
                 var head = stack.Peek();
-                if (head.isFunction) {
-                    // arrow operands are added to parent function. So the => itself is not added as a new node. 
+                if (!head.isFunction) {
+                    error = $"=> can be used only as lambda in functions. Was used by: {head.operation}";
                     return;
                 }
-                error = $"=> can be used only in functions. Was used in: {head.operation}";
+                if (head.OperandCount == 0) {
+                    error = $"=> expect a preceding lambda argument. Was used in: {head.operation}()";
+                    return;
+                }
+                if (head.OperandCount > 1) {
+                    error = $"=> expect a preceding lambda argument. Was used in: {head.operation}()"; // todo
+                    return;
+                }
+                /* if (head.operation.type != TokenType.Symbol) {
+                    error = $"=> lambda argument must by a symbol name. Was: {head.operation}";
+                    return;
+                } */
+                // arrow operands are added to parent function. So the => itself is not added as a new node. 
                 return;
             }
             var newNode     = new QueryNode(token);
