@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "while":
                 case "do":
                 case "for":
-                    error = $"expression must not use conditional statement: {symbol}";
+                    error = $"operation must not use conditional statement: {symbol}";
                     return null;
             }
             return new Field(symbol);

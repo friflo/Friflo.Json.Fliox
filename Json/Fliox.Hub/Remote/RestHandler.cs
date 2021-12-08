@@ -192,12 +192,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (filter != null) {
                 var filterOp = QueryParser.Parse(filter, out string error);
                 if (error != null) {
-                    context.WriteError("query filter error", error, 400);
+                    context.WriteError("filter error", error, 400);
                     return null;
                 }
                 if (filterOp is FilterOperation op)
                     return op;
-                context.WriteError("query filter error", "filter must be boolean operation", 400);
+                context.WriteError("filter error", "filter must be boolean operation", 400);
                 return null;
             }
             var queryFilter = queryParams["query-filter"];
@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var filterOp = reader.Read<FilterOperation>(queryFilter);
                 if (!reader.Error.ErrSet)
                     return filterOp;
-                context.WriteError("query filter error", reader.Error.ToString(), 400);
+                context.WriteError("filter error", reader.Error.ToString(), 400);
                 return null;
             }
         }
