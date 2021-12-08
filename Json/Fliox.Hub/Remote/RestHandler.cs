@@ -195,7 +195,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.WriteError("query filter error", error, 400);
                     return null;
                 }
-                return (FilterOperation)filterOp;
+                if (filterOp is FilterOperation op)
+                    return op;
+                context.WriteError("query filter error", "filter must be boolean operation", 400);
+                return null;
             }
             var queryFilter = queryParams["query-filter"];
             if (queryFilter == null) {
