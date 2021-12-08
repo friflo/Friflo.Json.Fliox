@@ -111,16 +111,20 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             Lambda l;
             BinaryOperands  bin;
             switch (method) {
-                case "Any":     l = Lambda(field, node, out error);    return new Any  (l.field, l.arg, (FilterOperation)l.operand);
-                case "Min":     l = Lambda(field, node, out error);    return new Min  (l.field, l.arg, l.operand);
-                case "Max":     l = Lambda(field, node, out error);    return new Max  (l.field, l.arg, l.operand);
-                case "Sum":     l = Lambda(field, node, out error);    return new Sum  (l.field, l.arg, l.operand);
+                // --- aggregate operations
+                case "Min":     l = Lambda(field, node, out error);    return new Min    (l.field, l.arg, l.operand);
+                case "Max":     l = Lambda(field, node, out error);    return new Max    (l.field, l.arg, l.operand);
+                case "Sum":     l = Lambda(field, node, out error);    return new Sum    (l.field, l.arg, l.operand);
+                case "Average": l = Lambda(field, node, out error);    return new Average(l.field, l.arg, l.operand);
+                
+                // --- quantify  operations
+                case "Any":     l = Lambda(field, node, out error);    return new Any    (l.field, l.arg, (FilterOperation)l.operand);
                 case "Count":   error = null;                   return new Count(null);
                 
                 // --- string operations
-                case "Contains":    bin = Bin(node, out error);     return new Contains     (bin.left, bin.right);
-                case "StartsWith":  bin = Bin(node, out error);     return new StartsWith   (bin.left, bin.right);
-                case "EndsWith":    bin = Bin(node, out error);     return new EndsWith     (bin.left, bin.right);
+                case "Contains":    bin = Params(field, node, out error);   return new Contains     (bin.left, bin.right);
+                case "StartsWith":  bin = Params(field, node, out error);   return new StartsWith   (bin.left, bin.right);
+                case "EndsWith":    bin = Params(field, node, out error);   return new EndsWith     (bin.left, bin.right);
                 default:
                     error = $"unknown method: {method}";
                     return null;
@@ -147,6 +151,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new Lambda(field, arg, fcn);
         }
         
+        private static BinaryOperands Params(string fieldName, in QueryNode node, out string error) {
+            error = null;
+            var field       = new Field(fieldName);
+            var fcnOperand  = node.GetOperand(0);
+            var fcn         = GetOperation(fcnOperand, out error);
+            return new BinaryOperands(field, fcn);
+        }
+
         private static BinaryOperands Bin(in QueryNode node, out string error) {
             if (node.OperandCount != 2) {
                 error = $"operation {node.operation} expect two operands";

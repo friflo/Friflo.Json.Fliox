@@ -266,15 +266,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         [Test]
-        public static void TestQueryMethods() {
+        public static void TestQueryAggregateMethods() {
             {
                 var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
                 AreEqual(".children.Min(child => child.age)", op.ToString());
-            }
-            /* {
+            } {
+                var op = QueryParser.Parse(".children.Max(child => child.age)", out _);
+                AreEqual(".children.Max(child => child.age)", op.ToString());
+            } {
+                var op = QueryParser.Parse(".children.Sum(child => child.age)", out _);
+                AreEqual(".children.Sum(child => child.age)", op.ToString());
+            } {
+                var op = QueryParser.Parse(".children.Average(child => child.age)", out _);
+                AreEqual(".children.Average(child => child.age)", op.ToString());
+            } /*{
+                var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
+                AreEqual(".children.Min(child => child.age)", op.ToString());
+            } {
+                var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
+                AreEqual(".children.Min(child => child.age)", op.ToString());
+            }*/
+        }
+        
+        [Test]
+        public static void TestQueryStringMethods() {
+            {
+                var op = QueryParser.Parse(".name.Contains('Smartphone')", out _);
+                AreEqual(".name.Contains('Smartphone')", op.ToString());
+            } {
                 var op = QueryParser.Parse(".name.StartsWith('Smartphone')", out _);
-                AreEqual(".name.StartsWith('Smart')", op.ToString());
-            } */
+                AreEqual(".name.StartsWith('Smartphone')", op.ToString());
+            } {
+                var op = QueryParser.Parse(".name.EndsWith('Smartphone')", out _);
+                AreEqual(".name.EndsWith('Smartphone')", op.ToString());
+            }
         }
         
         [Test]
