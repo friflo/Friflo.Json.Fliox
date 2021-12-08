@@ -119,6 +119,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 
                 // --- quantify  operations
                 case "Any":     l = Lambda(field, node, out error); return new Any       (l.field, l.arg, (FilterOperation)l.operand);
+                case "All":     l = Lambda(field, node, out error); return new All       (l.field, l.arg, (FilterOperation)l.operand);
                 case "Count":   l = Lambda(field, node, out error); return new CountWhere(l.field, l.arg, (FilterOperation)l.operand);
                 
                 // --- string operations

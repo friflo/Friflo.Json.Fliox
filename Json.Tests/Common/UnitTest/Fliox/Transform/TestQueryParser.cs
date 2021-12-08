@@ -290,6 +290,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = QueryParser.OperationFromNode(node, out _);
                 AreEqual(".children.Any(child => child.age == 20)", op.ToString());
             } {
+                var node = QueryTree.CreateTree(".children.All(child => child.age == 20)", out _);
+                AreEqual(".children.All {child, == {child.age, 20}}", node.ToString());
+                var op = QueryParser.OperationFromNode(node, out _);
+                AreEqual(".children.All(child => child.age == 20)", op.ToString());
+            } {
                 var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
                 AreEqual(".children.Count {child, == {child.age, 20}}", node.ToString());
                 var op = QueryParser.OperationFromNode(node, out _);
