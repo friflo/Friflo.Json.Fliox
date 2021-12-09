@@ -135,11 +135,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var node    = QueryTree.CreateTree("!(1 < 2)", out _);
                 AreEqual("! {( {< {1, 2}}}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
+                That(op, Is.TypeOf<Not>());
                 AreEqual("!(1 < 2)", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("(1 + 2) * 3", out _);
                 AreEqual("( {* {+ {1, 2}, 3}}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
+                That(op, Is.TypeOf<Multiply>());
                 // AreEqual("(1 + 2) * 3", op.ToString());
             }
         }

@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return;
                 }
                 if (stack.Count == 1) {
-                    error = "not matching open parenthesis";
+                    error = "no matching open parenthesis";
                     return;
                 }
                 stack.Pop();
