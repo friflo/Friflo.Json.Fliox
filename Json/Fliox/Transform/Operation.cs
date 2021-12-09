@@ -104,6 +104,30 @@ namespace Friflo.Json.Fliox.Transform
             }
             return field.name;
         }
+        
+        protected string BinaryLinq(string token, Operation left, Operation right) {
+            return $"{left.Linq} {token} {right.Linq}";
+        }
+        
+        internal static int GetPrecedence (Operation op) {
+            switch (op) {
+                // --- binary arithmetic
+                case Multiply           _:  return 2;
+                case Divide             _:  return 2;
+                case Add                _:  return 3;
+                case Subtract           _:  return 3;
+                
+                // --- binary compare
+                case GreaterThan        _:  return 4;
+                case GreaterThanOrEqual _:  return 4;
+                case LessThan           _:  return 4;
+                case LessThanOrEqual    _:  return 4;
+                case NotEqual           _:  return 5;
+                case Equal              _:  return 5;
+             
+                default:                    return 0;
+            }
+        }
     }
     
     [Fri.Discriminator("op")]
