@@ -36,17 +36,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             switch (node.operation.type)
             {
                 // --- binary tokens
-                case TokenType.Add:             b = Bin(node, out error);   return new Add                  (b.left, b.right);
-                case TokenType.Sub:             b = Bin(node, out error);   return new Subtract             (b.left, b.right);
-                case TokenType.Mul:             b = Bin(node, out error);   return new Multiply             (b.left, b.right);
-                case TokenType.Div:             b = Bin(node, out error);   return new Divide               (b.left, b.right);
+                case TokenType.Add:             b = Bin(node, false, out error);   return new Add                  (b.left, b.right);
+                case TokenType.Sub:             b = Bin(node, false, out error);   return new Subtract             (b.left, b.right);
+                case TokenType.Mul:             b = Bin(node, false, out error);   return new Multiply             (b.left, b.right);
+                case TokenType.Div:             b = Bin(node, false, out error);   return new Divide               (b.left, b.right);
                 //
-                case TokenType.Greater:         b = Bin(node, out error);   return new GreaterThan          (b.left, b.right);
-                case TokenType.GreaterOrEqual:  b = Bin(node, out error);   return new GreaterThanOrEqual   (b.left, b.right);
-                case TokenType.Less:            b = Bin(node, out error);   return new LessThan             (b.left, b.right);
-                case TokenType.LessOrEqual:     b = Bin(node, out error);   return new LessThanOrEqual      (b.left, b.right);
-                case TokenType.Equals:          b = Bin(node, out error);   return new Equal                (b.left, b.right);
-                case TokenType.NotEquals:       b = Bin(node, out error);   return new NotEqual             (b.left, b.right);
+                case TokenType.Greater:         b = Bin(node, false, out error);   return new GreaterThan          (b.left, b.right);
+                case TokenType.GreaterOrEqual:  b = Bin(node, false, out error);   return new GreaterThanOrEqual   (b.left, b.right);
+                case TokenType.Less:            b = Bin(node, false, out error);   return new LessThan             (b.left, b.right);
+                case TokenType.LessOrEqual:     b = Bin(node, false, out error);   return new LessThanOrEqual      (b.left, b.right);
+                case TokenType.Equals:          b = Bin(node, true,  out error);   return new Equal                (b.left, b.right);
+                case TokenType.NotEquals:       b = Bin(node, true,  out error);   return new NotEqual             (b.left, b.right);
                 
                 // --- arity tokens
                 case TokenType.Or:
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
 
-        private static BinaryOperands Bin(in QueryNode node, out string error) {
+        private static BinaryOperands Bin(in QueryNode node, bool boolOperands, out string error) {
             if (node.OperandCount != 2) {
                 error = $"operation {node.operation} expect two operands";
                 return default;
@@ -215,6 +215,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var operand_1 = node.GetOperand(1);
             var left    = GetOperation(operand_0, out error);
             var right   = GetOperation(operand_1, out error);
+            if (boolOperands)
+                return new BinaryOperands (left, right);
             if (left is FilterOperation || right is FilterOperation) {
                 error = $"operation {node.operation.ToString()} must not use boolean operands";
                 return default;
