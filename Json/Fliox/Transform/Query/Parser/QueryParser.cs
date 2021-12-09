@@ -69,7 +69,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         return GetFunction(node, out error);
                     }
                     return GetField(node, out error);
-            // no case TokenType.BracketOpen:  -> is never added as QueryNode
+                case TokenType.BracketOpen:
+                    if (node.OperandCount != 1) {
+                        error = $"operation {node.operation} expect one operand";
+                        return default;
+                    }
+                    var operand_0   = node.GetOperand(0);
+                    var operation   = GetOperation(operand_0, out error);
+                    return operation;
                 default:
                     error = $"unexpected operation {node.operation}";
                     return null;

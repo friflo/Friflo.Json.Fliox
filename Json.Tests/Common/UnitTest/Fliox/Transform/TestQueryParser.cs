@@ -129,13 +129,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        // [Test]
+        [Test]
         public static void TestQueryScope() {
             {
-                var node    = QueryTree.CreateTree("!(true == false)", out _);
-                AreEqual("! {== {true, false}}", node.ToString());
+                var node    = QueryTree.CreateTree("!(1 < 2)", out _);
+                AreEqual("! {( {< {1, 2}}}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
-                AreEqual("!(true == false)", op.ToString());
+                AreEqual("!(1 < 2)", op.ToString());
             }
         }
         

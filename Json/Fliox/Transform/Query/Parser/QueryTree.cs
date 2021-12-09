@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     // example:  a * b + c   (5 tokens)
@@ -55,33 +56,59 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case Arity.Unary:   AddUnary    (stack, token, out error);  return;
                 case Arity.Binary:  AddBinary   (stack, token, out error);  return;
                 case Arity.NAry:    AddNAry     (stack, token, out error);  return;
-                default:            AddDefault  (stack, token, out error);  return;
+                default:
+                    switch (token.type){
+                        case TokenType.BracketOpen:     HandleBracketOpen(stack, out error);    return;
+                        case TokenType.BracketClose:    HandleBracketClose(stack, out error);   return;
+                        default:
+                            error = $"Unexpected query token: {token}";
+                            return;
+                    }
             }
         }
+
+        private static void HandleBracketOpen(Stack<QueryNode> stack, out string error) {
+            var last = stack.Peek();
+            if (last.operation.type == TokenType.Symbol) {
+                // the bracket converts the symbol to function with 0 or 1 parameter.
+                // 0: .children.Count()
+                // 1: .children.Min(child => child.age)
+                // => so it becomes NAry
+                last.isFunction = true;
+                last.arity      = Arity.NAry;
+                error = null;
+                return;
+            }
+            // add (grouping) open parenthesis
+            var newNode = new QueryNode(new Token(TokenType.BracketOpen));
+            last.AddOperand(newNode);
+            stack.Push(newNode);
+            error = null;
+        }
         
-        private static void AddDefault(Stack<QueryNode> stack, in Token token, out string error) {
-            switch (token.type) {
-                case TokenType.BracketOpen:
-                    var last = stack.Peek();
-                    if (last.operation.type == TokenType.Symbol) {
-                        // the bracket converts the symbol to function with 0 or 1 parameter.
-                        // 0: .children.Count()
-                        // 1: .children.Min(child => child.age)
-                        // => so it becomes NAry
-                        last.isFunction = true;
-                        last.arity      = Arity.NAry;
-                    }
-                    error = null;    
-                    return;
-                case TokenType.BracketClose:
-                    var head = stack.Peek();
+        private static void HandleBracketClose(Stack<QueryNode> stack, out string error) {
+            var head = stack.Peek();
+            while (true) {
+                if (head.isFunction) {
                     // A closing bracket causes the head node to be used as an Unary node.
-                    // So its last operand will not be used as the left operand for subsequent Binary operands.
+                    // So its last operand will not be used as the left operand for subsequent n-ary operations (n>1).
                     head.arity = Arity.Unary;
                     error = null;
                     return;
+                }
+                if (head.operation.type == TokenType.BracketOpen) {
+                    // remove matching (grouping) open parenthesis
+                    stack.Pop();
+                    error = null;
+                    return;
+                }
+                if (stack.Count == 1) {
+                    error = "not matching open parenthesis";
+                    return;
+                }
+                stack.Pop();
+                head = stack.Peek();
             }
-            error = $"Unexpected query token: {token}";
         }
         
         private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {
