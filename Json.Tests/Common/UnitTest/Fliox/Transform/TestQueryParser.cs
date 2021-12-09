@@ -132,17 +132,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryScope() {
             {
-                var node    = QueryTree.CreateTree("!(1 < 2)", out _);
-                AreEqual("! {( {< {1, 2}}}", node.ToString());
+                var node    = QueryTree.CreateTree("!(true)", out _);
+                AreEqual("! {( {true}}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Not>());
-                AreEqual("!(1 < 2)", op.ToString());
+                AreEqual("!(true)", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("(1 + 2) * 3", out _);
                 AreEqual("( {* {+ {1, 2}, 3}}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Multiply>());
                 AreEqual("(1 + 2) * 3", op.ToString());
+            } {
+                var node    = QueryTree.CreateTree("(true || false) && true", out _);
+                AreEqual("( {&& {|| {true, false}, true}}", node.ToString());
+                var op      = QueryParser.OperationFromNode(node, out _);
+                That(op, Is.TypeOf<And>());
+                AreEqual("(true || false) && true", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("(1 < 2 || 3 < 4) && 5 < 6", out _);
                 AreEqual("( {&& {|| {< {1, 2}, < {3, 4}}, < {5, 6}}}", node.ToString());
