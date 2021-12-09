@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         [Fri.Required]  public  string      value;
         
-        protected override void AppendLinq(StringBuilder sb) => sb.Append($"'{value}'");
+        public    override void AppendLinq(StringBuilder sb) => sb.Append($"'{value}'");
 
         public StringLiteral() { }
         public StringLiteral(string value) { this.value = value; }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         public          double      value;
 
-        protected override void AppendLinq(StringBuilder sb) => sb.Append(value.ToString(CultureInfo.InvariantCulture));
+        public    override void AppendLinq(StringBuilder sb) => sb.Append(value.ToString(CultureInfo.InvariantCulture));
 
         public DoubleLiteral() { }
         public DoubleLiteral(double value) { this.value = value; }
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         public          long        value;
 
-        protected override void AppendLinq(StringBuilder sb) => sb.Append(value.ToString());
+        public    override void AppendLinq(StringBuilder sb) => sb.Append(value.ToString());
 
         public LongLiteral() { }
         public LongLiteral(long value) { this.value = value; }
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class TrueLiteral : FilterOperation
     {
-        protected override void AppendLinq(StringBuilder sb) => sb.Append("true");
+        public    override void AppendLinq(StringBuilder sb) => sb.Append("true");
 
         internal override void Init(OperationContext cx, InitFlags flags) { }
 
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class FalseLiteral : FilterOperation
     {
-        protected override void AppendLinq(StringBuilder sb) => sb.Append("false");
+        public    override void AppendLinq(StringBuilder sb) => sb.Append("false");
 
         internal override void Init(OperationContext cx, InitFlags flags) { }
 
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
     public sealed class NullLiteral : Literal
     {
-        protected override void AppendLinq(StringBuilder sb) => sb.Append("null");
+        public    override void AppendLinq(StringBuilder sb) => sb.Append("null");
 
         public NullLiteral() { }
 

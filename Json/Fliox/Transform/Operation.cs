@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public abstract class Operation
     {
-        protected abstract  void        AppendLinq (StringBuilder sb);
+        public    abstract  void        AppendLinq (StringBuilder sb);
         internal  abstract  void        Init (OperationContext cx, InitFlags flags);
         internal  abstract  EvalResult  Eval (EvalCx cx);
         public              string      Linq { get {
