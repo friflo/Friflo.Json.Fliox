@@ -68,11 +68,16 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public abstract class Operation
     {
-        public   abstract   string      Linq { get; }
-        internal abstract   void        Init (OperationContext cx, InitFlags flags);
-        internal abstract   EvalResult  Eval (EvalCx cx);
+        protected abstract  void        AppendLinq (StringBuilder sb);
+        internal  abstract  void        Init (OperationContext cx, InitFlags flags);
+        internal  abstract  EvalResult  Eval (EvalCx cx);
+        public              string      Linq { get {
+            var sb = new StringBuilder();
+            AppendLinq(sb);
+            return sb.ToString();
+        } }
 
-        public   override   string      ToString() => Linq; 
+        public    override  string      ToString() => Linq; 
 
         internal static readonly Scalar         True  = Scalar.True; 
         internal static readonly Scalar         False = Scalar.False;

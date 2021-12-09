@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Text;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public sealed class Contains : BinaryBoolOp
     {
-        public override string      Linq => $"{left.Linq}.Contains({right.Linq})";
+        protected override void AppendLinq(StringBuilder sb) => sb.Append($"{left.Linq}.Contains({right.Linq})");
 
         public Contains() { }
         public Contains(Operation left, Operation right) : base(left, right) { }
@@ -25,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class StartsWith : BinaryBoolOp
     {
-        public override string      Linq => $"{left.Linq}.StartsWith({right.Linq})";
+        protected override void AppendLinq(StringBuilder sb) => sb.Append($"{left.Linq}.StartsWith({right.Linq})");
 
         public StartsWith() { }
         public StartsWith(Operation left, Operation right) : base(left, right) { }
@@ -43,7 +44,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class EndsWith : BinaryBoolOp
     {
-        public override string      Linq => $"{left.Linq}.EndsWith({right.Linq})";
+        protected override void AppendLinq(StringBuilder sb) => sb.Append($"{left.Linq}.EndsWith({right.Linq})");
 
         public EndsWith() { }
         public EndsWith(Operation left, Operation right) : base(left, right) { }

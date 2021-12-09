@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
@@ -24,7 +25,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Not : UnaryLogicalOp
     {
-        public override string      Linq => $"!({operand})";
+        protected override void AppendLinq(StringBuilder sb) => sb.Append($"!({operand})");
 
         public Not() { }
         public Not(FilterOperation operand) : base(operand) { }
@@ -61,7 +62,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class And : BinaryLogicalOp
     {
-        public override string      Linq => NAryLinq("&&", operands);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(NAryLinq("&&", operands));
 
         public And() { }
         public And(List<FilterOperation> operands) : base(operands) { }
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Or : BinaryLogicalOp
     {
-        public override string      Linq => NAryLinq("||", operands);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(NAryLinq("||", operands));
         
         public Or() { }
         public Or(List<FilterOperation> operands) : base(operands) { }

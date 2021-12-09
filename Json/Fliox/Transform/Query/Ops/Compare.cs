@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Equal() { }
         public Equal(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => BinaryLinq("==", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("==", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -51,7 +52,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public NotEqual() { }
         public NotEqual(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => BinaryLinq("!=", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("!=", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -71,7 +72,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessThan() { }
         public LessThan(Operation left, Operation right) : base(left, right) { }
         
-        public override string      Linq => BinaryLinq("<", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("<", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -90,7 +91,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessThanOrEqual() { }
         public LessThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
-        public override string      Linq => BinaryLinq("<=", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("<=", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -109,7 +110,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterThan() { }
         public GreaterThan(Operation left, Operation right) : base(left, right) { }
         
-        public override string      Linq => BinaryLinq(">", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq(">", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -128,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterThanOrEqual() { }
         public GreaterThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
-        public override string      Linq => BinaryLinq(">=", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq(">=", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();

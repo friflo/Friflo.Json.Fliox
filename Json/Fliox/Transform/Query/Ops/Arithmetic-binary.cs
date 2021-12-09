@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Add() { }
         public Add(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => BinaryLinq("+", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("+", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -52,7 +53,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Subtract() { }
         public Subtract(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => BinaryLinq("-", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("-", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -70,7 +71,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Multiply() { }
         public Multiply(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => BinaryLinq("*", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("*", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -88,7 +89,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Divide() { }
         public Divide(Operation left, Operation right) : base(left, right) { }
 
-        public override string      Linq => BinaryLinq("/", left, right);
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(BinaryLinq("/", left, right));
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();

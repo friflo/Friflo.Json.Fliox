@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ConvertToAutoProperty
@@ -28,7 +29,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
         [Fri.Ignore]    internal    EvalResult  evalResult;
 
-        public override             string      Linq => name;
+        protected override void AppendLinq(StringBuilder sb) => sb.Append(name);
 
         public Field() { }
         public Field(string name) { this.name = name; }
