@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class And : BinaryLogicalOp
     {
-        public override string      Linq => string.Join(" && ", operands);
+        public override string      Linq => NAryLinq("&&", operands);
 
         public And() { }
         public And(List<FilterOperation> operands) : base(operands) { }
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Or : BinaryLogicalOp
     {
-        public override string      Linq => string.Join(" || ", operands);
+        public override string      Linq => NAryLinq("||", operands);
         
         public Or() { }
         public Or(List<FilterOperation> operands) : base(operands) { }

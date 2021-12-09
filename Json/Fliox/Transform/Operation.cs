@@ -131,7 +131,23 @@ namespace Friflo.Json.Fliox.Transform
             return sb.ToString();
         }
         
-        internal static int GetPrecedence (Operation op) {
+        protected string NAryLinq(string token, List<FilterOperation> operands) {
+            var sb          = new StringBuilder();
+            var precedence  = GetPrecedence(this);
+            var operand     = operands[0];
+            sb.Append(operand.Linq);
+            
+            for (int n = 1; n < operands.Count; n++) {
+                operand = operands[n];
+                sb.Append(' ');
+                sb.Append(token);
+                sb.Append(' ');
+                sb.Append(operand.Linq);
+            }
+            return sb.ToString();
+        }
+        
+        private static int GetPrecedence (Operation op) {
             switch (op) {
                 // --- binary arithmetic
                 case Multiply           _:  return 2;
