@@ -25,15 +25,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             left.Init(cx, 0);
             right.Init(cx, 0);
         }
-        
-        protected void AppendLinq(string name, StringBuilder sb) {
-            left.AppendLinq(sb);
-            sb.Append(".");
-            sb.Append(name);
-            sb.Append("(");
-            right.AppendLinq(sb);
-            sb.Append(")");
-        }
     }
     
     // --- associative comparison operations ---
@@ -42,7 +33,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Equal() { }
         public Equal(Operation left, Operation right) : base(left, right) { }
 
-        public    override void AppendLinq(StringBuilder sb) => BinaryLinq(sb, "==", left, right);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqBinary(sb, "==", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -61,7 +52,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public NotEqual() { }
         public NotEqual(Operation left, Operation right) : base(left, right) { }
 
-        public    override void AppendLinq(StringBuilder sb) => BinaryLinq(sb, "!=", left, right);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqBinary(sb, "!=", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -81,7 +72,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessThan() { }
         public LessThan(Operation left, Operation right) : base(left, right) { }
         
-        public    override void AppendLinq(StringBuilder sb) => BinaryLinq(sb, "<", left, right);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqBinary(sb, "<", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -100,7 +91,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessThanOrEqual() { }
         public LessThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
-        public    override void AppendLinq(StringBuilder sb) => BinaryLinq(sb, "<=", left, right);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqBinary(sb, "<=", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -119,7 +110,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterThan() { }
         public GreaterThan(Operation left, Operation right) : base(left, right) { }
         
-        public    override void AppendLinq(StringBuilder sb) => BinaryLinq(sb, ">", left, right);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqBinary(sb, ">", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -138,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterThanOrEqual() { }
         public GreaterThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
-        public    override void AppendLinq(StringBuilder sb) => BinaryLinq(sb, ">=", left, right);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqBinary(sb, ">=", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();

@@ -32,10 +32,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Count() { }
         public Count(Field field) : base(field) { }
 
-        public    override void AppendLinq(StringBuilder sb) {
-            field.AppendLinq(sb);
-            sb.Append(".Count()");
-        }
+        public   override void AppendLinq(StringBuilder sb) { field.AppendLinq(sb); sb.Append(".Count()"); }
 
         internal override EvalResult Eval(EvalCx cx) {
             var eval = field.Eval(cx);
@@ -73,7 +70,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Min() { }
         public Min(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public    override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Min", field, arg, array, sb);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Min", field, arg, array, sb);
 
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
@@ -96,7 +93,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Max() { }
         public Max(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public    override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Max", field, arg, array, sb);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Max", field, arg, array, sb);
 
         internal override EvalResult Eval(EvalCx cx) {
             Scalar currentMin = new Scalar();
@@ -119,7 +116,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Sum() { }
         public Sum(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public    override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Sum", field, arg, array, sb);
+        public   override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Sum", field, arg, array, sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);
@@ -137,7 +134,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Average() { }
         public Average(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public    override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Average", field, arg, array, sb);
+        public  override void AppendLinq(StringBuilder sb) => AppendLinqArrow("Average", field, arg, array, sb);
 
         internal override EvalResult Eval(EvalCx cx) {
             Scalar sum = new Scalar(0);

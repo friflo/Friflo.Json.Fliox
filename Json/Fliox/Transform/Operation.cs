@@ -122,7 +122,23 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append(")");
         }
         
-        protected void BinaryLinq(StringBuilder sb, string token, Operation left, Operation right) {
+        protected static void AppendLinqMethod(string name, Operation symbol, Operation operand, StringBuilder sb) {
+            symbol.AppendLinq(sb);
+            sb.Append(".");
+            sb.Append(name);
+            sb.Append("(");
+            operand.AppendLinq(sb);
+            sb.Append(")");
+        }
+        
+        protected static void AppendLinqFunction(string name, Operation operand, StringBuilder sb) {
+            sb.Append(name);
+            sb.Append("(");
+            operand.AppendLinq(sb);
+            sb.Append(")");
+        }
+        
+        protected void AppendLinqBinary(StringBuilder sb, string token, Operation left, Operation right) {
             AppendOperation (sb, left);
             sb.Append(' ');
             sb.Append(token);
@@ -142,7 +158,7 @@ namespace Friflo.Json.Fliox.Transform
             sb.Append(')');
         }
         
-        protected void NAryLinq(StringBuilder sb, string token, List<FilterOperation> operands) {
+        protected void AppendLinqNAry(StringBuilder sb, string token, List<FilterOperation> operands) {
             var operand     = operands[0];
             AppendOperation(sb, operand);
             for (int n = 1; n < operands.Count; n++) {
