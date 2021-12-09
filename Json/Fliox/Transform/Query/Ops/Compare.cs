@@ -25,6 +25,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             left.Init(cx, 0);
             right.Init(cx, 0);
         }
+        
+        protected void AppendLinq(string name, StringBuilder sb) {
+            left.AppendLinq(sb);
+            sb.Append(".");
+            sb.Append(name);
+            sb.Append("(");
+            right.AppendLinq(sb);
+            sb.Append(")");
+        }
     }
     
     // --- associative comparison operations ---

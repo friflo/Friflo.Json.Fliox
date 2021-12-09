@@ -25,7 +25,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Not : UnaryLogicalOp
     {
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"!({operand})");
+        public    override void AppendLinq(StringBuilder sb) {
+            sb.Append("!(");
+            operand.AppendLinq(sb);
+            sb.Append(")");
+        }
 
         public Not() { }
         public Not(FilterOperation operand) : base(operand) { }
