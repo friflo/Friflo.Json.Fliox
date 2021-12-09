@@ -117,8 +117,8 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         private void AppendOperation(StringBuilder sb, Operation op) {
-            var precedence      = GetPrecedence(this);
             var opPrecedence    = GetPrecedence(op);
+            var precedence      = GetPrecedence(this);
             if (precedence > opPrecedence) {
                 sb.Append(op.Linq);
                 return;
@@ -131,15 +131,13 @@ namespace Friflo.Json.Fliox.Transform
         protected string NAryLinq(string token, List<FilterOperation> operands) {
             var sb          = new StringBuilder();
             var operand     = operands[0];
-            // AppendOperation(sb, operand);
-            sb.Append(operand.Linq);
+            AppendOperation(sb, operand);
             for (int n = 1; n < operands.Count; n++) {
                 operand                 = operands[n];
                 sb.Append(' ');
                 sb.Append(token);
                 sb.Append(' ');
-                // AppendOperation(sb, operand);
-                sb.Append(operand.Linq);
+                AppendOperation(sb, operand);
             }
             return sb.ToString();
         }
@@ -151,7 +149,6 @@ namespace Friflo.Json.Fliox.Transform
                 case Divide             _:  return 2;
                 case Add                _:  return 3;
                 case Subtract           _:  return 3;
-                
                 // --- binary compare
                 case GreaterThan        _:  return 4;
                 case GreaterThanOrEqual _:  return 4;
@@ -159,6 +156,9 @@ namespace Friflo.Json.Fliox.Transform
                 case LessThanOrEqual    _:  return 4;
                 case NotEqual           _:  return 5;
                 case Equal              _:  return 5;
+                // -- n-ary logical
+                case And                _:  return 6;
+                case Or                 _:  return 7;
              
                 default:                    return 0;
             }

@@ -447,7 +447,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } { 
                 var or3 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
                 AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':3}}]}");
-                AreEqual(".age == 1 || .age == 2 || .age == 3",   or3.Linq);
+                AreEqual("(.age == 1 || .age == 2) || .age == 3",   or3.Linq);
                 Cosmos  ("c.age = 1 || c.age = 2 || c.age = 3",   or3.query.Cosmos);
             }
             
