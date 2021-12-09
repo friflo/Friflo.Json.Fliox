@@ -50,40 +50,36 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void GetNode(Stack<QueryNode> stack, in Token token, out string error) {
             var shape = Token.Shape(token.type);
             switch (shape.arity) {
-                case Arity.Unary:
-                    AddUnary (stack, token, out error);
-                    return;
-                case Arity.Binary:
-                    AddBinary(stack, token, out error);
-                    return;
-                case Arity.NAry:
-                    AddNAry  (stack, token, out error);
-                    return;
-                default:
-                    if (token.type == TokenType.BracketOpen) {
-                        var last = stack.Peek();
-                        if (last.operation.type == TokenType.Symbol) {
-                            // the bracket converts the symbol to function with 0 or 1 parameter.
-                            // 0: .children.Count()
-                            // 1: .children.Min(child => child.age)
-                            // => so it becomes NAry
-                            last.isFunction = true;
-                            last.arity      = Arity.NAry;
-                        }
-                        error = null;    
-                        return;
-                    }
-                    if (token.type == TokenType.BracketClose) {
-                        var head = stack.Peek();
-                        // A closing bracket causes the head node to be used as an Unary node.
-                        // So its last operand will not be used as the left operand for subsequent Binary operands.
-                        head.arity = Arity.Unary;
-                        error = null;
-                        return;
-                    }
-                    error = $"Unexpected query token: {token}";
-                    return;
+                case Arity.Unary:   AddUnary    (stack, token, out error);  return;
+                case Arity.Binary:  AddBinary   (stack, token, out error);  return;
+                case Arity.NAry:    AddNAry     (stack, token, out error);  return;
+                default:            AddDefault  (stack, token, out error);  return;
             }
+        }
+        
+        private static void AddDefault(Stack<QueryNode> stack, in Token token, out string error) {
+            if (token.type == TokenType.BracketOpen) {
+                var last = stack.Peek();
+                if (last.operation.type == TokenType.Symbol) {
+                    // the bracket converts the symbol to function with 0 or 1 parameter.
+                    // 0: .children.Count()
+                    // 1: .children.Min(child => child.age)
+                    // => so it becomes NAry
+                    last.isFunction = true;
+                    last.arity      = Arity.NAry;
+                }
+                error = null;    
+                return;
+            }
+            if (token.type == TokenType.BracketClose) {
+                var head = stack.Peek();
+                // A closing bracket causes the head node to be used as an Unary node.
+                // So its last operand will not be used as the left operand for subsequent Binary operands.
+                head.arity = Arity.Unary;
+                error = null;
+                return;
+            }
+            error = $"Unexpected query token: {token}";
         }
         
         private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {

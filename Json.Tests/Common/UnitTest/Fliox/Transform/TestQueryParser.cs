@@ -129,6 +129,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        // [Test]
+        public static void TestQueryScope() {
+            {
+                var op = QueryParser.Parse("!(true == false)", out _);
+                AreEqual("!(true)", op.Linq);
+            }
+        }
+        
         [Test]
         public static void TestQueryOr() {
             {
