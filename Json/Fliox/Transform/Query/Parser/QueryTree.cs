@@ -68,8 +68,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void HandleBracketOpen(Stack<QueryNode> stack, out string error) {
-            var last = stack.Peek();
-            if (last.operation.type == TokenType.Symbol) {
+            stack.TryPeek(out QueryNode last);
+            // Is there a preceding symbol?
+            if (last?.operation.type == TokenType.Symbol) {
                 // the bracket converts the symbol to function with 0 or 1 parameter.
                 // 0: .children.Count()
                 // 1: .children.Min(child => child.age)
@@ -81,7 +82,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             // add (grouping) open parenthesis
             var newNode = new QueryNode(new Token(TokenType.BracketOpen));
-            last.AddOperand(newNode);
+            last?.AddOperand(newNode);
             stack.Push(newNode);
             error = null;
         }
@@ -97,8 +98,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return;
                 }
                 if (head.operation.type == TokenType.BracketOpen) {
-                    // remove matching (grouping) open parenthesis
-                    stack.Pop();
+                    // found matching (grouping) open parenthesis
                     error = null;
                     return;
                 }
