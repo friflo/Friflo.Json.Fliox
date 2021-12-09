@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Count(Field field) : base(field) { }
 
         public    override void AppendLinq(StringBuilder sb) {
-            sb.Append(field.Linq);
+            field.AppendLinq(sb);
             sb.Append(".Count()");
         }
 

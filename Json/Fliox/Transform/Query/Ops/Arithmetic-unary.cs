@@ -25,6 +25,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             cx.ValidateReuse(this); // results are reused
             value.Init(cx, 0);
         }
+        
+        protected void AppendLinq(string name, StringBuilder sb) {
+            sb.Append(name);
+            sb.Append("(");
+            value.AppendLinq(sb);
+            sb.Append(")");
+        }
     }
     
     public sealed class Abs : UnaryArithmeticOp
@@ -32,7 +39,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Abs() { }
         public Abs(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"Abs({value.Linq})");
+        public    override void AppendLinq(StringBuilder sb) => AppendLinq("Abs", sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -50,7 +57,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Ceiling() { }
         public Ceiling(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"Ceiling({value.Linq})");
+        public    override void AppendLinq(StringBuilder sb) => AppendLinq("Ceiling", sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -68,7 +75,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Floor() { }
         public Floor(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"Floor({value.Linq})");
+        public    override void AppendLinq(StringBuilder sb) => AppendLinq("Floor", sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -86,7 +93,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Exp() { }
         public Exp(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"Exp({value.Linq})");
+        public    override void AppendLinq(StringBuilder sb) => AppendLinq("Exp", sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -104,7 +111,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Log() { }
         public Log(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"Log({value.Linq})");
+        public    override void AppendLinq(StringBuilder sb) => AppendLinq("Log", sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -122,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Sqrt() { }
         public Sqrt(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"Sqrt({value.Linq})");
+        public    override void AppendLinq(StringBuilder sb) => AppendLinq("Sqrt", sb);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -140,8 +147,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Negate() { }
         public Negate(Operation value) : base(value) { }
 
-        public    override void AppendLinq(StringBuilder sb) => sb.Append($"-({value.Linq})");
-        
+        public    override void AppendLinq(StringBuilder sb) {
+            sb.Append("-(");
+            value.AppendLinq(sb);
+            sb.Append(")");
+        }
+
         internal override EvalResult Eval(EvalCx cx) {
             var zero = new Scalar(0);
             evalResult.Clear();
