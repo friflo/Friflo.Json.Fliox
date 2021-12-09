@@ -108,40 +108,37 @@ namespace Friflo.Json.Fliox.Transform
         
         protected string BinaryLinq(string token, Operation left, Operation right) {
             var sb = new StringBuilder();
-            var precedence      = GetPrecedence(this);
-            var leftPrecedence  = GetPrecedence(left);
-            var rightPrecedence = GetPrecedence(right);
-            if (precedence > leftPrecedence) {
-                sb.Append(left.Linq);
-            } else {
-                sb.Append('(');
-                sb.Append(left.Linq);
-                sb.Append(')');
-            }
+            AppendOperation (sb, left);
             sb.Append(' ');
             sb.Append(token);
             sb.Append(' ');
-            if (precedence > rightPrecedence) {
-                sb.Append(right.Linq);
-            } else {
-                sb.Append('(');
-                sb.Append(right.Linq);
-                sb.Append(')');
-            }
+            AppendOperation (sb, right);
             return sb.ToString();
+        }
+        
+        private void AppendOperation(StringBuilder sb, Operation op) {
+            var precedence      = GetPrecedence(this);
+            var opPrecedence    = GetPrecedence(op);
+            if (precedence > opPrecedence) {
+                sb.Append(op.Linq);
+                return;
+            }
+            sb.Append('(');
+            sb.Append(op.Linq);
+            sb.Append(')');
         }
         
         protected string NAryLinq(string token, List<FilterOperation> operands) {
             var sb          = new StringBuilder();
-            var precedence  = GetPrecedence(this);
             var operand     = operands[0];
+            // AppendOperation(sb, operand);
             sb.Append(operand.Linq);
-            
             for (int n = 1; n < operands.Count; n++) {
-                operand = operands[n];
+                operand                 = operands[n];
                 sb.Append(' ');
                 sb.Append(token);
                 sb.Append(' ');
+                // AppendOperation(sb, operand);
                 sb.Append(operand.Linq);
             }
             return sb.ToString();
