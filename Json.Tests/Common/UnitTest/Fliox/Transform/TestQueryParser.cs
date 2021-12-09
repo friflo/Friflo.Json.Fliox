@@ -132,8 +132,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         // [Test]
         public static void TestQueryScope() {
             {
-                var op = QueryParser.Parse("!(true == false)", out _);
-                AreEqual("!(true)", op.Linq);
+                var node    = QueryTree.CreateTree("!(true == false)", out _);
+                AreEqual("! {== {true, false}}", node.ToString());
+                var op      = QueryParser.OperationFromNode(node, out _);
+                AreEqual("!(true == false)", op.ToString());
             }
         }
         

@@ -25,6 +25,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         public static QueryNode CreateTree (string operation, out string error) {
             var result  = QueryLexer.Tokenize (operation,   out error);
+            if (error != null)
+                return null;
             var node    = CreateTree(result.items,out error);
             return node;
         }
@@ -58,26 +60,26 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static void AddDefault(Stack<QueryNode> stack, in Token token, out string error) {
-            if (token.type == TokenType.BracketOpen) {
-                var last = stack.Peek();
-                if (last.operation.type == TokenType.Symbol) {
-                    // the bracket converts the symbol to function with 0 or 1 parameter.
-                    // 0: .children.Count()
-                    // 1: .children.Min(child => child.age)
-                    // => so it becomes NAry
-                    last.isFunction = true;
-                    last.arity      = Arity.NAry;
-                }
-                error = null;    
-                return;
-            }
-            if (token.type == TokenType.BracketClose) {
-                var head = stack.Peek();
-                // A closing bracket causes the head node to be used as an Unary node.
-                // So its last operand will not be used as the left operand for subsequent Binary operands.
-                head.arity = Arity.Unary;
-                error = null;
-                return;
+            switch (token.type) {
+                case TokenType.BracketOpen:
+                    var last = stack.Peek();
+                    if (last.operation.type == TokenType.Symbol) {
+                        // the bracket converts the symbol to function with 0 or 1 parameter.
+                        // 0: .children.Count()
+                        // 1: .children.Min(child => child.age)
+                        // => so it becomes NAry
+                        last.isFunction = true;
+                        last.arity      = Arity.NAry;
+                    }
+                    error = null;    
+                    return;
+                case TokenType.BracketClose:
+                    var head = stack.Peek();
+                    // A closing bracket causes the head node to be used as an Unary node.
+                    // So its last operand will not be used as the left operand for subsequent Binary operands.
+                    head.arity = Arity.Unary;
+                    error = null;
+                    return;
             }
             error = $"Unexpected query token: {token}";
         }
