@@ -138,9 +138,10 @@
         .tabContent     { display: none; border-top: none; }
 
 
-        .filter         { width:100%; height: 15px; font-size: 13px; color: var(--color); font-family: 'Courier New', Courier, monospace;
-                          background-color: transparent;  margin: 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
-        .filter:hover   { background-color: transparent;  margin: 0px; padding: 0px 3px;    border: 0.5px solid var(--tab-border); }
+        .filter         { width:100%; height: 15px; font-size: 14px; color: var(--color);
+                          font-family: 'Consolas', 'Courier New', Courier, monospace;
+                          background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
+        .filter:hover   { background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid var(--tab-border); }
         .filter:focus   { background-color: var(--background2);  outline: none !important;  border: 0.5px solid var(--tab-border);}
         .filter::placeholder {  opacity: 0.5; font-family: Arial, Helvetica, sans-serif; }
 
@@ -250,7 +251,7 @@
     </tr>
   </table>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
-  <div style="overflow:initial; white-space:nowrap; margin-bottom: 10px; display:flex;">
+  <div style="overflow:initial; white-space:nowrap; margin-bottom: 7px; display:flex;">
     <span class="tab" onclick="app.openTab('playground')">Playground</span>
     <span class="tab" onclick="app.openTab('explorer')"   >Explorer</span>
     <span class="tab" onclick="app.openTab('settings')"   ><b>⋮</b></span>
@@ -330,6 +331,14 @@
   <div id="explorer" class="tabContent">
     <table width="100%" style="border-spacing: 0px;"">
       <tr>
+        <td></td>
+        <td class="vbar2"></td>
+        <td colspan="3">
+          <input id="entityFilter" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="filter" onkeyup="app.runFilter(event)">
+        </td>        
+      </tr>
+
+      <tr>
         <td style="overflow:auto;white-space:nowrap">
         </td>
         <td class="vbar2"></td>
@@ -354,14 +363,6 @@
           <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
           <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
         </td>
-      </tr>
-
-      <tr>
-        <td></td>
-        <td class="vbar2"></td>
-        <td colspan="3">
-          <input id="entityFilter" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="filter" onkeyup="app.runFilter(event)">
-        </td>        
       </tr>
 
       <tr>
