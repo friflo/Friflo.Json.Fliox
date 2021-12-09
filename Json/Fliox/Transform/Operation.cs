@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -106,7 +107,28 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         protected string BinaryLinq(string token, Operation left, Operation right) {
-            return $"{left.Linq} {token} {right.Linq}";
+            var sb = new StringBuilder();
+            var precedence      = GetPrecedence(this);
+            var leftPrecedence  = GetPrecedence(left);
+            var rightPrecedence = GetPrecedence(right);
+            if (precedence > leftPrecedence) {
+                sb.Append(left.Linq);
+            } else {
+                sb.Append('(');
+                sb.Append(left.Linq);
+                sb.Append(')');
+            }
+            sb.Append(' ');
+            sb.Append(token);
+            sb.Append(' ');
+            if (precedence > rightPrecedence) {
+                sb.Append(right.Linq);
+            } else {
+                sb.Append('(');
+                sb.Append(right.Linq);
+                sb.Append(')');
+            }
+            return sb.ToString();
         }
         
         internal static int GetPrecedence (Operation op) {

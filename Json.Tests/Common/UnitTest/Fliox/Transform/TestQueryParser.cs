@@ -142,7 +142,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("( {* {+ {1, 2}, 3}}", node.ToString());
                 var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Multiply>());
-                // AreEqual("(1 + 2) * 3", op.ToString());
+                AreEqual("(1 + 2) * 3", op.ToString());
             }
         }
         
