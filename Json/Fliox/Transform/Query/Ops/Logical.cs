@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class And : BinaryLogicalOp
     {
-        public    override void AppendLinq(StringBuilder sb) => sb.Append(NAryLinq("&&", operands));
+        public    override void AppendLinq(StringBuilder sb) => NAryLinq(sb, "&&", operands);
 
         public And() { }
         public And(List<FilterOperation> operands) : base(operands) { }
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Or : BinaryLogicalOp
     {
-        public    override void AppendLinq(StringBuilder sb) => sb.Append(NAryLinq("||", operands));
+        public    override void AppendLinq(StringBuilder sb) => NAryLinq(sb, "||", operands);
         
         public Or() { }
         public Or(List<FilterOperation> operands) : base(operands) { }

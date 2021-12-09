@@ -111,30 +111,27 @@ namespace Friflo.Json.Fliox.Transform
             return field.name;
         }
         
-        protected string BinaryLinq(string token, Operation left, Operation right) {
-            var sb = new StringBuilder();
+        protected void BinaryLinq(StringBuilder sb, string token, Operation left, Operation right) {
             AppendOperation (sb, left);
             sb.Append(' ');
             sb.Append(token);
             sb.Append(' ');
             AppendOperation (sb, right);
-            return sb.ToString();
         }
         
         private void AppendOperation(StringBuilder sb, Operation op) {
             var opPrecedence    = GetPrecedence(op);
             var precedence      = GetPrecedence(this);
             if (precedence > opPrecedence) {
-                sb.Append(op.Linq);
+                op.AppendLinq(sb);
                 return;
             }
             sb.Append('(');
-            sb.Append(op.Linq);
+            op.AppendLinq(sb);
             sb.Append(')');
         }
         
-        protected string NAryLinq(string token, List<FilterOperation> operands) {
-            var sb          = new StringBuilder();
+        protected void NAryLinq(StringBuilder sb, string token, List<FilterOperation> operands) {
             var operand     = operands[0];
             AppendOperation(sb, operand);
             for (int n = 1; n < operands.Count; n++) {
@@ -144,7 +141,6 @@ namespace Friflo.Json.Fliox.Transform
                 sb.Append(' ');
                 AppendOperation(sb, operand);
             }
-            return sb.ToString();
         }
         
         private static int GetPrecedence (Operation op) {
