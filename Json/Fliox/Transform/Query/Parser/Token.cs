@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Arrow:           return "=>";
                 //
                 case TokenType.Error:           return "ERROR";
-                case TokenType.Whitespace:      return "WHITESPACE";
+                case TokenType.Whitespace:      return "WS";
                 case TokenType.End:             return "END";
                 //
                 default:                        return "---";
