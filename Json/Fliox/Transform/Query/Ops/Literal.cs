@@ -23,11 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         [Fri.Required]  public  string      value;
         
-        public    override void AppendLinq(StringBuilder sb) {
-            sb.Append("'");
-            sb.Append(value);
-            sb.Append("'");
-        }
+        public    override void AppendLinq(StringBuilder sb) { sb.Append("'"); sb.Append(value); sb.Append("'"); }
 
         public StringLiteral() { }
         public StringLiteral(string value) { this.value = value; }

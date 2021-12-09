@@ -111,6 +111,17 @@ namespace Friflo.Json.Fliox.Transform
             return field.name;
         }
         
+        protected static void AppendLinqArrow(string name, Field field, string arg, Operation op, StringBuilder sb) {
+            field.AppendLinq(sb);
+            sb.Append(".");
+            sb.Append(name);
+            sb.Append("(");
+            sb.Append(arg);
+            sb.Append(" => ");
+            op.AppendLinq(sb);
+            sb.Append(")");
+        }
+        
         protected void BinaryLinq(StringBuilder sb, string token, Operation left, Operation right) {
             AppendOperation (sb, left);
             sb.Append(' ');
