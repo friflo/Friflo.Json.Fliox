@@ -46,8 +46,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         NotEquals,      // !=
         //
     //  Dot,            // .
-        BracketOpen,    // (
-        BracketClose,   // )
+        /// ( and ) are used for functions or grouping operations
+        BracketOpen,    // ( 
+        /// <see cref="BracketClose"/> must not be used to create a <see cref="QueryNode"/> 
+        BracketClose,   // ) 
         //
         Or,             // ||
         And,            // &&

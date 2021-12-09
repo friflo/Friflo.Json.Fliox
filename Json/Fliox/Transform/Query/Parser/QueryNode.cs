@@ -1,9 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
+// ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public class QueryNode {
@@ -40,13 +43,26 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             sb.Append("}");
         }
-
-        internal QueryNode (Token operation) {
+        
+        internal QueryNode (in Token operation) {
+            AssertValidTokenType(operation.type);
             this.operation  = operation;
             operands        = new List<QueryNode>();
             var shape       = Token.Shape(operation.type);
             arity           = shape.arity;
             precedence      = shape.precedence;
+        }
+        
+        [Conditional("DEBUG")]
+        private static void AssertValidTokenType(TokenType type) {
+           switch (type) {
+               case TokenType.Start:
+               case TokenType.BracketClose:
+               case TokenType.Error:
+               case TokenType.Whitespace:
+               case TokenType.End:
+                   throw new InvalidOperationException($"Must not create a QueryNode with operation type: {type}");
+           }
         }
     } 
 }
