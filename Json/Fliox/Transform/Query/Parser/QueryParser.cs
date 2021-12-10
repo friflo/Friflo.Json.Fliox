@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (operand is FilterOperation filterOperand) {
                 return new UnaryOp (filterOperand);
             }
-            error = $"not operator {node.operation.ToString()} must use a boolean operand";
+            error = $"not operator ! must use a boolean operand";
             return default;
         }
 
