@@ -59,21 +59,23 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Double:      error = null;   return new DoubleLiteral(node.operation.dbl);
                 case TokenType.Long:        error = null;   return new LongLiteral  (node.operation.lng);
                 
-                case TokenType.Symbol:      return GetField(node, out error);
-                case TokenType.Function:    return GetFunction(node, out error);
-                
-                case TokenType.BracketOpen:
-                    if (node.OperandCount != 1) {
-                        error = $"parentheses (...) expect one operand";
-                        return default;
-                    }
-                    var operand_0   = node.GetOperand(0);
-                    var operation   = GetOperation(operand_0, out error);
-                    return operation;
+                case TokenType.Symbol:      return GetField     (node, out error);
+                case TokenType.Function:    return GetFunction  (node, out error);
+                case TokenType.BracketOpen: return GetScope     (node, out error);
                 default:
                     error = $"unexpected operation {node.operation}";
                     return null;
             }
+        }
+        
+        private static Operation GetScope(QueryNode node, out string error) {
+            if (node.OperandCount != 1) {
+                error = $"parentheses (...) expect one operand";
+                return default;
+            }
+            var operand_0   = node.GetOperand(0);
+            var operation   = GetOperation(operand_0, out error);
+            return operation;
         }
         
         private static Operation GetField(QueryNode node, out string error) {
