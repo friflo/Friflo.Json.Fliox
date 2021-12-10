@@ -266,6 +266,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("!123", out error);
                 AreEqual("not operator ! must use a boolean operand", error);
             } {
+                Parse(")", out error);
+                AreEqual("no matching open parenthesis", error);
+            } {
                 Parse("123)", out error);
                 AreEqual("no matching open parenthesis", error);
             } {
@@ -280,6 +283,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("Abs()", out error);
                 AreEqual("function Abs() expect one operand", error);
+            } {
+                Parse("=>", out error);
+                AreEqual("operator => expect one preceding operand", error);
+            } {
+                Parse("||", out error);
+                AreEqual("operator || expect one preceding operand", error);
+            } {
+                Parse("+", out error);
+                AreEqual("operator + expect one preceding operand", error);
             }
         }
         

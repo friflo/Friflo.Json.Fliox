@@ -101,8 +101,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static void HandleBracketClose(Stack<QueryNode> stack, out string error) {
-            var head = stack.Peek();
             while (true) {
+                if (!stack.TryPeek(out QueryNode head)) {
+                    error = "no matching open parenthesis";
+                    return;
+                }
                 if (head.isFunction) {
                     // A closing bracket causes the head node to be used as an Unary node.
                     // So its last operand will not be used as the left operand for subsequent n-ary operations (n>1).
@@ -116,12 +119,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = null;
                     return;
                 }
-                if (stack.Count == 1) {
-                    error = "no matching open parenthesis";
-                    return;
-                }
                 stack.Pop();
-                head = stack.Peek();
             }
         }
         
@@ -137,8 +135,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
+            if (!stack.TryPeek(out QueryNode head)) {
+                error = $"operator {token} expect one preceding operand";
+                return;
+            }
             if (token.type == TokenType.Arrow) {
-                HandleArrow(stack, out error);
+                HandleArrow(head, out error);
                 return;
             }
             error           = null;
@@ -146,8 +148,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             PushNode(stack, newNode);
         }
         
-        private static void HandleArrow(Stack<QueryNode> stack, out string error) {
-            var head = stack.Peek();
+        private static void HandleArrow(QueryNode head, out string error) {
             if (!head.isFunction) {
                 error = $"=> can be used only as lambda in functions. Was used by: {head.operation}";
                 return;
@@ -202,8 +203,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private static void AddNAry(Stack<QueryNode> stack, in Token token, out string error) {
+            if (!stack.TryPeek(out QueryNode node)) {
+                error = $"operator {token} expect one preceding operand";
+                return;
+            }
             error = null;
-            var node = stack.Peek();
             if (node.operation.type == token.type) {
                 // || &&  are allowed having multiple operators 
                 return;
