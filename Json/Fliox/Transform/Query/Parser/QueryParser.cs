@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
                 // --- unary tokens
                 case TokenType.Not:
-                    var unary = Unary(node, out error);
+                    var unary = NotOp(node, out error);
                     return new Not(unary.operand);
                 case TokenType.String:          error = null;   return new StringLiteral(node.operation.str);
                 case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return GetField(node, out error);
                 case TokenType.BracketOpen:
                     if (node.OperandCount != 1) {
-                        error = $"operation {node.operation} expect one operand";
+                        error = $"parentheses (...) expect one operand";
                         return default;
                     }
                     var operand_0   = node.GetOperand(0);
@@ -105,21 +105,21 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             string      symbol  = node.operation.str;
             Operation   operand;
             switch (symbol) {
-                case "Abs":     operand = Operand(node, out error);     return new Abs      (operand);
-                case "Ceiling": operand = Operand(node, out error);     return new Ceiling  (operand);
-                case "Floor":   operand = Operand(node, out error);     return new Floor    (operand);
-                case "Exp":     operand = Operand(node, out error);     return new Exp      (operand);
-                case "Log":     operand = Operand(node, out error);     return new Log      (operand);
-                case "Sqrt":    operand = Operand(node, out error);     return new Sqrt     (operand);
+                case "Abs":     operand = FcnOp(node, out error);     return new Abs      (operand);
+                case "Ceiling": operand = FcnOp(node, out error);     return new Ceiling  (operand);
+                case "Floor":   operand = FcnOp(node, out error);     return new Floor    (operand);
+                case "Exp":     operand = FcnOp(node, out error);     return new Exp      (operand);
+                case "Log":     operand = FcnOp(node, out error);     return new Log      (operand);
+                case "Sqrt":    operand = FcnOp(node, out error);     return new Sqrt     (operand);
                 default:
                     error = $"unknown function: {symbol}()";
                     return null;
             }
         }
         
-        private static Operation Operand(in QueryNode node, out string error) {
+        private static Operation FcnOp(in QueryNode node, out string error) {
             if (node.OperandCount != 1) {
-                error = $"operation {node.operation} expect one operand";
+                error = $"function {node.operation}() expect one operand";
                 return default;
             }
             error = null;
@@ -192,9 +192,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new BinaryOperands(field, fcn);
         }
         
-        private static UnaryOp Unary(in QueryNode node, out string error) {
+        private static UnaryOp NotOp(in QueryNode node, out string error) {
             if (node.OperandCount != 1) {
-                error = $"operation {node.operation} expect one operand";
+                error = $"not operator expect one operand";
                 return default;
             }
             var operand_0  = node.GetOperand(0);

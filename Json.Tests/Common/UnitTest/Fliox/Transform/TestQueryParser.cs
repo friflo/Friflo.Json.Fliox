@@ -270,6 +270,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 QueryParser.Parse("(123", out error);
                 AreEqual("missing closing parenthesis", error);
+            } {
+                QueryParser.Parse("!a b", out error);
+                AreEqual("not operator expect one operand", error);
+            } {
+                QueryParser.Parse("()", out error);
+                AreEqual("parentheses (...) expect one operand", error);
+            } {
+                QueryParser.Parse("Abs()", out error);
+                AreEqual("function Abs() expect one operand", error);
             }
         }
         
