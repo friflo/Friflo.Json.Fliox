@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal readonly   int             precedence;
         internal            Arity           arity;
         internal            bool            isFunction;
+        internal            bool            bracketClosed;
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
         

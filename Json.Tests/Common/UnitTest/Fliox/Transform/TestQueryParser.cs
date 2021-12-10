@@ -261,6 +261,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 QueryParser.Parse("Foo(1)", out error);
                 AreEqual("unknown function: Foo()", error);
+            } {
+                QueryParser.Parse("!123", out error);
+                AreEqual("operation ! must use a boolean operand", error);
+            } {
+                QueryParser.Parse("123)", out error);
+                AreEqual("no matching open parenthesis", error);
+            } {
+                QueryParser.Parse("(123", out error);
+                AreEqual("missing closing parenthesis", error);
             }
         }
         

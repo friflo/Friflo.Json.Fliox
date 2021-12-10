@@ -42,12 +42,25 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (error != null)
                     return null;
             }
-            if (stack.Count == 0)
-                throw new InvalidOperationException("invalid stack count");
+            if (!ValidateStack(stack, out error))
+                return null;
             while (stack.Count > 1)
                 stack.Pop();
             var result = stack.Peek();
             return result;
+        }
+        
+        private static bool ValidateStack(Stack<QueryNode> stack, out string error) {
+            if (stack.Count == 0)
+                throw new InvalidOperationException("invalid stack count");
+            foreach (var entry in stack) {
+                if (entry.operation.type == TokenType.BracketOpen && !entry.bracketClosed) {
+                    error = "missing closing parenthesis";
+                    return false;
+                }
+            }
+            error = null;
+            return true;
         }
 
         private static void GetNode(Stack<QueryNode> stack, in Token token, out string error) {
@@ -99,6 +112,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 }
                 if (head.operation.type == TokenType.BracketOpen) {
                     // found matching (grouping) open parenthesis
+                    head.bracketClosed = true;
                     error = null;
                     return;
                 }
