@@ -34,22 +34,16 @@ var exampleSync: ProtocolMessage_Union =
         },
         {
             "task": "query",
-            "container": "Article",
-            "filter": { "op":"true" }
+            "container": "Article"
         },
         {
             "task":         "query",
             "container":    "Article",
-            "filter": {
-                "op":"equal",
-                "left": {"op":"field",  "name":  ".name"},
-                "right":{"op":"string", "value": "Smartphone"}
-            }
+            "filter":       ".name == 'Smartphone'"
         },
         {
             "task":         "query",
             "container":    "Article",
-            "filter":       { "op":"true" },
             "references": [
                 {
                     "selector": ".producer",
