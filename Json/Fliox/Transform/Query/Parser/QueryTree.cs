@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             var newNode = new QueryNode(token);
             if (token.type == TokenType.Function) {
-                // A Function can accept 0 or 1 parameter.
+                // Function can accept 0 or 1 parameter.
                 // 0: .children.Count()
                 // 1: .children.Min(child => child.age)
                 // => so it becomes NAry
@@ -129,6 +129,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             var node = stack.Peek();
             node.AddOperand(newNode);
+            if (token.type == TokenType.Function) {
+                stack.Push(newNode);
+            }
         }
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {

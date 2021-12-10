@@ -295,10 +295,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("+", out error);
                 AreEqual("operator + expect one preceding operand", error);
-            } /* {
+            } {
                 Parse("!Abs(1)", out error);
                 AreEqual("not operator ! must use a boolean operand", error);
-            } */
+            }
         }
         
         [Test]
@@ -373,6 +373,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = Parse("Sqrt(2.5)", out _);
                 AreEqual("Sqrt(2.5)", op.ToString());
+            } {
+                var op = Parse("Abs(Sqrt(2.5))", out _);
+                AreEqual("Abs(Sqrt(2.5))", op.ToString());
             }
         }
         
