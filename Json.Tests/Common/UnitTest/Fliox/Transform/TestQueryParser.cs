@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Fliox.Transform.QueryParser;
 
 // ReSharper disable InlineOutVariableDeclaration
 // ReSharper disable TooWideLocalVariableScope
@@ -71,66 +72,66 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryBasicParser() {
             // --- literals
             {
-                var op = QueryParser.Parse("1", out _);
+                var op = Parse("1", out _);
                 AreEqual("1", op.Linq);
             } {
-                var op = QueryParser.Parse("1.2", out _);
+                var op = Parse("1.2", out _);
                 AreEqual("1.2", op.Linq);
             } {
-                var op = QueryParser.Parse("'abc'", out _);
+                var op = Parse("'abc'", out _);
                 AreEqual("'abc'", op.Linq);
             } {
-                var op = QueryParser.Parse("true", out _);
+                var op = Parse("true", out _);
                 That(op, Is.TypeOf<TrueLiteral>());
             } {
-                var op = QueryParser.Parse("false", out _);
+                var op = Parse("false", out _);
                 That(op, Is.TypeOf<FalseLiteral>());
             } {
-                var op = QueryParser.Parse("null", out _);
+                var op = Parse("null", out _);
                 That(op, Is.TypeOf<NullLiteral>());
             }
             
             // --- arithmetic operations
             {
-                var op = QueryParser.Parse("1+2", out _);
+                var op = Parse("1+2", out _);
                 AreEqual("1 + 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1-2", out _);
+                var op = Parse("1-2", out _);
                 AreEqual("1 - 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1*2", out _);
+                var op = Parse("1*2", out _);
                 AreEqual("1 * 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1/2", out _);
+                var op = Parse("1/2", out _);
                 AreEqual("1 / 2", op.Linq);
             }
             // --- comparison operation
             {
-                var op = QueryParser.Parse("1<2", out _);
+                var op = Parse("1<2", out _);
                 AreEqual("1 < 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1<=2", out _);
+                var op = Parse("1<=2", out _);
                 AreEqual("1 <= 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1>2", out _);
+                var op = Parse("1>2", out _);
                 AreEqual("1 > 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1>=2", out _);
+                var op = Parse("1>=2", out _);
                 AreEqual("1 >= 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1==2", out _);
+                var op = Parse("1==2", out _);
                 AreEqual("1 == 2", op.Linq);
             } {
-                var op = QueryParser.Parse("1!=2", out _);
+                var op = Parse("1!=2", out _);
                 AreEqual("1 != 2", op.Linq);
             } {
-                var op = QueryParser.Parse("!true", out _);
+                var op = Parse("!true", out _);
                 AreEqual("!(true)", op.Linq);
             } {
-                var op = QueryParser.Parse("true == false", out _);
+                var op = Parse("true == false", out _);
                 AreEqual("true == false", op.Linq);
             } {
-                var op = QueryParser.Parse("true != false", out _);
+                var op = Parse("true != false", out _);
                 AreEqual("true != false", op.Linq);
             }
         }
@@ -167,10 +168,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryOr() {
             {
-                var op = QueryParser.Parse("true || false", out _);
+                var op = Parse("true || false", out _);
                 AreEqual("true || false", op.Linq);
             } {
-                var op = QueryParser.Parse("true || false || true", out _);
+                var op = Parse("true || false || true", out _);
                 AreEqual("true || false || true", op.Linq);
                 That(op, Is.TypeOf<Or>());
                 AreEqual(3, ((Or)op).operands.Count);
@@ -180,10 +181,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryAnd() {
             {
-                var op = QueryParser.Parse("true && false", out _);
+                var op = Parse("true && false", out _);
                 AreEqual("true && false", op.Linq);
             } {
-                var op = QueryParser.Parse("true && false && true", out _);
+                var op = Parse("true && false && true", out _);
                 AreEqual("true && false && true", op.Linq);
                 That(op, Is.TypeOf<And>());
                 AreEqual(3, ((And)op).operands.Count);
@@ -235,49 +236,49 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryErrors() {
             string error;
             {
-                QueryParser.Parse("", out error);
+                Parse("", out error);
                 AreEqual("operation is empty", error);
             } {
-                QueryParser.Parse("true < false", out error);
+                Parse("true < false", out error);
                 AreEqual("operator < must not use boolean operands", error);
             } {
-                QueryParser.Parse("1 < 3 > 2", out error);
+                Parse("1 < 3 > 2", out error);
                 AreEqual("operator > must not use boolean operands", error);
             } {
-                QueryParser.Parse("true ||", out error);
+                Parse("true ||", out error);
                 AreEqual("expect at minimum two operands for operator ||", error);
             } {
-                QueryParser.Parse("true || 1", out error);
+                Parse("true || 1", out error);
                 AreEqual("operator || expect boolean operands. Got: 1", error);
             } {
-                QueryParser.Parse("1+", out error);
+                Parse("1+", out error);
                 AreEqual("operator + expect two operands", error);
             } {
-                QueryParser.Parse("if", out error);
+                Parse("if", out error);
                 AreEqual("conditional statements must not be used: if", error);
             } {
-                QueryParser.Parse(".children.Foo(child => child.age)", out error);
+                Parse(".children.Foo(child => child.age)", out error);
                 AreEqual("unknown method: Foo() used by: .children.Foo", error);
             } {
-                QueryParser.Parse("Foo(1)", out error);
+                Parse("Foo(1)", out error);
                 AreEqual("unknown function: Foo()", error);
             } {
-                QueryParser.Parse("!123", out error);
+                Parse("!123", out error);
                 AreEqual("not operator ! must use a boolean operand", error);
             } {
-                QueryParser.Parse("123)", out error);
+                Parse("123)", out error);
                 AreEqual("no matching open parenthesis", error);
             } {
-                QueryParser.Parse("(123", out error);
+                Parse("(123", out error);
                 AreEqual("missing closing parenthesis", error);
             } {
-                QueryParser.Parse("!a b", out error);
+                Parse("!a b", out error);
                 AreEqual("not operator expect one operand", error);
             } {
-                QueryParser.Parse("()", out error);
+                Parse("()", out error);
                 AreEqual("parentheses (...) expect one operand", error);
             } {
-                QueryParser.Parse("Abs()", out error);
+                Parse("Abs()", out error);
                 AreEqual("function Abs() expect one operand", error);
             }
         }
@@ -285,7 +286,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryQuantifyErrors() {
             string error;
-            QueryParser.Parse(".children.Any(child => child.age)", out error);
+            Parse(".children.Any(child => child.age)", out error);
             AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age", error);
         }
         
@@ -293,16 +294,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryArrowErrors() {
             string error;
             {
-                QueryParser.Parse("1 => 2", out error);
+                Parse("1 => 2", out error);
                 AreEqual("=> can be used only as lambda in functions. Was used by: 1", error);
             } {
-                QueryParser.Parse(".children.Any(=> child.age)", out error);
+                Parse(".children.Any(=> child.age)", out error);
                 AreEqual("=> expect one preceding lambda argument. Was used in: .children.Any()", error);
             } {
-                QueryParser.Parse(".children.Any(child foo => child.age)", out error);
+                Parse(".children.Any(child foo => child.age)", out error);
                 AreEqual("=> expect one preceding lambda argument. Was used in: .children.Any()", error);
             } {
-                QueryParser.Parse(".children.Any(-1 => child.age)", out error);
+                Parse(".children.Any(-1 => child.age)", out error);
                 AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any()", error);
             }
         }
@@ -311,22 +312,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestLexerErrors() {
             string error;
             {
-                QueryParser.Parse("=+", out error);
+                Parse("=+", out error);
                 AreEqual("unexpected character '+' after '='. Use == or =>", error);
             } {
-                QueryParser.Parse("|x", out error);
+                Parse("|x", out error);
                 AreEqual("unexpected character 'x' after '|'. Use ||", error);
             } {
-                QueryParser.Parse("&x", out error);
+                Parse("&x", out error);
                 AreEqual("unexpected character 'x' after '&'. Use &&", error);
             } {
-                QueryParser.Parse("#", out error);
+                Parse("#", out error);
                 AreEqual("unexpected character: '#'", error);
             } {
-                QueryParser.Parse("'abc", out error);
+                Parse("'abc", out error);
                 AreEqual("missing string terminator ' for: abc", error);
             }  {
-                QueryParser.Parse("1.23.4", out error);
+                Parse("1.23.4", out error);
                 AreEqual("invalid floating point number: 1.23.", error);
             }
         }
@@ -334,22 +335,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestArithmeticFunction() {
             {
-                var op = QueryParser.Parse("Abs(-1)", out _);
+                var op = Parse("Abs(-1)", out _);
                 AreEqual("Abs(-1)", op.ToString());
             }  {
-                var op = QueryParser.Parse("Ceiling(2.5)", out _);
+                var op = Parse("Ceiling(2.5)", out _);
                 AreEqual("Ceiling(2.5)", op.ToString());
             }  {
-                var op = QueryParser.Parse("Floor(2.5)", out _);
+                var op = Parse("Floor(2.5)", out _);
                 AreEqual("Floor(2.5)", op.ToString());
             } {
-                var op = QueryParser.Parse("Exp(2.5)", out _);
+                var op = Parse("Exp(2.5)", out _);
                 AreEqual("Exp(2.5)", op.ToString());
             } {
-                var op = QueryParser.Parse("Log(2.5)", out _);
+                var op = Parse("Log(2.5)", out _);
                 AreEqual("Log(2.5)", op.ToString());
             }  {
-                var op = QueryParser.Parse("Log(2.5)", out _);
+                var op = Parse("Log(2.5)", out _);
                 AreEqual("Log(2.5)", op.ToString());
             }
         }
@@ -357,16 +358,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryAggregateMethods() {
             {
-                var op = QueryParser.Parse(".children.Min(child => child.age)", out _);
+                var op = Parse(".children.Min(child => child.age)", out _);
                 AreEqual(".children.Min(child => child.age)", op.ToString());
             } {
-                var op = QueryParser.Parse(".children.Max(child => child.age)", out _);
+                var op = Parse(".children.Max(child => child.age)", out _);
                 AreEqual(".children.Max(child => child.age)", op.ToString());
             } {
-                var op = QueryParser.Parse(".children.Sum(child => child.age)", out _);
+                var op = Parse(".children.Sum(child => child.age)", out _);
                 AreEqual(".children.Sum(child => child.age)", op.ToString());
             } {
-                var op = QueryParser.Parse(".children.Average(child => child.age)", out _);
+                var op = Parse(".children.Average(child => child.age)", out _);
                 AreEqual(".children.Average(child => child.age)", op.ToString());
             }
         }
@@ -399,13 +400,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryStringMethods() {
             {
-                var op = QueryParser.Parse(".name.Contains('Smartphone')", out _);
+                var op = Parse(".name.Contains('Smartphone')", out _);
                 AreEqual(".name.Contains('Smartphone')", op.ToString());
             } {
-                var op = QueryParser.Parse(".name.StartsWith('Smartphone')", out _);
+                var op = Parse(".name.StartsWith('Smartphone')", out _);
                 AreEqual(".name.StartsWith('Smartphone')", op.ToString());
             } {
-                var op = QueryParser.Parse(".name.EndsWith('Smartphone')", out _);
+                var op = Parse(".name.EndsWith('Smartphone')", out _);
                 AreEqual(".name.EndsWith('Smartphone')", op.ToString());
             }
         }
@@ -413,7 +414,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryMisc() {
             {
-                var op = QueryParser.Parse(".name=='Smartphone'", out _);
+                var op = Parse(".name=='Smartphone'", out _);
                 AreEqual(".name == 'Smartphone'", op.ToString());
             }
         }
@@ -434,7 +435,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         private static void AssertFilterUndefinedScalar(string operation, JsonEvaluator eval) {
             var json    = @"{ ""items"": [] }";
-            var op      = (FilterOperation)QueryParser.Parse(operation, out _);
+            var op      = (FilterOperation)Parse(operation, out _);
             var filter  = new JsonFilter(op);
             var result  = eval.Filter(new JsonValue(json), filter);
             IsFalse(result);
