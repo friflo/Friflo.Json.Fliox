@@ -53,6 +53,15 @@ namespace System.Collections.Generic
         public static int EnsureCapacity<T>(this HashSet<T> hashSet, int capacity) {
             return 0;
         }
+        
+        public static bool TryPeek<T>(this Stack<T> stack, out T result) {
+            if (stack.Count > 0) {
+                result = stack.Peek();
+                return true;
+            }
+            result = default;
+            return false;
+        }
     }
 }
 
