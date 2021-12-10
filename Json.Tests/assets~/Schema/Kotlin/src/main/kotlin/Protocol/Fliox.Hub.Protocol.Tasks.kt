@@ -50,7 +50,7 @@ data class QueryEntities (
               val container  : String,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
-              val filterJson : FilterOperation? = null,
+              val filterTree : FilterOperation? = null,
               val filter     : String? = null,
               val references : List<References>? = null,
     override  val info       : JsonElement? = null,

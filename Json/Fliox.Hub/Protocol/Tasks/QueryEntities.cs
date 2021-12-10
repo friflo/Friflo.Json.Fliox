@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Required]  public  string              container;
                         public  string              keyName;
                         public  bool?               isIntKey;
-                        public  FilterOperation     filterJson;
+                        public  FilterOperation     filterTree;
                         public  string              filter;
                         public  List<References>    references;
                         
@@ -25,14 +25,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override       string              TaskName => $"container: '{container}', filter: {filter}";
         
         public FilterOperation GetFilter() {
-            if (filterJson != null)
-                return filterJson;
+            if (filterTree != null)
+                return filterTree;
             return Operation.FilterTrue;
         }
         
         private bool ValidateFilter(out TaskErrorResult error) {
             error = null;
-            if (filterJson != null)
+            if (filterTree != null)
                 return true;
             if (filter == null)
                 return true;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return false;
             }
             if (operation is FilterOperation filterOperation) {
-                filterJson = filterOperation;
+                filterTree = filterOperation;
                 return true;
             }
             error = InvalidTaskError("filter must be boolean operation");

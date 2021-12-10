@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filter = CreateFilter(context, queryParams);
             if (filter == null)
                 return;
-            var queryEntities   = new QueryEntities{ container = container, filterJson = filter };
+            var queryEntities   = new QueryEntities{ container = container, filterTree = filter };
             var restResult      = await ExecuteTask(context, database, queryEntities);
             
             if (restResult.taskResult == null)

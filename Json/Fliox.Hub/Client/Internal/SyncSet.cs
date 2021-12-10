@@ -411,7 +411,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
                     isIntKey    = IsIntKey(set.IsIntKey()),  
-                    filterJson  = query.filter,
+                    filterTree  = query.filter,
                     filter      = query.filterLinq,
                     references  = references
                 };
