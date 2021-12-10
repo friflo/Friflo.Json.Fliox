@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = message};   
         }
         
-        private static TaskErrorResult InvalidTaskError(string error) {
+        internal static TaskErrorResult InvalidTaskError(string error) {
             // error = $"{message} {TaskType} ({TaskName})";
             return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = error};   
         }
