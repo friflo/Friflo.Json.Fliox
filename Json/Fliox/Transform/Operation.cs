@@ -9,6 +9,7 @@ using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Transform.Query.Parser;
 
 namespace Friflo.Json.Fliox.Transform
 {
@@ -92,6 +93,10 @@ namespace Friflo.Json.Fliox.Transform
        
         public JsonLambda Lambda() {
             return new JsonLambda(this);
+        }
+        
+        public static Operation Parse (string operation, out string error) {
+            return QueryBuilder.Parse(operation, out error);
         }
         
         public static Operation FromLambda<T>(Expression<Func<T, object>> lambda, QueryPath queryPath = null) {

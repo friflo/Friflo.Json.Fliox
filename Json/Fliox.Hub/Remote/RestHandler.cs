@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
             var filter = queryParams["filter"];
             if (filter != null) {
-                var filterOp = QueryParser.Parse(filter, out string error);
+                var filterOp = Operation.Parse(filter, out string error);
                 if (error != null) {
                     context.WriteError("filter error", error, 400);
                     return null;

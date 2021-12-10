@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Fliox.Transform.QueryParser;
+using static Friflo.Json.Fliox.Transform.Operation;
 
 // ReSharper disable InlineOutVariableDeclaration
 // ReSharper disable TooWideLocalVariableScope
