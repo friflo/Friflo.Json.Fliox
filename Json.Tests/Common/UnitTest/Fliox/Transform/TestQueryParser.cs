@@ -162,6 +162,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op      = OperationFromNode(node, out _);
                 That(op, Is.TypeOf<And>());
                 AreEqual("(1 < 2 || 3 < 4) && 5 < 6", op.ToString());
+            } {
+                var node    = QueryTree.CreateTree("((1))", out _);
+                AreEqual("( {( {1}}", node.ToString());
+                var op      = OperationFromNode(node, out _);
+                AreEqual("1", op.ToString());
+            } {
+                var node    = QueryTree.CreateTree("!(!(true))", out _);
+                AreEqual("! {( {!, ( {true}}}", node.ToString());
+                var op      = OperationFromNode(node, out _);
+                //AreEqual("1", op.ToString()); todo
             }
         }
         

@@ -103,13 +103,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         stack.Pop();
                     } else {
                         head.arity = Arity.Unary;
-                    } 
+                    }
                     error = null;
                     return;
                 }
                 if (head.operation.type == TokenType.BracketOpen) {
                     // found matching (grouping) open parenthesis
-                    head.bracketClosed = true;
+                    if (stack.Count > 1) {
+                        stack.Pop();
+                    } else {
+                        head.bracketClosed = true;
+                    }
                     error = null;
                     return;
                 }
