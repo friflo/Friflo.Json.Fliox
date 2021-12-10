@@ -2,8 +2,8 @@
   "msg": "sync",
   "database": "monitor",
   "tasks": [
-    { "task": "query", "container": "users",    "filter": {"op": "true"} },
-    { "task": "query", "container": "histories","filter": {"op": "true"} }
+    { "task": "query", "container": "users",    "filterJson": {"op": "true"} },
+    { "task": "query", "container": "histories","filterJson": {"op": "true"} }
   ],
   "info": [
     "monitor: query all users & histories",

@@ -2,8 +2,8 @@
   "msg": "sync",
   "database": "cluster",
   "tasks": [
-    { "task": "query", "container": "containers", "filter":{ "op": "true" }},
-    { "task": "query", "container": "commands",   "filter":{ "op": "true" }}
+    { "task": "query", "container": "containers", "filterJson":{ "op": "true" }},
+    { "task": "query", "container": "commands",   "filterJson":{ "op": "true" }}
   ],
   "info": [
     "list all hosted databases, their containers & commands"
