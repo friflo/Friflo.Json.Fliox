@@ -471,6 +471,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        [Test]
+        public static void TestQueryCoverage() {
+            var shape = new TokenShape();
+            AreEqual("Start          arity: Undef, precedence: 0", shape.ToString());
+        }
+        
+        
         // ------------------------ evaluate operations ------------------------ 
         [Test]
         public static void TestFilterUndefinedScalar() {

@@ -3,7 +3,7 @@
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    internal readonly struct TokenShape {
+    public readonly struct TokenShape {
         internal readonly   TokenType   type;
         internal readonly   Arity       arity;
         internal readonly   int         precedence;
