@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// </list>
         /// </summary>
         private static void PushNode(Stack<QueryNode> stack, QueryNode newNode) {
-            var node        = stack.Peek();
+            var node        = stack.Peek(); // calling method already checked stack not empty 
             var precedence  = newNode.precedence;
             if (newNode.arity == Arity.Unary || node.arity == Arity.Unary) {
                 stack.Pop();

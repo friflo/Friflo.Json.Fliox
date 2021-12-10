@@ -18,11 +18,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
         
-        internal            int             OperandCount                            => operands.Count;        
-        internal            QueryNode       GetOperand(int index)                   => operands[index];
-        internal            void            SetOperand(int index, QueryNode node)   => operands[index] = node;
-        internal            void            AddOperand(QueryNode node)              => operands.Add(node);
-        
+        internal            int             OperandCount                                => operands.Count;        
+        internal            QueryNode       GetOperand(int index)                       => operands[index];
+        internal            void            SetOperand(int index, QueryNode operand)    => operands[index] = operand;
+        internal            void            AddOperand(QueryNode operand) {
+            if (operand == null) throw new ArgumentNullException(nameof(operand));
+            operands.Add(operand);
+        }
+
         public   override   string          ToString() {
             var sb = new StringBuilder();
             AppendLabel(sb);
