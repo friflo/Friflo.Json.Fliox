@@ -99,7 +99,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (head.isFunction) {
                     // A closing bracket causes the head node to be used as an Unary node.
                     // So its last operand will not be used as the left operand for subsequent n-ary operations (n>1).
-                    head.arity = Arity.Unary;
+                    if (stack.Count > 1) {
+                        stack.Pop();
+                    } else {
+                        head.arity = Arity.Unary;
+                    } 
                     error = null;
                     return;
                 }

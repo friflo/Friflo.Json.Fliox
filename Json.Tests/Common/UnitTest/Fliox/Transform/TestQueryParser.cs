@@ -377,6 +377,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = Parse("Abs(Sqrt(2.5))", out _);
                 AreEqual("Abs(Sqrt(2.5))", op.ToString());
             }
+            // --- test with scopes
+            {
+                var op = Parse("(Abs(1) == 1)", out _);
+                AreEqual("Abs(1) == 1", op.ToString());
+            } {
+                var op = Parse("!(Abs(1) == 1)", out _);
+                AreEqual("!(Abs(1) == 1)", op.ToString());
+            }
         }
         
         [Test]
