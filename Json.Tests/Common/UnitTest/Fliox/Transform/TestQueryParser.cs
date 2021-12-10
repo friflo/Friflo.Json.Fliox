@@ -251,6 +251,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("true || 1", out error);
                 AreEqual("operator || expect boolean operands. Got: 1", error);
             } {
+                Parse("true || ()", out error); // coverage
+                AreEqual("parentheses (...) expect one operand", error);
+            } {
                 Parse("1+", out error);
                 AreEqual("operator + expect two operands", error);
             } {
@@ -361,9 +364,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = Parse("Log(2.5)", out _);
                 AreEqual("Log(2.5)", op.ToString());
-            }  {
+            } {
                 var op = Parse("Log(2.5)", out _);
                 AreEqual("Log(2.5)", op.ToString());
+            } {
+                var op = Parse("Sqrt(2.5)", out _);
+                AreEqual("Sqrt(2.5)", op.ToString());
             }
         }
         
