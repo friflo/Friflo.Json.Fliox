@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         public static Operation Parse (string operation, out string error) {
-            return QueryBuilder.Parse(operation, out error);
+            return QueryParser.Parse(operation, out error);
         }
         
         public static Operation FromLambda<T>(Expression<Func<T, object>> lambda, QueryPath queryPath = null) {

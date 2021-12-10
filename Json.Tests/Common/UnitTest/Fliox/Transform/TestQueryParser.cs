@@ -141,25 +141,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var node    = QueryTree.CreateTree("!(true)", out _);
                 AreEqual("! {( {true}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Not>());
                 AreEqual("!(true)", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("(1 + 2) * 3", out _);
                 AreEqual("( {* {+ {1, 2}, 3}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Multiply>());
                 AreEqual("(1 + 2) * 3", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("(true || false) && true", out _);
                 AreEqual("( {&& {|| {true, false}, true}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<And>());
                 AreEqual("(true || false) && true", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("(1 < 2 || 3 < 4) && 5 < 6", out _);
                 AreEqual("( {&& {|| {< {1, 2}, < {3, 4}}, < {5, 6}}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 That(op, Is.TypeOf<And>());
                 AreEqual("(1 < 2 || 3 < 4) && 5 < 6", op.ToString());
             }
@@ -197,37 +197,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var node    = QueryTree.CreateTree("a * b + c", out _);
                 AreEqual("+ {* {a, b}, c}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("a * b + c", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("a + b * c", out _);
                 AreEqual("+ {a, * {b, c}}", node.ToString());
-                var op  = QueryBuilder.OperationFromNode(node, out _);
+                var op  = QueryParser.OperationFromNode(node, out _);
                 AreEqual("a + b * c", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("true && false && 1 < 2", out _);
                 AreEqual("&& {true, false, < {1, 2}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("true && false && 1 < 2", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("true || 1 + 2 * 3 < 10", out _);
                 AreEqual("|| {true, < {+ {1, * {2, 3}}, 10}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("true || 1 + 2 * 3 < 10", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("10 > 3 * 2 + 1 || true", out _);
                 AreEqual("|| {> {10, + {* {3, 2}, 1}}, true}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("10 > 3 * 2 + 1 || true", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("true || false && true", out _);
                 AreEqual("|| {true, && {false, true}}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("true || false && true", op.ToString());
             } {
                 var node    = QueryTree.CreateTree("true && false || true", out _);
                 AreEqual("|| {&& {true, false}, true}", node.ToString());
-                var op      = QueryBuilder.OperationFromNode(node, out _);
+                var op      = QueryParser.OperationFromNode(node, out _);
                 AreEqual("true && false || true", op.ToString());
             }
         }
@@ -377,22 +377,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var node = QueryTree.CreateTree(".children.Any(child => child.age == 20)", out _);
                 AreEqual(".children.Any {child, == {child.age, 20}}", node.ToString());
-                var op = QueryBuilder.OperationFromNode(node, out _);
+                var op = QueryParser.OperationFromNode(node, out _);
                 AreEqual(".children.Any(child => child.age == 20)", op.ToString());
             } {
                 var node = QueryTree.CreateTree(".children.All(child => child.age == 20)", out _);
                 AreEqual(".children.All {child, == {child.age, 20}}", node.ToString());
-                var op = QueryBuilder.OperationFromNode(node, out _);
+                var op = QueryParser.OperationFromNode(node, out _);
                 AreEqual(".children.All(child => child.age == 20)", op.ToString());
             } {
                 var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
                 AreEqual(".children.Count {child, == {child.age, 20}}", node.ToString());
-                var op = QueryBuilder.OperationFromNode(node, out _);
+                var op = QueryParser.OperationFromNode(node, out _);
                 AreEqual(".children.Count(child => child.age == 20)", op.ToString());
             } {
                 var node = QueryTree.CreateTree(".items.Max(item => item.amount) > 1", out _);
                 AreEqual("> {.items.Max {item, item.amount}, 1}", node.ToString());
-                var op = QueryBuilder.OperationFromNode(node, out _);
+                var op = QueryParser.OperationFromNode(node, out _);
                 AreEqual(".items.Max(item => item.amount) > 1", op.ToString());
             }
         }
