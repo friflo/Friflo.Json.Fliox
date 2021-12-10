@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("(1)-1", 5);
             AssertToken("o=>o.name", 3);
             
-            AssertToken("a.Contains('xyz')", 4);
+            AssertToken("a.Contains('xyz')", 3, "a.Contains()'xyz')");
 
             AssertToken("a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2||false))", 42); // must be 42 in any case :)
         }
@@ -295,7 +295,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("+", out error);
                 AreEqual("operator + expect one preceding operand", error);
-            }
+            } /* {
+                Parse("!Abs(1)", out error);
+                AreEqual("not operator ! must use a boolean operand", error);
+            } */
         }
         
         [Test]
@@ -394,22 +397,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryQuantityMethods() {
             {
                 var node = QueryTree.CreateTree(".children.Any(child => child.age == 20)", out _);
-                AreEqual(".children.Any {child, == {child.age, 20}}", node.ToString());
+                AreEqual(".children.Any() {child, == {child.age, 20}}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".children.Any(child => child.age == 20)", op.ToString());
             } {
                 var node = QueryTree.CreateTree(".children.All(child => child.age == 20)", out _);
-                AreEqual(".children.All {child, == {child.age, 20}}", node.ToString());
+                AreEqual(".children.All() {child, == {child.age, 20}}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".children.All(child => child.age == 20)", op.ToString());
             } {
                 var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
-                AreEqual(".children.Count {child, == {child.age, 20}}", node.ToString());
+                AreEqual(".children.Count() {child, == {child.age, 20}}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".children.Count(child => child.age == 20)", op.ToString());
             } {
                 var node = QueryTree.CreateTree(".items.Max(item => item.amount) > 1", out _);
-                AreEqual("> {.items.Max {item, item.amount}, 1}", node.ToString());
+                AreEqual("> {.items.Max() {item, item.amount}, 1}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".items.Max(item => item.amount) > 1", op.ToString());
             }

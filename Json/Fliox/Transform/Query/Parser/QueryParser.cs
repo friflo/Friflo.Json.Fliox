@@ -64,11 +64,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
                 case TokenType.Long:            error = null;   return new LongLiteral  (node.operation.lng);
                 
-                case TokenType.Symbol:
-                    if (node.isFunction) {
-                        return GetFunction(node, out error);
-                    }
-                    return GetField(node, out error);
+                case TokenType.Symbol:          return GetField(node, out error);
+                case TokenType.Function:        return GetFunction(node, out error);
+                
                 case TokenType.BracketOpen:
                     if (node.OperandCount != 1) {
                         error = $"parentheses (...) expect one operand";
@@ -119,7 +117,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Operation FcnOp(in QueryNode node, out string error) {
             if (node.OperandCount != 1) {
-                error = $"function {node.operation}() expect one operand";
+                error = $"function {node.operation} expect one operand";
                 return default;
             }
             error = null;
@@ -180,7 +178,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = null;
                 return new Quantify(field, arg, filter);
             }
-            error = $"quantify operation {node.operation}() expect boolean lambda body. Was: {fcn}";
+            error = $"quantify operation {node.operation} expect boolean lambda body. Was: {fcn}";
             return default;
         }
         

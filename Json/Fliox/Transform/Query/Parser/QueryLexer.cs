@@ -103,7 +103,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case '\t':
                 case '\r':
                 case '\n':
-                    return GetWhitespace(operation, ref pos);
+                    SkipWhitespace(operation, ref pos);
+                    return new Token(TokenType.Whitespace);
                 case End:
                     pos--;
                     return new Token(TokenType.End);
@@ -146,7 +147,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     if (IsChar(c))
                         continue;
                     var str = operation.Substring(start, pos - start);
+                    SkipWhitespace(operation, ref pos);
                     error = null;
+                    c = GetChar(operation, pos);
+                    if (c == '(') {
+                        pos++;
+                        return new Token(TokenType.Function, str);
+                    }
                     return new Token(TokenType.Symbol, str);
                 }
             }
@@ -206,7 +213,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Token GetWhitespace(string operation, ref int pos) {
+        private static void SkipWhitespace(string operation, ref int pos) {
             while (true) {
                 int c = GetChar(operation, pos);
                 switch (c) {
@@ -214,7 +221,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         pos++;
                         continue;
                 }
-                return new Token(TokenType.Whitespace);
+                return;
             }
         }
     }

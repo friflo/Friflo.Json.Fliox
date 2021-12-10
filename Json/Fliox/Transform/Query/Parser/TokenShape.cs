@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Start,
         //
         Symbol,
+        Function,
         Long,
         Double,
         String,

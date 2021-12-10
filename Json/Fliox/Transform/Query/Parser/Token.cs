@@ -56,10 +56,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         public override string ToString() {
             switch (type) {
-                case TokenType.Symbol:  return str;
-                case TokenType.Long:    return lng.ToString();
-                case TokenType.Double:  return dbl.ToString(CultureInfo.InvariantCulture);
-                case TokenType.String:  return $"'{str}'";
+                case TokenType.Symbol:      return str;
+                case TokenType.Function:    return $"{str}()";
+                case TokenType.Long:        return lng.ToString();
+                case TokenType.Double:      return dbl.ToString(CultureInfo.InvariantCulture);
+                case TokenType.String:      return $"'{str}'";
                 //
                 case TokenType.Add:             return "+";
                 case TokenType.Sub:             return "-";
@@ -118,6 +119,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 new TokenShape(TokenType.Or,            NAry,   7),
                 //
                 new TokenShape(TokenType.Symbol,        Unary,  8),
+                new TokenShape(TokenType.Function,      Unary,  8),
                 new TokenShape(TokenType.Long,          Unary,  8),
                 new TokenShape(TokenType.Double,        Unary,  8),
                 new TokenShape(TokenType.String,        Unary,  8),

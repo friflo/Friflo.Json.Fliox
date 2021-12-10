@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal readonly   Token           operation;
         internal readonly   int             precedence;
         internal            Arity           arity;
-        internal            bool            isFunction;
+        internal readonly   bool            isFunction;
         internal            bool            bracketClosed;
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var shape       = Token.Shape(operation.type);
             arity           = shape.arity;
             precedence      = shape.precedence;
+            isFunction      = operation.type == TokenType.Function;
         }
         
         [Conditional("DEBUG")]

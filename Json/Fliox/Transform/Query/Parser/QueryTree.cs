@@ -82,17 +82,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         private static void HandleBracketOpen(Stack<QueryNode> stack, out string error) {
             stack.TryPeek(out QueryNode last);
-            // Is there a preceding symbol?
-            if (last?.operation.type == TokenType.Symbol) {
-                // the bracket converts the symbol to function with 0 or 1 parameter.
-                // 0: .children.Count()
-                // 1: .children.Min(child => child.age)
-                // => so it becomes NAry
-                last.isFunction = true;
-                last.arity      = Arity.NAry;
-                error = null;
-                return;
-            }
+
             // add (grouping) open parenthesis
             var newNode = new QueryNode(new Token(TokenType.BracketOpen));
             last?.AddOperand(newNode);
@@ -126,6 +116,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {
             error = null;
             var newNode = new QueryNode(token);
+            if (token.type == TokenType.Function) {
+                // A Function can accept 0 or 1 parameter.
+                // 0: .children.Count()
+                // 1: .children.Min(child => child.age)
+                // => so it becomes NAry
+                newNode.arity = Arity.NAry;
+            }
             if (stack.Count == 0) {
                 stack.Push(newNode);
                 return;
@@ -154,12 +151,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return;
             }
             if (head.OperandCount != 1) {
-                error = $"=> expect one preceding lambda argument. Was used in: {head.operation}()";
+                error = $"=> expect one preceding lambda argument. Was used in: {head.operation}";
                 return;
             }
             var lambdaArg = head.GetOperand(0);
             if (lambdaArg.operation.type != TokenType.Symbol) {
-                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation}()";
+                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation}";
                 return;
             }
             error = null;
