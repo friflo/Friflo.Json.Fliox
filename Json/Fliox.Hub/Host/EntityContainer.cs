@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
-                var message = $"failed filter entities of '{name}' (filter: {command.filterLinq}) - {readEntities.Error.message}";
+                var message = $"failed filter entities of '{name}' (filter: {command.filter}) - {readEntities.Error.message}";
                 var error = new CommandError (message);
                 return new QueryEntitiesResult {Error = error};
             }

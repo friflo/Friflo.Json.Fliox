@@ -101,6 +101,7 @@
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "filterJson": { "ref":  "FilterOperation", "nullable": true },
+                "filter":     { "type": "string", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true },
                 "info":       { "nullable": true }
             }

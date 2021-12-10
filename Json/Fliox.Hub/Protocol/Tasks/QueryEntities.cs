@@ -18,11 +18,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  string              keyName;
                         public  bool?               isIntKey;
                         public  FilterOperation     filterJson;
-        [Fri.Ignore]    public  string              filterLinq;
+                        public  string              filter;
                         public  List<References>    references;
                         
         internal override       TaskType            TaskType => TaskType.query;
-        public   override       string              TaskName => $"container: '{container}', filter: {filterLinq}";
+        public   override       string              TaskName => $"container: '{container}', filter: {filter}";
         
         public FilterOperation GetFilter() {
             if (filterJson != null)
