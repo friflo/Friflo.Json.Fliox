@@ -124,7 +124,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {
             error = null;
             var newNode = new QueryNode(token);
-            if (token.type == TokenType.Function) {
+            var expectOperand = token.type == TokenType.Function || token.type == TokenType.Not;
+            if (expectOperand) {
                 // Function can accept 0 or 1 parameter.
                 // 0: .children.Count()
                 // 1: .children.Min(child => child.age)
@@ -137,7 +138,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             var node = stack.Peek();
             node.AddOperand(newNode);
-            if (token.type == TokenType.Function) {
+            if (expectOperand) {
                 stack.Push(newNode);
             }
         }

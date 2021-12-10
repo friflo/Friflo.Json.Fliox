@@ -168,10 +168,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op      = OperationFromNode(node, out _);
                 AreEqual("1", op.ToString());
             } {
-                var node    = QueryTree.CreateTree("!(!(true))", out _);
-                AreEqual("! {( {!, ( {true}}}", node.ToString());
+                var node    = QueryTree.CreateTree("!(true)", out _);
+                AreEqual("! {( {true}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                //AreEqual("1", op.ToString()); todo
+                AreEqual("!(true)", op.ToString());
+            } {
+                var node    = QueryTree.CreateTree("(!(true))", out _);
+                AreEqual("( {! {( {true}}}", node.ToString());
+                var op      = OperationFromNode(node, out _);
+                AreEqual("!(true)", op.ToString());
+            } {
+                var node    = QueryTree.CreateTree("!(!(true))", out _);
+                AreEqual("! {( {! {( {true}}}}", node.ToString());
+                var op      = OperationFromNode(node, out _);
+                AreEqual("!(!(true))", op.ToString());
             }
         }
         
