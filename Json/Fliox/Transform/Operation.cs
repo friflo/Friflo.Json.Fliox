@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Transform
         private void AppendOperation(StringBuilder sb, Operation op) {
             var opPrecedence    = GetPrecedence(op);
             var precedence      = GetPrecedence(this);
-            if (precedence > opPrecedence) {
+            if (precedence >= opPrecedence) {
                 op.AppendLinq(sb);
                 return;
             }
