@@ -31,41 +31,36 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetOperation(QueryNode node, out string error) {
-            BinaryOperands b;
+            BinaryOperands          b;
+            List<FilterOperation>   f;
             
             switch (node.operation.type)
             {
                 // --- binary tokens
-                case TokenType.Add:             b = Bin(node, false, out error);   return new Add                  (b.left, b.right);
-                case TokenType.Sub:             b = Bin(node, false, out error);   return new Subtract             (b.left, b.right);
-                case TokenType.Mul:             b = Bin(node, false, out error);   return new Multiply             (b.left, b.right);
-                case TokenType.Div:             b = Bin(node, false, out error);   return new Divide               (b.left, b.right);
+                case TokenType.Add:             b = Bin(node, false, out error);    return new Add                  (b.left, b.right);
+                case TokenType.Sub:             b = Bin(node, false, out error);    return new Subtract             (b.left, b.right);
+                case TokenType.Mul:             b = Bin(node, false, out error);    return new Multiply             (b.left, b.right);
+                case TokenType.Div:             b = Bin(node, false, out error);    return new Divide               (b.left, b.right);
                 //
-                case TokenType.Greater:         b = Bin(node, false, out error);   return new GreaterThan          (b.left, b.right);
-                case TokenType.GreaterOrEqual:  b = Bin(node, false, out error);   return new GreaterThanOrEqual   (b.left, b.right);
-                case TokenType.Less:            b = Bin(node, false, out error);   return new LessThan             (b.left, b.right);
-                case TokenType.LessOrEqual:     b = Bin(node, false, out error);   return new LessThanOrEqual      (b.left, b.right);
-                case TokenType.Equals:          b = Bin(node, true,  out error);   return new Equal                (b.left, b.right);
-                case TokenType.NotEquals:       b = Bin(node, true,  out error);   return new NotEqual             (b.left, b.right);
+                case TokenType.Greater:         b = Bin(node, false, out error);    return new GreaterThan          (b.left, b.right);
+                case TokenType.GreaterOrEqual:  b = Bin(node, false, out error);    return new GreaterThanOrEqual   (b.left, b.right);
+                case TokenType.Less:            b = Bin(node, false, out error);    return new LessThan             (b.left, b.right);
+                case TokenType.LessOrEqual:     b = Bin(node, false, out error);    return new LessThanOrEqual      (b.left, b.right);
+                case TokenType.Equals:          b = Bin(node, true,  out error);    return new Equal                (b.left, b.right);
+                case TokenType.NotEquals:       b = Bin(node, true,  out error);    return new NotEqual             (b.left, b.right);
                 
                 // --- arity tokens
-                case TokenType.Or:
-                    var filterOperands  = FilterOperands(node, out error); 
-                    return new Or (filterOperands);
-                case TokenType.And:
-                    filterOperands      = FilterOperands(node, out error); 
-                    return new And (filterOperands);
+                case TokenType.Or:          f = FilterOperands(node, out error);    return new Or (f);
+                case TokenType.And:         f = FilterOperands(node, out error);    return new And (f);
 
                 // --- unary tokens
-                case TokenType.Not:
-                    var unary = NotOp(node, out error);
-                    return new Not(unary.operand);
-                case TokenType.String:          error = null;   return new StringLiteral(node.operation.str);
-                case TokenType.Double:          error = null;   return new DoubleLiteral(node.operation.dbl);
-                case TokenType.Long:            error = null;   return new LongLiteral  (node.operation.lng);
+                case TokenType.Not:         return NotOp(node, out error);
+                case TokenType.String:      error = null;   return new StringLiteral(node.operation.str);
+                case TokenType.Double:      error = null;   return new DoubleLiteral(node.operation.dbl);
+                case TokenType.Long:        error = null;   return new LongLiteral  (node.operation.lng);
                 
-                case TokenType.Symbol:          return GetField(node, out error);
-                case TokenType.Function:        return GetFunction(node, out error);
+                case TokenType.Symbol:      return GetField(node, out error);
+                case TokenType.Function:    return GetFunction(node, out error);
                 
                 case TokenType.BracketOpen:
                     if (node.OperandCount != 1) {
@@ -190,7 +185,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new BinaryOperands(field, fcn);
         }
         
-        private static UnaryOp NotOp(in QueryNode node, out string error) {
+        private static Not NotOp(in QueryNode node, out string error) {
             if (node.OperandCount != 1) {
                 error = $"not operator expect one operand";
                 return default;
@@ -198,7 +193,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var operand_0  = node.GetOperand(0);
             var operand    = GetOperation(operand_0, out error);
             if (operand is FilterOperation filterOperand) {
-                return new UnaryOp (filterOperand);
+                return new Not(filterOperand);
             }
             error = $"not operator ! must use a boolean operand";
             return default;
@@ -244,15 +239,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return operands;
         }
     }
-    
-    internal readonly struct UnaryOp {
-        internal readonly   FilterOperation   operand;
-        
-        internal UnaryOp(FilterOperation operand) {
-            this.operand = operand;
-        }
-    }
-    
     
     internal readonly struct BinaryOperands {
         internal readonly   Operation   left;
