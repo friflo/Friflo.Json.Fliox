@@ -236,25 +236,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             string error;
             {
                 QueryParser.Parse("", out error);
-                AreEqual("operation string is empty", error);
+                AreEqual("operation is empty", error);
             } {
                 QueryParser.Parse("true < false", out error);
-                AreEqual("operation < must not use boolean operands", error);
+                AreEqual("operator < must not use boolean operands", error);
             } {
                 QueryParser.Parse("1 < 3 > 2", out error);
-                AreEqual("operation > must not use boolean operands", error);
+                AreEqual("operator > must not use boolean operands", error);
             } {
                 QueryParser.Parse("true ||", out error);
-                AreEqual("expect at minimum two operands for operation ||", error);
+                AreEqual("expect at minimum two operands for operator ||", error);
             } {
                 QueryParser.Parse("true || 1", out error);
-                AreEqual("operation || expect boolean operands. Got: 1", error);
+                AreEqual("operator || expect boolean operands. Got: 1", error);
             } {
                 QueryParser.Parse("1+", out error);
-                AreEqual("operation + expect two operands", error);
+                AreEqual("operator + expect two operands", error);
             } {
                 QueryParser.Parse("if", out error);
-                AreEqual("operation must not use conditional statement: if", error);
+                AreEqual("conditional statements must not be used: if", error);
             } {
                 QueryParser.Parse(".children.Foo(child => child.age)", out error);
                 AreEqual("unknown method: Foo() used by: .children.Foo", error);
@@ -263,7 +263,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unknown function: Foo()", error);
             } {
                 QueryParser.Parse("!123", out error);
-                AreEqual("operation ! must use a boolean operand", error);
+                AreEqual("not operator ! must use a boolean operand", error);
             } {
                 QueryParser.Parse("123)", out error);
                 AreEqual("no matching open parenthesis", error);
