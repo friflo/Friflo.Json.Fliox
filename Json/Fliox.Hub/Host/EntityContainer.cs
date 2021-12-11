@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public abstract class EntityContainer : IDisposable
     {
-        /// <summary>The name of a container. This name is always equals to the entity Type name.</summary>
+        /// <summary> container name </summary>
         public    readonly  string          name;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
-                var message = $"failed filter entities of '{name}' filter: {command.filter} - {readEntities.Error.message}";
+                var message = $"filter failed. container: '{name}' filter: {command.filter} - {readEntities.Error.message}";
                 return new QueryEntitiesResult { Error = new CommandError (message) };
             }
             var result = FilterEntities(command, readEntities.entities, messageContext);
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     var match = evaluator.Filter(json, jsonFilter, out string filterError);
                     if (filterError != null) {
-                        var message = $"failed filter entity '{key}' filter: {jsonFilter} - {filterError}";
+                        var message = $"filter failed at '{key}' filter: {jsonFilter} - {filterError}";
                         return new QueryEntitiesResult{ Error = new CommandError (message) };
                     }
                     if (!match)
