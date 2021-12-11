@@ -12,56 +12,77 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public static class TestEvaluator
     {
         [Test]
-        public static void TestJsonEvaluator() {
+        public static void TestEval() {
             using (var eval = new JsonEvaluator()) {
-                AssertJsonEvaluator(eval);
+                AssertEval(eval);
             }
         }
+
+        private const string  Json    = @"{""strVal"": ""abc"", ""intVal"": 42}";
+
         
-        private static void AssertJsonEvaluator(JsonEvaluator eval) {
-            var     json    = @"{""strVal"": ""abc"", ""intVal"": 42}";
+        private static void AssertEval(JsonEvaluator eval) {
             string  error;
             {
-                var result = Eval ("1 == 1", json, eval, out _);
+                var result = Eval ("1 == 1", Json, eval, out _);
                 AreEqual(true, result);
             }
             // --- arithmetic functions
             {
-                Eval ("Abs('abc') >= 1", json, eval, out error);
+                Eval ("Abs('abc') >= 1", Json, eval, out error);
                 AreEqual("expect numeric operand. was: 'abc' in Abs('abc')", error);
             } {
-                Eval ("1 < Abs(null)", json, eval, out error);
+                Eval ("1 < Abs(null)", Json, eval, out error);
                 AreEqual("expect numeric operand. was: null in Abs(null)", error);
             }
             // --- arithmetic operators
             {
-                Eval ("1 * 'abc'", json, eval, out error);
+                Eval ("1 * 'abc'", Json, eval, out error);
                 AreEqual("expect two numeric operands. left: 1, right: 'abc'", error);
             } {
-                Eval ("2 + 'abc'", json, eval, out error);
+                Eval ("2 + 'abc'", Json, eval, out error);
                 AreEqual("expect two numeric operands. left: 2, right: 'abc'", error);
             } {
-                Eval ("'abc' - 3", json, eval, out error);
+                Eval ("'abc' - 3", Json, eval, out error);
                 AreEqual("expect two numeric operands. left: 'abc', right: 3", error);
             } {
-                Eval ("'abc' / 4", json, eval, out error);
+                Eval ("'abc' / 4", Json, eval, out error);
                 AreEqual("expect two numeric operands. left: 'abc', right: 4", error);
             }
             // --- string functions
             {
-                Eval (".strVal.Contains(.intVal)", json, eval, out error);
+                Eval (".strVal.Contains(.intVal)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".strVal.StartsWith(.intVal)", json, eval, out error);
+                Eval (".strVal.StartsWith(.intVal)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".strVal.EndsWith(.intVal)", json, eval, out error);
+                Eval (".strVal.EndsWith(.intVal)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".intVal.EndsWith('abc')", json, eval, out error);
+                Eval (".intVal.EndsWith('abc')", Json, eval, out error);
                 AreEqual("expect two string operands. left: 42, right: 'abc'", error);
+            } /* {
+                Eval (".foo.EndsWith(.bar)", json, eval, out error);
+                AreEqual("expect two string operands. left: 42, right: 'abc'", error);
+            } */
+        }
+        
+        [Test]
+        public static void TestFilter() {
+            using (var eval = new JsonEvaluator()) {
+                AssertFilter(eval);
             }
-            
+        }
+        
+        private static void AssertFilter(JsonEvaluator eval) {
+            {
+                var result = Filter (".foo.EndsWith('abc')", Json, eval, out _);
+                IsFalse(result);
+            } {
+                var result = Filter (".strVal.EndsWith('abc')", Json, eval, out _);
+                IsTrue(result);
+            }
         }
         
         private static object Eval(string operation, string json, JsonEvaluator eval, out string error) {
@@ -72,6 +93,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var value   = new JsonValue(json);
             var result  = eval.Eval(value, lambda, out error);
             return result;
-        } 
+        }
+        
+        private static bool Filter(string operation, string json, JsonEvaluator eval, out string error) {
+            var op      = (FilterOperation)QueryParser.Parse(operation, out error);
+            if (error != null)
+                return false;
+            var filter  = new JsonFilter(op);
+            var value   = new JsonValue(json);
+            var result  = eval.Filter(value, filter, out error);
+            return result;
+        }
     }
 }
