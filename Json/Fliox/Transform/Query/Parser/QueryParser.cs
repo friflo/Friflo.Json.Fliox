@@ -156,9 +156,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "Count":   q = Quantify(field, node, out error);   return new CountWhere(q.field, q.arg, q.filter);
                 
                 // --- string operations
-                case "Contains":    b = Params(field, node, out error); return new Contains  (b.left, b.right);
-                case "StartsWith":  b = Params(field, node, out error); return new StartsWith(b.left, b.right);
-                case "EndsWith":    b = Params(field, node, out error); return new EndsWith  (b.left, b.right);
+                case "Contains":    b = StringOp(field, node, out error); return new Contains  (b.left, b.right);
+                case "StartsWith":  b = StringOp(field, node, out error); return new StartsWith(b.left, b.right);
+                case "EndsWith":    b = StringOp(field, node, out error); return new EndsWith  (b.left, b.right);
                 default:
                     error = $"unknown method: {method}() used by: {symbol} {At} {node.Pos}";
                     return null;
@@ -189,12 +189,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static BinaryOperands Params(string fieldName, in QueryNode node, out string error) {
-            error = null;
+        private static BinaryOperands StringOp(string fieldName, in QueryNode node, out string error) {
             var field       = new Field(fieldName);
             var fcnOperand  = node.GetOperand(0);
             var fcn         = GetOperation(fcnOperand, out error);
-            return new BinaryOperands(field, fcn);
+            if (fcn is StringLiteral || fcn is Field) {
+                error = null;
+                return new BinaryOperands(field, fcn);
+            }
+            error = $"expect string or field operand in {node.operation}. was: {fcnOperand} {At} {fcnOperand.Pos}";
+            return default;
         }
         
         private static Not NotOp(in QueryNode node, out string error) {
