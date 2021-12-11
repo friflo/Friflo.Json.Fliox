@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Eval (".intVal.EndsWith('abc')", Json, eval, out error);
                 AreEqual("expect two string operands. left: 42, right: 'abc'", error);
             } /* {
-                Eval (".foo.EndsWith(.bar)", json, eval, out error);
+                Eval (".foo.EndsWith(.bar)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 42, right: 'abc'", error);
             } */
         }
@@ -107,5 +107,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var result  = eval.Filter(value, filter, out error);
             return result;
         }
+        
+        // ------------------------ evaluate operations ------------------------ 
+        [Test]
+        public static void TestFilterUndefinedScalar() {
+            using (var eval = new JsonEvaluator()) {
+                // use an aggregate (Max) of an empty array and compare it to a scalar
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) == 1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) != 1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) <  1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) <= 1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) >  1", eval);
+                AssertFilterUndefinedScalar (".items.Max(item => item.amount) >= 1", eval);
+            }
+        }
+        
+        private static void AssertFilterUndefinedScalar(string operation, JsonEvaluator eval) {
+            var json    = @"{ ""items"": [] }";
+            var op      = (FilterOperation)QueryParser.Parse(operation, out _);
+            var filter  = new JsonFilter(op);
+            var result  = eval.Filter(new JsonValue(json), filter, out _);
+            IsFalse(result);
+        } 
     }
 }
