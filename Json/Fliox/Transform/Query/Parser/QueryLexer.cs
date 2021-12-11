@@ -6,6 +6,10 @@ using System.Globalization;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
+    /// <summary>
+    /// <see cref="QueryLexer"/> iterate the characters of the given operation and create a list
+    /// of <see cref="Token"/>s.
+    /// </summary>
     public static class QueryLexer
     {
         private const int End = -1;
