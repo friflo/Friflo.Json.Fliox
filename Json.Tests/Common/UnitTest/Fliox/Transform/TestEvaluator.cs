@@ -82,6 +82,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var result = Filter (".strVal.EndsWith('abc')", Json, eval, out _);
                 IsTrue(result);
+            } {
+                var result = Filter (".strVal.EndsWith(.foo)", Json, eval, out _);
+                IsFalse(result);
             }
         }
         
