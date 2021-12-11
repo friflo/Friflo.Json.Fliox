@@ -127,8 +127,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return End;
         }
         
-        private static bool IsChar(int c) {
+        private static bool IsFirstSymbolChar(int c) {
             return  'a' <= c && c <= 'z' ||
+                    'A' <= c && c <= 'Z' ||
+                    '_' == c || '.' == c;
+        }
+        
+        private static bool IsSymbolChar(int c) {
+            return  '0' <= c && c <= '9' ||
+                    'a' <= c && c <= 'z' ||
                     'A' <= c && c <= 'Z' ||
                     '_' == c || '.' == c;
         }
@@ -145,12 +152,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (IsDigit(c)) {
                 return GetNumber (false, operation, ref pos, out error);
             }
-            if (IsChar(c)) {
+            if (IsFirstSymbolChar(c)) {
                 var start = pos;
                 while (true) {
                     pos++;
                     c = GetChar(operation, pos);
-                    if (IsChar(c))
+                    if (IsSymbolChar(c))
                         continue;
                     var str = operation.Substring(start, pos - start);
                     SkipWhitespace(operation, ref pos);

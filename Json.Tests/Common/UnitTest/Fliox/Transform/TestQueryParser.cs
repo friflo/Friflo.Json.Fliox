@@ -186,8 +186,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = Parse("(1 + 2) == 3", out _);
                 AreEqual("1 + 2 == 3", op.Linq);
             }  {
-                var op = Parse("(.a + .b) == 3", out _);
-                AreEqual(".a + .b == 3", op.Linq);
+                var op = Parse("(.val1 + .val2) == 3", out _);
+                AreEqual(".val1 + .val2 == 3", op.Linq);
             }
         }
         
