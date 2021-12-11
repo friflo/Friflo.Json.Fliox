@@ -136,6 +136,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             string method   = symbol.Substring(lastDot + 1);
             string field    = symbol.Substring(0, lastDot);
+            if (field.IndexOf('.') == -1) {
+                error = $"expect . in field name {field} {At} {node.Pos}";
+                return null;
+            }
             Aggregate       l;
             Quantify        q;
             BinaryOperands  b;

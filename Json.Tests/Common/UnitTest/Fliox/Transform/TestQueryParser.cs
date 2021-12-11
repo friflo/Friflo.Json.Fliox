@@ -321,6 +321,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("foo('bar') >= 1", out error);
                 AreEqual("unknown function: foo() at pos 0", error);
+            } {
+                Parse("foo.Contains('bar')", out error);
+                AreEqual("expect . in field name foo at pos 0", error);
             }
         }
         
