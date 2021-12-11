@@ -58,11 +58,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         internal string GetLabel(bool decorate) {
             switch (type) {
-                case TokenType.Symbol:      return str;
-                case TokenType.Function:    return decorate ? $"{str}()" : $"{str}(";
-                case TokenType.Long:        return lng.ToString();
-                case TokenType.Double:      return dbl.ToString(CultureInfo.InvariantCulture);
-                case TokenType.String:      return $"'{str}'";
+                case TokenType.Symbol:          return str;
+                case TokenType.Function:        return decorate ? $"{str}()" : $"{str}(";
+                case TokenType.Long:            return lng.ToString();
+                case TokenType.Double:          return dbl.ToString(CultureInfo.InvariantCulture);
+                case TokenType.String:          return $"'{str}'";
                 //
                 case TokenType.Add:             return "+";
                 case TokenType.Sub:             return "-";
