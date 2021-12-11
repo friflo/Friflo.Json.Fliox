@@ -163,9 +163,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
-                var message = $"failed filter entities of '{name}' (filter: {command.filter}) - {readEntities.Error.message}";
-                var error = new CommandError (message);
-                return new QueryEntitiesResult {Error = error};
+                var message = $"failed filter entities of '{name}' filter: {command.filter} - {readEntities.Error.message}";
+                return new QueryEntitiesResult { Error = new CommandError (message) };
             }
             var result = FilterEntities(command, readEntities.entities, messageContext);
             return result;
@@ -182,13 +181,18 @@ namespace Friflo.Json.Fliox.Hub.Host
                     var json    = value.Json;   // JSON was invalid. Error != null
                     if (json.IsNull())
                         continue;
-                    if (!evaluator.Filter(json, jsonFilter))
+                    var match = evaluator.Filter(json, jsonFilter, out string filterError);
+                    if (filterError != null) {
+                        var message = $"failed filter entity '{key}' filter: {jsonFilter} - {filterError}";
+                        return new QueryEntitiesResult{ Error = new CommandError (message) };
+                    }
+                    if (!match)
                         continue;
                     var entry = new EntityValue(json);
                     result.Add(key, entry);
                 }
             }
-            return new QueryEntitiesResult{entities = result};
+            return new QueryEntitiesResult{ entities = result };
         }
         
         private static List<ReferencesResult> GetReferences(

@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
             for (int n = 0; n < entities.Count; n++) {
                 var value   = entities[n];
-                if (jsonEvaluator.Filter(value, jsonFilter)) {
+                if (jsonEvaluator.Filter(value, jsonFilter, out _)) {
                     result.Add(value);
                 }
             }

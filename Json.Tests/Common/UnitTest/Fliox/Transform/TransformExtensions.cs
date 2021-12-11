@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         public static bool Filter(this JsonEvaluator evaluator, string json, JsonFilter filter) {
-            return evaluator.Filter(new JsonValue(json), filter);
+            return evaluator.Filter(new JsonValue(json), filter, out _);
         }
         
         public static IReadOnlyList<ScalarSelectResult> Select(this ScalarSelector selector, string json, ScalarSelect scalarSelect) {

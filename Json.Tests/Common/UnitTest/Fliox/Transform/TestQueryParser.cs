@@ -517,7 +517,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var json    = @"{ ""items"": [] }";
             var op      = (FilterOperation)Parse(operation, out _);
             var filter  = new JsonFilter(op);
-            var result  = eval.Filter(new JsonValue(json), filter);
+            var result  = eval.Filter(new JsonValue(json), filter, out _);
             IsFalse(result);
         } 
     }

@@ -22,19 +22,30 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Filter
-        public bool Filter(JsonValue json, JsonFilter filter) {
-            if (filter.op is TrueLiteral)
+        public bool Filter(JsonValue json, JsonFilter filter, out string error) {
+            if (filter.op is TrueLiteral) {
+                error = null;
                 return true;  // result is independent fom given json
-            if (filter.op is FalseLiteral)
+            }
+            if (filter.op is FalseLiteral) {
+                error = null;
                 return false; // result is independent fom given json
-            
+            }
             ReadJsonFields(json, filter);
             var cx = new EvalCx(-1);
             var evalResult = filter.op.Eval(cx);
 
-            if (evalResult.values.Count == 0)
+            if (evalResult.values.Count == 0) {
+                error = null;
                 return false;
-            
+            }
+            foreach (var result in evalResult.values) {
+                if (!result.IsError)
+                    continue;
+                error = result.ErrorMessage;
+                return false;
+            }
+            error = null;
             foreach (var result in evalResult.values) {
                 if (result.CompareTo(Operation.True) != 0)
                     return false;
