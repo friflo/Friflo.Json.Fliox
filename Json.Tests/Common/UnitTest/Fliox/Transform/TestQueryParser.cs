@@ -351,22 +351,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             string error;
             {
                 Parse("=+", out error);
-                AreEqual("unexpected character '+' after '='. Use == or =>", error);
+                AreEqual("unexpected character '+' after '='. Use == or => at pos 1", error);
             } {
                 Parse("|x", out error);
-                AreEqual("unexpected character 'x' after '|'. Use ||", error);
+                AreEqual("unexpected character 'x' after '|'. Use || at pos 1", error);
             } {
                 Parse("&x", out error);
-                AreEqual("unexpected character 'x' after '&'. Use &&", error);
+                AreEqual("unexpected character 'x' after '&'. Use && at pos 1", error);
             } {
                 Parse("#", out error);
-                AreEqual("unexpected character: '#'", error);
+                AreEqual("unexpected character: '#' at pos 0", error);
             } {
                 Parse("'abc", out error);
-                AreEqual("missing string terminator ' for: abc", error);
+                AreEqual("missing string terminator ' for: abc at pos 4", error);
             }  {
                 Parse("1.23.4", out error);
-                AreEqual("invalid floating point number: 1.23.", error);
+                AreEqual("invalid floating point number: 1.23. at pos 4", error);
             }
         }
         
