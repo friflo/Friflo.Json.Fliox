@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 throw new InvalidOperationException("invalid stack count");
             foreach (var entry in stack) {
                 if (entry.operation.type == TokenType.BracketOpen && !entry.bracketClosed) {
-                    error = "missing closing parenthesis";
+                    error = $"missing closing parenthesis {At} {entry.Pos}";
                     return false;
                 }
             }
@@ -75,16 +75,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case Arity.NAry:    AddNAry     (stack, token, out error);  return;
                 default:
                     switch (token.type){
-                        case TokenType.BracketOpen:     HandleBracketOpen (stack, out error, token);    return;
-                        case TokenType.BracketClose:    HandleBracketClose(stack, out error);           return;
+                        case TokenType.BracketOpen:     HandleBracketOpen (stack, token, out error);    return;
+                        case TokenType.BracketClose:    HandleBracketClose(stack, token, out error);    return;
                         default:
-                            error = $"Unexpected query token: {token}";
+                            error = $"Unexpected query token: {token} {At} {token.pos}";
                             return;
                     }
             }
         }
 
-        private static void HandleBracketOpen(Stack<QueryNode> stack, out string error, in Token token) {
+        private static void HandleBracketOpen(Stack<QueryNode> stack, in Token token, out string error) {
             stack.TryPeek(out QueryNode last);
 
             // add (grouping) open parenthesis
@@ -94,10 +94,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
         }
         
-        private static void HandleBracketClose(Stack<QueryNode> stack, out string error) {
+        private static void HandleBracketClose(Stack<QueryNode> stack, in Token token, out string error) {
             while (true) {
                 if (!stack.TryPeek(out QueryNode head)) {
-                    error = "no matching open parenthesis";
+                    error = $"no matching open parenthesis {At} {token.pos}";
                     return;
                 }
                 if (head.isFunction) {
@@ -149,11 +149,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         private static void AddBinary(Stack<QueryNode> stack, in Token token, out string error) {
             if (!stack.TryPeek(out QueryNode head)) {
-                error = $"operator {token} expect one preceding operand";
+                error = $"operator {token} expect one preceding operand {At} {token.pos}";
                 return;
             }
             if (token.type == TokenType.Arrow) {
-                HandleArrow(head, out error);
+                HandleArrow(head, token, out error);
                 return;
             }
             error           = null;
@@ -161,18 +161,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             PushNode(stack, newNode);
         }
         
-        private static void HandleArrow(QueryNode head, out string error) {
+        private static void HandleArrow(QueryNode head, in Token token, out string error) {
             if (!head.isFunction) {
-                error = $"=> can be used only as lambda in functions. Was used by: {head.operation}";
+                error = $"=> can be used only as lambda in functions. Was used by: {head.operation} {At} {token.pos}";
                 return;
             }
             if (head.OperandCount != 1) {
-                error = $"=> expect one preceding lambda argument. Was used in: {head.operation}";
+                error = $"=> expect one preceding lambda argument. Was used in: {head.operation} {At} {token.pos}";
                 return;
             }
             var lambdaArg = head.GetOperand(0);
             if (lambdaArg.operation.type != TokenType.Symbol) {
-                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation}";
+                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {token.pos}";
                 return;
             }
             error = null;
@@ -217,7 +217,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
         private static void AddNAry(Stack<QueryNode> stack, in Token token, out string error) {
             if (!stack.TryPeek(out QueryNode node)) {
-                error = $"operator {token} expect one preceding operand";
+                error = $"operator {token} expect one preceding operand {At} {token.pos}";
                 return;
             }
             error = null;
@@ -228,5 +228,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var newNode = new QueryNode(token);
             PushNode(stack, newNode);
         }
+        
+        private const string At = "at pos";
     }
 }

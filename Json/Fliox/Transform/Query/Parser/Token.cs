@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             this.str    = str;
             this.lng    = 0;
             this.dbl    = 0;
-            this.pos    = position;
+            this.pos    = position - 1;
         }
         
         internal Token (long lng, int position) {

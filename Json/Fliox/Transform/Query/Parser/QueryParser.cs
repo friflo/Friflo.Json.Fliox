@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (operand is FilterOperation filterOperand) {
                 return new Not(filterOperand);
             }
-            error = $"not operator ! must use a boolean operand";
+            error = $"not operator ! must use a boolean operand {At} {node.Pos}";
             return default;
         }
 
@@ -246,6 +246,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             return operands;
         }
+        
+        private const string At = "at pos";
     }
     
     internal readonly struct BinaryOperands {

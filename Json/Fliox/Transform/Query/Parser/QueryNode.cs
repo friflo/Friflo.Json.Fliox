@@ -16,6 +16,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal readonly   bool            isFunction;
         internal            bool            bracketClosed;
         
+        internal            int             Pos => operation.pos;
+        
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
         
         internal            int             OperandCount                                => operands.Count;        
