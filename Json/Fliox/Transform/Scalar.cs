@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Transform
 
         private void AssertUnaryNumber() {
             if (!IsNumber)
-                throw new ArgumentException($"Expect numeric operand. operand: {this}");
+                throw new ArgumentException($"Expect numeric operand. was: {this}");
         }
         
         // --- binary arithmetic operations ---
