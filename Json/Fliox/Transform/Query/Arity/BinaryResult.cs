@@ -25,11 +25,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
                 return true;                
             }
             if (left.IsError) {
-                result = Scalar.Error ($"{leftOp} - {left}");
+                result = Scalar.Error ($"{left} in {leftOp}");
                 return false;
             }
             if (right.IsError) {
-                result = Scalar.Error ($"{rightOp} - {right}");
+                result = Scalar.Error ($"{right} in {rightOp}");
                 return false;
             }
             result = Operation.False;

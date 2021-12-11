@@ -26,7 +26,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(true, result);
             } {
                 Eval ("Abs('abc') >= 1", json, eval, out error);
-                AreEqual("Abs('abc') - error: Expect numeric operand. was: 'abc'", error);
+                AreEqual("expect numeric operand. was: 'abc' in Abs('abc')", error);
+            } {
+                Eval ("1 < Abs(null)", json, eval, out error);
+                AreEqual("expect numeric operand. was: null in Abs(null)", error);
             }
         }
         

@@ -238,7 +238,7 @@ namespace Friflo.Json.Fliox.Transform
                 error = default;
                 return true;
             }
-            error = Error($"Expect numeric operand. was: {this}");
+            error = Error($"expect numeric operand. was: {this}");
             return false;
         }
         
@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private void AssertBinaryNumbers(in Scalar other) {
             if (!IsNumber || !other.IsNumber)
-                throw new ArgumentException($"Expect two numeric operands. left: {this}, right: {other}");
+                throw new ArgumentException($"expect two numeric operands. left: {this}, right: {other}");
         }
         
         // --- binary string expressions
@@ -314,7 +314,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private void AssertBinaryString(in Scalar other) {
             if (!IsString || !other.IsString)
-                throw new ArgumentException($"Expect two string operands. left: {this}, right: {other}");
+                throw new ArgumentException($"expect two string operands. left: {this}, right: {other}");
         }
         
         // --------
@@ -347,7 +347,6 @@ namespace Friflo.Json.Fliox.Transform
                     sb.Append("(Undefined)");
                     break;
                 case ScalarType.Error:
-                    sb.Append("error: ");
                     sb.Append(stringValue);
                     break;
             }
