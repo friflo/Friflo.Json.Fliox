@@ -10,6 +10,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public static class QueryParser
     {
+        /// <summary>
+        /// namespace, class or method name may change. Use <see cref="Operation.Parse"/> instead.  
+        /// </summary>
         public static Operation Parse (string operation, out string error) {
             var result  = QueryLexer.Tokenize (operation,   out error);
             if (error != null)
