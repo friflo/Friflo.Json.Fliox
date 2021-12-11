@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Transform
 
         private void AssertUnaryNumber() {
             if (!IsNumber)
-                throw new InvalidOperationException($"Expect operand being numeric. operand: {this}");
+                throw new ArgumentException($"Expect operand being numeric. operand: {this}");
         }
         
         // --- binary arithmetic operations ---
@@ -274,7 +274,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private void AssertBinaryNumbers(in Scalar other) {
             if (!IsNumber || !other.IsNumber)
-                throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
+                throw new ArgumentException($"Expect both operands being numeric. left: {this}, right: {other}");
         }
         
         // --- binary string expressions
@@ -295,7 +295,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private void AssertBinaryString(in Scalar other) {
             if (!IsString || !other.IsString)
-                throw new InvalidOperationException($"Expect both operands being a string. left: {this}, right: {other}");
+                throw new ArgumentException($"Expect both operands being a string. left: {this}, right: {other}");
         }
         
         // --------
