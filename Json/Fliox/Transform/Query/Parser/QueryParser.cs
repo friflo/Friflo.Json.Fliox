@@ -215,7 +215,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var operand_0 = node.GetOperand(0);
             var operand_1 = node.GetOperand(1);
             var left    = GetOperation(operand_0, out error);
+            if (error != null)
+                return default;
             var right   = GetOperation(operand_1, out error);
+            if (error != null)
+                return default;
             if (boolOperands)
                 return new BinaryOperands (left, right);
             if (left is FilterOperation || right is FilterOperation) {
