@@ -143,45 +143,51 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("! {( {true}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Not>());
-                AreEqual("!(true)", op.ToString());
+                AreEqual("!(true)", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("(1 + 2) * 3", out _);
                 AreEqual("( {* {+ {1, 2}, 3}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
                 That(op, Is.TypeOf<Multiply>());
-                AreEqual("(1 + 2) * 3", op.ToString());
+                AreEqual("(1 + 2) * 3", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("(true || false) && true", out _);
                 AreEqual("( {&& {|| {true, false}, true}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
                 That(op, Is.TypeOf<And>());
-                AreEqual("(true || false) && true", op.ToString());
+                AreEqual("(true || false) && true", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("(1 < 2 || 3 < 4) && 5 < 6", out _);
                 AreEqual("( {&& {|| {< {1, 2}, < {3, 4}}, < {5, 6}}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
                 That(op, Is.TypeOf<And>());
-                AreEqual("(1 < 2 || 3 < 4) && 5 < 6", op.ToString());
+                AreEqual("(1 < 2 || 3 < 4) && 5 < 6", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("((1))", out _);
                 AreEqual("( {( {1}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("1", op.ToString());
+                AreEqual("1", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("!(true)", out _);
                 AreEqual("! {( {true}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("!(true)", op.ToString());
+                AreEqual("!(true)", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("(!(true))", out _);
                 AreEqual("( {! {( {true}}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("!(true)", op.ToString());
+                AreEqual("!(true)", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("!(!(true))", out _);
                 AreEqual("! {( {! {( {true}}}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("!(!(true))", op.ToString());
+                AreEqual("!(!(true))", op.Linq);
+            } {
+                var op = Parse("(1 + 2) == 3", out _);
+                AreEqual("1 + 2 == 3", op.Linq);
+            }  {
+                var op = Parse("(.a + .b) == 3", out _);
+                AreEqual(".a + .b == 3", op.Linq);
             }
         }
         
@@ -218,37 +224,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var node    = QueryTree.CreateTree("a * b + c", out _);
                 AreEqual("+ {* {a, b}, c}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("a * b + c", op.ToString());
+                AreEqual("a * b + c", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("a + b * c", out _);
                 AreEqual("+ {a, * {b, c}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("a + b * c", op.ToString());
+                AreEqual("a + b * c", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("true && false && 1 < 2", out _);
                 AreEqual("&& {true, false, < {1, 2}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("true && false && 1 < 2", op.ToString());
+                AreEqual("true && false && 1 < 2", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("true || 1 + 2 * 3 < 10", out _);
                 AreEqual("|| {true, < {+ {1, * {2, 3}}, 10}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("true || 1 + 2 * 3 < 10", op.ToString());
+                AreEqual("true || 1 + 2 * 3 < 10", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("10 > 3 * 2 + 1 || true", out _);
                 AreEqual("|| {> {10, + {* {3, 2}, 1}}, true}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("10 > 3 * 2 + 1 || true", op.ToString());
+                AreEqual("10 > 3 * 2 + 1 || true", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("true || false && true", out _);
                 AreEqual("|| {true, && {false, true}}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("true || false && true", op.ToString());
+                AreEqual("true || false && true", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("true && false || true", out _);
                 AreEqual("|| {&& {true, false}, true}", node.ToString());
                 var op      = OperationFromNode(node, out _);
-                AreEqual("true && false || true", op.ToString());
+                AreEqual("true && false || true", op.Linq);
             }
         }
         
@@ -383,54 +389,54 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestArithmeticFunction() {
             {
                 var op = Parse("Abs(-1)", out _);
-                AreEqual("Abs(-1)", op.ToString());
+                AreEqual("Abs(-1)", op.Linq);
             }  {
                 var op = Parse("Ceiling(2.5)", out _);
-                AreEqual("Ceiling(2.5)", op.ToString());
+                AreEqual("Ceiling(2.5)", op.Linq);
             }  {
                 var op = Parse("Floor(2.5)", out _);
-                AreEqual("Floor(2.5)", op.ToString());
+                AreEqual("Floor(2.5)", op.Linq);
             } {
                 var op = Parse("Exp(2.5)", out _);
-                AreEqual("Exp(2.5)", op.ToString());
+                AreEqual("Exp(2.5)", op.Linq);
             } {
                 var op = Parse("Log(2.5)", out _);
-                AreEqual("Log(2.5)", op.ToString());
+                AreEqual("Log(2.5)", op.Linq);
             } {
                 var op = Parse("Log(2.5)", out _);
-                AreEqual("Log(2.5)", op.ToString());
+                AreEqual("Log(2.5)", op.Linq);
             } {
                 var op = Parse("Sqrt(2.5)", out _);
-                AreEqual("Sqrt(2.5)", op.ToString());
+                AreEqual("Sqrt(2.5)", op.Linq);
             } {
                 var op = Parse("Abs(Sqrt(2.5))", out _);
-                AreEqual("Abs(Sqrt(2.5))", op.ToString());
+                AreEqual("Abs(Sqrt(2.5))", op.Linq);
             }
             // --- same operator precedence
             {
                 var op = Parse("1 + 2 - 3", out _);
                 That(op, Is.TypeOf<Subtract>());
-                AreEqual("1 + 2 - 3", op.ToString());
+                AreEqual("1 + 2 - 3", op.Linq);
             } {
                 var op = Parse("1 - 2 + 3", out _);
                 That(op, Is.TypeOf<Add>());
-                AreEqual("1 - 2 + 3", op.ToString());
+                AreEqual("1 - 2 + 3", op.Linq);
             } {
                 var op = Parse("1 * 2 / 3", out _);
                 That(op, Is.TypeOf<Divide>());
-                AreEqual("1 * 2 / 3", op.ToString());
+                AreEqual("1 * 2 / 3", op.Linq);
             } {
                 var op = Parse("1 / 2 * 3", out _);
                 That(op, Is.TypeOf<Multiply>());
-                AreEqual("1 / 2 * 3", op.ToString());
+                AreEqual("1 / 2 * 3", op.Linq);
             }
             // --- test with scopes
             {
                 var op = Parse("(Abs(1) == 1)", out _);
-                AreEqual("Abs(1) == 1", op.ToString());
+                AreEqual("Abs(1) == 1", op.Linq);
             } {
                 var op = Parse("!(Abs(1) == 1)", out _);
-                AreEqual("!(Abs(1) == 1)", op.ToString());
+                AreEqual("!(Abs(1) == 1)", op.Linq);
             }
         }
         
@@ -438,16 +444,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryAggregateMethods() {
             {
                 var op = Parse(".children.Min(child => child.age)", out _);
-                AreEqual(".children.Min(child => child.age)", op.ToString());
+                AreEqual(".children.Min(child => child.age)", op.Linq);
             } {
                 var op = Parse(".children.Max(child => child.age)", out _);
-                AreEqual(".children.Max(child => child.age)", op.ToString());
+                AreEqual(".children.Max(child => child.age)", op.Linq);
             } {
                 var op = Parse(".children.Sum(child => child.age)", out _);
-                AreEqual(".children.Sum(child => child.age)", op.ToString());
+                AreEqual(".children.Sum(child => child.age)", op.Linq);
             } {
                 var op = Parse(".children.Average(child => child.age)", out _);
-                AreEqual(".children.Average(child => child.age)", op.ToString());
+                AreEqual(".children.Average(child => child.age)", op.Linq);
             }
         }
         
@@ -457,22 +463,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var node = QueryTree.CreateTree(".children.Any(child => child.age == 20)", out _);
                 AreEqual(".children.Any() {child, == {child.age, 20}}", node.ToString());
                 var op = OperationFromNode(node, out _);
-                AreEqual(".children.Any(child => child.age == 20)", op.ToString());
+                AreEqual(".children.Any(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryTree.CreateTree(".children.All(child => child.age == 20)", out _);
                 AreEqual(".children.All() {child, == {child.age, 20}}", node.ToString());
                 var op = OperationFromNode(node, out _);
-                AreEqual(".children.All(child => child.age == 20)", op.ToString());
+                AreEqual(".children.All(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
                 AreEqual(".children.Count() {child, == {child.age, 20}}", node.ToString());
                 var op = OperationFromNode(node, out _);
-                AreEqual(".children.Count(child => child.age == 20)", op.ToString());
+                AreEqual(".children.Count(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryTree.CreateTree(".items.Max(item => item.amount) > 1", out _);
                 AreEqual("> {.items.Max() {item, item.amount}, 1}", node.ToString());
                 var op = OperationFromNode(node, out _);
-                AreEqual(".items.Max(item => item.amount) > 1", op.ToString());
+                AreEqual(".items.Max(item => item.amount) > 1", op.Linq);
             }
         }
 
@@ -480,13 +486,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryStringMethods() {
             {
                 var op = Parse(".name.Contains('Smartphone')", out _);
-                AreEqual(".name.Contains('Smartphone')", op.ToString());
+                AreEqual(".name.Contains('Smartphone')", op.Linq);
             } {
                 var op = Parse(".name.StartsWith('Smartphone')", out _);
-                AreEqual(".name.StartsWith('Smartphone')", op.ToString());
+                AreEqual(".name.StartsWith('Smartphone')", op.Linq);
             } {
                 var op = Parse(".name.EndsWith('Smartphone')", out _);
-                AreEqual(".name.EndsWith('Smartphone')", op.ToString());
+                AreEqual(".name.EndsWith('Smartphone')", op.Linq);
+            } {
+                var op = Parse(".foo.EndsWith(.bar)", out _);
+                AreEqual(".foo.EndsWith(.bar)", op.Linq);
             }
         }
         
@@ -494,7 +503,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryMisc() {
             {
                 var op = Parse(".name=='Smartphone'", out _);
-                AreEqual(".name == 'Smartphone'", op.ToString());
+                AreEqual(".name == 'Smartphone'", op.Linq);
             }
         }
         

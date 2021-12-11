@@ -49,14 +49,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
             // --- string functions
             {
-                Eval (".strVal.Contains(1)", json, eval, out error);
-                AreEqual("expect two string operands. left: 'abc', right: 1", error);
+                Eval (".strVal.Contains(.intVal)", json, eval, out error);
+                AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".strVal.StartsWith(2)", json, eval, out error);
-                AreEqual("expect two string operands. left: 'abc', right: 2", error);
+                Eval (".strVal.StartsWith(.intVal)", json, eval, out error);
+                AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".strVal.EndsWith(3)", json, eval, out error);
-                AreEqual("expect two string operands. left: 'abc', right: 3", error);
+                Eval (".strVal.EndsWith(.intVal)", json, eval, out error);
+                AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
                 Eval (".intVal.EndsWith('abc')", json, eval, out error);
                 AreEqual("expect two string operands. left: 42, right: 'abc'", error);
@@ -65,7 +65,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static object Eval(string operation, string json, JsonEvaluator eval, out string error) {
-            var op      = QueryParser.Parse(operation, out _);
+            var op      = QueryParser.Parse(operation, out error);
+            if (error != null)
+                return null;
             var lambda  = new JsonLambda(op);
             var value   = new JsonValue(json);
             var result  = eval.Eval(value, lambda, out error);
