@@ -260,37 +260,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("operation is empty", error);
             } {
                 Parse("true < false", out error);
-                AreEqual("operator < must not use boolean operands", error);
+                AreEqual("operator < must not use boolean operands at pos 5", error);
             } {
                 Parse("1 < 3 > 2", out error);
-                AreEqual("operator > must not use boolean operands", error);
+                AreEqual("operator > must not use boolean operands at pos 6", error);
             } {
                 Parse("true ||", out error);
-                AreEqual("expect at minimum two operands for operator ||", error);
+                AreEqual("expect at minimum two operands for operator || at pos 5", error);
             } {
                 Parse("true || 1", out error);
-                AreEqual("operator || expect boolean operands. Got: 1", error);
+                AreEqual("operator || expect boolean operands. Got: 1 at pos 8", error);
             } {
                 Parse("true || ()", out error); // coverage
-                AreEqual("parentheses (...) expect one operand", error);
+                AreEqual("parentheses (...) expect one operand at pos 8", error);
             } {
                 Parse("1+", out error);
-                AreEqual("operator + expect two operands", error);
+                AreEqual("operator + expect two operands at pos 1", error);
             } {
                 Parse("if", out error);
-                AreEqual("conditional statements must not be used: if", error);
+                AreEqual("conditional statements must not be used: if at pos 0", error);
             } {
                 Parse(".children.Foo(child => child.age)", out error);
-                AreEqual("unknown method: Foo() used by: .children.Foo", error);
+                AreEqual("unknown method: Foo() used by: .children.Foo at pos 0", error);
             } {
                 Parse("Foo(1)", out error);
-                AreEqual("unknown function: Foo()", error);
+                AreEqual("unknown function: Foo() at pos 0", error);
             } {
                 Parse("!123", out error);
-                AreEqual("not operator ! must use a boolean operand at pos 0", error);
+                AreEqual("not operator ! must use a boolean operand. Was: 123 at pos 1", error);
             } {
-                Parse(")", out error);
-                AreEqual("no matching open parenthesis at pos 0", error);
+                Parse(" )", out error);
+                AreEqual("no matching open parenthesis at pos 1", error);
             } {
                 Parse("123)", out error);
                 AreEqual("no matching open parenthesis at pos 3", error);
@@ -299,13 +299,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("missing closing parenthesis at pos 0", error);
             } {
                 Parse("!a b", out error);
-                AreEqual("not operator expect one operand", error);
+                AreEqual("not operator expect one operand at pos 0", error);
             } {
                 Parse("()", out error);
-                AreEqual("parentheses (...) expect one operand", error);
+                AreEqual("parentheses (...) expect one operand at pos 0", error);
             } {
                 Parse("Abs()", out error);
-                AreEqual("function Abs() expect one operand", error);
+                AreEqual("function Abs() expect one operand at pos 0", error);
             } {
                 Parse("=>", out error);
                 AreEqual("operator => expect one preceding operand at pos 0", error);
@@ -317,7 +317,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("operator + expect one preceding operand at pos 0", error);
             } {
                 Parse("!Abs(1)", out error);
-                AreEqual("not operator ! must use a boolean operand at pos 0", error);
+                AreEqual("not operator ! must use a boolean operand. Was: Abs() at pos 1", error);
             }
         }
         
@@ -325,7 +325,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryQuantifyErrors() {
             string error;
             Parse(".children.Any(child => child.age)", out error);
-            AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age", error);
+            AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age at pos 23", error);
         }
         
         [Test]
@@ -333,16 +333,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             string error;
             {
                 Parse("1 => 2", out error);
-                AreEqual("=> can be used only as lambda in functions. Was used by: 1 at pos 2", error);
+                AreEqual("=> can be used only as lambda in functions. Used by: 1 at pos 0", error);
             } {
                 Parse(".children.Any(=> child.age)", out error);
-                AreEqual("=> expect one preceding lambda argument. Was used in: .children.Any() at pos 14", error);
+                AreEqual("=> expect one preceding lambda argument. Used in: .children.Any() at pos 14", error);
             } {
                 Parse(".children.Any(child foo => child.age)", out error);
-                AreEqual("=> expect one preceding lambda argument. Was used in: .children.Any() at pos 24", error);
+                AreEqual("=> expect one preceding lambda argument. Used in: .children.Any() at pos 24", error);
             } {
                 Parse(".children.Any(-1 => child.age)", out error);
-                AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any() at pos 17", error);
+                AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any() at pos 14", error);
             }
         }
         

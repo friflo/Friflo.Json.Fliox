@@ -163,16 +163,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static void HandleArrow(QueryNode head, in Token token, out string error) {
             if (!head.isFunction) {
-                error = $"=> can be used only as lambda in functions. Was used by: {head.operation} {At} {token.pos}";
+                error = $"=> can be used only as lambda in functions. Used by: {head.operation} {At} {head.Pos}";
                 return;
             }
             if (head.OperandCount != 1) {
-                error = $"=> expect one preceding lambda argument. Was used in: {head.operation} {At} {token.pos}";
+                error = $"=> expect one preceding lambda argument. Used in: {head.operation} {At} {token.pos}";
                 return;
             }
             var lambdaArg = head.GetOperand(0);
             if (lambdaArg.operation.type != TokenType.Symbol) {
-                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {token.pos}";
+                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {lambdaArg.Pos}";
                 return;
             }
             error = null;

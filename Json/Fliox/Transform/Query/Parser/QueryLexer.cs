@@ -158,9 +158,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     c = GetChar(operation, pos);
                     if (c == '(') {
                         pos++;
-                        return new Token(TokenType.Function, start, str);
+                        return new Token(TokenType.Function, start + 1, str);
                     }
-                    return new Token(TokenType.Symbol, start, str);
+                    return new Token(TokenType.Symbol, start + 1, str);
                 }
             }
             error = $"unexpected character: '{(char)c}' {At} {pos}";
@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Token GetNumber(bool negative, string operation, ref int pos, out string error) {
-            int     start = pos++;
+            int     start = pos++ - (negative ? 1 : 0);
             bool    isFloat = false;
             while (true) {
                 int c = GetChar(operation, pos);
@@ -192,11 +192,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var str = operation.Substring(start, pos - start);
             if (isFloat) {
                 double dbl = double.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
-                dbl = negative ? -dbl : dbl;
                 return new Token(dbl, start);
             }
             long lng = long.Parse(str);
-            lng = negative ? -lng : lng;
             return new Token(lng, start);
         }
         
