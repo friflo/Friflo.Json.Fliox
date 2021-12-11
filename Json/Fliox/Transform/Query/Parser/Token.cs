@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         public override string ToString() {
             var sb = new StringBuilder();
             foreach (var item in items) {
-                sb.Append(item.ToString());
+                sb.Append(item.GetLabel(false));
             }
             return sb.ToString();
         }
@@ -32,6 +32,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         public  readonly    string      str;
         public  readonly    long        lng;
         public  readonly    double      dbl;
+        
+        public  override    string      ToString() => GetLabel(true);
 
         internal Token (TokenType type, string str = null) {
             this.type   = type;
@@ -54,10 +56,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             this.str    = null;
         }
 
-        public override string ToString() {
+        internal string GetLabel(bool decorate) {
             switch (type) {
                 case TokenType.Symbol:      return str;
-                case TokenType.Function:    return $"{str}()";
+                case TokenType.Function:    return decorate ? $"{str}()" : $"{str}(";
                 case TokenType.Long:        return lng.ToString();
                 case TokenType.Double:      return dbl.ToString(CultureInfo.InvariantCulture);
                 case TokenType.String:      return $"'{str}'";

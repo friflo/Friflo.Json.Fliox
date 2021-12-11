@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertToken("(1)-1", 5);
             AssertToken("o=>o.name", 3);
             
-            AssertToken("a.Contains('xyz')", 3, "a.Contains()'xyz')");
+            AssertToken("a.Contains('xyz')", 3);
 
             AssertToken("a=>!((a.b==-1||1<2)&&(-2<=3||3>1||3>=(1-1*1)/1||-1!=2||false))", 42); // must be 42 in any case :)
         }
