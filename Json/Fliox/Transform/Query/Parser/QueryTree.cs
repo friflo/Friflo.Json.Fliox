@@ -75,8 +75,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case Arity.NAry:    AddNAry     (stack, token, out error);  return;
                 default:
                     switch (token.type){
-                        case TokenType.BracketOpen:     HandleBracketOpen(stack, out error);    return;
-                        case TokenType.BracketClose:    HandleBracketClose(stack, out error);   return;
+                        case TokenType.BracketOpen:     HandleBracketOpen (stack, out error, token);    return;
+                        case TokenType.BracketClose:    HandleBracketClose(stack, out error);           return;
                         default:
                             error = $"Unexpected query token: {token}";
                             return;
@@ -84,11 +84,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
 
-        private static void HandleBracketOpen(Stack<QueryNode> stack, out string error) {
+        private static void HandleBracketOpen(Stack<QueryNode> stack, out string error, in Token token) {
             stack.TryPeek(out QueryNode last);
 
             // add (grouping) open parenthesis
-            var newNode = new QueryNode(new Token(TokenType.BracketOpen));
+            var newNode = new QueryNode(token);
             last?.AddOperand(newNode);
             stack.Push(newNode);
             error = null;

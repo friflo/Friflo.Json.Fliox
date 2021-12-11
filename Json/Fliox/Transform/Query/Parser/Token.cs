@@ -28,32 +28,36 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     
     // ------------------------------------ Token ------------------------------------
     public readonly struct Token {
-        public  readonly    TokenType   type;
-        public  readonly    string      str;
-        public  readonly    long        lng;
-        public  readonly    double      dbl;
+        internal readonly   TokenType   type;
+        internal readonly   string      str;
+        internal readonly   long        lng;
+        internal readonly   double      dbl;
+        internal readonly   int         pos;
         
-        public  override    string      ToString() => GetLabel(true);
+        public   override   string      ToString() => GetLabel(true);
 
-        internal Token (TokenType type, string str = null) {
+        internal Token (TokenType type, int position, string str = null) {
             this.type   = type;
             this.str    = str;
             this.lng    = 0;
             this.dbl    = 0;
+            this.pos    = position;
         }
         
-        internal Token (long lng) {
+        internal Token (long lng, int position) {
             this.type   = TokenType.Long;
             this.lng    = lng;
             this.str    = null;
             this.dbl    = 0;
+            this.pos    = position;
         }
 
-        internal Token (double dbl) {
+        internal Token (double dbl, int position) {
             this.type   = TokenType.Double;
             this.dbl    = dbl;
             this.lng    = 0;
             this.str    = null;
+            this.pos    = position;
         }
 
         internal string GetLabel(bool decorate) {
