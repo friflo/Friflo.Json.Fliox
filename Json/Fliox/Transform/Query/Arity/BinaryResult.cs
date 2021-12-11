@@ -19,9 +19,21 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
 
         public override string ToString() => $"({left}, {right})";
         
-        internal bool BothOperandsDefined(out Scalar result) {
+        internal bool BothOperandsDefined(out Scalar result, Operation leftOp, Operation rightOp) {
+            if (left.IsDefined && right.IsDefined) {
+                result = Operation.False;
+                return true;                
+            }
+            if (left.IsError) {
+                result = Scalar.Error ($"{leftOp} - {left}");
+                return false;
+            }
+            if (right.IsError) {
+                result = Scalar.Error ($"{rightOp} - {right}");
+                return false;
+            }
             result = Operation.False;
-            return left.type != ScalarType.Undefined && right.type != ScalarType.Undefined;
+            return false;
         }
     }
     

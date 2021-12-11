@@ -43,19 +43,31 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Eval
-        public object Eval(JsonValue json, JsonLambda lambda) {
+        public object Eval(JsonValue json, JsonLambda lambda, out string error) {
             ReadJsonFields(json, lambda);
             var cx = new EvalCx(-1);
             var evalResult = lambda.op.Eval(cx);
             
-            if (evalResult.values.Count == 1)
-                return evalResult.values[0].AsObject();
+            if (evalResult.values.Count == 1) {
+                var value = evalResult.values[0];    
+                if (value.IsError) {
+                    error = value.ErrorMessage;
+                    return null;
+                }
+                error = null;
+                return value.AsObject();
+            }
             
             object[] evalResults = new object[evalResult.values.Count];
             for (int n = 0; n < evalResult.values.Count; n++) {
                 var result = evalResult.values[n];
+                if (result.IsError) {
+                    error = result.ErrorMessage;
+                    return null;
+                }
                 evalResults[n] = result.AsObject();
             }
+            error = null;
             return evalResults;
         }
 

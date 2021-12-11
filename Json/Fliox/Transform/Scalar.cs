@@ -9,6 +9,8 @@ namespace Friflo.Json.Fliox.Transform
 {
     public enum ScalarType : byte {
         Undefined,
+        Error,
+        //
         String,
         Double,
         Long,
@@ -28,18 +30,21 @@ namespace Friflo.Json.Fliox.Transform
         private     readonly    string          stringValue;    // 8 bytes
 
         private                 double          DoubleValue => BitConverter.Int64BitsToDouble(primitiveValue);
-        private                 long            LongValue => primitiveValue;
-        private                 bool            BoolValue => primitiveValue != 0;
+        private                 long            LongValue   => primitiveValue;
+        private                 bool            BoolValue   => primitiveValue != 0;
+        internal                string          ErrorMessage=> stringValue;
 
-        private                 bool            IsString => type == ScalarType.String;
-        private                 bool            IsNumber => type == ScalarType.Double || type == ScalarType.Long;
-        private                 bool            IsDouble => type == ScalarType.Double;
-        private                 bool            IsLong   => type == ScalarType.Long;
+        private                 bool            IsString    => type == ScalarType.String;
+        private                 bool            IsNumber    => type == ScalarType.Double || type == ScalarType.Long;
+        private                 bool            IsDouble    => type == ScalarType.Double;
+        private                 bool            IsLong      => type == ScalarType.Long;
+        internal                bool            IsError     => type == ScalarType.Error;
+        internal                bool            IsDefined   => type >  ScalarType.Error;
         
-        public static readonly Scalar           True  = new Scalar(true); 
-        public static readonly Scalar           False = new Scalar(false);
+        public static readonly  Scalar          True  = new Scalar(true); 
+        public static readonly  Scalar          False = new Scalar(false);
         
-        public static readonly Scalar           Null  = new Scalar(ScalarType.Null, null);
+        public static readonly  Scalar          Null  = new Scalar(ScalarType.Null, null);
 
 
         internal Scalar(ScalarType type, string value) {
@@ -47,6 +52,10 @@ namespace Friflo.Json.Fliox.Transform
             stringValue     = value;
             //
             primitiveValue  = 0;
+        }
+        
+        internal static Scalar Error(string message) {
+            return new Scalar(ScalarType.Error, message);
         }
         
         public Scalar(string value) {
@@ -177,50 +186,60 @@ namespace Friflo.Json.Fliox.Transform
 
         // --- unary arithmetic operations ---
         public Scalar Abs() {
-            AssertUnaryNumber();
+            if (!AssertUnaryNumber(out Scalar error))
+                return error;
             if (IsDouble)
                 return new Scalar(Math.Abs(DoubleValue));
             return     new Scalar(Math.Abs(LongValue));
         }
         
         public Scalar Ceiling() {
-            AssertUnaryNumber();
+            if (!AssertUnaryNumber(out Scalar error))
+                return error;
             if (IsDouble)
                 return new Scalar(Math.Ceiling(        DoubleValue));
             return     new Scalar(Math.Ceiling((double)LongValue));
         }
         
         public Scalar Floor() {
-            AssertUnaryNumber();
+            if (!AssertUnaryNumber(out Scalar error))
+                return error;
             if (IsDouble)
                 return new Scalar(Math.Floor(        DoubleValue));
             return     new Scalar(Math.Floor((double)LongValue));
         }
         
         public Scalar Exp() {
-            AssertUnaryNumber();
+            if (!AssertUnaryNumber(out Scalar error))
+                return error;
             if (IsDouble)
                 return new Scalar(Math.Exp(DoubleValue));
             return     new Scalar(Math.Exp(LongValue));
         }
         
         public Scalar Log() {
-            AssertUnaryNumber();
+            if (!AssertUnaryNumber(out Scalar error))
+                return error;
             if (IsDouble)
                 return new Scalar(Math.Log(DoubleValue));
             return     new Scalar(Math.Log(LongValue));
         }
         
         public Scalar Sqrt() {
-            AssertUnaryNumber();
+            if (!AssertUnaryNumber(out Scalar error))
+                return error;
             if (IsDouble)
                 return new Scalar(Math.Sqrt(DoubleValue));
             return     new Scalar(Math.Sqrt(LongValue));
         }
 
-        private void AssertUnaryNumber() {
-            if (!IsNumber)
-                throw new ArgumentException($"Expect numeric operand. was: {this}");
+        private bool AssertUnaryNumber(out Scalar error) {
+            if (IsNumber) {
+                error = default;
+                return true;
+            }
+            error = Error($"Expect numeric operand. was: {this}");
+            return false;
         }
         
         // --- binary arithmetic operations ---
@@ -326,6 +345,10 @@ namespace Friflo.Json.Fliox.Transform
                     break;
                 case ScalarType.Undefined:
                     sb.Append("(Undefined)");
+                    break;
+                case ScalarType.Error:
+                    sb.Append("error: ");
+                    sb.Append(stringValue);
                     break;
             }
         }
