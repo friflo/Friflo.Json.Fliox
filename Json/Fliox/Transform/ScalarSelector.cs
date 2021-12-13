@@ -15,12 +15,16 @@ namespace Friflo.Json.Fliox.Transform
     public sealed class ScalarSelector : IDisposable
     {
         private             Bytes                               targetJson = new Bytes(128);
-        private             Utf8JsonParser                          targetParser;
+        private             Utf8JsonParser                      targetParser;
         
+        /// use <see cref="NodeStack"/> while debugging
         private readonly    List<PathNode<ScalarSelectResult>>  nodeStack = new List<PathNode<ScalarSelectResult>>();
         private readonly    ScalarSelect                        reusedSelect = new ScalarSelect();
 
         public              string                              ErrorMessage => targetParser.error.msg.AsString();
+        
+        // ReSharper disable once UnusedMember.Local
+        private string NodeStack => nodeStack.Count == 0 ? "empty" : nodeStack[nodeStack.Count - 1].ToString(); // debugging only 
 
         public void Dispose() {
             targetParser.Dispose();
