@@ -89,9 +89,20 @@ namespace Friflo.Json.Fliox.Transform.Select
         private void AscendToString(StringBuilder sb) {
             if (parent != null)
                 parent.AscendToString(sb);
-            if (selectorNode.selectorType == SelectorType.Member)
-                sb.Append('.');
-            sb.Append(selectorNode.name);
+            switch (selectorNode.selectorType) {
+                case SelectorType.Member:
+                    sb.Append('.');
+                    sb.Append(selectorNode.name);
+                    break;
+                case SelectorType.ArrayGroup:
+                    sb.Append('[');
+                    sb.Append(arrayIndex);
+                    sb.Append(']');
+                    break;
+                default:
+                    sb.Append(selectorNode.name);
+                    break;
+            }
         }
 
         internal PathNode(SelectorNode selectorNode, PathNode<TResult> parent) {
