@@ -26,6 +26,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
+            var lambdaArg = new LambdaArg();
+            cx.variables.Add(arg, lambdaArg);
             body.Init(cx, 0);
         }
         
@@ -55,6 +57,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
+            var lambdaArg = new LambdaArg();
+            cx.variables.Add(arg, lambdaArg);
             body.Init(cx, 0);
         }
         

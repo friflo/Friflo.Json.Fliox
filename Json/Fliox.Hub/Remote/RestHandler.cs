@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -194,8 +195,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.WriteError("filter error", error, 400);
                     return null;
                 }
-                if (filterOp is FilterOperation op)
-                    return op;
+                if (filterOp is FilterOperation op) {
+                    Filter filterLambda = new Filter("o", op);
+                    return filterLambda;
+                }
                 context.WriteError("filter error", "filter must be boolean operation", 400);
                 return null;
             }

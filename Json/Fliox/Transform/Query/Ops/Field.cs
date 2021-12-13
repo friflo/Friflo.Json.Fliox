@@ -91,13 +91,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         string GetName(bool isArrayField, string path);
     }
     
-    internal class Variable : ISelector
+    internal class LambdaArg : ISelector
     {
-        private readonly string name;
-        
-        internal Variable (string name) {
-            this.name = name;
-        }
+        internal LambdaArg () { }
         
         public string GetName(bool isArrayField, string path) {
             return isArrayField ? path + "[*]" : path;
