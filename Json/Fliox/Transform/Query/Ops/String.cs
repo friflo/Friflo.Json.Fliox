@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public sealed class Contains : BinaryBoolOp
     {
-        public   override void AppendLinq(StringBuilder sb) => AppendLinqMethod("Contains", left, right, sb);
+        public   override void AppendLinq(AppendCx cx) => AppendLinqMethod("Contains", left, right, cx);
 
         public Contains() { }
         public Contains(Operation left, Operation right) : base(left, right) { }
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class StartsWith : BinaryBoolOp
     {
-        public   override void AppendLinq(StringBuilder sb) => AppendLinqMethod("StartsWith", left, right, sb);
+        public   override void AppendLinq(AppendCx cx) => AppendLinqMethod("StartsWith", left, right, cx);
 
         public StartsWith() { }
         public StartsWith(Operation left, Operation right) : base(left, right) { }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class EndsWith : BinaryBoolOp
     {
-        public   override void AppendLinq(StringBuilder sb) => AppendLinqMethod("EndsWith", left, right, sb);
+        public   override void AppendLinq(AppendCx cx) => AppendLinqMethod("EndsWith", left, right, cx);
 
         public EndsWith() { }
         public EndsWith(Operation left, Operation right) : base(left, right) { }

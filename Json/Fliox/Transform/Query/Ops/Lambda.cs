@@ -11,10 +11,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Fri.Required]  public          string          arg;
         [Fri.Required]  public          Operation       body;
         
-        public   override void AppendLinq(StringBuilder sb) {
-            sb.Append(arg);
-            sb.Append(" => ");
-            body.AppendLinq(sb);
+        public   override void AppendLinq(AppendCx cx) {
+            cx.lambdaArg = arg;
+            cx.Append(arg);
+            cx.Append(" => ");
+            body.AppendLinq(cx);
         }
 
         public Lambda() { }
@@ -39,10 +40,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Fri.Required]  public          string          arg;
         [Fri.Required]  public          FilterOperation body;
         
-        public   override void AppendLinq(StringBuilder sb) {
-            sb.Append(arg);
-            sb.Append(" => ");
-            body.AppendLinq(sb);
+        public   override void AppendLinq(AppendCx cx) {
+            cx.lambdaArg = arg;
+            cx.Append(arg);
+            cx.Append(" => ");
+            body.AppendLinq(cx);
         }
 
         public Filter() { }

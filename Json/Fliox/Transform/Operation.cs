@@ -72,13 +72,13 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public abstract class Operation
     {
-        public    abstract  void        AppendLinq (StringBuilder sb);
+        public    abstract void         AppendLinq(AppendCx cx);
         internal  abstract  void        Init (OperationContext cx, InitFlags flags);
         internal  abstract  EvalResult  Eval (EvalCx cx);
         public              string      Linq { get {
-            var sb = new StringBuilder();
-            AppendLinq(sb);
-            return sb.ToString();
+            var cs = new AppendCx(null);
+            AppendLinq(cs);
+            return cs.sb.ToString();
         } }
 
         public    override  string      ToString() => Linq; 
@@ -131,62 +131,68 @@ namespace Friflo.Json.Fliox.Transform
             return field.name;
         }
         
-        protected static void AppendLinqArrow(string name, Field field, string arg, Operation op, StringBuilder sb) {
-            field.AppendLinq(sb);
+        protected static void AppendLinqArrow(string name, Field field, string arg, Operation op, AppendCx cx) {
+            var sb = cx.sb;
+            field.AppendLinq(cx);
             sb.Append(".");
             sb.Append(name);
             sb.Append("(");
             sb.Append(arg);
             sb.Append(" => ");
-            op.AppendLinq(sb);
+            op.AppendLinq(cx);
             sb.Append(")");
         }
         
-        protected static void AppendLinqMethod(string name, Operation symbol, Operation operand, StringBuilder sb) {
-            symbol.AppendLinq(sb);
+        protected static void AppendLinqMethod(string name, Operation symbol, Operation operand, AppendCx cx) {
+            var sb = cx.sb;
+            symbol.AppendLinq(cx);
             sb.Append(".");
             sb.Append(name);
             sb.Append("(");
-            operand.AppendLinq(sb);
+            operand.AppendLinq(cx);
             sb.Append(")");
         }
         
-        protected static void AppendLinqFunction(string name, Operation operand, StringBuilder sb) {
+        protected static void AppendLinqFunction(string name, Operation operand, AppendCx cx) {
+            var sb = cx.sb;
             sb.Append(name);
             sb.Append("(");
-            operand.AppendLinq(sb);
+            operand.AppendLinq(cx);
             sb.Append(")");
         }
         
-        protected void AppendLinqBinary(StringBuilder sb, string token, Operation left, Operation right) {
-            AppendOperation (sb, left);
+        protected void AppendLinqBinary(AppendCx cx, string token, Operation left, Operation right) {
+            var sb = cx.sb;
+            AppendOperation (cx, left);
             sb.Append(' ');
             sb.Append(token);
             sb.Append(' ');
-            AppendOperation (sb, right);
+            AppendOperation (cx, right);
         }
         
-        private void AppendOperation(StringBuilder sb, Operation op) {
+        private void AppendOperation(AppendCx cx, Operation op) {
+            var sb = cx.sb;
             var opPrecedence    = GetPrecedence(op);
             var precedence      = GetPrecedence(this);
             if (precedence >= opPrecedence) {
-                op.AppendLinq(sb);
+                op.AppendLinq(cx);
                 return;
             }
             sb.Append('(');
-            op.AppendLinq(sb);
+            op.AppendLinq(cx);
             sb.Append(')');
         }
         
-        protected void AppendLinqNAry(StringBuilder sb, string token, List<FilterOperation> operands) {
+        protected void AppendLinqNAry(AppendCx cx, string token, List<FilterOperation> operands) {
+            var sb = cx.sb;
             var operand     = operands[0];
-            AppendOperation(sb, operand);
+            AppendOperation(cx, operand);
             for (int n = 1; n < operands.Count; n++) {
                 operand                 = operands[n];
                 sb.Append(' ');
                 sb.Append(token);
                 sb.Append(' ');
-                AppendOperation(sb, operand);
+                AppendOperation(cx, operand);
             }
         }
         
