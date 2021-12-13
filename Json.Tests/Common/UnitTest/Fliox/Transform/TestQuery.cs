@@ -105,10 +105,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 
                 // ---
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
-                AreEqual(".name == 'Peter'",  isPeter.ToString());
+                AreEqual(".name == 'Peter'",  isPeter.Linq);
                 Cosmos  ("c.name = 'Peter'",  isPeter.Query.Cosmos);
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
-                AreEqual(".name == 'Peter'", isPeter2.ToString());
+                AreEqual(".name == 'Peter'", isPeter2.Linq);
                 
                 bool IsPeter(Person p) => p.name == "Peter";
 
@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
                 var isChildAge20 = new All(new Field (".children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter();
                 var isChildAge20Expect = FromFilter((Person p) => p.children.All(child => child.age == 20));
-                AreEqual(isChildAge20Expect.ToString(), isChildAge20.ToString());
+                AreEqual(isChildAge20Expect.Linq, isChildAge20.Linq);
                 IsTrue  (eval.Filter(peter, isChildAge20));
                 
                 
@@ -229,7 +229,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var hasChildHobbySurfing = new Any (new Field (".children"), "child", hasHobbySurfing).Filter();
                 bool HasChildHobbySurfing(Person p) => p.children.Any(child => child.hobbies.Any(hobby => hobby.name == "Surfing"));
                 
-                AreEqual(".children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.ToString());
+                AreEqual(".children.Any(child => child.hobbies.Any(hobby => hobby.name == 'Surfing'))", hasChildHobbySurfing.Linq);
                 IsTrue (HasChildHobbySurfing(Peter));
             //  IsTrue (eval.Filter(peter, hasChildHobbySurfing)); todo
             //  IsFalse(eval.Filter(john,  hasChildHobbySurfing)); todo

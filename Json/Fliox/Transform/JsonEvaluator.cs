@@ -105,7 +105,8 @@ namespace Friflo.Json.Fliox.Transform
         internal            Operation           op;
         private  readonly   OperationContext    operationContext = new OperationContext();
 
-        public   override   string              ToString() => op != null ? op.Linq : "not initialized";
+        public              string              Linq        => op != null ? op.Linq : "not initialized";
+        public   override   string              ToString()  => Linq;
 
         internal JsonLambda() { }
 
