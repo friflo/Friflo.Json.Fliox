@@ -173,6 +173,18 @@ export class Not extends UnaryLogicalOp {
     op       : "not";
 }
 
+export class Lambda extends Operation {
+    op    : "lambda";
+    arg   : string;
+    body  : Operation_Union;
+}
+
+export class Filter extends FilterOperation {
+    op    : "filter";
+    arg   : string;
+    body  : FilterOperation_Union;
+}
+
 export abstract class BinaryQuantifyOp extends FilterOperation {
     field      : Field;
     arg        : string;

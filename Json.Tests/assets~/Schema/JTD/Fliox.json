@@ -120,6 +120,7 @@
                 "true":               { "ref":  "TrueLiteral" },
                 "false":              { "ref":  "FalseLiteral" },
                 "not":                { "ref":  "Not" },
+                "filter":             { "ref":  "Filter" },
                 "any":                { "ref":  "Any" },
                 "all":                { "ref":  "All" },
                 "contains":           { "ref":  "Contains" },
@@ -165,6 +166,8 @@
                 "true":               { "ref":  "TrueLiteral" },
                 "false":              { "ref":  "FalseLiteral" },
                 "not":                { "ref":  "Not" },
+                "lambda":             { "ref":  "Lambda" },
+                "filter":             { "ref":  "Filter" },
                 "any":                { "ref":  "Any" },
                 "all":                { "ref":  "All" },
                 "countWhere":         { "ref":  "CountWhere" },
@@ -396,6 +399,18 @@
         "UnaryLogicalOp": {
             "properties": {
                 "operand": { "ref":  "FilterOperation" }
+            }
+        },
+        "Lambda": {
+            "properties": {
+                "arg":  { "type": "string" },
+                "body": { "ref":  "Operation" }
+            }
+        },
+        "Filter": {
+            "properties": {
+                "arg":  { "type": "string" },
+                "body": { "ref":  "FilterOperation" }
             }
         },
         "Any": {

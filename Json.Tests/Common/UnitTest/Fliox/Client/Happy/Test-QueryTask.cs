@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             
             // ensure API available
-            AreEqual($"SELECT * FROM c WHERE EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
+            AreEqual($"WHERE EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
 
             var orderCustomer           = orders.RefPath(o => o.customer);
             var customer                = readOrders.ReadRefPath(orderCustomer);
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
-            AreEqual("allArticles2 -> .producer -> .employees[*]", producerEmployees.ToString());
+            AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.ToString());
 
             // lab - test ReadRef expressions
             if (lab) {

@@ -549,6 +549,36 @@
             ],
             "additionalProperties": false
         },
+        "Lambda": {
+            "type": "object",
+            "extends": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
+            "properties": {
+                "op":   { "enum": ["lambda"] },
+                "arg":  { "type": "string" },
+                "body": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
+            },
+            "required": [
+                "op",
+                "arg",
+                "body"
+            ],
+            "additionalProperties": false
+        },
+        "Filter": {
+            "type": "object",
+            "extends": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" },
+            "properties": {
+                "op":   { "enum": ["filter"] },
+                "arg":  { "type": "string" },
+                "body": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }
+            },
+            "required": [
+                "op",
+                "arg",
+                "body"
+            ],
+            "additionalProperties": false
+        },
         "Any": {
             "type": "object",
             "extends": { "$ref": "#/definitions/BinaryQuantifyOp" },

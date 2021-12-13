@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
     
     // ------------------------------------- unary operations -------------------------------------
-    public sealed class Field : Operation
+    public sealed class Field : Operation, ISelector
     {
         [Fri.Required]  public      string      name;
         [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
@@ -42,12 +42,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var dotPos = name.IndexOf('.');
                 if (dotPos == -1)
                     throw new InvalidOperationException("expect a dot in field name");
-                var arg = name.Substring(0, dotPos);
-                var lambda = cx.lambdaArgs[arg];
-                var path = name.Substring(dotPos + 1);
-                selector = lambda.name + "[*]." + path;
+                var arg     = name.Substring(0, dotPos);
+                var lambda  = cx.variables[arg];
+                var path    = name.Substring(dotPos);
+                selector    = lambda.GetName(isArrayField, path);
             }
             cx.selectors.Add(this);
+        }
+        
+        public string GetName(bool isArrayField, string path) {
+            return name + "[*]" + path;
         }
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -77,17 +81,34 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         ArrayField = 1
     }
+    
+    internal interface ISelector {
+        string GetName(bool isArrayField, string path);
+    }
+    
+    internal class Variable : ISelector
+    {
+        private readonly string name;
+        
+        internal Variable (string name) {
+            this.name = name;
+        }
+        
+        public string GetName(bool isArrayField, string path) {
+            return isArrayField ? path + "[*]" : path;
+        }
+    }
 
     internal sealed class OperationContext
     {
         internal readonly List<Field>                   selectors = new List<Field>();
         private  readonly HashSet<Operation>            operations = new HashSet<Operation>();
-        internal readonly Dictionary<string, Field>     lambdaArgs = new Dictionary<string, Field>();
+        internal readonly Dictionary<string, ISelector> variables  = new Dictionary<string, ISelector>();
 
         internal void Init() {
             selectors.Clear();
             operations.Clear();
-            lambdaArgs.Clear();
+            variables.Clear();
         }
 
         internal void ValidateReuse(Operation op) {

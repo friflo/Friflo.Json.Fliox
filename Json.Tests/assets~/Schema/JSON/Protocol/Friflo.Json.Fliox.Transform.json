@@ -16,6 +16,7 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/TrueLiteral" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/FalseLiteral" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Not" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Filter" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Any" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/All" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Contains" },
@@ -23,7 +24,7 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
             ],
             "properties": {
-                "op": { "enum": ["equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "any", "all", "contains", "startsWith", "endsWith"] }
+                "op": { "enum": ["equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "filter", "any", "all", "contains", "startsWith", "endsWith"] }
             },
             "required": [
                 "op"
@@ -65,6 +66,8 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/TrueLiteral" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/FalseLiteral" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Not" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Lambda" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Filter" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Any" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/All" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/CountWhere" },
@@ -73,7 +76,7 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
             ],
             "properties": {
-                "op": { "enum": ["field", "string", "double", "int64", "null", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "min", "max", "sum", "average", "count", "equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "any", "all", "countWhere", "contains", "startsWith", "endsWith"] }
+                "op": { "enum": ["field", "string", "double", "int64", "null", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "min", "max", "sum", "average", "count", "equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "lambda", "filter", "any", "all", "countWhere", "contains", "startsWith", "endsWith"] }
             },
             "required": [
                 "op"

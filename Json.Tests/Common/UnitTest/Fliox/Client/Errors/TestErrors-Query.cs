@@ -60,12 +60,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("Find<Order> (id: 'order-1')",                                     order1                  .Details);
             AreEqual("QueryTask<Article> (filter: true)",                               allArticles             .Details);
             AreEqual("allArticles -> .producer",                                        articleProducer         .Details);
-            AreEqual("QueryTask<Order> (filter: .items.Any(i => i.name == 'Camera'))",  hasOrderCamera          .Details);
-            AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')",            ordersWithCustomer1     .Details);
-            AreEqual("QueryTask<Order> (filter: .items.Count(i => i.amount < 1) > 0)",  read3                   .Details);
-            AreEqual("QueryTask<Order> (filter: .items.Any(i => i.amount < 2))",        ordersAnyAmountLower2   .Details);
-            AreEqual("QueryTask<Order> (filter: .items.All(i => i.amount > 0))",        ordersAllAmountGreater0 .Details);
-            AreEqual("QueryTask<Order> (filter: .customer == 'read-task-error')",       orders2WithTaskError    .Details);
+            AreEqual("QueryTask<Order> (filter: o => .items.Any(i => i.name == 'Camera'))", hasOrderCamera          .Details);
+            AreEqual("QueryTask<Order> (filter: o => .customer == 'customer-1')",           ordersWithCustomer1     .Details);
+            AreEqual("QueryTask<Order> (filter: o => .items.Count(i => i.amount < 1) > 0)", read3                   .Details);
+            AreEqual("QueryTask<Order> (filter: o => .items.Any(i => i.amount < 2))",       ordersAnyAmountLower2   .Details);
+            AreEqual("QueryTask<Order> (filter: o => .items.All(i => i.amount > 0))",       ordersAllAmountGreater0 .Details);
+            AreEqual("QueryTask<Order> (filter: o => .customer == 'read-task-error')",      orders2WithTaskError    .Details);
             AreEqual("orders2WithTaskError -> .customer",                               order2CustomerError     .Details);
 
             var orderCustomer   = orders.RefPath(o => o.customer);

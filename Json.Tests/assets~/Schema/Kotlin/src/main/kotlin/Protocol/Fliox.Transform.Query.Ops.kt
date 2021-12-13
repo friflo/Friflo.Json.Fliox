@@ -256,6 +256,20 @@ abstract class UnaryLogicalOp {
 }
 
 @Serializable
+@SerialName("lambda")
+data class Lambda (
+              val arg  : String,
+              val body : Operation,
+) : Operation()
+
+@Serializable
+@SerialName("filter")
+data class Filter (
+              val arg  : String,
+              val body : FilterOperation,
+) : FilterOperation()
+
+@Serializable
 @SerialName("any")
 data class Any (
     override  val field     : Field,

@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Transform.Query
         internal static string ToCosmos(string collection, FilterOperation filter) {
             var cx      = new ConvertContext(collection, filter);
             var result  = cx.Traverse(filter);
-            return "WHERE " + result;
+            return result;
         }
     }
     
@@ -79,9 +79,13 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case And and:
                     operands = GetOperands(and.operands);
                     return string.Join(" && ", operands);
-                    
+                
+                case Filter filterOp:
+                    var cx              = new ConvertContext (collection, filter);
+                    operand             = cx.Traverse(filterOp.body);
+                    return $"WHERE {operand}";
                 case Any any:
-                    var cx              = new ConvertContext ("", filter);
+                    cx                  = new ConvertContext ("", filter);
                     operand             = cx.Traverse(any.predicate);
                     string fieldName    = Traverse(any.field);
                     string arg          = any.arg;

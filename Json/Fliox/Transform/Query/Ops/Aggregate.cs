@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal override void Init(OperationContext cx, InitFlags flags) {
             cx.ValidateReuse(this); // results are reused
-            cx.lambdaArgs.Add(arg, field);
+            cx.variables.Add(arg, field);
             field.Init(cx, InitFlags.ArrayField);
             array.Init(cx, flags);
         }

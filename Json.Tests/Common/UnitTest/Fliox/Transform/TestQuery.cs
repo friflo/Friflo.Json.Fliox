@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using static Friflo.Json.Fliox.Transform.Operation;
+
 using static Friflo.Json.Tests.Common.UnitTest.Fliox.Transform.AssertEqual;
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
 
@@ -105,11 +105,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var john  = jsonMapper.Write(John);
 
                 // ---
-                var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
-                AreEqual(".name == 'Peter'",  isPeter.Linq);
-                Cosmos  ("c.name = 'Peter'",  isPeter.Query.Cosmos);
+                var  isPeter         = new Filter("p", new Equal(new Field (".name"), new StringLiteral ("Peter"))).Filter();
+                AreEqual("p => .name == 'Peter'",  isPeter.Linq);
+                Cosmos  ("WHERE c.name = 'Peter'",  isPeter.Query.Cosmos);
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
-                AreEqual(".name == 'Peter'", isPeter2.Linq);
+                AreEqual("p => .name == 'Peter'", isPeter2.Linq);
                 
                 bool IsPeter(Person p) => p.name == "Peter";
 
@@ -167,8 +167,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsTrue  (eval.Filter(peter, isAge40));
                 
                 // var  isChildAge20  = new Equal(new Field (".children[*].age"), new Add(new LongLiteral (15), new LongLiteral(5))).Filter();
-                var isChildAge20 = new All(new Field (".children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Filter();
-                var isChildAge20Expect = FromFilter((Person p) => p.children.All(child => child.age == 20));
+                var isChildAge20 = new Filter("p", new All(new Field (".children"), "child", new Equal(new Field ("child.age"), new LongLiteral (20)))).Filter();
+                var isChildAge20Expect = Operation.FromFilter((Person p) => p.children.All(child => child.age == 20));
                 AreEqual(isChildAge20Expect.Linq, isChildAge20.Linq);
                 IsTrue  (eval.Filter(peter, isChildAge20));
                 
@@ -399,6 +399,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
 
+        private static FilterOperation FromFilter<T>(Expression<Func<T, bool>> filter) {
+            var lambda = (Filter)Operation.FromFilter(filter);
+            return lambda.body;
+        }
+        
+        private static Operation FromLambda<T>(Expression<Func<T, object>> filter) {
+            var lambda = (Lambda)Operation.FromLambda(filter);
+            return lambda.body;
+        }
+        
         [Test]
         public static void TestQueryConversion() {
           using (var mapper   = new ObjectMapper()) {
@@ -598,7 +608,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     
     internal static class AssertEqual {
         internal static void Cosmos (string expect, string was) {
-            expect = $"SELECT * FROM c WHERE {expect}"; 
             AreEqual(expect, was);
         }
         

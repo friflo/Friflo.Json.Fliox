@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Transform
     [Fri.Polymorph(typeof(Average),             Discriminant = "average")]
     [Fri.Polymorph(typeof(Count),               Discriminant = "count")]
     
-    // --- FilterOperation  
+    // --- FilterOperation
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
     [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
@@ -55,6 +55,9 @@ namespace Friflo.Json.Fliox.Transform
     [Fri.Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
     [Fri.Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
     [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    
+    [Fri.Polymorph(typeof(Lambda),              Discriminant = "lambda")]
+    [Fri.Polymorph(typeof(Filter),              Discriminant = "filter")]
     [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
     [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
     [Fri.Polymorph(typeof(CountWhere),          Discriminant = "countWhere")]
@@ -99,12 +102,24 @@ namespace Friflo.Json.Fliox.Transform
             return QueryParser.Parse(operation, out error);
         }
         
+        private static string GetExpressionArg(Expression exp) {
+            if (exp is LambdaExpression lambda) {
+                return lambda.Parameters[0].Name;
+            }
+            return null;
+        }
+        
         public static Operation FromLambda<T>(Expression<Func<T, object>> lambda, QueryPath queryPath = null) {
-            return QueryConverter.OperationFromExpression(lambda, queryPath);
+            var op = QueryConverter.OperationFromExpression(lambda, queryPath);
+            var arg = GetExpressionArg(lambda);
+            return new Lambda(arg, op);
+
         }
         
         public static FilterOperation FromFilter<T>(Expression<Func<T, bool>> filter, QueryPath queryPath = null) {
-            return (FilterOperation)QueryConverter.OperationFromExpression(filter, queryPath);
+            var op = (FilterOperation)QueryConverter.OperationFromExpression(filter, queryPath);
+            var arg = GetExpressionArg(filter);
+            return new Filter(arg, op);
         }
         
         public static string PathFromLambda<T>(Expression<Func<T, object>> path, QueryPath queryPath = null) {
@@ -199,7 +214,7 @@ namespace Friflo.Json.Fliox.Transform
     }
     
     [Fri.Discriminator("op")]
-    // --- FilterOperation  
+    // --- FilterOperation
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
     [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
@@ -213,6 +228,8 @@ namespace Friflo.Json.Fliox.Transform
     [Fri.Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
     [Fri.Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
     [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    
+    [Fri.Polymorph(typeof(Filter),              Discriminant = "filter")]
     [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
     [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
     //
@@ -241,7 +258,7 @@ namespace Friflo.Json.Fliox.Transform
         
         public              string              Cosmos { get {
             var collection = "c";
-            return $"SELECT * FROM {collection} {QueryCosmos.ToCosmos(collection, filter)}";
+            return QueryCosmos.ToCosmos(collection, filter);
         } }
 
         internal QueryFormat (FilterOperation filter) {

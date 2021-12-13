@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testCustomers.writeTaskErrors.Add(deleteTaskError,  () => new CommandError("simulated delete task error"));
             testCustomers.readTaskErrors. Add(readTaskError,    () => new CommandError("simulated read task error"));
             // Query(c => c.id == "query-task-error")
-            testCustomers.queryErrors.Add(".id == 'query-task-error'", () => new QueryEntitiesResult {Error = new CommandError("simulated query error")});
+            testCustomers.queryErrors.Add("c => .id == 'query-task-error'", () => new QueryEntitiesResult {Error = new CommandError("simulated query error")});
         
             var customers = store.customers;
 

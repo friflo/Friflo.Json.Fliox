@@ -31,6 +31,8 @@ import { Or }                 from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { TrueLiteral }        from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { FalseLiteral }       from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Not }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { Lambda }             from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { Filter }             from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Any }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { All }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { CountWhere }         from "./Friflo.Json.Fliox.Transform.Query.Ops"
@@ -71,6 +73,8 @@ export type Operation_Union =
     | TrueLiteral
     | FalseLiteral
     | Not
+    | Lambda
+    | Filter
     | Any
     | All
     | CountWhere
@@ -113,6 +117,8 @@ export abstract class Operation {
         | "true"
         | "false"
         | "not"
+        | "lambda"
+        | "filter"
         | "any"
         | "all"
         | "countWhere"
@@ -134,6 +140,7 @@ export type FilterOperation_Union =
     | TrueLiteral
     | FalseLiteral
     | Not
+    | Filter
     | Any
     | All
     | Contains
@@ -154,6 +161,7 @@ export abstract class FilterOperation extends Operation {
         | "true"
         | "false"
         | "not"
+        | "filter"
         | "any"
         | "all"
         | "contains"
