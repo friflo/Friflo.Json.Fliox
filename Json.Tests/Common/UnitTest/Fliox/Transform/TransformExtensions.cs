@@ -11,15 +11,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public static class TransformExtensions
     {
         public static object Eval (this JsonEvaluator evaluator, string json, JsonLambda lambda) {
-            return evaluator.Eval(new JsonValue(json), lambda, out _);
+            var jsonValue = new JsonValue(json);
+            return evaluator.Eval(jsonValue, lambda, out _);
         }
         
         public static bool Filter(this JsonEvaluator evaluator, string json, JsonFilter filter) {
-            return evaluator.Filter(new JsonValue(json), filter, out _);
+            var jsonValue = new JsonValue(json);
+            return evaluator.Filter(jsonValue, filter, out _);
         }
         
         public static IReadOnlyList<ScalarSelectResult> Select(this ScalarSelector selector, string json, ScalarSelect scalarSelect) {
-            return selector.Select(new JsonValue(json), scalarSelect);
+            var jsonValue = new JsonValue(json);
+            return selector.Select(jsonValue, scalarSelect);
         }
     }
 }
