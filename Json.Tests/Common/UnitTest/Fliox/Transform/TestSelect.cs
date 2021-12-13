@@ -154,6 +154,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AreEqual(new[]{"J. R. R. Tolkien", "Herman Melville"},                          result[1].AsObjects());
             AreEqual(new[]{"The Sermon","A Long-expected Party", "The Shadow of the Past"}, result[2].AsObjects());
             AreEqual(new object[] {},                                                       result[3].AsObjects());
+            
+            AreEqual(new    [] {0, 1},  result[0].groupIndices);
+            AreEqual(new    [] {0, 1},  result[1].groupIndices);
+            AreEqual(new    [] {0, 2},  result[2].groupIndices);
+            AreEqual(new int[] {},      result[3].groupIndices);
         }
         
         private void AssertJsonResults(List<JsonSelectResult> result) {
@@ -166,12 +171,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public void TestGroupSelect() {
             var selectors = new[] {
-                ".children[=>].hobbies[*].name", // group by using [=>]
-                ".children[*].hobbies[*].name"   // don't group by using [*]
+                ".children[*].hobbies[*].name", // group by using [=>]
+                //".children[*].hobbies[*].name"   // don't group by using [*]
             };
             var select = new ScalarSelect(selectors);
             
-            using (var jsonMapper   = new ObjectMapper())
+            using (var typeStore    = new TypeStore())
+            using (var jsonMapper   = new ObjectMapper(typeStore))
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;
@@ -183,16 +189,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // result contains two groups returned as index ranges:
                 // Group 0: [0 - 2]
                 // Group 1: [3 - 4]    note: 4 = result[0].values.Count - 1
-                AreEqual(new [] {0, 3},     result[0].groupIndices); // the start indices of groups
-                AreEqual(5,                 result[0].values.Count);
+                AreEqual(new [] {0,1,2,3,4},    result[0].groupIndices); // the start indices of groups
+                AreEqual(5,                     result[0].values.Count);
                 
+            /* todo remove  
                 // --- path[1]  dont group by using [*]
                 AreEqual(new [] {"Gaming", "Biking", "Travelling", "Biking", "Surfing"}, result[1].AsObjects());
+              
                 // result contains no groups
                 AreEqual(0,                 result[1].groupIndices.Count);
                 
                 // values of both results are equal
-                AreEqual(result[0].values,  result[1].values);
+                AreEqual(result[0].values,  result[1].values); */
             }
         }
         
@@ -204,7 +212,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             };
             var select = new ScalarSelect(selectors);
             var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
-            using (var jsonMapper   = new ObjectMapper())
+            using (var typeStore    = new TypeStore())
+            using (var jsonMapper   = new ObjectMapper(typeStore))
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;

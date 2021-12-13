@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         internal override void Init(OperationContext cx, InitFlags flags) {
             bool isArrayField = (flags & InitFlags.ArrayField) != 0;
             if (name.StartsWith(".")) {
-                selector = isArrayField ? name + "[=>]" : name;
+                selector = isArrayField ? name + "[*]" : name;
             } else {
                 var dotPos = name.IndexOf('.');
                 if (dotPos == -1)
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var arg = name.Substring(0, dotPos);
                 var lambda = cx.lambdaArgs[arg];
                 var path = name.Substring(dotPos + 1);
-                selector = lambda.name + "[=>]." + path;
+                selector = lambda.name + "[*]." + path;
             }
             cx.selectors.Add(this);
         }

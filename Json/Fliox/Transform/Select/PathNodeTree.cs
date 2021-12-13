@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Transform.Select
                         curNode.Add(childNode);
                     }
                     var type = selectorNode.selectorType;
-                    if (type == SelectorType.ArrayWildcard || type == SelectorType.ArrayGroup) {
+                    if (type == SelectorType.ArrayGroup) { // || type == SelectorType.ArrayWildcard { 
                         isArrayResult = true;
                         curNode.wildcardNode = childNode;
                     }

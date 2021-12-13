@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Transform.Select
     {
         Root,
         Member,
-        ArrayWildcard,
+    //  ArrayWildcard,
         ArrayGroup
     }
 
@@ -144,8 +144,8 @@ namespace Friflo.Json.Fliox.Transform.Select
                     SelectorType indexType;
                     string indexString = path.Substring(arrayStart + 1, arrayEnd - arrayStart - 1);
                     switch (indexString) {
-                        case "*":  indexType = SelectorType.ArrayWildcard;   break;
-                        case "=>": indexType = SelectorType.ArrayGroup;      break;
+                    //  case "*":  indexType = SelectorType.ArrayWildcard;   break;
+                        case "*": indexType = SelectorType.ArrayGroup;       break;
                         default:
                             throw new InvalidOperationException($"unsupported array selector: {path.Substring(start, len)}");
                     }
