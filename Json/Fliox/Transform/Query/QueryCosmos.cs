@@ -37,11 +37,11 @@ namespace Friflo.Json.Fliox.Transform.Query
                     return doubleLiteral.value.ToString(CultureInfo.InvariantCulture);
                 case LongLiteral longLiteral:
                     return longLiteral.value.ToString();
-                case TrueLiteral trueLiteral:
+                case TrueLiteral    _:
                     return "true";
-                case FalseLiteral falseLiteral:
+                case FalseLiteral   _:
                     return "false";
-                case NullLiteral nullLiteral:
+                case NullLiteral    _:
                     return "null";
                 
                 case Equal equal:

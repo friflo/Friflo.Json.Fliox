@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Text;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops

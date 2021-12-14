@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable EmptyConstructor
