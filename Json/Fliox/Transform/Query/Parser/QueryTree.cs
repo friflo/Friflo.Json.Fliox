@@ -174,23 +174,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                         error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {lambdaArg.Pos}";
                         return;
                     }
-                    var arrowNode = new QueryNode(token);
-                    head.AddOperand(arrowNode);
-                    stack.Push(arrowNode);
-                    error = null;
-                    // success
-                    // note: arrow operands are added to parent function. So the => itself is not added as a new node.
                     break;
                 case TokenType.Symbol:
-                    arrowNode = new QueryNode(token);
-                    head.AddOperand(arrowNode);
-                    stack.Push(arrowNode);
-                    error = null;
                     break;
                 default:
                     error = $"=> can be used only as lambda in functions. Used by: {head.operation} {At} {head.Pos}";
                     return;
             }
+            var arrowNode = new QueryNode(token);
+            head.AddOperand(arrowNode);
+            stack.Push(arrowNode);
+            error = null;
         }
         
         /// <summary>
