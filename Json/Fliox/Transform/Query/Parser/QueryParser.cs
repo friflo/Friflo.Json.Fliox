@@ -85,6 +85,20 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return operation;
         }
         
+        private static bool GetArrowBody(QueryNode node, int operandIndex, out QueryNode bodyNode, out string error) {
+            var arrowNode = node.GetOperand(operandIndex); // only => is added as node
+            if (arrowNode.operation.type != TokenType.Arrow)
+                throw new InvalidOperationException("expect => as symbol operand");
+            if (arrowNode.OperandCount != 1) {
+                error = $"lambda '{node.operation} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
+                bodyNode = null;
+                return false;
+            }
+            error   = null;
+            bodyNode    = arrowNode.GetOperand(0);
+            return true;
+        }
+        
         private static Operation GetField(QueryNode node, out string error) {
             var symbol = node.operation.str;
             error = null;
@@ -101,15 +115,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return null;
             }
             if (node.OperandCount == 1) {
-                var arrowNode = node.GetOperand(0); // is always present as it isLambda
-                if (arrowNode.operation.type != TokenType.Arrow)
-                    throw new InvalidOperationException("expect => as symbol operand");
-                if (arrowNode.OperandCount != 1) {
-                    error = $"lambda '{node.operation} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
-                    return default;
-                }
-                var body    = arrowNode.GetOperand(0);
-                var bodyOp  = GetOperation(body, out error);
+                if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
+                    return null;
+                var bodyOp  = GetOperation(bodyNode, out error);
                 return new Lambda(symbol, bodyOp);
             }
             return new Field(symbol);
@@ -182,25 +190,25 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
-            var arrowNode   = node.GetOperand(1); // is always present as it isLambda
-            var fcnOperand  = arrowNode.GetOperand(0);
+            if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
+                return default;
+            var bodyOp      = GetOperation(bodyNode, out error);
             var arg         = argOperand.operation.str;
-            var fcn         = GetOperation(fcnOperand, out error);
-            return new Aggregate(field, arg, fcn);
+            return new Aggregate(field, arg, bodyOp);
         }
         
         private static Quantify Quantify(string fieldName, in QueryNode node, out string error) {
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
-            var arrowNode   = node.GetOperand(1); // is always present as it isLambda
-            var fcnOperand  = arrowNode.GetOperand(0);
-            var arg         = argOperand.operation.str;
-            var fcn         = GetOperation(fcnOperand, out error);
+            if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
+                return default;
+            var fcn         = GetOperation(bodyNode, out error);
             if (fcn is FilterOperation filter) {
                 error = null;
+                var arg         = argOperand.operation.str;
                 return new Quantify(field, arg, filter);
             }
-            error = $"quantify operation {node.operation} expect boolean lambda body. Was: {fcn} {At} {fcnOperand.Pos}";
+            error = $"quantify operation {node.operation} expect boolean lambda body. Was: {fcn} {At} {bodyNode.Pos}";
             return default;
         }
         

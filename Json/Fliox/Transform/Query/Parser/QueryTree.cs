@@ -128,11 +128,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {
             error = null;
             var newNode = new QueryNode(token);
-            /* if (stack.TryPeek(out var head) && head.isLambda) { 
-                head.AddOperand(newNode);
-                stack.Push(newNode);
-                return;
-            } */
             var expectOperand = token.type == TokenType.Function || token.type == TokenType.Not;
             if (expectOperand) {
                 // Function can accept 0 or 1 parameter.
