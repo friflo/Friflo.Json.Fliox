@@ -48,7 +48,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 if (dotPos == -1)
                     throw new InvalidOperationException("expect a dot in field name");
                 var arg     = name.Substring(0, dotPos);
-                var lambda  = cx.variables[arg];
+                if (!cx.variables.TryGetValue(arg, out var lambda)) {
+                    cx.Error($"symbol '{arg}' not found");
+                    return;
+                }
                 var path    = name.Substring(dotPos);
                 selector    = lambda.GetName(isArrayField, path);
             }
@@ -106,15 +109,19 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         internal readonly   List<Field>                     selectors = new List<Field>();
         private  readonly   HashSet<Operation>              operations = new HashSet<Operation>();
         internal readonly   Dictionary<string, ISelector>   variables  = new Dictionary<string, ISelector>();
+        private             string                          error;
         
         internal            Operation                       Operation => op;
 
-        public void Init(Operation op) {
+        public bool Init(Operation op, out string error) {
+            this.error = null;
             selectors.Clear();
             operations.Clear();
             variables.Clear();
             this.op = op;
             op.Init(this, 0);
+            error = this.error;
+            return error == null;
         }
 
         internal void ValidateReuse(Operation op) {
@@ -122,6 +129,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 return;
             var msg = $"Used operation instance is not applicable for reuse. Use a clone. Type: {op.GetType().Name}, instance: {op}";
             throw new InvalidOperationException(msg);
+        }
+        
+        internal void   Error(string message) {
+            // log only first error
+            if (error != null)
+                return;
+            error = message;
         }
     }
     

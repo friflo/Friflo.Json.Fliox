@@ -112,7 +112,9 @@ namespace Friflo.Json.Fliox.Transform
         
         public JsonLambda(Operation op) {
             operationContext = new OperationContext();
-            operationContext.Init(op);
+            operationContext.Init(op, out string error);
+            if (error != null)
+                throw new InvalidOperationException(error);
             InitLambda(operationContext);
         }
         

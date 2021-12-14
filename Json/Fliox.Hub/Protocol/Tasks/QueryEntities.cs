@@ -60,8 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (!ValidateFilter (out error))
                 return error;
             filterContext = new OperationContext();
-            filterContext.Init(filterTree);
-            
+            if (!filterContext.Init(GetFilter(), out var message)) {
+                return InvalidTaskError($"invalid filter: {message}");
+            }
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.QueryEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
