@@ -28,11 +28,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         Start,
         //
-        Symbol,
-        Function,
-        Long,
-        Double,
-        String,
+        Symbol,         // sym 
+        Function,       // sym(
+        Long,           // 1
+        Double,         // 1.2
+        String,         // 'abc' "abc"
         //
         Add,            // +
         Sub,            // -

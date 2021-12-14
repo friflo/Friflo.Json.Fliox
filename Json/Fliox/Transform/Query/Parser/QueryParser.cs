@@ -99,6 +99,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"conditional statements must not be used: {symbol} {At} {node.Pos}";
                     return null;
             }
+            if (node.isLambda) {
+                if (node.OperandCount != 1) {
+                    error = $"lambda '{node} =>' expect one operand as body {At} {node.Pos}";
+                    return default;
+                }
+                var body = node.GetOperand(0);
+                var bodyOp = GetOperation(body, out error);
+                return new Lambda(symbol, bodyOp);
+            }
             return new Field(symbol);
         }
         

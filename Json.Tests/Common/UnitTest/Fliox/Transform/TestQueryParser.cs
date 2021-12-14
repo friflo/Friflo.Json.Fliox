@@ -356,6 +356,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse(".children.Any(-1 => child.age)", out error);
                 AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any() at pos 14", error);
+            } {
+                Parse("o =>", out error);
+                AreEqual("lambda 'o =>' expect one operand as body at pos 0", error);
             }
         }
         
@@ -453,6 +456,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = Parse(".children.Average(child => child.age)", out _);
                 AreEqual(".children.Average(child => child.age)", op.Linq);
             }
+        }
+        
+        [Test]
+        public static void TestQueryLambda() {
+            {
+                var op = Parse("o => true", out _);
+                AreEqual("o => true", op.Linq);
+            } {
+                var op = Parse("o => 1 + 2", out _);
+                AreEqual("o => 1 + 2", op.Linq);
+            } /* {
+                var op = Parse("o => true || false", out _);
+                AreEqual("o => true || false", op.Linq);
+            } */
         }
         
         [Test]

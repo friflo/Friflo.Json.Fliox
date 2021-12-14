@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"no matching open parenthesis {At} {token.pos}";
                     return;
                 }
-                if (head.isFunction) {
+                if (head.operation.type == TokenType.Function) {
                     // A closing bracket causes the head node to be used as an Unary node.
                     // So its last operand will not be used as the left operand for subsequent n-ary operations (n>1).
                     if (stack.Count > 1) {
@@ -162,22 +162,29 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static void HandleArrow(QueryNode head, in Token token, out string error) {
-            if (!head.isFunction) {
-                error = $"=> can be used only as lambda in functions. Used by: {head.operation} {At} {head.Pos}";
-                return;
+            switch (head.operation.type) {
+                case TokenType.Function:
+                    if (head.OperandCount != 1) {
+                        error = $"=> expect one preceding lambda argument. Used in: {head.operation} {At} {token.pos}";
+                        return;
+                    }
+                    var lambdaArg = head.GetOperand(0);
+                    if (lambdaArg.operation.type != TokenType.Symbol) {
+                        error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {lambdaArg.Pos}";
+                        return;
+                    }
+                    error = null;
+                    // success
+                    // note: arrow operands are added to parent function. So the => itself is not added as a new node.
+                    break;
+                case TokenType.Symbol:
+                    head.isLambda = true;
+                    error = null;
+                    break;
+                default:
+                    error = $"=> can be used only as lambda in functions. Used by: {head.operation} {At} {head.Pos}";
+                    return;
             }
-            if (head.OperandCount != 1) {
-                error = $"=> expect one preceding lambda argument. Used in: {head.operation} {At} {token.pos}";
-                return;
-            }
-            var lambdaArg = head.GetOperand(0);
-            if (lambdaArg.operation.type != TokenType.Symbol) {
-                error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {lambdaArg.Pos}";
-                return;
-            }
-            error = null;
-            // success
-            // note: arrow operands are added to parent function. So the => itself is not added as a new node. 
         }
         
         /// <summary>

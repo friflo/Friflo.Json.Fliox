@@ -196,6 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return null;
                 }
                 if (filterOp is FilterOperation op) {
+                    // enforce "o" as lambda argument
                     Filter filterLambda = new Filter("o", op);
                     return filterLambda;
                 }
