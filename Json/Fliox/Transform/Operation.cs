@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public abstract class Operation
     {
-        public    abstract void         AppendLinq(AppendCx cx);
+        public    abstract  void        AppendLinq(AppendCx cx);
         internal  abstract  void        Init (OperationContext cx, InitFlags flags);
         internal  abstract  EvalResult  Eval (EvalCx cx);
         public              string      Linq { get {
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Transform
 
        
         public JsonLambda Lambda() {
-            return new JsonLambda(this);
+            return JsonLambda.Create(this);
         }
         
         public static Operation Parse (string operation, out string error) {
@@ -254,7 +254,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         public JsonFilter Filter() {
-            return new JsonFilter(this);
+            return JsonFilter.Create(this);
         }        
     }
     

@@ -109,11 +109,15 @@ namespace Friflo.Json.Fliox.Transform
         public   override   string              ToString()  => Linq;
 
         internal JsonLambda() { }
-
-        public JsonLambda(Operation op) {
+        
+        protected JsonLambda(Operation op) {
             InitLambda(op);
         }
         
+        public static JsonLambda Create(Operation op) {
+            return new JsonLambda(op);
+        }
+
         public static JsonLambda Create<T> (Expression<Func<T, object>> lambda) {
             var op = Operation.FromLambda(lambda);
             var jsonLambda = new JsonLambda(op);
@@ -144,7 +148,11 @@ namespace Friflo.Json.Fliox.Transform
 
     public sealed class JsonFilter : JsonLambda
     {
-        public JsonFilter(FilterOperation op) : base(op) { }
+        private JsonFilter(FilterOperation op) : base(op) { }
+        
+        public static JsonFilter Create(FilterOperation op) {
+            return new JsonFilter(op);
+        }
 
         public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
