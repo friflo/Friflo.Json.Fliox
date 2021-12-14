@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         internal readonly List<string> variables;
         
-        internal Context(int dummy) {
-            variables = new List<string>();
+        internal Context(List<string> variables) {
+            this.variables = variables ?? new List<string>();
         }
     }
     
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// Traverse the tree returned by <see cref="QueryTree.CreateTree"/> and create itself a tree of
         /// <see cref="Operation"/>'s while visiting the given tree.
         /// </summary>
-        public static Operation Parse (string operation, out string error) {
+        public static Operation Parse (string operation, out string error, List<string> variables = null) {
             var result  = QueryLexer.Tokenize (operation,   out error);
             if (error != null)
                 return null;
@@ -37,14 +37,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var node = QueryTree.CreateTree(result.items,out error);
             if (error != null)
                 return null;
-            var cx = new Context (0);
-            var op = GetOperation (node, cx, out error);
+            var cx  = new Context (variables);
+            var op  = GetOperation (node, cx, out error);
             return op;
         }
         
         public static Operation OperationFromNode (QueryNode node, out string error) {
-            var cx = new Context (0);
-            var op      = GetOperation (node, cx, out error);
+            var cx  = new Context (null);
+            var op  = GetOperation (node, cx, out error);
             return op;
         }
         
@@ -113,11 +113,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Operation GetField(QueryNode node, in Context cx, out string error) {
             var symbol = node.operation.str;
-            error = null;
             switch (symbol) {
-                case "true":    return new TrueLiteral();
-                case "false":   return new FalseLiteral();
-                case "null":    return new NullLiteral();
+                case "true":    error = null;   return new TrueLiteral();
+                case "false":   error = null;   return new FalseLiteral();
+                case "null":    error = null;   return new NullLiteral();
                 case "if":
                 case "else":
                 case "while":
@@ -129,9 +128,20 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (node.OperandCount == 1) {
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
+                error = null;
+                cx.variables.Add(node.operation.str);
                 var bodyOp  = GetOperation(bodyNode, cx, out error);
                 return new Lambda(symbol, bodyOp);
             }
+            var firstDot = symbol.IndexOf('.');
+            if (firstDot > 0) {
+                var variable = symbol.Substring(0, firstDot);
+                if (cx.variables.IndexOf(variable) == -1) {
+                    error = $"variable '{variable}' not found {At} {node.Pos}";
+                    return null;
+                }
+            }
+            error = null;
             return new Field(symbol);
         }
         
@@ -204,6 +214,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
+            cx.variables.Add(argOperand.operation.str);
             var bodyOp      = GetOperation(bodyNode, cx, out error);
             var arg         = argOperand.operation.str;
             return new Aggregate(field, arg, bodyOp);
@@ -214,6 +225,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
+            cx.variables.Add(argOperand.operation.str);
             var fcn         = GetOperation(bodyNode, cx, out error);
             if (fcn is FilterOperation filter) {
                 error = null;

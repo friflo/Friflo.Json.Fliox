@@ -359,6 +359,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("o =>", out error);
                 AreEqual("lambda 'o =>' expect one subsequent operand as body at pos 2", error);
+            } {
+                Parse("o => foo.age", out error);
+                AreEqual("variable 'foo' not found at pos 5", error);
             }
         }
         

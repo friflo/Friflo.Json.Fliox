@@ -163,8 +163,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filter = CreateFilter(context, queryParams);
             if (filter == null)
                 return;
-            var operationCx = new OperationContext();
             // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
+            var operationCx = new OperationContext();
             if (!operationCx.Init(filter, out var message)) {
                 context.WriteError("invalid filter", message, 400);
                 return;
@@ -193,17 +193,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        /// enforce "o" as lambda argument
+        private const string DefaultArg = "o"; 
+        
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
             var filter = queryParams["filter"];
             if (filter != null) {
-                var filterOp = Operation.Parse(filter, out string error);
+                var variables = new List<string>{DefaultArg}; 
+                var filterOp = Operation.Parse(filter, out string error, variables);
                 if (error != null) {
                     context.WriteError("filter error", error, 400);
                     return null;
                 }
                 if (filterOp is FilterOperation op) {
-                    // enforce "o" as lambda argument
-                    Filter filterLambda = new Filter("o", op);
+                    Filter filterLambda = new Filter(DefaultArg, op);
                     return filterLambda;
                 }
                 context.WriteError("filter error", "filter must be boolean operation", 400);
