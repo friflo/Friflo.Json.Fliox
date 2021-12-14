@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var operationCx = new OperationContext();
             // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
             if (!operationCx.Init(filter, out var message)) {
-                context.WriteError("invalid filter", message, 500);
+                context.WriteError("invalid filter", message, 400);
                 return;
             }
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter };
