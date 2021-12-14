@@ -379,7 +379,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unexpected character: '#' at pos 0", error);
             } {
                 Parse("'abc", out error);
-                AreEqual("missing string terminator ' for: abc at pos 4", error);
+                AreEqual("missing string terminator for: abc at pos 4", error);
             }  {
                 Parse("1.23.4", out error);
                 AreEqual("invalid floating point number: 1.23. at pos 4", error);

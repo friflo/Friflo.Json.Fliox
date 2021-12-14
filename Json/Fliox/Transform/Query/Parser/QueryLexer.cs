@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 int c = GetChar(operation, pos);
                 if (c == End) {
                     var str = operation.Substring(start, pos - start);
-                    error = $"missing string terminator ' for: {str} {At} {pos}";
+                    error = $"missing string terminator for: {str} {At} {pos}";
                     return new Token(TokenType.Error, start);
                 }
                 if (c == terminator) {
