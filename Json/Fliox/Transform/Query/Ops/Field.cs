@@ -113,6 +113,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
         internal            Operation                       Operation => op;
 
+        /// <summary>
+        /// Initialize <see cref="OperationContext"/> with given <see cref="op"/> and validate operation in one step.
+        /// Validation is not done in a separate step to ensure validation and initialization code and result are in sync.     
+        /// </summary>
         public bool Init(Operation op, out string error) {
             this.error = null;
             selectors.Clear();
