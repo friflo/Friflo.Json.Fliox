@@ -161,6 +161,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             PushNode(stack, newNode);
         }
         
+        /// Arrow tokens (=>) are added as <see cref="QueryNode"/> and accessed by <see cref="QueryParser.GetArrowBody"/> 
         private static void HandleArrow(Stack<QueryNode> stack, QueryNode head, in Token token, out string error) {
             switch (head.operation.type) {
                 case TokenType.Function:

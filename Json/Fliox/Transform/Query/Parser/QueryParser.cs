@@ -85,10 +85,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return operation;
         }
         
+        /// Arrow operands are added exclusively by <see cref="QueryTree.HandleArrow"/> 
         private static bool GetArrowBody(QueryNode node, int operandIndex, out QueryNode bodyNode, out string error) {
-            var arrowNode = node.GetOperand(operandIndex); // only => is added as node
+            var arrowNode = node.GetOperand(operandIndex);
             if (arrowNode.operation.type != TokenType.Arrow)
-                throw new InvalidOperationException("expect => as symbol operand");
+                throw new InvalidOperationException("expect Arrow node as operand");
             if (arrowNode.OperandCount != 1) {
                 error = $"lambda '{node.operation} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
                 bodyNode = null;
