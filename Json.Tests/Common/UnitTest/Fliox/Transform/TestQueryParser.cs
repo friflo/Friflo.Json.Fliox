@@ -367,7 +367,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             string error;
             {
                 Parse("=+", out error);
-                AreEqual("unexpected character '+' after '='. Use == or => at pos 1", error);
+                AreEqual("invalid operator '='. Use == or => at pos 1", error);
             } {
                 Parse("|x", out error);
                 AreEqual("unexpected character 'x' after '|'. Use || at pos 1", error);

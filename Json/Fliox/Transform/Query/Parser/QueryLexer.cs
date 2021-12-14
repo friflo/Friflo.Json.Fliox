@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     if (c == '>') {
                             pos++; return new Token(TokenType.Arrow, pos - 1);
                     }
-                    error = $"unexpected character '{(char)c}' after '='. Use == or => {At} {pos}";
+                    error = $"invalid operator '='. Use == or => {At} {pos}";
                     return new Token(TokenType.Error, pos);
                 case '|':
                     c = GetChar(operation, pos);
