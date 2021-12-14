@@ -163,6 +163,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filter = CreateFilter(context, queryParams);
             if (filter == null)
                 return;
+            var operationCx = new OperationContext();
+            // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
+            if (!operationCx.Init(filter, out var message)) {
+                context.WriteError("invalid filter", message, 500);
+                return;
+            }
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter };
             var restResult      = await ExecuteTask(context, database, queryEntities);
             
