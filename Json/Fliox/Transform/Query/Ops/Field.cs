@@ -45,8 +45,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 selector = LambdaArg.Instance.GetName(isArrayField, name);
             } else {
                 var dotPos = name.IndexOf('.');
-                if (dotPos == -1)
-                    throw new InvalidOperationException("expect a dot in field name");
+                if (dotPos == -1) {
+                    cx.Error($"expect dot in field name '{name}'");
+                    return;
+                }
                 var arg     = name.Substring(0, dotPos);
                 if (!cx.variables.TryGetValue(arg, out var lambda)) {
                     cx.Error($"symbol '{arg}' not found");

@@ -49,13 +49,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             await HandleListenerContext(ctx).ConfigureAwait(false); // handle incoming requests parallel
                         }
                         catch (Exception e) {
-                            Log($"Request failed - {e.GetType()}: {e.Message}");
+                            var message = $"request failed - {e.GetType().Name}: {e.Message}";
+                            Log(message);
                             var     req             = ctx.Request;
                             var     resp            = ctx.Response;
                             if (!resp.OutputStream.CanWrite)
                                 return;
-                            var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
-                            byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
+                            byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
                             SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length);
                             await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
                             resp.Close();
