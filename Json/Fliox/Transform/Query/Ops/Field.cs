@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         internal override void Init(OperationContext cx, InitFlags flags) {
             bool isArrayField = (flags & InitFlags.ArrayField) != 0;
             if (name.StartsWith(".")) {
-                selector = isArrayField ? name + "[*]" : name;
+                selector = LambdaArg.Instance.GetName(isArrayField, name);
             } else {
                 var dotPos = name.IndexOf('.');
                 if (dotPos == -1)
@@ -96,8 +96,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     internal class LambdaArg : ISelector
     {
-        internal LambdaArg () { }
+        internal static readonly LambdaArg Instance = new LambdaArg();
         
+        private LambdaArg () { }
+
         public string GetName(bool isArrayField, string path) {
             return isArrayField ? path + "[*]" : path;
         }
@@ -147,7 +149,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public          string          lambdaArg;
         public readonly StringBuilder   sb;
         
-        public AppendCx (string dummy) {
+        // ReSharper disable once UnusedParameter.Local
+        public AppendCx (string _) {
             sb          = new StringBuilder();
             lambdaArg   = "";
         }

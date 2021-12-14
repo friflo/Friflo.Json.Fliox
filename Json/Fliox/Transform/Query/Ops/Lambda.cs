@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Text;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -24,11 +23,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             this.body   = body;
         }
         
-        internal override void Init(OperationContext cx, InitFlags flags) {
-            cx.ValidateReuse(this); // results are reused
-            var lambdaArg = new LambdaArg();
-            cx.variables.Add(arg, lambdaArg);
+        internal static  void InitBody (Operation body, string arg, OperationContext cx) {
+            cx.variables.Add(arg, LambdaArg.Instance);
             body.Init(cx, 0);
+        }
+        
+        internal override void Init(OperationContext cx, InitFlags flags) {
+            InitBody(body, arg, cx);
         }
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -56,10 +57,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
         
         internal override void Init(OperationContext cx, InitFlags flags) {
-            cx.ValidateReuse(this); // results are reused
-            var lambdaArg = new LambdaArg();
-            cx.variables.Add(arg, lambdaArg);
-            body.Init(cx, 0);
+            Ops.Lambda.InitBody(body, arg, cx);
         }
         
         internal override EvalResult Eval(EvalCx cx) {
