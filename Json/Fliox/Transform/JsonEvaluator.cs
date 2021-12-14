@@ -103,31 +103,32 @@ namespace Friflo.Json.Fliox.Transform
         internal readonly   List<EvalResult>    resultBuffer    = new List<EvalResult>();   // Count == selectors.Count
         internal readonly   ScalarSelect        scalarSelect    = new ScalarSelect();
         internal            Operation           op;
-        private  readonly   OperationContext    operationContext = new OperationContext();
+        private  readonly   OperationContext    operationContext;
 
         public              string              Linq        => op != null ? op.Linq : "not initialized";
         public   override   string              ToString()  => Linq;
 
         internal JsonLambda() { }
         
-        protected JsonLambda(Operation op) {
-            InitLambda(op);
+        public JsonLambda(Operation op) {
+            operationContext = new OperationContext();
+            operationContext.Init(op);
+            InitLambda(operationContext);
         }
         
-        public static JsonLambda Create(Operation op) {
-            return new JsonLambda(op);
+        public JsonLambda(OperationContext operationContext) {
+            this.operationContext = operationContext;
+            InitLambda(operationContext);
         }
-
+        
         public static JsonLambda Create<T> (Expression<Func<T, object>> lambda) {
             var op = Operation.FromLambda(lambda);
             var jsonLambda = new JsonLambda(op);
             return jsonLambda;
         }
 
-        private void InitLambda(Operation op) {
-            this.op = op;
-            operationContext.Init();
-            op.Init(operationContext, 0);
+        private void InitLambda(OperationContext opCx) {
+            op = opCx.Operation;
             selectors.Clear();
             fields.Clear();
             foreach (var selector in operationContext.selectors) {
@@ -148,12 +149,9 @@ namespace Friflo.Json.Fliox.Transform
 
     public sealed class JsonFilter : JsonLambda
     {
-        private JsonFilter(FilterOperation op) : base(op) { }
+        public JsonFilter(FilterOperation op)  : base(op) { }
+        public JsonFilter(OperationContext cx) : base(cx) { }
         
-        public static JsonFilter Create(FilterOperation op) {
-            return new JsonFilter(op);
-        }
-
         public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
             var jsonLambda = new JsonFilter(op);

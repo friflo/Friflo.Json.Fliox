@@ -100,16 +100,21 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
 
-    internal sealed class OperationContext
+    public sealed class OperationContext
     {
-        internal readonly List<Field>                   selectors = new List<Field>();
-        private  readonly HashSet<Operation>            operations = new HashSet<Operation>();
-        internal readonly Dictionary<string, ISelector> variables  = new Dictionary<string, ISelector>();
+        private             Operation                       op;
+        internal readonly   List<Field>                     selectors = new List<Field>();
+        private  readonly   HashSet<Operation>              operations = new HashSet<Operation>();
+        internal readonly   Dictionary<string, ISelector>   variables  = new Dictionary<string, ISelector>();
+        
+        internal            Operation                       Operation => op;
 
-        internal void Init() {
+        public void Init(Operation op) {
             selectors.Clear();
             operations.Clear();
             variables.Clear();
+            this.op = op;
+            op.Init(this, 0);
         }
 
         internal void ValidateReuse(Operation op) {

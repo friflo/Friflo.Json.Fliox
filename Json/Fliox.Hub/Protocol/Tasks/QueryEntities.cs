@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -20,6 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  FilterOperation     filterTree;
                         public  string              filter;
                         public  List<References>    references;
+                        
+        [Fri.Ignore]    public  OperationContext    filterContext;
                         
         internal override       TaskType            TaskType => TaskType.query;
         public   override       string              TaskName => $"container: '{container}', filter: {filter}";
@@ -56,6 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return error;
             if (!ValidateFilter (out error))
                 return error;
+            filterContext = new OperationContext();
+            filterContext.Init(filterTree);
+            
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.QueryEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {

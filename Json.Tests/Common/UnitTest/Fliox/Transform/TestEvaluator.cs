@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var op      = QueryParser.Parse(operation, out error);
             if (error != null)
                 return null;
-            var lambda  = JsonLambda.Create(op);
+            var lambda  = new JsonLambda(op);
             var value   = new JsonValue(json);
             var result  = eval.Eval(value, lambda, out error);
             return result;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var op      = (FilterOperation)QueryParser.Parse(operation, out error);
             if (error != null)
                 return false;
-            var filter  = JsonFilter.Create(op);
+            var filter  = new JsonFilter(op);
             var value   = new JsonValue(json);
             var result  = eval.Filter(value, filter, out error);
             return result;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static void AssertFilterUndefinedScalar(string operation, JsonEvaluator eval) {
             var json    = @"{ ""items"": [] }";
             var op      = (FilterOperation)QueryParser.Parse(operation, out _);
-            var filter  = JsonFilter.Create(op);
+            var filter  = new JsonFilter(op);
             var result  = eval.Filter(new JsonValue(json), filter, out _);
             IsFalse(result);
         } 

@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Transform
 
        
         public JsonLambda Lambda() {
-            return JsonLambda.Create(this);
+            return new JsonLambda(this);
         }
         
         public static Operation Parse (string operation, out string error) {
@@ -254,7 +254,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         public JsonFilter Filter() {
-            return JsonFilter.Create(this);
+            return new JsonFilter(this);
         }        
     }
     

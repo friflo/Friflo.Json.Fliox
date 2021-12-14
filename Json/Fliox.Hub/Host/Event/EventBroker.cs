@@ -288,7 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         {
             if (filter == null)
                 return entities;
-            var jsonFilter      = JsonFilter.Create(filter); // filter can be reused
+            var jsonFilter      = new JsonFilter(filter); // filter can be reused
             var result          = new List<JsonValue>();
 
             for (int n = 0; n < entities.Count; n++) {
