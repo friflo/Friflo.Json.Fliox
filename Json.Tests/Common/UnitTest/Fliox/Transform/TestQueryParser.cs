@@ -466,10 +466,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = OperationFromNode(node, out _);
                 AreEqual("o => true", op.Linq);
             } {
-                var node = QueryTree.CreateTree("o => 1 + 2", out _);
-                AreEqual("o {=> {+ {1, 2}}}", node.ToString());
+                var node = QueryTree.CreateTree("o => o.m1 + o.m2", out _);
+                AreEqual("o {=> {+ {o.m1, o.m2}}}", node.ToString());
                 var op = OperationFromNode(node, out _);
-                AreEqual("o => 1 + 2", op.Linq);
+                AreEqual("o => o.m1 + o.m2", op.Linq);
             } {
                 var node = QueryTree.CreateTree("o => true || false", out _);
                 AreEqual("o {=> {|| {true, false}}}", node.ToString());

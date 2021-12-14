@@ -9,6 +9,15 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
+    internal readonly struct Context
+    {
+        internal readonly List<string> variables;
+        
+        internal Context(int dummy) {
+            variables = new List<string>();
+        }
+    }
+    
     public static class QueryParser
     {
         /// <summary>
@@ -28,60 +37,62 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var node = QueryTree.CreateTree(result.items,out error);
             if (error != null)
                 return null;
-            var op = GetOperation (node,               out error);
+            var cx = new Context (0);
+            var op = GetOperation (node, cx, out error);
             return op;
         }
         
         public static Operation OperationFromNode (QueryNode node, out string error) {
-            var op      = GetOperation (node, out error);
+            var cx = new Context (0);
+            var op      = GetOperation (node, cx, out error);
             return op;
         }
         
-        private static Operation GetOperation(QueryNode node, out string error) {
+        private static Operation GetOperation(QueryNode node, in Context cx, out string error) {
             BinaryOperands          b;
             List<FilterOperation>   f;
             
             switch (node.operation.type)
             {
                 // --- binary tokens
-                case TokenType.Add:             b = Bin(node, false, out error);    return new Add                  (b.left, b.right);
-                case TokenType.Sub:             b = Bin(node, false, out error);    return new Subtract             (b.left, b.right);
-                case TokenType.Mul:             b = Bin(node, false, out error);    return new Multiply             (b.left, b.right);
-                case TokenType.Div:             b = Bin(node, false, out error);    return new Divide               (b.left, b.right);
+                case TokenType.Add:             b = Bin(node, cx, false, out error);    return new Add                  (b.left, b.right);
+                case TokenType.Sub:             b = Bin(node, cx, false, out error);    return new Subtract             (b.left, b.right);
+                case TokenType.Mul:             b = Bin(node, cx, false, out error);    return new Multiply             (b.left, b.right);
+                case TokenType.Div:             b = Bin(node, cx, false, out error);    return new Divide               (b.left, b.right);
                 //
-                case TokenType.Greater:         b = Bin(node, false, out error);    return new GreaterThan          (b.left, b.right);
-                case TokenType.GreaterOrEqual:  b = Bin(node, false, out error);    return new GreaterThanOrEqual   (b.left, b.right);
-                case TokenType.Less:            b = Bin(node, false, out error);    return new LessThan             (b.left, b.right);
-                case TokenType.LessOrEqual:     b = Bin(node, false, out error);    return new LessThanOrEqual      (b.left, b.right);
-                case TokenType.Equals:          b = Bin(node, true,  out error);    return new Equal                (b.left, b.right);
-                case TokenType.NotEquals:       b = Bin(node, true,  out error);    return new NotEqual             (b.left, b.right);
+                case TokenType.Greater:         b = Bin(node, cx, false, out error);    return new GreaterThan          (b.left, b.right);
+                case TokenType.GreaterOrEqual:  b = Bin(node, cx, false, out error);    return new GreaterThanOrEqual   (b.left, b.right);
+                case TokenType.Less:            b = Bin(node, cx, false, out error);    return new LessThan             (b.left, b.right);
+                case TokenType.LessOrEqual:     b = Bin(node, cx, false, out error);    return new LessThanOrEqual      (b.left, b.right);
+                case TokenType.Equals:          b = Bin(node, cx, true,  out error);    return new Equal                (b.left, b.right);
+                case TokenType.NotEquals:       b = Bin(node, cx, true,  out error);    return new NotEqual             (b.left, b.right);
                 
                 // --- arity tokens
-                case TokenType.Or:          f = FilterOperands(node, out error);    return new Or (f);
-                case TokenType.And:         f = FilterOperands(node, out error);    return new And (f);
+                case TokenType.Or:          f = FilterOperands(node, cx, out error);    return new Or (f);
+                case TokenType.And:         f = FilterOperands(node, cx, out error);    return new And (f);
 
                 // --- unary tokens
-                case TokenType.Not:         return NotOp(node, out error);
+                case TokenType.Not:         return NotOp(node, cx, out error);
                 case TokenType.String:      error = null;   return new StringLiteral(node.operation.str);
                 case TokenType.Double:      error = null;   return new DoubleLiteral(node.operation.dbl);
                 case TokenType.Long:        error = null;   return new LongLiteral  (node.operation.lng);
                 
-                case TokenType.Symbol:      return GetField     (node, out error);
-                case TokenType.Function:    return GetFunction  (node, out error);
-                case TokenType.BracketOpen: return GetScope     (node, out error);
+                case TokenType.Symbol:      return GetField     (node, cx, out error);
+                case TokenType.Function:    return GetFunction  (node, cx, out error);
+                case TokenType.BracketOpen: return GetScope     (node, cx, out error);
                 default:
                     error = $"unexpected operation {node.operation} {At} {node.Pos}";
                     return null;
             }
         }
         
-        private static Operation GetScope(QueryNode node, out string error) {
+        private static Operation GetScope(QueryNode node, in Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"parentheses (...) expect one operand {At} {node.Pos}";
                 return default;
             }
             var operand_0   = node.GetOperand(0);
-            var operation   = GetOperation(operand_0, out error);
+            var operation   = GetOperation(operand_0, cx, out error);
             return operation;
         }
         
@@ -100,7 +111,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return true;
         }
         
-        private static Operation GetField(QueryNode node, out string error) {
+        private static Operation GetField(QueryNode node, in Context cx, out string error) {
             var symbol = node.operation.str;
             error = null;
             switch (symbol) {
@@ -118,43 +129,43 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (node.OperandCount == 1) {
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
-                var bodyOp  = GetOperation(bodyNode, out error);
+                var bodyOp  = GetOperation(bodyNode, cx, out error);
                 return new Lambda(symbol, bodyOp);
             }
             return new Field(symbol);
         }
         
-        private static Operation GetMathFunction(QueryNode node, out string error) {
+        private static Operation GetMathFunction(QueryNode node, in Context cx, out string error) {
             string      symbol  = node.operation.str;
             Operation   operand;
             switch (symbol) {
-                case "Abs":     operand = FcnOp(node, out error);     return new Abs      (operand);
-                case "Ceiling": operand = FcnOp(node, out error);     return new Ceiling  (operand);
-                case "Floor":   operand = FcnOp(node, out error);     return new Floor    (operand);
-                case "Exp":     operand = FcnOp(node, out error);     return new Exp      (operand);
-                case "Log":     operand = FcnOp(node, out error);     return new Log      (operand);
-                case "Sqrt":    operand = FcnOp(node, out error);     return new Sqrt     (operand);
+                case "Abs":     operand = FcnOp(node, cx, out error);     return new Abs      (operand);
+                case "Ceiling": operand = FcnOp(node, cx, out error);     return new Ceiling  (operand);
+                case "Floor":   operand = FcnOp(node, cx, out error);     return new Floor    (operand);
+                case "Exp":     operand = FcnOp(node, cx, out error);     return new Exp      (operand);
+                case "Log":     operand = FcnOp(node, cx, out error);     return new Log      (operand);
+                case "Sqrt":    operand = FcnOp(node, cx, out error);     return new Sqrt     (operand);
                 default:
                     error = $"unknown function: {symbol}() {At} {node.Pos}";
                     return null;
             }
         }
         
-        private static Operation FcnOp(in QueryNode node, out string error) {
+        private static Operation FcnOp(in QueryNode node, in Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"function {node.operation} expect one operand {At} {node.Pos}";
                 return default;
             }
             error = null;
             var operand = node.GetOperand(0);
-            return GetOperation(operand, out error);
+            return GetOperation(operand, cx, out error);
         }
         
-        private static Operation GetFunction(QueryNode node, out string error) {
+        private static Operation GetFunction(QueryNode node, in Context cx, out string error) {
             var symbol  = node.operation.str;
             var lastDot = symbol.LastIndexOf('.');
             if (lastDot == -1) {
-                return GetMathFunction(node, out error);
+                return GetMathFunction(node, cx, out error);
             }
             string method   = symbol.Substring(lastDot + 1);
             string field    = symbol.Substring(0, lastDot);
@@ -167,43 +178,43 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             BinaryOperands  b;
             switch (method) {
                 // --- aggregate operations
-                case "Min":     l = Aggregate(field, node, out error);  return new Min       (l.field, l.arg, l.operand);
-                case "Max":     l = Aggregate(field, node, out error);  return new Max       (l.field, l.arg, l.operand);
-                case "Sum":     l = Aggregate(field, node, out error);  return new Sum       (l.field, l.arg, l.operand);
-                case "Average": l = Aggregate(field, node, out error);  return new Average   (l.field, l.arg, l.operand);
+                case "Min":     l = Aggregate(field, node, cx, out error);  return new Min       (l.field, l.arg, l.operand);
+                case "Max":     l = Aggregate(field, node, cx, out error);  return new Max       (l.field, l.arg, l.operand);
+                case "Sum":     l = Aggregate(field, node, cx, out error);  return new Sum       (l.field, l.arg, l.operand);
+                case "Average": l = Aggregate(field, node, cx, out error);  return new Average   (l.field, l.arg, l.operand);
                 
                 // --- quantify  operations
-                case "Any":     q = Quantify(field, node, out error);   return new Any       (q.field, q.arg, q.filter);
-                case "All":     q = Quantify(field, node, out error);   return new All       (q.field, q.arg, q.filter);
-                case "Count":   q = Quantify(field, node, out error);   return new CountWhere(q.field, q.arg, q.filter);
+                case "Any":     q = Quantify(field, node, cx, out error);   return new Any       (q.field, q.arg, q.filter);
+                case "All":     q = Quantify(field, node, cx, out error);   return new All       (q.field, q.arg, q.filter);
+                case "Count":   q = Quantify(field, node, cx, out error);   return new CountWhere(q.field, q.arg, q.filter);
                 
                 // --- string operations
-                case "Contains":    b = StringOp(field, node, out error); return new Contains  (b.left, b.right);
-                case "StartsWith":  b = StringOp(field, node, out error); return new StartsWith(b.left, b.right);
-                case "EndsWith":    b = StringOp(field, node, out error); return new EndsWith  (b.left, b.right);
+                case "Contains":    b = StringOp(field, node, cx, out error); return new Contains  (b.left, b.right);
+                case "StartsWith":  b = StringOp(field, node, cx, out error); return new StartsWith(b.left, b.right);
+                case "EndsWith":    b = StringOp(field, node, cx, out error); return new EndsWith  (b.left, b.right);
                 default:
                     error = $"unknown method: {method}() used by: {symbol} {At} {node.Pos}";
                     return null;
             }
         }
         
-        private static Aggregate Aggregate(string fieldName, in QueryNode node, out string error) {
+        private static Aggregate Aggregate(string fieldName, in QueryNode node, Context cx, out string error) {
             error = null;
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            var bodyOp      = GetOperation(bodyNode, out error);
+            var bodyOp      = GetOperation(bodyNode, cx, out error);
             var arg         = argOperand.operation.str;
             return new Aggregate(field, arg, bodyOp);
         }
         
-        private static Quantify Quantify(string fieldName, in QueryNode node, out string error) {
+        private static Quantify Quantify(string fieldName, in QueryNode node, Context cx, out string error) {
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            var fcn         = GetOperation(bodyNode, out error);
+            var fcn         = GetOperation(bodyNode, cx, out error);
             if (fcn is FilterOperation filter) {
                 error = null;
                 var arg         = argOperand.operation.str;
@@ -213,10 +224,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static BinaryOperands StringOp(string fieldName, in QueryNode node, out string error) {
+        private static BinaryOperands StringOp(string fieldName, in QueryNode node, Context cx, out string error) {
             var field       = new Field(fieldName);
             var fcnOperand  = node.GetOperand(0);
-            var fcn         = GetOperation(fcnOperand, out error);
+            var fcn         = GetOperation(fcnOperand, cx, out error);
             if (fcn is StringLiteral || fcn is Field) {
                 error = null;
                 return new BinaryOperands(field, fcn);
@@ -225,13 +236,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static Not NotOp(in QueryNode node, out string error) {
+        private static Not NotOp(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"not operator expect one operand {At} {node.Pos}";
                 return default;
             }
             var operand_0  = node.GetOperand(0);
-            var operand    = GetOperation(operand_0, out error);
+            var operand    = GetOperation(operand_0, cx, out error);
             if (operand is FilterOperation filterOperand) {
                 return new Not(filterOperand);
             }
@@ -239,17 +250,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
 
-        private static BinaryOperands Bin(in QueryNode node, bool boolOperands, out string error) {
+        private static BinaryOperands Bin(in QueryNode node, Context cx, bool boolOperands, out string error) {
             if (node.OperandCount != 2) {
                 error = $"operator {node.operation} expect two operands {At} {node.Pos}";
                 return default;
             }
             var operand_0 = node.GetOperand(0);
             var operand_1 = node.GetOperand(1);
-            var left    = GetOperation(operand_0, out error);
+            var left    = GetOperation(operand_0, cx, out error);
             if (error != null)
                 return default;
-            var right   = GetOperation(operand_1, out error);
+            var right   = GetOperation(operand_1, cx, out error);
             if (error != null)
                 return default;
             if (boolOperands)
@@ -261,7 +272,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new BinaryOperands (left, right);
         }
         
-        private static List<FilterOperation> FilterOperands(in QueryNode node, out string error) {
+        private static List<FilterOperation> FilterOperands(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount < 2) {
                 error = $"expect at minimum two operands for operator {node.operation} {At} {node.Pos}";
                 return null;
@@ -269,7 +280,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var operands = new List<FilterOperation> (node.OperandCount);
             for (int n = 0; n < node.OperandCount; n++) {
                 var operand     = node.GetOperand(n);
-                var operation   = GetOperation(operand, out error);
+                var operation   = GetOperation(operand, cx, out error);
                 if (error != null)
                     return null;
                 if (operation is FilterOperation filterOperation) {
