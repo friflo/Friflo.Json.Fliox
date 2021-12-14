@@ -358,7 +358,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any() at pos 14", error);
             } {
                 Parse("o =>", out error);
-                AreEqual("lambda 'o =>' expect one operand as body at pos 0", error);
+                AreEqual("lambda 'o =>' expect one subsequent operand as body at pos 2", error);
             }
         }
         
@@ -461,15 +461,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryLambda() {
             {
-                var op = Parse("o => true", out _);
+                var node = QueryTree.CreateTree("o => true", out _);
+                AreEqual("o {=> {true}}", node.ToString());
+                var op = OperationFromNode(node, out _);
                 AreEqual("o => true", op.Linq);
             } {
-                var op = Parse("o => 1 + 2", out _);
+                var node = QueryTree.CreateTree("o => 1 + 2", out _);
+                AreEqual("o {=> {+ {1, 2}}}", node.ToString());
+                var op = OperationFromNode(node, out _);
                 AreEqual("o => 1 + 2", op.Linq);
-            } /* {
-                var op = Parse("o => true || false", out _);
+            } {
+                var node = QueryTree.CreateTree("o => true || false", out _);
+                AreEqual("o {=> {|| {true, false}}}", node.ToString());
+                var op = OperationFromNode(node, out _);
                 AreEqual("o => true || false", op.Linq);
-            } */
+            } {
+                var op = Parse("o => (1 + 2)", out _);
+                AreEqual("o => 1 + 2", op.Linq);
+            }
         }
         
         [Test]

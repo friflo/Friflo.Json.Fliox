@@ -128,6 +128,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void AddUnary(Stack<QueryNode> stack, in Token token, out string error) {
             error = null;
             var newNode = new QueryNode(token);
+            /* if (stack.TryPeek(out var head) && head.isLambda) { 
+                head.AddOperand(newNode);
+                stack.Push(newNode);
+                return;
+            } */
             var expectOperand = token.type == TokenType.Function || token.type == TokenType.Not;
             if (expectOperand) {
                 // Function can accept 0 or 1 parameter.
@@ -153,7 +158,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return;
             }
             if (token.type == TokenType.Arrow) {
-                HandleArrow(head, token, out error);
+                HandleArrow(stack, head, token, out error);
                 return;
             }
             error           = null;
@@ -161,7 +166,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             PushNode(stack, newNode);
         }
         
-        private static void HandleArrow(QueryNode head, in Token token, out string error) {
+        private static void HandleArrow(Stack<QueryNode> stack, QueryNode head, in Token token, out string error) {
             switch (head.operation.type) {
                 case TokenType.Function:
                     if (head.OperandCount != 1) {
@@ -178,7 +183,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     // note: arrow operands are added to parent function. So the => itself is not added as a new node.
                     break;
                 case TokenType.Symbol:
+                    var arrowNode = new QueryNode(token);
                     head.isLambda = true;
+                    head.AddOperand(arrowNode);
+                    stack.Push(arrowNode);
                     error = null;
                     break;
                 default:
