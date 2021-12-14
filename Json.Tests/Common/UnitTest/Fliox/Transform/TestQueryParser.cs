@@ -485,22 +485,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestQueryQuantityMethods() {
             {
                 var node = QueryTree.CreateTree(".children.Any(child => child.age == 20)", out _);
-                AreEqual(".children.Any() {child, == {child.age, 20}}", node.ToString());
+                AreEqual(".children.Any() {child, => {== {child.age, 20}}}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".children.Any(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryTree.CreateTree(".children.All(child => child.age == 20)", out _);
-                AreEqual(".children.All() {child, == {child.age, 20}}", node.ToString());
+                AreEqual(".children.All() {child, => {== {child.age, 20}}}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".children.All(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
-                AreEqual(".children.Count() {child, == {child.age, 20}}", node.ToString());
+                AreEqual(".children.Count() {child, => {== {child.age, 20}}}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".children.Count(child => child.age == 20)", op.Linq);
             } {
                 var node = QueryTree.CreateTree(".items.Max(item => item.amount) > 1", out _);
-                AreEqual("> {.items.Max() {item, item.amount}, 1}", node.ToString());
+                AreEqual("> {.items.Max() {item, => {item.amount}}, 1}", node.ToString());
                 var op = OperationFromNode(node, out _);
                 AreEqual(".items.Max(item => item.amount) > 1", op.Linq);
             }

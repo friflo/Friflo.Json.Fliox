@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -99,8 +100,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"conditional statements must not be used: {symbol} {At} {node.Pos}";
                     return null;
             }
-            if (node.isLambda) {
+            if (node.OperandCount == 1) {
                 var arrowNode = node.GetOperand(0); // is always present as it isLambda
+                if (arrowNode.operation.type != TokenType.Arrow)
+                    throw new InvalidOperationException("expect => as symbol operand");
                 if (arrowNode.OperandCount != 1) {
                     error = $"lambda '{node.operation} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
                     return default;
@@ -179,7 +182,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
-            var fcnOperand  = node.GetOperand(1);
+            var arrowNode   = node.GetOperand(1); // is always present as it isLambda
+            var fcnOperand  = arrowNode.GetOperand(0);
             var arg         = argOperand.operation.str;
             var fcn         = GetOperation(fcnOperand, out error);
             return new Aggregate(field, arg, fcn);
@@ -188,7 +192,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static Quantify Quantify(string fieldName, in QueryNode node, out string error) {
             var field       = new Field(fieldName);
             var argOperand  = node.GetOperand(0);
-            var fcnOperand  = node.GetOperand(1);
+            var arrowNode   = node.GetOperand(1); // is always present as it isLambda
+            var fcnOperand  = arrowNode.GetOperand(0);
             var arg         = argOperand.operation.str;
             var fcn         = GetOperation(fcnOperand, out error);
             if (fcn is FilterOperation filter) {

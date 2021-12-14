@@ -13,7 +13,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal readonly   Token           operation;
         internal readonly   int             precedence;
         internal            Arity           arity;
-        internal            bool            isLambda;
         internal            bool            bracketClosed;
         
         internal            int             Pos => operation.pos;
