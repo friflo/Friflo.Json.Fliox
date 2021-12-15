@@ -165,19 +165,19 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             switch (head.TokenType) {
                 case TokenType.Function:
                     if (head.OperandCount != 1) {
-                        error = $"=> expect one preceding lambda argument. Used in: {head.operation} {At} {token.pos}";
+                        error = $"=> expect one preceding lambda argument. Used in: {head.Label} {At} {token.pos}";
                         return;
                     }
                     var lambdaArg = head.GetOperand(0);
                     if (lambdaArg.TokenType != TokenType.Symbol) {
-                        error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {lambdaArg.Pos}";
+                        error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.Label} in {head.Label} {At} {lambdaArg.Pos}";
                         return;
                     }
                     break;
                 case TokenType.Symbol:
                     break;
                 default:
-                    error = $"=> can be used only as lambda in functions. Used by: {head.operation} {At} {head.Pos}";
+                    error = $"=> can be used only as lambda in functions. Used by: {head.Label} {At} {head.Pos}";
                     return;
             }
             var arrowNode = new QueryNode(token);

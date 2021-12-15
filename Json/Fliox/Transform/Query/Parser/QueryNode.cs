@@ -10,11 +10,12 @@ using System.Text;
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public class QueryNode {
-        internal readonly   Token           operation;
+        private  readonly   Token           operation;
         internal readonly   int             precedence;
         internal            Arity           arity;
         internal            bool            bracketClosed;
         
+        internal            string          Label       => operation.GetLabel(true);
         internal            TokenType       TokenType   => operation.type;
         internal            string          Str         => operation.str;
         internal            double          Dbl         => operation.dbl;
@@ -38,7 +39,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
 
         private void AppendLabel (StringBuilder sb) {
-            sb.Append(operation.ToString());
+            sb.Append(operation);
             var operandsCount = operands.Count;
             if (operandsCount == 0)
                 return;

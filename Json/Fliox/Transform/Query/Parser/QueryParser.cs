@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Function:    return GetFunction  (node, cx, out error);
                 case TokenType.BracketOpen: return GetScope     (node, cx, out error);
                 default:
-                    error = $"unexpected operation {node.operation} {At} {node.Pos}";
+                    error = $"unexpected operation {node.Label} {At} {node.Pos}";
                     return null;
             }
         }
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (arrowNode.TokenType != TokenType.Arrow)
                 throw new InvalidOperationException("expect Arrow node as operand");
             if (arrowNode.OperandCount != 1) {
-                error = $"lambda '{node.operation} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
+                error = $"lambda '{node.Label} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
                 bodyNode = null;
                 return false;
             }
@@ -163,7 +163,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Operation FcnOp(in QueryNode node, in Context cx, out string error) {
             if (node.OperandCount != 1) {
-                error = $"function {node.operation} expect one operand {At} {node.Pos}";
+                error = $"function {node.Label} expect one operand {At} {node.Pos}";
                 return default;
             }
             error = null;
@@ -232,7 +232,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 var arg         = argOperand.Str;
                 return new Quantify(field, arg, filter);
             }
-            error = $"quantify operation {node.operation} expect boolean lambda body. Was: {fcn} {At} {bodyNode.Pos}";
+            error = $"quantify operation {node.Label} expect boolean lambda body. Was: {fcn} {At} {bodyNode.Pos}";
             return default;
         }
         
@@ -244,7 +244,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = null;
                 return new BinaryOperands(field, fcn);
             }
-            error = $"expect string or field operand in {node.operation}. was: {fcnOperand} {At} {fcnOperand.Pos}";
+            error = $"expect string or field operand in {node.Label}. was: {fcnOperand} {At} {fcnOperand.Pos}";
             return default;
         }
         
@@ -258,13 +258,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (operand is FilterOperation filterOperand) {
                 return new Not(filterOperand);
             }
-            error = $"not operator ! must use a boolean operand. Was: {operand_0.operation} {At} {operand_0.Pos}";
+            error = $"not operator ! must use a boolean operand. Was: {operand_0.Label} {At} {operand_0.Pos}";
             return default;
         }
 
         private static BinaryOperands Bin(in QueryNode node, Context cx, bool boolOperands, out string error) {
             if (node.OperandCount != 2) {
-                error = $"operator {node.operation} expect two operands {At} {node.Pos}";
+                error = $"operator {node.Label} expect two operands {At} {node.Pos}";
                 return default;
             }
             var operand_0 = node.GetOperand(0);
@@ -278,7 +278,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (boolOperands)
                 return new BinaryOperands (left, right);
             if (left is FilterOperation || right is FilterOperation) {
-                error = $"operator {node.operation.ToString()} must not use boolean operands {At} {node.Pos}";
+                error = $"operator {node.Label} must not use boolean operands {At} {node.Pos}";
                 return default;
             }
             return new BinaryOperands (left, right);
@@ -286,7 +286,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static List<FilterOperation> FilterOperands(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount < 2) {
-                error = $"expect at minimum two operands for operator {node.operation} {At} {node.Pos}";
+                error = $"expect at minimum two operands for operator {node.Label} {At} {node.Pos}";
                 return null;
             }
             var operands = new List<FilterOperation> (node.OperandCount);
@@ -298,7 +298,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (operation is FilterOperation filterOperation) {
                     operands.Add(filterOperation);
                 } else {
-                    error = $"operator {node.operation} expect boolean operands. Got: {operation} {At} {operand.Pos}";
+                    error = $"operator {node.Label} expect boolean operands. Got: {operation} {At} {operand.Pos}";
                     return null;
                 }
             }
