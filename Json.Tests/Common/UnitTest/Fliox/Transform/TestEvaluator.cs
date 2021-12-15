@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
 
-        private const string  Json    = @"{""strVal"": ""abc"", ""intVal"": 42}";
+        private const string  Json    = @"{""strVal"": ""abc"", ""intVal"": 42, , ""nullVal"": null}";
 
         
         private static void AssertEval(JsonEvaluator eval) {
@@ -29,11 +29,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
             // --- arithmetic functions
             {
-                Eval ("Abs('abc') >= 1", Json, eval, out error);
-                AreEqual("expect numeric operand. was: 'abc' in Abs('abc')", error);
+                Eval ("o => Abs(o.strVal) >= 1", Json, eval, out error);
+                AreEqual("expect numeric operand. was: 'abc' in Abs(.strVal)", error);
             } {
-                Eval ("1 < Abs(null)", Json, eval, out error);
-                AreEqual("expect numeric operand. was: null in Abs(null)", error);
+                // Eval ("o => 1 < Abs(o.nullVal)", Json, eval, out error);
+                // AreEqual("expect numeric operand. was: null in Abs(null)", error);
             }
             // --- arithmetic operators
             {

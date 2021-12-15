@@ -213,26 +213,33 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             string      symbol  = node.ValueStr;
             Operation   operand;
             switch (symbol) {
-                case "Abs":     operand = FcnOp(node, cx, out error);     return new Abs      (operand);
-                case "Ceiling": operand = FcnOp(node, cx, out error);     return new Ceiling  (operand);
-                case "Floor":   operand = FcnOp(node, cx, out error);     return new Floor    (operand);
-                case "Exp":     operand = FcnOp(node, cx, out error);     return new Exp      (operand);
-                case "Log":     operand = FcnOp(node, cx, out error);     return new Log      (operand);
-                case "Sqrt":    operand = FcnOp(node, cx, out error);     return new Sqrt     (operand);
+                case "Abs":     operand = Number(node, cx, out error);  return new Abs      (operand);
+                case "Ceiling": operand = Number(node, cx, out error);  return new Ceiling  (operand);
+                case "Floor":   operand = Number(node, cx, out error);  return new Floor    (operand);
+                case "Exp":     operand = Number(node, cx, out error);  return new Exp      (operand);
+                case "Log":     operand = Number(node, cx, out error);  return new Log      (operand);
+                case "Sqrt":    operand = Number(node, cx, out error);  return new Sqrt     (operand);
                 default:
                     error = $"unknown function: {symbol}() {At} {node.Pos}";
                     return null;
             }
         }
         
-        private static Operation FcnOp(in QueryNode node, Context cx, out string error) {
+        private static Operation Number(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"function {node.Label} expect one operand {At} {node.Pos}";
                 return default;
             }
-            error = null;
             var operand = node.GetOperand(0);
-            return GetOperation(operand, cx, out error);
+            var op = GetOperation(operand, cx, out error);
+            if (error != null)
+                return null;
+            if (op is Field || op is LongLiteral || op is DoubleLiteral || op is UnaryArithmeticOp) {
+                error = null;
+                return op;
+            }
+            error = $"expect field or numeric operand. was: {operand.Label} {At} {operand.Pos}";
+            return null;
         }
         
         private static Operation GetFunction(QueryNode node, Context cx, out string error) {
