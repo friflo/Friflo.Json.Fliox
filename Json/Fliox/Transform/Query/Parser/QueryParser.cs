@@ -73,9 +73,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
                 // --- unary tokens
                 case TokenType.Not:         return NotOp(node, cx, out error);
-                case TokenType.String:      error = null;   return new StringLiteral(node.Str);
-                case TokenType.Double:      error = null;   return new DoubleLiteral(node.Dbl);
-                case TokenType.Long:        error = null;   return new LongLiteral  (node.Lng);
+                case TokenType.String:      Literal(node, out error);                   return new StringLiteral(node.Str);
+                case TokenType.Double:      Literal(node, out error);                   return new DoubleLiteral(node.Dbl);
+                case TokenType.Long:        Literal(node, out error);                   return new LongLiteral  (node.Lng);
                 
                 case TokenType.Symbol:      return GetField     (node, cx, out error);
                 case TokenType.Function:    return GetFunction  (node, cx, out error);
@@ -260,6 +260,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             error = $"not operator ! must use a boolean operand. Was: {operand_0.Label} {At} {operand_0.Pos}";
             return default;
+        }
+        
+        private static void Literal(in QueryNode node, out string error) {
+            if (node.OperandCount == 0) {
+                error = null;
+                return;
+            }
+            var first = node.GetOperand(0);
+            error = $"invalid operation {first.Label} on literal {node.Label} {At} {first.Pos}";
         }
 
         private static BinaryOperands Bin(in QueryNode node, Context cx, bool boolOperands, out string error) {

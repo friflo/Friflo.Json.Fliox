@@ -331,6 +331,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse(".foo.Contains(1)", out error);
                 AreEqual("expect string or field operand in .foo.Contains(). was: 1 at pos 14", error);
+            } {
+                Parse("'abc'.Foo('xyz')", out error);
+                AreEqual("invalid operation .Foo() on literal 'abc' at pos 5", error);
+            } {
+                Parse("123.Bar('xyz')", out error);
+                AreEqual("invalid operation Bar() on literal 123 at pos 4", error);
             }
         }
         
