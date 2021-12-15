@@ -14,7 +14,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         [Fri.Required]  public  Operation   left;
         [Fri.Required]  public  Operation   right;
+        
         internal readonly       EvalResult  evalResult = new EvalResult(new List<Scalar>());
+        internal override       bool        IsNumeric => true;
 
         protected BinaryArithmeticOp() { }
         protected BinaryArithmeticOp(Operation left, Operation right) {

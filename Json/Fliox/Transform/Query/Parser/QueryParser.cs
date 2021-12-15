@@ -234,7 +234,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var op = GetOperation(operand, cx, out error);
             if (error != null)
                 return null;
-            if (op is Field || op is LongLiteral || op is DoubleLiteral || op is UnaryArithmeticOp) {
+            if (op.IsNumeric || op is Field) {
                 error = null;
                 return op;
             }

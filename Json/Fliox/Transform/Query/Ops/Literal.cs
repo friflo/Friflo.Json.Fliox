@@ -35,7 +35,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class DoubleLiteral : Literal
     {
-        public          double      value;
+        public              double      value;
+        internal override   bool        IsNumeric => true;
 
         public   override void AppendLinq(AppendCx cx) => cx.Append(value.ToString(CultureInfo.InvariantCulture));
 
@@ -50,7 +51,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class LongLiteral : Literal
     {
-        public          long        value;
+        public              long        value;
+        internal override   bool        IsNumeric => true;
 
         public   override void AppendLinq(AppendCx cx) => cx.sb.Append(value);
 

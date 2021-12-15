@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     {
         [Fri.Required] public           Operation   value;
         [Fri.Ignore] internal  readonly EvalResult  evalResult = new EvalResult(new List<Scalar>());
+        internal override               bool        IsNumeric => true;
 
         protected UnaryArithmeticOp() { }
 
