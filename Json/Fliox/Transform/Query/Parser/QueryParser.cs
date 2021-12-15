@@ -73,9 +73,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
                 // --- unary tokens
                 case TokenType.Not:         return NotOp(node, cx, out error);
-                case TokenType.String:      Literal(node, out error);                   return new StringLiteral(node.Str);
-                case TokenType.Double:      Literal(node, out error);                   return new DoubleLiteral(node.Dbl);
-                case TokenType.Long:        Literal(node, out error);                   return new LongLiteral  (node.Lng);
+                case TokenType.String:      Literal(node, out error);                   return new StringLiteral(node.ValueStr);
+                case TokenType.Double:      Literal(node, out error);                   return new DoubleLiteral(node.ValueDbl);
+                case TokenType.Long:        Literal(node, out error);                   return new LongLiteral  (node.ValueLng);
                 
                 case TokenType.Symbol:      return GetField     (node, cx, out error);
                 case TokenType.Function:    return GetFunction  (node, cx, out error);
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetField(QueryNode node, in Context cx, out string error) {
-            var symbol = node.Str;
+            var symbol = node.ValueStr;
             switch (symbol) {
                 case "true":    error = null;   return new TrueLiteral();
                 case "false":   error = null;   return new FalseLiteral();
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
                 error = null;
-                cx.variables.Add(node.Str);
+                cx.variables.Add(node.ValueStr);
                 var bodyOp  = GetOperation(bodyNode, cx, out error);
                 return new Lambda(symbol, bodyOp);
             }
@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetMathFunction(QueryNode node, in Context cx, out string error) {
-            string      symbol  = node.Str;
+            string      symbol  = node.ValueStr;
             Operation   operand;
             switch (symbol) {
                 case "Abs":     operand = FcnOp(node, cx, out error);     return new Abs      (operand);
@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetFunction(QueryNode node, in Context cx, out string error) {
-            var symbol  = node.Str;
+            var symbol  = node.ValueStr;
             var lastDot = symbol.LastIndexOf('.');
             if (lastDot == -1) {
                 return GetMathFunction(node, cx, out error);
@@ -214,9 +214,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.variables.Add(argOperand.Str);
+            cx.variables.Add(argOperand.ValueStr);
             var bodyOp      = GetOperation(bodyNode, cx, out error);
-            var arg         = argOperand.Str;
+            var arg         = argOperand.ValueStr;
             return new Aggregate(field, arg, bodyOp);
         }
         
@@ -225,11 +225,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.variables.Add(argOperand.Str);
+            cx.variables.Add(argOperand.ValueStr);
             var fcn         = GetOperation(bodyNode, cx, out error);
             if (fcn is FilterOperation filter) {
                 error = null;
-                var arg         = argOperand.Str;
+                var arg         = argOperand.ValueStr;
                 return new Quantify(field, arg, filter);
             }
             error = $"quantify operation {node.Label} expect boolean lambda body. Was: {fcn} {At} {bodyNode.Pos}";

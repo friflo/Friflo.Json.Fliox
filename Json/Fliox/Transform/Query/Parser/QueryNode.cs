@@ -17,9 +17,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         internal            string          Label       => operation.GetLabel(true);
         internal            TokenType       TokenType   => operation.type;
-        internal            string          Str         => operation.str;
-        internal            double          Dbl         => operation.dbl;
-        internal            long            Lng         => operation.lng;
+        internal            string          ValueStr    => operation.str;
+        internal            double          ValueDbl    => operation.dbl;
+        internal            long            ValueLng    => operation.lng;
         internal            int             Pos         => operation.pos;
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
