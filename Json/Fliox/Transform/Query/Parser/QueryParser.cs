@@ -136,6 +136,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = null;
                 cx.variables.Add(node.ValueStr);
                 var bodyOp  = GetOperation(bodyNode, cx, out error);
+                if (bodyOp is FilterOperation filter) {
+                    return new Filter(symbol, filter);
+                }
                 return new Lambda(symbol, bodyOp);
             }
             if (!ValidateVariable(symbol, node, cx, out error))
@@ -146,8 +149,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static bool ValidateVariable(string symbol, QueryNode node, in Context cx, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot == 0) {
-                error = null;
-                return true;
+                error = $"invalid symbol name: {symbol} {At} {node.Pos}";
+                return false;
             }
             if (firstDot > 0) {
                 symbol = symbol.Substring(0, firstDot);

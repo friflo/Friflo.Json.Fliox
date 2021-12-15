@@ -185,8 +185,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = Parse("(1 + 2) == 3", out _);
                 AreEqual("1 + 2 == 3", op.Linq);
             }  {
-                var op = Parse("(.val1 + .val2) == 3", out _);
-                AreEqual(".val1 + .val2 == 3", op.Linq);
+                var op = Parse("(o.val1 + o.val2) == 3", out _, TestVars);
+                AreEqual("o.val1 + o.val2 == 3", op.Linq);
             }
         }
         
@@ -216,7 +216,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        private static List<string> TestVars => new List<string> { "a", "b", "c"};
+        private static List<string> TestVars => new List<string> { "o", "a", "b", "c"};
         
         
         [Test]
@@ -288,8 +288,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("if", out error);
                 AreEqual("conditional statements must not be used: if at pos 0", error);
             } {
-                Parse(".children.Foo(child => child.age)", out error);
-                AreEqual("unknown method: Foo() used by: .children.Foo at pos 0", error);
+                Parse("o.children.Foo(child => child.age)", out error, TestVars);
+                AreEqual("unknown method: Foo() used by: o.children.Foo at pos 0", error);
             } {
                 Parse("Foo(1)", out error);
                 AreEqual("unknown function: Foo() at pos 0", error);
@@ -333,8 +333,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("foo.Contains('bar')", out error);
                 AreEqual("variable not found: foo at pos 0", error);
             } {
-                Parse(".foo.Contains(1)", out error);
-                AreEqual("expect string or field operand in .foo.Contains(). was: 1 at pos 14", error);
+                Parse("o.foo.Contains(1)", out error, TestVars);
+                AreEqual("expect string or field operand in o.foo.Contains(). was: 1 at pos 15", error);
             } {
                 Parse("'abc'.Foo('xyz')", out error);
                 AreEqual("invalid operation .Foo() on literal 'abc' at pos 5", error);
@@ -345,8 +345,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("true.Bar('xyz')", out error);
                 AreEqual("variable not found: true at pos 0", error);
             } {
-                Parse(".children.Contains(foo)", out error);
-                AreEqual("variable not found: foo at pos 19", error);
+                Parse("o.children.Contains(foo)", out error, TestVars);
+                AreEqual("variable not found: foo at pos 20", error);
             }
         }
         
@@ -372,20 +372,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("o => foo.age", out error);
                 AreEqual("variable not found: foo at pos 5", error);
             } {
-                Parse(".children.Any(child => child.age)", out error);
-                AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age at pos 23", error);
+                Parse("o.children.Any(child => child.age)", out error, TestVars);
+                AreEqual("quantify operation o.children.Any() expect boolean lambda body. Was: child.age at pos 24", error);
             } {
-                Parse(".children.Any(foo)", out error);
-                AreEqual("Invalid lambda expression in .children.Any() at pos 0", error);
+                Parse("o.children.Any(foo)", out error, TestVars);
+                AreEqual("Invalid lambda expression in o.children.Any() at pos 0", error);
             } {
-                Parse(".children.Min(foo)", out error);
-                AreEqual("Invalid lambda expression in .children.Min() at pos 0", error);
+                Parse("o.children.Min(foo)", out error, TestVars);
+                AreEqual("Invalid lambda expression in o.children.Min() at pos 0", error);
             } {
-                Parse(".children.Any(foo => bar)", out error);
-                AreEqual("variable not found: bar at pos 21", error);
+                Parse("o.children.Any(foo => bar)", out error, TestVars);
+                AreEqual("variable not found: bar at pos 22", error);
             } {
-                Parse(".children.Min(foo => bar)", out error);
-                AreEqual("variable not found: bar at pos 21", error);
+                Parse("o.children.Min(foo => bar)", out error, TestVars);
+                AreEqual("variable not found: bar at pos 22", error);
             }
         }
         
@@ -471,17 +471,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryAggregateMethods() {
             {
-                var op = Parse(".children.Min(child => child.age)", out _);
-                AreEqual(".children.Min(child => child.age)", op.Linq);
+                var op = Parse("o.children.Min(child => child.age)", out _, TestVars);
+                AreEqual("o.children.Min(child => child.age)", op.Linq);
             } {
-                var op = Parse(".children.Max(child => child.age)", out _);
-                AreEqual(".children.Max(child => child.age)", op.Linq);
+                var op = Parse("o.children.Max(child => child.age)", out _, TestVars);
+                AreEqual("o.children.Max(child => child.age)", op.Linq);
             } {
-                var op = Parse(".children.Sum(child => child.age)", out _);
-                AreEqual(".children.Sum(child => child.age)", op.Linq);
+                var op = Parse("o.children.Sum(child => child.age)", out _, TestVars);
+                AreEqual("o.children.Sum(child => child.age)", op.Linq);
             } {
-                var op = Parse(".children.Average(child => child.age)", out _);
-                AreEqual(".children.Average(child => child.age)", op.Linq);
+                var op = Parse("o.children.Average(child => child.age)", out _, TestVars);
+                AreEqual("o.children.Average(child => child.age)", op.Linq);
             }
         }
         
@@ -511,50 +511,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public static void TestQueryQuantityMethods() {
             {
-                var node = QueryTree.CreateTree(".children.Any(child => child.age == 20)", out _);
-                AreEqual(".children.Any() {child, => {== {child.age, 20}}}", node.ToString());
-                var op = OperationFromNode(node, out _);
-                AreEqual(".children.Any(child => child.age == 20)", op.Linq);
+                var node = QueryTree.CreateTree("o.children.Any(child => child.age == 20)", out _);
+                AreEqual("o.children.Any() {child, => {== {child.age, 20}}}", node.ToString());
+                var op = OperationFromNode(node, out _, TestVars);
+                AreEqual("o.children.Any(child => child.age == 20)", op.Linq);
             } {
-                var node = QueryTree.CreateTree(".children.All(child => child.age == 20)", out _);
-                AreEqual(".children.All() {child, => {== {child.age, 20}}}", node.ToString());
-                var op = OperationFromNode(node, out _);
-                AreEqual(".children.All(child => child.age == 20)", op.Linq);
+                var node = QueryTree.CreateTree("o.children.All(child => child.age == 20)", out _);
+                AreEqual("o.children.All() {child, => {== {child.age, 20}}}", node.ToString());
+                var op = OperationFromNode(node, out _, TestVars);
+                AreEqual("o.children.All(child => child.age == 20)", op.Linq);
             } {
-                var node = QueryTree.CreateTree(".children.Count(child => child.age == 20)", out _);
-                AreEqual(".children.Count() {child, => {== {child.age, 20}}}", node.ToString());
-                var op = OperationFromNode(node, out _);
-                AreEqual(".children.Count(child => child.age == 20)", op.Linq);
+                var node = QueryTree.CreateTree("o.children.Count(child => child.age == 20)", out _);
+                AreEqual("o.children.Count() {child, => {== {child.age, 20}}}", node.ToString());
+                var op = OperationFromNode(node, out _, TestVars);
+                AreEqual("o.children.Count(child => child.age == 20)", op.Linq);
             } {
-                var node = QueryTree.CreateTree(".items.Max(item => item.amount) > 1", out _);
-                AreEqual("> {.items.Max() {item, => {item.amount}}, 1}", node.ToString());
-                var op = OperationFromNode(node, out _);
-                AreEqual(".items.Max(item => item.amount) > 1", op.Linq);
+                var node = QueryTree.CreateTree("o.items.Max(item => item.amount) > 1", out _);
+                AreEqual("> {o.items.Max() {item, => {item.amount}}, 1}", node.ToString());
+                var op = OperationFromNode(node, out _, TestVars);
+                AreEqual("o.items.Max(item => item.amount) > 1", op.Linq);
             }
         }
 
         [Test]
         public static void TestQueryStringMethods() {
             {
-                var op = Parse(".name.Contains('Smartphone')", out _);
-                AreEqual(".name.Contains('Smartphone')", op.Linq);
+                var op = Parse("o.name.Contains('Smartphone')", out _, TestVars);
+                AreEqual("o.name.Contains('Smartphone')", op.Linq);
             } {
-                var op = Parse(".name.StartsWith('Smartphone')", out _);
-                AreEqual(".name.StartsWith('Smartphone')", op.Linq);
+                var op = Parse("o.name.StartsWith('Smartphone')", out _, TestVars);
+                AreEqual("o.name.StartsWith('Smartphone')", op.Linq);
             } {
-                var op = Parse(".name.EndsWith('Smartphone')", out _);
-                AreEqual(".name.EndsWith('Smartphone')", op.Linq);
+                var op = Parse("o.name.EndsWith('Smartphone')", out _, TestVars);
+                AreEqual("o.name.EndsWith('Smartphone')", op.Linq);
             } {
-                var op = Parse(".foo.EndsWith(.bar)", out _);
-                AreEqual(".foo.EndsWith(.bar)", op.Linq);
+                var op = Parse("o.foo.EndsWith(o.bar)", out _, TestVars);
+                AreEqual("o.foo.EndsWith(o.bar)", op.Linq);
             }
         }
         
         [Test]
         public static void TestQueryMisc() {
             {
-                var op = Parse(".name=='Smartphone'", out _);
-                AreEqual(".name == 'Smartphone'", op.Linq);
+                var op = Parse("o.name=='Smartphone'", out _, TestVars);
+                AreEqual("o.name == 'Smartphone'", op.Linq);
             }
         }
         

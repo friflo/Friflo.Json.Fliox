@@ -4,6 +4,7 @@
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Parser;
+using System.Collections.Generic;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -51,19 +52,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
             // --- string functions
             {
-                Eval (".strVal.Contains(.intVal)", Json, eval, out error);
+                Eval ("o => o.strVal.Contains(o.intVal)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".strVal.StartsWith(.intVal)", Json, eval, out error);
+                Eval ("o => o.strVal.StartsWith(o.intVal)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".strVal.EndsWith(.intVal)", Json, eval, out error);
+                Eval ("o => o.strVal.EndsWith(o.intVal)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 'abc', right: 42", error);
             } {
-                Eval (".intVal.EndsWith('abc')", Json, eval, out error);
+                Eval ("o => o.intVal.EndsWith('abc')", Json, eval, out error);
                 AreEqual("expect two string operands. left: 42, right: 'abc'", error);
             } /* {
-                Eval (".foo.EndsWith(.bar)", Json, eval, out error);
+                Eval ("o => o.EndsWith(.bar)", Json, eval, out error);
                 AreEqual("expect two string operands. left: 42, right: 'abc'", error);
             } */
         }
@@ -77,19 +78,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         private static void AssertFilter(JsonEvaluator eval) {
             {
-                var result = Filter (".foo.EndsWith('abc')", Json, eval, out _);
+                var result = Filter ("o => o.foo.EndsWith('abc')", Json, eval, out _);
                 IsFalse(result);
             } {
-                var result = Filter (".strVal.EndsWith('abc')", Json, eval, out _);
+                var result = Filter ("o => o.strVal.EndsWith('abc')", Json, eval, out _);
                 IsTrue(result);
             } {
-                var result = Filter (".strVal.EndsWith(.foo)", Json, eval, out _);
+                var result = Filter ("o => o.strVal.EndsWith(o.foo)", Json, eval, out _);
                 IsFalse(result);
             }
         }
         
         private static object Eval(string operation, string json, JsonEvaluator eval, out string error) {
-            var op      = QueryParser.Parse(operation, out error);
+            var variables = new List<string> { "o" };
+            var op      = QueryParser.Parse(operation, out error, variables);
             if (error != null)
                 return null;
             var lambda  = new JsonLambda(op);
@@ -113,12 +115,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public static void TestFilterUndefinedScalar() {
             using (var eval = new JsonEvaluator()) {
                 // use an aggregate (Max) of an empty array and compare it to a scalar
-                AssertFilterUndefinedScalar (".items.Max(item => item.amount) == 1", eval);
-                AssertFilterUndefinedScalar (".items.Max(item => item.amount) != 1", eval);
-                AssertFilterUndefinedScalar (".items.Max(item => item.amount) <  1", eval);
-                AssertFilterUndefinedScalar (".items.Max(item => item.amount) <= 1", eval);
-                AssertFilterUndefinedScalar (".items.Max(item => item.amount) >  1", eval);
-                AssertFilterUndefinedScalar (".items.Max(item => item.amount) >= 1", eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) == 1", eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) != 1", eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) <  1", eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) <= 1", eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) >  1", eval);
+                AssertFilterUndefinedScalar ("o => o.items.Max(item => item.amount) >= 1", eval);
             }
         }
         

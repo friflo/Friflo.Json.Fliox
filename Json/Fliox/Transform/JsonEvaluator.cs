@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Transform
 
     public sealed class JsonFilter : JsonLambda
     {
-        public JsonFilter(FilterOperation op)  : base(op) { }
+        public JsonFilter(FilterOperation  op) : base(op) { }
         public JsonFilter(OperationContext cx) : base(cx) { }
         
         public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
