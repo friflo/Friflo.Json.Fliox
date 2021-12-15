@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (stack.Count == 0)
                 throw new InvalidOperationException("invalid stack count");
             foreach (var entry in stack) {
-                if (entry.operation.type == TokenType.BracketOpen && !entry.bracketClosed) {
+                if (entry.TokenType == TokenType.BracketOpen && !entry.bracketClosed) {
                     error = $"missing closing parenthesis {At} {entry.Pos}";
                     return false;
                 }
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = $"no matching open parenthesis {At} {token.pos}";
                     return;
                 }
-                if (head.operation.type == TokenType.Function) {
+                if (head.TokenType == TokenType.Function) {
                     // A closing bracket causes the head node to be used as an Unary node.
                     // So its last operand will not be used as the left operand for subsequent n-ary operations (n>1).
                     if (stack.Count > 1) {
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     error = null;
                     return;
                 }
-                if (head.operation.type == TokenType.BracketOpen) {
+                if (head.TokenType == TokenType.BracketOpen) {
                     // found matching (grouping) open parenthesis
                     if (stack.Count > 1) {
                         stack.Pop();
@@ -162,14 +162,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         /// Arrow tokens (=>) are added as <see cref="QueryNode"/> and accessed by <see cref="QueryParser.GetArrowBody"/> 
         private static void HandleArrow(Stack<QueryNode> stack, QueryNode head, in Token token, out string error) {
-            switch (head.operation.type) {
+            switch (head.TokenType) {
                 case TokenType.Function:
                     if (head.OperandCount != 1) {
                         error = $"=> expect one preceding lambda argument. Used in: {head.operation} {At} {token.pos}";
                         return;
                     }
                     var lambdaArg = head.GetOperand(0);
-                    if (lambdaArg.operation.type != TokenType.Symbol) {
+                    if (lambdaArg.TokenType != TokenType.Symbol) {
                         error = $"=> lambda argument must by a symbol name. Was: {lambdaArg.operation} in {head.operation} {At} {lambdaArg.Pos}";
                         return;
                     }
@@ -227,7 +227,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return;
             }
             error = null;
-            if (node.operation.type == token.type) {
+            if (node.TokenType == token.type) {
                 // || &&  are allowed having multiple operators 
                 return;
             }

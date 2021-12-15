@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             BinaryOperands          b;
             List<FilterOperation>   f;
             
-            switch (node.operation.type)
+            switch (node.TokenType)
             {
                 // --- binary tokens
                 case TokenType.Add:             b = Bin(node, cx, false, out error);    return new Add                  (b.left, b.right);
@@ -73,9 +73,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
                 // --- unary tokens
                 case TokenType.Not:         return NotOp(node, cx, out error);
-                case TokenType.String:      error = null;   return new StringLiteral(node.operation.str);
-                case TokenType.Double:      error = null;   return new DoubleLiteral(node.operation.dbl);
-                case TokenType.Long:        error = null;   return new LongLiteral  (node.operation.lng);
+                case TokenType.String:      error = null;   return new StringLiteral(node.Str);
+                case TokenType.Double:      error = null;   return new DoubleLiteral(node.Dbl);
+                case TokenType.Long:        error = null;   return new LongLiteral  (node.Lng);
                 
                 case TokenType.Symbol:      return GetField     (node, cx, out error);
                 case TokenType.Function:    return GetFunction  (node, cx, out error);
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// Arrow operands are added exclusively by <see cref="QueryTree.HandleArrow"/> 
         private static bool GetArrowBody(QueryNode node, int operandIndex, out QueryNode bodyNode, out string error) {
             var arrowNode = node.GetOperand(operandIndex);
-            if (arrowNode.operation.type != TokenType.Arrow)
+            if (arrowNode.TokenType != TokenType.Arrow)
                 throw new InvalidOperationException("expect Arrow node as operand");
             if (arrowNode.OperandCount != 1) {
                 error = $"lambda '{node.operation} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetField(QueryNode node, in Context cx, out string error) {
-            var symbol = node.operation.str;
+            var symbol = node.Str;
             switch (symbol) {
                 case "true":    error = null;   return new TrueLiteral();
                 case "false":   error = null;   return new FalseLiteral();
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
                 error = null;
-                cx.variables.Add(node.operation.str);
+                cx.variables.Add(node.Str);
                 var bodyOp  = GetOperation(bodyNode, cx, out error);
                 return new Lambda(symbol, bodyOp);
             }
@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetMathFunction(QueryNode node, in Context cx, out string error) {
-            string      symbol  = node.operation.str;
+            string      symbol  = node.Str;
             Operation   operand;
             switch (symbol) {
                 case "Abs":     operand = FcnOp(node, cx, out error);     return new Abs      (operand);
@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Operation GetFunction(QueryNode node, in Context cx, out string error) {
-            var symbol  = node.operation.str;
+            var symbol  = node.Str;
             var lastDot = symbol.LastIndexOf('.');
             if (lastDot == -1) {
                 return GetMathFunction(node, cx, out error);
@@ -214,9 +214,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.variables.Add(argOperand.operation.str);
+            cx.variables.Add(argOperand.Str);
             var bodyOp      = GetOperation(bodyNode, cx, out error);
-            var arg         = argOperand.operation.str;
+            var arg         = argOperand.Str;
             return new Aggregate(field, arg, bodyOp);
         }
         
@@ -225,11 +225,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.variables.Add(argOperand.operation.str);
+            cx.variables.Add(argOperand.Str);
             var fcn         = GetOperation(bodyNode, cx, out error);
             if (fcn is FilterOperation filter) {
                 error = null;
-                var arg         = argOperand.operation.str;
+                var arg         = argOperand.Str;
                 return new Quantify(field, arg, filter);
             }
             error = $"quantify operation {node.operation} expect boolean lambda body. Was: {fcn} {At} {bodyNode.Pos}";

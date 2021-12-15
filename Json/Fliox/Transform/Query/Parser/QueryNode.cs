@@ -15,7 +15,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         internal            Arity           arity;
         internal            bool            bracketClosed;
         
-        internal            int             Pos => operation.pos;
+        internal            TokenType       TokenType   => operation.type;
+        internal            string          Str         => operation.str;
+        internal            double          Dbl         => operation.dbl;
+        internal            long            Lng         => operation.lng;
+        internal            int             Pos         => operation.pos;
         
         private  readonly   List<QueryNode> operands;   // intentionally private. optimize: could avoid List<> in most cases 
         
