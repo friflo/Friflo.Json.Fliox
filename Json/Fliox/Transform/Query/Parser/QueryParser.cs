@@ -34,7 +34,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return false;
             if (env.arg == variable)
                 return true;
-            return env.variables?.IndexOf(variable) != -1;
+            if (env.variables == null)
+                return false;
+            return env.variables.IndexOf(variable) != -1;
         }
         
         internal string GetFieldName (string name) {
