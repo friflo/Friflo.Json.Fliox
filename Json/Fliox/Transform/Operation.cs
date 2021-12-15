@@ -97,8 +97,8 @@ namespace Friflo.Json.Fliox.Transform
             return new JsonLambda(this);
         }
         
-        public static Operation Parse (string operation, out string error, List<string> variables = null) {
-            return QueryParser.Parse(operation, out error, variables);
+        public static Operation Parse (string operation, out string error, QueryEnv env = null) {
+            return QueryParser.Parse(operation, out error, env);
         }
         
         private static string GetExpressionArg(Expression exp) {

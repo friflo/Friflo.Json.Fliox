@@ -4,7 +4,6 @@
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Parser;
-using System.Collections.Generic;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -90,10 +89,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static object Eval(string operation, string json, JsonEvaluator eval, out string error) {
-            var variables = new List<string> { "o" };
-            var op      = QueryParser.Parse(operation, out error, variables);
-            if (error != null)
-                return null;
+            var op      = QueryParser.Parse(operation, out error);
+            AreEqual(operation, op.Linq);
             var lambda  = new JsonLambda(op);
             var value   = new JsonValue(json);
             var result  = eval.Eval(value, lambda, out error);
@@ -102,8 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         private static bool Filter(string operation, string json, JsonEvaluator eval, out string error) {
             var op      = (FilterOperation)QueryParser.Parse(operation, out error);
-            if (error != null)
-                return false;
+            AreEqual(operation, op.Linq);
             var filter  = new JsonFilter(op);
             var value   = new JsonValue(json);
             var result  = eval.Filter(value, filter, out error);

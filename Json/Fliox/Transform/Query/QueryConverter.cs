@@ -317,7 +317,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             this.path       = path;
             this.exp        = exp;
             this.parameter  = parameter;
-            this.queryPath   = queryPath;
+            this.queryPath  = queryPath;
         }
     }
 

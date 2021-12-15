@@ -448,8 +448,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         foreach (var path in patchTask.members) {
                             var value = selectResults[n++].Json;
                             entityPatches.Add(new PatchReplace {
-                                path = path,
-                                value = value
+                                path    = path,
+                                value   = value
                             });
                         }
                     }

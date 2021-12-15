@@ -337,30 +337,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             
             // --- unary aggregate operations
             {
-                var min         = new Min(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, min, "{'op':'min','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
+                var min         = new Lambda("o", new Min(new Field(".children"), "child", new Field("child.age")));
+                AssertJson(mapper, min, "{'op':'lambda','arg':'o','body':{'op':'min','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(10,         eval.Eval(john, min.Lambda()));
-                AreEqual(".children.Min(child => child.age)", min.Linq);
+                AreEqual("o => o.children.Min(child => child.age)", min.Linq);
             } {
-                var max         = new Max(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, max, "{'op':'max','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
+                var max         = new Lambda("o", new Max(new Field(".children"), "child", new Field("child.age")));
+                AssertJson(mapper, max, "{'op':'lambda','arg':'o','body':{'op':'max','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(11,         eval.Eval(john, max.Lambda()));
-                AreEqual(".children.Max(child => child.age)", max.Linq);
+                AreEqual("o => o.children.Max(child => child.age)", max.Linq);
             } {
-                var sum         = new Sum(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, sum, "{'op':'sum','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
+                var sum         = new Lambda("o", new Sum(new Field(".children"), "child", new Field("child.age")));
+                AssertJson(mapper, sum, "{'op':'lambda','arg':'o','body':{'op':'sum','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(21,         eval.Eval(john, sum.Lambda()));
-                AreEqual(".children.Sum(child => child.age)", sum.Linq);
+                AreEqual("o => o.children.Sum(child => child.age)", sum.Linq);
             } {
-                var average     = new Average(new Field(".children"), "child", new Field("child.age"));
-                AssertJson(mapper, average, "{'op':'average','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}");
+                var average     = new Lambda("o", new Average(new Field(".children"), "child", new Field("child.age")));
+                AssertJson(mapper, average, "{'op':'lambda','arg':'o','body':{'op':'average','field':{'name':'.children'},'arg':'child','array':{'op':'field','name':'child.age'}}}");
                 AreEqual(10.5,       eval.Eval(john, average.Lambda()));
-                AreEqual(".children.Average(child => child.age)", average.Linq);
+                AreEqual("o => o.children.Average(child => child.age)", average.Linq);
             } {
-                var count       = new Count(new Field(".children"));
-                AssertJson(mapper, count, "{'op':'count','field':{'name':'.children'}}");
+                var count       = new Lambda("o", new Count(new Field(".children")));
+                AssertJson(mapper, count, "{'op':'lambda','arg':'o','body':{'op':'count','field':{'name':'.children'}}}");
                 AreEqual(2,          eval.Eval(john, count.Lambda()));
-                AreEqual(".children.Count()", count.Linq);
+                AreEqual("o => o.children.Count()", count.Linq);
             }
             
             // --- binary string operations

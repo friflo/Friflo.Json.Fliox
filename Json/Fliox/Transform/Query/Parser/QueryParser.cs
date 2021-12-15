@@ -9,12 +9,50 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    internal readonly struct Context
+    internal class Context
     {
-        internal readonly List<string> variables;
+        private  readonly   QueryEnv        env;
+        private             string          arg;
+        internal readonly   List<string>    locals;
         
-        internal Context(List<string> variables) {
-            this.variables = variables ?? new List<string>();
+        internal Context(QueryEnv env) {
+            this.env    = env;
+            arg         = env != null ? env.arg + "." : null;
+            locals      = new List<string>();
+        }
+        
+        internal void SetArg(string arg) {
+            if (this.arg != null)
+                throw new InvalidOperationException("arg already set");
+            this.arg = arg + ".";
+        }
+        
+        internal bool ExistVariable(string variable) {
+            if (locals.IndexOf(variable) != -1)
+                return true;
+            if (env == null)
+                return false;
+            if (env.arg == variable)
+                return true;
+            return env.variables?.IndexOf(variable) != -1;
+        }
+        
+        internal string GetFieldName (string name) {
+            if (arg != null && name.StartsWith(arg)) {
+                return name.Substring(arg.Length - 1);
+            }
+            return name;
+        }
+    }
+    
+    public class QueryEnv
+    {
+        public readonly string       arg;
+        public readonly List<string> variables;
+        
+        public QueryEnv (string arg, List<string> variables = null) {
+            this.arg        = arg;
+            this.variables  = variables;
         }
     }
     
@@ -26,7 +64,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// Traverse the tree returned by <see cref="QueryTree.CreateTree"/> and create itself a tree of
         /// <see cref="Operation"/>'s while visiting the given tree.
         /// </summary>
-        public static Operation Parse (string operation, out string error, List<string> variables = null) {
+        public static Operation Parse (string operation, out string error, QueryEnv env = null) {
             var result  = QueryLexer.Tokenize (operation,   out error);
             if (error != null)
                 return null;
@@ -37,18 +75,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var node = QueryTree.CreateTree(result.items,out error);
             if (error != null)
                 return null;
-            var cx  = new Context (variables);
+            var cx  = new Context (env);
             var op  = GetOperation (node, cx, out error);
             return op;
         }
         
-        public static Operation OperationFromNode (QueryNode node, out string error, List<string> variables = null) {
-            var cx  = new Context (variables);
+        public static Operation OperationFromNode (QueryNode node, out string error, QueryEnv env = null) {
+            var cx  = new Context (env);
             var op  = GetOperation (node, cx, out error);
             return op;
         }
         
-        private static Operation GetOperation(QueryNode node, in Context cx, out string error) {
+        private static Operation GetOperation(QueryNode node, Context cx, out string error) {
             BinaryOperands          b;
             List<FilterOperation>   f;
             
@@ -86,7 +124,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Operation GetScope(QueryNode node, in Context cx, out string error) {
+        private static Operation GetScope(QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"parentheses (...) expect one operand {At} {node.Pos}";
                 return default;
@@ -116,7 +154,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return true;
         }
         
-        private static Operation GetField(QueryNode node, in Context cx, out string error) {
+        private static Operation GetField(QueryNode node, Context cx, out string error) {
             var symbol = node.ValueStr;
             switch (symbol) {
                 case "true":    error = null;   return new TrueLiteral();
@@ -133,8 +171,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (node.OperandCount == 1) {
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
+                cx.SetArg(node.ValueStr);
                 error = null;
-                cx.variables.Add(node.ValueStr);
+                cx.locals.Add(node.ValueStr);
                 var bodyOp  = GetOperation(bodyNode, cx, out error);
                 if (bodyOp is FilterOperation filter) {
                     return new Filter(symbol, filter);
@@ -143,10 +182,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             if (!ValidateVariable(symbol, node, cx, out error))
                 return null;
-            return new Field(symbol);
+            return CreateField(symbol, cx);
         }
         
-        private static bool ValidateVariable(string symbol, QueryNode node, in Context cx, out string error) {
+        private static Field CreateField(string name, Context cx) {
+            name = cx.GetFieldName(name);
+            return new Field(name);
+        }
+        
+        private static bool ValidateVariable(string symbol, QueryNode node, Context cx, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot == 0) {
                 error = $"invalid symbol name: {symbol} {At} {node.Pos}";
@@ -155,7 +199,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (firstDot > 0) {
                 symbol = symbol.Substring(0, firstDot);
             }
-            if (cx.variables.IndexOf(symbol) == -1) {
+            if (!cx.ExistVariable(symbol)) {
                 error = $"variable not found: {symbol} {At} {node.Pos}";
                 return false;
             }
@@ -163,7 +207,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return true;
         }
         
-        private static Operation GetMathFunction(QueryNode node, in Context cx, out string error) {
+        private static Operation GetMathFunction(QueryNode node, Context cx, out string error) {
             string      symbol  = node.ValueStr;
             Operation   operand;
             switch (symbol) {
@@ -179,7 +223,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Operation FcnOp(in QueryNode node, in Context cx, out string error) {
+        private static Operation FcnOp(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"function {node.Label} expect one operand {At} {node.Pos}";
                 return default;
@@ -189,7 +233,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return GetOperation(operand, cx, out error);
         }
         
-        private static Operation GetFunction(QueryNode node, in Context cx, out string error) {
+        private static Operation GetFunction(QueryNode node, Context cx, out string error) {
             var symbol  = node.ValueStr;
             var lastDot = symbol.LastIndexOf('.');
             if (lastDot == -1) {
@@ -226,11 +270,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Aggregate Aggregate(string fieldName, in QueryNode node, Context cx, out string error) {
             error = null;
-            var field       = new Field(fieldName);
+            var field       = CreateField(fieldName, cx);
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.variables.Add(argOperand.ValueStr);
+            cx.locals.Add(argOperand.ValueStr);
             var bodyOp      = GetOperation(bodyNode, cx, out error);
             if (error != null)
                 return default;
@@ -239,11 +283,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Quantify Quantify(string fieldName, in QueryNode node, Context cx, out string error) {
-            var field       = new Field(fieldName);
+            var field       = CreateField(fieldName, cx);
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.variables.Add(argOperand.ValueStr);
+            cx.locals.Add(argOperand.ValueStr);
             var fcn         = GetOperation(bodyNode, cx, out error);
             if (error != null)
                 return default;
@@ -257,7 +301,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static BinaryOperands StringOp(string fieldName, in QueryNode node, Context cx, out string error) {
-            var field       = new Field(fieldName);
+            var field       = CreateField(fieldName, cx);
             var fcnOperand  = node.GetOperand(0);
             var fcn         = GetOperation(fcnOperand, cx, out error);
             if (error != null)

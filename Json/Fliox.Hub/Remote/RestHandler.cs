@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Transform.Query.Parser;
 
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -199,8 +200,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
             var filter = queryParams["filter"];
             if (filter != null) {
-                var variables = new List<string>{DefaultArg}; 
-                var filterOp = Operation.Parse(filter, out string error, variables);
+                var env = new QueryEnv(DefaultArg); 
+                var filterOp = Operation.Parse(filter, out string error, env);
                 if (error != null) {
                     context.WriteError("filter error", error, 400);
                     return null;
