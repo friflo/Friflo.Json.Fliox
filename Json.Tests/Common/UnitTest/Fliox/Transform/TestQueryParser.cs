@@ -344,14 +344,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("true.Bar('xyz')", out error);
                 AreEqual("variable not found: true at pos 0", error);
+            } {
+                Parse(".children.Contains(foo)", out error);
+                AreEqual("variable not found: foo at pos 19", error);
             }
-        }
-        
-        [Test]
-        public static void TestQueryQuantifyErrors() {
-            string error;
-            Parse(".children.Any(child => child.age)", out error);
-            AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age at pos 23", error);
         }
         
         [Test]
@@ -375,6 +371,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("o => foo.age", out error);
                 AreEqual("variable not found: foo at pos 5", error);
+            } {
+                Parse(".children.Any(child => child.age)", out error);
+                AreEqual("quantify operation .children.Any() expect boolean lambda body. Was: child.age at pos 23", error);
+            } {
+                Parse(".children.Any(foo)", out error);
+                AreEqual("Invalid lambda expression in .children.Any() at pos 0", error);
+            } {
+                Parse(".children.Min(foo)", out error);
+                AreEqual("Invalid lambda expression in .children.Min() at pos 0", error);
+            } {
+                Parse(".children.Any(foo => bar)", out error);
+                AreEqual("variable not found: bar at pos 21", error);
+            } {
+                Parse(".children.Min(foo => bar)", out error);
+                AreEqual("variable not found: bar at pos 21", error);
             }
         }
         

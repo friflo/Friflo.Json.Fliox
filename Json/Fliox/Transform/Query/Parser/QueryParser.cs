@@ -98,6 +98,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         /// Arrow operands are added exclusively by <see cref="QueryTree.HandleArrow"/> 
         private static bool GetArrowBody(QueryNode node, int operandIndex, out QueryNode bodyNode, out string error) {
+            if (operandIndex >= node.OperandCount) {
+                error = $"Invalid lambda expression in {node.Label} {At} {node.Pos}";
+                bodyNode = null;
+                return false;
+            }
             var arrowNode = node.GetOperand(operandIndex);
             if (arrowNode.TokenType != TokenType.Arrow)
                 throw new InvalidOperationException("expect Arrow node as operand");
@@ -224,6 +229,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             cx.variables.Add(argOperand.ValueStr);
             var bodyOp      = GetOperation(bodyNode, cx, out error);
+            if (error != null)
+                return default;
             var arg         = argOperand.ValueStr;
             return new Aggregate(field, arg, bodyOp);
         }
@@ -235,6 +242,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             cx.variables.Add(argOperand.ValueStr);
             var fcn         = GetOperation(bodyNode, cx, out error);
+            if (error != null)
+                return default;
             if (fcn is FilterOperation filter) {
                 error = null;
                 var arg         = argOperand.ValueStr;
@@ -248,6 +257,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var field       = new Field(fieldName);
             var fcnOperand  = node.GetOperand(0);
             var fcn         = GetOperation(fcnOperand, cx, out error);
+            if (error != null)
+                return default;
             if (fcn is StringLiteral || fcn is Field) {
                 error = null;
                 return new BinaryOperands(field, fcn);
