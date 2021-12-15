@@ -70,21 +70,20 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void GetNode(Stack<QueryNode> stack, in Token token, out string error) {
             var shape = Token.Shape(token.type);
             switch (shape.arity) {
-                case Arity.Unary:   AddUnary    (stack, token, out error);  return;
-                case Arity.Binary:  AddBinary   (stack, token, out error);  return;
-                case Arity.NAry:    AddNAry     (stack, token, out error);  return;
+                case Arity.Unary:               AddUnary    (stack, token, out error);  return;
+                case Arity.Binary:              AddBinary   (stack, token, out error);  return;
+                case Arity.NAry:                AddNAry     (stack, token, out error);  return;
+            }
+            switch (token.type){
+                case TokenType.BracketOpen:     BracketOpen (stack, token, out error);  return;
+                case TokenType.BracketClose:    BracketClose(stack, token, out error);  return;
                 default:
-                    switch (token.type){
-                        case TokenType.BracketOpen:     HandleBracketOpen (stack, token, out error);    return;
-                        case TokenType.BracketClose:    HandleBracketClose(stack, token, out error);    return;
-                        default:
-                            error = $"Unexpected query token: {token} {At} {token.pos}";
-                            return;
-                    }
+                    error = $"Unexpected query token: {token} {At} {token.pos}";
+                    return;
             }
         }
 
-        private static void HandleBracketOpen(Stack<QueryNode> stack, in Token token, out string error) {
+        private static void BracketOpen(Stack<QueryNode> stack, in Token token, out string error) {
             stack.TryPeek(out QueryNode last);
 
             // add (grouping) open parenthesis
@@ -94,7 +93,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = null;
         }
         
-        private static void HandleBracketClose(Stack<QueryNode> stack, in Token token, out string error) {
+        private static void BracketClose(Stack<QueryNode> stack, in Token token, out string error) {
             while (true) {
                 if (!stack.TryPeek(out QueryNode head)) {
                     error = $"no matching open parenthesis {At} {token.pos}";
