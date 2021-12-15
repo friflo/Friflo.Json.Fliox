@@ -3,6 +3,7 @@
 
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
+using System.Collections.Generic;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Fliox.Transform.Query.Parser.QueryParser;
@@ -215,18 +216,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
+        private static List<string> TestVars => new List<string> { "a", "b", "c"};
+        
+        
         [Test]
         public static void TestQueryPrecedence() {
             // note: the operation with lowest precedence is always on the beginning of node.ToString()
             {
                 var node    = QueryTree.CreateTree("a * b + c", out _);
                 AreEqual("+ {* {a, b}, c}", node.ToString());
-                var op      = OperationFromNode(node, out _);
+                var op      = OperationFromNode(node, out _, TestVars);
                 AreEqual("a * b + c", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("a + b * c", out _);
                 AreEqual("+ {a, * {b, c}}", node.ToString());
-                var op      = OperationFromNode(node, out _);
+                var op      = OperationFromNode(node, out _, TestVars);
                 AreEqual("a + b * c", op.Linq);
             } {
                 var node    = QueryTree.CreateTree("true && false && 1 < 2", out _);
@@ -327,7 +331,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unknown function: foo() at pos 0", error);
             } {
                 Parse("foo.Contains('bar')", out error);
-                AreEqual("expect . in field name foo at pos 0", error);
+                AreEqual("variable not found: foo at pos 0", error);
             } {
                 Parse(".foo.Contains(1)", out error);
                 AreEqual("expect string or field operand in .foo.Contains(). was: 1 at pos 14", error);
@@ -337,6 +341,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("123.Bar('xyz')", out error);
                 AreEqual("invalid operation Bar() on literal 123 at pos 4", error);
+            } {
+                Parse("true.Bar('xyz')", out error);
+                AreEqual("variable not found: true at pos 0", error);
             }
         }
         
@@ -367,7 +374,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("lambda 'o =>' expect one subsequent operand as body at pos 2", error);
             } {
                 Parse("o => foo.age", out error);
-                AreEqual("variable 'foo' not found at pos 5", error);
+                AreEqual("variable not found: foo at pos 5", error);
             }
         }
         

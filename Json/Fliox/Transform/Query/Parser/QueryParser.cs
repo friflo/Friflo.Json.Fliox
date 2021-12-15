@@ -42,8 +42,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return op;
         }
         
-        public static Operation OperationFromNode (QueryNode node, out string error) {
-            var cx  = new Context (null);
+        public static Operation OperationFromNode (QueryNode node, out string error, List<string> variables = null) {
+            var cx  = new Context (variables);
             var op  = GetOperation (node, cx, out error);
             return op;
         }
@@ -133,16 +133,26 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 var bodyOp  = GetOperation(bodyNode, cx, out error);
                 return new Lambda(symbol, bodyOp);
             }
+            if (!ValidateVariable(symbol, node, cx, out error))
+                return null;
+            return new Field(symbol);
+        }
+        
+        private static bool ValidateVariable(string symbol, QueryNode node, in Context cx, out string error) {
             var firstDot = symbol.IndexOf('.');
+            if (firstDot == 0) {
+                error = null;
+                return true;
+            }
             if (firstDot > 0) {
-                var variable = symbol.Substring(0, firstDot);
-                if (cx.variables.IndexOf(variable) == -1) {
-                    error = $"variable '{variable}' not found {At} {node.Pos}";
-                    return null;
-                }
+                symbol = symbol.Substring(0, firstDot);
+            }
+            if (cx.variables.IndexOf(symbol) == -1) {
+                error = $"variable not found: {symbol} {At} {node.Pos}";
+                return false;
             }
             error = null;
-            return new Field(symbol);
+            return true;
         }
         
         private static Operation GetMathFunction(QueryNode node, in Context cx, out string error) {
@@ -179,10 +189,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             string method   = symbol.Substring(lastDot + 1);
             string field    = symbol.Substring(0, lastDot);
-            if (field.IndexOf('.') == -1) {
-                error = $"expect . in field name {field} {At} {node.Pos}";
+            if (!ValidateVariable(field, node, cx, out error))
                 return null;
-            }
             Aggregate       l;
             Quantify        q;
             BinaryOperands  b;
