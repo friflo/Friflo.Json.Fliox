@@ -80,7 +80,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Not:             return "!";
                 case TokenType.NotEquals:       return "!=";
                 //
-            //  case TokenType.Dot:             return ".";
                 case TokenType.BracketOpen:     return "(";
                 case TokenType.BracketClose:    return ")";
                 //
@@ -135,7 +134,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 new TokenShape(TokenType.BracketOpen,   Undef,  9),
                 new TokenShape(TokenType.BracketClose,  Undef,  1),
                 new TokenShape(TokenType.Not,           Unary,  1), // todo
-            //  new TokenShape(TokenType.Dot,           Unary,  1),
                 //
                 new TokenShape(TokenType.Arrow,         Binary, 10),
                 new TokenShape(TokenType.Error,         Undef, -1),
