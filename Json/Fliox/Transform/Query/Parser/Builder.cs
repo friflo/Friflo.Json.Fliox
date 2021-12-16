@@ -72,18 +72,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TT.NotEquals:      b = Bin(node, cx, Var,     out error);  return new NotEqual             (b.left, b.right);
                 
                 // --- arity tokens
-                case TT.Or:          f = FilterOperands(node, cx, out error);   return new Or (f);
-                case TT.And:         f = FilterOperands(node, cx, out error);   return new And (f);
+                case TT.Or:             f = FilterOps(node, cx, out error);     return new Or (f);
+                case TT.And:            f = FilterOps(node, cx, out error);     return new And (f);
 
                 // --- unary tokens
-                case TT.Not:         return NotOp(node, cx, out error);
-                case TT.String:      Literal(node, out error);                  return new StringLiteral(node.ValueStr);
-                case TT.Double:      Literal(node, out error);                  return new DoubleLiteral(node.ValueDbl);
-                case TT.Long:        Literal(node, out error);                  return new LongLiteral  (node.ValueLng);
+                case TT.Not:            return NotOp(node, cx, out error);
+                case TT.String:         Literal(node, out error);               return new StringLiteral(node.ValueStr);
+                case TT.Double:         Literal(node, out error);               return new DoubleLiteral(node.ValueDbl);
+                case TT.Long:           Literal(node, out error);               return new LongLiteral  (node.ValueLng);
                 
-                case TT.Symbol:      return GetField     (node, cx, out error);
-                case TT.Function:    return GetFunction  (node, cx, out error);
-                case TT.BracketOpen: return GetScope     (node, cx, out error);
+                case TT.Symbol:         return GetField     (node, cx, out error);
+                case TT.Function:       return GetFunction  (node, cx, out error);
+                case TT.BracketOpen:    return GetScope     (node, cx, out error);
                 default:
                     error = $"unexpected operation {node.Label} {At} {node.Pos}";
                     return null;
@@ -333,7 +333,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new BinaryOperands (left, right);
         }
         
-        private static List<FilterOperation> FilterOperands(in QueryNode node, Context cx, out string error) {
+        private static List<FilterOperation> FilterOps(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount < 2) {
                 error = $"expect at minimum two operands for operator {node.Label} {At} {node.Pos}";
                 return null;
