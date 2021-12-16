@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using TT = Friflo.Json.Fliox.Transform.Query.Parser.TokenType;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestBaseTypeForParameter
@@ -49,31 +50,31 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             switch (node.TokenType)
             {
                 // --- binary tokens
-                case TokenType.Add:             b = Bin(node, cx, false, out error);    return new Add                  (b.left, b.right);
-                case TokenType.Sub:             b = Bin(node, cx, false, out error);    return new Subtract             (b.left, b.right);
-                case TokenType.Mul:             b = Bin(node, cx, false, out error);    return new Multiply             (b.left, b.right);
-                case TokenType.Div:             b = Bin(node, cx, false, out error);    return new Divide               (b.left, b.right);
+                case TT.Add:             b = Bin(node, cx, false, out error);    return new Add                  (b.left, b.right);
+                case TT.Sub:             b = Bin(node, cx, false, out error);    return new Subtract             (b.left, b.right);
+                case TT.Mul:             b = Bin(node, cx, false, out error);    return new Multiply             (b.left, b.right);
+                case TT.Div:             b = Bin(node, cx, false, out error);    return new Divide               (b.left, b.right);
                 //
-                case TokenType.Greater:         b = Bin(node, cx, false, out error);    return new GreaterThan          (b.left, b.right);
-                case TokenType.GreaterOrEqual:  b = Bin(node, cx, false, out error);    return new GreaterThanOrEqual   (b.left, b.right);
-                case TokenType.Less:            b = Bin(node, cx, false, out error);    return new LessThan             (b.left, b.right);
-                case TokenType.LessOrEqual:     b = Bin(node, cx, false, out error);    return new LessThanOrEqual      (b.left, b.right);
-                case TokenType.Equals:          b = Bin(node, cx, true,  out error);    return new Equal                (b.left, b.right);
-                case TokenType.NotEquals:       b = Bin(node, cx, true,  out error);    return new NotEqual             (b.left, b.right);
+                case TT.Greater:         b = Bin(node, cx, false, out error);    return new GreaterThan          (b.left, b.right);
+                case TT.GreaterOrEqual:  b = Bin(node, cx, false, out error);    return new GreaterThanOrEqual   (b.left, b.right);
+                case TT.Less:            b = Bin(node, cx, false, out error);    return new LessThan             (b.left, b.right);
+                case TT.LessOrEqual:     b = Bin(node, cx, false, out error);    return new LessThanOrEqual      (b.left, b.right);
+                case TT.Equals:          b = Bin(node, cx, true,  out error);    return new Equal                (b.left, b.right);
+                case TT.NotEquals:       b = Bin(node, cx, true,  out error);    return new NotEqual             (b.left, b.right);
                 
                 // --- arity tokens
-                case TokenType.Or:          f = FilterOperands(node, cx, out error);    return new Or (f);
-                case TokenType.And:         f = FilterOperands(node, cx, out error);    return new And (f);
+                case TT.Or:          f = FilterOperands(node, cx, out error);    return new Or (f);
+                case TT.And:         f = FilterOperands(node, cx, out error);    return new And (f);
 
                 // --- unary tokens
-                case TokenType.Not:         return NotOp(node, cx, out error);
-                case TokenType.String:      Literal(node, out error);                   return new StringLiteral(node.ValueStr);
-                case TokenType.Double:      Literal(node, out error);                   return new DoubleLiteral(node.ValueDbl);
-                case TokenType.Long:        Literal(node, out error);                   return new LongLiteral  (node.ValueLng);
+                case TT.Not:         return NotOp(node, cx, out error);
+                case TT.String:      Literal(node, out error);                   return new StringLiteral(node.ValueStr);
+                case TT.Double:      Literal(node, out error);                   return new DoubleLiteral(node.ValueDbl);
+                case TT.Long:        Literal(node, out error);                   return new LongLiteral  (node.ValueLng);
                 
-                case TokenType.Symbol:      return GetField     (node, cx, out error);
-                case TokenType.Function:    return GetFunction  (node, cx, out error);
-                case TokenType.BracketOpen: return GetScope     (node, cx, out error);
+                case TT.Symbol:      return GetField     (node, cx, out error);
+                case TT.Function:    return GetFunction  (node, cx, out error);
+                case TT.BracketOpen: return GetScope     (node, cx, out error);
                 default:
                     error = $"unexpected operation {node.Label} {At} {node.Pos}";
                     return null;
@@ -97,7 +98,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return false;
             }
             var arrowNode = node.GetOperand(operandIndex);
-            if (arrowNode.TokenType != TokenType.Arrow)
+            if (arrowNode.TokenType != TT.Arrow)
                 throw new InvalidOperationException("expect Arrow node as operand");
             if (arrowNode.OperandCount != 1) {
                 error = $"lambda '{node.Label} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
