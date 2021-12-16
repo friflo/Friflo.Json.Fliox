@@ -159,16 +159,17 @@ namespace Friflo.Json.Fliox.Transform
                     typeDiff = ScalarType.String - other.type;
                     if (typeDiff != 0)
                         return typeDiff;
-                    return String.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
+                    return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
                 case ScalarType.Double:
                     if (other.IsDouble)
                         return (long) (DoubleValue - other.DoubleValue);
-                    if (other.IsLong)
-                        return (long) (DoubleValue - other.LongValue);
+                    if (other.IsLong) {
+                        return CompareDouble(DoubleValue, other.LongValue);
+                    }
                     return ScalarType.Double - other.type;
                 case ScalarType.Long:
                     if (other.IsDouble)
-                        return (long) (LongValue - other.DoubleValue);
+                        return CompareDouble(LongValue, other.DoubleValue);
                     if (other.IsLong)
                         return LongValue - other.LongValue;
                     return ScalarType.Long - other.type;
@@ -182,6 +183,11 @@ namespace Friflo.Json.Fliox.Transform
                 default:
                     throw new NotSupportedException($"Scalar does not support CompareTo() for type: {type}");                
             }
+        }
+        
+        private static int CompareDouble(double left, double right) {
+            double dif = left - right;
+            return dif < 0 ? -1 : (dif > 0 ? +1 : 0);
         }
 
         // --- unary arithmetic operations ---

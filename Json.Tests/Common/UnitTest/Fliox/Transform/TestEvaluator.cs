@@ -85,6 +85,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var result = Filter ("o => o.strVal.EndsWith(o.foo)", Json, eval, out _);
                 IsFalse(result);
+            } {
+                var result = Filter ("o => 1 < 1.1", Json, eval, out _);
+                IsTrue(result);
+            } {
+                var result = Filter ("o => 1.1 > 1", Json, eval, out _);
+                IsTrue(result);
+            } {
+                var result = Filter ("o => 1.1 == 1.1", Json, eval, out _);
+                IsTrue(result);
             }
         }
         
@@ -101,6 +110,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         private static bool Filter(string operation, string json, JsonEvaluator eval, out string error) {
             var op      = (FilterOperation)QueryBuilder.Parse(operation, out error);
+            if (error != null)
+                return false;
             AreEqual(operation, op.Linq);
             var filter  = new JsonFilter(op);
             var value   = new JsonValue(json);
