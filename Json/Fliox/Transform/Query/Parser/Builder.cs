@@ -12,6 +12,13 @@ using static Friflo.Json.Fliox.Transform.Query.Parser.OperandType;
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
+    /// <summary>
+    /// Schematic processing overview
+    /// <code>
+    ///  operation string          token[]           node tree            operation tree
+    /// ------------------> Lexer ---------> Parser -----------> Builder ---------------->
+    /// </code>
+    /// </summary>
     public static class QueryBuilder
     {
         /// <summary>
