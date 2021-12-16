@@ -136,10 +136,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 new TokenShape(TokenType.Not,           Unary,  1), // todo
                 //
                 new TokenShape(TokenType.Arrow,         Binary, 10),
-                new TokenShape(TokenType.Error,         Undef, -1),
-                new TokenShape(TokenType.Whitespace,    Undef, -1),
+                //
                 new TokenShape(TokenType.End,           Undef, -1),
                 new TokenShape(TokenType.Start,         Undef, -1),
+                new TokenShape(TokenType.Whitespace,    Undef, -1),
+                new TokenShape(TokenType.Error,         Undef, -1),
             };
             var count = Enum.GetNames(typeof(TokenType)).Length;
             if (count != tempShapes.Length)

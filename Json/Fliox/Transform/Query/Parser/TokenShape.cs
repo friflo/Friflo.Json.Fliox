@@ -26,10 +26,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     
     public enum TokenType
     {
-        Start,
+        Start,          // initial lastType - not added to token[] result  
+        End,            // End of string    - not added to token[] result 
+        Whitespace,     // whitespace       - not added to token[] result  
+        Error,          // Lexer error      - token[] result is null
         //
         Symbol,         // sym 
         Function,       // sym(
+        /// ( and ) are used for functions or grouping operations
+        BracketOpen,    // ( 
+        /// <see cref="BracketClose"/> must not be used to create a <see cref="QueryNode"/> 
+        BracketClose,   // )
+        //
         Long,           // 1
         Double,         // 1.2
         String,         // 'abc' "abc"
@@ -46,19 +54,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Not,            // !
         NotEquals,      // !=
         //
-        /// ( and ) are used for functions or grouping operations
-        BracketOpen,    // ( 
-        /// <see cref="BracketClose"/> must not be used to create a <see cref="QueryNode"/> 
-        BracketClose,   // ) 
-        //
         Or,             // ||
         And,            // &&
         //
         Equals,         // ==
         Arrow,          // =>
-        //
-        Error,
-        Whitespace,
-        End,
     }
 }
