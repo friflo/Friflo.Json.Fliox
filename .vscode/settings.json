@@ -27,9 +27,11 @@
         "uglifyjs",
         "Ullrich",
         "upsert",
+        "upserted",
         "Upserts",
         "vbar",
-        "WIPO"
+        "WIPO",
+        "xffffffff"
     ],
     "cSpell.enableFiletypes": [
         "http"

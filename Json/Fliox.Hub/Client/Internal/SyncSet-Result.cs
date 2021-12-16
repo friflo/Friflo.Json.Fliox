@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var json = value.Json;  // in case of RemoteClient json is "null"
                 var isNull = json.IsNull();
                 if (isNull) {
-                    // dont remove missing requested peer from EntitySet.peers to preserve info about its absence
+                    // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
                     continue;
                 }
                 var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
