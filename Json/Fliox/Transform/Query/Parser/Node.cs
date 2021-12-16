@@ -67,10 +67,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static void AssertValidTokenType(TokenType type) {
            switch (type) {
                case TokenType.Start:
-               case TokenType.BracketClose:
-               case TokenType.Error:
-               case TokenType.Whitespace:
                case TokenType.End:
+               case TokenType.Whitespace:
+               case TokenType.Error:
+               case TokenType.BracketClose:
                    throw new InvalidOperationException($"Must not create a QueryNode with operation type: {type}");
            }
         }

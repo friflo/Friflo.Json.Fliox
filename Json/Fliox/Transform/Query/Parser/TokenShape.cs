@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Whitespace,     // whitespace       - not added to token[] result  
         Error,          // Lexer error      - token[] result is null
         //
-        Symbol,         // sym 
-        Function,       // sym(
+        Symbol,         // o.name  o.child.name  true  false  null
+        Function,       // o.name.StartsWith(    o.items.Any(  Abs(    
         /// ( and ) are used for functions or grouping operations
         BracketOpen,    // ( 
         /// <see cref="BracketClose"/> must not be used to create a <see cref="QueryNode"/> 
