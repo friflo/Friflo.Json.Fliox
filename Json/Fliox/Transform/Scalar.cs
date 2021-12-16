@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Transform
                     return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
                 case ScalarType.Double:
                     if (other.IsDouble)
-                        return (long) (DoubleValue - other.DoubleValue);
+                        return CompareDouble(DoubleValue, other.DoubleValue);
                     if (other.IsLong) {
                         return CompareDouble(DoubleValue, other.LongValue);
                     }
