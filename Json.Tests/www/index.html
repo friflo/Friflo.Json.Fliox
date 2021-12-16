@@ -332,12 +332,15 @@
     <table width="100%" style="border-spacing: 0px;"">
       <tr>
         <td style="float: right; height: 18px; opacity: 0.5;">
-          <small style="margin-right: 5px;">filter</small>
+          <a id="filterLink" href="#" target="_blank" onclick="app.updateFilterLink()">
+            <small style="margin-right: 5px;" >filter</small>
+          </a>
           <small title="parameter o used for lambda expression body">o =></small>
         </td>
         <td class="vbar2"></td>
         <td colspan="3">
-          <input id="entityFilter" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="LINQ lambda expression body" onkeyup="app.runFilter(event)">
+          <input id="entityFilter" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="LINQ lambda expression body"
+            onkeyup="app.runFilter(event)" onchange="app.updateFilterLink()">
         </td>        
       </tr>
 
