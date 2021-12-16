@@ -183,8 +183,8 @@ namespace Friflo.Json.Fliox.Hub.Host
 
 
         // -------------------------------------- helper methods --------------------------------------
-        private static string GetHResultDetails(int hresult) {
-            var lng = hresult & 0xffffffffL;
+        private static string GetHResultDetails(int result) {
+            var lng = result & 0xffffffffL;
             switch (lng) {
                 case 0x0000007B:   return "invalid file name";
                 case 0x80070002:   return "file not found";
@@ -196,10 +196,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private EntityError CreateEntityError (EntityErrorType type, in JsonKey key, Exception e) {
-            var hresult = e.HResult;
-            var details = GetHResultDetails(hresult);
+            var result = e.HResult;
+            var details = GetHResultDetails(result);
             var sb = new StringBuilder();
-            sb.Append($"HResult: 0x{hresult:X8}");
+            sb.Append($"HResult: 0x{result:X8}");
             if (details != null) {
                 sb.Append(" - ");
                 sb.Append(details);
