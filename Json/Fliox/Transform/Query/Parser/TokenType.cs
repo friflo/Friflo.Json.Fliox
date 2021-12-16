@@ -31,33 +31,33 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Whitespace,     // whitespace       - not added to token[] result  
         Error,          // Lexer error      - token[] result is null
         //
-        Symbol,         // o.name  o.child.name  true  false  null
-        Function,       // o.name.StartsWith(    o.items.Any(  Abs(    
+        Symbol,         //   o.name  o.child.name  true  false  null
+        Function,       //   o.name.StartsWith(    o.items.Any(  Abs(    
         /// ( and ) are used for functions or grouping operations
-        BracketOpen,    // ( 
+        BracketOpen,    //   ( 
         /// <see cref="BracketClose"/> must not be used to create a <see cref="QueryNode"/> 
-        BracketClose,   // )
+        BracketClose,   //   )
         //
-        Long,           // 1
-        Double,         // 1.2
-        String,         // 'abc' "abc"
+        Long,           //   1
+        Double,         //   1.2
+        String,         //   'abc' "abc"
         //
-        Add,            // +
-        Sub,            // -
-        Mul,            // *
-        Div,            // /
+        Add,            //   +
+        Sub,            //   -
+        Mul,            //   *
+        Div,            //   /
         //
-        Greater,        // >
-        GreaterOrEqual, // >=
-        Less,           // <
-        LessOrEqual,    // <=
-        Not,            // !
-        NotEquals,      // !=
+        Greater,        //   >
+        GreaterOrEqual, //   >=
+        Less,           //   <
+        LessOrEqual,    //   <=
+        Not,            //   !
+        NotEquals,      //   !=
         //
-        Or,             // ||
-        And,            // &&
+        Or,             //   ||
+        And,            //   &&
         //
-        Equals,         // ==
-        Arrow,          // =>
+        Equals,         //   ==
+        Arrow,          //   =>
     }
 }
