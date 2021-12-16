@@ -359,9 +359,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("a.children.Contains(foo)", out error, TestEnv);
                 AreEqual("variable not found: foo at pos 20", error);
-            }  {
+            } {
                 Parse("true == foo.Contains('xxx')", out error, new QueryEnv(null)); // no variables set
                 AreEqual("variable not found: foo at pos 8", error);
+            } {
+                Parse("1 + 'sss'", out error, new QueryEnv(null));
+                AreEqual("operator + must use numeric operands at pos 2", error);
             }
         }
         

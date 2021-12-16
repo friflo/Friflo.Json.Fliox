@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+
 using TT = Friflo.Json.Fliox.Transform.Query.Parser.TokenType;
+using static Friflo.Json.Fliox.Transform.Query.Parser.OperandType;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable SuggestBaseTypeForParameter
@@ -50,27 +52,27 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             switch (node.TokenType)
             {
                 // --- binary tokens
-                case TT.Add:             b = Bin(node, cx, false, out error);    return new Add                  (b.left, b.right);
-                case TT.Sub:             b = Bin(node, cx, false, out error);    return new Subtract             (b.left, b.right);
-                case TT.Mul:             b = Bin(node, cx, false, out error);    return new Multiply             (b.left, b.right);
-                case TT.Div:             b = Bin(node, cx, false, out error);    return new Divide               (b.left, b.right);
+                case TT.Add:            b = Bin(node, cx, Num,     out error);  return new Add                  (b.left, b.right);
+                case TT.Sub:            b = Bin(node, cx, Num,     out error);  return new Subtract             (b.left, b.right);
+                case TT.Mul:            b = Bin(node, cx, Num,     out error);  return new Multiply             (b.left, b.right);
+                case TT.Div:            b = Bin(node, cx, Num,     out error);  return new Divide               (b.left, b.right);
                 //
-                case TT.Greater:         b = Bin(node, cx, false, out error);    return new GreaterThan          (b.left, b.right);
-                case TT.GreaterOrEqual:  b = Bin(node, cx, false, out error);    return new GreaterThanOrEqual   (b.left, b.right);
-                case TT.Less:            b = Bin(node, cx, false, out error);    return new LessThan             (b.left, b.right);
-                case TT.LessOrEqual:     b = Bin(node, cx, false, out error);    return new LessThanOrEqual      (b.left, b.right);
-                case TT.Equals:          b = Bin(node, cx, true,  out error);    return new Equal                (b.left, b.right);
-                case TT.NotEquals:       b = Bin(node, cx, true,  out error);    return new NotEqual             (b.left, b.right);
+                case TT.Greater:        b = Bin(node, cx, Num|Str, out error);  return new GreaterThan          (b.left, b.right);
+                case TT.GreaterOrEqual: b = Bin(node, cx, Num|Str, out error);  return new GreaterThanOrEqual   (b.left, b.right);
+                case TT.Less:           b = Bin(node, cx, Num|Str, out error);  return new LessThan             (b.left, b.right);
+                case TT.LessOrEqual:    b = Bin(node, cx, Num|Str, out error);  return new LessThanOrEqual      (b.left, b.right);
+                case TT.Equals:         b = Bin(node, cx, Var,     out error);  return new Equal                (b.left, b.right);
+                case TT.NotEquals:      b = Bin(node, cx, Var,     out error);  return new NotEqual             (b.left, b.right);
                 
                 // --- arity tokens
-                case TT.Or:          f = FilterOperands(node, cx, out error);    return new Or (f);
-                case TT.And:         f = FilterOperands(node, cx, out error);    return new And (f);
+                case TT.Or:          f = FilterOperands(node, cx, out error);   return new Or (f);
+                case TT.And:         f = FilterOperands(node, cx, out error);   return new And (f);
 
                 // --- unary tokens
                 case TT.Not:         return NotOp(node, cx, out error);
-                case TT.String:      Literal(node, out error);                   return new StringLiteral(node.ValueStr);
-                case TT.Double:      Literal(node, out error);                   return new DoubleLiteral(node.ValueDbl);
-                case TT.Long:        Literal(node, out error);                   return new LongLiteral  (node.ValueLng);
+                case TT.String:      Literal(node, out error);                  return new StringLiteral(node.ValueStr);
+                case TT.Double:      Literal(node, out error);                  return new DoubleLiteral(node.ValueDbl);
+                case TT.Long:        Literal(node, out error);                  return new LongLiteral  (node.ValueLng);
                 
                 case TT.Symbol:      return GetField     (node, cx, out error);
                 case TT.Function:    return GetFunction  (node, cx, out error);
@@ -298,7 +300,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = $"invalid operation {first.Label} on literal {node.Label} {At} {first.Pos}";
         }
 
-        private static BinaryOperands Bin(in QueryNode node, Context cx, bool boolOperands, out string error) {
+        private static BinaryOperands Bin(in QueryNode node, Context cx, OperandType type, out string error) {
             if (node.OperandCount != 2) {
                 error = $"operator {node.Label} expect two operands {At} {node.Pos}";
                 return default;
@@ -309,11 +311,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             if (!GetOp(operand_1, cx, out var right, out error))
                 return default;
-            if (boolOperands)
-                return new BinaryOperands (left, right);
-            if (left is FilterOperation || right is FilterOperation) {
-                error = $"operator {node.Label} must not use boolean operands {At} {node.Pos}";
+            if (type == Num) {
+                if ((left.IsNumeric || left is Field) && (right.IsNumeric || right is Field))
+                    return new BinaryOperands (left, right); 
+                error = $"operator {node.Label} must use numeric operands {At} {node.Pos}";
                 return default;
+            }
+            if ((type & Bool) == 0) {
+                if (left is FilterOperation || right is FilterOperation) {
+                    error = $"operator {node.Label} must not use boolean operands {At} {node.Pos}";
+                    return default;
+                }
             }
             return new BinaryOperands (left, right);
         }
