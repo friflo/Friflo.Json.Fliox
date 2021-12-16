@@ -4,8 +4,8 @@
     {
       "task":       "query",
       "container":  "articles",
-      "filter":     ".name == 'Smartphone'"
+      "filter":     "o.name == 'Smartphone'"
     }
   ],
-  "info": "query articles with a filter => .name == 'Smartphone'"
+  "info": "query articles with a filter => o.name == 'Smartphone'"
 }
