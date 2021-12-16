@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TT.Equals:         b = Bin(node, cx, Var,     out error);  return new Equal                (b.left, b.right);
                 case TT.NotEquals:      b = Bin(node, cx, Var,     out error);  return new NotEqual             (b.left, b.right);
                 
-                // --- arity tokens
+                // --- n-ary tokens
                 case TT.Or:             f = FilterOps(node, cx, out error);     return new Or (f);
                 case TT.And:            f = FilterOps(node, cx, out error);     return new And (f);
 
