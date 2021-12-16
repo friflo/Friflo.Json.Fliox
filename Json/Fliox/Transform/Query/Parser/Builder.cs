@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return null;
                 cx.SetArg(node.ValueStr);
                 error = null;
-                cx.locals.Add(node.ValueStr);
+                cx.AddLocal(node.ValueStr);
                 if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                     return null;
                 if (bodyOp is FilterOperation filter) {
@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.locals.Add(argOperand.ValueStr);
+            cx.AddLocal(argOperand.ValueStr);
             if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                 return default;
             var arg         = argOperand.ValueStr;
@@ -260,7 +260,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var argOperand  = node.GetOperand(0);
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
-            cx.locals.Add(argOperand.ValueStr);
+            cx.AddLocal(argOperand.ValueStr);
             if (!GetOp(bodyNode, cx, out var fcn, out error))
                 return default;
             if (fcn is FilterOperation filter) {

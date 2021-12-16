@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     {
         private  readonly   QueryEnv        env;
         private             string          arg;
-        internal readonly   List<string>    locals;
+        private  readonly   List<string>    locals;
         
         internal Context(QueryEnv env) {
             this.env    = env;
@@ -36,6 +36,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             this.arg = arg + ".";
         }
         
+        internal void AddLocal(string local) {
+            locals.Add(local);
+        }
+
         internal bool ExistVariable(string variable) {
             if (locals.IndexOf(variable) != -1)
                 return true;
