@@ -34,14 +34,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testCustomers.writeTaskErrors.Add(upsertTaskException,  () => throw new SimulationException("simulated upsert task exception"));
             testCustomers.writeTaskErrors.Add(deleteTaskException,  () => throw new SimulationException("simulated delete task exception"));
             // Query(c => c.id == "query-task-exception")
-            testCustomers.queryErrors.Add("c => c.id == 'query-task-exception'", () => throw new SimulationException("simulated query exception"));
+            testCustomers.queryErrors.Add("o => o.id == 'query-task-exception'", () => throw new SimulationException("simulated query exception"));
 
             
             var customers = store.customers;
 
             var readCustomers   = customers.Read()                                          .TaskName("readCustomers");
             var customerRead    = readCustomers.Find(readTaskException)                     .TaskName("customerRead");
-            var customerQuery   = customers.Query(c => c.id == "query-task-exception")      .TaskName("customerQuery");
+            var customerQuery   = customers.Query(o => o.id == "query-task-exception")      .TaskName("customerQuery");
 
             var createError     = customers.Create(new Customer{id = createTaskException})  .TaskName("createError");
             var upsertError     = customers.Upsert(new Customer{id = upsertTaskException})  .TaskName("upsertError");

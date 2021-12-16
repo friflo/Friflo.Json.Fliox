@@ -22,30 +22,33 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  string              filter;
                         public  List<References>    references;
                         
+        [Fri.Ignore]    private FilterOperation     filterLambda;
         [Fri.Ignore]    public  OperationContext    filterContext;
                         
         internal override       TaskType            TaskType => TaskType.query;
         public   override       string              TaskName => $"container: '{container}', filter: {filter}";
         
         public FilterOperation GetFilter() {
-            if (filterTree != null)
-                return filterTree;
+            if (filterLambda != null)
+                return filterLambda;
             return Operation.FilterTrue;
         }
         
         private bool ValidateFilter(out TaskErrorResult error) {
             error = null;
-            if (filterTree != null)
+            if (filterTree != null) {
+                filterLambda = new Filter("o", filterTree);
                 return true;
+            }
             if (filter == null)
                 return true;
-            var operation = Operation.Parse(filter, out var parseError);
+            var operation = Operation.Parse("o=>" + filter, out var parseError);
             if (operation == null) {
                 error = InvalidTaskError(parseError);
                 return false;
             }
             if (operation is FilterOperation filterOperation) {
-                filterTree = filterOperation;
+                filterLambda = filterOperation;
                 return true;
             }
             error = InvalidTaskError("filter must be boolean operation");

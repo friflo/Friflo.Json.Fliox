@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client.Internal
@@ -407,11 +408,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     references = new List<References>(subRefs.Count);
                     AddReferences(references, subRefs);
                 }
+                var filterTree = query.filter;
+                if (query.filter is Filter filter) {
+                    filterTree = filter.body;
+                }
                 var req = new QueryEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
                     isIntKey    = IsIntKey(set.IsIntKey()),  
-                    filterTree  = query.filter,
+                    filterTree  = filterTree,
                     filter      = query.filterLinq,
                     references  = references
                 };

@@ -202,8 +202,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return null;
                 }
                 if (filterOp is FilterOperation op) {
-                    Filter filterLambda = new Filter(DefaultArg, op);
-                    return filterLambda;
+                    return op;
                 }
                 context.WriteError("filter error", "filter must be boolean operation", 400);
                 return null;
