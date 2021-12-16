@@ -77,6 +77,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 
                 // --- unary tokens
                 case TT.Not:            return NotOp(node, cx, out error);
+                
+                // --- nullary tokens
                 case TT.String:         Literal(node, out error);               return new StringLiteral(node.ValueStr);
                 case TT.Double:         Literal(node, out error);               return new DoubleLiteral(node.ValueDbl);
                 case TT.Long:           Literal(node, out error);               return new LongLiteral  (node.ValueLng);
