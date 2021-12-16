@@ -10,9 +10,12 @@ namespace Friflo.Json.Fliox.Transform.Query
 {
     internal static class QueryCosmos
     {
-        internal static string ToCosmos(string collection, FilterOperation filter) {
-            var cx      = new ConvertContext(collection, filter);
-            var result  = cx.Traverse(filter);
+        internal static string ToCosmos(string collection, FilterOperation filterOperation) {
+            if (filterOperation is Filter filter) {
+                filterOperation = filter.body;
+            }
+            var cx      = new ConvertContext(collection, filterOperation);
+            var result  = cx.Traverse(filterOperation);
             return result;
         }
     }

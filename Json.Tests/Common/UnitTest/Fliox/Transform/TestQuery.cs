@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // ---
                 var  isPeter         = new Filter("p", new Equal(new Field (".name"), new StringLiteral ("Peter"))).Filter();
                 AreEqual("p => p.name == 'Peter'",  isPeter.Linq);
-                Cosmos  ("WHERE c.name = 'Peter'",  isPeter.Query.Cosmos);
+                Cosmos  ("c.name = 'Peter'",        isPeter.Query.Cosmos);
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
                 AreEqual("p => p.name == 'Peter'", isPeter2.Linq);
                 

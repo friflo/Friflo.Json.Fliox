@@ -40,7 +40,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             
             // ensure API available
-            AreEqual($"WHERE EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
+            AreEqual($"c.customer = 'customer-1'",                                        ordersWithCustomer1.DebugQuery.Cosmos);
+            AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
 
             var orderCustomer           = orders.RefPath(o => o.customer);
             var customer                = readOrders.ReadRefPath(orderCustomer);
