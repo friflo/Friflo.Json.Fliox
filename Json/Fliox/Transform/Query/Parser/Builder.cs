@@ -29,14 +29,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (error != null)
                 return null;
             var cx  = new Context (env);
-            var op  = GetOperation (node, cx, out error);
-            return op;
+            return GetOperation (node, cx, out error);
         }
         
         public static Operation OperationFromNode (QueryNode node, out string error, QueryEnv env = null) {
             var cx  = new Context (env);
-            var op  = GetOperation (node, cx, out error);
-            return op;
+            return GetOperation (node, cx, out error);
+        }
+        
+        private static bool GetOp(QueryNode node, Context cx, out Operation op, out string error) {
+            op = GetOperation(node, cx, out error);
+            return error == null;
         }
         
         private static Operation GetOperation(QueryNode node, Context cx, out string error) {
@@ -83,8 +86,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             }
             var operand_0   = node.GetOperand(0);
-            var operation   = GetOperation(operand_0, cx, out error);
-            return operation;
+            return GetOperation(operand_0, cx, out error);
         }
         
         /// Arrow operands are added exclusively by <see cref="QueryParser.HandleArrow"/> 
@@ -127,7 +129,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 cx.SetArg(node.ValueStr);
                 error = null;
                 cx.locals.Add(node.ValueStr);
-                var bodyOp  = GetOperation(bodyNode, cx, out error);
+                if (!GetOp(bodyNode, cx, out var bodyOp, out error))
+                    return null;
                 if (bodyOp is FilterOperation filter) {
                     return new Filter(symbol, filter);
                 }
@@ -182,8 +185,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             }
             var operand = node.GetOperand(0);
-            var op = GetOperation(operand, cx, out error);
-            if (error != null)
+            if (!GetOp(operand, cx, out var op, out error))
                 return null;
             if (op.IsNumeric || op is Field) {
                 error = null;
@@ -235,8 +237,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             cx.locals.Add(argOperand.ValueStr);
-            var bodyOp      = GetOperation(bodyNode, cx, out error);
-            if (error != null)
+            if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                 return default;
             var arg         = argOperand.ValueStr;
             return new Aggregate(field, arg, bodyOp);
@@ -248,8 +249,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             cx.locals.Add(argOperand.ValueStr);
-            var fcn         = GetOperation(bodyNode, cx, out error);
-            if (error != null)
+            if (!GetOp(bodyNode, cx, out var fcn, out error))
                 return default;
             if (fcn is FilterOperation filter) {
                 error = null;
@@ -263,8 +263,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static BinaryOperands StringOp(string fieldName, in QueryNode node, Context cx, out string error) {
             var field       = CreateField(fieldName, cx);
             var fcnOperand  = node.GetOperand(0);
-            var fcn         = GetOperation(fcnOperand, cx, out error);
-            if (error != null)
+            if (!GetOp(fcnOperand, cx, out var fcn, out error))
                 return default;
             if (fcn is StringLiteral || fcn is Field) {
                 error = null;
@@ -280,7 +279,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             }
             var operand_0  = node.GetOperand(0);
-            var operand    = GetOperation(operand_0, cx, out error);
+            if (!GetOp(operand_0, cx, out var operand, out error))
+                return null;
             if (operand is FilterOperation filterOperand) {
                 return new Not(filterOperand);
             }
@@ -304,11 +304,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             var operand_0 = node.GetOperand(0);
             var operand_1 = node.GetOperand(1);
-            var left    = GetOperation(operand_0, cx, out error);
-            if (error != null)
+            if (!GetOp(operand_0, cx, out var left, out error))
                 return default;
-            var right   = GetOperation(operand_1, cx, out error);
-            if (error != null)
+            if (!GetOp(operand_1, cx, out var right, out error))
                 return default;
             if (boolOperands)
                 return new BinaryOperands (left, right);
@@ -327,8 +325,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var operands = new List<FilterOperation> (node.OperandCount);
             for (int n = 0; n < node.OperandCount; n++) {
                 var operand     = node.GetOperand(n);
-                var operation   = GetOperation(operand, cx, out error);
-                if (error != null)
+                if (!GetOp(operand, cx, out var operation, out error))
                     return null;
                 if (operation is FilterOperation filterOperation) {
                     operands.Add(filterOperation);
