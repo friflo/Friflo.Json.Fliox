@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         public static Operation Parse (string operation, out string error, QueryEnv env = null) {
-            return QueryParser.Parse(operation, out error, env);
+            return QueryBuilder.Parse(operation, out error, env);
         }
         
         private static string GetExpressionArg(Expression exp) {

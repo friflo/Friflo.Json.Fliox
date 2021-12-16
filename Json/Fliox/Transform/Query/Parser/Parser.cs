@@ -23,10 +23,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
     // Sounds irritating on first look but make sense in design of expression trees.
     //
     /// <summary>
-    /// <see cref="QueryTree"/> iterate the <see cref="Token"/>'s returned from <see cref="QueryLexer"/> and build
+    /// <see cref="QueryParser"/> iterate the <see cref="Token"/>'s returned from <see cref="QueryLexer"/> and build
     /// a tree of nodes with the root node returned by <see cref="CreateTree"/>.
     /// </summary>
-    public static class QueryTree
+    public static class QueryParser
     {
         public static QueryNode CreateTree (string operation, out string error) {
             var result  = QueryLexer.Tokenize (operation,   out error);
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             PushNode(stack, newNode);
         }
         
-        /// Arrow tokens (=>) are added as <see cref="QueryNode"/> and accessed by <see cref="QueryParser.GetArrowBody"/> 
+        /// Arrow tokens (=>) are added as <see cref="QueryNode"/> and accessed by <see cref="QueryBuilder.GetArrowBody"/> 
         private static void HandleArrow(Stack<QueryNode> stack, QueryNode head, in Token token, out string error) {
             switch (head.TokenType) {
                 case TokenType.Function:

@@ -9,61 +9,12 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 // ReSharper disable SuggestBaseTypeForParameter
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    internal class Context
-    {
-        private  readonly   QueryEnv        env;
-        private             string          arg;
-        internal readonly   List<string>    locals;
-        
-        internal Context(QueryEnv env) {
-            this.env    = env;
-            arg         = env != null ? env.arg + "." : null;
-            locals      = new List<string>();
-        }
-        
-        internal void SetArg(string arg) {
-            if (this.arg != null)
-                throw new InvalidOperationException("arg already set");
-            this.arg = arg + ".";
-        }
-        
-        internal bool ExistVariable(string variable) {
-            if (locals.IndexOf(variable) != -1)
-                return true;
-            if (env == null)
-                return false;
-            if (env.arg == variable)
-                return true;
-            if (env.variables == null)
-                return false;
-            return env.variables.IndexOf(variable) != -1;
-        }
-        
-        internal string GetFieldName (string name) {
-            if (arg != null && name.StartsWith(arg)) {
-                return name.Substring(arg.Length - 1);
-            }
-            return name;
-        }
-    }
-    
-    public class QueryEnv
-    {
-        public readonly string       arg;
-        public readonly List<string> variables;
-        
-        public QueryEnv (string arg, List<string> variables = null) {
-            this.arg        = arg;
-            this.variables  = variables;
-        }
-    }
-    
-    public static class QueryParser
+    public static class QueryBuilder
     {
         /// <summary>
         /// namespace, class or method name may change. Use <see cref="Operation.Parse"/> instead.
         /// <br/>
-        /// Traverse the tree returned by <see cref="QueryTree.CreateTree"/> and create itself a tree of
+        /// Traverse the tree returned by <see cref="QueryParser.CreateTree"/> and create itself a tree of
         /// <see cref="Operation"/>'s while visiting the given tree.
         /// </summary>
         public static Operation Parse (string operation, out string error, QueryEnv env = null) {
@@ -74,7 +25,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = "operation is empty";
                 return null;
             }
-            var node = QueryTree.CreateTree(result.items,out error);
+            var node = QueryParser.CreateTree(result.items,out error);
             if (error != null)
                 return null;
             var cx  = new Context (env);
@@ -136,7 +87,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return operation;
         }
         
-        /// Arrow operands are added exclusively by <see cref="QueryTree.HandleArrow"/> 
+        /// Arrow operands are added exclusively by <see cref="QueryParser.HandleArrow"/> 
         private static bool GetArrowBody(QueryNode node, int operandIndex, out QueryNode bodyNode, out string error) {
             if (operandIndex >= node.OperandCount) {
                 error = $"Invalid lambda expression in {node.Label} {At} {node.Pos}";
@@ -391,39 +342,5 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private const string At = "at pos";
-    }
-    
-    internal readonly struct BinaryOperands {
-        internal readonly   Operation   left;
-        internal readonly   Operation   right;
-        
-        internal BinaryOperands(Operation left, Operation right) {
-            this.left   = left;
-            this.right  = right;
-        }
-    }
-    
-    internal readonly struct Aggregate {
-        internal readonly   Field       field;
-        internal readonly   string      arg; 
-        internal readonly   Operation   operand;
-        
-        internal Aggregate(Field field, string arg, Operation operand) {
-            this.field      = field;
-            this.arg        = arg;
-            this.operand    = operand;
-        }
-    }
-    
-    internal readonly struct Quantify {
-        internal readonly   Field           field;
-        internal readonly   string          arg; 
-        internal readonly   FilterOperation filter;
-        
-        internal Quantify(Field field, string arg, FilterOperation filter) {
-            this.field      = field;
-            this.arg        = arg;
-            this.filter     = filter;
-        }
     }
 }

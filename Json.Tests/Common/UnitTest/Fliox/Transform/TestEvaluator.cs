@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static object Eval(string operation, string json, JsonEvaluator eval, out string error) {
-            var op      = QueryParser.Parse(operation, out error);
+            var op      = QueryBuilder.Parse(operation, out error);
             AreEqual(operation, op.Linq);
             var lambda  = new JsonLambda(op);
             var value   = new JsonValue(json);
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static bool Filter(string operation, string json, JsonEvaluator eval, out string error) {
-            var op      = (FilterOperation)QueryParser.Parse(operation, out error);
+            var op      = (FilterOperation)QueryBuilder.Parse(operation, out error);
             AreEqual(operation, op.Linq);
             var filter  = new JsonFilter(op);
             var value   = new JsonValue(json);
@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         private static void AssertFilterUndefinedScalar(string operation, JsonEvaluator eval) {
             var json    = @"{ ""items"": [] }";
-            var op      = (FilterOperation)QueryParser.Parse(operation, out _);
+            var op      = (FilterOperation)QueryBuilder.Parse(operation, out _);
             var filter  = new JsonFilter(op);
             var result  = eval.Filter(new JsonValue(json), filter, out _);
             IsFalse(result);
