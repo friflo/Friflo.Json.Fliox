@@ -164,12 +164,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filter = CreateFilter(context, queryParams);
             if (filter == null)
                 return;
-            // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
-            var operationCx = new OperationContext();
-            if (!operationCx.Init(filter, out var message)) {
-                context.WriteError("invalid filter", message, 400);
-                return;
-            }
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter };
             var restResult      = await ExecuteTask(context, database, queryEntities);
             
@@ -198,6 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private const string DefaultArg = "o"; 
         
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
+            // --- handle filter expression
             var filter = queryParams["filter"];
             if (filter != null) {
                 var env = new QueryEnv(DefaultArg); 
@@ -213,17 +208,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("filter error", "filter must be boolean operation", 400);
                 return null;
             }
-            var queryFilter = queryParams["query-filter"];
+            // --- handle filter tree
+            var queryFilter = queryParams["filter-tree"];
             if (queryFilter == null) {
                 return Operation.FilterTrue;
             }
             using (var pooled = pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
                 var filterOp = reader.Read<FilterOperation>(queryFilter);
-                if (!reader.Error.ErrSet)
-                    return filterOp;
-                context.WriteError("filter error", reader.Error.ToString(), 400);
-                return null;
+                if (reader.Error.ErrSet) {
+                    context.WriteError("filter error", reader.Error.ToString(), 400);
+                    return null;
+                }
+                // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
+                var operationCx = new OperationContext();
+                if (!operationCx.Init(filterOp, out var message)) {
+                    context.WriteError("invalid filter", message, 400);
+                    return null;
+                }
+                return filterOp;
             }
         }
         
