@@ -18,15 +18,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
-    [Flags]
-    internal enum OperandType {
-        None    = 0,
-        Num     = 1,
-        Str     = 2,
-        Bool    = 4,
-        Var     = 1 | 2 | 4,
-    } 
-    
     internal class Context
     {
         private  readonly   QueryEnv        env;
@@ -65,6 +56,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
     }
     
+    [Flags]
+    internal enum OperandType {
+        None    = 0,
+        Num     = 1,
+        Str     = 2,
+        Bool    = 4,
+        Var     = 1 | 2 | 4,
+    }
+    
+    // ------------------------------ operand result types ------------------------------
     internal readonly struct BinaryOperands {
         internal readonly   Operation   left;
         internal readonly   Operation   right;
