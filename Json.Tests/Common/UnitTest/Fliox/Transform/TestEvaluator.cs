@@ -37,17 +37,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
             // --- arithmetic operators
             {
-                Eval ("1 * 'abc'", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 1, right: 'abc'", error);
+                Eval ("o => o.intVal * o.strVal", Json, eval, out error);
+                AreEqual("expect two numeric operands. left: 42, right: 'abc'", error);
             } {
-                Eval ("2 + 'abc'", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 2, right: 'abc'", error);
+                Eval ("o => o.intVal + o.strVal", Json, eval, out error);
+                AreEqual("expect two numeric operands. left: 42, right: 'abc'", error);
             } {
-                Eval ("'abc' - 3", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 'abc', right: 3", error);
+                Eval ("o => o.strVal - o.intVal", Json, eval, out error);
+                AreEqual("expect two numeric operands. left: 'abc', right: 42", error);
             } {
-                Eval ("'abc' / 4", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 'abc', right: 4", error);
+                Eval ("o => o.strVal / o.intVal", Json, eval, out error);
+                AreEqual("expect two numeric operands. left: 'abc', right: 42", error);
             }
             // --- string functions
             {
@@ -90,6 +90,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         
         private static object Eval(string operation, string json, JsonEvaluator eval, out string error) {
             var op      = QueryBuilder.Parse(operation, out error);
+            if (error != null)
+                return null;
             AreEqual(operation, op.Linq);
             var lambda  = new JsonLambda(op);
             var value   = new JsonValue(json);
