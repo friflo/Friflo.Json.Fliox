@@ -17,8 +17,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// <summary>
         /// namespace, class or method name may change. Use <see cref="Operation.Parse"/> instead.
         /// <br/>
-        /// Traverse the tree returned by <see cref="QueryParser.CreateTree"/> and create itself a tree of
-        /// <see cref="Operation"/>'s while visiting the given tree.
+        /// Traverse the node tree returned by <see cref="QueryParser.CreateTree"/> and create itself a tree of
+        /// <see cref="Operation"/>'s.
         /// </summary>
         public static Operation Parse (string operation, out string error, QueryEnv env = null) {
             var result  = QueryLexer.Tokenize (operation,   out error);
