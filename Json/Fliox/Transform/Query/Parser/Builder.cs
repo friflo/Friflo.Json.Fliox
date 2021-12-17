@@ -169,13 +169,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
-            if (firstDot == -1) {
-                error = $"expect parameter name. was: {symbol} {At} {node.Pos}";
+            if (firstDot == 0 || symbol.Length == 0) {
+                error = $"missing preceding variable for {node.Label} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            if (firstDot == 0) {
-                error = $"invalid parameter name: {symbol} {At} {node.Pos}";
+            if (firstDot == -1) {
+                if (cx.ExistParameter(symbol))
+                    error = $"missing field name after '{symbol}.' {At} {node.Pos}";
+                else
+                    error = $"parameter not found: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
             }
@@ -231,10 +234,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var lastDot = symbol.LastIndexOf('.');
             if (lastDot == -1) {
                 return GetMathFunction(node, cx, out error);
-            }
-            if (lastDot == 0) {
-                error = $"missing preceding symbol for {node.Label} {At} {node.Pos}";
-                return null;
             }
             string method       = symbol.Substring(lastDot + 1);
             string fieldName    = symbol.Substring(0, lastDot);

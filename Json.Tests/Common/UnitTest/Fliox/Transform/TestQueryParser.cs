@@ -343,7 +343,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unknown function: foo() at pos 0", error);
             } {
                 Parse("foo.Contains('bar')", out error);
-                AreEqual("expect parameter name. was: foo at pos 0", error);
+                AreEqual("parameter not found: foo at pos 0", error);
             } {
                 Parse("o.foo.Contains(1)", out error, TestEnv);
                 AreEqual("expect string or field operand in o.foo.Contains(). was: 1 at pos 15", error);
@@ -358,13 +358,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("invalid operation Bar() on literal 123 at pos 4", error);
             } {
                 Parse("true.Bar('xyz')", out error);
-                AreEqual("expect parameter name. was: true at pos 0", error);
+                AreEqual("parameter not found: true at pos 0", error);
             } {
                 Parse("o.children.Contains(foo)", out error, TestEnv);
                 AreEqual("variable not found: foo at pos 20", error);
             } {
                 Parse("true == foo.Contains('xxx')", out error, new QueryEnv(null)); // no variables set
-                AreEqual("expect parameter name. was: foo at pos 8", error);
+                AreEqual("parameter not found: foo at pos 8", error);
             } {
                 Parse("1 + 'sss'", out error, new QueryEnv(null));
                 AreEqual("operator + must use numeric operands at pos 2", error);
@@ -415,10 +415,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("Invalid lambda expression in o.children.Min() at pos 0", error);
             } {
                 Parse(".Any()", out error, TestEnv);
-                AreEqual("missing preceding symbol for .Any() at pos 0", error);
+                AreEqual("missing preceding variable for .Any() at pos 0", error);
+            }  {
+                Parse("..Any()", out error, TestEnv);
+                AreEqual("missing preceding variable for ..Any() at pos 0", error);
             } {
                 Parse("x.yyy.Any(a => true)", out error, TestEnv);
                 AreEqual("parameter not found: x at pos 0", error);
+            } {
+                Parse("o.Any(a => true)", out error, TestEnv);
+                AreEqual("missing field name after 'o.' at pos 0", error);
             }
         }
         
