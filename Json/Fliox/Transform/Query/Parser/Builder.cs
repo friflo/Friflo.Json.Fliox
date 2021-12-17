@@ -148,32 +148,25 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 }
                 return new Lambda(symbol, bodyOp);
             }
-            if (!ValidateVariable(symbol, node, cx, out error))
-                return null;
-            CreateField(symbol, cx, out Field field, out error);
+            CreateField(symbol, node, cx, out Field field, out error);
             return field;
         }
         
-        private static bool CreateField(string name, Context cx, out Field field, out string error) {
-            name = cx.GetFieldName(name);
-            field = new Field(name);
-            error = null;
-            return true;
-        }
-        
-        private static bool ValidateVariable(string symbol, QueryNode node, Context cx, out string error) {
+        private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot == 0) {
                 error = $"invalid symbol name: {symbol} {At} {node.Pos}";
+                field = null;
                 return false;
             }
-            if (firstDot > 0) {
-                symbol = symbol.Substring(0, firstDot);
-            }
-            if (!cx.ExistVariable(symbol)) {
-                error = $"variable not found: {symbol} {At} {node.Pos}";
+            var variable = firstDot > 0 ?  symbol.Substring(0, firstDot) : symbol;
+            if (!cx.ExistVariable(variable)) {
+                error = $"variable not found: {variable} {At} {node.Pos}";
+                field = null;
                 return false;
             }
+            symbol = cx.GetFieldName(symbol);
+            field = new Field(symbol);
             error = null;
             return true;
         }
@@ -220,9 +213,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = $"missing preceding symbol for {node.Label} {At} {node.Pos}";
                 return null;
             }
-            string method   = symbol.Substring(lastDot + 1);
-            string field    = symbol.Substring(0, lastDot);
-            if (!ValidateVariable(field, node, cx, out error))
+            string method       = symbol.Substring(lastDot + 1);
+            string fieldName    = symbol.Substring(0, lastDot);
+            if (!CreateField(fieldName, node, cx, out var field, out error))
                 return null;
             Aggregate       l;
             Quantify        q;
@@ -249,9 +242,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Aggregate Aggregate(string fieldName, in QueryNode node, Context cx, out string error) {
-            if (!CreateField(fieldName, cx, out var field, out error))
-                return default;
+        private static Aggregate Aggregate(Field field, in QueryNode node, Context cx, out string error) {
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
@@ -263,9 +254,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new Aggregate(field, arg, bodyOp);
         }
         
-        private static Quantify Quantify(string fieldName, in QueryNode node, Context cx, out string error) {
-            if (!CreateField(fieldName, cx, out Field field, out error))
-                return default;
+        private static Quantify Quantify(Field field, in QueryNode node, Context cx, out string error) {
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
@@ -281,9 +270,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static BinaryOperands StringOp(string fieldName, in QueryNode node, Context cx, out string error) {
-            if (!CreateField(fieldName, cx, out Field field, out error))
-                return default;
+        private static BinaryOperands StringOp(Field field, in QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"expect one operand in {node.Label} {At} {node.Pos}";
                 return default;
