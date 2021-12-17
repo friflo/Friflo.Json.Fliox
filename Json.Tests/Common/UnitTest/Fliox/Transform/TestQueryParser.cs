@@ -413,6 +413,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("a.children.Min()", out error, TestEnv);
                 AreEqual("Invalid lambda expression in a.children.Min() at pos 0", error);
+            } {
+                Parse(".Any()", out error, TestEnv);
+                AreEqual("missing preceding symbol for .Any() at pos 0", error);
             }
         }
         

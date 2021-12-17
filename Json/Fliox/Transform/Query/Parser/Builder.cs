@@ -216,6 +216,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (lastDot == -1) {
                 return GetMathFunction(node, cx, out error);
             }
+            if (lastDot == 0) {
+                error = $"missing preceding symbol for {node.Label} {At} {node.Pos}";
+                return null;
+            }
             string method   = symbol.Substring(lastDot + 1);
             string field    = symbol.Substring(0, lastDot);
             if (!ValidateVariable(field, node, cx, out error))
