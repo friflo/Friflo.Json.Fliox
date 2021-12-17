@@ -142,11 +142,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return null;
                 if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                     return null;
-                error = null;
                 if (bodyOp is FilterOperation filter) {
-                    return new Filter(symbol, filter);
+                    return Success(new Filter(symbol, filter), out error);
                 }
-                return new Lambda(symbol, bodyOp);
+                return Success(new Lambda(symbol, bodyOp), out error);
             }
             CreateVariable(symbol, node, cx, out Field field, out error);
             return field;
@@ -163,8 +162,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return false;
             }
             field = new Field(symbol); // todo should return a Variable of type scalar in future
-            error = null;
-            return true;
+            return Success(true, out error);
         }
         
         private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
@@ -193,8 +191,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 symbol = symbol.Substring(param.Length);
             }
             field = new Field(symbol);
-            error = null;
-            return true;
+            return Success(true, out error);
         }
         
         private static Operation GetMathFunction(QueryNode node, Context cx, out string error) {
@@ -216,15 +213,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static Operation Number(in QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"function {node.Label} expect one operand {At} {node.Pos}";
-                return default;
+                return null;
             }
             var operand = node.GetOperand(0);
             if (!GetOp(operand, cx, out var op, out error))
                 return null;
-            if (op.IsNumeric || op is Field) {
-                error = null;
-                return op;
-            }
+            if (op.IsNumeric || op is Field)
+                return Success(op, out error);
             error = $"expect field or numeric operand. was: {operand.Label} {At} {operand.Pos}";
             return null;
         }
@@ -272,9 +267,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return default;
             if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                 return default;
-            error = null;
             var arg         = argOperand.ValueStr;
-            return new Aggregate(field, arg, bodyOp);
+            return Success(new Aggregate(field, arg, bodyOp), out error);
         }
         
         private static Quantify Quantify(Field field, in QueryNode node, Context cx, out string error) {
@@ -286,9 +280,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetOp(bodyNode, cx, out var fcn, out error))
                 return default;
             if (fcn is FilterOperation filter) {
-                error = null;
-                var arg         = argOperand.ValueStr;
-                return new Quantify(field, arg, filter);
+                var arg = argOperand.ValueStr;
+                return Success(new Quantify(field, arg, filter), out error);
             }
             error = $"quantify operation {node.Label} expect boolean lambda body. Was: {fcn} {At} {bodyNode.Pos}";
             return default;
@@ -302,10 +295,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var fcnOperand  = node.GetOperand(0);
             if (!GetOp(fcnOperand, cx, out var fcn, out error))
                 return default;
-            if (fcn is StringLiteral || fcn is Field) {
-                error = null;
-                return new BinaryOperands(field, fcn);
-            }
+            if (fcn is StringLiteral || fcn is Field)
+                return Success(new BinaryOperands(field, fcn), out error);
             error = $"expect string or field operand in {node.Label}. was: {fcnOperand} {At} {fcnOperand.Pos}";
             return default;
         }
@@ -377,10 +368,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return null;
                 }
             }
-            error = null;
-            return operands;
+            return Success(operands, out error);
         }
         
+        private static T Success<T> (T result, out string error) {
+            error = null;
+            return result;
+        }
+
         internal const string At = "at pos";
     }
 }
