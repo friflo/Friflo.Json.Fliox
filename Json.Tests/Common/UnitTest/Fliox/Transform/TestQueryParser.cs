@@ -408,8 +408,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("a.children.Min(foo => bar)", out error, TestEnv);
                 AreEqual("variable not found: bar at pos 22", error);
             } {
-                Parse("a.Any()", out error, TestEnv);
-                AreEqual("Invalid lambda expression in a.Any() at pos 0", error);
+                Parse("a.children.Any()", out error, TestEnv);
+                AreEqual("Invalid lambda expression in a.children.Any() at pos 0", error);
             } {
                 Parse("a.children.Min()", out error, TestEnv);
                 AreEqual("Invalid lambda expression in a.children.Min() at pos 0", error);

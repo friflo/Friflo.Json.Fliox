@@ -150,12 +150,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
             if (!ValidateVariable(symbol, node, cx, out error))
                 return null;
-            return CreateField(symbol, cx);
+            CreateField(symbol, cx, out Field field, out error);
+            return field;
         }
         
-        private static Field CreateField(string name, Context cx) {
+        private static bool CreateField(string name, Context cx, out Field field, out string error) {
             name = cx.GetFieldName(name);
-            return new Field(name);
+            field = new Field(name);
+            error = null;
+            return true;
         }
         
         private static bool ValidateVariable(string symbol, QueryNode node, Context cx, out string error) {
@@ -243,20 +246,22 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static Aggregate Aggregate(string fieldName, in QueryNode node, Context cx, out string error) {
-            error = null;
-            var field       = CreateField(fieldName, cx);
+            if (!CreateField(fieldName, cx, out var field, out error))
+                return default;
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
             cx.AddLocal(argOperand.ValueStr);
             if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                 return default;
+            error = null;
             var arg         = argOperand.ValueStr;
             return new Aggregate(field, arg, bodyOp);
         }
         
         private static Quantify Quantify(string fieldName, in QueryNode node, Context cx, out string error) {
-            var field       = CreateField(fieldName, cx);
+            if (!CreateField(fieldName, cx, out Field field, out error))
+                return default;
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
@@ -273,7 +278,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         private static BinaryOperands StringOp(string fieldName, in QueryNode node, Context cx, out string error) {
-            var field       = CreateField(fieldName, cx);
+            if (!CreateField(fieldName, cx, out Field field, out error))
+                return default;
             if (node.OperandCount != 1) {
                 error = $"expect one operand in {node.Label} {At} {node.Pos}";
                 return default;
