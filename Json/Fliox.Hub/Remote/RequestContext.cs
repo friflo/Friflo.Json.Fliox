@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public void WriteError (string errorType, string message, int statusCode) {
-            var error           = $"{errorType} - {message}";
+            var error           = $"{errorType} > {message}";
             ResponseContentType = "text/plain";
             StatusCode          = statusCode;
             Response            = new JsonValue(error);

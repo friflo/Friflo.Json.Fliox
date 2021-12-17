@@ -375,6 +375,8 @@ class App {
     }
 
     errorAsHtml (error) {
+        const pos = error.indexOf('>') + 1;
+        error = pos == 0 ? error : error.substring(0, pos) + "<br>" + error.substring(pos);
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
