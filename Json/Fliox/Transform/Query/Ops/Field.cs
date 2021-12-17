@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             } else {
                 var dotPos = name.IndexOf('.');
                 if (dotPos == -1) {
-                    cx.Error($"expect dot in field name '{name}'");
+                    cx.Error($"invalid field name '{name}'");
                     return;
                 }
                 var arg     = name.Substring(0, dotPos);
