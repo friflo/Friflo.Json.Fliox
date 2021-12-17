@@ -343,7 +343,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unknown function: foo() at pos 0", error);
             } {
                 Parse("foo.Contains('bar')", out error);
-                AreEqual("expect field name. was: foo at pos 0", error);
+                AreEqual("expect parameter name. was: foo at pos 0", error);
             } {
                 Parse("o.foo.Contains(1)", out error, TestEnv);
                 AreEqual("expect string or field operand in o.foo.Contains(). was: 1 at pos 15", error);
@@ -358,13 +358,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("invalid operation Bar() on literal 123 at pos 4", error);
             } {
                 Parse("true.Bar('xyz')", out error);
-                AreEqual("expect field name. was: true at pos 0", error);
+                AreEqual("expect parameter name. was: true at pos 0", error);
             } {
                 Parse("o.children.Contains(foo)", out error, TestEnv);
                 AreEqual("variable not found: foo at pos 20", error);
             } {
                 Parse("true == foo.Contains('xxx')", out error, new QueryEnv(null)); // no variables set
-                AreEqual("expect field name. was: foo at pos 8", error);
+                AreEqual("expect parameter name. was: foo at pos 8", error);
             } {
                 Parse("1 + 'sss'", out error, new QueryEnv(null));
                 AreEqual("operator + must use numeric operands at pos 2", error);
@@ -391,7 +391,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("lambda 'o =>' expect one subsequent operand as body at pos 2", error);
             } {
                 Parse("o => foo.age", out error);
-                AreEqual("local variable not found: foo at pos 5", error);
+                AreEqual("parameter not found: foo at pos 5", error);
             } {
                 Parse("o.children.Any(child => child.age)", out error, TestEnv);
                 AreEqual("quantify operation o.children.Any() expect boolean lambda body. Was: child.age at pos 24", error);
@@ -418,7 +418,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("missing preceding symbol for .Any() at pos 0", error);
             } {
                 Parse("x.yyy.Any(a => true)", out error, TestEnv);
-                AreEqual("local variable not found: x at pos 0", error);
+                AreEqual("parameter not found: x at pos 0", error);
             }
         }
         

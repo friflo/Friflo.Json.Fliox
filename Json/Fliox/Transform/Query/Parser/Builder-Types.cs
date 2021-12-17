@@ -9,32 +9,32 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
     public class QueryEnv
     {
-        public readonly string       arg;
+        public readonly string       lambdaParam;
         public readonly List<string> variables;
         
-        public QueryEnv (string arg, List<string> variables = null) {
-            this.arg        = arg;
-            this.variables  = variables;
+        public QueryEnv (string lambdaParam, List<string> variables = null) {
+            this.lambdaParam    = lambdaParam;
+            this.variables      = variables;
         }
     }
     
     internal class Context
     {
         private  readonly   QueryEnv        env;
-        private             string          arg;
-        private  readonly   List<string>    locals;
+        private  readonly   string          lambdaParam;
+        private  readonly   List<string>    parameters;
         
         internal Context(QueryEnv env) {
             this.env    = env;
-            locals      = new List<string>();
-            arg = env?.arg;
-            if (arg != null) {
-                locals.Add(arg);
+            parameters      = new List<string>();
+            lambdaParam = env?.lambdaParam;
+            if (lambdaParam != null) {
+                parameters.Add(lambdaParam);
             }
         }
         
-        internal void AddLocal(string local) {
-            locals.Add(local);
+        internal void AddParameter(string param) {
+            parameters.Add(param);
         }
         
         internal bool ExistVariable(string variable) {
@@ -43,11 +43,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return env.variables.IndexOf(variable) != -1;
         }
 
-        internal bool ExistLocal(string variable) {
-            return locals.IndexOf(variable) != -1;
+        internal bool ExistParameter(string param) {
+            return parameters.IndexOf(param) != -1;
         }
         
-        internal bool IsArg (string symbol) => arg == symbol;
+        internal bool IsLambdaParam (string symbol) => lambdaParam == symbol;
     }
     
     [Flags]

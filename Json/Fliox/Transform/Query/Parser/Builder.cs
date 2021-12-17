@@ -138,9 +138,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (node.OperandCount == 1) {
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
-                cx.AddLocal(node.ValueStr);
+                cx.AddParameter(node.ValueStr);
                 error = null;
-                cx.AddLocal(node.ValueStr);
+                cx.AddParameter(node.ValueStr);
                 if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                     return null;
                 if (bodyOp is FilterOperation filter) {
@@ -170,24 +170,24 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot == -1) {
-                error = $"expect field name. was: {symbol} {At} {node.Pos}";
+                error = $"expect parameter name. was: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
             }
             if (firstDot == 0) {
-                error = $"invalid field name: {symbol} {At} {node.Pos}";
+                error = $"invalid parameter name: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            var local = symbol.Substring(0, firstDot);
-            if (!cx.ExistLocal(local)) {
-                error = $"local variable not found: {local} {At} {node.Pos}";
+            var param = symbol.Substring(0, firstDot);
+            if (!cx.ExistParameter(param)) {
+                error = $"parameter not found: {param} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            if (cx.IsArg(local)) {
+            if (cx.IsLambdaParam(param)) {
                 // field names referencing lambda argument start with . e.g. ".name"
-                symbol = symbol.Substring(local.Length);
+                symbol = symbol.Substring(param.Length);
             }
             field = new Field(symbol);
             error = null;
@@ -269,7 +269,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
-            cx.AddLocal(argOperand.ValueStr);
+            cx.AddParameter(argOperand.ValueStr);
             if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                 return default;
             error = null;
@@ -281,7 +281,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
-            cx.AddLocal(argOperand.ValueStr);
+            cx.AddParameter(argOperand.ValueStr);
             if (!GetOp(bodyNode, cx, out var fcn, out error))
                 return default;
             if (fcn is FilterOperation filter) {

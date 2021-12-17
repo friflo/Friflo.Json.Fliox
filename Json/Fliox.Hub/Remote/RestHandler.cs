@@ -189,14 +189,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// enforce "o" as lambda argument
-        private const string DefaultArg = "o"; 
+        private const string DefaultParam = "o"; 
         
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
             // --- handle filter expression
             var filter = queryParams["filter"];
             if (filter != null) {
-                var env = new QueryEnv(DefaultArg); 
-                var filterOp = Operation.Parse(filter, out string error, env);
+                var env         = new QueryEnv(DefaultParam); 
+                var filterOp    = Operation.Parse(filter, out string error, env);
                 if (error != null) {
                     context.WriteError("filter error", error, 400);
                     return null;
