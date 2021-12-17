@@ -26,38 +26,28 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         internal Context(QueryEnv env) {
             this.env    = env;
-            arg         = env != null ? env.arg + "." : null;
             locals      = new List<string>();
-        }
-        
-        internal void SetArg(string arg) {
-            if (this.arg != null)
-                throw new InvalidOperationException("arg already set");
-            this.arg = arg + ".";
+            arg = env?.arg;
+            if (arg != null) {
+                locals.Add(arg);
+            }
         }
         
         internal void AddLocal(string local) {
             locals.Add(local);
         }
-
+        
         internal bool ExistVariable(string variable) {
-            if (locals.IndexOf(variable) != -1)
-                return true;
-            if (env == null)
-                return false;
-            if (env.arg == variable)
-                return true;
-            if (env.variables == null)
+            if (env?.variables == null)
                 return false;
             return env.variables.IndexOf(variable) != -1;
         }
-        
-        internal string GetFieldName (string name) {
-            if (arg != null && name.StartsWith(arg)) {
-                return name.Substring(arg.Length - 1);
-            }
-            return name;
+
+        internal bool ExistLocal(string variable) {
+            return locals.IndexOf(variable) != -1;
         }
+        
+        internal bool IsArg (string symbol) => arg == symbol;
     }
     
     [Flags]

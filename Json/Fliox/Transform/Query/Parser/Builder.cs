@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (node.OperandCount == 1) {
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
-                cx.SetArg(node.ValueStr);
+                cx.AddLocal(node.ValueStr);
                 error = null;
                 cx.AddLocal(node.ValueStr);
                 if (!GetOp(bodyNode, cx, out var bodyOp, out error))
@@ -148,24 +148,47 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 }
                 return new Lambda(symbol, bodyOp);
             }
-            CreateField(symbol, node, cx, out Field field, out error);
+            CreateVariable(symbol, node, cx, out Field field, out error);
             return field;
+        }
+        
+        private static bool CreateVariable(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
+            var firstDot = symbol.IndexOf('.');
+            if (firstDot == -1) {
+                if (!cx.ExistVariable(symbol)) {
+                    error = $"variable not found: {symbol} {At} {node.Pos}";
+                    field = null;
+                    return false;
+                }
+                field = new Field(symbol); // should return a Variable of type scalar in future
+                error = null;
+                return true;
+            }
+            return CreateField(symbol, node, cx, out field, out error);
         }
         
         private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
+            if (firstDot == -1) {
+                error = $"expect field name. was: {symbol} {At} {node.Pos}";
+                field = null;
+                return false;
+            }
             if (firstDot == 0) {
-                error = $"invalid symbol name: {symbol} {At} {node.Pos}";
+                error = $"invalid field name: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            var variable = firstDot > 0 ?  symbol.Substring(0, firstDot) : symbol;
-            if (!cx.ExistVariable(variable)) {
-                error = $"variable not found: {variable} {At} {node.Pos}";
+            var variable = symbol.Substring(0, firstDot);
+            if (!cx.ExistLocal(variable)) {
+                error = $"local variable not found: {variable} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            symbol = cx.GetFieldName(symbol);
+            if (cx.IsArg(variable)) {
+                // field names referencing lambda argument start with . e.g. ".name"
+                symbol = symbol.Substring(variable.Length);
+            }
             field = new Field(symbol);
             error = null;
             return true;
