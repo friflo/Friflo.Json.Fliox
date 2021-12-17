@@ -425,6 +425,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("o.Any(a => true)", out error, TestEnv);
                 AreEqual("missing field name after 'o.' at pos 0", error);
+            } {
+                Parse("o.children.Any(o => true)", out error, TestEnv);
+                AreEqual("parameter already used: o at pos 15", error);
+            } {
+                Parse("o.children.Min(o => true)", out error, TestEnv);
+                AreEqual("parameter already used: o at pos 15", error);
+            } {
+                Parse("o => true", out error, TestEnv);
+                AreEqual("parameter already used: o at pos 0", error);
             }
         }
         

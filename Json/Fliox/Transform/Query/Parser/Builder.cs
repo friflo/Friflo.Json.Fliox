@@ -138,11 +138,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (node.OperandCount == 1) {
                 if (!GetArrowBody(node, 0, out QueryNode bodyNode, out error))
                     return null;
-                cx.AddParameter(node.ValueStr);
-                error = null;
-                cx.AddParameter(node.ValueStr);
+                if (!cx.AddParameter(node, out error))
+                    return null;
                 if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                     return null;
+                error = null;
                 if (bodyOp is FilterOperation filter) {
                     return new Filter(symbol, filter);
                 }
@@ -268,7 +268,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
-            cx.AddParameter(argOperand.ValueStr);
+            if (!cx.AddParameter(argOperand, out error))
+                return default;
             if (!GetOp(bodyNode, cx, out var bodyOp, out error))
                 return default;
             error = null;
@@ -280,7 +281,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
-            cx.AddParameter(argOperand.ValueStr);
+            if (!cx.AddParameter(argOperand, out error))
+                return default;
             if (!GetOp(bodyNode, cx, out var fcn, out error))
                 return default;
             if (fcn is FilterOperation filter) {
@@ -379,6 +381,6 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return operands;
         }
         
-        private const string At = "at pos";
+        internal const string At = "at pos";
     }
 }
