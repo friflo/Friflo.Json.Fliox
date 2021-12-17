@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     field = null;
                     return false;
                 }
-                field = new Field(symbol); // should return a Variable of type scalar in future
+                field = new Field(symbol); // todo should return a Variable of type scalar in future
                 error = null;
                 return true;
             }
