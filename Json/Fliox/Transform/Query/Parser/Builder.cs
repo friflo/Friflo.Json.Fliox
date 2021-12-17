@@ -154,17 +154,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static bool CreateVariable(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
-            if (firstDot == -1) {
-                if (!cx.ExistVariable(symbol)) {
-                    error = $"variable not found: {symbol} {At} {node.Pos}";
-                    field = null;
-                    return false;
-                }
-                field = new Field(symbol); // todo should return a Variable of type scalar in future
-                error = null;
-                return true;
+            if (firstDot != -1) {
+                return CreateField(symbol, node, cx, out field, out error);
             }
-            return CreateField(symbol, node, cx, out field, out error);
+            if (!cx.ExistVariable(symbol)) {
+                error = $"variable not found: {symbol} {At} {node.Pos}";
+                field = null;
+                return false;
+            }
+            field = new Field(symbol); // todo should return a Variable of type scalar in future
+            error = null;
+            return true;
         }
         
         private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
@@ -179,15 +179,15 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 field = null;
                 return false;
             }
-            var variable = symbol.Substring(0, firstDot);
-            if (!cx.ExistLocal(variable)) {
-                error = $"local variable not found: {variable} {At} {node.Pos}";
+            var local = symbol.Substring(0, firstDot);
+            if (!cx.ExistLocal(local)) {
+                error = $"local variable not found: {local} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            if (cx.IsArg(variable)) {
+            if (cx.IsArg(local)) {
                 // field names referencing lambda argument start with . e.g. ".name"
-                symbol = symbol.Substring(variable.Length);
+                symbol = symbol.Substring(local.Length);
             }
             field = new Field(symbol);
             error = null;
