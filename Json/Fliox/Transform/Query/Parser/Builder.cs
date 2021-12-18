@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return field;
         }
         
-        private static bool CreateVariable(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
+        private static bool CreateVariable(string symbol, QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot != -1) {
                 return CreateField(symbol, node, cx, out field, out error);
@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return Success(true, out error);
         }
         
-        private static bool CreateField(string symbol, in QueryNode node, Context cx, out Field field, out string error) {
+        private static bool CreateField(string symbol, QueryNode node, Context cx, out Field field, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot == 0 || symbol.Length == 0) {
                 error = $"missing preceding variable for {node.Label} {At} {node.Pos}";
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Operation Number(in QueryNode node, Context cx, out string error) {
+        private static Operation Number(QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"function {node.Label} expect one operand {At} {node.Pos}";
                 return null;
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             }
         }
         
-        private static Aggregate Aggregate(Field field, in QueryNode node, Context cx, out string error) {
+        private static Aggregate Aggregate(Field field, QueryNode node, Context cx, out string error) {
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return Success(new Aggregate(field, arg, bodyOp), out error);
         }
         
-        private static Quantify Quantify(Field field, in QueryNode node, Context cx, out string error) {
+        private static Quantify Quantify(Field field, QueryNode node, Context cx, out string error) {
             if (!GetArrowBody(node, 1, out QueryNode bodyNode, out error))
                 return default;
             var argOperand  = node.GetOperand(0);
@@ -287,7 +287,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static BinaryOperands StringOp(Field field, in QueryNode node, Context cx, out string error) {
+        private static BinaryOperands StringOp(Field field, QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"expect one operand in {node.Label} {At} {node.Pos}";
                 return default;
@@ -301,7 +301,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static Not NotOp(in QueryNode node, Context cx, out string error) {
+        private static Not NotOp(QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
                 error = $"not operator expect one operand {At} {node.Pos}";
                 return default;
@@ -316,7 +316,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static void Literal(in QueryNode node, out string error) {
+        private static void Literal(QueryNode node, out string error) {
             if (node.OperandCount == 0) {
                 error = null;
                 return;
@@ -325,7 +325,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             error = $"invalid operation {first.Label} on literal {node.Label} {At} {first.Pos}";
         }
 
-        private static BinaryOperands Bin(in QueryNode node, Context cx, OperandType type, out string error) {
+        private static BinaryOperands Bin(QueryNode node, Context cx, OperandType type, out string error) {
             if (node.OperandCount != 2) {
                 error = $"operator {node.Label} expect two operands {At} {node.Pos}";
                 return default;
@@ -351,7 +351,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return new BinaryOperands (left, right);
         }
         
-        private static List<FilterOperation> FilterOps(in QueryNode node, Context cx, out string error) {
+        private static List<FilterOperation> FilterOps(QueryNode node, Context cx, out string error) {
             if (node.OperandCount < 2) {
                 error = $"expect at minimum two operands for operator {node.Label} {At} {node.Pos}";
                 return null;
