@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TT.Double:         Nullary(node, out error);               return new DoubleLiteral(node.ValueDbl);
                 case TT.Long:           Nullary(node, out error);               return new LongLiteral  (node.ValueLng);
                 
-                case TT.Symbol:         return GetField     (node, cx, out error);
+                case TT.Symbol:         return GetSymbolOp     (node, cx, out error);
                 case TT.Function:       return GetFunction  (node, cx, out error);
                 case TT.BracketOpen:    return GetScope     (node, cx, out error);
                 default:
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return true;
         }
         
-        private static Operation GetField(QueryNode node, Context cx, out string error) {
+        private static Operation GetSymbolOp(QueryNode node, Context cx, out string error) {
             var symbol = node.ValueStr;
             switch (symbol) {
                 case "true":    Nullary(node, out error);   return new TrueLiteral();
@@ -149,28 +149,25 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 }
                 return Success(new Lambda(symbol, bodyOp), out error);
             }
-            CreateVariable(symbol, node, cx, out Field field, out error);
-            return field;
+            return CreateVariable(symbol, node, cx, out error);
         }
         
-        private static bool CreateVariable(string symbol, QueryNode node, Context cx, out Field field, out string error) {
+        private static Operation CreateVariable(string symbol, QueryNode node, Context cx, out string error) {
             var firstDot = symbol.IndexOf('.');
             if (firstDot != -1) {
-                return CreateField(symbol, node, cx, out field, out error);
+                CreateField(symbol, node, cx, out Field field, out error);
+                return field;
             }
             var findResult = cx.FindVariable(symbol); 
-            switch (findResult) {
+            switch (findResult.type) {
                 case VariableType.NotFound:
                     error = $"variable not found: {symbol} {At} {node.Pos}";
-                    field = null;
-                    return false;
+                    return null;
                 case VariableType.Parameter:
                     error = $"cannot use lambda parameter {symbol} as operand (only its fields) {At} {node.Pos}";
-                    field = null;
-                    return false;
+                    return null;
             }
-            field = new Field(symbol); // todo should return a Variable of type scalar in future
-            return Success(true, out error);
+            return Success(findResult.value, out error);
         }
         
         private static bool CreateField(string symbol, QueryNode node, Context cx, out Field field, out string error) {
@@ -181,15 +178,17 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return false;
             }
             if (firstDot == -1) {
-                if (cx.FindVariable(symbol) == VariableType.Parameter)
+                var findSymbol = cx.FindVariable(symbol); 
+                if (findSymbol.type == VariableType.Parameter)
                     error = $"missing field name after '{symbol}.' {At} {node.Pos}";
                 else
                     error = $"variable not found: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
             }
-            var param = symbol.Substring(0, firstDot);
-            if (cx.FindVariable(param) != VariableType.Parameter) {
+            var param           = symbol.Substring(0, firstDot);
+            var findVariable    = cx.FindVariable(param); 
+            if (findVariable.type != VariableType.Parameter) {
                 error = $"variable not found: {param} {At} {node.Pos}";
                 field = null;
                 return false;

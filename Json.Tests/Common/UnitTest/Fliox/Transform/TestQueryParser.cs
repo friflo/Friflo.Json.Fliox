@@ -216,7 +216,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
         
-        private static QueryEnv TestEnv => new QueryEnv("o", new List<string>{"a", "b", "c"});
+        private static QueryEnv TestEnv => new QueryEnv("o", new Dictionary<string, string>{{"a", "1"}, {"b", "2"}, {"c", "3"}});
         
         
         [Test]
