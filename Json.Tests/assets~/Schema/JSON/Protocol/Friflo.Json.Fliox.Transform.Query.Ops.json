@@ -103,6 +103,39 @@
             ],
             "additionalProperties": false
         },
+        "PiLiteral": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/Literal" },
+            "properties": {
+                "op": { "enum": ["PI"] }
+            },
+            "required": [
+                "op"
+            ],
+            "additionalProperties": false
+        },
+        "EulerLiteral": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/Literal" },
+            "properties": {
+                "op": { "enum": ["E"] }
+            },
+            "required": [
+                "op"
+            ],
+            "additionalProperties": false
+        },
+        "TauLiteral": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/Literal" },
+            "properties": {
+                "op": { "enum": ["Tau"] }
+            },
+            "required": [
+                "op"
+            ],
+            "additionalProperties": false
+        },
         "Abs": {
             "type": "object",
             "extends": { "$ref": "#/definitions/UnaryArithmeticOp" },

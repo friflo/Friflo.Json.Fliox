@@ -52,6 +52,21 @@ class NullLiteral (
 ) : Literal()
 
 @Serializable
+@SerialName("PI")
+class PiLiteral (
+) : Literal()
+
+@Serializable
+@SerialName("E")
+class EulerLiteral (
+) : Literal()
+
+@Serializable
+@SerialName("Tau")
+class TauLiteral (
+) : Literal()
+
+@Serializable
 @SerialName("abs")
 data class Abs (
     override  val value : Operation,

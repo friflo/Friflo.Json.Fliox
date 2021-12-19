@@ -139,6 +139,9 @@
                 "double":             { "ref":  "DoubleLiteral" },
                 "int64":              { "ref":  "LongLiteral" },
                 "null":               { "ref":  "NullLiteral" },
+                "PI":                 { "ref":  "PiLiteral" },
+                "E":                  { "ref":  "EulerLiteral" },
+                "Tau":                { "ref":  "TauLiteral" },
                 "abs":                { "ref":  "Abs" },
                 "ceiling":            { "ref":  "Ceiling" },
                 "floor":              { "ref":  "Floor" },
@@ -217,6 +220,21 @@
             }
         },
         "NullLiteral": {
+            "properties": {
+
+            }
+        },
+        "PiLiteral": {
+            "properties": {
+
+            }
+        },
+        "EulerLiteral": {
+            "properties": {
+
+            }
+        },
+        "TauLiteral": {
             "properties": {
 
             }

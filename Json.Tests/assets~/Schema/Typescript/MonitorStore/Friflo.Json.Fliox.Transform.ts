@@ -4,6 +4,9 @@ import { StringLiteral }      from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { DoubleLiteral }      from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { LongLiteral }        from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { NullLiteral }        from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { PiLiteral }          from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { EulerLiteral }       from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { TauLiteral }         from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Abs }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Ceiling }            from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Floor }              from "./Friflo.Json.Fliox.Transform.Query.Ops"
@@ -46,6 +49,9 @@ export type Operation_Union =
     | DoubleLiteral
     | LongLiteral
     | NullLiteral
+    | PiLiteral
+    | EulerLiteral
+    | TauLiteral
     | Abs
     | Ceiling
     | Floor
@@ -90,6 +96,9 @@ export abstract class Operation {
         | "double"
         | "int64"
         | "null"
+        | "PI"
+        | "E"
+        | "Tau"
         | "abs"
         | "ceiling"
         | "floor"

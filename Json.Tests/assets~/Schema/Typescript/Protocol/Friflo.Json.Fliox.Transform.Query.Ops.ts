@@ -42,6 +42,18 @@ export class NullLiteral extends Literal {
     op  : "null";
 }
 
+export class PiLiteral extends Literal {
+    op  : "PI";
+}
+
+export class EulerLiteral extends Literal {
+    op  : "E";
+}
+
+export class TauLiteral extends Literal {
+    op  : "Tau";
+}
+
 export abstract class UnaryArithmeticOp extends Operation {
     value  : Operation_Union;
 }

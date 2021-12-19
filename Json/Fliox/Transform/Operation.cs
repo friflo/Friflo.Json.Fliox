@@ -19,7 +19,11 @@ namespace Friflo.Json.Fliox.Transform
     [Fri.Polymorph(typeof(StringLiteral),       Discriminant = "string")]
     [Fri.Polymorph(typeof(DoubleLiteral),       Discriminant = "double")]
     [Fri.Polymorph(typeof(LongLiteral),         Discriminant = "int64")]
+    //
     [Fri.Polymorph(typeof(NullLiteral),         Discriminant = "null")]
+    [Fri.Polymorph(typeof(PiLiteral),           Discriminant = "PI")]
+    [Fri.Polymorph(typeof(EulerLiteral),        Discriminant = "E")]
+    [Fri.Polymorph(typeof(TauLiteral),          Discriminant = "Tau")]
     //  
     [Fri.Polymorph(typeof(Abs),                 Discriminant = "abs")]
     [Fri.Polymorph(typeof(Ceiling),             Discriminant = "ceiling")]
