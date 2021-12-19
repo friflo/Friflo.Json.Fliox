@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "StartsWith":  b = StringOp(field, node, cx, out error); return new StartsWith(b.left, b.right);
                 case "EndsWith":    b = StringOp(field, node, cx, out error); return new EndsWith  (b.left, b.right);
                 default:
-                    error = $"unknown method: {method}() used by: {symbol} {At} {node.Pos}";
+                    error = $"unknown method: {method}() used by {fieldName} {node.Pos}";
                     return null;
             }
         }
