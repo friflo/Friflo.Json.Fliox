@@ -313,7 +313,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("parentheses (...) expect one operand at pos 0", error);
             } {
                 Parse("Abs()", out error);
-                AreEqual("function Abs() expect one operand at pos 0", error);
+                AreEqual("expect field or numeric operand in Abs() at pos 0", error);
             } {
                 Parse("=>", out error);
                 AreEqual("operator => expect one preceding operand at pos 0", error);
@@ -328,16 +328,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("not operator ! must use a boolean operand. Was: Abs() at pos 1", error);
             } {
                 Parse("Abs('abc')", out error);
-                AreEqual("expect field or numeric operand. was: 'abc' at pos 4", error);
+                AreEqual("Abs() expect field or numeric operand. was: 'abc' at pos 4", error);
             } {
                 Parse("Abs(true)", out error);
-                AreEqual("expect field or numeric operand. was: true at pos 4", error);
+                AreEqual("Abs() expect field or numeric operand. was: true at pos 4", error);
             } {
                 Parse("Abs(1 == 1)", out error);
-                AreEqual("expect field or numeric operand. was: == at pos 6", error);
+                AreEqual("Abs() expect field or numeric operand. was: == at pos 6", error);
             } {
                 Parse("Abs(Abs(1 == 1))", out error);
-                AreEqual("expect field or numeric operand. was: == at pos 10", error);
+                AreEqual("Abs() expect field or numeric operand. was: == at pos 10", error);
             } {
                 Parse("foo('bar') >= 1", out error);
                 AreEqual("unknown function: foo() at pos 0", error);

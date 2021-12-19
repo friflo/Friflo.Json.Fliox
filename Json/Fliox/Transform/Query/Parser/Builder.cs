@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         
         private static Operation Number(QueryNode node, Context cx, out string error) {
             if (node.OperandCount != 1) {
-                error = $"function {node.Label} expect one operand {At} {node.Pos}";
+                error = $"expect field or numeric operand in {node.Label} {At} {node.Pos}";
                 return null;
             }
             var operand = node.GetOperand(0);
@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return null;
             if (op.IsNumeric || op is Field)
                 return Success(op, out error);
-            error = $"expect field or numeric operand. was: {operand.Label} {At} {operand.Pos}";
+            error = $"{node.Label} expect field or numeric operand. was: {operand.Label} {At} {operand.Pos}";
             return null;
         }
         
