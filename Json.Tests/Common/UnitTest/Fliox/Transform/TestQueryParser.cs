@@ -374,6 +374,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Parse("true o", out error);
                 AreEqual("unexpected operand o on true at pos 5", error);
+            } {
+                Parse("o == 1", out error, TestEnv);
+                AreEqual("cannot use lambda parameter o as operand (only its fields) at pos 0", error);
             }
         }
         

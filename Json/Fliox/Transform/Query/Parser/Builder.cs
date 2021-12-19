@@ -158,10 +158,16 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (firstDot != -1) {
                 return CreateField(symbol, node, cx, out field, out error);
             }
-            if (cx.FindVariable(symbol) != VariableType.Variable) {
-                error = $"variable not found: {symbol} {At} {node.Pos}";
-                field = null;
-                return false;
+            var findResult = cx.FindVariable(symbol); 
+            switch (findResult) {
+                case VariableType.NotFound:
+                    error = $"variable not found: {symbol} {At} {node.Pos}";
+                    field = null;
+                    return false;
+                case VariableType.Parameter:
+                    error = $"cannot use lambda parameter {symbol} as operand (only its fields) {At} {node.Pos}";
+                    field = null;
+                    return false;
             }
             field = new Field(symbol); // todo should return a Variable of type scalar in future
             return Success(true, out error);
