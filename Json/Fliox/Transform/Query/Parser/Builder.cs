@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (firstDot != -1) {
                 return CreateField(symbol, node, cx, out field, out error);
             }
-            if (!cx.ExistVariable(symbol)) {
+            if (cx.FindVariable(symbol) != VariableType.Variable) {
                 error = $"variable not found: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return false;
             }
             if (firstDot == -1) {
-                if (cx.ExistParameter(symbol))
+                if (cx.FindVariable(symbol) == VariableType.Parameter)
                     error = $"missing field name after '{symbol}.' {At} {node.Pos}";
                 else
                     error = $"parameter not found: {symbol} {At} {node.Pos}";
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 return false;
             }
             var param = symbol.Substring(0, firstDot);
-            if (!cx.ExistParameter(param)) {
+            if (cx.FindVariable(param) != VariableType.Parameter) {
                 error = $"parameter not found: {param} {At} {node.Pos}";
                 field = null;
                 return false;
