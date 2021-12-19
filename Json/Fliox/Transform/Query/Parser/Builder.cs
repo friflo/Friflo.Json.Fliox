@@ -129,6 +129,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case "true":    Nullary(node, out error);   return new TrueLiteral();
                 case "false":   Nullary(node, out error);   return new FalseLiteral();
                 case "null":    Nullary(node, out error);   return new NullLiteral();
+                case "E":       Nullary(node, out error);   return new EulerLiteral();
+                case "PI":      Nullary(node, out error);   return new PiLiteral();
+                case "Tau":     Nullary(node, out error);   return new TauLiteral();
                 case "if":
                 case "else":
                 case "while":

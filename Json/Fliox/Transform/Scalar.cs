@@ -41,8 +41,13 @@ namespace Friflo.Json.Fliox.Transform
         internal                bool            IsError     => type == ScalarType.Error;
         internal                bool            IsDefined   => type >  ScalarType.Error;
         
-        public static readonly  Scalar          True  = new Scalar(true); 
-        public static readonly  Scalar          False = new Scalar(false);
+        public static readonly  Scalar          True    = new Scalar(true); 
+        public static readonly  Scalar          False   = new Scalar(false);
+
+        // ReSharper disable once InconsistentNaming
+        public static readonly  Scalar          PI      = new Scalar(Math.PI);
+        public static readonly  Scalar          E       = new Scalar(Math.E);
+        public static readonly  Scalar          Tau     = new Scalar(6.2831853071795862); // Math.Tau
         
         public static readonly  Scalar          Null  = new Scalar(ScalarType.Null, null);
 

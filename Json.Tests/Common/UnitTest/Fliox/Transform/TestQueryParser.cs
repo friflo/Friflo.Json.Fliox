@@ -499,6 +499,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = Parse("Abs(1 + 1)", out _);
                 AreEqual("Abs(1 + 1)", op.Linq);
+            } {
+                var op = Parse("PI", out _);
+                AreEqual("PI", op.Linq);
+            } {
+                var op = Parse("E", out _);
+                AreEqual("E", op.Linq);
+            } {
+                var op = Parse("Tau", out _);
+                AreEqual("Tau", op.Linq);
             }
             // --- same operator precedence
             {
