@@ -289,7 +289,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("conditional statements must not be used: if at pos 0", error);
             } {
                 Parse("o.children.Foo(child => child.age)", out error, TestEnv);
-                AreEqual("unknown method: Foo() used by o.children 0", error);
+                AreEqual("unknown method: Foo() used by o.children at pos 0", error);
             } {
                 Parse("Foo(1)", out error);
                 AreEqual("unknown function: Foo() at pos 0", error);
