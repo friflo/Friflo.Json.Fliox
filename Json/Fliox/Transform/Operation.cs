@@ -98,6 +98,11 @@ namespace Friflo.Json.Fliox.Transform
             return new JsonLambda(this);
         }
         
+        /// <summary>
+        /// Parse the given <see cref="Operation"/> string and return an <see cref="Operation"/>.
+        /// <returns>An <see cref="Operation"/> is successful.
+        /// Otherwise it returns null and provide an descriptive <see cref="error"/> message.</returns>
+        /// </summary>
         public static Operation Parse (string operation, out string error, QueryEnv env = null) {
             return QueryBuilder.Parse(operation, out error, env);
         }
