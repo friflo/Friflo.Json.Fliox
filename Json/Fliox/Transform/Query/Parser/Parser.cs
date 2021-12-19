@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     }
                     var lambdaArg = head.GetOperand(0);
                     if (lambdaArg.TokenType != TokenType.Symbol) {
-                        error = $"=> lambda argument must by a parameter name. Was: {lambdaArg.Label} in {head.Label} {At} {lambdaArg.Pos}";
+                        error = $"=> lambda argument must be a parameter name. Was: {lambdaArg.Label} in {head.Label} {At} {lambdaArg.Pos}";
                         return;
                     }
                     break;

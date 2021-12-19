@@ -346,7 +346,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unknown function: foo() at pos 0", error);
             } {
                 Parse("foo.Contains('bar')", out error);
-                AreEqual("parameter not found: foo at pos 0", error);
+                AreEqual("variable not found: foo at pos 0", error);
             } {
                 Parse("o.foo.Contains(1)", out error, TestEnv);
                 AreEqual("expect string or field operand in o.foo.Contains(). was: 1 at pos 15", error);
@@ -361,13 +361,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("unexpected operand Bar() on 123 at pos 4", error);
             } {
                 Parse("true.Bar('xyz')", out error);
-                AreEqual("parameter not found: true at pos 0", error);
+                AreEqual("variable not found: true at pos 0", error);
             } {
                 Parse("o.children.Contains(foo)", out error, TestEnv);
                 AreEqual("variable not found: foo at pos 20", error);
             } {
                 Parse("true == foo.Contains('xxx')", out error, new QueryEnv(null)); // no variables set
-                AreEqual("parameter not found: foo at pos 8", error);
+                AreEqual("variable not found: foo at pos 8", error);
             } {
                 Parse("1 + 'sss'", out error);
                 AreEqual("operator + must use numeric operands at pos 2", error);
@@ -394,13 +394,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("=> expect one preceding lambda argument. Used in: .children.Any() at pos 24", error);
             } {
                 Parse(".children.Any(-1 => child.age)", out error);
-                AreEqual("=> lambda argument must by a parameter name. Was: -1 in .children.Any() at pos 14", error);
+                AreEqual("=> lambda argument must be a parameter name. Was: -1 in .children.Any() at pos 14", error);
             } {
                 Parse("o =>", out error);
-                AreEqual("lambda 'o =>' expect one subsequent operand as body at pos 2", error);
+                AreEqual("lambda 'o =>' expect lambda body at pos 2", error);
             } {
                 Parse("o => foo.age", out error);
-                AreEqual("parameter not found: foo at pos 5", error);
+                AreEqual("variable not found: foo at pos 5", error);
             } {
                 Parse("o.children.Any(child => child.age)", out error, TestEnv);
                 AreEqual("quantify operation o.children.Any() expect boolean lambda body. Was: child.age at pos 24", error);
@@ -430,7 +430,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("missing preceding variable for ..Any() at pos 0", error);
             } {
                 Parse("x.yyy.Any(a => true)", out error, TestEnv);
-                AreEqual("parameter not found: x at pos 0", error);
+                AreEqual("variable not found: x at pos 0", error);
             } {
                 Parse("o.Any(a => true)", out error, TestEnv);
                 AreEqual("missing field name after 'o.' at pos 0", error);

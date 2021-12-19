@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             if (arrowNode.TokenType != TT.Arrow)
                 throw new InvalidOperationException("expect Arrow node as operand");
             if (arrowNode.OperandCount != 1) {
-                error = $"lambda '{node.Label} =>' expect one subsequent operand as body {At} {arrowNode.Pos}";
+                error = $"lambda '{node.Label} =>' expect lambda body {At} {arrowNode.Pos}";
                 bodyNode = null;
                 return false;
             }
@@ -184,13 +184,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 if (cx.FindVariable(symbol) == VariableType.Parameter)
                     error = $"missing field name after '{symbol}.' {At} {node.Pos}";
                 else
-                    error = $"parameter not found: {symbol} {At} {node.Pos}";
+                    error = $"variable not found: {symbol} {At} {node.Pos}";
                 field = null;
                 return false;
             }
             var param = symbol.Substring(0, firstDot);
             if (cx.FindVariable(param) != VariableType.Parameter) {
-                error = $"parameter not found: {param} {At} {node.Pos}";
+                error = $"variable not found: {param} {At} {node.Pos}";
                 field = null;
                 return false;
             }
