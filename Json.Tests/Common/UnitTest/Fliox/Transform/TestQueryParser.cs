@@ -352,10 +352,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("expect one operand in o.foo.Contains() at pos 0", error);
             } {
                 Parse("'abc'.Foo('xyz')", out error);
-                AreEqual("invalid operation .Foo() on literal 'abc' at pos 5", error);
+                AreEqual("unexpected operand .Foo() on 'abc' at pos 5", error);
             } {
                 Parse("123.Bar('xyz')", out error);
-                AreEqual("invalid operation Bar() on literal 123 at pos 4", error);
+                AreEqual("unexpected operand Bar() on 123 at pos 4", error);
             } {
                 Parse("true.Bar('xyz')", out error);
                 AreEqual("parameter not found: true at pos 0", error);
@@ -366,8 +366,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Parse("true == foo.Contains('xxx')", out error, new QueryEnv(null)); // no variables set
                 AreEqual("parameter not found: foo at pos 8", error);
             } {
-                Parse("1 + 'sss'", out error, new QueryEnv(null));
+                Parse("1 + 'sss'", out error);
                 AreEqual("operator + must use numeric operands at pos 2", error);
+            } {
+                Parse("true o", out error);
+                AreEqual("unexpected operand o on true at pos 5", error);
             }
         }
         

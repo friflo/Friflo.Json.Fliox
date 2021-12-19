@@ -79,9 +79,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TT.Not:            return NotOp(node, cx, out error);
                 
                 // --- nullary tokens
-                case TT.String:         Literal(node, out error);               return new StringLiteral(node.ValueStr);
-                case TT.Double:         Literal(node, out error);               return new DoubleLiteral(node.ValueDbl);
-                case TT.Long:           Literal(node, out error);               return new LongLiteral  (node.ValueLng);
+                case TT.String:         Nullary(node, out error);               return new StringLiteral(node.ValueStr);
+                case TT.Double:         Nullary(node, out error);               return new DoubleLiteral(node.ValueDbl);
+                case TT.Long:           Nullary(node, out error);               return new LongLiteral  (node.ValueLng);
                 
                 case TT.Symbol:         return GetField     (node, cx, out error);
                 case TT.Function:       return GetFunction  (node, cx, out error);
@@ -124,9 +124,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         private static Operation GetField(QueryNode node, Context cx, out string error) {
             var symbol = node.ValueStr;
             switch (symbol) {
-                case "true":    error = null;   return new TrueLiteral();
-                case "false":   error = null;   return new FalseLiteral();
-                case "null":    error = null;   return new NullLiteral();
+                case "true":    Nullary(node, out error);   return new TrueLiteral();
+                case "false":   Nullary(node, out error);   return new FalseLiteral();
+                case "null":    Nullary(node, out error);   return new NullLiteral();
                 case "if":
                 case "else":
                 case "while":
@@ -316,13 +316,13 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             return default;
         }
         
-        private static void Literal(QueryNode node, out string error) {
+        private static void Nullary(QueryNode node, out string error) {
             if (node.OperandCount == 0) {
                 error = null;
                 return;
             }
             var first = node.GetOperand(0);
-            error = $"invalid operation {first.Label} on literal {node.Label} {At} {first.Pos}";
+            error = $"unexpected operand {first.Label} on {node.Label} {At} {first.Pos}";
         }
 
         private static BinaryOperands Bin(QueryNode node, Context cx, OperandType type, out string error) {
