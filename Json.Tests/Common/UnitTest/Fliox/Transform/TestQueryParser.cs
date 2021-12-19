@@ -385,7 +385,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual("=> expect one preceding lambda argument. Used in: .children.Any() at pos 24", error);
             } {
                 Parse(".children.Any(-1 => child.age)", out error);
-                AreEqual("=> lambda argument must by a symbol name. Was: -1 in .children.Any() at pos 14", error);
+                AreEqual("=> lambda argument must by a parameter name. Was: -1 in .children.Any() at pos 14", error);
             } {
                 Parse("o =>", out error);
                 AreEqual("lambda 'o =>' expect one subsequent operand as body at pos 2", error);
