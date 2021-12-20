@@ -1356,8 +1356,9 @@ class App {
             this.responseEditor?.layout();
             break;
         case "explorer":
-            this.layoutEditor(this.commandValueEditor,  commandValue);
+            // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
             this.layoutEditor(this.entityEditor,        entityContainer);
+            this.layoutEditor(this.commandValueEditor,  commandValue);
             break;
         }
     }
