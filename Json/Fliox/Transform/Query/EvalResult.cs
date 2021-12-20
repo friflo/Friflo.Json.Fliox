@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Text;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Transform.Query
@@ -14,7 +15,7 @@ namespace Friflo.Json.Fliox.Transform.Query
         private             int             endIndex;
 
         internal            int             StartIndex => startIndex;
-        public   override   string          ToString() => $"Values: {values.Count}, Groups: {groupIndices.Count}";
+        public   override   string          ToString() => Label;
 
         internal EvalResult (in Scalar singleValue) {
             values              = new List<Scalar> { singleValue };
@@ -57,5 +58,17 @@ namespace Friflo.Json.Fliox.Transform.Query
         internal void SetSingle(in Scalar value) {
             values[0] = value;
         }
+        
+        private string Label { get {
+            var sb = new StringBuilder();
+            sb.Append("Values: ");
+            sb.Append(values.Count);
+            sb.Append(", Groups: ");
+            if (groupIndices == null)
+                sb.Append("null");
+            else
+                sb.Append(groupIndices.Count);
+            return sb.ToString();
+        } }
     }
 }
