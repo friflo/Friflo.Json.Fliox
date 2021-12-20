@@ -1356,14 +1356,19 @@ class App {
             this.responseEditor?.layout();
             break;
         case "explorer":
-            var commandElem =  commandValue.children[0];
-            if (commandElem)   commandElem.style.width = "100px"; // required to shrink width
-            const entityElem = entityContainer.children[0]
-            if (entityElem)    entityElem.style.width = "100px"; // required to shrink width
-            this.commandValueEditor?.layout();
-            this.entityEditor?.layout();
+            this.layoutEditor(this.commandValueEditor,  commandValue);
+            this.layoutEditor(this.entityEditor,        entityContainer);
             break;
         }
+    }
+
+    layoutEditor(monacoEditor, containerElem) {
+        const editorElem = containerElem.children[0];
+        if (!monacoEditor || !editorElem)
+            return;
+        editorElem.style.width = "0px";  // required to shrink width. Found no alternative solution right now.
+        monacoEditor.layout();
+        editorElem.style.width = containerElem.clientWidth + "px";
     }
 
     addTableResize () {
