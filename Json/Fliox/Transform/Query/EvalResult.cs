@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Query
         private             int             endIndex;
 
         internal            int             StartIndex => startIndex;
+        public   override   string          ToString() => $"Values: {values.Count}, Groups: {groupIndices.Count}";
 
         internal EvalResult (in Scalar singleValue) {
             values              = new List<Scalar> { singleValue };
