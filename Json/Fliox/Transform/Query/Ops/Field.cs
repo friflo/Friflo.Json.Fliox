@@ -65,6 +65,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
 
         internal override EvalResult Eval(EvalCx cx) {
+         /* if (evalResult.values.Count == 0) {
+                evalResult.Add(Null);
+                return evalResult;
+            } */
             int groupIndex = cx.GroupIndex;
             if (groupIndex == -1)
                 return evalResult;

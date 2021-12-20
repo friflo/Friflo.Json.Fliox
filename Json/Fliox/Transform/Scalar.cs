@@ -14,8 +14,8 @@ namespace Friflo.Json.Fliox.Transform
         String,
         Double,
         Long,
+        Null, // enhance case performance by putting it directly to Double & Long
         Bool,
-        Null,
         Array,
         Object
     }
@@ -197,59 +197,64 @@ namespace Friflo.Json.Fliox.Transform
 
         // --- unary arithmetic operations ---
         public Scalar Abs() {
-            if (!AssertUnaryNumber(out Scalar error))
-                return error;
+            if (!AssertUnaryNumber(out Scalar result))
+                return result;
             if (IsDouble)
                 return new Scalar(Math.Abs(DoubleValue));
             return     new Scalar(Math.Abs(LongValue));
         }
         
         public Scalar Ceiling() {
-            if (!AssertUnaryNumber(out Scalar error))
-                return error;
+            if (!AssertUnaryNumber(out Scalar result))
+                return result;
             if (IsDouble)
                 return new Scalar(Math.Ceiling(        DoubleValue));
             return     new Scalar(Math.Ceiling((double)LongValue));
         }
         
         public Scalar Floor() {
-            if (!AssertUnaryNumber(out Scalar error))
-                return error;
+            if (!AssertUnaryNumber(out Scalar result))
+                return result;
             if (IsDouble)
                 return new Scalar(Math.Floor(        DoubleValue));
             return     new Scalar(Math.Floor((double)LongValue));
         }
         
         public Scalar Exp() {
-            if (!AssertUnaryNumber(out Scalar error))
-                return error;
+            if (!AssertUnaryNumber(out Scalar result))
+                return result;
             if (IsDouble)
                 return new Scalar(Math.Exp(DoubleValue));
             return     new Scalar(Math.Exp(LongValue));
         }
         
         public Scalar Log() {
-            if (!AssertUnaryNumber(out Scalar error))
-                return error;
+            if (!AssertUnaryNumber(out Scalar result))
+                return result;
             if (IsDouble)
                 return new Scalar(Math.Log(DoubleValue));
             return     new Scalar(Math.Log(LongValue));
         }
         
         public Scalar Sqrt() {
-            if (!AssertUnaryNumber(out Scalar error))
-                return error;
+            if (!AssertUnaryNumber(out Scalar result))
+                return result;
             if (IsDouble)
                 return new Scalar(Math.Sqrt(DoubleValue));
             return     new Scalar(Math.Sqrt(LongValue));
         }
 
-        private bool AssertUnaryNumber(out Scalar error) {
-            if (IsNumber) {
-                error = default;
-                return true;
-            }
-            error = Error($"expect numeric operand. was: {this}");
+        private bool AssertUnaryNumber(out Scalar result) {
+            switch (type) {
+            /*  case ScalarType.Null:
+                    result = Null;
+                    return false; */
+                case ScalarType.Long:
+                case ScalarType.Double:
+                    result = default;
+                    return true;
+            } 
+            result = Error($"expect numeric operand. was: {this}");
             return false;
         }
         
