@@ -5,6 +5,7 @@ using System;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 namespace Friflo.Json.Fliox.Transform
 {
     public enum ScalarType : byte {
@@ -197,65 +198,61 @@ namespace Friflo.Json.Fliox.Transform
 
         // --- unary arithmetic operations ---
         public Scalar Abs() {
-            if (!AssertUnaryNumber(out Scalar result))
-                return result;
-            if (IsDouble)
-                return new Scalar(Math.Abs(DoubleValue));
-            return     new Scalar(Math.Abs(LongValue));
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.Double: return new Scalar(Math.Abs(DoubleValue));
+                case ScalarType.Long:   return new Scalar(Math.Abs(LongValue));
+            } 
+            return ExpectNumber();
         }
         
         public Scalar Ceiling() {
-            if (!AssertUnaryNumber(out Scalar result))
-                return result;
-            if (IsDouble)
-                return new Scalar(Math.Ceiling(        DoubleValue));
-            return     new Scalar(Math.Ceiling((double)LongValue));
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.Double: return new Scalar(Math.Ceiling(DoubleValue));
+                case ScalarType.Long:   return new Scalar(             LongValue);
+            } 
+            return ExpectNumber();
         }
         
         public Scalar Floor() {
-            if (!AssertUnaryNumber(out Scalar result))
-                return result;
-            if (IsDouble)
-                return new Scalar(Math.Floor(        DoubleValue));
-            return     new Scalar(Math.Floor((double)LongValue));
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.Double: return new Scalar(Math.Floor(DoubleValue));
+                case ScalarType.Long:   return new Scalar(           LongValue);
+            } 
+            return ExpectNumber();
         }
         
         public Scalar Exp() {
-            if (!AssertUnaryNumber(out Scalar result))
-                return result;
-            if (IsDouble)
-                return new Scalar(Math.Exp(DoubleValue));
-            return     new Scalar(Math.Exp(LongValue));
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.Double: return new Scalar(Math.Exp(DoubleValue));
+                case ScalarType.Long:   return new Scalar(Math.Exp(LongValue));
+            } 
+            return ExpectNumber();
         }
         
         public Scalar Log() {
-            if (!AssertUnaryNumber(out Scalar result))
-                return result;
-            if (IsDouble)
-                return new Scalar(Math.Log(DoubleValue));
-            return     new Scalar(Math.Log(LongValue));
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.Double: return new Scalar(Math.Log(DoubleValue));
+                case ScalarType.Long:   return new Scalar(Math.Log(LongValue));
+            } 
+            return ExpectNumber();
         }
         
         public Scalar Sqrt() {
-            if (!AssertUnaryNumber(out Scalar result))
-                return result;
-            if (IsDouble)
-                return new Scalar(Math.Sqrt(DoubleValue));
-            return     new Scalar(Math.Sqrt(LongValue));
+            switch (type) {
+                case ScalarType.Null:   return Null;
+                case ScalarType.Double: return new Scalar(Math.Sqrt(DoubleValue));
+                case ScalarType.Long:   return new Scalar(Math.Sqrt(LongValue));
+            }
+            return ExpectNumber();
         }
 
-        private bool AssertUnaryNumber(out Scalar result) {
-            switch (type) {
-            /*  case ScalarType.Null:
-                    result = Null;
-                    return false; */
-                case ScalarType.Long:
-                case ScalarType.Double:
-                    result = default;
-                    return true;
-            } 
-            result = Error($"expect numeric operand. was: {this}");
-            return false;
+        private Scalar ExpectNumber() {
+            return Error($"expect numeric operand. was: {this}");
         }
         
         // --- binary arithmetic operations ---
