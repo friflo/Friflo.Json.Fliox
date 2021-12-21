@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Transform
         private                 bool            IsDouble    => type == ScalarType.Double;
         private                 bool            IsLong      => type == ScalarType.Long;
         public                  bool            IsBool      => type == ScalarType.Bool;
-        private                 bool            IsNull      => type == ScalarType.Null;
+        internal                bool            IsNull      => type == ScalarType.Null;
         internal                bool            IsError     => type == ScalarType.Error;
         internal                bool            IsDefined   => type >  ScalarType.Error;
         
@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.Transform
                 case ScalarType.Null:
                     if (other.IsNull)
                         return True;
-                    return EqualsError(other);
+                    return Null;
                 default:
                     throw new NotSupportedException($"Scalar does not support EqualsTo() for type: {type}");                
             }
@@ -218,34 +218,49 @@ namespace Friflo.Json.Fliox.Transform
             return Error(sb.ToString());
         }
         
-        public long CompareTo(in Scalar other) {
-            int typeDiff;
+        public long CompareTo(in Scalar other, Operation left, Operation right, out Scalar result) {
             switch (type) {
                 case ScalarType.String:
-                    typeDiff = ScalarType.String - other.type;
-                    if (typeDiff != 0)
-                        return typeDiff;
-                    return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
+                    if (other.IsString) {
+                        result = new Scalar();
+                        return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
+                    }
+                    return ReturnDefault(other, left, right, out result);
                 case ScalarType.Double:
-                    if (other.IsDouble)
+                    if (other.IsDouble) {
+                        result = new Scalar();
                         return CompareDouble(DoubleValue, other.DoubleValue);
+                    }
                     if (other.IsLong) {
+                        result = new Scalar();
                         return CompareDouble(DoubleValue, other.LongValue);
                     }
-                    return ScalarType.Double - other.type;
+                    return ReturnDefault(other, left, right, out result);
                 case ScalarType.Long:
-                    if (other.IsDouble)
+                    if (other.IsDouble) {
+                        result = new Scalar();
                         return CompareDouble(LongValue, other.DoubleValue);
-                    if (other.IsLong)
+                    }
+                    if (other.IsLong) {
+                        result = new Scalar();
                         return LongValue - other.LongValue;
-                    return ScalarType.Long - other.type;
+                    }
+                    return ReturnDefault(other, left, right, out result);
                 case ScalarType.Bool:
-                    typeDiff = ScalarType.Bool - other.type;
-                    // possible primitive values: 0 or 1
-                    return typeDiff != 0 ? typeDiff : primitiveValue - other.primitiveValue;
+                    if (other.IsBool) {
+                        result = new Scalar();
+                        return primitiveValue - other.primitiveValue; // possible primitive values: 0 or 1
+                    } 
+                    return ReturnDefault(other, left, right, out result);
                 case ScalarType.Null:
-                    typeDiff = ScalarType.Null - other.type;
-                    return typeDiff != 0 ? typeDiff : 0;
+                    if (other.IsTrue) {
+                        result = new Scalar();
+                        return 0;
+                    } 
+                    return ReturnDefault(other, left, right, out result);
+                case ScalarType.Error:
+                    result = this;
+                    return 0;
                 default:
                     throw new NotSupportedException($"Scalar does not support CompareTo() for type: {type}");                
             }
@@ -255,64 +270,90 @@ namespace Friflo.Json.Fliox.Transform
             double dif = left - right;
             return dif < 0 ? -1 : (dif > 0 ? +1 : 0);
         }
-
+        
+        private int ReturnDefault(in Scalar other, Operation left, Operation right, out Scalar result) {
+            switch (other.type) {
+                case ScalarType.Null:   result = Null;                              break;
+                case ScalarType.Error:  result = other;                             break;
+                default:                result = CompareError(other, left, right);  break;                
+            }
+            return 0;
+        }
+        
+        private Scalar CompareError(in Scalar other, Operation left, Operation right) {
+            var sb = new StringBuilder();
+            sb.Append("Cannot compare ");
+            AppendTo(sb);
+            sb.Append(" with ");
+            other.AppendTo(sb);
+            if (left != null) {
+                sb.Append(" left: ");
+                sb.Append(left.Linq);
+            }
+            if (right != null) {
+                sb.Append(" right: ");
+                sb.Append(right.Linq);
+            }
+            return Error(sb.ToString());
+        }
+        
         // --- unary arithmetic operations ---
-        public Scalar Abs() {
+        public Scalar Abs(Operation operation) {
             switch (type) {
                 case ScalarType.Null:   return Null;
                 case ScalarType.Double: return new Scalar(Math.Abs(DoubleValue));
                 case ScalarType.Long:   return new Scalar(Math.Abs(LongValue));
             } 
-            return ExpectNumber();
+            return ExpectNumber(operation);
         }
         
-        public Scalar Ceiling() {
+        public Scalar Ceiling(Operation operation) {
             switch (type) {
                 case ScalarType.Null:   return Null;
                 case ScalarType.Double: return new Scalar(Math.Ceiling(DoubleValue));
                 case ScalarType.Long:   return new Scalar(             LongValue);
             } 
-            return ExpectNumber();
+            return ExpectNumber(operation);
         }
         
-        public Scalar Floor() {
+        public Scalar Floor(Operation operation) {
             switch (type) {
                 case ScalarType.Null:   return Null;
                 case ScalarType.Double: return new Scalar(Math.Floor(DoubleValue));
                 case ScalarType.Long:   return new Scalar(           LongValue);
             } 
-            return ExpectNumber();
+            return ExpectNumber(operation);
         }
         
-        public Scalar Exp() {
+        public Scalar Exp(Operation operation) {
             switch (type) {
                 case ScalarType.Null:   return Null;
                 case ScalarType.Double: return new Scalar(Math.Exp(DoubleValue));
                 case ScalarType.Long:   return new Scalar(Math.Exp(LongValue));
             } 
-            return ExpectNumber();
+            return ExpectNumber(operation);
         }
         
-        public Scalar Log() {
+        public Scalar Log(Operation operation) {
             switch (type) {
                 case ScalarType.Null:   return Null;
                 case ScalarType.Double: return new Scalar(Math.Log(DoubleValue));
                 case ScalarType.Long:   return new Scalar(Math.Log(LongValue));
             } 
-            return ExpectNumber();
+            return ExpectNumber(operation);
         }
         
-        public Scalar Sqrt() {
+        public Scalar Sqrt(Operation operation) {
             switch (type) {
                 case ScalarType.Null:   return Null;
                 case ScalarType.Double: return new Scalar(Math.Sqrt(DoubleValue));
                 case ScalarType.Long:   return new Scalar(Math.Sqrt(LongValue));
             }
-            return ExpectNumber();
+            return ExpectNumber(operation);
         }
 
-        private Scalar ExpectNumber() {
-            return Error($"expect numeric operand. was: {this}");
+        private Scalar ExpectNumber(Operation operation) {
+            return Error($"expect numeric operand. was: {this} in {operation.Linq}");
         }
         
         // --- binary arithmetic operations ---

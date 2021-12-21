@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = val.Abs();
+                var result = val.Abs(this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = val.Ceiling();
+                var result = val.Ceiling(this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = val.Floor();
+                var result = val.Floor(this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = val.Exp();
+                var result = val.Exp(this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = val.Log();
+                var result = val.Log(this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = val.Sqrt();
+                var result = val.Sqrt(this);
                 evalResult.Add(result);
             }
             return evalResult;

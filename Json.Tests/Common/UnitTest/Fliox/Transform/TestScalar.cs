@@ -31,16 +31,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             
             var lng2 = new Scalar(2);
             
-            AreEqual(0, lng2.CompareTo(lng2));
-            AreEqual(0, dbl2.CompareTo(dbl2));
-            AreEqual(0, dbl2.CompareTo(lng2));
-            AreEqual(0, lng2.CompareTo(dbl2));
+            CompareTo( 0, lng2,     lng2);
+            CompareTo( 0, dbl2,     dbl2);
+            CompareTo( 0, dbl2,     lng2);
+            CompareTo( 0, lng2,     dbl2);
             
             var @true  = new Scalar(true);
             var @false = new Scalar(false);
-            AreEqual( 0, @true.CompareTo(@true));
-            AreEqual( 1, @true.CompareTo(@false));
-            AreEqual(-1, @false.CompareTo(@true));
+            CompareTo( 0, @true,    @true);
+            CompareTo( 1, @true,    @false);
+            CompareTo(-1, @false,   @true);
+        }
+        
+        private static void CompareTo(int expect, Scalar left, Scalar right) {
+            var compare = left.CompareTo(right, null, null, out Scalar result);
+            AreEqual(ScalarType.Undefined, result.type);
+            AreEqual(expect, compare);
         }
         
         [Test]

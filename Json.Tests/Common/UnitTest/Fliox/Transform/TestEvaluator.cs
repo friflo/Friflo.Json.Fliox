@@ -32,9 +32,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Eval ("o => Abs(o.strVal) >= 1", Json, eval, out error);
                 AreEqual("expect numeric operand. was: 'abc' in Abs(o.strVal)", error);
             } {
-                // Abs(null) = null, 1 < null = false
+                // Abs(null) = null, 1 < null = null
                 var result = Eval ("o => 1 < Abs(o.nullVal)", Json, eval, out error);
-                AreEqual(false, result);
+                IsNull(result);
             }
             // --- arithmetic operators
             {

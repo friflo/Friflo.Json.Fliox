@@ -72,12 +72,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override void AppendLinq(AppendCx cx) => AppendLinqArrow("Min", field, arg, array, cx);
 
         internal override EvalResult Eval(EvalCx cx) {
-            Scalar currentMin = new Scalar();
+            Scalar currentMin = Null;
             var eval = array.Eval(cx);
             foreach (var val in eval.values) {
-                if (currentMin.type != ScalarType.Undefined) {
-                    if (val.CompareTo(currentMin) < 0)
+                if (!currentMin.IsNull) {
+                    if (val.CompareTo(currentMin, array, null, out Scalar result) < 0)
                         currentMin = val;
+                    if (result.IsError)
+                        return evalResult.SetError(result);
                 } else {
                     currentMin = val;
                 }
@@ -95,12 +97,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public   override void AppendLinq(AppendCx cx) => AppendLinqArrow("Max", field, arg, array, cx);
 
         internal override EvalResult Eval(EvalCx cx) {
-            Scalar currentMin = new Scalar();
+            Scalar currentMin = Null;
             var eval = array.Eval(cx);
             foreach (var val in eval.values) {
-                if (currentMin.type != ScalarType.Undefined) {
-                    if (val.CompareTo(currentMin) > 0)
+                if (!currentMin.IsNull) {
+                    if (val.CompareTo(currentMin, array, null, out Scalar result) > 0)
                         currentMin = val;
+                    if (result.IsError)
+                        return evalResult.SetError(result);
                 } else {
                     currentMin = val;
                 }
