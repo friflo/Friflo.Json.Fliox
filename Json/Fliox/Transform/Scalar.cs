@@ -5,6 +5,7 @@ using System;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable CompareOfFloatsByEqualityOperator
 // ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 namespace Friflo.Json.Fliox.Transform
 {
@@ -33,14 +34,21 @@ namespace Friflo.Json.Fliox.Transform
         private                 double          DoubleValue => BitConverter.Int64BitsToDouble(primitiveValue);
         private                 long            LongValue   => primitiveValue;
         private                 bool            BoolValue   => primitiveValue != 0;
-        internal                string          ErrorMessage=> stringValue;
+        public                  string          ErrorMessage=> stringValue;
 
         private                 bool            IsString    => type == ScalarType.String;
         private                 bool            IsNumber    => type == ScalarType.Double || type == ScalarType.Long;
         private                 bool            IsDouble    => type == ScalarType.Double;
         private                 bool            IsLong      => type == ScalarType.Long;
+        public                  bool            IsBool      => type == ScalarType.Bool;
+        private                 bool            IsNull      => type == ScalarType.Null;
         internal                bool            IsError     => type == ScalarType.Error;
         internal                bool            IsDefined   => type >  ScalarType.Error;
+        
+        public                  bool            IsTrue      => type == ScalarType.Bool && primitiveValue != 0;
+        public                  bool            IsFalse     => type == ScalarType.Bool && primitiveValue == 0;
+
+
         
         public static readonly  Scalar          True    = new Scalar(true); 
         public static readonly  Scalar          False   = new Scalar(false);
@@ -158,6 +166,58 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- compare two scalars ---
+        public Scalar EqualsTo(in Scalar other) {
+            switch (type) {
+                case ScalarType.String:
+                    if (other.IsString)
+                        return stringValue == other.stringValue ? True : False;
+                    if (other.IsNull)
+                        return Null;
+                    return EqualsError(other);
+                case ScalarType.Double:
+                    if (other.IsDouble)
+                        return DoubleValue == other.DoubleValue ? True : False;
+                    if (other.IsLong)
+                        return EqualsDouble(DoubleValue, other.LongValue);
+                    if (other.IsNull)
+                        return Null;
+                    return EqualsError(other);
+                case ScalarType.Long:
+                    if (other.IsDouble)
+                        return EqualsDouble(LongValue, other.DoubleValue);
+                    if (other.IsLong)
+                        return LongValue == other.LongValue ? True : False;
+                    if (other.IsNull)
+                        return Null;
+                    return EqualsError(other);
+                case ScalarType.Bool:
+                    if (other.IsBool)
+                        return primitiveValue == other.primitiveValue ? True : False; // possible primitive values: 0 or 1
+                    if (other.IsNull)
+                        return Null;
+                    return EqualsError(other);
+                case ScalarType.Null:
+                    if (other.IsNull)
+                        return True;
+                    return EqualsError(other);
+                default:
+                    throw new NotSupportedException($"Scalar does not support EqualsTo() for type: {type}");                
+            }
+        }
+        
+        private static Scalar EqualsDouble(double left, double right) {
+            return left == right ? True : False;
+        }
+        
+        private Scalar EqualsError(in Scalar other) {
+            var sb = new StringBuilder();
+            sb.Append("Cannot compare ");
+            AppendTo(sb);
+            sb.Append(" with ");
+            other.AppendTo(sb);
+            return Error(sb.ToString());
+        }
+        
         public long CompareTo(in Scalar other) {
             int typeDiff;
             switch (type) {
@@ -190,7 +250,7 @@ namespace Friflo.Json.Fliox.Transform
                     throw new NotSupportedException($"Scalar does not support CompareTo() for type: {type}");                
             }
         }
-        
+
         private static int CompareDouble(double left, double right) {
             double dif = left - right;
             return dif < 0 ? -1 : (dif > 0 ? +1 : 0);

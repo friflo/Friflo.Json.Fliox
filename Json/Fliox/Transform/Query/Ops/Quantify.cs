@@ -41,7 +41,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var groupCx = new EvalCx(groupIndex);
                 var eval = predicate.Eval(groupCx);
                 foreach (var val in eval.values) {
-                    if (val.CompareTo(True) == 0)
+                    var result = val.EqualsTo(True);
+                    if (result.IsError)
+                        return new EvalResult(result);
+                    if (result.IsTrue)
                         return SingleTrue;
                 }
             }
@@ -62,7 +65,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var groupCx = new EvalCx(groupIndex);
                 var eval = predicate.Eval(groupCx);
                 foreach (var val in eval.values) {
-                    if (val.CompareTo(True) != 0)
+                    var result = val.EqualsTo(True);
+                    if (result.IsError)
+                        return new EvalResult(result);
+                    if (!result.IsTrue)
                         return SingleFalse;
                 }
             }
@@ -103,7 +109,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var groupCx = new EvalCx(groupIndex);
                 var eval = predicate.Eval(groupCx);
                 foreach (var val in eval.values) {
-                    if (val.CompareTo(True) == 0) {
+                    var result = val.EqualsTo(True);
+                    if (result.IsError)
+                        return new EvalResult(result);
+                    if (result.IsTrue) {
                         count++;                        
                     }
                 }
