@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var result = pair.left.EqualsTo(pair.right);
+                var result = pair.left.EqualsTo(pair.right, this);
                 if (result.IsError)
                     return evalResult.SetError(result);
                 evalResult.Add(result);
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var result = pair.left.EqualsTo(pair.right);
+                var result = pair.left.EqualsTo(pair.right, this);
                 if (result.IsError)
                     return evalResult.SetError(result);
                 if (result.IsNull)

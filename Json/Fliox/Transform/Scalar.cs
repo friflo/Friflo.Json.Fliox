@@ -4,6 +4,7 @@
 using System;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 // ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
@@ -166,14 +167,14 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- compare two scalars ---
-        public Scalar EqualsTo(in Scalar other) {
+        public Scalar EqualsTo(in Scalar other, Operation operation) {
             switch (type) {
                 case ScalarType.String:
                     if (other.IsString)
                         return stringValue == other.stringValue ? True : False;
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other);
+                    return EqualsError(other, operation);
                 case ScalarType.Double:
                     if (other.IsDouble)
                         return DoubleValue == other.DoubleValue ? True : False;
@@ -181,7 +182,7 @@ namespace Friflo.Json.Fliox.Transform
                         return EqualsDouble(DoubleValue, other.LongValue);
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other);
+                    return EqualsError(other, operation);
                 case ScalarType.Long:
                     if (other.IsDouble)
                         return EqualsDouble(LongValue, other.DoubleValue);
@@ -189,13 +190,13 @@ namespace Friflo.Json.Fliox.Transform
                         return LongValue == other.LongValue ? True : False;
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other);
+                    return EqualsError(other, operation);
                 case ScalarType.Bool:
                     if (other.IsBool)
                         return primitiveValue == other.primitiveValue ? True : False; // possible primitive values: 0 or 1
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other);
+                    return EqualsError(other, operation);
                 case ScalarType.Null:
                     if (other.IsNull)
                         return True;
@@ -209,12 +210,17 @@ namespace Friflo.Json.Fliox.Transform
             return left == right ? True : False;
         }
         
-        private Scalar EqualsError(in Scalar other) {
+        private Scalar EqualsError(in Scalar other, Operation operation) {
             var sb = new StringBuilder();
             sb.Append("Cannot compare ");
             AppendTo(sb);
             sb.Append(" with ");
             other.AppendTo(sb);
+            if (operation != null) {
+                sb.Append(" in ");
+                var appendCx = new AppendCx(sb);
+                operation.AppendLinq(appendCx);
+            }
             return Error(sb.ToString());
         }
         
@@ -286,13 +292,14 @@ namespace Friflo.Json.Fliox.Transform
             AppendTo(sb);
             sb.Append(" with ");
             other.AppendTo(sb);
+            var appendCx = new AppendCx(sb);
             if (left != null) {
                 sb.Append(" left: ");
-                sb.Append(left.Linq);
+                left.AppendLinq(appendCx);
             }
             if (right != null) {
                 sb.Append(" right: ");
-                sb.Append(right.Linq);
+                right.AppendLinq(appendCx);
             }
             return Error(sb.ToString());
         }
@@ -353,7 +360,15 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         private Scalar ExpectNumber(Operation operation) {
-            return Error($"expect numeric operand. was: {this} in {operation.Linq}");
+            var sb = new StringBuilder();
+            sb.Append("expect numeric operand. was: ");
+            AppendTo(sb);
+            if (operation != null) {
+                var appendCx = new AppendCx(sb);
+                sb.Append(" in ");
+                operation.AppendLinq(appendCx);
+            }
+            return Error(sb.ToString());
         }
         
         // --- binary arithmetic operations ---

@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Transform
             }
             error = null;
             foreach (var result in evalResult.values) {
-                var isTrue = result.EqualsTo(Operation.True);  
+                var isTrue = result.EqualsTo(Operation.True, null);  
                 if (!isTrue.IsTrue)
                     return false;
             }

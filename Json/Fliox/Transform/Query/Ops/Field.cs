@@ -156,8 +156,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public readonly StringBuilder   sb;
         
         // ReSharper disable once UnusedParameter.Local
-        public AppendCx (string _) {
-            sb          = new StringBuilder();
+        public AppendCx (StringBuilder sb) {
+            this.sb     = sb;
             lambdaArg   = "";
         }
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
@@ -80,7 +81,7 @@ namespace Friflo.Json.Fliox.Transform
         internal  abstract  EvalResult  Eval (EvalCx cx);
         internal  virtual   bool        IsNumeric => false;
         public              string      Linq { get {
-            var cs = new AppendCx(null);
+            var cs = new AppendCx(new StringBuilder());
             AppendLinq(cs);
             return cs.sb.ToString();
         } }
