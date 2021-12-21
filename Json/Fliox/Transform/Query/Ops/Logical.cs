@@ -33,7 +33,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = operand.Eval(cx);
             foreach (var val in eval.values) {
-                evalResult.Add(val.CompareTo(True) == 0 ? False : True);
+                var result = val.EqualsTo(True);
+                if (result.IsError)
+                    return evalResult.SetError(result);
+                evalResult.Add(result.IsTrue ? False : True);
             }
             return evalResult;
         }
@@ -80,7 +83,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var result = resultIterator.Current;
                 var itemResult = True;
                 for (int n = 0; n < operands.Count; n++) {
-                    if (result.evalResult.values[n].CompareTo(True) != 0) {
+                    var isTrue = result.evalResult.values[n].EqualsTo(True);
+                    if (isTrue.IsError)
+                        return evalResult.SetError(isTrue);
+                    if (isTrue.IsFalse) {
                         itemResult = False;
                         break;
                     }
@@ -112,7 +118,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
                 var result = resultIterator.Current;
                 var itemResult = False;
                 for (int n = 0; n < operands.Count; n++) {
-                    if (result.evalResult.values[n].CompareTo(True) == 0) {
+                    var isTrue = result.evalResult.values[n].EqualsTo(True);
+                    if (isTrue.IsError)
+                        return evalResult.SetError(isTrue);
+                    if (isTrue.IsTrue) {
                         itemResult = True;
                         break;
                     }

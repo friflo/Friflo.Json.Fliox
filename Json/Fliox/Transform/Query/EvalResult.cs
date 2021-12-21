@@ -59,6 +59,12 @@ namespace Friflo.Json.Fliox.Transform.Query
             values[0] = value;
         }
         
+        internal EvalResult SetError(in Scalar error) {
+            values.Clear();
+            values.Add(error);
+            return this;
+        }
+        
         private string Label { get {
             var sb = new StringBuilder();
             sb.Append("Values: ");
