@@ -44,13 +44,11 @@ namespace Friflo.Json.Fliox.Transform
         public                  bool            IsBool      => type == ScalarType.Bool;
         internal                bool            IsNull      => type == ScalarType.Null;
         internal                bool            IsError     => type == ScalarType.Error;
-        internal                bool            IsDefined   => type >  ScalarType.Error;
         
         public                  bool            IsTrue      => type == ScalarType.Bool && primitiveValue != 0;
         public                  bool            IsFalse     => type == ScalarType.Bool && primitiveValue == 0;
-
-
         
+
         public static readonly  Scalar          True    = new Scalar(true); 
         public static readonly  Scalar          False   = new Scalar(false);
 
@@ -59,7 +57,7 @@ namespace Friflo.Json.Fliox.Transform
         public static readonly  Scalar          E       = new Scalar(Math.E);
         public static readonly  Scalar          Tau     = new Scalar(6.2831853071795862); // Math.Tau
         
-        public static readonly  Scalar          Null  = new Scalar(ScalarType.Null, null);
+        public static readonly  Scalar          Null    = new Scalar(ScalarType.Null, null);
 
 
         internal Scalar(ScalarType type, string value) {
@@ -69,7 +67,7 @@ namespace Friflo.Json.Fliox.Transform
             primitiveValue  = 0;
         }
         
-        internal static Scalar Error(string message) {
+        private static Scalar Error(string message) {
             return new Scalar(ScalarType.Error, message);
         }
         
@@ -228,42 +226,43 @@ namespace Friflo.Json.Fliox.Transform
             switch (type) {
                 case ScalarType.String:
                     if (other.IsString) {
-                        result = new Scalar();
+                        result = default;
                         return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
                     }
                     return ReturnDefault(other, left, right, out result);
                 case ScalarType.Double:
                     if (other.IsDouble) {
-                        result = new Scalar();
+                        result = default;
                         return CompareDouble(DoubleValue, other.DoubleValue);
                     }
                     if (other.IsLong) {
-                        result = new Scalar();
+                        result = default;
                         return CompareDouble(DoubleValue, other.LongValue);
                     }
                     return ReturnDefault(other, left, right, out result);
                 case ScalarType.Long:
                     if (other.IsDouble) {
-                        result = new Scalar();
+                        result = default;
                         return CompareDouble(LongValue, other.DoubleValue);
                     }
                     if (other.IsLong) {
-                        result = new Scalar();
+                        result = default;
                         return LongValue - other.LongValue;
                     }
                     return ReturnDefault(other, left, right, out result);
                 case ScalarType.Bool:
                     if (other.IsBool) {
-                        result = new Scalar();
+                        result = default;
                         return primitiveValue - other.primitiveValue; // possible primitive values: 0 or 1
-                    } 
+                    }
                     return ReturnDefault(other, left, right, out result);
                 case ScalarType.Null:
-                    if (other.IsTrue) {
-                        result = new Scalar();
+                    if (other.IsNull) {
+                        result = default;
                         return 0;
-                    } 
-                    return ReturnDefault(other, left, right, out result);
+                    }
+                    result = Null;
+                    return 0;
                 case ScalarType.Error:
                     result = this;
                     return 0;
