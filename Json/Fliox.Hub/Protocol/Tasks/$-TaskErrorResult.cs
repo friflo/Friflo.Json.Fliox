@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         ValidationError,
         /// HTTP status: 400
         InvalidTask,
-        /// HTTP status: 400
+        /// HTTP status: 501
         NotImplemented,
         /// HTTP status: 403
         PermissionDenied,

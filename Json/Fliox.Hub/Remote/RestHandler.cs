@@ -384,7 +384,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case TaskErrorResultType.ValidationError:       status = 400;   break;
                     case TaskErrorResultType.None:                  status = 500;   break;
                     case TaskErrorResultType.UnhandledException:    status = 500;   break;
-                    case TaskErrorResultType.NotImplemented:        status = 400;   break;
+                    case TaskErrorResultType.NotImplemented:        status = 501;   break;
                     case TaskErrorResultType.SyncError:             status = 500;   break;
                     default:                                        status = 500;   break;
                 }
