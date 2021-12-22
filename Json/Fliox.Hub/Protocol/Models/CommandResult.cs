@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public interface ICommandResult
     {
         /// In case a command fails its <see cref="CommandError.message"/> is assigned to <see cref="TaskErrorResult.message"/>
-        [Fri.Ignore]        CommandError    Error { get; set;  }
+        [Fri.Ignore]        CommandError        Error { get; set;  }
     }
     
     /// <summary>
@@ -18,13 +18,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public sealed class CommandError
     {
-        [Fri.Ignore] public string          message;
+        [Fri.Ignore] public TaskErrorResultType type;
+        [Fri.Ignore] public string              message;
 
-        public   override   string          ToString() => message;
+        public   override   string              ToString() => message;
         
         public CommandError() {}
         public CommandError(string message) {
-            this.message = message;
+            this.type       = TaskErrorResultType.DatabaseError;
+            this.message    = message;
+        }
+        public CommandError(TaskErrorResultType type, string message) {
+            this.type       = type;
+            this.message    = message;
         }
     }
 }

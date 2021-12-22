@@ -40,6 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
         DatabaseError,
         
+        FilterError,
+        
         InvalidTask,
         
         NotImplemented,

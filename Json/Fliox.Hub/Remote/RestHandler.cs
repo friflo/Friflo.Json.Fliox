@@ -380,6 +380,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case TaskErrorResultType.InvalidTask:           status = 400;   break;
                     case TaskErrorResultType.PermissionDenied:      status = 403;   break;
                     case TaskErrorResultType.DatabaseError:         status = 500;   break;
+                    case TaskErrorResultType.FilterError:           status = 500;   break;
                     case TaskErrorResultType.None:                  status = 500;   break;
                     case TaskErrorResultType.UnhandledException:    status = 500;   break;
                     case TaskErrorResultType.NotImplemented:        status = 500;   break;

@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string                  ToString() => TaskName;
 
         internal static TaskErrorResult TaskError(CommandError error) {
-            return new TaskErrorResult (TaskErrorResultType.DatabaseError, error.message);   
+            return new TaskErrorResult (error.type, error.message);   
         }
         
         internal static TaskErrorResult InvalidTaskError(string error) {

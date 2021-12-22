@@ -32,6 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         DatabaseError,
         
+        FilterError,
+        
         NotImplemented,
         
         InvalidTask,
@@ -94,6 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             switch (type) {
                 case TaskErrorResultType.UnhandledException:    return TaskErrorType.UnhandledException;
                 case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
+                case TaskErrorResultType.FilterError:           return TaskErrorType.FilterError;
                 case TaskErrorResultType.InvalidTask:           return TaskErrorType.InvalidTask;
                 case TaskErrorResultType.NotImplemented:        return TaskErrorType.NotImplemented;
                 case TaskErrorResultType.PermissionDenied:      return TaskErrorType.PermissionDenied;
