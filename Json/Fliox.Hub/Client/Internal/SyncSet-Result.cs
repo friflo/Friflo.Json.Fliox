@@ -286,10 +286,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 EntitySet           refContainer = set.intern.store._intern.GetSetByName(reference.container);
                 ReadRefsTask        subRef       = refs[reference.selector];
                 if (refResult.error != null) {
-                    var taskErrorInfo = new TaskErrorInfo(new TaskErrorResult {
-                        type    = TaskErrorResultType.DatabaseError,
-                        message = refResult.error 
-                    });
+                    var taskError       = new TaskErrorResult (TaskErrorResultType.DatabaseError, refResult.error);
+                    var taskErrorInfo   = new TaskErrorInfo (taskError);
                     subRef.state.SetError(taskErrorInfo);
                     continue;
                 }

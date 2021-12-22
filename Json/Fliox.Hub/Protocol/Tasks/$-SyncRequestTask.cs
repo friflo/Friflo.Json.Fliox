@@ -35,13 +35,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string                  ToString() => TaskName;
 
         internal static TaskErrorResult TaskError(CommandError error) {
-            var message = error.message;
-            return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = message};   
+            return new TaskErrorResult (TaskErrorResultType.DatabaseError, error.message);   
         }
         
         internal static TaskErrorResult InvalidTaskError(string error) {
             // error = $"{message} {TaskType} ({TaskName})";
-            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = error};   
+            return new TaskErrorResult (TaskErrorResultType.InvalidTask, error);   
         }
         
         internal static TaskErrorResult MissingField(string field) {
@@ -58,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public static TaskErrorResult PermissionDenied(string message) {
             // message = $"{message} {TaskType} ({TaskName})";
-            return new TaskErrorResult{ type = TaskErrorResultType.PermissionDenied, message = message };
+            return new TaskErrorResult (TaskErrorResultType.PermissionDenied, message);
         }
 
         internal static bool ValidReferences(List<References> references, out TaskErrorResult error) {

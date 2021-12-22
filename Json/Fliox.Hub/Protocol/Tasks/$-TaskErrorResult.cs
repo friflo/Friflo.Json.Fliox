@@ -4,6 +4,7 @@
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task result -----------------------------------
@@ -15,6 +16,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 
         internal override       TaskType            TaskType => TaskType.error;
         public   override       string              ToString() => $"type: {type}, message: {message}";
+        
+        public TaskErrorResult() {}
+        public TaskErrorResult(TaskErrorResultType type, string message, string stacktrace = null) {
+            this.type       = type;
+            this.message    = message;
+            this.stacktrace = stacktrace;
+        }
     }
     
     /// <summary>Describe the type of a <see cref="TaskErrorResult"/></summary>

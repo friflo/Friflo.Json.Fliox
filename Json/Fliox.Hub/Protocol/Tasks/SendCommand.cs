@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return new SendCommandResult { result = jsonResult };
             }
             var msg = $"command handler not found: '{name}'";
-            return new TaskErrorResult { type = TaskErrorResultType.NotImplemented, message = msg };
+            return new TaskErrorResult (TaskErrorResultType.NotImplemented, msg);
         }
     }
     

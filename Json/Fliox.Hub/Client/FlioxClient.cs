@@ -554,10 +554,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
                 SetErrors(result, syncStore);
             } else {
-                syncError = new TaskErrorResult {
-                    message = error.message,
-                    type    = TaskErrorResultType.SyncError
-                };
+                syncError = new TaskErrorResult (TaskErrorResultType.SyncError, error.message);
                 containerResults = new Dictionary<string, ContainerEntities>();
             }
 

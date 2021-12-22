@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
             }
 #endif
-            return new TaskErrorResult{ type = TaskErrorResultType.UnhandledException, message = msg, stacktrace  = stack };
+            return new TaskErrorResult (TaskErrorResultType.UnhandledException,msg, stack);
         }
 
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
