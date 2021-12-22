@@ -189,7 +189,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         /// enforce "o" as lambda argument
-        private const string DefaultParam = "o"; 
+        private const string DefaultParam = "o";
+        private const string InvalidFilter = "invalid filter";
         
         private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
             // --- handle filter expression
@@ -198,13 +199,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var env         = new QueryEnv(DefaultParam); 
                 var filterOp    = Operation.Parse(filter, out string error, env);
                 if (error != null) {
-                    context.WriteError("filter error", error, 400);
+                    context.WriteError(InvalidFilter, error, 400);
                     return null;
                 }
                 if (filterOp is FilterOperation op) {
                     return op;
                 }
-                context.WriteError("filter error", "filter must be boolean operation", 400);
+                context.WriteError(InvalidFilter, "filter must be boolean operation", 400);
                 return null;
             }
             // --- handle filter tree
@@ -216,13 +217,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var reader = pooled.instance.reader;
                 var filterOp = reader.Read<FilterOperation>(queryFilter);
                 if (reader.Error.ErrSet) {
-                    context.WriteError("filter error", reader.Error.ToString(), 400);
+                    context.WriteError(InvalidFilter, reader.Error.ToString(), 400);
                     return null;
                 }
                 // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
                 var operationCx = new OperationContext();
                 if (!operationCx.Init(filterOp, out var message)) {
-                    context.WriteError("invalid filter", message, 400);
+                    context.WriteError(InvalidFilter, message, 400);
                     return null;
                 }
                 return filterOp;
