@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             if (valError != null) {
-                return new PatchEntitiesResult{Error = new CommandError(valError)};
+                return new PatchEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
             }
             
             // Write patched entities back
