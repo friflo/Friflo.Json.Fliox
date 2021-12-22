@@ -738,6 +738,7 @@
                 "UnhandledException",
                 "DatabaseError",
                 "FilterError",
+                "ValidationError",
                 "InvalidTask",
                 "NotImplemented",
                 "PermissionDenied",

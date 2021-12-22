@@ -235,6 +235,7 @@ export type TaskErrorResultType =
     | "UnhandledException"
     | "DatabaseError"
     | "FilterError"
+    | "ValidationError"
     | "InvalidTask"
     | "NotImplemented"
     | "PermissionDenied"

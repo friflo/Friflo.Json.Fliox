@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 
             error = database.Schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrors);
             if (error != null) {
-                return TaskError(new CommandError(error));
+                return TaskError(new CommandError(TaskErrorResultType.ValidationError, error));
             }
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value

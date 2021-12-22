@@ -27,27 +27,31 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     
     /// <summary>Describe the type of a <see cref="TaskErrorResult"/></summary>
     public enum TaskErrorResultType {
+        /// HTTP status: 500
         None,
         /// <summary>
+        /// HTTP status: 500
         /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
         /// More information at <see cref="FlioxHub.ExecuteSync"/>.
         /// </summary>
         UnhandledException,
-        
         /// <summary>
+        /// HTTP status: 500
         /// Inform about an error when accessing a database.
         /// E.g. the access is currently not available or accessing a missing table.
         /// </summary>
         DatabaseError,
-        
+        /// HTTP status: 400
         FilterError,
-        
+        /// HTTP status: 400
+        ValidationError,
+        /// HTTP status: 400
         InvalidTask,
-        
+        /// HTTP status: 400
         NotImplemented,
-        
+        /// HTTP status: 403
         PermissionDenied,
-        
+        /// HTTP status: 500
         SyncError
     }
 }
