@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task result -----------------------------------
     public abstract class SyncMessageResult : SyncTaskResult, ICommandResult
     {
-        public CommandError                 Error { get; set; }
+        [Fri.Ignore] public CommandError    Error { get; set; }
     }
     
     public sealed class SendMessageResult : SyncMessageResult

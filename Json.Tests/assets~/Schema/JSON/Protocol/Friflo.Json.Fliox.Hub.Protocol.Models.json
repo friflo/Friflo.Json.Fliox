@@ -28,17 +28,9 @@
             ],
             "additionalProperties": false
         },
-        "CommandError": {
-            "type": "object",
-            "properties": {
-                "message": { "type": ["string", "null"] }
-            },
-            "additionalProperties": false
-        },
         "ReadEntitiesSetResult": {
             "type": "object",
             "properties": {
-                "Error":      { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/CommandError" }] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
             },
             "additionalProperties": false

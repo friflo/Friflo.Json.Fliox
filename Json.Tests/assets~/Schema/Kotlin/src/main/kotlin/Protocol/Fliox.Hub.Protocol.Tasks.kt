@@ -141,14 +141,12 @@ abstract class SyncTaskResult  {
 
 @Serializable
 @SerialName("create")
-data class CreateEntitiesResult (
-              val Error : CommandError? = null,
+class CreateEntitiesResult (
 ) : SyncTaskResult()
 
 @Serializable
 @SerialName("upsert")
-data class UpsertEntitiesResult (
-              val Error : CommandError? = null,
+class UpsertEntitiesResult (
 ) : SyncTaskResult()
 
 @Serializable
@@ -160,7 +158,6 @@ data class ReadEntitiesResult (
 @Serializable
 @SerialName("query")
 data class QueryEntitiesResult (
-              val Error      : CommandError? = null,
               val container  : String? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
@@ -168,31 +165,26 @@ data class QueryEntitiesResult (
 
 @Serializable
 @SerialName("patch")
-data class PatchEntitiesResult (
-              val Error : CommandError? = null,
+class PatchEntitiesResult (
 ) : SyncTaskResult()
 
 @Serializable
 @SerialName("delete")
-data class DeleteEntitiesResult (
-              val Error : CommandError? = null,
+class DeleteEntitiesResult (
 ) : SyncTaskResult()
 
 @Serializable
 @SerialName("message")
-data class SendMessageResult (
-    override  val Error : CommandError? = null,
+class SendMessageResult (
 ) : SyncMessageResult()
 
 @Serializable
 abstract class SyncMessageResult {
-    abstract  val Error : CommandError?
 }
 
 @Serializable
 @SerialName("command")
 data class SendCommandResult (
-    override  val Error  : CommandError? = null,
               val result : JsonElement? = null,
 ) : SyncMessageResult()
 
@@ -209,8 +201,7 @@ class SubscribeMessageResult (
 @Serializable
 @SerialName("reserveKeys")
 data class ReserveKeysResult (
-              val Error : CommandError? = null,
-              val keys  : ReservedKeys? = null,
+              val keys : ReservedKeys? = null,
 ) : SyncTaskResult()
 
 @Serializable

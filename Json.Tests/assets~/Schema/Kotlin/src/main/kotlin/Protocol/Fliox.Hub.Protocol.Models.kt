@@ -20,13 +20,7 @@ data class References (
 )
 
 @Serializable
-data class CommandError (
-              val message : String? = null,
-)
-
-@Serializable
 data class ReadEntitiesSetResult (
-              val Error      : CommandError? = null,
               val references : List<ReferencesResult>? = null,
 )
 

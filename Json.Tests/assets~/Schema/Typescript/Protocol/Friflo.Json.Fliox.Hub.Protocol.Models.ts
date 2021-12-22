@@ -13,12 +13,7 @@ export class References {
     references? : References[] | null;
 }
 
-export class CommandError {
-    message? : string | null;
-}
-
 export class ReadEntitiesSetResult {
-    Error?      : CommandError | null;
     references? : ReferencesResult[] | null;
 }
 

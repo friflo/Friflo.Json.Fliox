@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
-                        public  CommandError                    Error { get; set; }
+        [Fri.Ignore]    public  CommandError                    Error { get; set; }
 
         
         internal override   TaskType            TaskType => TaskType.query;

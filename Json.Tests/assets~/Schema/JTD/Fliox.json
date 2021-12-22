@@ -645,17 +645,12 @@
         },
         "CreateEntitiesResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
-            }
-        },
-        "CommandError": {
-            "properties": {
-                "message": { "type": "string", "nullable": true }
+
             }
         },
         "UpsertEntitiesResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
+
             }
         },
         "ReadEntitiesResult": {
@@ -665,7 +660,6 @@
         },
         "ReadEntitiesSetResult": {
             "properties": {
-                "Error":      { "ref":  "CommandError", "nullable": true },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
         },
@@ -679,7 +673,6 @@
         },
         "QueryEntitiesResult": {
             "properties": {
-                "Error":      { "ref":  "CommandError", "nullable": true },
                 "container":  { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
@@ -687,27 +680,26 @@
         },
         "PatchEntitiesResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
+
             }
         },
         "DeleteEntitiesResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
+
             }
         },
         "SendMessageResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
+
             }
         },
         "SyncMessageResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
+
             }
         },
         "SendCommandResult": {
             "properties": {
-                "Error":  { "ref":  "CommandError", "nullable": true },
                 "result": { "nullable": true }
             }
         },
@@ -723,8 +715,7 @@
         },
         "ReserveKeysResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true },
-                "keys":  { "ref":  "ReservedKeys", "nullable": true }
+                "keys": { "ref":  "ReservedKeys", "nullable": true }
             }
         },
         "ReservedKeys": {

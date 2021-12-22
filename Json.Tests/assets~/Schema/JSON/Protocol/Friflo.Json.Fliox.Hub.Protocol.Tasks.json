@@ -269,8 +269,7 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":  { "enum": ["create"] },
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] }
+                "task": { "enum": ["create"] }
             },
             "required": [
                 "task"
@@ -281,8 +280,7 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":  { "enum": ["upsert"] },
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] }
+                "task": { "enum": ["upsert"] }
             },
             "required": [
                 "task"
@@ -307,7 +305,6 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
                 "task":       { "enum": ["query"] },
-                "Error":      { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] },
                 "container":  { "type": ["string", "null"] },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
@@ -322,8 +319,7 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":  { "enum": ["patch"] },
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] }
+                "task": { "enum": ["patch"] }
             },
             "required": [
                 "task"
@@ -334,8 +330,7 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":  { "enum": ["delete"] },
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] }
+                "task": { "enum": ["delete"] }
             },
             "required": [
                 "task"
@@ -346,8 +341,7 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageResult" },
             "properties": {
-                "task":  { "enum": ["message"] },
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] }
+                "task": { "enum": ["message"] }
             },
             "required": [
                 "task"
@@ -359,7 +353,7 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "isAbstract": true,
             "properties": {
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] }
+
             },
             "additionalProperties": false
         },
@@ -368,7 +362,6 @@
             "extends": { "$ref": "#/definitions/SyncMessageResult" },
             "properties": {
                 "task":   { "enum": ["command"] },
-                "Error":  { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] },
                 "result": {  }
             },
             "required": [
@@ -402,9 +395,8 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":  { "enum": ["reserveKeys"] },
-                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/CommandError" }] },
-                "keys":  { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/ReservedKeys" }] }
+                "task": { "enum": ["reserveKeys"] },
+                "keys": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/ReservedKeys" }] }
             },
             "required": [
                 "task"

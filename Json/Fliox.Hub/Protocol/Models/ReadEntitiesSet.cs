@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class ReadEntitiesSetResult: ICommandResult
     {
                         public  List<ReferencesResult>          references;
-                        public  CommandError                    Error { get; set; }
+        [Fri.Ignore]    public  CommandError                    Error { get; set; }
 
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         

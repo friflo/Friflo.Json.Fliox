@@ -7,7 +7,6 @@ import { References }            from "./Friflo.Json.Fliox.Hub.Protocol.Models"
 import { JsonPatch }             from "./Friflo.Json.Fliox.Transform"
 import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform"
 import { int32 }                 from "./Standard"
-import { CommandError }          from "./Friflo.Json.Fliox.Hub.Protocol.Models"
 import { ReadEntitiesSetResult } from "./Friflo.Json.Fliox.Hub.Protocol.Models"
 import { ReferencesResult }      from "./Friflo.Json.Fliox.Hub.Protocol.Models"
 import { int64 }                 from "./Standard"
@@ -166,13 +165,11 @@ export abstract class SyncTaskResult {
 }
 
 export class CreateEntitiesResult extends SyncTaskResult {
-    task   : "create";
-    Error? : CommandError | null;
+    task  : "create";
 }
 
 export class UpsertEntitiesResult extends SyncTaskResult {
-    task   : "upsert";
-    Error? : CommandError | null;
+    task  : "upsert";
 }
 
 export class ReadEntitiesResult extends SyncTaskResult {
@@ -182,28 +179,24 @@ export class ReadEntitiesResult extends SyncTaskResult {
 
 export class QueryEntitiesResult extends SyncTaskResult {
     task        : "query";
-    Error?      : CommandError | null;
     container?  : string | null;
     ids         : string[];
     references? : ReferencesResult[] | null;
 }
 
 export class PatchEntitiesResult extends SyncTaskResult {
-    task   : "patch";
-    Error? : CommandError | null;
+    task  : "patch";
 }
 
 export class DeleteEntitiesResult extends SyncTaskResult {
-    task   : "delete";
-    Error? : CommandError | null;
+    task  : "delete";
 }
 
 export abstract class SyncMessageResult extends SyncTaskResult {
-    Error? : CommandError | null;
 }
 
 export class SendMessageResult extends SyncMessageResult {
-    task   : "message";
+    task  : "message";
 }
 
 export class SendCommandResult extends SyncMessageResult {
@@ -220,9 +213,8 @@ export class SubscribeMessageResult extends SyncTaskResult {
 }
 
 export class ReserveKeysResult extends SyncTaskResult {
-    task   : "reserveKeys";
-    Error? : CommandError | null;
-    keys?  : ReservedKeys | null;
+    task  : "reserveKeys";
+    keys? : ReservedKeys | null;
 }
 
 export class ReservedKeys {
