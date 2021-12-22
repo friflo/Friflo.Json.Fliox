@@ -374,13 +374,20 @@ class App {
         return undefined;
     }
 
-    errorAsHtml (message) {
+    bracketValue = /\[(.*?)\]/;
+
+    errorAsHtml (message, p) {
         // first line: error type, second line: error message
         const pos = message.indexOf(' > ');
         let error = message;
         if (pos > 0) {
             let reason = message.substring(pos + 3);
             if (reason.startsWith("at ")) {
+                const matches = reason.match(this.bracketValue);
+                if (p && matches[1]) {
+                    const link = `<a target="_blank" href="./rest/${p.database}/${p.container}/${matches[1]}">${matches[1]}</a>`;
+                    reason = reason.replace(matches[1], link);
+                }
                 reason = reason.replace("] ", "]<br>");
             }
             error =  message.substring(0, pos) + " ><br>" + reason;
@@ -830,7 +837,7 @@ class App {
         readEntities.innerHTML  = containerLink + reload;
         if (!response.ok) {
             const error = await response.text();
-            entityExplorer.innerHTML = this.errorAsHtml(error);
+            entityExplorer.innerHTML = this.errorAsHtml(error, p);
             return;
         }
         let     content = await response.json();
