@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             Scalar sum = new Scalar(0);
             var eval = array.Eval(cx);
             foreach (var val in eval.values) {
-                sum = sum.Add(val);
+                sum = sum.Add(val, this);
             }
             evalResult.SetSingle(sum);
             return evalResult;
@@ -149,10 +149,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             var eval = array.Eval(cx);
             int count = 0;
             foreach (var val in eval.values) {
-                sum = sum.Add(val);
+                sum = sum.Add(val, this);
                 count++;
             }
-            var average = sum.Divide(new Scalar((double)count)); 
+            var average = sum.Divide(new Scalar((double)count), this); 
             evalResult.SetSingle(average);
             return evalResult;
         }

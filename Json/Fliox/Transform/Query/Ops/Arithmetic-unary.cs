@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = value.Eval(cx);
             foreach (var val in eval.values) {
-                var result = zero.Subtract(val);
+                var result = zero.Subtract(val, this);
                 evalResult.Add(result);
             }
             return evalResult;

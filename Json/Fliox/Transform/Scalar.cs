@@ -199,6 +199,8 @@ namespace Friflo.Json.Fliox.Transform
                     if (other.IsNull)
                         return True;
                     return Null;
+                case ScalarType.Error:
+                    return this;
                 default:
                     throw new NotSupportedException($"Scalar does not support EqualsTo() for type: {type}");                
             }
@@ -373,8 +375,8 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         // --- binary arithmetic operations ---
-        public Scalar Add(in Scalar other) {
-            if (!AssertBinaryNumbers(other, out Scalar error))
+        public Scalar Add(in Scalar other, Operation operation) {
+            if (!AssertBinaryNumbers(other, operation, out Scalar error))
                 return error;
             if (IsDouble) {
                 if (other.IsDouble)
@@ -386,8 +388,8 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   + other.LongValue);
         }
         
-        public Scalar Subtract(in Scalar other) {
-            if (!AssertBinaryNumbers(other, out Scalar error))
+        public Scalar Subtract(in Scalar other, Operation operation) {
+            if (!AssertBinaryNumbers(other, operation, out Scalar error))
                 return error;
             if (IsDouble) {
                 if (other.IsDouble)
@@ -399,8 +401,8 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   - other.LongValue);
         }
         
-        public Scalar Multiply(in Scalar other) {
-            if (!AssertBinaryNumbers(other, out Scalar error))
+        public Scalar Multiply(in Scalar other, Operation operation) {
+            if (!AssertBinaryNumbers(other, operation, out Scalar error))
                 return error;
             if (IsDouble) {
                 if (other.IsDouble)
@@ -412,8 +414,8 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   * other.LongValue);
         }
         
-        public Scalar Divide(in Scalar other) {
-            if (!AssertBinaryNumbers(other, out Scalar error))
+        public Scalar Divide(in Scalar other, Operation operation) {
+            if (!AssertBinaryNumbers(other, operation, out Scalar error))
                 return error;
             if (IsDouble) {
                 if (other.IsDouble)
@@ -425,12 +427,22 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   / other.LongValue);
         }
         
-        private bool AssertBinaryNumbers(in Scalar other, out Scalar error) {
+        private bool AssertBinaryNumbers(in Scalar other, Operation operation, out Scalar error) {
             if (IsNumber && other.IsNumber) {
                 error = default;
                 return true;
             }
-            error = Error($"expect two numeric operands. left: {this}, right: {other}");
+            var sb = new StringBuilder();
+            sb.Append("expect numeric operands. left: ");
+            AppendTo(sb);
+            sb.Append(", right: ");
+            other.AppendTo(sb);
+            if (operation != null) {
+                sb.Append(" in ");
+                var cx = new AppendCx(sb);
+                operation.AppendLinq(cx);
+            }
+            error = Error(sb.ToString());
             return false;
         }
         

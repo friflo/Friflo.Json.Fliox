@@ -39,16 +39,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- arithmetic operators
             {
                 Eval ("o => o.intVal * o.strVal", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 42, right: 'abc'", error);
+                AreEqual("expect numeric operands. left: 42, right: 'abc' in o.intVal * o.strVal", error);
             } {
                 Eval ("o => o.intVal + o.strVal", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 42, right: 'abc'", error);
+                AreEqual("expect numeric operands. left: 42, right: 'abc' in o.intVal + o.strVal", error);
             } {
                 Eval ("o => o.strVal - o.intVal", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 'abc', right: 42", error);
+                AreEqual("expect numeric operands. left: 'abc', right: 42 in o.strVal - o.intVal", error);
             } {
                 Eval ("o => o.strVal / o.intVal", Json, eval, out error);
-                AreEqual("expect two numeric operands. left: 'abc', right: 42", error);
+                AreEqual("expect numeric operands. left: 'abc', right: 42 in o.strVal / o.intVal", error);
             }
             // --- string functions
             {

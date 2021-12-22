@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var result = pair.left.Add(pair.right);
+                var result = pair.left.Add(pair.right, this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var result = pair.left.Subtract(pair.right);
+                var result = pair.left.Subtract(pair.right, this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var result = pair.left.Multiply(pair.right);
+                var result = pair.left.Multiply(pair.right, this);
                 evalResult.Add(result);
             }
             return evalResult;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var result = pair.left.Divide(pair.right);
+                var result = pair.left.Divide(pair.right, this);
                 evalResult.Add(result);
             }
             return evalResult;
