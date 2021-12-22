@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         }
         
         private static void CompareTo(int expect, Scalar left, Scalar right) {
-            var compare = left.CompareTo(right, null, null, out Scalar result);
+            var compare = left.CompareTo(right, null, out Scalar result);
             AreEqual(ScalarType.Undefined, result.type);
             AreEqual(expect, compare);
         }

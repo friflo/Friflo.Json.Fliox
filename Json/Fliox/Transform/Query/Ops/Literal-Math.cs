@@ -5,7 +5,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public sealed class PiLiteral : Literal
     {
-        public   override void AppendLinq(AppendCx cx) => cx.Append("PI");
+        public   override string    Name => "PI";
+        public   override void      AppendLinq(AppendCx cx) => cx.Append("PI");
 
         public PiLiteral() { }
 
@@ -17,7 +18,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class EulerLiteral : Literal
     {
-        public   override void AppendLinq(AppendCx cx) => cx.Append("E");
+        public   override string    Name => "E";
+        public   override void      AppendLinq(AppendCx cx) => cx.Append("E");
 
         public EulerLiteral() { }
 
@@ -29,7 +31,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class TauLiteral : Literal
     {
-        public   override void AppendLinq(AppendCx cx) => cx.Append("Tau");
+        public   override string    Name => "Tau";
+        public   override void      AppendLinq(AppendCx cx) => cx.Append("Tau");
 
         public TauLiteral() { }
 

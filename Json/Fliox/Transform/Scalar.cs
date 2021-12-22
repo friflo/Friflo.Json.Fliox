@@ -222,14 +222,14 @@ namespace Friflo.Json.Fliox.Transform
             return Error(sb.ToString());
         }
         
-        public long CompareTo(in Scalar other, Operation left, Operation right, out Scalar result) {
+        public long CompareTo(in Scalar other, Operation operation, out Scalar result) {
             switch (type) {
                 case ScalarType.String:
                     if (other.IsString) {
                         result = default;
                         return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
                     }
-                    return CompareDefault(other, left, right, out result);
+                    return CompareDefault(other, operation, out result);
                 case ScalarType.Double:
                     if (other.IsDouble) {
                         result = default;
@@ -239,7 +239,7 @@ namespace Friflo.Json.Fliox.Transform
                         result = default;
                         return CompareDouble(DoubleValue, other.LongValue);
                     }
-                    return CompareDefault(other, left, right, out result);
+                    return CompareDefault(other, operation, out result);
                 case ScalarType.Long:
                     if (other.IsDouble) {
                         result = default;
@@ -249,13 +249,13 @@ namespace Friflo.Json.Fliox.Transform
                         result = default;
                         return LongValue - other.LongValue;
                     }
-                    return CompareDefault(other, left, right, out result);
+                    return CompareDefault(other, operation, out result);
                 case ScalarType.Bool:
                     if (other.IsBool) {
                         result = default;
                         return primitiveValue - other.primitiveValue; // possible primitive values: 0 or 1
                     }
-                    return CompareDefault(other, left, right, out result);
+                    return CompareDefault(other, operation, out result);
                 case ScalarType.Null:
                     if (other.IsNull) {
                         result = default;
@@ -276,29 +276,31 @@ namespace Friflo.Json.Fliox.Transform
             return dif < 0 ? -1 : (dif > 0 ? +1 : 0);
         }
         
-        private int CompareDefault(in Scalar other, Operation left, Operation right, out Scalar result) {
+        private int CompareDefault(in Scalar other, Operation operation, out Scalar result) {
             switch (other.type) {
                 case ScalarType.Null:   result = Null;                              break;
                 case ScalarType.Error:  result = other;                             break;
-                default:                result = CompareError(other, left, right);  break;                
+                default:                result = CompareError(other, operation);  break;                
             }
             return 0;
         }
         
-        private Scalar CompareError(in Scalar other, Operation left, Operation right) {
+        private Scalar CompareError(in Scalar other, Operation operation) {
             var sb = new StringBuilder();
             sb.Append("Compare failed ");
             AppendTo(sb);
-            sb.Append(" with ");
+            if (operation != null) {
+                sb.Append(' ');
+                sb.Append(operation.Name);
+                sb.Append(' ');
+            } else {
+                sb.Append(" with ");
+            }
             other.AppendTo(sb);
             var appendCx = new AppendCx(sb);
-            if (left != null) {
-                sb.Append(" left: ");
-                left.AppendLinq(appendCx);
-            }
-            if (right != null) {
-                sb.Append(" right: ");
-                right.AppendLinq(appendCx);
+            if (operation != null) {
+                sb.Append(" in ");
+                operation.AppendLinq(appendCx);
             }
             return Error(sb.ToString());
         }

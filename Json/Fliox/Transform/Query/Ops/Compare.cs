@@ -32,7 +32,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Equal() { }
         public Equal(Operation left, Operation right) : base(left, right) { }
 
-        public   override void AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "==", left, right);
+        public   override string    Name => "==";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "==", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -52,7 +53,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public NotEqual() { }
         public NotEqual(Operation left, Operation right) : base(left, right) { }
 
-        public   override void AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "!=", left, right);
+        public   override string    Name => "!=";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "!=", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
@@ -76,13 +78,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessThan() { }
         public LessThan(Operation left, Operation right) : base(left, right) { }
         
-        public   override void AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<", left, right);
+        public   override string    Name => "<";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var compare = pair.left.CompareTo(pair.right, left, right, out Scalar result);
+                var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
                 if (!result.IsNull)
@@ -98,13 +101,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public LessThanOrEqual() { }
         public LessThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
-        public   override void AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<=", left, right);
+        public   override string    Name => "<=";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<=", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var compare = pair.left.CompareTo(pair.right, left, right, out Scalar result);
+                var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
                 if (!result.IsNull)
@@ -120,13 +124,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterThan() { }
         public GreaterThan(Operation left, Operation right) : base(left, right) { }
         
-        public   override void AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">", left, right);
+        public   override string    Name => ">";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var compare = pair.left.CompareTo(pair.right, left, right, out Scalar result);
+                var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
                 if (!result.IsNull)
@@ -142,13 +147,14 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public GreaterThanOrEqual() { }
         public GreaterThanOrEqual(Operation left, Operation right) : base(left, right) { }
         
-        public   override void AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">=", left, right);
+        public   override string    Name => ">=";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">=", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var compare = pair.left.CompareTo(pair.right, left, right, out Scalar result);
+                var compare = pair.left.CompareTo(pair.right, this, out Scalar result);
                 if (result.IsError)
                     return evalResult.SetError(result);
                 if (!result.IsNull)
