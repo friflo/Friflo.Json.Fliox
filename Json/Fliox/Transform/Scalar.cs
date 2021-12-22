@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Transform
                         return stringValue == other.stringValue ? True : False;
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other, operation);
+                    return EqualsDefault(other, operation);
                 case ScalarType.Double:
                     if (other.IsDouble)
                         return DoubleValue == other.DoubleValue ? True : False;
@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Transform
                         return EqualsDouble(DoubleValue, other.LongValue);
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other, operation);
+                    return EqualsDefault(other, operation);
                 case ScalarType.Long:
                     if (other.IsDouble)
                         return EqualsDouble(LongValue, other.DoubleValue);
@@ -188,13 +188,13 @@ namespace Friflo.Json.Fliox.Transform
                         return LongValue == other.LongValue ? True : False;
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other, operation);
+                    return EqualsDefault(other, operation);
                 case ScalarType.Bool:
                     if (other.IsBool)
                         return primitiveValue == other.primitiveValue ? True : False; // possible primitive values: 0 or 1
                     if (other.IsNull)
                         return Null;
-                    return EqualsError(other, operation);
+                    return EqualsDefault(other, operation);
                 case ScalarType.Null:
                     if (other.IsNull)
                         return True;
@@ -208,11 +208,11 @@ namespace Friflo.Json.Fliox.Transform
             return left == right ? True : False;
         }
         
-        private Scalar EqualsError(in Scalar other, Operation operation) {
+        private Scalar EqualsDefault(in Scalar other, Operation operation) {
             var sb = new StringBuilder();
-            sb.Append("Cannot compare ");
+            sb.Append("Equals failed ");
             AppendTo(sb);
-            sb.Append(" with ");
+            sb.Append(" == ");
             other.AppendTo(sb);
             if (operation != null) {
                 sb.Append(" in ");
@@ -229,7 +229,7 @@ namespace Friflo.Json.Fliox.Transform
                         result = default;
                         return string.Compare(stringValue, other.stringValue, StringComparison.Ordinal);
                     }
-                    return ReturnDefault(other, left, right, out result);
+                    return CompareDefault(other, left, right, out result);
                 case ScalarType.Double:
                     if (other.IsDouble) {
                         result = default;
@@ -239,7 +239,7 @@ namespace Friflo.Json.Fliox.Transform
                         result = default;
                         return CompareDouble(DoubleValue, other.LongValue);
                     }
-                    return ReturnDefault(other, left, right, out result);
+                    return CompareDefault(other, left, right, out result);
                 case ScalarType.Long:
                     if (other.IsDouble) {
                         result = default;
@@ -249,13 +249,13 @@ namespace Friflo.Json.Fliox.Transform
                         result = default;
                         return LongValue - other.LongValue;
                     }
-                    return ReturnDefault(other, left, right, out result);
+                    return CompareDefault(other, left, right, out result);
                 case ScalarType.Bool:
                     if (other.IsBool) {
                         result = default;
                         return primitiveValue - other.primitiveValue; // possible primitive values: 0 or 1
                     }
-                    return ReturnDefault(other, left, right, out result);
+                    return CompareDefault(other, left, right, out result);
                 case ScalarType.Null:
                     if (other.IsNull) {
                         result = default;
@@ -276,7 +276,7 @@ namespace Friflo.Json.Fliox.Transform
             return dif < 0 ? -1 : (dif > 0 ? +1 : 0);
         }
         
-        private int ReturnDefault(in Scalar other, Operation left, Operation right, out Scalar result) {
+        private int CompareDefault(in Scalar other, Operation left, Operation right, out Scalar result) {
             switch (other.type) {
                 case ScalarType.Null:   result = Null;                              break;
                 case ScalarType.Error:  result = other;                             break;
@@ -287,7 +287,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private Scalar CompareError(in Scalar other, Operation left, Operation right) {
             var sb = new StringBuilder();
-            sb.Append("Cannot compare ");
+            sb.Append("Compare failed ");
             AppendTo(sb);
             sb.Append(" with ");
             other.AppendTo(sb);
