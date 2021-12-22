@@ -297,8 +297,8 @@ namespace Friflo.Json.Fliox.Transform
                 sb.Append(" with ");
             }
             other.AppendTo(sb);
-            var appendCx = new AppendCx(sb);
             if (operation != null) {
+                var appendCx = new AppendCx(sb);
                 sb.Append(" in ");
                 operation.AppendLinq(appendCx);
             }
