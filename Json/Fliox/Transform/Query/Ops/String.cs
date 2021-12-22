@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var contains = pair.left.Contains(pair.right);
+                var contains = pair.left.Contains(pair.right, this);
                 evalResult.Add(contains);
             }
             return evalResult;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var startsWith = pair.left.StartsWith(pair.right);
+                var startsWith = pair.left.StartsWith(pair.right, this);
                 evalResult.Add(startsWith);
             }
             return evalResult;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             evalResult.Clear();
             var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
             foreach (var pair in eval) {
-                var endsWith = pair.left.EndsWith(pair.right);
+                var endsWith = pair.left.EndsWith(pair.right, this);
                 evalResult.Add(endsWith);
             }
             return evalResult;

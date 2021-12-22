@@ -447,30 +447,40 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         // --- binary string expressions
-        public Scalar Contains(in Scalar other) {
-            if (!AssertBinaryString(other, out Scalar error))
+        public Scalar Contains(in Scalar other, Operation operation) {
+            if (!AssertBinaryString(other, operation, out Scalar error))
                 return error;
             return stringValue.Contains(other.stringValue) ? True : False;
         }
         
-        public Scalar StartsWith(in Scalar other) {
-            if (!AssertBinaryString(other, out Scalar error))
+        public Scalar StartsWith(in Scalar other, Operation operation) {
+            if (!AssertBinaryString(other, operation, out Scalar error))
                 return error;
             return stringValue.StartsWith(other.stringValue) ? True : False;
         }
         
-        public Scalar EndsWith(in Scalar other) {
-            if (!AssertBinaryString(other, out Scalar error))
+        public Scalar EndsWith(in Scalar other, Operation operation) {
+            if (!AssertBinaryString(other, operation, out Scalar error))
                 return error;
             return stringValue.EndsWith(other.stringValue) ? True : False;
         }
         
-        private bool AssertBinaryString(in Scalar other, out Scalar error) {
+        private bool AssertBinaryString(in Scalar other, Operation operation, out Scalar error) {
             if (IsString && other.IsString) {
                 error = default;
                 return true;
             }
-            error = Error($"expect two string operands. left: {this}, right: {other}");
+            var sb = new StringBuilder();
+            sb.Append("expect string operands. left: ");
+            AppendTo(sb);
+            sb.Append(", right: ");
+            other.AppendTo(sb);
+            if (operation != null) {
+                sb.Append(" in ");
+                var cx = new AppendCx(sb);
+                operation.AppendLinq(cx);
+            }
+            error = Error(sb.ToString());
             return false;
         }
         

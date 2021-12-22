@@ -53,20 +53,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- string functions
             {
                 Eval ("o => o.strVal.Contains(o.intVal)", Json, eval, out error);
-                AreEqual("expect two string operands. left: 'abc', right: 42", error);
+                AreEqual("expect string operands. left: 'abc', right: 42 in o.strVal.Contains(o.intVal)", error);
             } {
                 Eval ("o => o.strVal.StartsWith(o.intVal)", Json, eval, out error);
-                AreEqual("expect two string operands. left: 'abc', right: 42", error);
+                AreEqual("expect string operands. left: 'abc', right: 42 in o.strVal.StartsWith(o.intVal)", error);
             } {
                 Eval ("o => o.strVal.EndsWith(o.intVal)", Json, eval, out error);
-                AreEqual("expect two string operands. left: 'abc', right: 42", error);
+                AreEqual("expect string operands. left: 'abc', right: 42 in o.strVal.EndsWith(o.intVal)", error);
             } {
                 Eval ("o => o.intVal.EndsWith('abc')", Json, eval, out error);
-                AreEqual("expect two string operands. left: 42, right: 'abc'", error);
-            } /* {
-                Eval ("o => o.EndsWith(.bar)", Json, eval, out error);
-                AreEqual("expect two string operands. left: 42, right: 'abc'", error);
-            } */
+                AreEqual("expect string operands. left: 42, right: 'abc' in o.intVal.EndsWith('abc')", error);
+            }
         }
         
         [Test]
