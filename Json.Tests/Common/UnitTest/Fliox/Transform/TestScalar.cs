@@ -78,17 +78,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertIsFalse(t.EqualsTo(f, null));
             AssertIsFalse(f.EqualsTo(t, null));
             
-            AreEqual("Cannot compare 1 with 'hello'",       lng1.EqualsTo(str,  null).ErrorMessage);
-            AreEqual("Cannot compare 1 with true",          lng1.EqualsTo(t,    null).ErrorMessage);
+            AreEqual("Equals failed 1 == 'hello'",       lng1.EqualsTo(str,  null).ErrorMessage);
+            AreEqual("Equals failed 1 == true",          lng1.EqualsTo(t,    null).ErrorMessage);
             
-            AreEqual("Cannot compare 1 with 'hello'",       dbl1.EqualsTo(str,  null).ErrorMessage);
-            AreEqual("Cannot compare 1 with true",          dbl1.EqualsTo(t,    null).ErrorMessage);
+            AreEqual("Equals failed 1 == 'hello'",       dbl1.EqualsTo(str,  null).ErrorMessage);
+            AreEqual("Equals failed 1 == true",          dbl1.EqualsTo(t,    null).ErrorMessage);
             
-            AreEqual("Cannot compare true with 1",          t.EqualsTo(lng1,    null).ErrorMessage);
-            AreEqual("Cannot compare true with 'hello'",    t.EqualsTo(str,     null).ErrorMessage);
+            AreEqual("Equals failed true == 1",          t.EqualsTo(lng1,    null).ErrorMessage);
+            AreEqual("Equals failed true == 'hello'",    t.EqualsTo(str,     null).ErrorMessage);
 
-            AreEqual("Cannot compare 'hello' with true",    str.EqualsTo(t,     null).ErrorMessage);
-            AreEqual("Cannot compare 'hello' with 1",       str.EqualsTo(lng1,  null).ErrorMessage);
+            AreEqual("Equals failed 'hello' == true",    str.EqualsTo(t,     null).ErrorMessage);
+            AreEqual("Equals failed 'hello' == 1",       str.EqualsTo(lng1,  null).ErrorMessage);
         }
         
         private static void AssertIsTrue(Scalar value) {
