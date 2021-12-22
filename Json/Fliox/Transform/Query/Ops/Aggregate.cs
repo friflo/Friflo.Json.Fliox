@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Count() { }
         public Count(Field field) : base(field) { }
 
-        public   override string    Name => "Count";
+        public   override string    OperationName => "Count";
         public   override void      AppendLinq(AppendCx cx) { field.AppendLinq(cx); cx.sb.Append(".Count()"); }
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Min() { }
         public Min(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public   override string    Name => "Min";
+        public   override string    OperationName => "Min";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Min", field, arg, array, cx);
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Max() { }
         public Max(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public   override string    Name => "Max";
+        public   override string    OperationName => "Max";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Max", field, arg, array, cx);
 
         internal override EvalResult Eval(EvalCx cx) {
@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Sum() { }
         public Sum(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public   override string    Name => "Sum";
+        public   override string    OperationName => "Sum";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Sum", field, arg, array, cx);
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Average() { }
         public Average(Field field, string arg, Operation array) : base(field, arg, array) { }
 
-        public   override string    Name => "Average";
+        public   override string    OperationName => "Average";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqArrow("Average", field, arg, array, cx);
 
         internal override EvalResult Eval(EvalCx cx) {

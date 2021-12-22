@@ -76,12 +76,12 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public abstract class Operation
     {
-        public    abstract  string      Name        { get; }
-        public    abstract  void        AppendLinq  (AppendCx cx);
-        internal  abstract  void        Init        (OperationContext cx, InitFlags flags);
-        internal  abstract  EvalResult  Eval        (EvalCx cx);
-        internal  virtual   bool        IsNumeric   => false;
-        public              string      Linq        { get {
+        public    abstract  string      OperationName   { get; }
+        public    abstract  void        AppendLinq      (AppendCx cx);
+        internal  abstract  void        Init            (OperationContext cx, InitFlags flags);
+        internal  abstract  EvalResult  Eval            (EvalCx cx);
+        internal  virtual   bool        IsNumeric       => false;
+        public              string      Linq            { get {
             var cs = new AppendCx(new StringBuilder());
             AppendLinq(cs);
             return cs.sb.ToString();

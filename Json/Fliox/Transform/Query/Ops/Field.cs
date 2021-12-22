@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
         [Fri.Ignore]    internal    EvalResult  evalResult;
 
-        public   override string    Name => "name";
+        public   override string    OperationName => "name";
         public   override void      AppendLinq(AppendCx cx) {
             if (name[0] == '.') {
                 cx.Append(cx.lambdaArg);    

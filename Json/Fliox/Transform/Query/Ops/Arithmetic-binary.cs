@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Add() { }
         public Add(Operation left, Operation right) : base(left, right) { }
 
-        public   override string    Name => "+";
+        public   override string    OperationName => "+";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "+", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Subtract() { }
         public Subtract(Operation left, Operation right) : base(left, right) { }
 
-        public   override string    Name => "-";
+        public   override string    OperationName => "-";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "-", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Multiply() { }
         public Multiply(Operation left, Operation right) : base(left, right) { }
 
-        public   override string    Name => "*";
+        public   override string    OperationName => "*";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "*", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         public Divide() { }
         public Divide(Operation left, Operation right) : base(left, right) { }
 
-        public   override string    Name => "/";
+        public   override string    OperationName => "/";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "/", left, right);
         
         internal override EvalResult Eval(EvalCx cx) {
