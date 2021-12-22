@@ -383,10 +383,11 @@ class App {
         if (pos > 0) {
             let reason = message.substring(pos + 3);
             if (reason.startsWith("at ")) {
-                const matches = reason.match(this.bracketValue);
-                if (p && matches[1]) {
-                    const link = `<a target="_blank" href="./rest/${p.database}/${p.container}/${matches[1]}">${matches[1]}</a>`;
-                    reason = reason.replace(matches[1], link);
+                const id = reason.match(this.bracketValue)[1];
+                if (p && id) {
+                    const coordinate = JSON.stringify({ database: p.database, container: p.container, id: id });
+                    const link = `<a  href="#" onclick='app.loadEntity(${coordinate})'>${id}</a>`;
+                    reason = reason.replace(id, link);
                 }
                 reason = reason.replace("] ", "]<br>");
             }
