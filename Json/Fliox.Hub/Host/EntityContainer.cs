@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     var match = evaluator.Filter(json, jsonFilter, out string filterError);
                     if (filterError != null) {
-                        var message = $"key: '{key}' - {filterError}";
+                        var message = $"at {name}[{key}] {filterError}";
                         return new QueryEntitiesResult{ Error = new CommandError (TaskErrorResultType.FilterError, message) };
                     }
                     if (!match)

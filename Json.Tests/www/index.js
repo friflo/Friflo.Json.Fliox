@@ -376,8 +376,15 @@ class App {
 
     errorAsHtml (message) {
         // first line: error type, second line: error message
-        const pos = message.indexOf('>') + 1;
-        const error = pos == 0 ? message : message.substring(0, pos) + "<br>" + message.substring(pos);
+        const pos = message.indexOf(' > ');
+        let error = message;
+        if (pos > 0) {
+            let reason = message.substring(pos + 3);
+            if (reason.startsWith("at ")) {
+                reason = reason.replace("] ", "]<br>");
+            }
+            error =  message.substring(0, pos) + " ><br>" + reason;
+        }
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
