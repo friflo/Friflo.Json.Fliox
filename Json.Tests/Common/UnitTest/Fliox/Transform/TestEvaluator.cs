@@ -158,12 +158,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 }
                 // --- success
                 {
-                    var result = Filter ("o => o.foo.EndsWith('abc')", Json, eval, out _);
-                    IsFalse(result);
-                } {
                     var result = Filter ("o => o.strVal.EndsWith('abc')", Json, eval, out _);
                     IsTrue(result);
                 } {
+                    // missing member o.foo => o.foo = null
+                    var result = Filter ("o => o.foo.EndsWith('abc')", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    // missing member o.foo => o.foo = null
                     var result = Filter ("o => o.strVal.EndsWith(o.foo)", Json, eval, out _);
                     IsFalse(result);
                 }
