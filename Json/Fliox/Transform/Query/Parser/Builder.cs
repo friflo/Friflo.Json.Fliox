@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TT.Double:         Nullary(node, out error);               return new DoubleLiteral(node.ValueDbl);
                 case TT.Long:           Nullary(node, out error);               return new LongLiteral  (node.ValueLng);
                 
-                case TT.Symbol:         return GetSymbolOp     (node, cx, out error);
+                case TT.Symbol:         return GetSymbolOp  (node, cx, out error);
                 case TT.Function:       return GetFunction  (node, cx, out error);
                 case TT.BracketOpen:    return GetScope     (node, cx, out error);
                 default:

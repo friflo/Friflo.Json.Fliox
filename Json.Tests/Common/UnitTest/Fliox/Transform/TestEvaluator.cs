@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Parser;
@@ -30,10 +31,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 }
                 // --- success
                 {
-                    // Abs(null) = null, 1 < null = null
-                    var result = Eval ("o => 1 < Abs(o.nullVal)", Json, eval, out error);
-                    IsNull(result);
+                    var result = Eval ("o => Abs(-1)", Json, eval, out error);
+                    AreEqual(1, result);
+                } {
+                    var result = Eval ("o => Log(E)", Json, eval, out error);
+                    AreEqual(1, result);
+                } {
+                    var result = Eval ("o => Exp(1)", Json, eval, out error);
+                    AreEqual(Math.E, result);
+                } {
+                    var result = Eval ("o => Sqrt(4)", Json, eval, out error);
+                    AreEqual(2, result);
+                } {
+                    var result = Eval ("o => Floor(2.5)", Json, eval, out error);
+                    AreEqual(2, result);
+                } {
+                    var result = Eval ("o => Ceiling(2.5)", Json, eval, out error);
+                    AreEqual(3, result);
                 }
+                // --- null
+                {
+                    var result = Eval ("o => Abs(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => Log(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => Exp(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => Sqrt(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => Floor(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => Ceiling(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
+                } /* { todo
+                    var result = Eval ("o => -o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                } */
             }
         }
         
@@ -54,6 +92,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 } {
                     Eval ("o => o.strVal / o.intVal", Json, eval, out error);
                     AreEqual("expect numeric operands. left: 'abc', right: 42 in o.strVal / o.intVal", error);
+                }
+                // --- success
+                {
+                    var result = Eval ("o => o.intVal * 1", Json, eval, out error);
+                    AreEqual(42, result);
+                } {
+                    var result = Eval ("o => o.intVal + 1", Json, eval, out error);
+                    AreEqual(43, result);
+                } {
+                    var result = Eval ("o => o.intVal - 1", Json, eval, out error);
+                    AreEqual(41, result);
+                } {
+                    var result = Eval ("o => o.intVal / 2", Json, eval, out error);
+                    AreEqual(21, result);
                 }
             }
         }
@@ -144,10 +196,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 } {
                     var result = Filter ("o => 1.1 < 1.2", Json, eval, out _);
                     IsTrue(result);
-                }
-                {
+                } {
                     var result = Eval ("1 == 1", Json, eval, out _);
                     AreEqual(true, result);
+                } {
+                    // Abs(null) = null, 1 < null = null
+                    var result = Eval ("o => 1 < Abs(o.nullVal)", Json, eval, out error);
+                    IsNull(result);
                 }
             }
         }
