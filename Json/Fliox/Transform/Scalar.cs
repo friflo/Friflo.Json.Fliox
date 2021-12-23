@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private Scalar EqualsDefault(in Scalar other, Operation operation) {
             var sb = new StringBuilder();
-            sb.Append("Equals failed ");
+            sb.Append("incompatible compare operands: ");
             AppendTo(sb);
             sb.Append(" == ");
             other.AppendTo(sb);
@@ -289,7 +289,7 @@ namespace Friflo.Json.Fliox.Transform
         
         private Scalar CompareError(in Scalar other, Operation operation) {
             var sb = new StringBuilder();
-            sb.Append("Compare failed ");
+            sb.Append("incompatible compare operands: ");
             AppendTo(sb);
             if (operation != null) {
                 sb.Append(' ');

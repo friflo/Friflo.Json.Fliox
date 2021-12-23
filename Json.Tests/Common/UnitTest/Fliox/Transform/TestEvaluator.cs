@@ -18,7 +18,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             }
         }
 
-        private const string  Json    = @"{""strVal"": ""abc"", ""intVal"": 42, ""nullVal"": null}";
+        private const string  Json    =
+@"{
+    ""strVal"":  ""abc"",
+    ""intVal"":  42,
+    ""nullVal"": null,
+    ""boolVal"": true
+}";
 
         
         private static void AssertEval(JsonEvaluator eval) {
@@ -63,6 +69,46 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 Eval ("o => o.intVal.EndsWith('abc')", Json, eval, out error);
                 AreEqual("expect string operands. left: 42, right: 'abc' in o.intVal.EndsWith('abc')", error);
+            }
+        }
+        
+        [Test]
+        public static void TestEvalEquality() {
+            using (var eval = new JsonEvaluator()) {
+                string  error;
+                {
+                    Eval ("o => o.strVal == 1", Json, eval, out error);
+                    AreEqual("incompatible compare operands: 'abc' == 1 in o.strVal == 1", error);
+                } {
+                    Eval ("o => o.strVal == true", Json, eval, out error);
+                    AreEqual("incompatible compare operands: 'abc' == true in o.strVal == true", error);
+                } {
+                    Eval ("o => true == o.strVal", Json, eval, out error);
+                    AreEqual("incompatible compare operands: true == 'abc' in true == o.strVal", error);
+                } {
+                    Eval ("o => 1 == o.strVal", Json, eval, out error);
+                    AreEqual("incompatible compare operands: 1 == 'abc' in 1 == o.strVal", error);
+                }
+            }
+        }
+        
+        [Test]
+        public static void TestEvalCompare() {
+            using (var eval = new JsonEvaluator()) {
+                string  error;
+                {
+                    Eval ("o => o.strVal < 1", Json, eval, out error);
+                    AreEqual("incompatible compare operands: 'abc' < 1 in o.strVal < 1", error);
+                } {
+                    Eval ("o => o.strVal < o.boolVal", Json, eval, out error);
+                    AreEqual("incompatible compare operands: 'abc' < true in o.strVal < o.boolVal", error);
+                } {
+                    Eval ("o => o.boolVal < o.strVal", Json, eval, out error);
+                    AreEqual("incompatible compare operands: true < 'abc' in o.boolVal < o.strVal", error);
+                } {
+                    Eval ("o => 1 < o.strVal", Json, eval, out error);
+                    AreEqual("incompatible compare operands: 1 < 'abc' in 1 < o.strVal", error);
+                }
             }
         }
         
