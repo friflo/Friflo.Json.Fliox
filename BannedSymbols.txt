@@ -1,0 +1,15 @@
+
+# [roslyn-analyzers/BannedApiAnalyzers.Help.md at main · dotnet/roslyn-analyzers]
+# https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
+
+# --- process handling
+T:System.Diagnostics.Process;                   avoid exploits running or observing other processes
+
+# --- reflection
+M:System.Type.GetType(System.String)                                            avoid exploits by ensuring only explicit given Types are used
+M:System.Activator.CreateInstance(System.String,System.String);                 avoid exploits by ensuring only explicit given Types are instantiated
+M:System.Activator.CreateInstance(System.String,System.String,System.Object[]); avoid exploits by ensuring only explicit given Types are instantiated
+
+
+# M:System.Console.WriteLine(System.String);    Don't use
+# M:System.Console.Write(System.String);        Don't use

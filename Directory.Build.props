@@ -2,5 +2,14 @@
   <PropertyGroup>
     <!-- Renamed default output folders obj & bin to .obj & .bin to avoid importing them by Unity -->
     <BaseIntermediateOutputPath>.obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    
+    <!-- Ban APIs listed in BannedSymbols.txt -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.3"  PrivateAssets="All" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)/BannedSymbols.txt" />
+  </ItemGroup>
+  
 </Project>
