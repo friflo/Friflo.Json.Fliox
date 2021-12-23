@@ -107,6 +107,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var result = Eval ("o => o.intVal / 2", Json, eval, out error);
                     AreEqual(21, result);
                 }
+                // --- null left
+                {
+                    var result = Eval ("o => o.nullVal * 1", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => o.nullVal + 1", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => o.nullVal - 1", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => o.nullVal / 2", Json, eval, out error);
+                    IsNull(result);
+                }
+                // --- null right
+                {
+                    var result = Eval ("o => 1 * o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 1 + o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 1 - o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 2 / o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                }
             }
         }
         
@@ -139,6 +167,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var result = Filter ("o => o.strVal.EndsWith(o.foo)", Json, eval, out _);
                     IsFalse(result);
                 }
+                // --- null left
+                {
+                    var result = Eval ("o => o.nullVal.Contains('abc')", Json, eval, out _);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => o.nullVal.EndsWith('abc')", Json, eval, out _);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => o.nullVal.StartsWith('abc')", Json, eval, out _);
+                    IsNull(result);
+                }
+                // --- null right
+                {
+                    var result = Eval ("o => 'abc'.Contains(o.nullVal)", Json, eval, out _);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 'abc'.EndsWith(o.nullVal)", Json, eval, out _);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 'abc'.StartsWith(o.nullVal)", Json, eval, out _);
+                    IsNull(result);
+                }
             }
         }
         
@@ -164,6 +214,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 {
                     var result = Filter ("o => 1.1 == 1.1", Json, eval, out _);
                     IsTrue(result);
+                }
+                // --- null left / right
+                {
+                    var result = Eval ("o => o.nullVal == 1", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 1 == o.nullVal", Json, eval, out error);
+                    IsNull(result);
                 }
             }
         }
@@ -199,6 +257,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 } {
                     var result = Eval ("1 == 1", Json, eval, out _);
                     AreEqual(true, result);
+                }
+                // --- null
+                {
+                    var result = Filter ("o => o.nullVal < 1", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    var result = Filter ("o => 1 < o.nullVal", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    var result = Filter ("o => 1.1 < o.nullVal", Json, eval, out _);
+                    IsFalse(result);
+                } {
+                    var result = Filter ("o => 'abc' < o.nullVal", Json, eval, out _);
+                    IsFalse(result);
                 } {
                     // Abs(null) = null, 1 < null = null
                     var result = Eval ("o => 1 < Abs(o.nullVal)", Json, eval, out error);
