@@ -222,6 +222,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 } {
                     var result = Eval ("o => 1 == o.nullVal", Json, eval, out error);
                     IsNull(result);
+                } {
+                    var result = Eval ("o => 1.1 == o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => 'abc' == o.nullVal", Json, eval, out error);
+                    IsNull(result);
+                } {
+                    var result = Eval ("o => true == o.nullVal", Json, eval, out error);
+                    IsNull(result);
                 }
             }
         }
