@@ -78,17 +78,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertIsFalse(t.EqualsTo(f, null));
             AssertIsFalse(f.EqualsTo(t, null));
             
-            AreEqual("Equals failed 1 == 'hello'",       lng1.EqualsTo(str,  null).ErrorMessage);
-            AreEqual("Equals failed 1 == true",          lng1.EqualsTo(t,    null).ErrorMessage);
+            AreEqual("incompatible compare operands: 1 == 'hello'",       lng1.EqualsTo(str,  null).ErrorMessage);
+            AreEqual("incompatible compare operands: 1 == true",          lng1.EqualsTo(t,    null).ErrorMessage);
             
-            AreEqual("Equals failed 1 == 'hello'",       dbl1.EqualsTo(str,  null).ErrorMessage);
-            AreEqual("Equals failed 1 == true",          dbl1.EqualsTo(t,    null).ErrorMessage);
+            AreEqual("incompatible compare operands: 1 == 'hello'",       dbl1.EqualsTo(str,  null).ErrorMessage);
+            AreEqual("incompatible compare operands: 1 == true",          dbl1.EqualsTo(t,    null).ErrorMessage);
             
-            AreEqual("Equals failed true == 1",          t.EqualsTo(lng1,    null).ErrorMessage);
-            AreEqual("Equals failed true == 'hello'",    t.EqualsTo(str,     null).ErrorMessage);
+            AreEqual("incompatible compare operands: true == 1",          t.EqualsTo(lng1,    null).ErrorMessage);
+            AreEqual("incompatible compare operands: true == 'hello'",    t.EqualsTo(str,     null).ErrorMessage);
 
-            AreEqual("Equals failed 'hello' == true",    str.EqualsTo(t,     null).ErrorMessage);
-            AreEqual("Equals failed 'hello' == 1",       str.EqualsTo(lng1,  null).ErrorMessage);
+            AreEqual("incompatible compare operands: 'hello' == true",    str.EqualsTo(t,     null).ErrorMessage);
+            AreEqual("incompatible compare operands: 'hello' == 1",       str.EqualsTo(lng1,  null).ErrorMessage);
         }
         
         private static void AssertIsTrue(Scalar value) {
