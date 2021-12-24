@@ -94,17 +94,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AssertIsFalse(t.EqualsTo(f, null));
             AssertIsFalse(f.EqualsTo(t, null));
             
-            AreEqual("incompatible operands: 1 == 'hello'",       lng1.EqualsTo(str,  null).ErrorMessage);
-            AreEqual("incompatible operands: 1 == true",          lng1.EqualsTo(t,    null).ErrorMessage);
+            AreEqual("incompatible operands: 1 with 'hello'",       lng1.EqualsTo(str,  null).ErrorMessage);
+            AreEqual("incompatible operands: 1 with true",          lng1.EqualsTo(t,    null).ErrorMessage);
             
-            AreEqual("incompatible operands: 1 == 'hello'",       dbl1.EqualsTo(str,  null).ErrorMessage);
-            AreEqual("incompatible operands: 1 == true",          dbl1.EqualsTo(t,    null).ErrorMessage);
+            AreEqual("incompatible operands: 1 with 'hello'",       dbl1.EqualsTo(str,  null).ErrorMessage);
+            AreEqual("incompatible operands: 1 with true",          dbl1.EqualsTo(t,    null).ErrorMessage);
             
-            AreEqual("incompatible operands: true == 1",          t.EqualsTo(lng1,    null).ErrorMessage);
-            AreEqual("incompatible operands: true == 'hello'",    t.EqualsTo(str,     null).ErrorMessage);
+            AreEqual("incompatible operands: true with 1",          t.EqualsTo(lng1,    null).ErrorMessage);
+            AreEqual("incompatible operands: true with 'hello'",    t.EqualsTo(str,     null).ErrorMessage);
 
-            AreEqual("incompatible operands: 'hello' == true",    str.EqualsTo(t,     null).ErrorMessage);
-            AreEqual("incompatible operands: 'hello' == 1",       str.EqualsTo(lng1,  null).ErrorMessage);
+            AreEqual("incompatible operands: 'hello' with true",    str.EqualsTo(t,     null).ErrorMessage);
+            AreEqual("incompatible operands: 'hello' with 1",       str.EqualsTo(lng1,  null).ErrorMessage);
         }
         
         [Test]

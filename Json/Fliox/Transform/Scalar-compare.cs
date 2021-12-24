@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Transform {
                     return Null;
                 case ScalarType.Object:
                 case ScalarType.Array:
-                    return EqualsError("invalid operand", other, operation);
+                    return CompareError("invalid operand", other, operation);
                 case ScalarType.Error:
                     return this;
                 default:
@@ -58,27 +58,12 @@ namespace Friflo.Json.Fliox.Transform {
                     return Null;
                 case ScalarType.Array:
                 case ScalarType.Object:
-                    return EqualsError("invalid operand", other, operation);
+                    return CompareError("invalid operand", other, operation);
                 default:
-                    return EqualsError("incompatible operands", other, operation);
+                    return CompareError("incompatible operands", other, operation);
             }
         }
-        
-        private Scalar EqualsError(string error, in Scalar other, Operation operation) {
-            var sb = new StringBuilder();
-            sb.Append(error);
-            sb.Append(": ");
-            AppendTo(sb);
-            sb.Append(" == ");
-            other.AppendTo(sb);
-            if (operation != null) {
-                sb.Append(" in ");
-                var appendCx = new AppendCx(sb);
-                operation.AppendLinq(appendCx);
-            }
-            return Error(sb.ToString());
-        }
-        
+
         // ------------------------------- compare order of two scalars -------------------------------
         public long CompareTo(in Scalar other, Operation operation, out Scalar result) {
             switch (type) {
