@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using Friflo.Json.Fliox.Transform;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 {
@@ -91,14 +91,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             AreEqual("incompatible operands: 'hello' == 1",       str.EqualsTo(lng1,  null).ErrorMessage);
         }
         
+        [Test]
+        public void TestScalarString() {
+            var str1 = new Scalar("abc");
+            var str2 = new Scalar("xyz");
+            AssertIsFalse(str1.         Contains(str2,           null));
+            AssertIsTrue (str1.         Contains(str1,           null));
+            AssertIsNull (str1.         Contains(Scalar.Null,    null));
+            AssertIsNull (Scalar.Null.  Contains(str1,    null));
+        }
+        
+        [Test]
+        public void TestScalarNumber() {
+            var num1 = new Scalar(1);
+            var num2 = new Scalar(2);
+            AreEqual (3,  num1.         Add(num2,           null).AsLong());
+            AreEqual (2,  num1.         Add(num1,           null).AsLong());
+            AssertIsNull (num1.         Add(Scalar.Null,    null));
+            AssertIsNull (Scalar.Null.  Add(num1,           null));
+        }
+        
         private static void AssertIsTrue(Scalar value) {
-            IsTrue(value.IsBool);
             IsTrue(value.IsTrue);
         }
         
         private static void AssertIsFalse(Scalar value) {
-            IsTrue(value.IsBool);
             IsFalse(value.IsTrue);
+        }
+        
+        private static void AssertIsNull(Scalar value) {
+            IsTrue(value.IsNull);
         }
 
     }

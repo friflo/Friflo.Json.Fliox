@@ -79,8 +79,8 @@ namespace Friflo.Json.Fliox.Transform
         
         // ------------------------------- binary arithmetic operations -------------------------------
         public Scalar Add(in Scalar other, Operation operation) {
-            if (!AssertBinaryNumbers(other, operation, out Scalar error))
-                return error;
+            if (!AreNumbers(other, operation, out Scalar result))
+                return result;
             if (IsDouble) {
                 if (other.IsDouble)
                     return new Scalar(DoubleValue + other.DoubleValue);
@@ -92,8 +92,8 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         public Scalar Subtract(in Scalar other, Operation operation) {
-            if (!AssertBinaryNumbers(other, operation, out Scalar error))
-                return error;
+            if (!AreNumbers(other, operation, out Scalar result))
+                return result;
             if (IsDouble) {
                 if (other.IsDouble)
                     return new Scalar(DoubleValue - other.DoubleValue);
@@ -105,8 +105,8 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         public Scalar Multiply(in Scalar other, Operation operation) {
-            if (!AssertBinaryNumbers(other, operation, out Scalar error))
-                return error;
+            if (!AreNumbers(other, operation, out Scalar result))
+                return result;
             if (IsDouble) {
                 if (other.IsDouble)
                     return new Scalar(DoubleValue * other.DoubleValue);
@@ -118,8 +118,8 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         public Scalar Divide(in Scalar other, Operation operation) {
-            if (!AssertBinaryNumbers(other, operation, out Scalar error))
-                return error;
+            if (!AreNumbers(other, operation, out Scalar result))
+                return result;
             if (IsDouble) {
                 if (other.IsDouble)
                     return new Scalar(DoubleValue / other.DoubleValue);
@@ -130,10 +130,19 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   / other.LongValue);
         }
         
-        private bool AssertBinaryNumbers(in Scalar other, Operation operation, out Scalar error) {
-            if (IsNumber && other.IsNumber) {
-                error = default;
-                return true;
+        private bool AreNumbers(in Scalar other, Operation operation, out Scalar result) {
+            if (IsNumber) {
+                if (other.IsNumber) {
+                    result = default;
+                    return true;
+                }
+                if (other.IsNull) {
+                    result = Null;
+                    return false;
+                }
+            } else if (IsNull) {
+                result = Null;
+                return false;
             }
             var sb = new StringBuilder();
             sb.Append("expect numeric operands. left: ");
@@ -145,33 +154,42 @@ namespace Friflo.Json.Fliox.Transform
                 var cx = new AppendCx(sb);
                 operation.AppendLinq(cx);
             }
-            error = Error(sb.ToString());
+            result = Error(sb.ToString());
             return false;
         }
         
         // ------------------------------- binary string operations -------------------------------
         public Scalar Contains(in Scalar other, Operation operation) {
-            if (!AssertBinaryString(other, operation, out Scalar error))
-                return error;
+            if (!AreStrings(other, operation, out Scalar result))
+                return result;
             return stringValue.Contains(other.stringValue) ? True : False;
         }
         
         public Scalar StartsWith(in Scalar other, Operation operation) {
-            if (!AssertBinaryString(other, operation, out Scalar error))
-                return error;
+            if (!AreStrings(other, operation, out Scalar result))
+                return result;
             return stringValue.StartsWith(other.stringValue) ? True : False;
         }
         
         public Scalar EndsWith(in Scalar other, Operation operation) {
-            if (!AssertBinaryString(other, operation, out Scalar error))
-                return error;
+            if (!AreStrings(other, operation, out Scalar result))
+                return result;
             return stringValue.EndsWith(other.stringValue) ? True : False;
         }
         
-        private bool AssertBinaryString(in Scalar other, Operation operation, out Scalar error) {
-            if (IsString && other.IsString) {
-                error = default;
-                return true;
+        private bool AreStrings(in Scalar other, Operation operation, out Scalar result) {
+            if (IsString) {
+                if (other.IsString) {
+                    result = default;
+                    return true;
+                }
+                if (other.IsNull) {
+                    result = Null;
+                    return false;
+                }
+            } else if (IsNull) {
+                result = Null;
+                return false;
             }
             var sb = new StringBuilder();
             sb.Append("expect string operands. left: ");
@@ -183,7 +201,7 @@ namespace Friflo.Json.Fliox.Transform
                 var cx = new AppendCx(sb);
                 operation.AppendLinq(cx);
             }
-            error = Error(sb.ToString());
+            result = Error(sb.ToString());
             return false;
         }
     }

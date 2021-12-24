@@ -39,8 +39,8 @@ namespace Friflo.Json.Fliox.Transform
         private                 bool            IsNumber    => type == ScalarType.Double || type == ScalarType.Long;
         private                 bool            IsDouble    => type == ScalarType.Double;
         private                 bool            IsLong      => type == ScalarType.Long;
-        public                  bool            IsBool      => type == ScalarType.Bool;
-        internal                bool            IsNull      => type == ScalarType.Null;
+        private                 bool            IsBool      => type == ScalarType.Bool;
+        public                  bool            IsNull      => type == ScalarType.Null;
         internal                bool            IsError     => type == ScalarType.Error;
         
         public                  bool            IsTrue      => type == ScalarType.Bool && primitiveValue != 0;
