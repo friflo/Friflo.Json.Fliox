@@ -131,16 +131,11 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         private bool AreNumbers(in Scalar other, Operation operation, out Scalar result) {
-            if (IsNumber) {
-                if (other.IsNumber) {
-                    result = default;
-                    return true;
-                }
-                if (other.IsNull) {
-                    result = Null;
-                    return false;
-                }
-            } else if (IsNull) {
+            if (IsNumber && other.IsNumber) {
+                result = default;
+                return true;
+            }
+            if (IsNull || other.IsNull) {
                 result = Null;
                 return false;
             }
@@ -178,16 +173,11 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         private bool AreStrings(in Scalar other, Operation operation, out Scalar result) {
-            if (IsString) {
-                if (other.IsString) {
-                    result = default;
-                    return true;
-                }
-                if (other.IsNull) {
-                    result = Null;
-                    return false;
-                }
-            } else if (IsNull) {
+            if (IsString && other.IsString) {
+                result = default;
+                return true;
+            }
+            if (IsNull || other.IsNull) {
                 result = Null;
                 return false;
             }
