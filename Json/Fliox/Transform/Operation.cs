@@ -145,31 +145,31 @@ namespace Friflo.Json.Fliox.Transform
         protected static void AppendLinqArrow(string name, Field field, string arg, Operation op, AppendCx cx) {
             var sb = cx.sb;
             field.AppendLinq(cx);
-            sb.Append(".");
+            sb.Append('.');
             sb.Append(name);
-            sb.Append("(");
+            sb.Append('(');
             sb.Append(arg);
             sb.Append(" => ");
             op.AppendLinq(cx);
-            sb.Append(")");
+            sb.Append(')');
         }
         
         protected static void AppendLinqMethod(string name, Operation symbol, Operation operand, AppendCx cx) {
             var sb = cx.sb;
             symbol.AppendLinq(cx);
-            sb.Append(".");
+            sb.Append('.');
             sb.Append(name);
-            sb.Append("(");
+            sb.Append('(');
             operand.AppendLinq(cx);
-            sb.Append(")");
+            sb.Append(')');
         }
         
         protected static void AppendLinqFunction(string name, Operation operand, AppendCx cx) {
             var sb = cx.sb;
             sb.Append(name);
-            sb.Append("(");
+            sb.Append('(');
             operand.AppendLinq(cx);
-            sb.Append(")");
+            sb.Append(')');
         }
         
         protected void AppendLinqBinary(AppendCx cx, string token, Operation left, Operation right) {
