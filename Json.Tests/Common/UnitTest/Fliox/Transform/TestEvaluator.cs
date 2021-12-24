@@ -17,7 +17,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     ""strVal"":  ""abc"",
     ""intVal"":  42,
     ""nullVal"": null,
-    ""boolVal"": true
+    ""boolVal"": true,
+    ""obj"":     {},
+    ""array"":   [1,2,3]
 }";
 
         [Test]
@@ -212,6 +214,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     Eval ("o => 1 == o.strVal", Json, eval, out error);
                     AreEqual("incompatible operands: 1 == 'abc' in 1 == o.strVal", error);
                 }
+                // --- error: object / array
+                {
+                    Eval ("o => o.obj == 'abc'", Json, eval, out error);
+                    AreEqual("invalid operand: (object) == 'abc' in o.obj == 'abc'", error);
+                } {
+                    Eval ("o => o.array == 'abc'", Json, eval, out error);
+                    AreEqual("invalid operand: (array) == 'abc' in o.array == 'abc'", error);
+                } {
+                    Eval ("o => 'abc' == o.obj", Json, eval, out error);
+                    AreEqual("invalid operand: 'abc' == (object) in 'abc' == o.obj", error);
+                } {
+                    Eval ("o => 'abc' == o.array", Json, eval, out error);
+                    AreEqual("invalid operand: 'abc' == (array) in 'abc' == o.array", error);
+                }
                 // --- success
                 {
                     var result = Filter ("o => 1.1 == 1.1", Json, eval, out _);
@@ -254,6 +270,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 } {
                     Eval ("o => 1 < o.strVal", Json, eval, out error);
                     AreEqual("incompatible operands: 1 < 'abc' in 1 < o.strVal", error);
+                }
+                // --- error: object / array
+                {
+                    Eval ("o => o.obj < 'abc'", Json, eval, out error);
+                    AreEqual("invalid operand: (object) < 'abc' in o.obj < 'abc'", error);
+                } {
+                    Eval ("o => o.array < 'abc'", Json, eval, out error);
+                    AreEqual("invalid operand: (array) < 'abc' in o.array < 'abc'", error);
+                } {
+                    Eval ("o => 'abc' < o.obj", Json, eval, out error);
+                    AreEqual("invalid operand: 'abc' < (object) in 'abc' < o.obj", error);
+                } {
+                    Eval ("o => 'abc' < o.array", Json, eval, out error);
+                    AreEqual("invalid operand: 'abc' < (array) in 'abc' < o.array", error);
                 }
                 // --- success
                 {

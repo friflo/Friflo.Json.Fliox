@@ -6,6 +6,7 @@ using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable CompareOfFloatsByEqualityOperator
 // ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 namespace Friflo.Json.Fliox.Transform
@@ -170,35 +171,30 @@ namespace Friflo.Json.Fliox.Transform
                 case ScalarType.String:
                     if (other.IsString)
                         return stringValue == other.stringValue ? True : False;
-                    if (other.IsNull)
-                        return Null;
                     return EqualsDefault(other, operation);
                 case ScalarType.Double:
                     if (other.IsDouble)
                         return DoubleValue == other.DoubleValue ? True : False;
                     if (other.IsLong)
                         return EqualsDouble(DoubleValue, other.LongValue);
-                    if (other.IsNull)
-                        return Null;
                     return EqualsDefault(other, operation);
                 case ScalarType.Long:
                     if (other.IsDouble)
                         return EqualsDouble(LongValue, other.DoubleValue);
                     if (other.IsLong)
                         return LongValue == other.LongValue ? True : False;
-                    if (other.IsNull)
-                        return Null;
                     return EqualsDefault(other, operation);
                 case ScalarType.Bool:
                     if (other.IsBool)
                         return primitiveValue == other.primitiveValue ? True : False; // possible primitive values: 0 or 1
-                    if (other.IsNull)
-                        return Null;
                     return EqualsDefault(other, operation);
                 case ScalarType.Null:
                     if (other.IsNull)
                         return True;
                     return Null;
+                case ScalarType.Object:
+                case ScalarType.Array:
+                    return EqualsError("invalid operand", other, operation);
                 case ScalarType.Error:
                     return this;
                 default:
@@ -211,8 +207,21 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         private Scalar EqualsDefault(in Scalar other, Operation operation) {
+            switch (other.type) {
+                case ScalarType.Null:
+                    return Null;
+                case ScalarType.Array:
+                case ScalarType.Object:
+                    return EqualsError("invalid operand", other, operation);
+                default:
+                    return EqualsError("incompatible operands", other, operation);
+            }
+        }
+        
+        private Scalar EqualsError(string error, in Scalar other, Operation operation) {
             var sb = new StringBuilder();
-            sb.Append("incompatible operands: ");
+            sb.Append(error);
+            sb.Append(": ");
             AppendTo(sb);
             sb.Append(" == ");
             other.AppendTo(sb);
@@ -265,6 +274,10 @@ namespace Friflo.Json.Fliox.Transform
                     }
                     result = Null;
                     return 0;
+                case ScalarType.Object:
+                case ScalarType.Array:
+                    result = CompareError("invalid operand", other, operation);
+                    return 0;
                 case ScalarType.Error:
                     result = this;
                     return 0;
@@ -280,16 +293,26 @@ namespace Friflo.Json.Fliox.Transform
         
         private int CompareDefault(in Scalar other, Operation operation, out Scalar result) {
             switch (other.type) {
-                case ScalarType.Null:   result = Null;                              break;
-                case ScalarType.Error:  result = other;                             break;
-                default:                result = CompareError(other, operation);  break;                
+                case ScalarType.Null:
+                    result = Null;
+                    return 0;
+                case ScalarType.Array:
+                case ScalarType.Object:
+                    result = CompareError("invalid operand", other, operation);
+                    return 0;
+                case ScalarType.Error:
+                    result = other;
+                    return 0;
+                default:
+                    result = CompareError("incompatible operands", other, operation);                
+                    return 0;
             }
-            return 0;
         }
         
-        private Scalar CompareError(in Scalar other, Operation operation) {
+        private Scalar CompareError(string error, in Scalar other, Operation operation) {
             var sb = new StringBuilder();
-            sb.Append("incompatible operands: ");
+            sb.Append(error);
+            sb.Append(": ");
             AppendTo(sb);
             if (operation != null) {
                 sb.Append(' ');
