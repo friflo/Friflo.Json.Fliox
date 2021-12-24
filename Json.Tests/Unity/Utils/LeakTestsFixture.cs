@@ -103,7 +103,7 @@ namespace Friflo.Json.Tests.Unity.Utils
                         
                         msg.Append($"  (at {f.GetFileName()}:{f.GetFileLineNumber()})\n");
                     }
-                    msg.Append("\n");
+                    msg.Append('\n');
                 }
                 Fail($"Found {DebugUtils.Allocations.Count} resource leaks\n{msg}");
             }

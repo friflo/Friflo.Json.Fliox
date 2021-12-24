@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 sb.Append(" ~ ");
                 sb.Append(taskMessage);
                 if (showStack && stacktrace != null) {
-                    sb.Append("\n");
+                    sb.Append('\n');
                     sb.Append(stacktrace);
                 }
                 return;

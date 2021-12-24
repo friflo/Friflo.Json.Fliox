@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 sb.Append(", ");
                 operands[n].AppendLabel(sb);
             }
-            sb.Append("}");
+            sb.Append('}');
         }
         
         internal QueryNode (in Token operation) {

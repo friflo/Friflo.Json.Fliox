@@ -176,7 +176,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         /// <returns></returns>
         protected override Expression VisitBinary(BinaryExpression b)
         {
-            sb.Append("(");
+            sb.Append('(');
             this.Visit(b.Left);
 
             switch (b.NodeType)
@@ -241,7 +241,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             }
 
             this.Visit(b.Right);
-            sb.Append(")");
+            sb.Append(')');
             return b;
         }
 
@@ -262,15 +262,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                         break;
 
                     case TypeCode.String:
-                        sb.Append("'");
+                        sb.Append('\'');
                         sb.Append(c.Value);
-                        sb.Append("'");
+                        sb.Append('\'');
                         break;
 
                     case TypeCode.DateTime:
-                        sb.Append("'");
+                        sb.Append('\'');
                         sb.Append(c.Value);
-                        sb.Append("'");
+                        sb.Append('\'');
                         break;
 
                     case TypeCode.Object:

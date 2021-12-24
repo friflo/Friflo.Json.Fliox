@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         sb.Append(", ");
                     sb.Append(members[n]);
                 }
-                sb.Append("]");
+                sb.Append(']');
                 return sb.ToString();
             }
         }

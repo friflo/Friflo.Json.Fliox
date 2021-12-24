@@ -86,9 +86,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 Append(sb,  "upsert",       upsert,     ref first);
                 AppendTasks(sb,  "reads",   reads,      ref first);
                 if (readRefs > 0) {
-                    sb.Append("(");
+                    sb.Append('(');
                     Append(sb, "refs",      readRefs,    ref first);
-                    sb.Append(")");
+                    sb.Append(')');
                 }
                 AppendTasks(sb, "queries",  queries,    ref first);
                 Append(sb,  "patch",        patch,      ref first);

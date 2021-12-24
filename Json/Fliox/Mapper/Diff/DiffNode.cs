@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     if (!addValue)
                         return;
                     Indent(sb, startPos, indent);
-                    sb.Append(" ");
+                    sb.Append(' ');
                     AddValue(sb, pathNode.typeMapper);
                     break;
                 case NodeType.Root:
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private static void Indent(StringBuilder sb, int startPos, int indent) {
             var pathLen = sb.Length - startPos;
             for (int i = pathLen; i < indent - 1; i++)
-                sb.Append(" ");
+                sb.Append(' ');
         }
 
         private void AddValue(StringBuilder sb, TypeMapper mapper) {
@@ -96,11 +96,11 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     if (mapper.IsArray) {
                         var leftCount = mapper.Count(left);
                         var rightCount = mapper.Count(right);
-                        sb.Append("[");
+                        sb.Append('[');
                         AppendValue(sb, leftCount);
                         sb.Append("] != [");
                         AppendValue(sb, rightCount);
-                        sb.Append("]");
+                        sb.Append(']');
                         return;
                     }
                     AppendValue(sb, left);
