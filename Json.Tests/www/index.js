@@ -741,6 +741,7 @@ class App {
     }
 
     listCommands (database, dbCommands, dbContainer) {
+        filterRow.style.visibility  = "hidden";
         readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         readEntities.innerHTML      = "";
 
@@ -826,7 +827,7 @@ class App {
         this.filter.container    = p.container;
         
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
-
+        filterRow.style.visibility   = "";
         catalogSchema.innerHTML  = this.schemaLink(p.database);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink      = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
