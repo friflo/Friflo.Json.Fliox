@@ -814,7 +814,16 @@ class App {
     applyFilter(database, container, filter) {
         const query   = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params  = { database: database, container: container };
+        this.saveFilter(database, container, filter)
         this.loadEntities(params, query);
+    }
+
+    saveFilter(database, container, filter) {
+        if (!this.filters[database]) {
+            this.filters[database] = {}
+        }
+        this.filters[database][container] = [filter];
+        this.setConfig("filters", this.filters);
     }
 
     updateFilterLink() {
@@ -826,6 +835,10 @@ class App {
 
     async loadEntities (p, query) {
         // if (p.clearSelection) this.setEditorHeader();
+        const storedFilter = this.filters[p.database]?.[p.container];
+        const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
+        entityFilter.value = filter;
+        
         this.filter.database     = p.database;
         this.filter.container    = p.container;
         
@@ -1322,6 +1335,7 @@ class App {
     formatEntities  = false;
     formatResponses = true;
     activeTab       = "playground";
+    filters         = {};
 
     setConfig(key, value) {
         this[key] = value;
@@ -1330,29 +1344,32 @@ class App {
             elem.value   = value;
             elem.checked = value;
         }
-        window.localStorage.setItem(key, value);
+        const valueStr = JSON.stringify(value);
+        window.localStorage.setItem(key, valueStr);
     }
 
     getConfig(key) {
-        return window.localStorage.getItem(key);
+        const valueStr = window.localStorage.getItem(key);
+        try {
+            return JSON.parse(valueStr);
+        } catch(e) { }
+        return undefined;
     }
 
     initConfigValue(key) {
-        var valueStr = this.getConfig(key);
-        if (valueStr == undefined) {
+        var value = this.getConfig(key);
+        if (value == undefined) {
             this.setConfig(key, this[key]);
             return;
         }
-        try {
-            const value = JSON.parse(valueStr);
-            this.setConfig(key, value);
-        } catch (e) { }
+        this.setConfig(key, value);
     }
 
     loadConfig() {
         this.initConfigValue("formatEntities");
         this.initConfigValue("formatResponses");
         this.initConfigValue("activeTab");
+        this.initConfigValue("filters");
     }
 
     formatJson(format, text) {
