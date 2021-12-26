@@ -139,8 +139,9 @@
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; }
 
-        .applyFilter    { background-color: #009200; color: white; cursor: pointer; 
-                          margin-right: 0px; padding-left: 5px; padding-right: 5px; font-size: 11px; padding-top: 1px; padding-bottom: 1px; }
+        .applyFilter    { cursor: pointer; 
+                          margin-right: 0px; padding-left: 7px; padding-right: 7px; font-size: 11px; padding-top: 1px; padding-bottom: 1px; }
+        .applyFilter:hover { background-color: var(--tab-hover); }
 
         .filter         { height: 18px; font-size: var(--mono-size); color: var(--color); font-family: var(--mono-font); width:100%; 
                           background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
@@ -335,8 +336,8 @@
     <table width="100%" style="border-spacing: 0px;"">
       <tr id="filterRow" style="visibility: hidden;">
         <td style="float: right; height: 18px;">
-          <span class="applyFilter" onclick="app.applyFilter()">apply</span>
-          <a id="filterLink" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()">
+          <span class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</span>
+          <a id="filterLink" title="Open filter in new tab" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()">
             <small>filter</small>
           </a>
           <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body">o =></small>
