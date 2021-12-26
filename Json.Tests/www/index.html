@@ -256,13 +256,13 @@
   </table>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
   <div style="overflow:initial; white-space:nowrap; margin-bottom: 7px; display:flex;">
-    <span class="tab" onclick="app.openTab('playground')">Playground</span>
-    <span class="tab" onclick="app.openTab('explorer')"   >Explorer</span>
-    <span class="tab" onclick="app.openTab('settings')"   ><b>⋮</b></span>
+    <a class="tab" href="#" onclick="app.openTab('playground')">Playground</a>
+    <a class="tab" href="#" onclick="app.openTab('explorer')"   >Explorer</a>
+    <a class="tab" href="#" onclick="app.openTab('settings')"   ><b>⋮</b></a>
     <span style="border-bottom: 1px solid var(--tab-border); width:100%;">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  type="text" id="user"  class="authInput" value="admin">&nbsp;
-      <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" type="text" id="token" class="authInput" value="admin">    
+      <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
+      <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
       <div class="dropdown">
         <button class="dropbtn">▼</button>
         <div class="dropdown-content">
@@ -336,7 +336,7 @@
     <table width="100%" style="border-spacing: 0px;"">
       <tr id="filterRow" style="visibility: hidden;">
         <td style="float: right; height: 18px;">
-          <span class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</span>
+          <a href="#" class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</a>
           <a id="filterLink" title="Open filter in new tab" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()">
             <small>filter</small>
           </a>
