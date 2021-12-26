@@ -811,7 +811,10 @@ class App {
         this.applyFilter(this.filter.database, this.filter.container, entityFilter.value);
     }
 
-    applyFilter(database, container, filter) {
+    applyFilter() {
+        const database  = this.filter.database;
+        const container = this.filter.container;
+        const filter    = entityFilter.value;
         const query   = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params  = { database: database, container: container };
         this.saveFilter(database, container, filter)
