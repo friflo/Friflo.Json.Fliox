@@ -822,10 +822,15 @@ class App {
     }
 
     saveFilter(database, container, filter) {
-        if (!this.filters[database]) {
-            this.filters[database] = {}
+        if (filter.trim() == "") {
+            const filterDatabase = this.filters[database];
+            if (filterDatabase) {
+                delete filterDatabase[container];
+            }
+        } else {
+            if (!this.filters[database]) this.filters[database] = {}            
+            this.filters[database][container] = [filter];
         }
-        this.filters[database][container] = [filter];
         this.setConfig("filters", this.filters);
     }
 
@@ -1347,7 +1352,7 @@ class App {
             elem.value   = value;
             elem.checked = value;
         }
-        const valueStr = JSON.stringify(value);
+        const valueStr = JSON.stringify(value, null, 2);
         window.localStorage.setItem(key, valueStr);
     }
 
