@@ -67,9 +67,9 @@
         .refLinkDecoration          { color: var(--link-color) !important;  }
         .refLinkDecoration:hover    { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--link-deco) !important; }
 
-        .navigate           { cursor: pointer; font-size: 14px; height: 20px; width: 20px; text-align: center; user-select: none; }
+        .navigate           { cursor: pointer; font-size: 14px; height: 20px; width: 20px; text-align: center; user-select: none; border-radius: 2px;}
         .navigate:hover     { background-color: var(--tab-hover); }
-        .navigate:active    { background-color: var(--background3); }
+        .navigate:active    { background-color: var(--background3); font-size: 13.5px; box-shadow: inset 1px 1px 1px #00000010; }
 
         /* dark mode color for firefox */
         @media(prefers-color-scheme: dark) {
@@ -139,9 +139,10 @@
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; }
 
-        .applyFilter    { cursor: pointer; 
-                          margin-right: 0px; padding-left: 10px; padding-right: 10px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; }
-        .applyFilter:hover { background-color: var(--tab-hover); }
+        .applyFilter        { cursor: pointer; border-radius: 2px;
+                             margin-right: 0px; padding-left: 10px; padding-right: 10px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; }
+        .applyFilter:hover  { background-color: var(--tab-hover); }
+        .applyFilter:active { background-color: var(--background3); font-size: 10.5px; box-shadow: inset 1px 1px 1px #00000010; }
 
         .filter         { height: 18px; font-size: var(--mono-size); color: var(--color); font-family: var(--mono-font); width:100%; 
                           background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
@@ -183,9 +184,10 @@
 
         .settings li                { list-style: none; }
 
-        .reload                     { cursor:pointer; opacity:0.5; user-select: none; }
-        .reload::after              { content: "⭮"; margin-left: 10px; }    /* using ::after avoids getting copied to clipboard */
-        .reload:active              { background-color: var(--tab-hover); }
+        .reload                     { cursor:pointer; opacity:0.5; user-select: none; font-size: 13px; border-radius: 2px; }
+        .reload::after              { content: "⭮"; padding-left: 7px; padding-right: 7px; }    /* using ::after avoids getting copied to clipboard */
+        .reload:hover               { background-color: var(--tab-hover); opacity:1; }
+        .reload:active::after       { background-color: var(--background3); font-size: 12px; box-shadow: inset 1px 1px 1px #00000010; }
 
         .spinner {
             border:         3px solid #f3f3f3;
