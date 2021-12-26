@@ -7,6 +7,7 @@ export abstract class ClusterStore {
 }
 
 export interface ClusterStoreService {
+    DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;
     DbSchema     (param: any) : DbSchema;
@@ -30,6 +31,10 @@ export class DbSchema {
 export class DbCommands {
     id        : string;
     commands  : string[];
+}
+
+export class DbInfo {
+    hubVersion  : string;
 }
 
 export class DbList {

@@ -244,6 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public CommandTask<TCommand>        Echo<TCommand>(TCommand command) =>
                                                                 SendCommand<TCommand,TCommand>  (StdCommand.Echo, command);
+        public CommandTask<DbInfo>          DbInfo()        =>  SendCommand<DbInfo>             (StdCommand.DbInfo);
         public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<DbContainers>       (StdCommand.DbContainers);
         public CommandTask<DbCommands>      DbCommands()    =>  SendCommand<DbCommands>         (StdCommand.DbCommands);
         public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<DbSchema>           (StdCommand.DbSchema);

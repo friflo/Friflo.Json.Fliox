@@ -119,6 +119,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public const string Echo            = "Echo";
         
         // --- Db*
+        public const string DbInfo          = "DbInfo";
+        
         public const string DbContainers    = "DbContainers";
 
         public const string DbCommands      = "DbCommands";

@@ -88,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         /// 
         public   readonly   string              hostName;
+        public   readonly   string              Version = "0.0.1";
         public   readonly   SharedEnv           sharedEnv;
         
         internal readonly   HostStats           hostStats = new HostStats();

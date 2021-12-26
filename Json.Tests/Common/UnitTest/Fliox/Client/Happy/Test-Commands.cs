@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("MemoryDatabase",  catalog0.databaseType);
             
             var commandsResult = commands.Result;
-            AreEqual(6,                 commandsResult.commands.Length);
+            AreEqual(7,                 commandsResult.commands.Length);
         }
         
         private static async Task AssertCommands(PocStore store) {
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("MemoryDatabase",  catalog0.databaseType);
             
             var commandsResult = commands.Result;
-            AreEqual(6,                 commandsResult.commands.Length);
+            AreEqual(7,                 commandsResult.commands.Length);
         }
     }
 }
