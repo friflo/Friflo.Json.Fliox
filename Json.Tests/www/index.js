@@ -821,6 +821,11 @@ class App {
         this.loadEntities(params, query);
     }
 
+    removeFilter() {
+        const params  = { database: this.filter.database, container: this.filter.container };
+        this.loadEntities(params);
+    }
+
     saveFilter(database, container, filter) {
         if (filter.trim() == "") {
             const filterDatabase = this.filters[database];
@@ -846,6 +851,9 @@ class App {
         const storedFilter = this.filters[p.database]?.[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
         entityFilter.value = filter;
+
+        const removeFilterVisibility = query ? "" : "hidden";
+        removeFilter.style.visibility = removeFilterVisibility;
         
         this.filter.database     = p.database;
         this.filter.container    = p.container;
