@@ -805,18 +805,21 @@ class App {
         container:  undefined
     }
 
-    runFilter(event) {
+    filterOnKeyUp(event) {
         if (event.code != 'Enter')
             return;
-        var filter  = entityFilter.value;
-        var query   = filter == "" ? null : `filter=${encodeURIComponent(filter)}`;
-        var params  = { database: this.filter.database, container: this.filter.container };
+        this.applyFilter(this.filter.database, this.filter.container, entityFilter.value);
+    }
+
+    applyFilter(database, container, filter) {
+        const query   = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
+        const params  = { database: database, container: container };
         this.loadEntities(params, query);
     }
 
     updateFilterLink() {
         var filter  = entityFilter.value;
-        var query   = filter == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
+        var query   = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         filterLink.href = url;
     }
