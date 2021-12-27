@@ -1,0 +1,82 @@
+<!doctype html>
+<title>Grid Layout</title>
+<style>
+    body {
+        margin: 0;
+        display: grid;
+        grid-template-areas: 
+            "body-header"
+            "body-tabs"
+            "body-playground"
+            "body-explorer"            
+            ;
+        grid-template-columns:  1fr;
+        grid-template-rows:     80px  60px 0 1fr;
+        grid-gap:   1px;
+        height:     100vh;
+        background: white;
+    }
+
+    #bodyPlayground {
+        display: none;
+        grid-template-areas: 
+            "pl-header          pl-header   pl-header"
+            "pl-title-req       .           pl-title-resp"
+            "pl-request         pl-bar      pl-response"
+            "pl-footer-req      .           pl-footer-resp";
+        grid-template-columns:  200px 5px 1fr;
+        grid-template-rows:     20px  20px 1fr 20px;
+        grid-gap:   1px;
+        background: white;
+    }
+
+    #bodyExplorer {
+        display: grid;
+        grid-template-areas: 
+            "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
+            ".              .           .                   .                   ex-action"
+            "ex-link-db     .           ex-link-container   .                   ex-link-entity"
+            "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity"
+            "ex-footer      ex-footer   ex-footer           ex-footer           ex-footer";
+        grid-template-columns:  200px 5px 200px 5px 1fr;
+        grid-template-rows:     20px  20px 20px 1fr 20px;
+        grid-gap:   1px;
+        background: white;
+    }
+    div { padding:    0px; background: lightgray; }
+</style>
+<body>
+    <div style="grid-area: body-header;">body header</div>
+    <div style="grid-area: body-tabs;">body tabs</div>
+    <div style="grid-area: body-playground;" id="bodyPlayground">
+        <div style="grid-area: pl-header;">playground header</div>
+
+        <div style="grid-area: pl-title-req;">title request</div>
+        <div style="grid-area: pl-title-resp;">title response</div>
+
+        <div style="grid-area: pl-request;">request</div>
+        <div style="grid-area: pl-bar;">1</div>
+        <div style="grid-area: pl-response;">response</div>
+
+        <div style="grid-area: pl-footer-req;">footer request</div>
+        <div style="grid-area: pl-footer-resp;">footer request</div>
+    </div>
+    <div style="grid-area: body-explorer;" id="bodyExplorer">
+        <div style="grid-area: ex-filter;">filter</div>
+        <div style="grid-area: ex-filter-input;">filter input</div>
+
+        <div style="grid-area: ex-action;">explorer action</div>
+
+        <div style="grid-area: ex-link-db;">db link</div>
+        <div style="grid-area: ex-link-container;">container link</div>
+        <div style="grid-area: ex-link-entity;">entity link</div>
+
+        <div style="grid-area: ex-database;">database</div>
+        <div style="grid-area: ex-container;">container</div>
+        <div style="grid-area: ex-entity;">entity</div>
+
+        <div style="grid-area: ex-footer;">explorer footer</div>
+        <div style="grid-area: ex-bar1;">1</div>
+        <div style="grid-area: ex-bar2;">2</div>
+    </div>
+</body>
