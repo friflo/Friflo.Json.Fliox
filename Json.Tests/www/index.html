@@ -99,10 +99,9 @@
             grid-template-areas: 
                 "pl-header          pl-header   pl-header"
                 "pl-title-req       .           pl-title-resp"
-                "pl-request         pl-bar      pl-response"
-                "pl-footer-req      .           pl-footer-resp";
+                "pl-request         pl-bar      pl-response";
             grid-template-columns:  300px 5px 1fr;
-            grid-template-rows:     30px  20px 1fr 40px;
+            grid-template-rows:     28px  25px 1fr;
             grid-gap:   0px;
         }
 
@@ -337,11 +336,18 @@
     </div>
 
     <div style="grid-area: pl-title-req;">
-      <small style="opacity: 0.7;">Request</small>
+        <small style="opacity: 0.7;">Request</small>
+        <div style="opacity: 0.6; float: right;" title="properties added to request on: WebSocket send">
+            <code>req: <div id="req" class="inline">- </div></code>,
+            <code>ack: <div id="ack" class="inline">- </div></code>,
+            <code>clt: <div id="clt" class="inline">- </div></code>
+        </div>      
     </div>
     
     <div style="grid-area: pl-title-resp;" class="nobreak">
       <small style="opacity: 0.7;">Response</small> <small id="response-state"></small>
+      <span style="opacity: 0.7; cursor: default;" title="all WebSocket messages / events: DevTools · Network · ws-* · Messages">🛈</span>
+      
       <span style="float:right;">
         <small>events: <span id="subscriptionCount">0</span></small>&nbsp;
         <code style="font-weight: bold">"seq": <span id="subscriptionSeq">-</span></code>
@@ -354,17 +360,6 @@
     <div style="grid-area: pl-bar;" class="vbar"></div>
     <div class="editor" style="grid-area: pl-response; border-left: 0px; overflow:hidden;" >
         <div class="editor" id="responseContainer"></div>
-    </div>
-
-    <div style="grid-area: pl-footer-req;">
-      <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
-      <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
-      <code style="font-weight: bold">"clt": <div id="clt" class="inline">- </div></code><br>
-      <small style="opacity: 0.5;">added by client on: WebSocket send</small>
-    </div>
-
-    <div style="grid-area: pl-footer-resp;">
-      <small style="opacity: 0.5;">all messages / events: DevTools · Network · ws-* · Messages</small>
     </div>
   </div>
 
