@@ -17,7 +17,7 @@
         background: white;
     }
 
-    #bodyPlayground {
+    #playground {
         display: none;
         grid-template-areas: 
             "pl-header          pl-header   pl-header"
@@ -30,7 +30,7 @@
         background: white;
     }
 
-    #bodyExplorer {
+    #explorer {
         display: grid;
         grid-template-areas: 
             "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
@@ -48,7 +48,7 @@
 <body>
     <div style="grid-area: body-header;">body header</div>
     <div style="grid-area: body-tabs;">body tabs</div>
-    <div style="grid-area: body-playground;" id="bodyPlayground">
+    <div style="grid-area: body-playground;" id="playground">
         <div style="grid-area: pl-header;">playground header</div>
 
         <div style="grid-area: pl-title-req;">title request</div>
@@ -61,7 +61,7 @@
         <div style="grid-area: pl-footer-req;">footer request</div>
         <div style="grid-area: pl-footer-resp;">footer request</div>
     </div>
-    <div style="grid-area: body-explorer;" id="bodyExplorer">
+    <div style="grid-area: body-explorer;" id="explorer">
         <div style="grid-area: ex-filter;">filter</div>
         <div style="grid-area: ex-filter-input;">filter input</div>
 
