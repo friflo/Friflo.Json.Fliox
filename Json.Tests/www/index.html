@@ -112,10 +112,9 @@
                 "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
                 ".              .           ex-schema           .                   ex-action"
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
-                "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity"
-                ".              .           .                   .                   ex-footer";
+                "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px 5px 200px 5px 1fr;
-            grid-template-rows:     28px 28px 20px 1fr 20px;
+            grid-template-rows:     28px 28px 20px 1fr;
             grid-gap:   0px;
         }
         /** ---------------------------------------------- Grid Layout ----------------------- */
@@ -419,13 +418,14 @@
         <span id="readEntitiesDB"><span style="opacity: 0.4;">database/</span></span><span id="readEntities"><span style="opacity: 0.4;">container</span></span>
         </small>
     </div>
-    <div style="grid-area: ex-link-entity; overflow:auto;white-space:nowrap">
+    <div style="grid-area: ex-link-entity; overflow:hidden; white-space:nowrap">
         <span id="entityHeader" style="display: none;">
         <small id="entityId">entity id</small>
         </span>
         <span id="commandHeader" style="display: none;" >
         <small id="commandLink">command</small>
         </span>
+        <small id="writeResult"></small>
     </div>
 
 
@@ -447,10 +447,6 @@
             <div class="editor" id="entityContainer" style="border: 0px solid;"></div>
         </div>
         </span>
-    </div>
-
-    <div style="grid-area: ex-footer;">
-        <small id="writeResult"></small>
     </div>
   </div>
 
