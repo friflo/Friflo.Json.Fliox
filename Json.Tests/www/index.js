@@ -1433,16 +1433,11 @@ class App {
         }
         for (var pair of pairs) {
             const style = pair.elem.children[0].style;
-            style.width  = "0px";  // required to shrink width. Found no alternative solution right now.
+            style.width  = "0px";  // required to shrink width.  Found no alternative solution right now.
             style.height = "0px";  // required to shrink height. Found no alternative solution right now.
         }
         for (var pair of pairs) {
             pair.editor.layout();
-        }
-        for (var pair of pairs) {
-            const elem = pair.elem;
-            elem.children[0].style.width  = elem.clientWidth  + "px";
-            elem.children[0].style.height = elem.clientHeight + "px";
         }
     }
 
