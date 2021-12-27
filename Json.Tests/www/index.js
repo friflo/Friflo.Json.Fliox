@@ -402,7 +402,7 @@ class App {
         var tabs = document.getElementsByClassName("tab");
         for (var i = 0; i < tabContents.length; i++) {
             const tabContent = tabContents[i]
-            tabContent.style.display = tabContent.id == tabName ? "block" : "none";
+            tabContent.style.display = tabContent.id == tabName ? "grid" : "none";
             if (tabContent.id == tabName) {
                 tabs[i].classList.add("selected");
             } else {
@@ -1405,8 +1405,11 @@ class App {
         // console.log("layoutEditors - activeTab: " + activeTab)
         switch (activeTab) {
         case "playground":
-            this.requestEditor?.layout();
-            this.responseEditor?.layout();
+            const editors = [
+                { editor: this.responseEditor,  elem: responseContainer },               
+                { editor: this.requestEditor,   elem: requestContainer },
+            ]
+            this.layoutMonacoEditors(editors);
             break;
         case "explorer":
             // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
@@ -1416,13 +1419,39 @@ class App {
         }
     }
 
+    layoutMonacoEditors(pairs) {
+        for (let n = pairs.length - 1; n >= 0; n--) {
+            const pair = pairs[n];
+            if (!pair.editor || !pair.elem.children[0]) {
+                pairs.splice(n, 1);
+            }
+        }
+        for (var pair of pairs) {
+            const style = pair.elem.children[0].style;
+            style.width  = "0px";  // required to shrink width. Found no alternative solution right now.
+            style.height = "0px";  // required to shrink height. Found no alternative solution right now.
+        }
+        for (var pair of pairs) {
+            pair.editor.layout();
+        }
+        for (var pair of pairs) {
+            const elem = pair.elem;
+            elem.children[0].style.width  = elem.clientWidth  + "px";
+            elem.children[0].style.height = elem.clientHeight + "px";
+        }
+    }
+
+    // todo replace by layoutMonacoEditors()
     layoutEditor(monacoEditor, containerElem) {
         const editorElem = containerElem.children[0];
         if (!monacoEditor || !editorElem)
             return;
-        editorElem.style.width = "0px";  // required to shrink width. Found no alternative solution right now.
+        const style = editorElem.style;
+        style.width  = "0px";  // required to shrink width. Found no alternative solution right now.
+        style.height = "0px";  // required to shrink height. Found no alternative solution right now.
         monacoEditor.layout();
-        editorElem.style.width = containerElem.clientWidth + "px";
+        style.width  = containerElem.clientWidth  + "px";
+        style.height = containerElem.clientHeight + "px";
     }
 
     addTableResize () {

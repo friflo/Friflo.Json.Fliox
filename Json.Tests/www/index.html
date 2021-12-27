@@ -77,7 +77,46 @@
             a:visited   { color: rgb(208, 173, 240) }
             a           { color: rgb(158, 158, 255) }
         }
+        /** ---------------------------------------------- Grid Layout ----------------------- */
+        body {
+            display: grid;
+            grid-template-areas: 
+                "body-header"
+                "body-tabs"
+                "body-playground"
+                "body-explorer";
+            grid-template-columns:  1fr;
+            grid-template-rows:     80px  60px 1fr 0;
+            grid-gap:   0px;
+            margin:     0;
+            height:     100vh;
+        }
+        
+        #playground {
+            display: grid;
+            grid-template-areas: 
+                "pl-header          pl-header   pl-header"
+                "pl-title-req       .           pl-title-resp"
+                "pl-request         pl-bar      pl-response"
+                "pl-footer-req      .           pl-footer-resp";
+            grid-template-columns:  300px 5px 1fr;
+            grid-template-rows:     30px  20px 1fr 40px;
+            grid-gap:   0px;
+        }
 
+        #explorer {
+            display: none;
+            grid-template-areas: 
+                "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
+                ".              .           .                   .                   ex-action"
+                "ex-link-db     .           ex-link-container   .                   ex-link-entity"
+                "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity"
+                "ex-footer      ex-footer   ex-footer           ex-footer           ex-footer";
+            grid-template-columns:  200px 5px 200px 5px 1fr;
+            grid-template-rows:     20px  20px 20px 1fr 20px;
+            grid-gap:   0px;
+        }
+        /** ---------------------------------------------- Grid Layout ----------------------- */
         .dropbtn {
             background-color: lightgrey;
             color: white;
@@ -220,6 +259,7 @@
     app.setupEditors();
   </script>
 
+  <div style="grid-area: body-header; overflow: hidden;">
   <table class="header" style="width: max-content;">
     <tr>
       <td>
@@ -256,8 +296,9 @@
       </td>
     </tr>
   </table>
+  </div>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
-  <div style="overflow:initial; white-space:nowrap; margin-bottom: 7px; display:flex;">
+  <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-bottom: 7px; display:flex;">
     <a class="tab" href="#" onclick="app.openTab('playground')">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('explorer')"   >Explorer</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   ><b>⋮</b></a>
@@ -281,56 +322,45 @@
   </div>
 
   <!-- ------------------------------------------- Playground ------------------------------------------- -->
-  <div id="playground" class="tabContent">
-  <span style="overflow:auto;white-space:nowrap">
-    <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
-    <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
+  <div style="grid-area: body-playground;" id="playground" class="tabContent">
+    <div style="grid-area: pl-header; overflow:hidden; white-space:nowrap">
+      <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
+      <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
 
-    &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;
-    <button type="button" onclick="app.sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">send</button>
-    &nbsp;&nbsp;
-    <button type="button" onclick="app.connectWebsocket()">connect</button> 
-    <button type="button" onclick="app.closeWebsocket()">close</button> &nbsp;
-    <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
-  </span>
-  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;
+      <button type="button" onclick="app.sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">send</button>
+      &nbsp;&nbsp;
+      <button type="button" onclick="app.connectWebsocket()">connect</button> 
+      <button type="button" onclick="app.closeWebsocket()">close</button> &nbsp;
+      <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
 
-  <table width="100%" style="border-spacing: 0px;">
-    <tr>
-      <td>
-        <small style="opacity: 0.7;">Request</small>
-      </td>
-      <td class="vbar2"></td>
-      <td class="nobreak">
-        <small style="opacity: 0.7;">Response</small> <small id="response-state"></small>
-        <span style="float:right;">
-          <small>events: <span id="subscriptionCount">0</span></small>&nbsp;
-          <code style="font-weight: bold">"seq": <span id="subscriptionSeq">-</span></code>
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td style="width: 410px; border-right: 0px;">
-        <div id="requestContainer" style="height: 500px; "></div>
-      </td>
-      <td class="vbar"></td>
-      <td style="display: grid; border-left: 0px;">
-        <div id="responseContainer" style="min-width:100px;  height: 500px;"></div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
-        <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
-        <code style="font-weight: bold">"clt": <div id="clt" class="inline">- </div></code><br>
-        <small style="opacity: 0.5;">added by client on: WebSocket send</small>
-      </td>
-      <td class="vbar2"></td>
-      <td>
-        <small style="opacity: 0.5;">all messages / events: DevTools · Network · ws-* · Messages</small>
-      </td>
-    </tr>
-  </table>
+    <div style="grid-area: pl-title-req;">
+      <small style="opacity: 0.7;">Request</small>
+    </div>
+    
+    <div style="grid-area: pl-title-resp;" class="nobreak">
+      <small style="opacity: 0.7;">Response</small> <small id="response-state"></small>
+      <span style="float:right;">
+        <small>events: <span id="subscriptionCount">0</span></small>&nbsp;
+        <code style="font-weight: bold">"seq": <span id="subscriptionSeq">-</span></code>
+      </span>
+    </div>
+
+    <div style="grid-area: pl-request; border-right: 0px; min-height: 50px;" id="requestContainer"></div>
+    <div style="grid-area: pl-bar;" class="vbar"></div>
+    <div style="grid-area: pl-response; border-left: 0px;" id="responseContainer"></div>
+
+    <div style="grid-area: pl-footer-req;">
+      <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
+      <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
+      <code style="font-weight: bold">"clt": <div id="clt" class="inline">- </div></code><br>
+      <small style="opacity: 0.5;">added by client on: WebSocket send</small>
+    </div>
+
+    <div style="grid-area: pl-footer-resp;">
+      <small style="opacity: 0.5;">all messages / events: DevTools · Network · ws-* · Messages</small>
+    </div>
   </div>
 
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
