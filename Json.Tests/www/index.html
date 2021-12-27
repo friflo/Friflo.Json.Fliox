@@ -86,14 +86,14 @@
                 "body-playground"
                 "body-explorer";
             grid-template-columns:  1fr;
-            grid-template-rows:     80px  60px 1fr 0;
+            grid-template-rows:     80px  60px 0 1fr;
             grid-gap:   0px;
             margin:     0;
             height:     100vh;
         }
         
         #playground {
-            display: grid;
+            display: none;
             grid-template-areas: 
                 "pl-header          pl-header   pl-header"
                 "pl-title-req       .           pl-title-resp"
@@ -105,14 +105,14 @@
         }
 
         #explorer {
-            display: none;
+            display: grid;
             grid-template-areas: 
                 "ex-filter      .           ex-filter-input     ex-filter-input     ex-filter-input"
-                ".              .           .                   .                   ex-action"
+                ".              .           ex-schema           .                   ex-action"
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity"
                 "ex-footer      ex-footer   ex-footer           ex-footer           ex-footer";
-            grid-template-columns:  200px 5px 200px 5px 1fr;
+            grid-template-columns:  150px 5px 200px 5px 1fr;
             grid-template-rows:     20px  20px 20px 1fr 20px;
             grid-gap:   0px;
         }
@@ -347,7 +347,7 @@
       </span>
     </div>
 
-    <div style="grid-area: pl-request; border-right: 0px; min-height: 50px;" id="requestContainer"></div>
+    <div style="grid-area: pl-request; border-right: 0px;" id="requestContainer"></div>
     <div style="grid-area: pl-bar;" class="vbar"></div>
     <div style="grid-area: pl-response; border-left: 0px;" id="responseContainer"></div>
 
@@ -364,105 +364,88 @@
   </div>
 
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
-  <div id="explorer" class="tabContent">
-    <table width="100%" style="border-spacing: 0px;"">
-      <tr id="filterRow" style="visibility: hidden;">
-        <td style="float: right; height: 18px;">
-             <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden;"
-                href="#" class="applyFilter" title="Remove filter" onclick="app.removeFilter()">✖</a><!--
-          --><a href="#" class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</a><!--
-          --><a id="filterLink" title="Open filter in new tab" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
-          --><small>filter</small>
-          </a>
-          <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body">o =></small>
-        </td>
-        <td class="vbar2"></td>
-        <td colspan="3">
-          <input id="entityFilter" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="lambda filter expression ⊂ LINQ where"
-            onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">
-        </td>        
-      </tr>
+  <div style="grid-area: body-explorer; overflow: hidden;" id="explorer" class="tabContent">
 
-      <tr>
-        <td style="overflow:auto; white-space:nowrap;">
-        </td>
-        <td class="vbar2"></td>
-        <td style="overflow:auto; white-space:nowrap; text-align: center;">
-          <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
-        </td>
-        <td class="vbar2"></td>
-        <td style="display:flex; overflow:auto;white-space:nowrap; height: 23px;">
-          <span style="min-width: 350px;">
-            <span id="entityTools" style="display: none;">
-              <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
-              <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
-              &nbsp;&nbsp;
-              <small id="entityType" title="entity type"><span style="opacity: 0.4;">entity type</span></small>
-            </span>
-            <span id="commandTools" style="display: none;">
-              <button type="button" onclick="app.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
-              &nbsp;
-              <small id="commandSignature">command</small>
-            </span>
-          </span>
-          <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
-          <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
-        </td>
-      </tr>
+    <div id="filterRow" style="grid-area: ex-filter; visibility: hidden;">
+      <div style="float: right; height: 18px;">
+         <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden;"
+            href="#" class="applyFilter" title="Remove filter" onclick="app.removeFilter()">✖</a><!--
+      --><a href="#" class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</a><!--
+      --><a id="filterLink" title="Open filter in new tab" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
+      --><small>filter</small>
+         </a>
+         <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body">o =></small>
+      </div>
+    </div>
+    <div style="grid-area: ex-filter-input;">
+      <input id="entityFilter" style="visibility: hidden;" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="lambda filter expression ⊂ LINQ where"
+        onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
+    </div>
 
-      <tr>
-        <td>
-          <small><a href="./rest" target="_blank" rel="noopener noreferrer" title="all databases hosted by Hub">databases</a></small>
-        </td>
-        <td class="vbar2"></td>
-        <td style="overflow:auto;white-space:nowrap">
-          <small>
-            <span id="readEntitiesDB"><span style="opacity: 0.4;">database/</span></span><span id="readEntities"><span style="opacity: 0.4;">container</span></span>
-          </small>
-        </td>
-        <td class="vbar2"></td>
-        <td style="overflow:auto;white-space:nowrap">
-          <span id="entityHeader" style="display: none;">
-            <small id="entityId">entity id</small>
-          </span>
-          <span id="commandHeader" style="display: none;" >
-            <small id="commandLink">command</small>
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td style="width: 130px; border-right: 0px; background-color: var(--background2);">
-          <div class="catalogs" id="catalogExplorer" style="width: 130px; display: block; overflow: auto; white-space:nowrap; height: 500px;">
-            <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
-          </div>
-        </td>
-        <td class="vbar"></td>
-        <td style="width: 200px; border-left: 0px; border-right: 0px; background-color: var(--background2);">
-          <div id="entityExplorer"  style="width: 200px; display: block; overflow: auto; white-space:nowrap; height: 500px;"></div>
-        </td>
-        <td class="vbar"></td>
-        <td style="display: grid; border-left: 0px;">
-          <span style="display: inline-flex;">
-            <div id="commandValueContainer" style="width: 100%; display: none;">
-                <div id="commandValue" style="height: 500px; border: 0px solid; border-right: 0px solid var(--background3);"></div>
-            </div>
-            <div id="commandParamBar" class="vbar" style="min-width: var(--vbar-width); width: var(--vbar-width); background-color: var(--command-bar);"></div>
-            <div style="width: 100%;">
-              <div id="entityContainer" style="height: 500px; border: 0px solid;"></div>
-            </div>
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td class="vbar2"></td>
-        <td></td>
-        <td class="vbar2"></td>
-        <td>
-          <small id="writeResult"></small>
-        </td>
-      </tr>
-    </table>
+
+    <div style="grid-area: ex-schema; overflow:auto; white-space:nowrap; text-align: center;">
+      <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
+    </div>
+    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px;">
+        <span style="min-width: 350px;">
+        <span id="entityTools" style="display: none;">
+            <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
+            <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
+            &nbsp;&nbsp;
+            <small id="entityType" title="entity type"><span style="opacity: 0.4;">entity type</span></small>
+        </span>
+        <span id="commandTools" style="display: none;">
+            <button type="button" onclick="app.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
+            &nbsp;
+            <small id="commandSignature">command</small>
+        </span>
+        </span>
+        <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
+        <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
+    </div>
+
+
+    <div style="grid-area: ex-link-db;">
+        <small><a href="./rest" target="_blank" rel="noopener noreferrer" title="all databases hosted by Hub">databases</a></small>
+    </div>
+    <div style="grid-area: ex-link-container; overflow:auto; white-space:nowrap">
+        <small>
+        <span id="readEntitiesDB"><span style="opacity: 0.4;">database/</span></span><span id="readEntities"><span style="opacity: 0.4;">container</span></span>
+        </small>
+    </div>
+    <div style="grid-area: ex-link-entity; overflow:auto;white-space:nowrap">
+        <span id="entityHeader" style="display: none;">
+        <small id="entityId">entity id</small>
+        </span>
+        <span id="commandHeader" style="display: none;" >
+        <small id="commandLink">command</small>
+        </span>
+    </div>
+
+
+    <div style="grid-area: ex-database; border-right: 0px; background-color: var(--background2); overflow: auto; ">
+        <div class="catalogs" id="catalogExplorer" style="display: block; min-height: 50px;">
+        <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
+        </div>
+    </div>
+    <div style="grid-area: ex-container; border-left: 0px; border-right: 0px; background-color: var(--background2); overflow: auto; ">
+        <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
+    </div>
+    <div style="grid-area: ex-entity; display: grid; border-left: 0px;">
+        <span style="display: inline-flex;">
+        <div id="commandValueContainer" style="width: 100%; display: none;">
+            <div id="commandValue" style="border: 0px solid; border-right: 0px solid var(--background3);"></div>
+        </div>
+        <div id="commandParamBar" class="vbar" style="min-width: var(--vbar-width); width: var(--vbar-width); background-color: var(--command-bar);"></div>
+        <div style="width: 100%;">
+            <div id="entityContainer" style="border: 0px solid;"></div>
+        </div>
+        </span>
+    </div>
+
+    <div style="grid-area: ex-footer;">
+        <small id="writeResult"></small>
+    </div>
   </div>
 
   <!-- ------------------------------------------- Settings ------------------------------------------- -->

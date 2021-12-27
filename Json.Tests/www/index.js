@@ -742,6 +742,7 @@ class App {
 
     listCommands (database, dbCommands, dbContainer) {
         filterRow.style.visibility  = "hidden";
+        entityFilter.style.visibility  = "hidden";
         readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         readEntities.innerHTML      = "";
 
@@ -860,6 +861,7 @@ class App {
         
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility   = "";
+        entityFilter.style.visibility  = "";
         catalogSchema.innerHTML  = this.schemaLink(p.database);
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink      = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
@@ -1413,8 +1415,11 @@ class App {
             break;
         case "explorer":
             // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
-            this.layoutEditor(this.entityEditor,        entityContainer);
-            this.layoutEditor(this.commandValueEditor,  commandValue);
+            const editors2 = [
+                { editor: this.entityEditor,        elem: entityContainer },               
+                { editor: this.commandValueEditor,  elem: commandValue },
+            ]
+            this.layoutMonacoEditors(editors2);
             break;
         }
     }
@@ -1439,19 +1444,6 @@ class App {
             elem.children[0].style.width  = elem.clientWidth  + "px";
             elem.children[0].style.height = elem.clientHeight + "px";
         }
-    }
-
-    // todo replace by layoutMonacoEditors()
-    layoutEditor(monacoEditor, containerElem) {
-        const editorElem = containerElem.children[0];
-        if (!monacoEditor || !editorElem)
-            return;
-        const style = editorElem.style;
-        style.width  = "0px";  // required to shrink width. Found no alternative solution right now.
-        style.height = "0px";  // required to shrink height. Found no alternative solution right now.
-        monacoEditor.layout();
-        style.width  = containerElem.clientWidth  + "px";
-        style.height = containerElem.clientHeight + "px";
     }
 
     addTableResize () {
