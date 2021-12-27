@@ -400,15 +400,19 @@ class App {
         activeTab = tabName;
         var tabContents = document.getElementsByClassName("tabContent");
         var tabs = document.getElementsByClassName("tab");
+        const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
         for (var i = 0; i < tabContents.length; i++) {
             const tabContent = tabContents[i]
             tabContent.style.display = tabContent.id == tabName ? "grid" : "none";
-            if (tabContent.id == tabName) {
+            const isActiveTab = tabContent.id == tabName;
+            if (isActiveTab) {
                 tabs[i].classList.add("selected");
             } else {
                 tabs[i].classList.remove("selected");
             }
+            gridTemplateRows[i + 2] = isActiveTab ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
         }
+        document.body.style.gridTemplateRows = gridTemplateRows.join(" ");
         this.layoutEditors();
         if (tabName != "settings") {
             this.setConfig("activeTab", tabName);
