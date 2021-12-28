@@ -867,8 +867,8 @@ class App {
         filterRow.style.visibility   = "";
         entityFilter.style.visibility  = "";
         catalogSchema.innerHTML  = this.schemaLink(p.database);
-        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
-        const containerLink      = `<a title="container" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
+        readEntitiesDB.innerHTML = `<a title="open database in new tab" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
+        const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
         const response           = await this.restRequest("GET", null, p.database, p.container, null, query);
 
@@ -948,7 +948,7 @@ class App {
         entityType.innerHTML    = this.getEntityType (schema, p.container);
         const containerRoute    = { database: p.database, container: p.container }
         let entityLink          = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${p.container}</a>`;
-        entityLink             += `<a title="entity id" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
+        entityLink             += `<a title="open entity in new tab" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        

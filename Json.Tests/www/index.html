@@ -329,10 +329,10 @@
       <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
 
       &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;
-      <button type="button" onclick="app.sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">send</button>
+      <button type="button" onclick="app.sendSyncRequest()"  title="Send websocket request (Ctrl+Alt+Enter)">send</button>
       &nbsp;&nbsp;
-      <button type="button" onclick="app.connectWebsocket()">connect</button> 
-      <button type="button" onclick="app.closeWebsocket()">close</button> &nbsp;
+      <button type="button" onclick="app.connectWebsocket()" title="connect WebSocket">connect</button> 
+      <button type="button" onclick="app.closeWebsocket()"   title="close WebSocket">close</button> &nbsp;
       <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
     </div>
 
@@ -373,14 +373,14 @@
          <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden;"
             href="#" class="applyFilter" title="Remove filter" onclick="app.removeFilter()">✖</a><!--
       --><a href="#" class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</a><!--
-      --><a id="filterLink" title="Open filter in new tab" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
+      --><a id="filterLink" title="open filter in new tab" style="opacity: 0.5;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
       --><small>filter</small>
          </a>
          <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body">o =></small>
       </div>
     </div>
     <div style="grid-area: ex-filter-input;">
-      <input id="entityFilter" style="visibility: hidden;" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="lambda filter expression ⊂ LINQ where"
+      <input id="entityFilter" style="visibility: hidden;" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="lambda expression predicate ⊂ LINQ where"
         onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
     </div>
 
@@ -392,7 +392,7 @@
         <span style="min-width: 350px;">
         <span id="entityTools" style="display: none;">
             <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
-            <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
+            <button type="button" onclick="app.saveEntity()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
             &nbsp;&nbsp;
             <small id="entityType" title="entity type"><span style="opacity: 0.4;">entity type</span></small>
         </span>
@@ -408,7 +408,7 @@
 
 
     <div style="grid-area: ex-link-db; ; overflow:hidden">
-        <small><a href="./rest" target="_blank" rel="noopener noreferrer" title="all databases hosted by Hub">databases</a></small>
+        <small><a href="./rest" target="_blank" rel="noopener noreferrer" title="open databases hosted by Hub in new tab">databases</a></small>
     </div>
     <div style="grid-area: ex-link-container; overflow:hidden; white-space:nowrap">
         <small>
