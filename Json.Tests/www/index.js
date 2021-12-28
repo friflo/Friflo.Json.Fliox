@@ -1450,17 +1450,20 @@ class App {
         this.dragTemplate   = document.getElementById(template);
         this.dragBar        = document.getElementById(bar);
         document.body.style.cursor = "ew-resize";
+        event.preventDefault();
     }
 
     getGridColumns(x) {
+        const prev = this.dragBar.previousElementSibling;
+        x = x - prev.offsetLeft;
+        // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
-            case "playground":      return [x + "px", "4px", "1fr"];
+            case "playground":          return [x + "px", "4px", "1fr"];
             case "explorer":
                 const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
-                //                         150px 5px 200px 5px 1fr;
-                switch (this.dragBar.id) {
-                    case "exBar1":  return [x + "px", cols[1], cols[2], cols[3]];
-                    case "exBar2":  return [cols[0], cols[1], x + "px", cols[3]];
+                switch (this.dragBar.id) { //  [150px 5px 200px 5px 1fr];
+                    case "exBar1":      return [x + "px", cols[1], cols[2], cols[3]];
+                    case "exBar2":      return [cols[0], cols[1], x + "px", cols[3]];
                 }
         }
     }
