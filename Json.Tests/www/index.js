@@ -1438,14 +1438,12 @@ class App {
         }
     }
 
-    isDragging = false;
-    dragOffset;
     dragTemplate;
     dragBar;
+    dragOffset;
 
     startDrag(event, template, bar) {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
-        this.isDragging     = true;
         this.dragOffset     = event.offsetX;
         this.dragTemplate   = document.getElementById(template);
         this.dragBar        = document.getElementById(bar);
@@ -1469,7 +1467,7 @@ class App {
     }
 
     onDrag(event) {
-        if (!this.isDragging)
+        if (!this.dragTemplate)
             return;
         // console.log(`  drag: ${event.clientX}`);
         const x     = event.clientX - this.dragOffset;
@@ -1480,9 +1478,9 @@ class App {
     }
 
     endDrag() {
-        if (!this.isDragging)
+        if (!this.dragTemplate)
             return;
-        this.isDragging = false;
+        this.dragTemplate = undefined;
         document.body.style.cursor = "auto";
     }
 
