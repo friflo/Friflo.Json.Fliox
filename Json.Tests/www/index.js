@@ -1257,16 +1257,9 @@ class App {
         }
         this.addSchemas(monacoSchemas);
 
-        const editorSettings = {
-            lineNumbers:    "off",
-            minimap:        { enabled: false },
-            theme:          window.appConfig.monacoTheme,
-            mouseWheelZoom: true
-        }
         // --- create request editor
         { 
             this.requestEditor = monaco.editor.create(requestContainer, { /* model: model */ });
-            this.requestEditor.updateOptions({ ...editorSettings });
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel (this.requestModel);
 
@@ -1286,7 +1279,6 @@ class App {
         // --- create response editor
         {
             this.responseEditor = monaco.editor.create(responseContainer, { /* model: model */ });
-            this.responseEditor.updateOptions({ ...editorSettings });
             this.responseModel = monaco.editor.createModel(null, "json", responseUri);
             this.responseEditor.setModel (this.responseModel);
         }
@@ -1294,7 +1286,6 @@ class App {
         // --- create entity editor
         {
             this.entityEditor = monaco.editor.create(entityContainer, { });
-            this.entityEditor.updateOptions({ ...editorSettings });
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
                     return;
@@ -1310,14 +1301,26 @@ class App {
             this.commandValueEditor = monaco.editor.create(commandValue, { });
             // this.commandValueModel   = monaco.editor.createModel(null, "json");
             // this.commandValueEditor.setModel(this.commandValueModel);
-            this.commandValueEditor.updateOptions({ ...editorSettings });
             //this.commandValueEditor.setValue("{}");
         }
         // this.commandResponseModel = monaco.editor.createModel(null, "json");
-
+        this.setEditorOptions();
         window.onresize = () => {
             this.layoutEditors();        
         };
+    }
+
+    setEditorOptions() {
+        const editorSettings = {
+            lineNumbers:    this.showLineNumbers ? "on" : "off",
+            minimap:        { enabled: this.showMinimap ? true : false },
+            theme:          window.appConfig.monacoTheme,
+            mouseWheelZoom: true
+        }
+        this.requestEditor.     updateOptions ({ ...editorSettings });
+        this.responseEditor.    updateOptions ({ ...editorSettings });
+        this.entityEditor.      updateOptions ({ ...editorSettings });
+        this.commandValueEditor.updateOptions ({ ...editorSettings });
     }
 
     tryFollowLink(value, column, line) {
@@ -1347,11 +1350,6 @@ class App {
         }
     }
 
-    formatEntities  = false;
-    formatResponses = true;
-    activeTab       = "playground";
-    filters         = {};
-
     setConfig(key, value) {
         this[key] = value;
         const elem = document.getElementById(key);
@@ -1380,11 +1378,30 @@ class App {
         this.setConfig(key, value);
     }
 
+    showLineNumbers = false;
+    showMinimap     = false;
+    formatEntities  = false;
+    formatResponses = true;
+    activeTab       = "playground";
+    filters         = {};
+
     loadConfig() {
+        this.initConfigValue("showLineNumbers");
+        this.initConfigValue("showMinimap");
         this.initConfigValue("formatEntities");
         this.initConfigValue("formatResponses");
         this.initConfigValue("activeTab");
         this.initConfigValue("filters");
+    }
+
+    changeConfig (key, value) {
+        this.setConfig(key, value);
+        switch (key) {
+            case "showLineNumbers":
+            case "showMinimap":
+                this.setEditorOptions();
+                break;
+        }
     }
 
     formatJson(format, text) {

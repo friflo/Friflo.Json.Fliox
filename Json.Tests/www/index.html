@@ -455,11 +455,20 @@
     <div class="settings">
       <ul>
         <li>
-          <input type="checkbox" id="formatEntities"  onclick="app.setConfig(id, checked)">
+            <input type="checkbox" id="showLineNumbers"  onclick="app.changeConfig(id, checked)">
+            <label for="showLineNumbers">Editor: Line numbers</label>
+        </li>
+        <li>
+            <input type="checkbox" id="showMinimap"  onclick="app.changeConfig(id, checked)">
+            <label for="showMinimap">Editor: Minimap</label>
+        </li>
+        <br>
+        <li>
+          <input type="checkbox" id="formatEntities"  onclick="app.changeConfig(id, checked)">
           <label for="formatEntities">Format entities received from server</label>
         </li>
         <li>
-          <input type="checkbox" id="formatResponses" onclick="app.setConfig(id, checked)">
+          <input type="checkbox" id="formatResponses" onclick="app.changeConfig(id, checked)">
           <label for="formatResponses">Format responses</label>
         </li>
       </ul>
