@@ -112,7 +112,7 @@
                 ".              .           ex-schema           .                   ex-action"
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
-            grid-template-columns:  150px 5px 200px 5px 1fr;
+            grid-template-columns:  150px 5px 200px 5px 1fr;    /* dynamically overwritten by #explorer.style */
             grid-template-rows:     28px 28px 20px 1fr;
             grid-gap:   0px;
         }
@@ -365,7 +365,8 @@
   </div>
 
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
-  <div style="grid-area: body-explorer; overflow: hidden;" id="explorer" class="tabContent">
+  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px 5px 200px 5px 1fr;"
+       id="explorer" class="tabContent">
 
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden;">
       <div style="float: right; height: 18px;">
@@ -430,9 +431,11 @@
         <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
         </div>
     </div>
+    <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
     <div style="grid-area: ex-container; border-left: 0px; border-right: 0px; background-color: var(--background2); overflow: auto; ">
         <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
     </div>
+    <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
     <div style="grid-area: ex-entity; display: grid; border-left: 0px; overflow: hidden;">
         <span style="display: inline-flex;">
         <div id="commandValueContainer" style="width: 100%; display: none; overflow: hidden;">
