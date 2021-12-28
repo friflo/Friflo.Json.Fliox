@@ -396,11 +396,17 @@ class App {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
+    toggleDescription() {
+        this.showDescription = !this.showDescription;
+        this.openTab(this.activeTab);
+    }
+
     openTab (tabName) {
         activeTab = tabName;
         var tabContents = document.getElementsByClassName("tabContent");
         var tabs = document.getElementsByClassName("tab");
         const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
+        gridTemplateRows[0] = this.showDescription ? "80px" : "0";
         for (var i = 0; i < tabContents.length; i++) {
             const tabContent = tabContents[i]
             tabContent.style.display = tabContent.id == tabName ? "grid" : "none";
@@ -1384,6 +1390,7 @@ class App {
     formatEntities  = false;
     formatResponses = true;
     activeTab       = "playground";
+    showDescription = true;
     filters         = {};
 
     loadConfig() {
