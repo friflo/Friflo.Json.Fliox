@@ -100,7 +100,7 @@
                 "pl-header          pl-header   pl-header"
                 "pl-title-req       .           pl-title-resp"
                 "pl-request         pl-bar      pl-response";
-            grid-template-columns:  300px 5px 1fr;
+            grid-template-columns:  300px 5px 1fr;  /* dynamically overwritten by #playground.style */
             grid-template-rows:     28px  25px 1fr;
             grid-gap:   0px;
         }
@@ -245,7 +245,8 @@
     </style>
 </head>
 
-<body style="grid-template-rows: 80px  38px 0 1fr; font-family: sans-serif; background-color: var(--background);">
+<body style="grid-template-rows: 80px  38px 0 1fr; font-family: sans-serif; background-color: var(--background);"
+    onmousemove="app.onDrag(event)" onmouseup="app.endDrag()">
   <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
         https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
   <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"/>
@@ -357,8 +358,8 @@
     <div  style="grid-area: pl-request; border-right: 0px; overflow:hidden;">
         <div class="editor" id="requestContainer"></div>
     </div>
-    <div style="grid-area: pl-bar;" class="vbar"></div>
-    <div class="editor" style="grid-area: pl-response; border-left: 0px; overflow:hidden;" >
+    <div id="plBar" style="grid-area: pl-bar; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'playground', id)"></div>
+    <div class="editor" style="grid-area: pl-response; border-left: 0px; overflow:hidden;">
         <div class="editor" id="responseContainer"></div>
     </div>
   </div>

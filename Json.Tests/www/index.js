@@ -1438,6 +1438,43 @@ class App {
         }
     }
 
+    isDragging = false;
+    dragOffset;
+    dragTemplate;
+    dragBar;
+
+    startDrag(event, template, bar) {
+        // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
+        this.isDragging     = true;
+        this.dragOffset     = event.offsetX;
+        this.dragTemplate   = document.getElementById(template);
+        this.dragBar        = document.getElementById(bar);
+        document.body.style.cursor = "ew-resize";
+    }
+
+    onDrag(event) {
+        if (!this.isDragging)
+            return;
+        // console.log(`  drag: ${event.clientX}`);
+        const x = event.clientX - this.dragOffset;
+        let cols = [
+			x + "px",
+			"4px",
+			"1fr"
+		];
+        this.dragTemplate.style.gridTemplateColumns = cols.join(" ");
+        this.layoutEditors();
+        event.preventDefault();
+    }
+
+    endDrag() {
+        if (!this.isDragging)
+            return;
+        this.isDragging = false;
+        document.body.style.cursor = "auto";
+    }
+
+
     addTableResize () {
         var tdElm;
         var startOffset;
