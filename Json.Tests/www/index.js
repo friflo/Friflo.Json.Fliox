@@ -756,7 +756,8 @@ class App {
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
         ulDatabase.append(typeLabel)
         var commandLabel = document.createElement('div');
-        commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer"><small style="opacity:0.5" title="all database commands">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;commands</small></a>`;
+        const label = '<small style="opacity:0.5" title="open database commands in new tab">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;commands</small>';
+        commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
         ulDatabase.append(commandLabel)
 
         var liCommands  = document.createElement('li');
