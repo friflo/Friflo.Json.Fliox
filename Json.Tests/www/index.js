@@ -6,7 +6,6 @@ var clt = null;
 var requestStart;
 var subSeq   = 0;
 var subCount = 0;
-var activeTab;
 
 const responseState     = document.getElementById("response-state");
 const subscriptionCount = document.getElementById("subscriptionCount");
@@ -213,7 +212,7 @@ class App {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
 
-        switch (activeTab) {
+        switch (this.activeTab) {
         case "playground":
             if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
                 this.sendSyncRequest();
@@ -396,19 +395,23 @@ class App {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
+    setClass(element, enable, className) {
+        const classList = element.classList;
+        if (enable) {
+            classList.add(className);
+            return;
+        }
+        classList.remove(className);        
+    }
+
     toggleDescription() {
-        this.changeConfig("showDescription", !this.showDescription);
-        const classList = toggleDescription.classList;
-        if (!this.showDescription) {
-            classList.add("expand");
-        } else {
-            classList.remove("expand");
-        }        
+        this.changeConfig("showDescription", !this.showDescription);   
         this.openTab(this.activeTab);
     }
 
     openTab (tabName) {
-        activeTab = tabName;
+        this.activeTab = tabName;
+        this.setClass(toggleDescription, !this.showDescription, "expand")
         var tabContents = document.getElementsByClassName("tabContent");
         var tabs = document.getElementsByClassName("tab");
         const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
@@ -417,11 +420,7 @@ class App {
             const tabContent = tabContents[i]
             tabContent.style.display = tabContent.id == tabName ? "grid" : "none";
             const isActiveTab = tabContent.id == tabName;
-            if (isActiveTab) {
-                tabs[i].classList.add("selected");
-            } else {
-                tabs[i].classList.remove("selected");
-            }
+            this.setClass(tabs[i], isActiveTab, "selected");
             gridTemplateRows[i + 2] = isActiveTab ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
         }
         document.body.style.gridTemplateRows = gridTemplateRows.join(" ");
@@ -1434,7 +1433,7 @@ class App {
 
     layoutEditors () {
         // console.log("layoutEditors - activeTab: " + activeTab)
-        switch (activeTab) {
+        switch (this.activeTab) {
         case "playground":
             const editors = [
                 { editor: this.responseEditor,  elem: responseContainer },               
