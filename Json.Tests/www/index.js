@@ -397,7 +397,13 @@ class App {
     }
 
     toggleDescription() {
-        this.showDescription = !this.showDescription;
+        this.changeConfig("showDescription", !this.showDescription);
+        const classList = toggleDescription.classList;
+        if (!this.showDescription) {
+            classList.add("expand");
+        } else {
+            classList.remove("expand");
+        }        
         this.openTab(this.activeTab);
     }
 
@@ -1399,6 +1405,7 @@ class App {
         this.initConfigValue("formatEntities");
         this.initConfigValue("formatResponses");
         this.initConfigValue("activeTab");
+        this.initConfigValue("showDescription");
         this.initConfigValue("filters");
     }
 
