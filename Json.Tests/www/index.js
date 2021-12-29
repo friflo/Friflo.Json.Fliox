@@ -983,7 +983,7 @@ class App {
         // console.log(entityJson);
         this.setEntityValue(p.database, p.container, content);
         if (selection)  this.entityEditor.setSelection(selection);        
-        this.entityEditor.focus();
+        // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
 
     async saveEntity () {
