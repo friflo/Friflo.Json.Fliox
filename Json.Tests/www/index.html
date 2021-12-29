@@ -446,13 +446,13 @@
 
     <!-- ------- database tree, container list, editors ------- -->
     <div style="grid-area: ex-database; border-right: 0px; background-color: var(--background2); overflow: auto; ">
-        <div class="catalogs" id="catalogExplorer" style="display: block; min-height: 50px;">
-        <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
-        </div>
+      <div class="catalogs" id="catalogExplorer" style="display: block; min-height: 50px; white-space: nowrap;">
+        <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
+      </div>
     </div>
     <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
     <div style="grid-area: ex-container; border-left: 0px; border-right: 0px; background-color: var(--background2); overflow: auto; ">
-        <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
+      <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
     </div>
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
     <div style="grid-area: ex-entity; display: grid; border-left: 0px; overflow: hidden;">
