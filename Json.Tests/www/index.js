@@ -415,7 +415,8 @@ class App {
         var tabContents = document.getElementsByClassName("tabContent");
         var tabs = document.getElementsByClassName("tab");
         const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
-        gridTemplateRows[0] = this.showDescription ? "80px" : "0";
+        const headerHeight = getComputedStyle(document.body).getPropertyValue('--header-height');
+        gridTemplateRows[0] = this.showDescription ? headerHeight : "0";
         for (var i = 0; i < tabContents.length; i++) {
             const tabContent = tabContents[i]
             tabContent.style.display = tabContent.id == tabName ? "grid" : "none";
