@@ -37,9 +37,9 @@
             --selected-color: #0000ff18;
             --tab-color:    #e8e8e8;
             --tab-hover:    #e0e0e0;
-            --tab-border:   #dfdfdf;
+            --tab-border:   #ffffff;
             --editor-border:#e8e8e8;
-            --background:   #f9f9f9;
+            --background:   #f4f4f4;
             --background2:  #ffffff;
             --background3:  #f0f0f0;
             --item-hover:   #e8e8e8;
@@ -52,7 +52,7 @@
             --selected-color: #44fa;
             --tab-color:    #303030;
             --tab-hover:    #606060;
-            --tab-border:   #404040;
+            --tab-border:   #000;
             --editor-border:#000;
             --background:   #000;
             --background2:  #1e1e1e;
@@ -320,9 +320,9 @@
     <div id="toggleDescription" onclick="app.toggleDescription()" style="border-bottom: 1px solid var(--tab-border); margin: 0;" title="toggle Hub description">
         <div class="toggleDescription" ></div>
     </div>
-    <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  3px;">Playground</a>
+    <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  4px;">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('explorer')"                                        >Explorer</a>
-    <a class="tab" href="#" onclick="app.openTab('settings')"   style="border-top-right-radius: 3px;"><b>⋮</b></a>
+    <a class="tab" href="#" onclick="app.openTab('settings')"   style="border-top-right-radius: 4px;"><b>⋮</b></a>
     <span style="border-bottom: 1px solid var(--tab-border); width:100%; padding-left: 30px;">
       <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
       <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
