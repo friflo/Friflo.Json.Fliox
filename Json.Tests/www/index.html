@@ -28,8 +28,8 @@
     </script>
     <style>
         :root {
-            --header-height: 70px;
-            --tab-height:    35px;
+            --header-height: 60px;
+            --tab-height:    40px;
             --vbar-width: 4px;            
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
@@ -177,11 +177,11 @@
 
         .vbar           { width: var(--vbar-width); min-width: var(--vbar-width); padding: 0px; background-color: var(--background3); }
 
-        .toggleDescription                  { width: 23px; height: 23px; transform: rotate(270deg) translate(-5px, 5px);
+        .toggleDescription                  { width: 23px; height: 23px; transform: rotate(270deg) translate(0px, 5px);
                                               opacity: 0.4; cursor: pointer; border-radius: 2px; }
         .toggleDescription::before          { content: "❯" }
         .toggleDescription:hover            { background-color: var(--tab-hover); }
-        .expand .toggleDescription          { width: 53px; height: 41px; transform: rotate(0) scale(0.8) translate(-0px, -9px);
+        .expand .toggleDescription          { width: 53px; height: 41px; transform: rotate(0) scale(0.8) translate(-0px, -17px);
                                               background-image: url("Json-Fliox-53x43.svg");  opacity: 1;  }
         .expand .toggleDescription::before  { content: unset }
         #toggleDescription                  { min-width: 33px;}
@@ -316,7 +316,7 @@
   </table>
   </div>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
-  <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-top: 3px; display:flex;">
+  <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-top: 10px; display:flex;">
     <div id="toggleDescription" onclick="app.toggleDescription()" style="border-bottom: 1px solid var(--tab-border); margin: 0;" title="toggle Hub description">
         <div class="toggleDescription" ></div>
     </div>
