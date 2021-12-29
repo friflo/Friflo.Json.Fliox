@@ -6,7 +6,7 @@
     <meta name="description" content="Test page for Json.Fliox.Hub to browse databases and send requests via HTTP and WebSocket to Hub">
     <meta name="color-scheme" content="dark light">
     <link rel="icon"     href="/Json-Fliox-53x43.svg" type="image/x-icon">
-    <link rel="manifest" href="./manifest.json">
+    <!-- <link rel="manifest" href="./manifest.json"> -->
     <meta name="theme-color" content="#606060">
     <title>JSON Fliox Hub</title>
     <script>
@@ -75,11 +75,21 @@
         .navigate:hover     { background-color: var(--tab-hover); }
         .navigate:active    { background-color: var(--background3); font-size: 13.5px; box-shadow: inset 1px 1px 1px #00000010; }
 
+        body::after {
+            content: "";
+            background-image: url('paint-splatter.png');
+            background-repeat: repeat; background-position: 5% 5%;
+            opacity: 0.6;
+            top: 0; left: 0; bottom: 0; right: 0;
+            position: absolute;
+            z-index: -1;   
+        }
         /* dark mode color for firefox */
         @media(prefers-color-scheme: dark) {
             body  { background-color: #000; color: #fff; }
             a:visited   { color: rgb(208, 173, 240) }
             a           { color: rgb(158, 158, 255) }
+            body::after { background-image: unset; opacity: 0; }
         }
         /** ---------------------------------------------- Grid Layout ----------------------- */
         body {
@@ -96,6 +106,9 @@
             margin:     0;
             height:     100vh;
         }
+
+
+
 
         .editor { height: 100%; }
         
