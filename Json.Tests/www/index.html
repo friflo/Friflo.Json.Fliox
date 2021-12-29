@@ -29,7 +29,7 @@
     <style>
         :root {
             --header-height: 70px;
-            --tab-height:    30px;
+            --tab-height:    35px;
             --vbar-width: 4px;            
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
@@ -37,7 +37,7 @@
             --selected-color: #0000ff18;
             --tab-color:    #e8e8e8;
             --tab-hover:    #e0e0e0;
-            --tab-border:   #ccc;
+            --tab-border:   #dfdfdf;
             --editor-border:#e8e8e8;
             --background:   #f9f9f9;
             --background2:  #ffffff;
@@ -177,12 +177,16 @@
 
         .vbar           { width: var(--vbar-width); min-width: var(--vbar-width); padding: 0px; background-color: var(--background3); }
 
-        .toggleDescription          { width: 22px; height: 22px; transform: rotate(270deg) translate(-5px,5px); opacity: 0.5; cursor: pointer; border-radius: 2px; }
-        .toggleDescription.expand   { transform: rotate(90deg) translate(0px,-5px); }
-        .toggleDescription:hover    { background-color: var(--tab-hover); }
+        .toggleDescription                  { width: 25px; height: 25px; transform: rotate(270deg) translate(-5px, 20px);
+                                              opacity: 0.5; cursor: pointer; border-radius: 2px; }
+        .toggleDescription::before          { content: "❯" }
+        .toggleDescription.expand::before   { content: unset }
+        .toggleDescription.expand           { width: 53px; height: 41px; transform: rotate(0) scale(0.8) translate(-0px, -10px);
+                                              background-image: url("Json-Fliox-53x43.svg");  opacity: 1;  }
+        .toggleDescription:hover            { background-color: var(--tab-hover); }
 
         .tab            { cursor: pointer; background-color: var(--tab-color); color: var(--color);
-                          border: 1px solid var(--tab-border); margin: 0px; padding: 3px 10px; }
+                          border: 1px solid var(--tab-border); margin: 0px; padding: 5px 10px; }
         .tab:hover      { background-color: var(--tab-hover);   border-bottom: 1px solid #ffffff00; }
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; background-color: var(--background); }
@@ -309,8 +313,8 @@
   </div>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
   <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-top: 3px; display:flex;">
-    <div style="border-bottom: 1px solid var(--tab-border); min-width:32px; min-width:32px; margin: 0;">
-        <div id="toggleDescription" class="toggleDescription" onclick="app.toggleDescription()">&nbsp;&nbsp;❯</div>
+    <div style="border-bottom: 1px solid var(--tab-border); min-width:60px; margin: 0;" title="toggle Hub description">
+        <div id="toggleDescription" class="toggleDescription" onclick="app.toggleDescription()"></div>
     </div>
     <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  3px;">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('explorer')"                                        >Explorer</a>
