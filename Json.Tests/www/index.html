@@ -373,7 +373,7 @@
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
   <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px 5px 200px 5px 1fr;"
        id="explorer" class="tabContent">
-
+    <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden;">
       <div style="float: right; height: 18px;">
          <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden;"
@@ -390,7 +390,7 @@
         onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
     </div>
 
-
+    <!-- ------- schema link, entity command/type ------- -->
     <div style="grid-area: ex-schema; overflow:auto; white-space:nowrap; text-align: center;">
       <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
     </div>
@@ -412,7 +412,7 @@
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
     </div>
 
-
+    <!-- ------- resource titles/links ------- -->
     <div style="grid-area: ex-link-db; ; overflow:hidden">
         <small><a href="./rest" target="_blank" rel="noopener noreferrer" title="open databases hosted by Hub in new tab">databases</a></small>
     </div>
@@ -431,7 +431,7 @@
         <small id="writeResult"></small>
     </div>
 
-
+    <!-- ------- database tree, container list, editors ------- -->
     <div style="grid-area: ex-database; border-right: 0px; background-color: var(--background2); overflow: auto; ">
         <div class="catalogs" id="catalogExplorer" style="display: block; min-height: 50px;">
         <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
@@ -443,7 +443,7 @@
     </div>
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
     <div style="grid-area: ex-entity; display: grid; border-left: 0px; overflow: hidden;">
-        <span style="display: inline-flex;">
+      <span style="display: inline-flex;">
         <div id="commandValueContainer" style="width: 100%; display: none; overflow: hidden;">
             <div class="editor" id="commandValue" style="border: 0px solid; border-right: 0px solid var(--background3);"></div>
         </div>
@@ -451,7 +451,7 @@
         <div style="width: 100%; overflow: hidden;">
             <div class="editor" id="entityContainer" style="border: 0px solid;"></div>
         </div>
-        </span>
+      </span>
     </div>
   </div>
 

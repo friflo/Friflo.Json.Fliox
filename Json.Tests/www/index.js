@@ -1467,6 +1467,12 @@ class App {
         for (var pair of pairs) {
             pair.editor.layout();
         }
+        // set editor width/height to their container width/height
+        for (var pair of pairs) {
+            const style  = pair.elem.children[0].style;
+            style.width  = pair.elem.clientWidth  + "px";
+            style.height = pair.elem.clientHeight + "px";
+        }
     }
 
     dragTemplate;
