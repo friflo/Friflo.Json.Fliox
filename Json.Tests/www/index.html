@@ -52,7 +52,7 @@
             --selected-color: #44fa;
             --tab-color:    #303030;
             --tab-hover:    #606060;
-            --tab-border:   #000;
+            --tab-border:   #1e1e1e;
             --editor-border:#000;
             --background:   #000;
             --background2:  #1e1e1e;
@@ -181,7 +181,7 @@
                                               opacity: 0.4; cursor: pointer; border-radius: 2px; }
         .toggleDescription::before          { content: "❯" }
         .toggleDescription:hover            { background-color: var(--tab-hover); }
-        .expand .toggleDescription          { width: 53px; height: 41px; transform: rotate(0) scale(0.8) translate(-0px, -17px);
+        .expand .toggleDescription          { width: 53px; height: 43px; transform: rotate(0) scale(0.8) translate(-0px, -17px);
                                               background-image: url("Json-Fliox-53x43.svg");  opacity: 1;  }
         .expand .toggleDescription::before  { content: unset }
         #toggleDescription                  { min-width: 33px;}
@@ -189,7 +189,7 @@
 
 
 
-        .tab            { cursor: pointer; background-color: var(--tab-color); color: var(--color);
+        .tab            { cursor: pointer; background-color: var(--tab-color); color: var(--color)!important;;
                           border: 1px solid var(--tab-border); margin: 0px; padding: 5px 10px; }
         .tab:hover      { background-color: var(--tab-hover);   border-bottom: 1px solid #ffffff00; }
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
@@ -320,9 +320,9 @@
     <div id="toggleDescription" onclick="app.toggleDescription()" style="border-bottom: 1px solid var(--tab-border); margin: 0;" title="toggle Hub description">
         <div class="toggleDescription" ></div>
     </div>
-    <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  4px;">Playground</a>
+    <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  3px;">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('explorer')"                                        >Explorer</a>
-    <a class="tab" href="#" onclick="app.openTab('settings')"   style="border-top-right-radius: 4px;"><b>⋮</b></a>
+    <a class="tab" href="#" onclick="app.openTab('settings')"   style="border-top-right-radius: 3px;"><b>⋮</b></a>
     <span style="border-bottom: 1px solid var(--tab-border); width:100%; padding-left: 30px;">
       <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
       <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
