@@ -1,6 +1,5 @@
 {
     "name": "JSON Fliox Hub",
-    "short_name": "Fliox Hub",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#fdfdfd",
