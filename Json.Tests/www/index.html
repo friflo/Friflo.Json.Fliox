@@ -19,14 +19,14 @@
     </script>
     <script src='bundle.js'></script> <!-- todo: load deferred -->
     <script type="module">
-        import { app } from  "./index.js";
+        import { app  } from  "./index.js";
         window.app = app;
-        app.loadConfig();
-        app.initUserToken();
-        app.loadExampleRequestList();
-        app.loadCluster();
-        app.addTableResize();
-        app.openTab(app.getConfig("activeTab"));
+        app.initApp();
+        window.onload = function() {
+            const body = document.body;
+            body.onmousemove = (event)  => app.onDrag(event);
+            body.onmouseup   = ()       => app.endDrag();
+        }
     </script>
     <style>
         :root {
@@ -264,8 +264,8 @@
     </style>
 </head>
 
-<body style="grid-template-rows: var(--header-height) var(--tab-height) 0 1fr 0; font-family: sans-serif; background-color: var(--background2);"
-    onmousemove="app.onDrag(event)" onmouseup="app.endDrag()">
+<body style="grid-template-rows: var(--header-height) var(--tab-height) 0 1fr 0;
+             font-family: sans-serif; background-color: var(--background2);">
   <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
         https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
   <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"/>

@@ -1217,17 +1217,21 @@ class App {
                 }
             }]; */
         var schemas = [];
-        var jsonSchemaResponse  = await fetch("protocol/json-schema.json");
-        var jsonSchema          = await jsonSchemaResponse.json();
+        try {
+            var jsonSchemaResponse  = await fetch("protocol/json-schema.json");
+            var jsonSchema          = await jsonSchemaResponse.json();
 
-        for (let schemaName in jsonSchema) {
-            var schema          = jsonSchema[schemaName];
-            var url             = "protocol/json-schema/" + schemaName;
-            var schemaEntry = {
-                uri:    "http://" + url,
-                schema: schema            
+            for (let schemaName in jsonSchema) {
+                var schema          = jsonSchema[schemaName];
+                var url             = "protocol/json-schema/" + schemaName;
+                var schemaEntry = {
+                    uri:    "http://" + url,
+                    schema: schema            
+                }
+                schemas.push(schemaEntry);
             }
-            schemas.push(schemaEntry);
+        } catch (e) {
+            console.error ("load json-schema.json failed");
         }
         return schemas;
     }
@@ -1573,6 +1577,18 @@ class App {
         document.addEventListener('mouseup', () => {
             tdElm = undefined;
         });
+    }
+
+    initApp() {
+        // --- methods without network requests
+        this.loadConfig();
+        this.initUserToken();
+        this.addTableResize();
+        this.openTab(app.getConfig("activeTab"));
+
+        // --- methods performing network requests - note: methods are not awaited
+        this.loadExampleRequestList();
+        this.loadCluster();
     }
 }
 
