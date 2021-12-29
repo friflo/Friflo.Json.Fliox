@@ -27,7 +27,7 @@ const entityType        = document.getElementById("entityType");
 const entityId          = document.getElementById("entityId");
 
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").then(registration => {
+    navigator.serviceWorker.register("./sw.js").then(registration => {
         console.log("SW registered");
     }).catch(error => {
         console.error(`SW failed: ${error}`);
