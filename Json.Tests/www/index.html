@@ -29,7 +29,7 @@
     <style>
         :root {
             --header-height: 70px;
-            --tab-height:    38px;
+            --tab-height:    30px;
             --vbar-width: 4px;            
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
@@ -86,9 +86,10 @@
                 "body-header"
                 "body-tabs"
                 "body-playground"
-                "body-explorer";
+                "body-explorer"
+                "body-settings";
             grid-template-columns:  1fr;
-            grid-template-rows:     var(--header-height) var(--header-height) 0 1fr; /* dynamically overwritten by body.style */
+            grid-template-rows:     var(--header-height) var(--tab-height) 0 1fr 0; /* dynamically overwritten by body.style */
             grid-gap:   0px;
             margin:     0;
             height:     100vh;
@@ -118,7 +119,8 @@
             grid-template-rows:     28px 28px 20px 1fr;
             grid-gap:   0px;
         }
-        /** ---------------------------------------------- Grid Layout ----------------------- */
+        /** ---------------------------------------------- Grid Layout end ----------------------- */
+
         .dropbtn {
             background-color: lightgrey;
             color: white;
@@ -179,10 +181,10 @@
         .toggleDescription.expand   { transform: rotate(90deg) translate(0px,-5px); }
         .toggleDescription:hover    { background-color: var(--tab-hover); }
 
-        .tab            { cursor: pointer; background-color: var(--tab-color); border: 1px solid var(--tab-border); margin: 0px; padding: 5px 10px; }
+        .tab            { cursor: pointer; background-color: var(--tab-color); border: 1px solid var(--tab-border); margin: 0px; padding: 3px 10px; }
         .tab:hover      { background-color: var(--tab-hover);   border-bottom: 1px solid #ffffff00; }
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
-        .tabContent     { display: none; border-top: none; }
+        .tabContent     { display: none; border-top: none; background-color: var(--background); }
 
         .applyFilter        { cursor: pointer; border-radius: 2px; width: 28px; height: 14px; display:inline-block; text-align: center;
                               margin-right: 1px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; }
@@ -251,7 +253,7 @@
     </style>
 </head>
 
-<body style="grid-template-rows: var(--header-height) var(--tab-height) 0 1fr; font-family: sans-serif; background-color: var(--background);"
+<body style="grid-template-rows: var(--header-height) var(--tab-height) 0 1fr 0; font-family: sans-serif; background-color: var(--background);"
     onmousemove="app.onDrag(event)" onmouseup="app.endDrag()">
   <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
         https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
@@ -305,7 +307,7 @@
   </table>
   </div>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
-  <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-top: 3px; margin-bottom: 7px; display:flex;">
+  <div style="grid-area: body-tabs; overflow:initial; white-space:nowrap; margin-top: 3px; display:flex;">
     <div style="border-bottom: 1px solid var(--tab-border); min-width:32px; min-width:32px; margin: 0;">
         <div id="toggleDescription" class="toggleDescription" onclick="app.toggleDescription()">&nbsp;&nbsp;❯</div>
     </div>
@@ -331,7 +333,7 @@
   </div>
 
   <!-- ------------------------------------------- Playground ------------------------------------------- -->
-  <div style="grid-area: body-playground; overflow: hidden" id="playground" class="tabContent">
+  <div style="grid-area: body-playground; overflow: hidden; padding-top: 10px;" id="playground" class="tabContent">
     <div style="grid-area: pl-header; overflow:hidden; white-space:nowrap">
       <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
       <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
@@ -373,7 +375,7 @@
   </div>
 
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
-  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px 5px 200px 5px 1fr;"
+  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px 5px 200px 5px 1fr; padding-top: 5px;"
        id="explorer" class="tabContent">
     <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden;">
@@ -458,7 +460,8 @@
   </div>
 
   <!-- ------------------------------------------- Settings ------------------------------------------- -->
-  <div id="settings" class="tabContent">
+  <div id="settings" class="tabContent" style="grid-area: body-settings; overflow: hidden; padding: 10px;">
+    <div>
     <div>Settings</div>
     <div class="settings">
       <ul>
@@ -480,6 +483,7 @@
           <label for="formatResponses">Format responses</label>
         </li>
       </ul>
+    </div>
     </div>
   </div>
   
