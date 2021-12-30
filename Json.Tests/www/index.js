@@ -418,7 +418,7 @@ class App {
 
     openTab (tabName) {
         this.activeTab = tabName;
-        this.setClass(toggleDescription, !this.showDescription, "expand")
+        this.setClass(document.body, !this.showDescription, "miniHeader")
         var tabContents = document.getElementsByClassName("tabContent");
         var tabs = document.getElementsByClassName("tab");
         const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
