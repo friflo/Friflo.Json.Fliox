@@ -42,7 +42,7 @@
             --tab-border:   #ffffff;
             --editor-border:#e8e8e8;
             --background:   #f4f4f4;
-            --background2:  #ffffff;
+            --background2:  #ffffff; --bg-transparent:  #fffffff0;
             --background3:  #f0f0f0;
             --item-hover:   #e8e8e8;
             --command-bar:  #d9d9ff;
@@ -57,7 +57,7 @@
             --tab-border:   #1e1e1e;
             --editor-border:#000;
             --background:   #000;
-            --background2:  #1e1e1e;
+            --background2:  #1e1e1e; --bg-transparent:  #000000b0;
             --background3:  #000;
             --item-hover:   #444;
             --command-bar:  #5f5f92;
@@ -89,7 +89,7 @@
             body  { background-color: #000; color: #fff; }
             a:visited   { color: rgb(208, 173, 240) }
             a           { color: rgb(158, 158, 255) }
-            body::after { background-image: unset; opacity: 0; }
+            body::after { opacity: 0.7; filter: invert(1); }
         }
         /** ---------------------------------------------- Grid Layout ----------------------- */
         body {
@@ -295,7 +295,8 @@
     app.setupEditors();
   </script>
 
-  <div style="grid-area: body-header; overflow: hidden;">
+  <div style="grid-area: body-header; overflow: hidden;
+              background: var(--bg-transparent); box-shadow: 0px 0px 30px 30px var(--bg-transparent);">
   <table class="header" style="width: max-content;">
     <tr>
       <td style="padding: 5px;">
@@ -341,8 +342,8 @@
     <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  3px;">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('explorer')"                                        >Explorer</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   style="border-top-right-radius: 3px;"><b>⋮</b></a>
-    <span style="width:100%;"></span>
-    <span style="border-bottom: 1px solid var(--tab-border); margin-left: 10px; margin-right: 10px; font-size: 13px;">
+    <span style="border-bottom: 1px solid var(--tab-border); width:100%;"></span>
+    <span style="border-bottom: 1px solid var(--tab-border); padding-left: 10px; padding-right: 10px; font-size: 13px;">
       <div style="background: var(--background); padding: 1px 1px 1px 10px;">
         <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
         <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
