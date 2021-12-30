@@ -79,7 +79,7 @@
             content: "";
             background-image: url('paint-splatter.png');
             background-repeat: repeat; background-position: 5% 5%;
-            opacity: 0.6;
+            opacity: 1;
             top: 0; left: 0; bottom: 0; right: 0;
             position: absolute;
             z-index: -1;   
@@ -94,6 +94,7 @@
         /** ---------------------------------------------- Grid Layout ----------------------- */
         body {
             display: grid;
+            font-size: 16px;    /* ChromeOS */
             grid-template-areas: 
                 "body-header"
                 "body-tabs"
@@ -137,11 +138,12 @@
         /** ---------------------------------------------- Grid Layout end ----------------------- */
 
         .dropbtn {
-            background-color: lightgrey;
-            color: white;
+            color: var(--color);
+            opacity:    0.5;
             padding:    0px;
-            border:     1px solid #aaa;
-            width:      16px;
+            border:     0px solid #aaa;
+            width:      23px;
+            height:     23px;
         }
         .authInput { width: 100px; }
         .dropdown {
@@ -157,6 +159,7 @@
             z-index: 1;
             cursor: default;
             font-size: 14px;
+            right: 0;
         }
         .dropdown-content div {
             color: black;
@@ -177,7 +180,7 @@
         .inline         { display:          inline; }
         h2              { margin:           0px;  }
         label           { display:          inline;  }
-        input           { display:          inline;  }
+        input           { display:          inline; font-size: 13px; /* ChromeOS */ }
         .nobreak *      { white-space:      nowrap; }
         .pre *          { white-space:      pre; }
         table.header td { padding-right:    10px; }
@@ -338,19 +341,22 @@
     <a class="tab" href="#" onclick="app.openTab('playground')" style="border-top-left-radius:  3px;">Playground</a>
     <a class="tab" href="#" onclick="app.openTab('explorer')"                                        >Explorer</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   style="border-top-right-radius: 3px;"><b>⋮</b></a>
-    <span style="border-bottom: 1px solid var(--tab-border); width:100%; padding-left: 30px;">
-      <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
-      <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
-      <div class="dropdown">
-        <button class="dropbtn">▼</button>
-        <div class="dropdown-content">
-          <div onclick="app.selectUser(this)">admin</div>
-          <div onclick="app.selectUser(this)">cluster-admin</div>
-          <div onclick="app.selectUser(this)">poc-admin</div>
-          <div onclick="app.selectUser(this)">poc-readonly</div>
-          <div onclick="app.selectUser(this)">monitor-admin</div>
-          <div onclick="app.selectUser(this)">user-admin</div>
-          <div onclick="app.selectUser(this)">user-readonly</div>
+    <span style="width:100%;"></span>
+    <span style="border-bottom: 1px solid var(--tab-border); margin-left: 10px; margin-right: 10px; font-size: 13px;">
+      <div style="background: var(--background); padding: 1px 1px 1px 10px;">
+        <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
+        <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
+        <div class="dropdown">
+          <button class="dropbtn">▼</button>
+          <div class="dropdown-content">
+            <div onclick="app.selectUser(this)">admin</div>
+            <div onclick="app.selectUser(this)">cluster-admin</div>
+            <div onclick="app.selectUser(this)">poc-admin</div>
+            <div onclick="app.selectUser(this)">poc-readonly</div>
+            <div onclick="app.selectUser(this)">monitor-admin</div>
+            <div onclick="app.selectUser(this)">user-admin</div>
+            <div onclick="app.selectUser(this)">user-readonly</div>
+          </div>
         </div>
       </div>
     </span>
