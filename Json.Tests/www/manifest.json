@@ -3,7 +3,7 @@
     "start_url": ".",
     "display": "standalone",
     "background_color": "#fdfdfd",
-    "theme_color": "#606060",
+    "theme_color": "#ffffff",
     "orientation": "landscape-primary",
     "icons": [
       {
