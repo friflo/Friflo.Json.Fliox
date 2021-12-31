@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema
                 var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
                 sb.Append(
 $@"
-<p>
+<div class='namespace'>
     <h2 id='{ns}'>
         <a href='#{ns}'>{ns}</a>
     </h2>
@@ -74,7 +74,7 @@ $@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
 ");
                 if (emitFile.footer != null)
                     sb.AppendLine(emitFile.footer);
-                sb.AppendLine("</p>");
+                sb.AppendLine("</div>");
             }
             sbNav.Append("</ul>\n");
 
@@ -121,7 +121,7 @@ $@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
 $@"    <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
     </h3>
-    <div>{definition}</div>
+    <desc>{definition}</desc>
 ");
             return new EmitType(type, sb);
         }

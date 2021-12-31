@@ -22,12 +22,15 @@
                     width:      100vw;
                     font-family: sans-serif
                 }
-        .head       { overflow: hidden;  }
-        .nav        { overflow: auto;   }
-        .docs       { overflow: auto; margin-left: 30px; }
-        .docs div   { margin-left: 50px; }
+        .head       { overflow: hidden; background: #f8f8f8; }
+        .nav        { overflow: auto;   background: #f8f8f8;  }
+        .docs       { overflow: auto;   margin-left: 30px; }
+        desc        { margin-left: 50px; }
+        .namespace  { margin-bottom: 100px; }
 
-        h3      { margin-left: 30px; }
+        h3      { margin-left: 30px; margin-bottom: 5px; }
+
+
         a       { text-decoration:  none; }
         ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
 
@@ -91,7 +94,7 @@
 <!-- -------------------------------  docs ------------------------------- -->
 <div style="grid-area: body-docs;" class="docs">
 
-<p>
+<div class='namespace'>
     <h2 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client'>Friflo.Json.Tests.Common.UnitTest.Fliox.Client</a>
     </h2>
@@ -344,47 +347,47 @@
             <td>text?</td> <td>string | null</td>
         </tr>
     </table>
-</p>
+</div>
 
-<p>
+<div class='namespace'>
     <h2 id='Standard'>
         <a href='#Standard'>Standard</a>
     </h2>
     <h3 id='Standard.DateTime'>
         <a href='#Standard.DateTime'>DateTime</a>
     </h3>
-    <div>timestamp as RFC 3339 + milliseconds</div>
+    <desc>timestamp as RFC 3339 + milliseconds</desc>
     <h3 id='Standard.int32'>
         <a href='#Standard.int32'>int32</a>
     </h3>
-    <div>signed integer 32-bit. Range: [-2147483648, 2147483647]</div>
+    <desc>signed integer 32-bit. Range: [-2147483648, 2147483647]</desc>
     <h3 id='Standard.BigInteger'>
         <a href='#Standard.BigInteger'>BigInteger</a>
     </h3>
-    <div>integer with arbitrary precision</div>
+    <desc>integer with arbitrary precision</desc>
     <h3 id='Standard.uint8'>
         <a href='#Standard.uint8'>uint8</a>
     </h3>
-    <div>unsigned integer 8-bit. Range: [0 - 255]</div>
+    <desc>unsigned integer 8-bit. Range: [0 - 255]</desc>
     <h3 id='Standard.int16'>
         <a href='#Standard.int16'>int16</a>
     </h3>
-    <div>signed integer 16-bit. Range: [-32768, 32767]</div>
+    <desc>signed integer 16-bit. Range: [-32768, 32767]</desc>
     <h3 id='Standard.int64'>
         <a href='#Standard.int64'>int64</a>
     </h3>
-    <div>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]</div>
+    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]</desc>
     <h3 id='Standard.float'>
         <a href='#Standard.float'>float</a>
     </h3>
-    <div>single precision floating point number</div>
+    <desc>single precision floating point number</desc>
     <h3 id='Standard.double'>
         <a href='#Standard.double'>double</a>
     </h3>
-    <div>double precision floating point number</div>
-</p>
+    <desc>double precision floating point number</desc>
+</div>
 
-<p>
+<div class='namespace'>
     <h2 id='Friflo.Json.Fliox.Hub.DB.Cluster'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
     </h2>
@@ -446,7 +449,7 @@
             <td>databases</td> <td>DbContainers[]</td>
         </tr>
     </table>
-</p>
+</div>
 
 </div>
 
