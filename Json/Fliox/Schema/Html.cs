@@ -54,7 +54,7 @@ $@"
 <p>
     <h2 id='{ns}'>
         <a href='#{ns}'>{ns}</a>
-    <h2>
+    </h2>
 ");
                 // sb.AppendLine(emitFile.header);
                 sbNav.Append(
