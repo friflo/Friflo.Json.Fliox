@@ -133,7 +133,7 @@ $@"    <h3 id='{qualifiedName}'>
                 return EmitClassType(type, sb);
             }
             if (type.IsService) {
-                return null; // EmitServiceType(type, sb);
+                return EmitServiceType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -207,7 +207,6 @@ $@"        <tr>
         </tr>");
             }
             sb.AppendLine($"    </table>");
-            sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }
         
@@ -216,17 +215,26 @@ $@"        <tr>
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();
             var commands        = type.Commands;
-            sb.AppendLine($"export interface {type.Name} {{");
+            var qualifiedName   = type.Namespace + "." + type.Name;
+            sb.AppendLine(
+$@"    <h3 id={qualifiedName}>
+        <a href='#{qualifiedName}'>interface {type.Name}</a>
+    </h3>
+    <table>
+");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in type.Commands) {
                 var commandParam    = GetTypeName(command.param,  context);
                 var commandResult   = GetTypeName(command.result, context);
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(param: {commandParam}) : {commandResult}";
-                sb.AppendLine($"    {command.name}{indent} {signature};");
+                sb.AppendLine(
+$@"        <tr>
+            <td>{command.name}</td>{indent}<td>{signature}</td>
+        </tr>");
             }
-            sb.AppendLine("}");
-            sb.AppendLine();
+            sb.AppendLine(
+"    </table>");
             return new EmitType(type, sb, imports, dependencies);
         }
         

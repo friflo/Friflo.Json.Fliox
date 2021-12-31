@@ -12,7 +12,7 @@
                     grid-template-areas: 
                         "body-head  body-head"
                         "body-nav   body-docs";
-                    grid-template-columns:  280px 1fr;
+                    grid-template-columns:  350px 1fr;
                     grid-template-rows:     60px  1fr;
                     grid-gap:   0px;
                     margin:     0;
@@ -44,6 +44,7 @@
     <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client'>Friflo.Json.Tests.Common.UnitTest.Fliox.Client</a></li>
         <ul>
             <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStore'>PocStore</a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStoreService'>PocStoreService</a></li>
             <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>Order</a></li>
             <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></li>
             <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>OrderItem</a></li>
@@ -112,7 +113,33 @@
             <td>types</td>     <td>{ [key: string]: TestType }</td>
         </tr>
     </table>
+    <h3 id=Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStoreService>
+        <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStoreService'>interface PocStoreService</a>
+    </h3>
+    <table>
 
+        <tr>
+            <td>TestCommand</td> <td>(param: TestCommand) : boolean</td>
+        </tr>
+        <tr>
+            <td>DbInfo</td>      <td>(param: any) : DbInfo</td>
+        </tr>
+        <tr>
+            <td>DbContainers</td><td>(param: any) : DbContainers</td>
+        </tr>
+        <tr>
+            <td>DbCommands</td>  <td>(param: any) : DbCommands</td>
+        </tr>
+        <tr>
+            <td>DbSchema</td>    <td>(param: any) : DbSchema</td>
+        </tr>
+        <tr>
+            <td>DbList</td>      <td>(param: any) : DbList</td>
+        </tr>
+        <tr>
+            <td>Echo</td>        <td>(param: any) : any</td>
+        </tr>
+    </table>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>class Order</a>
     </h3>
@@ -130,7 +157,6 @@
             <td>items?</td>    <td>OrderItem[] | null</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>class Customer</a>
     </h3>
@@ -142,7 +168,6 @@
             <td>name</td> <td>string</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>class OrderItem</a>
     </h3>
@@ -157,7 +182,6 @@
             <td>name?</td>    <td>string | null</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>class Article</a>
     </h3>
@@ -172,7 +196,6 @@
             <td>producer?</td> <td>string | null</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>class Producer</a>
     </h3>
@@ -187,7 +210,6 @@
             <td>employees?</td> <td>string[] | null</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>class Employee</a>
     </h3>
@@ -202,7 +224,6 @@
             <td>lastName?</td>  <td>string | null</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocEntity'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocEntity'>abstract class PocEntity</a>
     </h3>
@@ -211,7 +232,6 @@
             <td>id</td> <td>string</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'>class TestType extends PocEntity</a>
     </h3>
@@ -295,7 +315,6 @@
             <td>derivedClassNull?</td> <td>DerivedClass | null</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'>class PocStruct</a>
     </h3>
@@ -304,7 +323,6 @@
             <td>value</td> <td>int32</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'>class DerivedClass extends OrderItem</a>
     </h3>
@@ -313,7 +331,6 @@
             <td>derivedVal</td> <td>int32</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'>class TestCommand</a>
     </h3>
@@ -322,7 +339,6 @@
             <td>text?</td> <td>string | null</td>
         </tr>
     </table>
-
 </p>
 
 <p>
@@ -375,7 +391,6 @@
             <td>hubVersion</td> <td>string</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>class DbContainers</a>
     </h3>
@@ -390,7 +405,6 @@
             <td>containers</td>   <td>string[]</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>class DbCommands</a>
     </h3>
@@ -402,7 +416,6 @@
             <td>commands</td> <td>string[]</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>class DbSchema</a>
     </h3>
@@ -420,7 +433,6 @@
             <td>jsonSchemas</td> <td>{ [key: string]: any }</td>
         </tr>
     </table>
-
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>class DbList</a>
     </h3>
@@ -429,7 +441,6 @@
             <td>databases</td> <td>DbContainers[]</td>
         </tr>
     </table>
-
 </p>
 
 </div>
