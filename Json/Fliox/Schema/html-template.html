@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schema Name</title>
+    <style>
+        :root   {
+                    --mono-font: 'Consolas', 'Courier New', Courier, monospace;
+                }
+        body    {
+                    display: grid;
+                    grid-template-areas: 
+                        "body-head  body-head"
+                        "body-nav   body-docs";
+                    grid-template-columns:  280px 1fr;
+                    grid-template-rows:     60px  1fr;
+                    grid-gap:   0px;
+                    margin:     0;
+                    height:     100vh;
+                    width:      100vw;
+                    font-family: sans-serif
+                }
+        .head   { overflow: hidden;  }
+        .nav    { overflow: auto;   }
+        .docs   { overflow: auto;  }
+
+        a       { text-decoration:  none; }
+        ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
+
+        table.type tr td   { width: 150px; }
+    </style>
+</head>
+
+<body>
+
+<!-- -------------------------------  nav ------------------------------- -->
+<div style="grid-area: body-head;" class="head">
+{{head}}
+</div>
+
+<!-- -------------------------------  nav ------------------------------- -->
+<div style="grid-area: body-nav;" class="nav">
+{{navigation}}
+</div>
+
+<!-- -------------------------------  docs ------------------------------- -->
+<div style="grid-area: body-docs;" class="docs">
+{{documentation}}
+</div>
+
+</body>
+</html>

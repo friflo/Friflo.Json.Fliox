@@ -32,6 +32,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/PocStore");
         }
         
+        /// C# -> HTML
+        [Test]
+        public static void CS_HTML () {
+            // Use code generator directly
+            var schema      = new NativeTypeSchema(typeof(PocStore));
+            var generator   = new Generator(schema, ".html", Replacements);
+            HtmlGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Html/PocStore");
+        }
+        
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JsonSchema () {
