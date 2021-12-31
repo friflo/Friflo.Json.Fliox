@@ -131,6 +131,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // override intended
         public virtual Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer) {
             var result              = new Dictionary<string, SchemaSet>();
+            var options             = new JsonTypeOptions(typeSchema);
+
+            var htmlGenerator       = HtmlGenerator.Generate(options);
+            var htmlSchema          = new SchemaSet (writer, "HTML",        "text/html",        htmlGenerator.files);
+            result.Add("html",       htmlSchema);
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
@@ -142,7 +147,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
             result.Add("json-schema",  jsonSchema);
             
-            var options             = new JsonTypeOptions(typeSchema);
             var typescriptGenerator = TypescriptGenerator.Generate(options);
             var typescriptSchema    = new SchemaSet (writer, "Typescript",  "text/plain",       typescriptGenerator.files);
             result.Add("typescript",   typescriptSchema);
@@ -154,6 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var kotlinGenerator     = KotlinGenerator.Generate(options);
             var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
             result.Add("kotlin",       kotlinSchema);
+            
             return result;
         }
         
