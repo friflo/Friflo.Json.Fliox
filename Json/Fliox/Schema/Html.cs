@@ -58,7 +58,7 @@ $@"
 ");
                 // sb.AppendLine(emitFile.header);
                 sbNav.Append(
-$@"    <li><a href='#{ns}'>{shortNs}</a></li>
+$@"    <li><a href='#{ns}'>{shortNs}</a>
         <ul>
 ");
                 foreach (var result in emitFile.emitTypes) {
