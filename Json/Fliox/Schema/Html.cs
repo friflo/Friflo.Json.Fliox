@@ -50,19 +50,19 @@ namespace Friflo.Json.Fliox.Schema
                 sb.Append(
 $@"
 <p>
-    <h2 id=""{ns}"">
-        <a href=""#{ns}"">{ns}</a>
+    <h2 id='{ns}'>
+        <a href='#{ns}'>{ns}</a>
     <h2>
 ");
                 // sb.AppendLine(emitFile.header);
                 sbNav.Append(
-$@"    <li><a href=""#{ns}"">{ns}</a></li>
+$@"    <li><a href='#{ns}'>{ns}</a></li>
         <ul>
 ");
                 foreach (var result in emitFile.emitTypes) {
                     var typeName = result.type.Name;
                     sbNav.Append(
-$@"            <li><a href=""#{ns}.{typeName}"">{typeName}</a></li>
+$@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
 ");
                     sb.Append(result.content);
                 }
@@ -116,9 +116,10 @@ $@"            <li><a href=""#{ns}.{typeName}"">{typeName}</a></li>
                 return null;
             var qualifiedName = type.Namespace + "." + type.Name;
             sb.Append(
-$@"    <h3 id=""{qualifiedName}"">
-        <a href=""#{qualifiedName}"">{type.Name}</a>
+$@"    <h3 id='{qualifiedName}'>
+        <a href='#{qualifiedName}'>{type.Name}</a>
     </h3>
+    <div>{definition}</div>
 ");
             return new EmitType(type, sb);
         }
@@ -165,8 +166,8 @@ $@"    <h3 id=""{qualifiedName}"">
             if (unionType == null) {
                 var abstractStr = type.IsAbstract ? "abstract " : "";
                 sb.AppendLine(
-$@"    <h3 id=""{qualifiedName}"">
-        <a href=""#{qualifiedName}"">{abstractStr}class {type.Name}{extendsStr}</a>");
+$@"    <h3 id='{qualifiedName}'>
+        <a href='#{qualifiedName}'>{abstractStr}class {type.Name}{extendsStr}</a>");
             } else {
                 sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
@@ -190,17 +191,22 @@ $@"    <h3 id=""{qualifiedName}"">
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
             }
-            /* foreach (var field in fields) {
+            sb.AppendLine("    </h3>");
+            sb.AppendLine($"    <table  class='type'");
+            foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
                 bool required = field.required;
                 var fieldType = GetFieldType(field, context);
                 var indent  = Indent(maxFieldName, field.name);
-                var optStr  = required ? " ": "?";
+                var optStr  = required ? "": "?";
                 var nullStr = required ? "" : " | null";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
-            } */
-            sb.AppendLine("    <h3>");
+                sb.AppendLine(
+$@"        <tr>
+            <td>{field.name}{optStr}</td>{indent} <td>{fieldType}{nullStr}</td>
+        </tr>");
+            }
+            sb.AppendLine($"    </table>");
             sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }
