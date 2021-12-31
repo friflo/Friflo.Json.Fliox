@@ -47,6 +47,8 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var pair in generator.fileEmits) {
                 string      ns          = pair.Key;
                 EmitFile    emitFile    = pair.Value;
+                var lastDot = ns.LastIndexOf('.') + 1;
+                var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
                 sb.Append(
 $@"
 <p>
@@ -56,7 +58,7 @@ $@"
 ");
                 // sb.AppendLine(emitFile.header);
                 sbNav.Append(
-$@"    <li><a href='#{ns}'>{ns}</a></li>
+$@"    <li><a href='#{ns}'>{shortNs}</a></li>
         <ul>
 ");
                 foreach (var result in emitFile.emitTypes) {
