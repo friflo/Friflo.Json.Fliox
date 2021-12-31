@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_HTML () {
             // Use code generator directly
             var schema      = new NativeTypeSchema(typeof(PocStore));
-            var generator   = new Generator(schema, ".html", Replacements);
+            var generator   = new Generator(schema, ".html");
             HtmlGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Html/PocStore");
         }

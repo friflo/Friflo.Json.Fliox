@@ -45,28 +45,29 @@ namespace Friflo.Json.Fliox.Schema
             sb.Clear();
             sbNav.Append("<ul>\n");
             foreach (var pair in generator.fileEmits) {
-                string      path        = pair.Key;
+                string      ns          = pair.Key;
                 EmitFile    emitFile    = pair.Value;
-                sb.Append($@"
+                sb.Append(
+$@"
 <p>
-    <h2 id=""{path}"">
-        <a href=""#{path}"">{path}</a>
+    <h2 id=""{ns}"">
+        <a href=""#{ns}"">{ns}</a>
     <h2>
 ");
                 // sb.AppendLine(emitFile.header);
                 sbNav.Append(
-$@"    <li><a href=""#{path}"">{path}</a></li>
+$@"    <li><a href=""#{ns}"">{ns}</a></li>
         <ul>
 ");
                 foreach (var result in emitFile.emitTypes) {
                     var typeName = result.type.Name;
                     sbNav.Append(
-$@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
+$@"            <li><a href=""#{ns}.{typeName}"">{typeName}</a></li>
 ");
-                    // sb.Append(result.content);
+                    sb.Append(result.content);
                 }
                 sbNav.Append(
-                    @"        </ul>
+@"        </ul>
     </li>
 ");
                 if (emitFile.footer != null)
@@ -96,26 +97,29 @@ $@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
             var nl= Environment.NewLine;
-            AddType (map, standard.Uint8,       $"/** unsigned integer 8-bit. Range: [0 - 255]                                  */{nl}export type uint8 = number" );
-            AddType (map, standard.Int16,       $"/** signed integer 16-bit. Range: [-32768, 32767]                             */{nl}export type int16 = number" );
-            AddType (map, standard.Int32,       $"/** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */{nl}export type int32 = number" );
-            AddType (map, standard.Int64,       $"/** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807] */{nl}export type int64 = number" );
+            AddType (map, standard.Uint8,       $"unsigned integer 8-bit. Range: [0 - 255]" );
+            AddType (map, standard.Int16,       $"signed integer 16-bit. Range: [-32768, 32767]" );
+            AddType (map, standard.Int32,       $"signed integer 32-bit. Range: [-2147483648, 2147483647]" );
+            AddType (map, standard.Int64,       $"signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]" );
                
-            AddType (map, standard.Double,      $"/** double precision floating point number */{nl}export type double = number" );
-            AddType (map, standard.Float,       $"/** single precision floating point number */{nl}export type float = number" );
+            AddType (map, standard.Double,      $"double precision floating point number" );
+            AddType (map, standard.Float,       $"single precision floating point number" );
                
-            AddType (map, standard.BigInteger,  $"/** integer with arbitrary precision       */{nl}export type BigInteger = string" );
-            AddType (map, standard.DateTime,    $"/** timestamp as RFC 3339 + milliseconds   */{nl}export type DateTime = string" );
-            AddType (map, standard.Guid,        $"/** GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\" */{nl}export type Guid = string" );
+            AddType (map, standard.BigInteger,  $"integer with arbitrary precision" );
+            AddType (map, standard.DateTime,    $"timestamp as RFC 3339 + milliseconds" );
+            AddType (map, standard.Guid,        $"GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\"" );
             return map;
         }
 
         private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
-            sb.Append(definition);
-            sb.AppendLine(";");
-            sb.AppendLine();
+            var qualifiedName = type.Namespace + "." + type.Name;
+            sb.Append(
+$@"    <h3 id=""{qualifiedName}"">
+        <a href=""#{qualifiedName}"">{type.Name}</a>
+    </h3>
+");
             return new EmitType(type, sb);
         }
         
@@ -128,7 +132,7 @@ $@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
                 return EmitClassType(type, sb);
             }
             if (type.IsService) {
-                return EmitServiceType(type, sb);
+                return null; // EmitServiceType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -152,14 +156,17 @@ $@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
             var extendsStr      = "";
             var baseType        = type.BaseType;
             if (baseType != null) {
-                extendsStr = $"extends {baseType.Name} ";
+                extendsStr = $" extends {baseType.Name}";
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
+            var qualifiedName = type.Namespace + "." + type.Name;
             var unionType = type.UnionType;
             if (unionType == null) {
                 var abstractStr = type.IsAbstract ? "abstract " : "";
-                sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
+                sb.AppendLine(
+$@"    <h3 id=""{qualifiedName}"">
+        <a href=""#{qualifiedName}"">{abstractStr}class {type.Name}{extendsStr}</a>");
             } else {
                 sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
@@ -169,7 +176,7 @@ $@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
+                sb.AppendLine($"export abstract class {type.Name}{extendsStr}{{");
                 sb.AppendLine($"    abstract {unionType.discriminator}:");
                 foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.discriminant}\"");
@@ -183,7 +190,7 @@ $@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
             }
-            foreach (var field in fields) {
+            /* foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
                 bool required = field.required;
@@ -192,8 +199,8 @@ $@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
                 var optStr  = required ? " ": "?";
                 var nullStr = required ? "" : " | null";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
-            }
-            sb.AppendLine("}");
+            } */
+            sb.AppendLine("    <h3>");
             sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }
