@@ -67,6 +67,7 @@ namespace Friflo.Json.Fliox.Schema
     {
         public   readonly   string                          fileExt;
         
+        public   readonly   TypeDef                         rootType;
         public   readonly   StandardTypes                   standardTypes;
 
 
@@ -117,6 +118,7 @@ namespace Friflo.Json.Fliox.Schema
             ICollection<TypeDef>    separateTypes = null,
             Func<TypeDef, string>   getPath = null)
         {
+            rootType                = schema.RootType;
             standardTypes           = schema.StandardTypes;
             fileExt                 = fileExtension;
             types                   = schema.Types;

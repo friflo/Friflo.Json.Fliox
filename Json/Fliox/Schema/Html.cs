@@ -41,20 +41,47 @@ namespace Friflo.Json.Fliox.Schema
         }
         
         private static void EmitHtmlFile(Generator generator, StringBuilder sb) {
+            var sbNav = new StringBuilder();
             sb.Clear();
+            sbNav.Append("<ul>\n");
             foreach (var pair in generator.fileEmits) {
                 string      path        = pair.Key;
                 EmitFile    emitFile    = pair.Value;
-                sb.AppendLine(emitFile.header);
+                sb.Append($@"
+<p>
+    <h2 id=""{path}"">
+        <a href=""#{path}"">{path}</a>
+    <h2>
+");
+                // sb.AppendLine(emitFile.header);
+                sbNav.Append(
+$@"    <li><a href=""#{path}"">{path}</a></li>
+        <ul>
+");
                 foreach (var result in emitFile.emitTypes) {
-                    sb.Append(result.content);
+                    var typeName = result.type.Name;
+                    sbNav.Append(
+$@"            <li><a href=""#{path}.{typeName}"">{typeName}</a></li>
+");
+                    // sb.Append(result.content);
                 }
+                sbNav.Append(
+                    @"        </ul>
+    </li>
+");
                 if (emitFile.footer != null)
                     sb.AppendLine(emitFile.footer);
+                sb.AppendLine("</p>");
             }
-            var template = GetTemplate();
-            var documentation = sb.ToString();
-            var htmlFile = template.Replace("{{documentation}}", documentation);
+            sbNav.Append("</ul>\n");
+
+            var schemaName      = generator.rootType.Name;
+            var htmlFile        = GetTemplate();
+            var navigation      = sbNav.ToString();
+            var documentation   = sb.ToString();
+            htmlFile            = htmlFile.Replace("{{schemaName}}",    schemaName);
+            htmlFile            = htmlFile.Replace("{{navigation}}",    navigation);
+            htmlFile            = htmlFile.Replace("{{documentation}}", documentation);
             generator.files.Add("schema.html", htmlFile);
         }
         
