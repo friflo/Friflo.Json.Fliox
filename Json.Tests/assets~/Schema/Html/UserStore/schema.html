@@ -29,7 +29,10 @@
         .title      { margin-left: 30px; }
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; font-weight: normal; }
+        discriminant{ color: brown; font-family: var(--mono-font); }
+
         desc        { margin-left: 50px; }
+
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; }
 
@@ -250,7 +253,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>type</td>        <td>allow</td>
+            <td>type</td>        <td><discriminant>'allow'</discriminant></td>
         </tr>
         <tr>
             <td>database?</td>    <td>string | null</td>
@@ -263,7 +266,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>type</td>        <td>task</td>
+            <td>type</td>        <td><discriminant>'task'</discriminant></td>
         </tr>
         <tr>
             <td>database?</td>    <td>string | null</td>
@@ -279,7 +282,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>type</td>        <td>message</td>
+            <td>type</td>        <td><discriminant>'message'</discriminant></td>
         </tr>
         <tr>
             <td>database?</td>    <td>string | null</td>
@@ -295,7 +298,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>type</td>        <td>subscribeMessage</td>
+            <td>type</td>        <td><discriminant>'subscribeMessage'</discriminant></td>
         </tr>
         <tr>
             <td>database?</td>    <td>string | null</td>
@@ -311,7 +314,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>type</td>        <td>operation</td>
+            <td>type</td>        <td><discriminant>'operation'</discriminant></td>
         </tr>
         <tr>
             <td>database?</td>    <td>string | null</td>
@@ -353,7 +356,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>type</td>        <td>predicate</td>
+            <td>type</td>        <td><discriminant>'predicate'</discriminant></td>
         </tr>
         <tr>
             <td>names</td>       <td>string[]</td>
