@@ -112,22 +112,22 @@ $@"    <h3 id='{qualifiedName}'>
             var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
-            var extendsStr      = "";
             var baseType        = type.BaseType;
+
+            var qualifiedName = type.Namespace + "." + type.Name;
+            var unionType = type.UnionType;
+            var abstractStr = type.IsAbstract ? "abstract " : "";
+            sb.AppendLine(
+$@"    <h3 id='{qualifiedName}'>
+        <a href='#{qualifiedName}'>{abstractStr}class {type.Name}</a>
+    </h3>");
             if (baseType != null) {
-                extendsStr = $" extends {baseType.Name}";
+                sb.AppendLine($"    <extends>extends {baseType.Name}</extends>");
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
-            var qualifiedName = type.Namespace + "." + type.Name;
-            var unionType = type.UnionType;
-            if (unionType == null) {
-                var abstractStr = type.IsAbstract ? "abstract " : "";
-                sb.AppendLine(
-$@"    <h3 id='{qualifiedName}'>
-        <a href='#{qualifiedName}'>{abstractStr}class {type.Name}{extendsStr}</a>");
-            } else {
-                sb.AppendLine($"export type {type.Name}{Union} =");
+            if (unionType != null) {
+                sb.AppendLine($@"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     sb.AppendLine($"    | {polyTypeDef.Name}");
@@ -135,7 +135,7 @@ $@"    <h3 id='{qualifiedName}'>
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                sb.AppendLine($"export abstract class {type.Name}{extendsStr}{{");
+                sb.AppendLine($"export abstract class {type.Name}{{");
                 sb.AppendLine($"    abstract {unionType.discriminator}:");
                 foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.discriminant}\"");
@@ -144,13 +144,15 @@ $@"    <h3 id='{qualifiedName}'>
             }
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
+            sb.AppendLine($"    <table  class='type'>");
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
-                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
+                sb.AppendLine(
+$@"        <tr>
+            <td>{discriminator}</td>{indent} <td>{discriminant}</td>
+        </tr>");
             }
-            sb.AppendLine("    </h3>");
-            sb.AppendLine($"    <table  class='type'");
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
