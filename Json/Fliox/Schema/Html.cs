@@ -119,13 +119,14 @@ $@"    <h3 id='{qualifiedName}'>
             var abstractStr = type.IsAbstract ? "abstract " : "";
             sb.AppendLine(
 $@"    <h3 id='{qualifiedName}'>
-        <a href='#{qualifiedName}'>{abstractStr}class {type.Name}</a>
-    </h3>");
+        <keyword>{abstractStr}class</keyword>
+        <a href='#{qualifiedName}'>{type.Name}</a>");
             if (baseType != null) {
-                sb.AppendLine($"    <extends>extends {baseType.Name}</extends>");
+                sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseType.Name}</extends>");
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
+            sb.AppendLine("    </h3>");
             if (unionType != null) {
                 sb.AppendLine($@"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
@@ -178,7 +179,8 @@ $@"        <tr>
             var qualifiedName   = type.Namespace + "." + type.Name;
             sb.AppendLine(
 $@"    <h3 id={qualifiedName}>
-        <a href='#{qualifiedName}'>interface {type.Name}</a>
+        <keyword>interface</keyword>
+        <a href='#{qualifiedName}'>{type.Name}</a>
     </h3>
     <table>
 ");

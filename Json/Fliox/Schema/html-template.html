@@ -27,7 +27,8 @@
         .docs       { overflow: auto;   margin-left: 30px; }
 
         .title      { margin-left: 30px; }
-        extends     { margin-left: 40px; font-size: 14px; }
+        keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
+        extends     { font-size: 14px; font-weight: normal; }
         desc        { margin-left: 50px; }
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; }
@@ -45,17 +46,17 @@
 
 <body>
 
-<!-- -------------------------------  nav ------------------------------- -->
+<!-- ------------------------------- head ------------------------------- -->
 <div style="grid-area: body-head;" class="head">
 <h2 class="title">{{schemaName}} schema</h2>
 </div>
 
-<!-- -------------------------------  nav ------------------------------- -->
+<!-- ------------------------------- nav ------------------------------- -->
 <div style="grid-area: body-nav;" class="nav">
 {{navigation}}
 </div>
 
-<!-- -------------------------------  docs ------------------------------- -->
+<!-- ------------------------------- docs ------------------------------- -->
 <div style="grid-area: body-docs;" class="docs">
 {{documentation}}
 </div>
