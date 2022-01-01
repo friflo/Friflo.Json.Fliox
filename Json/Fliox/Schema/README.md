@@ -19,6 +19,7 @@ Currently supported input schemas are:
 From these input schemas the following output schemas can be generate:
 - C#
 - JSON Schema
+- HTML
 - Typescript
 - Kotlin
 
