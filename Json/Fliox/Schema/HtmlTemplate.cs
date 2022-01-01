@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+namespace Friflo.Json.Fliox.Schema
+{
+    public sealed partial class HtmlGenerator
+    {
+        private const string Template =
+@"<!DOCTYPE html>
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
@@ -67,3 +75,6 @@
 
 </body>
 </html>
+";
+    }
+}

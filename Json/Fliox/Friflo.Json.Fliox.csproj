@@ -34,9 +34,4 @@
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
     </ItemGroup>
 	
-    <ItemGroup>
-      <None Remove="Schema\html-template.html" />
-      <EmbeddedResource Include="Schema\html-template.html" />
-    </ItemGroup>
-
 </Project>

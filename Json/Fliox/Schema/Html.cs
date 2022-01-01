@@ -3,8 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Utils;
@@ -40,17 +38,8 @@ namespace Friflo.Json.Fliox.Schema
             EmitHtmlFile(generator, sb);
         }
         
-        private static string GetTemplate() {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream("Friflo.Json.Fliox.Schema.html-template.html"))
-            using (StreamReader reader = new StreamReader(stream)) {
-                return reader.ReadToEnd();
-            }
-        }
-        
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            var nl= Environment.NewLine;
             AddType (map, standard.Uint8,       $"unsigned integer 8-bit. Range: [0 - 255]" );
             AddType (map, standard.Int16,       $"signed integer 16-bit. Range: [-32768, 32767]" );
             AddType (map, standard.Int32,       $"signed integer 32-bit. Range: [-2147483648, 2147483647]" );
@@ -303,7 +292,7 @@ $@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
             sbNav.Append("</ul>\n");
 
             var schemaName      = generator.rootType.Name;
-            var htmlFile        = GetTemplate();
+            var htmlFile        = Template;
             var navigation      = sbNav.ToString();
             var documentation   = sb.ToString();
             htmlFile            = htmlFile.Replace("{{schemaName}}",    schemaName);
