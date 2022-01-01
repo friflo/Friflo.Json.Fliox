@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Schema
             standardTypes   = GetStandardTypes(generator.standardTypes);
         }
         
-        public static void Generate(Generator generator) {
+        public static void Generate(Generator generator, string template = null) {
             var emitter = new HtmlGenerator(generator);
             var sb      = new StringBuilder();
             foreach (var type in generator.types) {
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Schema
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
             emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
-            EmitHtmlFile(generator, sb);
+            EmitHtmlFile(generator, template, sb);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -253,7 +253,7 @@ $@"        <tr>
             }
         }
         
-        private static void EmitHtmlFile(Generator generator, StringBuilder sb) {
+        private static void EmitHtmlFile(Generator generator, string template, StringBuilder sb) {
             var sbNav = new StringBuilder();
             sb.Clear();
             sbNav.Append("<ul>\n");
@@ -292,7 +292,7 @@ $@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
             sbNav.Append("</ul>\n");
 
             var schemaName      = generator.rootType.Name;
-            var htmlFile        = Template;
+            var htmlFile        = template ?? Template;
             var navigation      = sbNav.ToString();
             var documentation   = sb.ToString();
             htmlFile            = htmlFile.Replace("{{schemaName}}",    schemaName);
