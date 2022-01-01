@@ -152,10 +152,10 @@ $@"        <tr>
                 var fieldType = GetFieldType(field, context);
                 var indent  = Indent(maxFieldName, field.name);
                 var optStr  = required ? "": "?";
-                var nullStr = required ? "" : " | null";
+                // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td>{field.name}{optStr}</td>{indent} <td>{fieldType}{nullStr}</td>
+            <td>{field.name}{optStr}</td>{indent} <td>{fieldType}</td>
         </tr>");
             }
             sb.AppendLine($"    </table>");
@@ -198,7 +198,7 @@ $@"        <tr>
             }
             if (field.isDictionary) {
                 var valueTypeName = GetElementType(field, context);
-                return $"{{ [key: string]: {valueTypeName} }}";
+                return $"{{ [key: <type>string</type>]: {valueTypeName} }}";
             }
             return GetTypeName(field.type, context);
         }
@@ -213,11 +213,11 @@ $@"        <tr>
         private static string GetTypeName(TypeDef type, TypeContext context) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
-                return "any"; // known as Mr anti-any  :) 
+                return "<type>any</type>"; // known as Mr anti-any  :) 
             if (type == standard.String || type == standard.JsonKey)
-                return "string";
+                return "<type>string</type>";
             if (type == standard.Boolean)
-                return "boolean";
+                return "<type>boolean</type>";
             context.imports.Add(type);
             var sb = context.sb;
             sb.Clear();
