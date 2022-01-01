@@ -123,7 +123,8 @@ $@"    <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>{abstractStr}class</keyword>");
             if (baseType != null) {
-                sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseType.Name}</extends>");
+                var baseName = GetTypeName(baseType, context);
+                sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseName}</extends>");
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
@@ -229,9 +230,10 @@ $@"        <tr>
             if (type == standard.Boolean)
                 return "boolean";
             context.imports.Add(type);
-            if (type.UnionType != null)
-                return $"{type.Name}{Union}";
-            return type.Name;
+            var sb = context.sb;
+            sb.Clear();
+            sb.Append($"<a href='#{type.Namespace}.{type.Name}'>{type.Name}</a>");
+            return sb.ToString();
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

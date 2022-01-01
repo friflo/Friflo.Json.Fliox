@@ -28,7 +28,7 @@
 
         .title      { margin-left: 30px; }
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
-        extends     { font-size: 14px; font-weight: normal; }
+        extends     { font-size: 14px; }
         discriminant{ color: brown; font-family: var(--mono-font); }
 
         desc        { margin-left: 50px; }
@@ -113,13 +113,13 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td>credentials</td> <td>{ [key: string]: UserCredential }</td>
+            <td>credentials</td> <td>{ [key: string]: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a> }</td>
         </tr>
         <tr>
-            <td>permissions</td> <td>{ [key: string]: UserPermission }</td>
+            <td>permissions</td> <td>{ [key: string]: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a> }</td>
         </tr>
         <tr>
-            <td>roles</td>       <td>{ [key: string]: Role }</td>
+            <td>roles</td>       <td>{ [key: string]: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a> }</td>
         </tr>
     </table>
     <h3 id=Friflo.Json.Fliox.Hub.DB.UserAuth.UserStoreService>
@@ -129,22 +129,22 @@
     <table>
 
         <tr>
-            <td>AuthenticateUser</td><td>(param: AuthenticateUser) : AuthenticateUserResult</td>
+            <td>AuthenticateUser</td><td>(param: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></td>
         </tr>
         <tr>
-            <td>DbInfo</td>          <td>(param: any) : DbInfo</td>
+            <td>DbInfo</td>          <td>(param: any) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'>DbInfo</a></td>
         </tr>
         <tr>
-            <td>DbContainers</td>    <td>(param: any) : DbContainers</td>
+            <td>DbContainers</td>    <td>(param: any) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></td>
         </tr>
         <tr>
-            <td>DbCommands</td>      <td>(param: any) : DbCommands</td>
+            <td>DbCommands</td>      <td>(param: any) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a></td>
         </tr>
         <tr>
-            <td>DbSchema</td>        <td>(param: any) : DbSchema</td>
+            <td>DbSchema</td>        <td>(param: any) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></td>
         </tr>
         <tr>
-            <td>DbList</td>          <td>(param: any) : DbList</td>
+            <td>DbList</td>          <td>(param: any) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>DbList</a></td>
         </tr>
         <tr>
             <td>Echo</td>            <td>(param: any) : any</td>
@@ -186,7 +186,7 @@
             <td>id</td>          <td>string</td>
         </tr>
         <tr>
-            <td>rights</td>      <td>Right_Union[]</td>
+            <td>rights</td>      <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>[]</td>
         </tr>
         <tr>
             <td>description?</td> <td>string | null</td>
@@ -249,7 +249,7 @@ export abstract class Right{
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'>RightAllow</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends>Right</extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table  class='type'>
         <tr>
@@ -262,7 +262,7 @@ export abstract class Right{
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'>RightTask</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends>Right</extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table  class='type'>
         <tr>
@@ -272,13 +272,13 @@ export abstract class Right{
             <td>database?</td>    <td>string | null</td>
         </tr>
         <tr>
-            <td>types</td>       <td>TaskType[]</td>
+            <td>types</td>       <td><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a>[]</td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>RightMessage</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends>Right</extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table  class='type'>
         <tr>
@@ -294,7 +294,7 @@ export abstract class Right{
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'>RightSubscribeMessage</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends>Right</extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table  class='type'>
         <tr>
@@ -310,7 +310,7 @@ export abstract class Right{
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'>RightOperation</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends>Right</extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table  class='type'>
         <tr>
@@ -320,7 +320,7 @@ export abstract class Right{
             <td>database?</td>    <td>string | null</td>
         </tr>
         <tr>
-            <td>containers</td>  <td>{ [key: string]: ContainerAccess }</td>
+            <td>containers</td>  <td>{ [key: string]: <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a> }</td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>
@@ -329,10 +329,10 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>operations?</td>       <td>OperationType[] | null</td>
+            <td>operations?</td>       <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>[] | null</td>
         </tr>
         <tr>
-            <td>subscribeChanges?</td> <td>Change[] | null</td>
+            <td>subscribeChanges?</td> <td><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>Change</a>[] | null</td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>
@@ -353,7 +353,7 @@ export abstract class Right{
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'>RightPredicate</a>
         <keyword>class</keyword>
-        <keyword>extends</keyword> <extends>Right</extends>
+        <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <table  class='type'>
         <tr>
@@ -463,7 +463,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td>databases</td> <td>DbContainers[]</td>
+            <td>databases</td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</td>
         </tr>
     </table>
 </div>
