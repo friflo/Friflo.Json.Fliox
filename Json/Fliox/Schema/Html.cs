@@ -271,10 +271,10 @@ $@"        <tr>
             foreach (var pair in generator.fileEmits) {
                 string      ns          = pair.Key;
                 EmitFile    emitFile    = pair.Value;
-                var lastDot = ns.LastIndexOf('.') + 1;
-                var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
+                // var lastDot = ns.LastIndexOf('.') + 1;
+                // var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
                 sb.Append(
-                    $@"
+$@"
 <div class='namespace'>
     <h2 id='{ns}'>
         <a href='#{ns}'>{ns}</a>
@@ -282,18 +282,18 @@ $@"        <tr>
 ");
                 // sb.AppendLine(emitFile.header);
                 sbNav.Append(
-                    $@"    <li><a href='#{ns}'>{shortNs}</a>
+$@"    <li><a href='#{ns}'>{ns}</a>
         <ul>
 ");
                 foreach (var result in emitFile.emitTypes) {
                     var typeName = result.type.Name;
                     sbNav.Append(
-                        $@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
+$@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
 ");
                     sb.Append(result.content);
                 }
                 sbNav.Append(
-                    @"        </ul>
+@"        </ul>
     </li>
 ");
                 if (emitFile.footer != null)
