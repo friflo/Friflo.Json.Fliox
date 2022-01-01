@@ -94,7 +94,8 @@ $@"    <h3 id='{qualifiedName}'>
                 var qualifiedName = type.Namespace + "." + type.Name;
                 sb.AppendLine(
 $@"    <h3 id='{qualifiedName}'>
-        <a href='#{qualifiedName}'>enum {type.Name}</a>
+        <keyword>enum</keyword>
+        <a href='#{qualifiedName}'>{type.Name}</a>
     </h3>
     <ul class='enum'>");
                 foreach (var enumValue in enumValues) {
