@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
+using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -24,6 +25,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             var options     = new NativeTypeOptions(typeof(UserStore));
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/UserStore");
+        }
+        
+        /// C# -> HTML
+        [Test]
+        public static void CS_HTML () {
+            // Use code generator directly
+            var schema      = new NativeTypeSchema(typeof(UserStore));
+            var generator   = new Generator(schema, ".html");
+            HtmlGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Html/UserStore");
         }
         
         /// C# -> JSON Schema
