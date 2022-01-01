@@ -40,54 +40,6 @@ namespace Friflo.Json.Fliox.Schema
             EmitHtmlFile(generator, sb);
         }
         
-        private static void EmitHtmlFile(Generator generator, StringBuilder sb) {
-            var sbNav = new StringBuilder();
-            sb.Clear();
-            sbNav.Append("<ul>\n");
-            foreach (var pair in generator.fileEmits) {
-                string      ns          = pair.Key;
-                EmitFile    emitFile    = pair.Value;
-                var lastDot = ns.LastIndexOf('.') + 1;
-                var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
-                sb.Append(
-$@"
-<div class='namespace'>
-    <h2 id='{ns}'>
-        <a href='#{ns}'>{ns}</a>
-    </h2>
-");
-                // sb.AppendLine(emitFile.header);
-                sbNav.Append(
-$@"    <li><a href='#{ns}'>{shortNs}</a>
-        <ul>
-");
-                foreach (var result in emitFile.emitTypes) {
-                    var typeName = result.type.Name;
-                    sbNav.Append(
-$@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
-");
-                    sb.Append(result.content);
-                }
-                sbNav.Append(
-@"        </ul>
-    </li>
-");
-                if (emitFile.footer != null)
-                    sb.AppendLine(emitFile.footer);
-                sb.AppendLine("</div>");
-            }
-            sbNav.Append("</ul>\n");
-
-            var schemaName      = generator.rootType.Name;
-            var htmlFile        = GetTemplate();
-            var navigation      = sbNav.ToString();
-            var documentation   = sb.ToString();
-            htmlFile            = htmlFile.Replace("{{schemaName}}",    schemaName);
-            htmlFile            = htmlFile.Replace("{{navigation}}",    navigation);
-            htmlFile            = htmlFile.Replace("{{documentation}}", documentation);
-            generator.files.Add("schema.html", htmlFile);
-        }
-        
         private static string GetTemplate() {
             var assembly = Assembly.GetExecutingAssembly();
             using (Stream stream = assembly.GetManifestResourceStream("Friflo.Json.Fliox.Schema.html-template.html"))
@@ -139,12 +91,16 @@ $@"    <h3 id='{qualifiedName}'>
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
-                sb.AppendLine($"export type {type.Name} =");
+                var qualifiedName = type.Namespace + "." + type.Name;
+                sb.AppendLine(
+$@"    <h3 id='{qualifiedName}'>
+        <a href='#{qualifiedName}'>enum {type.Name}</a>
+    </h3>
+    <ul class='enum'>");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    | \"{enumValue}\"");
+                    sb.AppendLine($"        <li>{enumValue}</li>");
                 }
-                sb.AppendLine($";");
-                sb.AppendLine();
+                sb.AppendLine("    </ul>");
                 return new EmitType(type, sb);
             }
             return null;
@@ -299,6 +255,54 @@ $@"        <tr>
                 }
                 emitFile.header = sb.ToString();
             }
+        }
+        
+        private static void EmitHtmlFile(Generator generator, StringBuilder sb) {
+            var sbNav = new StringBuilder();
+            sb.Clear();
+            sbNav.Append("<ul>\n");
+            foreach (var pair in generator.fileEmits) {
+                string      ns          = pair.Key;
+                EmitFile    emitFile    = pair.Value;
+                var lastDot = ns.LastIndexOf('.') + 1;
+                var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
+                sb.Append(
+                    $@"
+<div class='namespace'>
+    <h2 id='{ns}'>
+        <a href='#{ns}'>{ns}</a>
+    </h2>
+");
+                // sb.AppendLine(emitFile.header);
+                sbNav.Append(
+                    $@"    <li><a href='#{ns}'>{shortNs}</a>
+        <ul>
+");
+                foreach (var result in emitFile.emitTypes) {
+                    var typeName = result.type.Name;
+                    sbNav.Append(
+                        $@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
+");
+                    sb.Append(result.content);
+                }
+                sbNav.Append(
+                    @"        </ul>
+    </li>
+");
+                if (emitFile.footer != null)
+                    sb.AppendLine(emitFile.footer);
+                sb.AppendLine("</div>");
+            }
+            sbNav.Append("</ul>\n");
+
+            var schemaName      = generator.rootType.Name;
+            var htmlFile        = GetTemplate();
+            var navigation      = sbNav.ToString();
+            var documentation   = sb.ToString();
+            htmlFile            = htmlFile.Replace("{{schemaName}}",    schemaName);
+            htmlFile            = htmlFile.Replace("{{navigation}}",    navigation);
+            htmlFile            = htmlFile.Replace("{{documentation}}", documentation);
+            generator.files.Add("schema.html", htmlFile);
         }
     }
 }

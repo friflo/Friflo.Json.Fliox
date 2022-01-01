@@ -29,6 +29,7 @@
         .title      { margin-left: 30px; }
         desc        { margin-left: 50px; }
         .namespace  { margin-bottom: 100px; }
+        ul.enum li  { margin-left: 50px; }
 
         h3      { margin-left: 30px; margin-bottom: 5px; }
 
@@ -298,18 +299,20 @@ export abstract class Right{
             <td>subscribeChanges?</td> <td>Change[] | null</td>
         </tr>
     </table>
-export type OperationType =
-    | "create"
-    | "upsert"
-    | "delete"
-    | "deleteAll"
-    | "patch"
-    | "read"
-    | "query"
-    | "mutate"
-    | "full"
-;
-
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>enum OperationType</a>
+    </h3>
+    <ul class='enum'>
+        <li>create</li>
+        <li>upsert</li>
+        <li>delete</li>
+        <li>deleteAll</li>
+        <li>patch</li>
+        <li>read</li>
+        <li>query</li>
+        <li>mutate</li>
+        <li>full</li>
+    </ul>
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'>class RightPredicate extends Right</a>
     type         : "predicate";
@@ -325,28 +328,32 @@ export type OperationType =
     <h2 id='Friflo.Json.Fliox.Hub.Protocol.Tasks'>
         <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a>
     </h2>
-export type TaskType =
-    | "read"
-    | "query"
-    | "create"
-    | "upsert"
-    | "patch"
-    | "delete"
-    | "message"
-    | "command"
-    | "subscribeChanges"
-    | "subscribeMessage"
-    | "reserveKeys"
-    | "error"
-;
-
-export type Change =
-    | "create"
-    | "upsert"
-    | "patch"
-    | "delete"
-;
-
+    <h3 id='Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>
+        <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>enum TaskType</a>
+    </h3>
+    <ul class='enum'>
+        <li>read</li>
+        <li>query</li>
+        <li>create</li>
+        <li>upsert</li>
+        <li>patch</li>
+        <li>delete</li>
+        <li>message</li>
+        <li>command</li>
+        <li>subscribeChanges</li>
+        <li>subscribeMessage</li>
+        <li>reserveKeys</li>
+        <li>error</li>
+    </ul>
+    <h3 id='Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>
+        <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>enum Change</a>
+    </h3>
+    <ul class='enum'>
+        <li>create</li>
+        <li>upsert</li>
+        <li>patch</li>
+        <li>delete</li>
+    </ul>
 </div>
 
 <div class='namespace'>
