@@ -94,8 +94,8 @@ $@"    <h3 id='{qualifiedName}'>
                 var qualifiedName = type.Namespace + "." + type.Name;
                 sb.AppendLine(
 $@"    <h3 id='{qualifiedName}'>
-        <keyword>enum</keyword>
         <a href='#{qualifiedName}'>{type.Name}</a>
+        <keyword>enum</keyword>
     </h3>
     <ul class='enum'>");
                 foreach (var enumValue in enumValues) {
@@ -120,8 +120,8 @@ $@"    <h3 id='{qualifiedName}'>
             var abstractStr = type.IsAbstract ? "abstract " : "";
             sb.AppendLine(
 $@"    <h3 id='{qualifiedName}'>
-        <keyword>{abstractStr}class</keyword>
-        <a href='#{qualifiedName}'>{type.Name}</a>");
+        <a href='#{qualifiedName}'>{type.Name}</a>
+        <keyword>{abstractStr}class</keyword>");
             if (baseType != null) {
                 sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseType.Name}</extends>");
                 dependencies.Add(baseType);
@@ -180,8 +180,8 @@ $@"        <tr>
             var qualifiedName   = type.Namespace + "." + type.Name;
             sb.AppendLine(
 $@"    <h3 id={qualifiedName}>
-        <keyword>interface</keyword>
         <a href='#{qualifiedName}'>{type.Name}</a>
+        <keyword>interface</keyword>
     </h3>
     <table>
 ");
