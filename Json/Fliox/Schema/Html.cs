@@ -118,31 +118,35 @@ $@"    <h3 id='{qualifiedName}'>
                 imports.Add(baseType);
             }
             sb.AppendLine("    </h3>");
-            if (unionType != null) {
-                sb.AppendLine($@"export type {type.Name}{Union} =");
-                foreach (var polyType in unionType.types) {
-                    var polyTypeDef = polyType.typeDef;
-                    sb.AppendLine($"    | {polyTypeDef.Name}");
-                    imports.Add(polyTypeDef);
-                }
-                sb.AppendLine($";");
-                sb.AppendLine();
-                sb.AppendLine($"export abstract class {type.Name}{{");
-                sb.AppendLine($"    abstract {unionType.discriminator}:");
-                foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"        | \"{polyType.discriminant}\"");
-                }
-                sb.AppendLine($"    ;");
-            }
+
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             sb.AppendLine($"    <table  class='type'>");
+            if (unionType != null) {
+                sb.AppendLine(
+                    $@"        <tr>
+            <td><field>{unionType.discriminator}</field></td>
+            <td><table>");
+                foreach (var polyType in unionType.types) {
+                    var polyTypeDef = polyType.typeDef;
+                    var name = GetTypeName (polyTypeDef, context);
+                    sb.AppendLine(
+                        $@"            <tr>
+                <td><discriminant>""{polyType.discriminant}""</discriminant></td>
+                <td>{name}</td>
+            </tr>");
+                    imports.Add(polyTypeDef);
+                }
+                sb.AppendLine(
+@"            </table></td>
+        </tr>");
+            }
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine(
 $@"        <tr>
-            <td><field>{discriminator}</field></td>{indent} <td><discriminant>'{discriminant}'</discriminant></td>
+            <td><field>{discriminator}</field></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
         </tr>");
             }
             foreach (var field in fields) {
@@ -173,7 +177,7 @@ $@"    <h3 id={qualifiedName}>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>interface</keyword>
     </h3>
-    <table>
+    <table class='type'>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in type.Commands) {

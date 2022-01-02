@@ -57,8 +57,8 @@ namespace Friflo.Json.Fliox.Schema
         a       { text-decoration:  none; }
         ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
 
-        table                           { margin-left: 50px; }
-        table.type tr td:first-child    { width: 150px; }
+        table.type                      { margin-left: 50px; }
+        table.type tr td:first-child    { width: 150px; vertical-align: baseline; }
     </style>
 </head>
 

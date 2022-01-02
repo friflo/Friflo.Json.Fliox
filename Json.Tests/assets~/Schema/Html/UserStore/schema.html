@@ -49,8 +49,8 @@
         a       { text-decoration:  none; }
         ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
 
-        table                           { margin-left: 50px; }
-        table.type tr td:first-child    { width: 150px; }
+        table.type                      { margin-left: 50px; }
+        table.type tr td:first-child    { width: 150px; vertical-align: baseline; }
     </style>
 </head>
 
@@ -133,7 +133,7 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStoreService'>UserStoreService</a>
         <keyword>interface</keyword>
     </h3>
-    <table>
+    <table class='type'>
 
         <tr>
             <td><cmd>AuthenticateUser</cmd></td><td>(param: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></td>
@@ -230,25 +230,36 @@
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>
         <keyword>abstract class</keyword>
     </h3>
-export type Right_Union =
-    | RightAllow
-    | RightTask
-    | RightMessage
-    | RightSubscribeMessage
-    | RightOperation
-    | RightPredicate
-;
-
-export abstract class Right{
-    abstract type:
-        | "allow"
-        | "task"
-        | "message"
-        | "subscribeMessage"
-        | "operation"
-        | "predicate"
-    ;
     <table  class='type'>
+        <tr>
+            <td><field>type</field></td>
+            <td><table>
+            <tr>
+                <td><discriminant>"allow"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'>RightAllow</a></td>
+            </tr>
+            <tr>
+                <td><discriminant>"task"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'>RightTask</a></td>
+            </tr>
+            <tr>
+                <td><discriminant>"message"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>RightMessage</a></td>
+            </tr>
+            <tr>
+                <td><discriminant>"subscribeMessage"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'>RightSubscribeMessage</a></td>
+            </tr>
+            <tr>
+                <td><discriminant>"operation"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'>RightOperation</a></td>
+            </tr>
+            <tr>
+                <td><discriminant>"predicate"</discriminant></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'>RightPredicate</a></td>
+            </tr>
+            </table></td>
+        </tr>
         <tr>
             <td><field>description</field>?</td> <td><type>string</type></td>
         </tr>
@@ -260,7 +271,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td><field>type</field></td>        <td><discriminant>'allow'</discriminant></td>
+            <td><field>type</field></td>        <td><discriminant>"allow"</discriminant></td>
         </tr>
         <tr>
             <td><field>database</field>?</td>    <td><type>string</type></td>
@@ -273,7 +284,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td><field>type</field></td>        <td><discriminant>'task'</discriminant></td>
+            <td><field>type</field></td>        <td><discriminant>"task"</discriminant></td>
         </tr>
         <tr>
             <td><field>database</field>?</td>    <td><type>string</type></td>
@@ -289,7 +300,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td><field>type</field></td>        <td><discriminant>'message'</discriminant></td>
+            <td><field>type</field></td>        <td><discriminant>"message"</discriminant></td>
         </tr>
         <tr>
             <td><field>database</field>?</td>    <td><type>string</type></td>
@@ -305,7 +316,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td><field>type</field></td>        <td><discriminant>'subscribeMessage'</discriminant></td>
+            <td><field>type</field></td>        <td><discriminant>"subscribeMessage"</discriminant></td>
         </tr>
         <tr>
             <td><field>database</field>?</td>    <td><type>string</type></td>
@@ -321,7 +332,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td><field>type</field></td>        <td><discriminant>'operation'</discriminant></td>
+            <td><field>type</field></td>        <td><discriminant>"operation"</discriminant></td>
         </tr>
         <tr>
             <td><field>database</field>?</td>    <td><type>string</type></td>
@@ -364,7 +375,7 @@ export abstract class Right{
     </h3>
     <table  class='type'>
         <tr>
-            <td><field>type</field></td>        <td><discriminant>'predicate'</discriminant></td>
+            <td><field>type</field></td>        <td><discriminant>"predicate"</discriminant></td>
         </tr>
         <tr>
             <td><field>names</field></td>       <td><type>string</type>[]</td>
