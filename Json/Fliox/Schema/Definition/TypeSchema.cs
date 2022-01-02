@@ -81,6 +81,20 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 }
             }
         }
+        
+        protected void SetRelationTypes (TypeDef rootTypeDef) {
+            foreach (var type in Types) {
+                var fields = type.Fields;
+                if (fields == null)
+                    continue;
+                foreach (var typeField in fields) {
+                    var relation = typeField.relation;
+                    if (relation == null)
+                        continue;
+                    typeField.relationType = rootTypeDef.FindField(relation).type;
+                }
+            }
+        }
     }
     
     internal class TypeDefKey

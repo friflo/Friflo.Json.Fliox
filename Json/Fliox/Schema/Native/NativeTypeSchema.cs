@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (!rootTypeDef.IsClass)
                 throw new InvalidOperationException($"rootType must be a class: {rootType}");
             RootType = rootTypeDef;
+            SetRelationTypes(rootTypeDef);
         }
 
         public NativeTypeSchema (ICollection<Type> typeList, Type rootType = null) {

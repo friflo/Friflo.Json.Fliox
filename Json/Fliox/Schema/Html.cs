@@ -158,13 +158,15 @@ $@"        <tr>
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? "": "?";
                 var modifier    = type.KeyField == field.name ? "<key>key</key>" : "";
+                var reference   = "";
                 if (field.relation != null) {
                     modifier = "<ref>ref</ref>";
+                    reference = " ➞ " + GetTypeName(field.relationType, context);
                 }
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td>{modifier}</td><td><field>{field.name}</field>{optStr}</td>{indent} <td>{fieldType}</td>
+            <td>{modifier}</td><td><field>{field.name}</field>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
         </tr>");
             }
             sb.AppendLine($"    </table>");

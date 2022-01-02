@@ -62,6 +62,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
             Name        = name;
             Namespace   = @namespace;
         }
+        
+        internal FieldDef FindField(string name) {
+            foreach (var field in Fields) {
+                if (field.name == name)
+                    return field;
+            }
+            return null;
+        }
     }
     
     // could by a readonly struct - but may be used by reference in future
@@ -87,6 +95,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  readonly    TypeDef         ownerType;
         public              bool            IsDerivedField { get; private set; }
         public  readonly    string          relation;
+        public              TypeDef         RelationType => relationType;
+        internal            TypeDef         relationType;
+        
 
         public  override    string          ToString() => name;
         
