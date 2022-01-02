@@ -36,11 +36,12 @@
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        key         { background: var(--key); font-family: var(--mono-font);  padding: 0 2px; border-radius: 2px; color: white; }
-        ref         { color: var(--key);                     font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
-        disc        { color: var(--field);  font-family: var(--mono-font);    padding: 0 3px; border-radius: 2px; border: 1px solid var(--field); }
-        field       { color: var(--field);  font-family: var(--mono-font); }
-        discriminant{ color: var(--value);  font-family: var(--mono-font); }
+        key         { background: var(--key); font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; color: white; }
+        refType     { color: var(--key); }
+        ref         { color: var(--field);    font-family: var(--mono-font);  }        
+        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field); }
+        field       { color: var(--field);    font-family: var(--mono-font); }
+        discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
         desc        { margin-left: 50px; }
 
@@ -54,7 +55,8 @@
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
         ul > li > a:hover               { background:  #dcdcdc; }
-        ul > li > ul > li               { height: 22px; }
+        ul > li > ul > li > a>div > key { font-size: 12px; }
+        ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }
@@ -198,7 +200,7 @@
             <td></td><td><key>id</key></td>       <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>ref</ref></td><td><field>customer</field>?</td> <td><type>string</type> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></td>
+            <td></td><td><ref>customer</ref>?</td> <td><type>string</type><refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a><refType></td>
         </tr>
         <tr>
             <td></td><td><field>created</field></td>  <td><a href='#Standard.DateTime'>DateTime</a></td>
@@ -225,7 +227,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><ref>ref</ref></td><td><field>article</field></td> <td><type>string</type> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>Article</a></td>
+            <td></td><td><ref>article</ref></td> <td><type>string</type><refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>Article</a><refType></td>
         </tr>
         <tr>
             <td></td><td><field>amount</field></td>  <td><a href='#Standard.int32'>int32</a></td>
@@ -246,7 +248,7 @@
             <td></td><td><field>name</field></td>     <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>ref</ref></td><td><field>producer</field>?</td> <td><type>string</type> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a></td>
+            <td></td><td><ref>producer</ref>?</td> <td><type>string</type><refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a><refType></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>
@@ -261,7 +263,7 @@
             <td></td><td><field>name</field></td>      <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>ref</ref></td><td><field>employees</field>?</td> <td><type>string</type>[] ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a></td>
+            <td></td><td><ref>employees</ref>?</td> <td><type>string</type>[]<refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a><refType></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>

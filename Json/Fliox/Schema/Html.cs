@@ -125,7 +125,7 @@ $@"    <h3 id='{qualifiedName}'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><br><keyword title='discriminator'>disc</keyword></td><td><br><disc>{unionType.discriminator}</disc></td>
+            <td><br></td><td><br><disc>{unionType.discriminator}</disc></td>
             <td><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
                 foreach (var polyType in unionType.types) {
@@ -147,7 +147,7 @@ $@"    <h3 id='{qualifiedName}'>
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine(
 $@"        <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
+            <td></td><td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
         </tr>");
             }
             foreach (var field in fields) {
@@ -165,8 +165,8 @@ $@"        <tr>
                 var relation    = field.RelationType;
                 var modifier    = "";
                 if (relation != null) {
-                    modifier    = "<ref>ref</ref>";
-                    reference   = " ➞ " + GetTypeName(relation, context);
+                    fieldTag    = "ref";
+                    reference   = $"<refType> ➞ {GetTypeName(relation, context)}<refType>";
                 }
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(

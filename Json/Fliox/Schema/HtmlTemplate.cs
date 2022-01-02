@@ -44,11 +44,12 @@ namespace Friflo.Json.Fliox.Schema
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        key         { background: var(--key); font-family: var(--mono-font);  padding: 0 2px; border-radius: 2px; color: white; }
-        ref         { color: var(--key);                     font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
-        disc        { color: var(--field);  font-family: var(--mono-font);    padding: 0 3px; border-radius: 2px; border: 1px solid var(--field); }
-        field       { color: var(--field);  font-family: var(--mono-font); }
-        discriminant{ color: var(--value);  font-family: var(--mono-font); }
+        key         { background: var(--key); font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; color: white; }
+        refType     { color: var(--key); }
+        ref         { color: var(--field);    font-family: var(--mono-font);  }        
+        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field); }
+        field       { color: var(--field);    font-family: var(--mono-font); }
+        discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
         desc        { margin-left: 50px; }
 
@@ -62,7 +63,8 @@ namespace Friflo.Json.Fliox.Schema
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
         ul > li > a:hover               { background:  #dcdcdc; }
-        ul > li > ul > li               { height: 22px; }
+        ul > li > ul > li > a>div > key { font-size: 12px; }
+        ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }

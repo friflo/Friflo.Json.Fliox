@@ -36,11 +36,12 @@
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        key         { background: var(--key); font-family: var(--mono-font);  padding: 0 2px; border-radius: 2px; color: white; }
-        ref         { color: var(--key);                     font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
-        disc        { color: var(--field);  font-family: var(--mono-font);    padding: 0 3px; border-radius: 2px; border: 1px solid var(--field); }
-        field       { color: var(--field);  font-family: var(--mono-font); }
-        discriminant{ color: var(--value);  font-family: var(--mono-font); }
+        key         { background: var(--key); font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; color: white; }
+        refType     { color: var(--key); }
+        ref         { color: var(--field);    font-family: var(--mono-font);  }        
+        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field); }
+        field       { color: var(--field);    font-family: var(--mono-font); }
+        discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
         desc        { margin-left: 50px; }
 
@@ -54,7 +55,8 @@
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
         ul > li > a:hover               { background:  #dcdcdc; }
-        ul > li > ul > li               { height: 22px; }
+        ul > li > ul > li > a>div > key { font-size: 12px; }
+        ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }
@@ -205,7 +207,7 @@
             <td></td><td><key>id</key></td>    <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>ref</ref></td><td><field>roles</field>?</td> <td><type>string</type>[] ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></td>
+            <td></td><td><ref>roles</ref>?</td> <td><type>string</type>[]<refType> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a><refType></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>
@@ -256,7 +258,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><br><keyword title='discriminator'>disc</keyword></td><td><br><disc>type</disc></td>
+            <td><br></td><td><br><disc>type</disc></td>
             <td><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>
             <tr>
@@ -296,7 +298,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>type</disc></td>        <td><discriminant>"allow"</discriminant></td>
+            <td></td><td><disc>type</disc></td>        <td><discriminant>"allow"</discriminant></td>
         </tr>
         <tr>
             <td></td><td><field>database</field>?</td>    <td><type>string</type></td>
@@ -309,7 +311,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>type</disc></td>        <td><discriminant>"task"</discriminant></td>
+            <td></td><td><disc>type</disc></td>        <td><discriminant>"task"</discriminant></td>
         </tr>
         <tr>
             <td></td><td><field>database</field>?</td>    <td><type>string</type></td>
@@ -325,7 +327,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>type</disc></td>        <td><discriminant>"message"</discriminant></td>
+            <td></td><td><disc>type</disc></td>        <td><discriminant>"message"</discriminant></td>
         </tr>
         <tr>
             <td></td><td><field>database</field>?</td>    <td><type>string</type></td>
@@ -341,7 +343,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>type</disc></td>        <td><discriminant>"subscribeMessage"</discriminant></td>
+            <td></td><td><disc>type</disc></td>        <td><discriminant>"subscribeMessage"</discriminant></td>
         </tr>
         <tr>
             <td></td><td><field>database</field>?</td>    <td><type>string</type></td>
@@ -357,7 +359,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>type</disc></td>        <td><discriminant>"operation"</discriminant></td>
+            <td></td><td><disc>type</disc></td>        <td><discriminant>"operation"</discriminant></td>
         </tr>
         <tr>
             <td></td><td><field>database</field>?</td>    <td><type>string</type></td>
@@ -400,7 +402,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><keyword title='discriminator'>disc</keyword></td><td><disc>type</disc></td>        <td><discriminant>"predicate"</discriminant></td>
+            <td></td><td><disc>type</disc></td>        <td><discriminant>"predicate"</discriminant></td>
         </tr>
         <tr>
             <td></td><td><field>names</field></td>       <td><type>string</type>[]</td>
