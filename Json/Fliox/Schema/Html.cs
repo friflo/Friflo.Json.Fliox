@@ -125,7 +125,7 @@ $@"    <h3 id='{qualifiedName}'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><br><disc title='discriminator'>disc</disc></td><td><br><field>{unionType.discriminator}</field></td>
+            <td><br><keyword title='discriminator'>disc</keyword></td><td><br><disc>{unionType.discriminator}</disc></td>
             <td><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
                 foreach (var polyType in unionType.types) {
@@ -147,7 +147,7 @@ $@"    <h3 id='{qualifiedName}'>
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine(
 $@"        <tr>
-            <td><disc title='discriminator'>disc</disc></td><td><field>{discriminator}</field></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
+            <td><keyword title='discriminator'>disc</keyword></td><td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
         </tr>");
             }
             foreach (var field in fields) {
@@ -157,9 +157,13 @@ $@"        <tr>
                 var fieldType   = GetFieldType(field, context);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? "": "?";
-                var modifier    = type.KeyField == field.name ? "<key>key</key>" : "";
+                var fieldTag    = "field";
+                if (type.KeyField == field.name) {
+                    fieldTag    = "key";
+                }
                 var reference   = "";
                 var relation    = field.RelationType;
+                var modifier    = "";
                 if (relation != null) {
                     modifier    = "<ref>ref</ref>";
                     reference   = " ➞ " + GetTypeName(relation, context);
@@ -167,7 +171,7 @@ $@"        <tr>
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td>{modifier}</td><td><field>{field.name}</field>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
+            <td>{modifier}</td><td><{fieldTag}>{field.name}</{fieldTag}>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
         </tr>");
             }
             sb.AppendLine($"    </table>");

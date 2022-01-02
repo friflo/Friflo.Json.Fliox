@@ -36,9 +36,9 @@
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        key         { background: var(--key);  font-size: 14px; padding: 0 1px; border-radius: 2px; color: white; }
-        ref         { color: var(--key);       font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
-        disc        { background: var(--disc); font-size: 14px; padding: 0 1px; border-radius: 2px; color: white; }
+        key         { background: var(--key); font-family: var(--mono-font);  padding: 0 2px; border-radius: 2px; color: white; }
+        ref         { color: var(--key);                     font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
+        disc        { color: var(--field);  font-family: var(--mono-font);    padding: 0 3px; border-radius: 2px; border: 1px solid var(--field); }
         field       { color: var(--field);  font-family: var(--mono-font); }
         discriminant{ color: var(--value);  font-family: var(--mono-font); }
 
@@ -54,6 +54,7 @@
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
         ul > li > a:hover               { background:  #dcdcdc; }
+        ul > li > ul > li               { height: 22px; }
         ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }
@@ -194,7 +195,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>       <td><type>string</type></td>
+            <td></td><td><key>id</key></td>       <td><type>string</type></td>
         </tr>
         <tr>
             <td><ref>ref</ref></td><td><field>customer</field>?</td> <td><type>string</type> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></td>
@@ -212,7 +213,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>   <td><type>string</type></td>
+            <td></td><td><key>id</key></td>   <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>name</field></td> <td><type>string</type></td>
@@ -239,7 +240,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>       <td><type>string</type></td>
+            <td></td><td><key>id</key></td>       <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>name</field></td>     <td><type>string</type></td>
@@ -254,7 +255,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>        <td><type>string</type></td>
+            <td></td><td><key>id</key></td>        <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>name</field></td>      <td><type>string</type></td>
@@ -269,7 +270,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>        <td><type>string</type></td>
+            <td></td><td><key>id</key></td>        <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>firstName</field></td> <td><type>string</type></td>
@@ -284,7 +285,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td> <td><type>string</type></td>
+            <td></td><td><key>id</key></td> <td><type>string</type></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'>
@@ -459,7 +460,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>           <td><type>string</type></td>
+            <td></td><td><key>id</key></td>           <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>databaseType</field></td> <td><type>string</type></td>
@@ -474,7 +475,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>       <td><type>string</type></td>
+            <td></td><td><key>id</key></td>       <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>commands</field></td> <td><type>string</type>[]</td>
@@ -486,7 +487,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td><key>key</key></td><td><field>id</field></td>          <td><type>string</type></td>
+            <td></td><td><key>id</key></td>          <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>schemaName</field></td>  <td><type>string</type></td>
