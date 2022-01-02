@@ -125,8 +125,9 @@ $@"    <h3 id='{qualifiedName}'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><field>{unionType.discriminator}</field></td>
-            <td><table>");
+            <td><keyword>discriminator</keyword><br><field>{unionType.discriminator}</field></td>
+            <td><table>
+            <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     var name = GetTypeName (polyTypeDef, context);
