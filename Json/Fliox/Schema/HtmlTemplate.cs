@@ -62,10 +62,10 @@ namespace Friflo.Json.Fliox.Schema
 
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
-        ul > li > a:hover               { background:  #dcdcdc; }
+        ul > li > a:hover               { background:  #eee; }
         ul > li > ul > li > a>div > key { font-size: 12px; }
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
-        ul > li > ul > li:hover         { background:  #dcdcdc; }
+        ul > li > ul > li:hover         { background:  #eee; }
 
         table.type                      { margin-left: 30px; }
         table.type tr td:nth-child(1)   { width: 30px; vertical-align: baseline;  }
