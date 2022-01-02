@@ -183,7 +183,7 @@ $@"    <h3 id={qualifiedName}>
                 var signature = $"(param: {commandParam}) : {commandResult}";
                 sb.AppendLine(
 $@"        <tr>
-            <td>{command.name}</td>{indent}<td>{signature}</td>
+            <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
         </tr>");
             }
             sb.AppendLine(

@@ -41,6 +41,7 @@ namespace Friflo.Json.Fliox.Schema
         type        { color: var(--type) }
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
+        cmd         { color: var(--value);  font-family: var(--mono-font); }
         field       { color: var(--key);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);  font-family: var(--mono-font); }
 
