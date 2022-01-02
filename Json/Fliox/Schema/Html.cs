@@ -142,7 +142,7 @@ $@"    <h3 id='{qualifiedName}'>
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine(
 $@"        <tr>
-            <td>{discriminator}</td>{indent} <td><discriminant>'{discriminant}'</discriminant></td>
+            <td><field>{discriminator}</field></td>{indent} <td><discriminant>'{discriminant}'</discriminant></td>
         </tr>");
             }
             foreach (var field in fields) {
@@ -155,7 +155,7 @@ $@"        <tr>
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td>{field.name}{optStr}</td>{indent} <td>{fieldType}</td>
+            <td><field>{field.name}</field>{optStr}</td>{indent} <td>{fieldType}</td>
         </tr>");
             }
             sb.AppendLine($"    </table>");

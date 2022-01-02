@@ -16,6 +16,9 @@ namespace Friflo.Json.Fliox.Schema
     <style>
         :root   {
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
+                    --key:      #9c110e;
+                    --value:    #1d52a7;
+                    --type:     #0f54d6;
                 }
         body    {
                     display: grid;
@@ -35,15 +38,16 @@ namespace Friflo.Json.Fliox.Schema
         .docs       { overflow: auto;   margin-left: 30px; }
 
         .title      { margin-left: 30px; }
-        type        { color: #0000e2; }
+        type        { color: var(--type) }
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
-        discriminant{ color: brown; font-family: var(--mono-font); }
+        field       { color: var(--key);    font-family: var(--mono-font); }
+        discriminant{ color: var(--value);  font-family: var(--mono-font); }
 
         desc        { margin-left: 50px; }
 
         .namespace  { margin-bottom: 100px; }
-        ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: #0093a1 }
+        ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: #555; font-size: 14px; }
 
         h3      { margin-left: 30px; margin-bottom: 5px; }
