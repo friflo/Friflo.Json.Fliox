@@ -159,9 +159,10 @@ $@"        <tr>
                 var optStr      = required ? "": "?";
                 var modifier    = type.KeyField == field.name ? "<key>key</key>" : "";
                 var reference   = "";
-                if (field.relation != null) {
-                    modifier = "<ref>ref</ref>";
-                    reference = " ➞ " + GetTypeName(field.relationType, context);
+                var relation    = field.RelationType;
+                if (relation != null) {
+                    modifier    = "<ref>ref</ref>";
+                    reference   = " ➞ " + GetTypeName(relation, context);
                 }
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
