@@ -52,6 +52,21 @@
         table.type                      { margin-left: 50px; }
         table.type tr td:first-child    { width: 150px; vertical-align: baseline; }
     </style>
+    <script>
+        // Required to support browser 'go back' 
+        window.addEventListener('hashchange', function(event) {
+            const id = window.location.hash.substring(1);                        
+            console.log('hashchange', id);
+            if (id == '') {
+                var docsElement = document.querySelector('.docs');
+                docsElement.firstElementChild.scrollIntoView();
+            }
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView();
+            }
+        }, false);
+    </script>
 </head>
 
 <body>
