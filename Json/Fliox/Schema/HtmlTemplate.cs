@@ -35,8 +35,8 @@ namespace Friflo.Json.Fliox.Schema
                     width:      100vw;
                     font-family: sans-serif
                 }
-        .head       { overflow: hidden; background: #f8f8f8; }
-        .nav        { overflow: auto;   background: #f8f8f8;  }
+        .head       { overflow: hidden; }
+        .nav        { overflow: auto;   }
         .docs       { overflow: auto;   margin-left: 30px; }
 
         .title      { margin-left: 30px; }
