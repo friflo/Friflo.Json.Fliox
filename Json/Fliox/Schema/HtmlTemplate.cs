@@ -16,7 +16,9 @@ namespace Friflo.Json.Fliox.Schema
     <style>
         :root   {
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
-                    --key:      #9c110e;
+                    --field:    #9c110e;
+                    --key:      #35ad3a;
+                    --disc:     #c9c9c9;
                     --value:    #1d52a7;
                     --type:     #0f54d6;
                 }
@@ -42,7 +44,9 @@ namespace Friflo.Json.Fliox.Schema
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        field       { color: var(--key);    font-family: var(--mono-font); }
+        key         { background: var(--key);  color: white; font-size: 14px; padding: 0 1px ; border-radius: 2px; }
+        disc        { background: var(--disc); color: white; font-size: 14px; padding: 0 1px ; border-radius: 2px; }
+        field       { color: var(--field);  font-family: var(--mono-font); }
         discriminant{ color: var(--value);  font-family: var(--mono-font); }
 
         desc        { margin-left: 50px; }
@@ -57,8 +61,9 @@ namespace Friflo.Json.Fliox.Schema
         a       { text-decoration:  none; }
         ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
 
-        table.type                      { margin-left: 50px; }
-        table.type tr td:first-child    { width: 150px; vertical-align: baseline; }
+        table.type                      { margin-left: 30px; }
+        table.type tr td:nth-child(1)   { width: 30px; vertical-align: baseline;  }
+        table.type tr td:nth-child(2)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
         // Required to support browser 'go back' 

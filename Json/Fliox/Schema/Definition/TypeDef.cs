@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  abstract    bool                IsClass         { get; }
         /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
         public  abstract    bool                IsStruct        { get; }
+        public  abstract    string              KeyField        { get; }
         public  abstract    List<FieldDef>      Fields          { get; }
         
         public  abstract    bool                IsService       { get; }

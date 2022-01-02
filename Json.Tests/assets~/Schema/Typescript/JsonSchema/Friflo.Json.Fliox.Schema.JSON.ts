@@ -12,6 +12,7 @@ export class JsonType {
     oneOf?                : FieldType[] | null;
     isAbstract?           : boolean | null;
     type?                 : string | null;
+    key?                  : string | null;
     properties?           : { [key: string]: FieldType } | null;
     commands?             : { [key: string]: CommandType } | null;
     isStruct?             : boolean | null;

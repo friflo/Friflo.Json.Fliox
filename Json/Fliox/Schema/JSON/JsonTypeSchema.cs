@@ -57,6 +57,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                         JsonTypeDef typeDef = pair.Value;
                         JsonType    type    = typeDef.type;
                         var         extends = type.extends;
+                        typeDef.keyField    = type.key;
                         type.name           = pair.Key;
                         if (extends != null) {
                             typeDef.baseType = FindRef(extends.reference, context);

@@ -125,7 +125,7 @@ $@"    <h3 id='{qualifiedName}'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><keyword>discriminator</keyword><br><field>{unionType.discriminator}</field></td>
+            <td><br><disc title='discriminator'>disc</disc></td><td><br><field>{unionType.discriminator}</field></td>
             <td><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
                 foreach (var polyType in unionType.types) {
@@ -147,20 +147,21 @@ $@"    <h3 id='{qualifiedName}'>
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine(
 $@"        <tr>
-            <td><field>{discriminator}</field></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
+            <td><disc title='discriminator'>disc</disc></td><td><field>{discriminator}</field></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
         </tr>");
             }
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                bool required = field.required;
-                var fieldType = GetFieldType(field, context);
-                var indent  = Indent(maxFieldName, field.name);
-                var optStr  = required ? "": "?";
+                bool required   = field.required;
+                var fieldType   = GetFieldType(field, context);
+                var indent      = Indent(maxFieldName, field.name);
+                var optStr      = required ? "": "?";
+                var modifier    = type.KeyField == field.name ? "<key>key</key>" : "";
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><field>{field.name}</field>{optStr}</td>{indent} <td>{fieldType}</td>
+            <td>{modifier}</td><td><field>{field.name}</field>{optStr}</td>{indent} <td>{fieldType}</td>
         </tr>");
             }
             sb.AppendLine($"    </table>");
@@ -188,7 +189,7 @@ $@"    <h3 id={qualifiedName}>
                 var signature = $"(param: {commandParam}) : {commandResult}";
                 sb.AppendLine(
 $@"        <tr>
-            <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
+            <td></td><td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
         </tr>");
             }
             sb.AppendLine(

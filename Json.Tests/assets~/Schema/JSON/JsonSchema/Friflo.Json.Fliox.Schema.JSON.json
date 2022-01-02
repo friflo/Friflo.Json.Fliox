@@ -21,6 +21,7 @@
                 "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
                 "isAbstract":           { "type": ["boolean", "null"] },
                 "type":                 { "type": ["string", "null"] },
+                "key":                  { "type": ["string", "null"] },
                 "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object" },
                 "commands":             { "additionalProperties": { "$ref": "#/definitions/CommandType" }, "type": "object" },
                 "isStruct":             { "type": ["boolean", "null"] },

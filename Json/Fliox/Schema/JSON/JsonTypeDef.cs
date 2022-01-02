@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   bool                IsClass         => fields != null;
         public   override   bool                IsService       => commands != null;
         public   override   bool                IsStruct        => isStruct;
+        public   override   string              KeyField        => keyField;
         public   override   List<FieldDef>      Fields          => fields;
         public   override   List<CommandDef>    Commands        => commands;
         public   override   UnionType           UnionType       => unionType;
@@ -28,6 +29,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
 
         // --- private
         internal            JsonTypeDef         baseType;
+        internal            string              keyField;
         internal            List<FieldDef>      fields;
         internal            List<CommandDef>    commands;
         internal            UnionType           unionType;

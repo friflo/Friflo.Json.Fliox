@@ -5,6 +5,7 @@
     "definitions": {
         "CustomIdEntity": {
             "type": "object",
+            "key": "customId",
             "properties": {
                 "customId": { "type": "string", "isKey": true }
             },

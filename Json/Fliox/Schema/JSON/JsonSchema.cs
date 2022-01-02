@@ -20,7 +20,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///     <item><see cref="JsonType.isStruct"/></item>
     ///     <item><see cref="JsonType.isAbstract"/></item>
     ///     <item><see cref="JsonType.commands"/></item>
-    ///     <item><see cref="FieldType.isKey"/></item>
+    ///     <item><see cref="JsonType.key"/></item>
+    ///     <item><see cref="FieldType.isKey"/></item> todo remove
     ///     <item><see cref="FieldType.relation"/></item>
     /// </list>
     /// The restriction of <see cref="JsonSchema"/> are:
@@ -67,6 +68,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         //
         // public  SchemaType?                  type; // todo use this
         public  string                          type; // null or SchemaType
+        public  string                          key;  // if null a property named "id" must exist
         public  Dictionary<string, FieldType>   properties;
         public  Dictionary<string, CommandType> commands;
         public  bool?                           isStruct;
@@ -115,7 +117,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Fri.Ignore]
         public  string          name;
         
-        public  bool?           isKey;
+        public  bool?           isKey;  // todo remove
         public  bool?           isAutoIncrement;
         
         public  string          relation;

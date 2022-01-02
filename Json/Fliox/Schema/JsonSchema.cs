@@ -119,6 +119,10 @@ namespace Friflo.Json.Fliox.Schema
                 sb.AppendLine();
                 sb.AppendLine($"            ],");
             }
+            var key = type.KeyField; 
+            if (key != null && key != "id") {
+                sb.AppendLine($"            \"key\": \"{key}\",");    
+            }
             sb.AppendLine($"            \"properties\": {{");
             bool    firstField      = true;
             var     requiredFields  = new List<string>(fields.Count);

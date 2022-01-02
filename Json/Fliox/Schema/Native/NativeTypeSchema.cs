@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Map.Obj;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -83,6 +82,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             foreach (var pair in nativeTypes) {
                 NativeTypeDef   typeDef = pair.Value;
                 TypeMapper      mapper  = typeDef.mapper;
+                typeDef.keyField        = "id";
                 
                 // set the fields for classes or structs
                 var  propFields = mapper.propFields;
@@ -116,6 +116,9 @@ namespace Friflo.Json.Fliox.Schema.Native
                         relation            = relation ?? propField.GetRelationAttributeType();
                         var required        = propField.required || !isNullable;
                         var isKey           = propField.isKey;
+                        if (isKey) {
+                            typeDef.keyField = propField.jsonName;
+                        }
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
                         
                         var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef, relation);
