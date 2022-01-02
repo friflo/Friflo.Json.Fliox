@@ -158,6 +158,9 @@ $@"        <tr>
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? "": "?";
                 var modifier    = type.KeyField == field.name ? "<key>key</key>" : "";
+                if (field.relation != null) {
+                    modifier = "<ref>ref</ref>";
+                }
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>

@@ -9,7 +9,7 @@
         :root   {
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
                     --field:    #9c110e;
-                    --key:      #35ad3a;
+                    --key:      #d400b8;
                     --disc:     #c9c9c9;
                     --value:    #1d52a7;
                     --type:     #0f54d6;
@@ -36,8 +36,9 @@
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        key         { background: var(--key);  color: white; font-size: 14px; padding: 0 1px ; border-radius: 2px; }
-        disc        { background: var(--disc); color: white; font-size: 14px; padding: 0 1px ; border-radius: 2px; }
+        key         { background: var(--key);  font-size: 14px; padding: 0 1px; border-radius: 2px; color: white; }
+        ref         { color: var(--key);       font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
+        disc        { background: var(--disc); font-size: 14px; padding: 0 1px; border-radius: 2px; color: white; }
         field       { color: var(--field);  font-family: var(--mono-font); }
         discriminant{ color: var(--value);  font-family: var(--mono-font); }
 
@@ -194,7 +195,7 @@
             <td><key>key</key></td><td><field>id</field></td>       <td><type>string</type></td>
         </tr>
         <tr>
-            <td></td><td><field>customer</field>?</td> <td><type>string</type></td>
+            <td><ref>ref</ref></td><td><field>customer</field>?</td> <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>created</field></td>  <td><a href='#Standard.DateTime'>DateTime</a></td>
@@ -221,7 +222,7 @@
     </h3>
     <table  class='type'>
         <tr>
-            <td></td><td><field>article</field></td> <td><type>string</type></td>
+            <td><ref>ref</ref></td><td><field>article</field></td> <td><type>string</type></td>
         </tr>
         <tr>
             <td></td><td><field>amount</field></td>  <td><a href='#Standard.int32'>int32</a></td>
@@ -242,7 +243,7 @@
             <td></td><td><field>name</field></td>     <td><type>string</type></td>
         </tr>
         <tr>
-            <td></td><td><field>producer</field>?</td> <td><type>string</type></td>
+            <td><ref>ref</ref></td><td><field>producer</field>?</td> <td><type>string</type></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>
@@ -257,7 +258,7 @@
             <td></td><td><field>name</field></td>      <td><type>string</type></td>
         </tr>
         <tr>
-            <td></td><td><field>employees</field>?</td> <td><type>string</type>[]</td>
+            <td><ref>ref</ref></td><td><field>employees</field>?</td> <td><type>string</type>[]</td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>

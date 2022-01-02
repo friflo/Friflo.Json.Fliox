@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Schema
         :root   {
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
                     --field:    #9c110e;
-                    --key:      #35ad3a;
+                    --key:      #d400b8;
                     --disc:     #c9c9c9;
                     --value:    #1d52a7;
                     --type:     #0f54d6;
@@ -44,8 +44,9 @@ namespace Friflo.Json.Fliox.Schema
         keyword     { font-size: 14px; font-weight: normal; opacity: 0.6; }
         extends     { font-size: 14px; }
         cmd         { color: var(--value);  font-family: var(--mono-font); }
-        key         { background: var(--key);  color: white; font-size: 14px; padding: 0 1px ; border-radius: 2px; }
-        disc        { background: var(--disc); color: white; font-size: 14px; padding: 0 1px ; border-radius: 2px; }
+        key         { background: var(--key);  font-size: 14px; padding: 0 1px; border-radius: 2px; color: white; }
+        ref         { color: var(--key);       font-size: 14px; padding: 0 3px; border-radius: 2px; border: 1px solid var(--key); }
+        disc        { background: var(--disc); font-size: 14px; padding: 0 1px; border-radius: 2px; color: white; }
         field       { color: var(--field);  font-family: var(--mono-font); }
         discriminant{ color: var(--value);  font-family: var(--mono-font); }
 
