@@ -10,7 +10,7 @@
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
                     --field:    #9c110e;
                     --key:      #d400b8;
-                    --disc:     #c9c9c9;
+                    --disc:     #2b9aa7;
                     --value:    #1d52a7;
                     --type:     #0f54d6;
                 }
@@ -51,8 +51,10 @@
         h3      { margin-left: 30px; margin-bottom: 5px; }
 
 
-        a       { text-decoration:  none; }
-        ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
+        a                               { text-decoration:  none; }
+        ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
+        ul > li > a:hover               { background:  #dcdcdc; }
+        ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }
         table.type tr td:nth-child(1)   { width: 30px; vertical-align: baseline;  }
@@ -87,41 +89,41 @@
 <ul>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth'>Friflo.Json.Fliox.Hub.DB.UserAuth</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore'>UserStore</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStoreService'>UserStoreService</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore'><div>UserStore</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStoreService'><div>UserStoreService</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'><div>UserCredential<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'><div>UserPermission<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'><div>Role<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'><div>AuthenticateUser</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'><div>AuthenticateUserResult</div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'>RightAllow</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'>RightTask</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>RightMessage</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'>RightSubscribeMessage</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'>RightOperation</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'>RightPredicate</a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div>Right</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'><div>RightAllow<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'><div>RightTask<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'><div>RightMessage<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'><div>RightSubscribeMessage<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'><div>RightOperation<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'><div>ContainerAccess</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'><div>OperationType</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'><div>RightPredicate<disc style='float:right'>type</disc></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>Change</a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'><div>TaskType</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'><div>Change</div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'>DbInfo</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>DbList</a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'><div>DbInfo</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'><div>DbList</div></a></li>
         </ul>
     </li>
 </ul>

@@ -83,11 +83,11 @@ namespace Friflo.Json.Fliox.Schema.Native
             foreach (var pair in nativeTypes) {
                 NativeTypeDef   typeDef = pair.Value;
                 TypeMapper      mapper  = typeDef.mapper;
-                typeDef.keyField        = "id";
                 
                 // set the fields for classes or structs
-                var  propFields = mapper.propFields;
+                var  propFields         = mapper.propFields;
                 if (propFields != null) {
+                    typeDef.keyField        = propFields.GetField("id") != null ? "id" : null;
                     typeDef.fields = new List<FieldDef>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
                         var fieldMapper     = propField.fieldType.GetUnderlyingMapper();

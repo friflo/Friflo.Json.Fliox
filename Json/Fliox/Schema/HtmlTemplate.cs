@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Schema
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
                     --field:    #9c110e;
                     --key:      #d400b8;
-                    --disc:     #c9c9c9;
+                    --disc:     #2b9aa7;
                     --value:    #1d52a7;
                     --type:     #0f54d6;
                 }
@@ -59,8 +59,10 @@ namespace Friflo.Json.Fliox.Schema
         h3      { margin-left: 30px; margin-bottom: 5px; }
 
 
-        a       { text-decoration:  none; }
-        ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
+        a                               { text-decoration:  none; }
+        ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
+        ul > li > a:hover               { background:  #dcdcdc; }
+        ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }
         table.type tr td:nth-child(1)   { width: 30px; vertical-align: baseline;  }

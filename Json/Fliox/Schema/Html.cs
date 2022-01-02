@@ -287,9 +287,14 @@ $@"    <li><a href='#{ns}'>{ns}</a>
         <ul>
 ");
                 foreach (var result in emitFile.emitTypes) {
-                    var typeName = result.type.Name;
+                    var type        = result.type;
+                    var typeName    = type.Name;
+                    var key         = type.KeyField;
+                    var keyTag      = key != null ? $"<key style='float:right'>{key}</key>" : "";
+                    var disc        = type.Discriminator;
+                    var discTag     = disc != null ? $"<disc style='float:right'>{disc}</disc>" : "";
                     sbNav.Append(
-$@"            <li><a href='#{ns}.{typeName}'>{typeName}</a></li>
+$@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{keyTag}</div></a></li>
 ");
                     sb.Append(result.content);
                 }

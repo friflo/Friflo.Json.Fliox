@@ -10,7 +10,7 @@
                     --mono-font: 'Consolas', 'Courier New', Courier, monospace;
                     --field:    #9c110e;
                     --key:      #d400b8;
-                    --disc:     #c9c9c9;
+                    --disc:     #2b9aa7;
                     --value:    #1d52a7;
                     --type:     #0f54d6;
                 }
@@ -51,8 +51,10 @@
         h3      { margin-left: 30px; margin-bottom: 5px; }
 
 
-        a       { text-decoration:  none; }
-        ul      { margin: 5px; padding-left: 8px; list-style-type: none; }
+        a                               { text-decoration:  none; }
+        ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
+        ul > li > a:hover               { background:  #dcdcdc; }
+        ul > li > ul > li:hover         { background:  #dcdcdc; }
 
         table.type                      { margin-left: 30px; }
         table.type tr td:nth-child(1)   { width: 30px; vertical-align: baseline;  }
@@ -87,40 +89,40 @@
 <ul>
     <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client'>Friflo.Json.Tests.Common.UnitTest.Fliox.Client</a>
         <ul>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStore'>PocStore</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStoreService'>PocStoreService</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>Order</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>OrderItem</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>Article</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocEntity'>PocEntity</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'>TestType</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'>PocStruct</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'>DerivedClass</a></li>
-            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'>TestCommand</a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStore'><div>PocStore</div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStoreService'><div>PocStoreService</div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'><div>Order<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'><div>Customer<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'><div>OrderItem</div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'><div>Article<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'><div>Producer<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'><div>Employee<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocEntity'><div>PocEntity<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'><div>TestType<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'><div>PocStruct</div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'><div>DerivedClass</div></a></li>
+            <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'><div>TestCommand</div></a></li>
         </ul>
     </li>
     <li><a href='#Standard'>Standard</a>
         <ul>
-            <li><a href='#Standard.DateTime'>DateTime</a></li>
-            <li><a href='#Standard.int32'>int32</a></li>
-            <li><a href='#Standard.BigInteger'>BigInteger</a></li>
-            <li><a href='#Standard.uint8'>uint8</a></li>
-            <li><a href='#Standard.int16'>int16</a></li>
-            <li><a href='#Standard.int64'>int64</a></li>
-            <li><a href='#Standard.float'>float</a></li>
-            <li><a href='#Standard.double'>double</a></li>
+            <li><a href='#Standard.DateTime'><div>DateTime</div></a></li>
+            <li><a href='#Standard.int32'><div>int32</div></a></li>
+            <li><a href='#Standard.BigInteger'><div>BigInteger</div></a></li>
+            <li><a href='#Standard.uint8'><div>uint8</div></a></li>
+            <li><a href='#Standard.int16'><div>int16</div></a></li>
+            <li><a href='#Standard.int64'><div>int64</div></a></li>
+            <li><a href='#Standard.float'><div>float</div></a></li>
+            <li><a href='#Standard.double'><div>double</div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'>DbInfo</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>DbList</a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'><div>DbInfo</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'><div>DbList</div></a></li>
         </ul>
     </li>
 </ul>
