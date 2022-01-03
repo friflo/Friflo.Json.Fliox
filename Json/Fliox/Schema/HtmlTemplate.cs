@@ -102,7 +102,8 @@ namespace Friflo.Json.Fliox.Schema
                 docsSelection = element;
                 element.classList.add('selected');
                 const parent = element.parentElement;
-                parent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                const block = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
+                parent.scrollIntoView({ behavior: 'smooth', block: block });
             }
         }
         // Required to support browser 'go back' 
