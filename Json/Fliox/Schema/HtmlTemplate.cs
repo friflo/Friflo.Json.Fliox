@@ -12,19 +12,30 @@ namespace Friflo.Json.Fliox.Schema
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <meta name='description' content='Schema {{schemaName}}'>
+    <meta name='color-scheme' content='dark light'>
     <title>{{schemaName}} Schema</title>
     <style>
-        :root   {
-                    --mono-font: 'Consolas', 'Courier New', Courier, monospace;
-                    --field:    #9c110e;
-                    --key:      #d400b8;
-                    --disc:     #2b9aa7;
-                    --value:    #1d52a7;
-                    --type:     #0f54d6;
-                    --keyword:  #6f6f6f;
-                    --bg:       #fff;
-                    --selected: #eee;
-                }
+        :root {
+            --mono-font: 'Consolas', 'Courier New', Courier, monospace;
+            --field:    #9c110e;
+            --key:      #d400b8;
+            --disc:     #2b9aa7;
+            --value:    #1d52a7;
+            --type:     #0f54d6;
+            --keyword:  #6f6f6f;
+            --bg:       #fff;
+            --selected: #eee;
+        }
+        [data-theme='dark'] {
+            --field:    #9c110e;
+            --key:      #d400b8;
+            --disc:     #2b9aa7;
+            --value:    #1d52a7;
+            --type:     #0f54d6;
+            --keyword:  #6f6f6f;
+            --bg:       #000;
+            --selected: #333;
+        }
         body::after {
             content: '';
             background-image: url('../../paint-splatter.svg'); /* from https://freesvg.org/ */
@@ -54,6 +65,8 @@ namespace Friflo.Json.Fliox.Schema
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
         .title      { margin: 6px 30px; padding: 0px 5px; display: inline-flex; background: var(--bg); }
+        .toggleTheme{ margin: 6px 330px; padding: 0px 5px; display: inline-flex; background: var(--bg); cursor: pointer; }
+
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
         chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
@@ -89,6 +102,16 @@ namespace Friflo.Json.Fliox.Schema
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        var toggleTheme = () => {
+            let mode = document.documentElement.getAttribute('data-theme');
+            mode = mode == 'dark' ? 'light' : 'dark'
+            console.log(`toggleTheme(${mode})`);
+            document.documentElement.setAttribute('data-theme', mode);
+        }
+
         var docsSelection;
         function scrollTo(id) {
             var element = undefined;
@@ -131,6 +154,7 @@ namespace Friflo.Json.Fliox.Schema
 <!-- ------------------------------- head ------------------------------- -->
 <div style='grid-area: body-head;' class='head'>
 <h2 class='title'>{{schemaName}} schema</h2>
+<div class='toggleTheme' onclick='toggleTheme()'>dark / light</div>
 </div>
 
 <!-- ------------------------------- nav ------------------------------- -->
