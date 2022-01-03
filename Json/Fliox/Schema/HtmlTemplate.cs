@@ -87,15 +87,17 @@ namespace Friflo.Json.Fliox.Schema
         window.addEventListener('hashchange', function(event) {
             const id = window.location.hash.substring(1);                        
             console.log('hashchange', id);
+            var element = undefined;
             if (id == '') {
-                var docsElement = document.querySelector('.docs');
-                docsElement.firstElementChild.scrollIntoView();
+                element = document.querySelector('.docs');
             }
-            const element = document.getElementById(id);
+            if (!element) {
+                element = document.getElementById(id);
+            }
             if (element) {
-                element.scrollIntoView();
-            }
-        }, false);
+                element.scrollIntoView({ behavior: 'smooth' });
+    }
+}, false);
     </script>
 </head>
 
