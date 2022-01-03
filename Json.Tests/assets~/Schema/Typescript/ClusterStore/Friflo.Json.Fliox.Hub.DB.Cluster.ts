@@ -4,9 +4,8 @@ export abstract class ClusterStore {
     containers  : { [key: string]: DbContainers };
     schemas     : { [key: string]: DbSchema };
     commands    : { [key: string]: DbCommands };
-}
 
-export interface ClusterStoreService {
+    // commands
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;

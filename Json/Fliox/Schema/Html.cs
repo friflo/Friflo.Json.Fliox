@@ -75,9 +75,6 @@ $@"    <h3 id='{qualifiedName}'>
             if (type.IsClass) {
                 return EmitClassType(type, sb);
             }
-            if (type.IsService) {
-                return EmitServiceType(type, sb);
-            }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
                 var qualifiedName = type.Namespace + "." + type.Name;
@@ -175,20 +172,16 @@ $@"        <tr>
         </tr>");
             }
             sb.AppendLine($"    </table>");
+            if (type.Commands != null) {
+                EmitServiceType(type, context, sb);
+            }
             return new EmitType(type, sb, imports, dependencies);
         }
         
-        private EmitType EmitServiceType(TypeDef type, StringBuilder sb) {
-            var imports         = new HashSet<TypeDef>();
-            var context         = new TypeContext (generator, imports, type);
-            var dependencies    = new List<TypeDef>();
+        private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
             var commands        = type.Commands;
-            var qualifiedName   = type.Namespace + "." + type.Name;
             sb.AppendLine(
-$@"    <h3 id={qualifiedName}>
-        <a href='#{qualifiedName}'>{type.Name}</a>
-        <keyword>interface</keyword>
-    </h3>
+$@"    <br>
     <table class='type'>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
@@ -204,7 +197,6 @@ $@"        <tr>
             }
             sb.AppendLine(
 "    </table>");
-            return new EmitType(type, sb, imports, dependencies);
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context) {

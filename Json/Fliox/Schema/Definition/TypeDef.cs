@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  abstract    string              KeyField        { get; }
         public  abstract    List<FieldDef>      Fields          { get; }
         
-        public  abstract    bool                IsService       { get; }
+        public  abstract    bool                IsService       { get; } // todo remove
         public  abstract    List<CommandDef>    Commands        { get; }
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>

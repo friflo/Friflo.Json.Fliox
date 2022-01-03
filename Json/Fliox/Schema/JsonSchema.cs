@@ -73,9 +73,6 @@ namespace Friflo.Json.Fliox.Schema
             if (type.IsClass) {
                 return EmitClassType(type, sb);
             }
-            if (type.IsService) {
-                return EmitServiceType(type, sb);
-            }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
                 sb.AppendLine($"        \"{type.Name}\": {{");
@@ -171,19 +168,22 @@ namespace Friflo.Json.Fliox.Schema
                 sb.AppendLine("            ],");
             }
             var additionalProperties = unionType != null ? "true" : "false";
-            sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
+            sb.Append($"            \"additionalProperties\": {additionalProperties}");
+            if (type.Commands != null) {
+                EmitServiceType(type, context, sb);
+            } else {
+                sb.AppendLine();
+            }
             sb.Append     ("        }");
             return new EmitType(type, sb);
         }
         
-        private EmitType EmitServiceType(TypeDef type, StringBuilder sb) {
-            var     context     = new TypeContext (generator, null, type);
+        private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
             var     commands    = type.Commands;
             bool    firstField  = true;
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
-            sb.AppendLine($"        \"{type.Name}\": {{");
-            sb.AppendLine($"            \"type\": \"object\",");
-            sb.AppendLine($"            \"commands\": {{");
+            sb.AppendLine(",");
+            sb.AppendLine("            \"commands\": {");
             foreach (var command in commands) {
                 var commandParam    = GetTypeName(command.param,  context, true);
                 var commandResult   = GetTypeName(command.result, context, true);
@@ -193,8 +193,6 @@ namespace Friflo.Json.Fliox.Schema
                 sb.Append($"                \"{command.name}\":{indent} {{ {signature} }}");
             }
             sb.AppendLine("\n            }");
-            sb.Append     ("        }");
-            return new EmitType(type, sb);
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {

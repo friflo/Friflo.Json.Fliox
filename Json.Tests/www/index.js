@@ -650,7 +650,7 @@ class App {
             var url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
             schema.fileMatch.push(url); // requires a lower case string
         }
-        var commandType     = dbSchema.definitions[schemaName + "Service"];
+        var commandType     = dbSchema.definitions[schemaName];
         var commands        = commandType.commands;
         for (var commandName in commands) {
             const command   = commands[commandName];
@@ -1170,7 +1170,7 @@ class App {
         this.layoutEditors();
 
         const schema        = this.databaseSchemas[database];
-        const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"] : null;
+        const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName] : null;
         const signature     = service ? service.commands[commandName] : null
         const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
         const tags          = this.getCommandTags(database, commandName, signature);

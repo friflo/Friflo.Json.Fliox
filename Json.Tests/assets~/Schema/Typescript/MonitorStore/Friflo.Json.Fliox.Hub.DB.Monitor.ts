@@ -15,9 +15,8 @@ export abstract class MonitorStore {
     clients    : { [key: string]: ClientInfo };
     users      : { [key: string]: UserInfo };
     histories  : { [key: string]: HistoryInfo };
-}
 
-export interface MonitorStoreService {
+    // commands
     ClearStats   (param: ClearStats) : ClearStatsResult;
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;

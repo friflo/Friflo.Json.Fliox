@@ -11,9 +11,8 @@ export abstract class UserStore {
     credentials  : { [key: string]: UserCredential };
     permissions  : { [key: string]: UserPermission };
     roles        : { [key: string]: Role };
-}
 
-export interface UserStoreService {
+    // commands
     AuthenticateUser (param: AuthenticateUser) : AuthenticateUserResult;
     DbInfo           (param: any) : DbInfo;
     DbContainers     (param: any) : DbContainers;

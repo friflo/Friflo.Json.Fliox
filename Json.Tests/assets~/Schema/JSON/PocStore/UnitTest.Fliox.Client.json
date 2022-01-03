@@ -21,10 +21,7 @@
                 "employees",
                 "types"
             ],
-            "additionalProperties": false
-        },
-        "PocStoreService": {
-            "type": "object",
+            "additionalProperties": false,
             "commands": {
                 "TestCommand":  { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
                 "DbInfo":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbInfo" } },

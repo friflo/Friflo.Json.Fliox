@@ -20,9 +20,8 @@ export abstract class PocStore {
     producers  : { [key: string]: Producer };
     employees  : { [key: string]: Employee };
     types      : { [key: string]: TestType };
-}
 
-export interface PocStoreService {
+    // commands
     TestCommand  (param: TestCommand) : boolean;
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;

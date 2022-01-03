@@ -15,10 +15,7 @@
                 "permissions",
                 "roles"
             ],
-            "additionalProperties": false
-        },
-        "UserStoreService": {
-            "type": "object",
+            "additionalProperties": false,
             "commands": {
                 "AuthenticateUser": { "param": { "$ref": "#/definitions/AuthenticateUser" }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
                 "DbInfo":           { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbInfo" } },

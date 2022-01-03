@@ -27,10 +27,7 @@
                 "entityRefs",
                 "customIdEntities2"
             ],
-            "additionalProperties": false
-        },
-        "EntityIdStoreService": {
-            "type": "object",
+            "additionalProperties": false,
             "commands": {
                 "DbInfo":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbInfo" } },
                 "DbContainers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },

@@ -20,9 +20,8 @@ export abstract class EntityIdStore {
     customIdEntities   : { [key: string]: CustomIdEntity };
     entityRefs         : { [key: string]: EntityRefs };
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
-}
 
-export interface EntityIdStoreService {
+    // commands
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;
