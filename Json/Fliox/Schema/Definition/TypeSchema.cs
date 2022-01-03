@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 typeDefMap = new Dictionary<TypeDefKey, TypeDef>(Types.Count);
                 var types = Types;
                 foreach (var typeDef in types) {
-                    bool isNamedType = typeDef.IsClass || typeDef.IsStruct || typeDef.IsEnum || typeDef.IsService;  
+                    bool isNamedType = typeDef.IsClass || typeDef.IsStruct || typeDef.IsEnum;  
                     if (!isNamedType)
                         continue;
                     var key = new TypeDefKey(typeDef.Namespace, typeDef.Name);

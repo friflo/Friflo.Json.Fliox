@@ -29,7 +29,6 @@ public sealed class NativeTypeDef : TypeDef
         public   override   bool                IsStruct        { get; }
         public   override   string              KeyField        => keyField;
         public   override   List<FieldDef>      Fields          => fields;
-        public   override   bool                IsService       { get; }
         public   override   List<CommandDef>    Commands        => commands;
         public   override   string              Discriminant    { get; }
         public   override   string              Discriminator   => discriminator;
