@@ -23,16 +23,18 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #1d52a7;
             --type:     #0f54d6;
             --keyword:  #6f6f6f;
+            --color:    #000;
             --bg:       #fff;
             --selected: #eee;
         }
         [data-theme='dark'] {
-            --field:    #9c110e;
-            --key:      #d400b8;
+            --field:    #a8ddfc;
+            --key:      #e64bd1;
             --disc:     #2b9aa7;
-            --value:    #1d52a7;
-            --type:     #0f54d6;
-            --keyword:  #6f6f6f;
+            --value:    #c7907a;
+            --type:     #6c95eb;
+            --keyword:  #aaa;
+            --color:    #fff;
             --bg:       #000;
             --selected: #333;
         }
@@ -44,6 +46,10 @@ namespace Friflo.Json.Fliox.Schema
             top: 0; left: 0; bottom: 0; right: 0;
             position: absolute;
             z-index: -1;   
+        }
+        body {
+            background: var(--bg);            
+            color:      var(--color);
         }
         body    {
                     display: grid;
@@ -102,14 +108,17 @@ namespace Friflo.Json.Fliox.Schema
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
+        function setTheme (mode) {
+            console.log(`toggleTheme(${mode})`);
+            document.documentElement.setAttribute('data-theme', mode);
+        }
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark');
+            setTheme('dark')
         }
         var toggleTheme = () => {
             let mode = document.documentElement.getAttribute('data-theme');
             mode = mode == 'dark' ? 'light' : 'dark'
-            console.log(`toggleTheme(${mode})`);
-            document.documentElement.setAttribute('data-theme', mode);
+            setTheme(mode)
         }
 
         var docsSelection;
