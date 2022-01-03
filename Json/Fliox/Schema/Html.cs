@@ -296,6 +296,9 @@ $@"    <li><a href='#{ns}'>{ns}</a>
                     if (type.Commands != null) {
                         tag         = $"<keyword style='float:right'>schema</keyword>";
                     }
+                    if (type.IsEnum) {
+                        tag         = $"<keyword style='float:right'>enum</keyword>";
+                    }
                     var disc        = type.Discriminator;
                     var discTag     = disc != null ? $"<disc style='float:right'>{disc}</disc>" : "";
                     sbNav.Append(
