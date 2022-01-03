@@ -118,6 +118,9 @@ $@"    <h3 id='{qualifiedName}'>
 
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
+            if (type.Commands != null) {
+                sb.AppendLine($"    <chapter>containers</chapter>");    
+            }
             sb.AppendLine($"    <table  class='type'>");
             if (unionType != null) {
                 sb.AppendLine(
@@ -181,7 +184,7 @@ $@"        <tr>
         private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
             var commands        = type.Commands;
             sb.AppendLine(
-$@"    <br>
+$@"    <br><chapter>commands</chapter>
     <table class='type'>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
