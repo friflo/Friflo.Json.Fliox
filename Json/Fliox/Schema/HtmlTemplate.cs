@@ -83,21 +83,34 @@ namespace Friflo.Json.Fliox.Schema
         table.type tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
-        // Required to support browser 'go back' 
-        window.addEventListener('hashchange', function(event) {
-            const id = window.location.hash.substring(1);                        
-            console.log('hashchange', id);
+        function scrollTo(id) {
             var element = undefined;
             if (id == '') {
-                element = document.querySelector('.docs');
+                element = document.querySelector('.docs').firstElementChild;
             }
             if (!element) {
                 element = document.getElementById(id);
             }
             if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-    }
-}, false);
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        // Required to support browser 'go back' 
+        window.addEventListener('hashchange', function(event) {
+            const id = window.location.hash.substring(1);
+            // console.log('hashchange', id);
+            scrollTo(id);
+        });
+        window.addEventListener('click', function(event) {
+            const path      = event.composedPath();
+            const anchor    = path.find(el => el.tagName == 'A');
+            if (anchor && anchor.hash) {
+                event.preventDefault();
+                const id = anchor.hash.substring(1);
+                scrollTo(id);
+                window.history.pushState(null, anchor.href, anchor.href);
+            }
+        });
     </script>
 </head>
 
