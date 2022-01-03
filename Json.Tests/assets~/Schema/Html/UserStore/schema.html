@@ -146,13 +146,13 @@
     <chapter>containers</chapter>
     <table  class='type'>
         <tr>
-            <td><field>credentials</field></td> <td>{ [key: <type>string</type>]: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a> }</td>
+            <td><field>credentials</field></td> <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></td>
         </tr>
         <tr>
-            <td><field>permissions</field></td> <td>{ [key: <type>string</type>]: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a> }</td>
+            <td><field>permissions</field></td> <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a></td>
         </tr>
         <tr>
-            <td><field>roles</field></td>       <td>{ [key: <type>string</type>]: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a> }</td>
+            <td><field>roles</field></td>       <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></td>
         </tr>
     </table>
     <br><chapter>commands</chapter>
@@ -362,7 +362,7 @@
             <td><field>database</field>?</td>    <td><type>string</type></td>
         </tr>
         <tr>
-            <td><field>containers</field></td>  <td>{ [key: <type>string</type>]: <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a> }</td>
+            <td><field>containers</field></td>  <td><key></key> ➞ <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>
@@ -496,7 +496,7 @@
             <td><field>schemaPath</field></td>  <td><type>string</type></td>
         </tr>
         <tr>
-            <td><field>jsonSchemas</field></td> <td>{ [key: <type>string</type>]: <type>any</type> }</td>
+            <td><field>jsonSchemas</field></td> <td><key></key> ➞ <type>any</type></td>
         </tr>
     </table>
     <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>
