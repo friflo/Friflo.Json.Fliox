@@ -68,9 +68,8 @@ namespace Friflo.Json.Fliox.Schema
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background:  #eee; }
 
-        table.type                      { margin-left: 30px; }
-        table.type tr td:nth-child(1)   { width: 30px; vertical-align: baseline;  }
-        table.type tr td:nth-child(2)   { width: 150px; vertical-align: baseline; }
+        table.type                      { margin-left: 70px; }
+        table.type tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
         // Required to support browser 'go back' 

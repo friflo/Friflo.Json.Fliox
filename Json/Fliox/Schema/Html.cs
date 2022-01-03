@@ -125,7 +125,7 @@ $@"    <h3 id='{qualifiedName}'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><br></td><td><br><disc>{unionType.discriminator}</disc></td>
+            <td><br><disc>{unionType.discriminator}</disc></td>
             <td><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
                 foreach (var polyType in unionType.types) {
@@ -147,7 +147,7 @@ $@"    <h3 id='{qualifiedName}'>
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.AppendLine(
 $@"        <tr>
-            <td></td><td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
+            <td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
         </tr>");
             }
             foreach (var field in fields) {
@@ -163,7 +163,6 @@ $@"        <tr>
                 }
                 var reference   = "";
                 var relation    = field.RelationType;
-                var modifier    = "";
                 if (relation != null) {
                     fieldTag    = "ref";
                     reference   = $"<refType> ➞ {GetTypeName(relation, context)}<refType>";
@@ -171,7 +170,7 @@ $@"        <tr>
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td>{modifier}</td><td><{fieldTag}>{field.name}</{fieldTag}>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
+            <td><{fieldTag}>{field.name}</{fieldTag}>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
         </tr>");
             }
             sb.AppendLine($"    </table>");
@@ -195,7 +194,7 @@ $@"    <br><chapter>commands</chapter>
                 var signature = $"(param: {commandParam}) : {commandResult}";
                 sb.AppendLine(
 $@"        <tr>
-            <td></td><td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
+            <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
         </tr>");
             }
             sb.AppendLine(
