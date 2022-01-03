@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Schema
                     --type:     #0f54d6;
                     --keyword:  #6f6f6f;
                     --bg:       #fff;
+                    --selected: #eee;
                 }
         body::after {
             content: '';
@@ -72,19 +73,22 @@ namespace Friflo.Json.Fliox.Schema
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
 
         h3      { margin-left: 30px; margin-bottom: 5px; }
+        h2.selected     { background: var(--selected); }
+        h3.selected     { background: var(--selected); }
 
 
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
-        ul > li > a:hover               { background:  #eee; }
+        ul > li > a:hover               { background: var(--selected); }
         ul > li > ul > li > a>div > key { font-size: 12px; }
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
-        ul > li > ul > li:hover         { background:  #eee; }
+        ul > li > ul > li:hover         { background: var(--selected); }
 
         table.type                      { margin-left: 70px; }
         table.type tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
+        var docsSelection;
         function scrollTo(id) {
             var element = undefined;
             if (id == '') {
@@ -94,6 +98,9 @@ namespace Friflo.Json.Fliox.Schema
                 element = document.getElementById(id);
             }
             if (element) {
+                docsSelection?.classList.remove('selected');
+                docsSelection = element;
+                element.classList.add('selected');
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
