@@ -10,7 +10,7 @@ import { Change }                from "./Friflo.Json.Fliox.Hub.Protocol.Tasks"
 import { FilterOperation }       from "./Friflo.Json.Fliox.Transform"
 import { FilterOperation_Union } from "./Friflo.Json.Fliox.Transform"
 
-export abstract class MonitorStore {
+export interface MonitorStore {
     hosts      : { [key: string]: HostInfo };
     clients    : { [key: string]: ClientInfo };
     users      : { [key: string]: UserInfo };

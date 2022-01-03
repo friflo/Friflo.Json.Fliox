@@ -100,8 +100,8 @@ namespace Friflo.Json.Fliox.Schema
             }
             var unionType = type.UnionType;
             if (unionType == null) {
-                var abstractStr = type.IsAbstract ? "abstract " : "";
-                sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
+                var typeName = type.Commands != null ? "interface" : type.IsAbstract ? "abstract class" : "class";
+                sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
             } else {
                 sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {

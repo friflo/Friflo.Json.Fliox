@@ -13,7 +13,7 @@ import { int64 }        from "./Standard"
 import { float }        from "./Standard"
 import { double }       from "./Standard"
 
-export abstract class PocStore {
+export interface PocStore {
     orders     : { [key: string]: Order };
     customers  : { [key: string]: Customer };
     articles   : { [key: string]: Article };

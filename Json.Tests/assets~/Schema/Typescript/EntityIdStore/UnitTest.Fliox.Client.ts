@@ -10,7 +10,7 @@ import { int64 }        from "./Standard"
 import { int16 }        from "./Standard"
 import { uint8 }        from "./Standard"
 
-export abstract class EntityIdStore {
+export interface EntityIdStore {
     guidEntities       : { [key: string]: GuidEntity };
     intEntities        : { [key: string]: IntEntity };
     intEntitiesAuto    : { [key: string]: AutoIntEntity };

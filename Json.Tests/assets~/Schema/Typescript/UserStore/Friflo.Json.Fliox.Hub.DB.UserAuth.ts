@@ -7,7 +7,7 @@ import { DbList }       from "./Friflo.Json.Fliox.Hub.DB.Cluster"
 import { Right }        from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights"
 import { Right_Union }  from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights"
 
-export abstract class UserStore {
+export interface UserStore {
     credentials  : { [key: string]: UserCredential };
     permissions  : { [key: string]: UserPermission };
     roles        : { [key: string]: Role };

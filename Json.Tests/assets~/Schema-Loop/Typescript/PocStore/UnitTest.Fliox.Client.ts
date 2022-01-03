@@ -30,7 +30,7 @@ export class Employee {
     lastName?  : string | null;
 }
 
-export abstract class PocStore {
+export interface PocStore {
     orders     : { [key: string]: Order };
     customers  : { [key: string]: Customer };
     articles   : { [key: string]: Article };
