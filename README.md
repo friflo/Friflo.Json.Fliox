@@ -321,4 +321,4 @@ This project is licensed under AGPLv3.
 
 Project not publish nor released yet. 2021-04-18
 
-Copyright (c) 2021 Ullrich Praetz. All rights reserved.
+Copyright (c) 2022 Ullrich Praetz. All rights reserved.
