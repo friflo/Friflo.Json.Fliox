@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Schema
                     --value:    #1d52a7;
                     --type:     #0f54d6;
                     --keyword:  #6f6f6f;
+                    --bg:       #fff;
                 }
         body    {
                     display: grid;
@@ -46,10 +47,10 @@ namespace Friflo.Json.Fliox.Schema
         chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
-        key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key);}
+        key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key);   background: var(--bg); }
         refType     { color: var(--key); }
         ref         { color: var(--field);    font-family: var(--mono-font);  }        
-        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field); }
+        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field); background: var(--bg); }
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
