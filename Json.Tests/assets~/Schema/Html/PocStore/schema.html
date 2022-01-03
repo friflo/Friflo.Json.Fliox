@@ -16,13 +16,22 @@
                     --keyword:  #6f6f6f;
                     --bg:       #fff;
                 }
+        body::after {
+            content: '';
+            background-image: url('../paint-splatter.svg'); /* from https://freesvg.org/ */
+            background-repeat: repeat; background-position: 5% 5%;
+            opacity: 1;
+            top: 0; left: 0; bottom: 0; right: 0;
+            position: absolute;
+            z-index: -1;   
+        }
         body    {
                     display: grid;
                     grid-template-areas: 
                         'body-head  body-head'
                         'body-nav   body-docs';
                     grid-template-columns:  300px 1fr;
-                    grid-template-rows:     60px  1fr;
+                    grid-template-rows:     40px  1fr;
                     grid-gap:   0px;
                     margin:     0;
                     height:     100vh;
@@ -30,10 +39,10 @@
                     font-family: sans-serif
                 }
         .head       { overflow: hidden; }
-        .nav        { overflow: auto;   }
-        .docs       { overflow: auto;   margin-left: 30px; }
+        .nav        { overflow: auto; background: var(--bg);  }
+        .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
-        .title      { margin-left: 30px; }
+        .title      { margin: 6px 30px; padding: 0px 5px; display: inline-flex; background: var(--bg); }
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
         chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
