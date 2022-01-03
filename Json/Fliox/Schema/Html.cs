@@ -59,10 +59,12 @@ namespace Friflo.Json.Fliox.Schema
                 return null;
             var qualifiedName = type.Namespace + "." + type.Name;
             sb.Append(
-$@"    <h3 id='{qualifiedName}'>
+$@"    <div>
+    <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
     </h3>
     <desc>{definition}</desc>
+    </div>
 ");
             return new EmitType(type, sb);
         }
@@ -79,7 +81,8 @@ $@"    <h3 id='{qualifiedName}'>
                 var enumValues = type.EnumValues;
                 var qualifiedName = type.Namespace + "." + type.Name;
                 sb.AppendLine(
-$@"    <h3 id='{qualifiedName}'>
+$@"    <div>
+    <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>enum</keyword>
     </h3>
@@ -87,7 +90,9 @@ $@"    <h3 id='{qualifiedName}'>
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"        <li>{enumValue}</li>");
                 }
-                sb.AppendLine("    </ul>");
+                sb.AppendLine(
+@"    </ul>
+    </div>");
                 return new EmitType(type, sb);
             }
             return null;
@@ -105,7 +110,8 @@ $@"    <h3 id='{qualifiedName}'>
             var unionType = type.UnionType;
             var abstractStr = type.IsAbstract ? "abstract " : "";
             sb.AppendLine(
-$@"    <h3 id='{qualifiedName}'>
+$@"    <div>
+    <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>{abstractStr}class</keyword>");
             if (baseType != null) {
@@ -173,10 +179,11 @@ $@"        <tr>
             <td><{fieldTag}>{field.name}</{fieldTag}>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
         </tr>");
             }
-            sb.AppendLine($"    </table>");
+            sb.AppendLine("    </table>");
             if (type.Commands != null) {
                 EmitServiceType(type, context, sb);
             }
+            sb.AppendLine("    </div>");
             return new EmitType(type, sb, imports, dependencies);
         }
         
@@ -197,8 +204,7 @@ $@"        <tr>
             <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
         </tr>");
             }
-            sb.AppendLine(
-"    </table>");
+            sb.AppendLine("    </table>");
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context) {

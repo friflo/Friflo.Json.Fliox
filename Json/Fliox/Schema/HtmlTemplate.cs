@@ -101,7 +101,8 @@ namespace Friflo.Json.Fliox.Schema
                 docsSelection?.classList.remove('selected');
                 docsSelection = element;
                 element.classList.add('selected');
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const parent = element.parentElement;
+                parent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
         // Required to support browser 'go back' 
