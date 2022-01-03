@@ -191,7 +191,7 @@ $@"    <br><chapter>commands</chapter>
                 var commandParam    = GetTypeName(command.param,  context);
                 var commandResult   = GetTypeName(command.result, context);
                 var indent = Indent(maxFieldName, command.name);
-                var signature = $"(param: {commandParam}) : {commandResult}";
+                var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
                 sb.AppendLine(
 $@"        <tr>
             <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
