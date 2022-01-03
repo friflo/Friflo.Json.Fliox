@@ -7,7 +7,7 @@ var exampleSync: ProtocolMessage_Union =
     tasks: [
         {
             "task":         "message",
-            "name":         "Echo",
+            "name":         "DbEcho",
             "value":        { "some": "data" }
         },
         {

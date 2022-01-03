@@ -23,7 +23,7 @@ export abstract class MonitorStore {
     DbCommands   (param: any) : DbCommands;
     DbSchema     (param: any) : DbSchema;
     DbList       (param: any) : DbList;
-    Echo         (param: any) : any;
+    DbEcho       (param: any) : any;
 }
 
 export class HostInfo {

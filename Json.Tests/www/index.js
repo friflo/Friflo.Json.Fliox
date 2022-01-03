@@ -1292,7 +1292,7 @@ class App {
     "tasks": [
         {
         "task":  "command",
-        "name":  "Echo",
+        "name":  "DbEcho",
         "value": "Hello World"
         }
     ]

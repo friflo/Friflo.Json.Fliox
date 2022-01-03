@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public TaskHandler () {
             // todo add handler via scanning TaskHandler
-            AddCommandHandler       (StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>(Echo));
+            AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>(DbEcho));
             AddCommandHandler       (StdCommand.DbInfo,        new CommandHandler<Empty,     DbInfo>            (DbInfo));
             AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
             AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandlerAsync  (StdCommand.DbList,        new CommandHandler<Empty,     Task<DbList>>      (DbList));
         }
         
-        private static JsonValue Echo (Command<JsonValue> command) {
+        private static JsonValue DbEcho (Command<JsonValue> command) {
             return command.JsonValue;
         }
         

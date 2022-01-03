@@ -23,7 +23,7 @@
                 "DbCommands":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
                 "DbSchema":         { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
                 "DbList":           { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbList" } },
-                "Echo":             { "param": {  }, "result": {  } }
+                "DbEcho":           { "param": {  }, "result": {  } }
             }
         },
         "AuthenticateUser": {

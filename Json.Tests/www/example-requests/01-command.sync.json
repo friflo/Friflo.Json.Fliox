@@ -3,14 +3,14 @@
   "tasks": [
     {
       "task":  "command",
-      "name":  "Echo",
+      "name":  "DbEcho",
       "value": "Hello World"
     }
   ],
   "info": [
       "Send a command to host.",
       "When handled by host it returns a result.",
-      "'Echo' is a standard host command.",
+      "'DbEcho' is a standard host command.",
       "It simply echos the given value."
   ]
 }
