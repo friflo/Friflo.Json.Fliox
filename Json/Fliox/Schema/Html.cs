@@ -289,11 +289,17 @@ $@"    <li><a href='#{ns}'>{ns}</a>
                     var type        = result.type;
                     var typeName    = type.Name;
                     var key         = type.KeyField;
-                    var keyTag      = key != null ? $"<key style='float:right'>{key}</key>" : "";
+                    string tag      = "";
+                    if (key != null) {
+                        tag         = $"<key style='float:right'>{key}</key>";
+                    }
+                    if (type.Commands != null) {
+                        tag         = $"<keyword style='float:right'>schema</keyword>";
+                    }
                     var disc        = type.Discriminator;
                     var discTag     = disc != null ? $"<disc style='float:right'>{disc}</disc>" : "";
                     sbNav.Append(
-$@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{keyTag}</div></a></li>
+$@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{tag}</div></a></li>
 ");
                     sb.Append(result.content);
                 }
