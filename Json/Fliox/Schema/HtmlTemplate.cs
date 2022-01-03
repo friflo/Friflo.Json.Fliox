@@ -84,8 +84,9 @@ namespace Friflo.Json.Fliox.Schema
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background: var(--selected); }
 
-        table.type                      { margin-left: 70px; }
-        table.type tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
+        .type                               { scroll-margin-bottom: 100px; } /* enable scrolling to next type without aligning next element on top */
+        div.type table                      { margin-left: 70px; }
+        div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
         var docsSelection;

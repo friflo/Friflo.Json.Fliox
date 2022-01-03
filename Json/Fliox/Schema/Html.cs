@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Schema
                 return null;
             var qualifiedName = type.Namespace + "." + type.Name;
             sb.Append(
-$@"    <div>
+$@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
     </h3>
@@ -81,7 +81,7 @@ $@"    <div>
                 var enumValues = type.EnumValues;
                 var qualifiedName = type.Namespace + "." + type.Name;
                 sb.AppendLine(
-$@"    <div>
+$@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>enum</keyword>
@@ -110,7 +110,7 @@ $@"    <div>
             var unionType = type.UnionType;
             var abstractStr = type.IsAbstract ? "abstract " : "";
             sb.AppendLine(
-$@"    <div>
+$@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>{abstractStr}class</keyword>");
@@ -127,7 +127,7 @@ $@"    <div>
             if (type.Commands != null) {
                 sb.AppendLine($"    <chapter>containers</chapter>");    
             }
-            sb.AppendLine($"    <table  class='type'>");
+            sb.AppendLine($"    <table>");
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
@@ -191,7 +191,7 @@ $@"        <tr>
             var commands        = type.Commands;
             sb.AppendLine(
 $@"    <br><chapter>commands</chapter>
-    <table class='type'>
+    <table>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in type.Commands) {
