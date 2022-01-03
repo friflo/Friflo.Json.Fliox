@@ -37,9 +37,10 @@ namespace Friflo.Json.Fliox.Schema
                     display: grid;
                     grid-template-areas: 
                         'body-head  body-head'
+                        'body-nav   body-docs-border'
                         'body-nav   body-docs';
                     grid-template-columns:  300px 1fr;
-                    grid-template-rows:     40px  1fr;
+                    grid-template-rows:     40px  10px 1fr;
                     grid-gap:   0px;
                     margin:     0;
                     height:     100vh;
@@ -47,7 +48,8 @@ namespace Friflo.Json.Fliox.Schema
                     font-family: sans-serif
                 }
         .head       { overflow: hidden; }
-        .nav        { overflow: auto; background: var(--bg);  }
+        .nav        { overflow: auto; background: var(--bg); }
+        .docs-border{ overflow: auto; background: var(--bg); }
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
         .title      { margin: 6px 30px; padding: 0px 5px; display: inline-flex; background: var(--bg); }
@@ -125,6 +127,9 @@ namespace Friflo.Json.Fliox.Schema
 <div style='grid-area: body-nav;' class='nav'>
 {{navigation}}
 </div>
+
+<!-- ---------------------------- docs-border --------------------------- -->
+<div style='grid-area: body-docs-border;' class='docs-border'></div>
 
 <!-- ------------------------------- docs ------------------------------- -->
 <div style='grid-area: body-docs;' class='docs'>
