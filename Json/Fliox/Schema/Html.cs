@@ -213,9 +213,10 @@ $@"        <tr>
                 return $"{elementTypeName}[]";
             }
             if (field.isDictionary) {
-                var key = field.type.KeyField;
+                var keyField = field.type.KeyField;
                 var valueTypeName = GetElementType(field, context);
-                return $"<key>{key}</key> ➞ {valueTypeName}";
+                var key = keyField != null ? $"<key>{keyField}</key>" : "key";
+                return $"{key} ➞ {valueTypeName}";
             }
             return GetTypeName(field.type, context);
         }
