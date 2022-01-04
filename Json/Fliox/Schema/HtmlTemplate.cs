@@ -106,6 +106,7 @@ namespace Friflo.Json.Fliox.Schema
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
         ul > li > a:hover               { background: var(--selected); }
+        ul > li > ul > li > a           { display: block; }
         ul > li > ul > li > a>div > key { font-size: 12px; }
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background: var(--selected); }
