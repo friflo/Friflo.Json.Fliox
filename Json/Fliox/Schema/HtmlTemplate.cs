@@ -70,8 +70,8 @@ namespace Friflo.Json.Fliox.Schema
         .docs-border{ overflow: auto; background: var(--bg); }
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
-        .title      { margin: 6px 30px; padding: 0px 5px; display: inline-flex; background: var(--bg); }
-        .toggleTheme{ margin: 6px 330px; padding: 0px 5px; display: inline-flex; background: var(--bg); cursor: pointer; }
+        .title      { margin: 6px 30px; height: 22px; padding: 3px 5px; display: inline-flex; background: var(--bg); border-radius: 2px; }
+        .toggleTheme{ margin: 6px 20px; height: 22px; padding: 3px 5px; display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer; float: right;}
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
@@ -162,8 +162,9 @@ namespace Friflo.Json.Fliox.Schema
 
 <!-- ------------------------------- head ------------------------------- -->
 <div style='grid-area: body-head;' class='head'>
-<h2 class='title'>{{schemaName}} schema</h2>
-<div class='toggleTheme' onclick='toggleTheme()'>dark / light</div>
+<h2 class='title'>{{schemaName}}</h2>
+<!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
+<div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>
 </div>
 
 <!-- ------------------------------- nav ------------------------------- -->
