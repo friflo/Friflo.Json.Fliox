@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #1d52a7;
             --type:     #0f54d6;
             --keyword:  #6f6f6f;
-            --color:    #000;
-            --bg:       #fff;
+            --color:    #000;   --highlight:    #000;
+            --bg:       #fff;   --bg-highlight: #e0e0ff;
             --selected: #eee;
             --link:     #0000ee;
             --visited:  #551a8b;
@@ -36,8 +36,8 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #c7907a;
             --type:     #5a7eff;
             --keyword:  #bbb;
-            --color:    #ddd;
-            --bg:       #000;
+            --color:    #ddd;   --highlight:    #fff;
+            --bg:       #000;   --bg-highlight: #44a;
             --selected: #333;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Schema
         h2.selected     { background: var(--selected); }
         h3.selected     { background: var(--selected); }
 
-
+        a.highlight                     { background: var(--bg-highlight); color: var(--highlight); }
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
         ul > li > a:hover               { background: var(--selected); }
@@ -167,6 +167,32 @@ namespace Friflo.Json.Fliox.Schema
                 const id = anchor.hash.substring(1);
                 scrollTo(id);
                 window.history.pushState(null, anchor.href, anchor.href);
+            }
+        });
+
+        // ----------------- highlight hovered links
+        var hoveredLinkHash;
+        var highlightedLinks = [];
+
+        window.addEventListener('mousemove', function(event) {
+            const path      = event.composedPath();
+            const anchor    = path.find(el => el.tagName == 'A');
+            if (anchor) {
+                if (hoveredLinkHash == anchor.hash)
+                    return;
+                hoveredLinkHash = anchor.hash;
+                const query = `a[href='${hoveredLinkHash}']`;
+                const links  = document.body.querySelectorAll(query);
+                // console.log(`hovered Link ${links.length} ${hoveredLinkHash}`);
+                for (var link of highlightedLinks)  { link.classList.remove('highlight'); }
+                for (var link of links)             { link.classList.add('highlight'); }
+                highlightedLinks = links
+            } else {
+                if (!hoveredLinkHash)
+                    return;
+                // console.log(`hovered Link NONE`);
+                hoveredLinkHash = undefined;
+                for (var link of highlightedLinks)  { link.classList.remove('highlight'); }
             }
         });
     </script>
