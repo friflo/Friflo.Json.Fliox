@@ -26,6 +26,8 @@ namespace Friflo.Json.Fliox.Schema
             --color:    #000;
             --bg:       #fff;
             --selected: #eee;
+            --link:     #0000ee;
+            --visited:  #551a8b;
         }
         [data-theme='dark'] {
             --field:    #a8ddfc;
@@ -37,6 +39,8 @@ namespace Friflo.Json.Fliox.Schema
             --color:    #fff;
             --bg:       #000;
             --selected: #333;
+            --link:   	#d0adf0;
+            --visited:  #9e9eff;
         }
         body::after {
             content: '';
@@ -47,6 +51,9 @@ namespace Friflo.Json.Fliox.Schema
             position: absolute;
             z-index: -1;   
         }
+        a,         a > *           { color: var(--link) }
+        a:visited, a:visited > *   { color: var(--visited) }
+
         body {
             background: var(--bg);            
             color:      var(--color);
