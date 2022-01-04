@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #1d52a7;
             --type:     #0f54d6;
             --keyword:  #6f6f6f;
-            --color:    #000;   --highlight:    #000;
+            --color:    #000;   --highlight:    #008;
             --bg:       #fff;   --bg-highlight: #e0e0ff;
             --selected: #eee;
             --link:     #0000ee;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Schema
             --type:     #5a7eff;
             --keyword:  #bbb;
             --color:    #ddd;   --highlight:    #fff;
-            --bg:       #000;   --bg-highlight: #44a;
+            --bg:       #000;   --bg-highlight: #4040c0;
             --selected: #333;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
@@ -102,10 +102,13 @@ namespace Friflo.Json.Fliox.Schema
         h2.selected     { background: var(--selected); }
         h3.selected     { background: var(--selected); }
 
-        a.highlight                     { background: var(--bg-highlight); color: var(--highlight); }
+        a.highlight, a.highlight div    { background: var(--bg-highlight) !important; color: var(--highlight) !important; }
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
+
+        ul > li > a                     { display: block; }
         ul > li > a:hover               { background: var(--selected); }
+
         ul > li > ul > li > a           { display: block; }
         ul > li > ul > li > a>div > key { font-size: 12px; }
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
