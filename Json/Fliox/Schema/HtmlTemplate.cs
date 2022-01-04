@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Schema
 
 <!-- ------------------------------- head ------------------------------- -->
 <div style='grid-area: body-head;' class='head'>
-<h2 class='title'><a href='#'>UserStore</a></h2>
+<h2 class='title'><a href='#'>{{schemaName}}</a></h2>
 <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
 <div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>
 </div>
