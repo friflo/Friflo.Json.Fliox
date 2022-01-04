@@ -23,9 +23,9 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #1d52a7;
             --type:     #0f54d6;
             --keyword:  #6f6f6f;
-            --color:    #000;   --highlight:    #008;
-            --bg:       #fff;   --bg-highlight: #e0e0ff;
-            --selected: #eee;
+            --color:    #000;       --highlight:        #008;
+            --bg:       #fff;       --bg-highlight:     #e0e0ff;
+            --selected: #f8f8f8;    --selected-border:  #ddd;
             --link:     #0000ee;
             --visited:  #551a8b;
         }
@@ -36,9 +36,9 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #c7907a;
             --type:     #5a7eff;
             --keyword:  #bbb;
-            --color:    #ddd;   --highlight:    #fff;
-            --bg:       #000;   --bg-highlight: #4040c0;
-            --selected: #333;
+            --color:    #ddd;       --highlight:        #fff;
+            --bg:       #000;       --bg-highlight:     #4040c0;
+            --selected: #202020;    --selected-border:  #404040;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
         }
@@ -99,8 +99,8 @@ namespace Friflo.Json.Fliox.Schema
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
 
         h3      { margin-left: 30px; margin-bottom: 5px; }
-        h2.selected     { background: var(--selected); }
-        h3.selected     { background: var(--selected); }
+        h2.selected     { background: var(--selected); border: 1px solid var(--selected-border); border-radius: 3px; }
+        h3.selected     { background: var(--selected); border: 1px solid var(--selected-border); border-radius: 3px; }
 
         a.highlight, a.highlight div    { background: var(--bg-highlight) !important; color: var(--highlight) !important; }
         a                               { text-decoration:  none; }
@@ -114,7 +114,8 @@ namespace Friflo.Json.Fliox.Schema
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
         ul > li > ul > li:hover         { background: var(--selected); }
 
-        .type                               { scroll-margin-bottom: 100px; } /* enable scrolling to next type without aligning next element on top */
+        .namespace                          { scroll-margin-top: 5px; }
+        .type                               { scroll-margin-top: 5px; scroll-margin-bottom: 100px;  } /* enable scrolling to next type without aligning next element on top */
         div.type table                      { margin-left: 70px; }
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
