@@ -77,8 +77,8 @@ namespace Friflo.Json.Fliox.Schema
         .docs-border{ overflow: auto; background: var(--bg); }
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
-        .title      { margin: 6px 30px; height: 22px; padding: 3px 5px; display: inline-flex; background: var(--bg); border-radius: 2px; }
-        .toggleTheme{ margin: 6px 20px; height: 22px; padding: 3px 5px; display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer; float: right;}
+        .title      { margin: 5px 30px; height: 25px; padding: 3px 10px; display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer; }
+        .toggleTheme{ margin: 5px 20px; height: 25px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer; float: right;}
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Schema
         function scrollTo(id) {
             var element = undefined;
             if (id == '') {
-                element = document.querySelector('.docs').firstElementChild;
+                element = document.querySelector('.docs').firstElementChild.firstElementChild;
             }
             if (!element) {
                 element = document.getElementById(id);
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Schema
         window.addEventListener('click', function(event) {
             const path      = event.composedPath();
             const anchor    = path.find(el => el.tagName == 'A');
-            if (anchor && anchor.hash) {
+            if (anchor && anchor.hash != undefined) {
                 event.preventDefault();
                 const id = anchor.hash.substring(1);
                 scrollTo(id);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Schema
 
 <!-- ------------------------------- head ------------------------------- -->
 <div style='grid-area: body-head;' class='head'>
-<h2 class='title'>{{schemaName}}</h2>
+<h2 class='title'><a href='#'>UserStore</a></h2>
 <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
 <div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>
 </div>
