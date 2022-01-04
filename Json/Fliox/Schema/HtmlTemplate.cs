@@ -108,19 +108,26 @@ namespace Friflo.Json.Fliox.Schema
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
+        // ----------------- theme dark / light
         function setTheme (mode) {
             console.log(`toggleTheme(${mode})`);
             document.documentElement.setAttribute('data-theme', mode);
-        }
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            setTheme('dark')
+            window.localStorage.setItem('docsTheme', mode);
         }
         var toggleTheme = () => {
             let mode = document.documentElement.getAttribute('data-theme');
             mode = mode == 'dark' ? 'light' : 'dark'
             setTheme(mode)
         }
+        var docsTheme = window.localStorage.getItem('docsTheme');
+        if (!docsTheme) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                docsTheme = 'dark';
+            }
+        }
+        setTheme(docsTheme);
 
+        // ----------------- scrolling / selection highlighting 
         var docsSelection;
         function scrollTo(id) {
             var element = undefined;
