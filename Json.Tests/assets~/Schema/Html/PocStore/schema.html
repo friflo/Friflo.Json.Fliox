@@ -9,8 +9,8 @@
     <style>
         :root {
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
-            --field:    #9c110e;
-            --key:      #d400b8;
+            --field:    #9c110e;    --field-border:     #9c110e80;
+            --key:      #d400b8;    --key-border:       #d400b880;
             --disc:     #2b9aa7;
             --value:    #1d52a7;
             --type:     #0f54d6;
@@ -22,8 +22,8 @@
             --visited:  #551a8b;
         }
         [data-theme='dark'] {
-            --field:    #a8ddfc;
-            --key:      #e64bd1;
+            --field:    #a8ddfc;    --field-border:     #a8ddfca0;
+            --key:      #e64bd1;     --key-border:      #e64bd1a0;
             --disc:     #2b9aa7;
             --value:    #c7907a;
             --type:     #5a7eff;
@@ -77,10 +77,10 @@
         chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
-        key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key);   background: var(--bg); }
+        key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
         refType     { color: var(--key); }
         ref         { color: var(--field);    font-family: var(--mono-font);  }        
-        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field); background: var(--bg); }
+        disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--bg); }
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
