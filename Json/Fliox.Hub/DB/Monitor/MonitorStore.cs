@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     {
         [Fri.Required]  public  string                          container;
         [Fri.Required]  public  List<Change>                    changes;
-                        public  FilterOperation                 filter;
+                        public  string                          filter;
     }
     
     public class UserInfo {
