@@ -79,9 +79,9 @@ namespace Friflo.Json.Fliox.Schema
         .docs-border{ overflow: auto; background: var(--bg); }
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
-        .title      { margin: 5px 20px; height: 25px; padding: 3px 10px; display: inline-flex; background: var(--bg); border: 1px solid var(--bg);  border-radius: 2px; cursor: pointer; }
-        .languages  { margin: 0px 20px; height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); border: 1px solid var(--bg-border); border-top: 0; border-radius: 2px;  }
-        .toggleTheme{ margin: 5px 20px; height: 25px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border: 1px solid var(--bg-border); border-radius: 2px; cursor: pointer;  }
+        .title      { margin: 5px 20px; height: 24px; padding: 3px 10px; display: inline-flex; background: var(--bg); border: 1px solid var(--bg);  border-radius: 2px; cursor: pointer; }
+        .languages  { margin: 0px 20px; height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .toggleTheme{ margin: 5px 20px; height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer;  }
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
