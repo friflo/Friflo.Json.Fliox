@@ -1218,7 +1218,7 @@ class App {
             }]; */
         var schemas = [];
         try {
-            var jsonSchemaResponse  = await fetch("protocol/json-schema.json");
+            var jsonSchemaResponse  = await fetch("schema/protocol/json-schema.json");
             var jsonSchema          = await jsonSchemaResponse.json();
 
             for (let schemaName in jsonSchema) {
