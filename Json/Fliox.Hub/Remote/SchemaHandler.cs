@@ -28,10 +28,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public bool IsApplicable(RequestContext context) {
-            return context.method == "GET" && context.path.StartsWith(SchemaBase);
+            if (context.method != "GET")
+                return false;
+            return RequestContext.IsBasePath(SchemaBase, context.path);
         }
         
         public Task HandleRequest(RequestContext context) {
+            if (context.path.Length == SchemaBase.Length) {
+                context.WriteError("invalid schema path", "missing database", 400);
+                return Task.CompletedTask;
+            }
             var path        = context.path.Substring(SchemaBase.Length + 1);
             var firstSlash  = path.IndexOf('/');
             var name        = firstSlash == -1 ? path : path.Substring(0, firstSlash);

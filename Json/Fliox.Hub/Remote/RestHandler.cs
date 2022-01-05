@@ -31,12 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public bool IsApplicable(RequestContext context) {
-            var path    = context.path;
-            if (!path.StartsWith(RestBase))
-                return false;
-            if (path.Length == RestBase.Length)
-                return true;
-            return path[RestBase.Length] == '/';
+            return RequestContext.IsBasePath(RestBase, context.path);
         }
             
         public async Task HandleRequest(RequestContext context) {

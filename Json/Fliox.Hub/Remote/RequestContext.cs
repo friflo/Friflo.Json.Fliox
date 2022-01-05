@@ -59,6 +59,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Response            = new JsonValue(error);
             Offset              = 0;
         }
+        
+        public static bool IsBasePath(string basePath, string path) {
+            if (!path.StartsWith(basePath))
+                return false;
+            if (path.Length == basePath.Length)
+                return true;
+            return path[basePath.Length] == '/';
+        }
     }
     
     public interface IHttpHeaders {
