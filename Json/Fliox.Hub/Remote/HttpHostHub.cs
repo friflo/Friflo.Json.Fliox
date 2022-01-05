@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
+            protocolSchemaHandler   = new SchemaHandler(protocolSchema, sepTypes);
             restHandler             = new RestHandler(hub);
         }
         

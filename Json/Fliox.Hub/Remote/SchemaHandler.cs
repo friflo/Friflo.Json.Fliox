@@ -24,19 +24,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private             Dictionary<string, SchemaSet>   schemas;
         private readonly    string                          basePath;
-        private readonly    string                          displayName;
+        private readonly    string                          name;
         
-        public SchemaHandler(string basePath, TypeSchema typeSchema, CreateZip zip = null) {
-            this.basePath       = basePath;
-            this.displayName    = basePath.Trim('/');
+        public SchemaHandler(TypeSchema typeSchema, CreateZip zip = null) {
+            this.name           = typeSchema.RootType.Name;
+            this.basePath       = $"/{name}/";
             this.typeSchema     = typeSchema;
             this.separateTypes  = typeSchema.GetEntityTypes();
             this.zip = zip;
         }
         
-        internal SchemaHandler(string basePath, TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
-            this.basePath       = basePath;
-            this.displayName    = basePath.Trim('/');
+        internal SchemaHandler(TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
+            this.name           = typeSchema.RootType.Name;;
+            this.basePath       = $"/{name}/";
             this.typeSchema     = typeSchema;
             this.separateTypes  = separateTypes;
             this.zip = zip;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"Hub", displayName}, $"Available schemas / languages for schema <b>{storeName}</b>");
+                HtmlHeader(sb, new []{"Hub", name}, $"Available schemas / languages for schema <b>{storeName}</b>");
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"Hub", displayName, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>");
+                HtmlHeader(sb, new[]{"Hub", name, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>");
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
                 sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
                 sb.AppendLine("<ul>");
