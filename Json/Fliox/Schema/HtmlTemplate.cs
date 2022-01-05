@@ -25,12 +25,13 @@ namespace Friflo.Json.Fliox.Schema
             --keyword:  #6f6f6f;
             --color:    #000;       --highlight:        #008;
             --bg:       #fff;       --bg-highlight:     #e0e0ff;
+            --bg-border:#ccc;
             --selected: #f8f8f8;    --selected-border:  #ddd;
             --link:     #0000ee;
             --visited:  #551a8b;
         }
         [data-theme='dark'] {
-            --field:    #a8ddfc;    --field-border:     #a8ddfca0;
+            --field:    #a8ddfc;     --field-border:    #a8ddfca0;
             --key:      #e64bd1;     --key-border:      #e64bd1a0;
             --disc:     #2b9aa7;
             --value:    #c7907a;
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.Schema
             --keyword:  #bbb;
             --color:    #ddd;       --highlight:        #fff;
             --bg:       #000;       --bg-highlight:     #4040c0;
+            --bg-border:#666;
             --selected: #202020;    --selected-border:  #404040;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
@@ -77,9 +79,9 @@ namespace Friflo.Json.Fliox.Schema
         .docs-border{ overflow: auto; background: var(--bg); }
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
-        .title      { margin: 5px 20px; height: 25px; padding: 3px 10px; display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer; }
-        .languages  { margin: 5px 20px; height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); border-radius: 2px; align-self: center; }
-        .toggleTheme{ margin: 5px 20px; height: 25px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer; margin-left: auto; }
+        .title      { margin: 5px 20px; height: 25px; padding: 3px 10px; display: inline-flex; background: var(--bg); border: 1px solid var(--bg);  border-radius: 2px; cursor: pointer; }
+        .languages  { margin: 0px 20px; height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); border: 1px solid var(--bg-border); border-top: 0; border-radius: 2px;  }
+        .toggleTheme{ margin: 5px 20px; height: 25px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border: 1px solid var(--bg-border); border-radius: 2px; cursor: pointer;  }
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
@@ -210,6 +212,7 @@ namespace Friflo.Json.Fliox.Schema
 <div style='grid-area: body-head;' class='head'>
     <div style='display:flex'>
         <h2  class='title'><a href='#'>PocStore</a></h2>
+        <div style='flex-grow: 1;'></div>
         <div class='languages'><a href='../index.html'>Typescript, C#, Kotlin, JSON Schema</a></div>
         <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
         <div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>
