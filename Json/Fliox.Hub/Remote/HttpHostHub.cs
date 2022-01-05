@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
             protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
-            restHandler              = new RestHandler(hub);
+            restHandler             = new RestHandler(hub);
         }
         
         public async Task<bool> ExecuteHttpRequest(RequestContext reqCtx) {
@@ -45,17 +45,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         private async Task<bool> HandleRequest(RequestContext request) {
-            if (schemaHandler != null) {
-                if (await schemaHandler.HandleRequest(request).ConfigureAwait(false))
-                    return true;
+            if (schemaHandler != null && schemaHandler.IsApplicable(request)) {
+                await schemaHandler.HandleRequest(request).ConfigureAwait(false);
+                return true;
             }
-            if (await restHandler.HandleRequest(request))
+            if (restHandler.IsApplicable(request)) {
+                await restHandler.HandleRequest(request);
                 return true;
-            if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
+            }
+            if (protocolSchemaHandler.IsApplicable(request)) {
+                await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
-            if (requestHandler == null)
-                return false;
-            return await requestHandler.HandleRequest(request).ConfigureAwait(false);
+            }
+            if (requestHandler != null && requestHandler.IsApplicable(request)) {
+                return await requestHandler.HandleRequest(request).ConfigureAwait(false);
+            }
+            return false;
         }
     }
 }

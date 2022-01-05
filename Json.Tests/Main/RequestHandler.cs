@@ -13,12 +13,14 @@ namespace Friflo.Json.Tests.Main
         public RequestHandler (string wwwRoot) {
             this.wwwRoot = wwwRoot;    
         }
+        
+        public bool IsApplicable(RequestContext context) {
+            return context.method == "GET";
+        }
             
         public async Task<bool> HandleRequest(RequestContext context) {
             try {
-                if (context.method == "GET") {
-                    await GetHandler(context);
-                }
+                await GetHandler(context);
             }
             catch (Exception ) {
                 var response = $"method: {context.method}, url: {context.path}";

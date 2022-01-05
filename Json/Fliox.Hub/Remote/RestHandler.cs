@@ -29,11 +29,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.hub    = hub;
             pool        = hub.sharedEnv.Pool;
         }
-            
-        public async Task<bool> HandleRequest(RequestContext context) {
+        
+        public bool IsApplicable(RequestContext context) {
             var path    = context.path;
             if (!path.StartsWith(RestBase))
                 return false;
+            if (path.Length == RestBase.Length)
+                return true;
+            return path[RestBase.Length] == '/';
+        }
+            
+        public async Task<bool> HandleRequest(RequestContext context) {
+            var path    = context.path;
             if (path.Length == RestBase.Length) {
                 // ------------------    GET            (no path)
                 if (context.method == "GET") { 
@@ -42,9 +49,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 context.WriteError("invalid request", "access to root only applicable with GET", 400);
                 return true;
-            }
-            if (path[RestBase.Length] != '/') {
-                return false;
             }
             var method          = context.method;
             var queryParams     = HttpUtility.ParseQueryString(context.query);

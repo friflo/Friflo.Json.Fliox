@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
 
 // ReSharper disable MemberCanBeProtected.Global
-// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
@@ -18,10 +17,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class SchemaHandler : IRequestHandler
     {
-        public  readonly    TypeSchema                      typeSchema;
-        private readonly    ICollection<TypeDef>            separateTypes;
-        public              string                          image = "/Json-Fliox-53x43.svg";
-        public  readonly    CreateZip                       zip;
+        private  readonly   TypeSchema                      typeSchema;
+        private  readonly   ICollection<TypeDef>            separateTypes;
+        private             string                          image = "/Json-Fliox-53x43.svg";
+        private  readonly   CreateZip                       zip;
         
         private             Dictionary<string, SchemaSet>   schemas;
         private readonly    string                          basePath;
@@ -35,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.zip = zip;
         }
         
-        public SchemaHandler(string basePath, TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
+        internal SchemaHandler(string basePath, TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
             this.basePath       = basePath;
             this.displayName    = basePath.Trim('/');
             this.typeSchema     = typeSchema;
@@ -43,26 +42,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.zip = zip;
         }
         
-        public Task<bool> HandleRequest(RequestContext context) {
-            if (context.method == "GET" && context.path.StartsWith(basePath)) {
-                var path = context.path.Substring(basePath.Length);
-                Result result   = new Result();
-                bool success    = GetSchemaFile(path, ref result);
-                if (!success) {
-                    context.WriteError("schema error", result.content, 404);
-                    return Task.FromResult(true);
-                }
-                if (result.isText) {
-                    context.WriteString(result.content, result.contentType);
-                    return Task.FromResult(true);
-                }
-                context.Write(new JsonValue(result.bytes), 0, result.contentType, 200);
-                return Task.FromResult(true);
-            }
-            return Task.FromResult(false);
+        public bool IsApplicable(RequestContext context) {
+            return context.method == "GET" && context.path.StartsWith(basePath);
         }
         
-        public bool GetSchemaFile(string path, ref Result result) {
+        public Task<bool> HandleRequest(RequestContext context) {
+            var path = context.path.Substring(basePath.Length);
+            Result result   = new Result();
+            bool success    = GetSchemaFile(path, ref result);
+            if (!success) {
+                context.WriteError("schema error", result.content, 404);
+                return Task.FromResult(true);
+            }
+            if (result.isText) {
+                context.WriteString(result.content, result.contentType);
+                return Task.FromResult(true);
+            }
+            context.Write(new JsonValue(result.bytes), 0, result.contentType, 200);
+            return Task.FromResult(true);
+        }
+        
+        private bool GetSchemaFile(string path, ref Result result) {
             if (typeSchema == null) {
                 return result.Error("no schema attached to database");
             }
