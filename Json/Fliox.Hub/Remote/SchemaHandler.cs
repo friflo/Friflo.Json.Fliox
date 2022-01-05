@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         internal SchemaHandler(TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
-            this.name           = typeSchema.RootType.Name;;
+            this.name           = typeSchema.RootType.Name;
             this.basePath       = $"/{name}/";
             this.typeSchema     = typeSchema;
             this.separateTypes  = separateTypes;
@@ -167,9 +167,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var title = string.Join(" · ", titlePath);
             var titleElements = new List<string>();
             int n = titlePath.Length -1;
-            foreach (var name in titlePath) {
+            foreach (var titleSection in titlePath) {
                 var link = string.Join("", Enumerable.Repeat("../", n--));
-                titleElements.Add($"<a href='{link}index.html'>{name}</a>");
+                titleElements.Add($"<a href='{link}index.html'>{titleSection}</a>");
             }
             var titleLinks = string.Join(" · ", titleElements);
             
