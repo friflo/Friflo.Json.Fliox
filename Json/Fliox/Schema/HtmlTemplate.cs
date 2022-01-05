@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Schema
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <meta name='description' content='Schema {{schemaName}}'>
     <meta name='color-scheme' content='dark light'>
-    <title>{{schemaName}} Schema</title>
+    <title>{{schemaName}}</title>
     <style>
         :root {
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.Schema
 <!-- ------------------------------- head ------------------------------- -->
 <div style='grid-area: body-head;' class='head'>
     <div style='display:flex'>
-        <h2  class='title'><a href='#'>PocStore</a></h2>
+        <h2  class='title'><a href='#'>{{schemaName}}</a></h2>
         <div style='flex-grow: 1;'></div>
         <div class='languages'><a href='../index.html'>Typescript, C#, Kotlin, JSON Schema</a></div>
         <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
