@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -16,12 +17,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public class SchemaHandler : IRequestHandler
     {
         private  const      string                              SchemaBase = "/schema";
+        private  readonly   FlioxHub                            hub;
         internal            string                              image = "/Json-Fliox-53x43.svg";
         internal readonly   CreateZip                           zip;
         private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
         
-        public SchemaHandler(CreateZip zip = null) {
-            this.zip = zip;
+        public SchemaHandler(FlioxHub hub, CreateZip zip = null) {
+            this.hub    = hub;
+            this.zip    = zip;
         }
         
         public bool IsApplicable(RequestContext context) {
@@ -31,14 +34,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public Task HandleRequest(RequestContext context) {
             var path        = context.path.Substring(SchemaBase.Length + 1);
             var firstSlash  = path.IndexOf('/');
-            var schemaName  = firstSlash == -1 ? path : path.Substring(0, firstSlash);
-            if (!schemas.TryGetValue(schemaName, out var schemaSet)) {
-                context.WriteError("schema not found", schemaName, 404);
-                return Task.CompletedTask;
+            var name        = firstSlash == -1 ? path : path.Substring(0, firstSlash);
+            if (!schemas.TryGetValue(name, out var schema)) {
+                if (!hub.TryGetDatabase(name, out var database)) {
+                    context.WriteError("schema not found", name, 404);
+                    return Task.CompletedTask;
+                }
+                var typeSchema = database.Schema.typeSchema;
+                if (typeSchema == null) {
+                    context.WriteError("missing schema for database", name, 404);
+                    return Task.CompletedTask;
+                }
+                schema = AddSchema(name, database.Schema.typeSchema);
             }
             var schemaPath  = path.Substring(firstSlash + 1);
             Result result   = new Result();
-            bool success    = schemaSet.GetSchemaFile(schemaPath, ref result, this);
+            bool success    = schema.GetSchemaFile(schemaPath, ref result, this);
             if (!success) {
                 context.WriteError("schema error", result.content, 404);
                 return Task.CompletedTask;
@@ -51,10 +62,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return Task.CompletedTask;
         }
         
-        public void AddSchema(TypeSchema typeSchema, ICollection<TypeDef> sepTypes = null) {
+        internal SchemaResource AddSchema(string name, TypeSchema typeSchema, ICollection<TypeDef> sepTypes = null) {
             sepTypes    = sepTypes ?? typeSchema.GetEntityTypes();
             var schema  = new SchemaResource(typeSchema, sepTypes);
-            schemas.Add(schema.name, schema);
+            schemas.Add(name, schema);
+            return schema;
         }
     }
         
@@ -63,10 +75,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   ICollection<TypeDef>            separateTypes;
 
         private             Dictionary<string, SchemaSet>   schemas;
-        internal readonly   string                          name;
+        private  readonly   string                          schemaName;
         
         internal SchemaResource(TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
-            this.name           = typeSchema.RootType.Name;
+            this.schemaName     = typeSchema.RootType.Name;
             this.typeSchema     = typeSchema;
             this.separateTypes  = separateTypes;
         }
@@ -84,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"Hub", name}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
+                HtmlHeader(sb, new []{"Hub", schemaName}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -109,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"Hub", name, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>", handler);
+                HtmlHeader(sb, new[]{"Hub", schemaName, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
                 sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
                 sb.AppendLine("<ul>");

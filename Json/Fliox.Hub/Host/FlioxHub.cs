@@ -231,6 +231,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             extensionDbs.Add(name, extensionDB);
         }
         
+        public bool TryGetDatabase(string name, out EntityDatabase value) {
+            if (name == null || name == EntityDatabase.MainDB) {
+                value = database;
+                return true;
+            }
+            return extensionDbs.TryGetValue(name, out value);
+        }
+        
         public EntityDatabase GetDatabase(string name) {
             if (name == null)
                 return database;

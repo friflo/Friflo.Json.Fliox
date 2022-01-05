@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class HttpHostHub : RemoteHostHub
     {
-        public   readonly   SchemaHandler       schemaHandler = new SchemaHandler();
+        public   readonly   SchemaHandler       schemaHandler;
         public              IRequestHandler     requestHandler;
         private  readonly   RestHandler         restHandler;
 
@@ -21,7 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            schemaHandler.AddSchema (protocolSchema, sepTypes);
+            schemaHandler           = new SchemaHandler(hub);
+            schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
             restHandler             = new RestHandler(hub);
         }
         
