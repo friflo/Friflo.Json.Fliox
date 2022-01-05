@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (path.Length == RestBase.Length) {
                 // ------------------    GET            (no path)
                 if (context.method == "GET") { 
-                    await Command(context, ClusterDB.Name, StdCommand.DbList, new JsonValue()); 
+                    await Command(context, ClusterDB.Name, StdCommand.DbList, new JsonValue()).ConfigureAwait(false); 
                     return;
                 }
                 context.WriteError("invalid request", "access to root only applicable with GET", 400);
@@ -79,10 +79,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 if (command != null) {
-                    await Command(context, database, command, value);
+                    await Command(context, database, command, value).ConfigureAwait(false);
                     return;
                 }
-                await Message(context, database, message, value);
+                await Message(context, database, message, value).ConfigureAwait(false);
                 return;
             }
             var resource = resourcePath.Split('/');
@@ -95,22 +95,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
-                await Command(context, resource[0], StdCommand.DbContainers, new JsonValue()); 
+                await Command(context, resource[0], StdCommand.DbContainers, new JsonValue()).ConfigureAwait(false); 
                 return;
             }
             // ------------------    GET            /database/container
             if (isGet && resource.Length == 2) {
-                await GetEntities(context, resource[0], resource[1], queryParams);
+                await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
                 return;
             }
             // ------------------    GET / DELETE   /database/container/id
             if (isGet || isDelete) {
                 if (resource.Length == 3) {
                     if (isGet) {
-                        await GetEntity(context, resource[0], resource[1], resource[2]);    
+                        await GetEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);    
                         return;
                     }
-                    await DeleteEntity(context, resource[0], resource[1], resource[2]);
+                    await DeleteEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 var keyName = queryParams["keyName"];
-                await UpsertEntity(context, resource[0], resource[1], resource[2], keyName, value);
+                await UpsertEntity(context, resource[0], resource[1], resource[2], keyName, value).ConfigureAwait(false);
                 return;
             }
             context.WriteError("invalid path/method", path, 400);
@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (filter == null)
                 return;
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter };
-            var restResult      = await ExecuteTask(context, database, queryEntities);
+            var restResult      = await ExecuteTask(context, database, queryEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
                 return;
@@ -244,7 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 container   = container,
                 sets        = new List<ReadEntitiesSet> { readEntitiesSet }
             };
-            var restResult = await ExecuteTask(context, database, readEntities);
+            var restResult = await ExecuteTask(context, database, readEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
                 return;
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var entityId        = new JsonKey(id);
             var deleteEntities  = new DeleteEntities { container = container };
             deleteEntities.ids.Add(entityId);
-            var restResult  = await ExecuteTask(context, database, deleteEntities);
+            var restResult  = await ExecuteTask(context, database, deleteEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
                 return;
@@ -305,7 +305,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 keyName     = keyName,
                 entities    = new List<JsonValue> {value} 
             };
-            var restResult  = await ExecuteTask(context, database, upsertEntities);
+            var restResult  = await ExecuteTask(context, database, upsertEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
                 return;
@@ -327,7 +327,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // ----------------------------------------- command / message -----------------------------------------
         private async Task Command(RequestContext context, string database, string command, JsonValue value) {
             var sendCommand = new SendCommand { name    = command, value   = value };
-            var restResult  = await ExecuteTask(context, database, sendCommand);
+            var restResult  = await ExecuteTask(context, database, sendCommand).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
                 return;
@@ -342,7 +342,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private async Task Message(RequestContext context, string database, string message, JsonValue value) {
             var sendMessage = new SendMessage { name = message, value   = value };
-            var restResult  = await ExecuteTask(context, database, sendMessage);
+            var restResult  = await ExecuteTask(context, database, sendMessage).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
                 return;
@@ -369,7 +369,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             };
             var localPool       = new Pool(hub.sharedEnv);
             var messageContext  = new MessageContext(localPool, null);
-            var result = await hub.ExecuteSync(synRequest, messageContext);
+            var result = await hub.ExecuteSync(synRequest, messageContext).ConfigureAwait(false);
             
             var error = result.error;
             if (error != null) {
