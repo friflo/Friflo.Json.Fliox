@@ -9,47 +9,36 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
 
-// ReSharper disable MemberCanBeProtected.Global
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
-    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class SchemaHandler : IRequestHandler
     {
-        private  readonly   TypeSchema                      typeSchema;
-        private  readonly   ICollection<TypeDef>            separateTypes;
-        private             string                          image = "/Json-Fliox-53x43.svg";
-        private  readonly   CreateZip                       zip;
+        private  const      string                              SchemaBase = "/schema";
+        internal            string                              image = "/Json-Fliox-53x43.svg";
+        internal readonly   CreateZip                           zip;
+        private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
         
-        private             Dictionary<string, SchemaSet>   schemas;
-        private readonly    string                          basePath;
-        private readonly    string                          name;
-        
-        public SchemaHandler(TypeSchema typeSchema, CreateZip zip = null) {
-            this.name           = typeSchema.RootType.Name;
-            this.basePath       = $"/{name}/";
-            this.typeSchema     = typeSchema;
-            this.separateTypes  = typeSchema.GetEntityTypes();
-            this.zip = zip;
-        }
-        
-        internal SchemaHandler(TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
-            this.name           = typeSchema.RootType.Name;
-            this.basePath       = $"/{name}/";
-            this.typeSchema     = typeSchema;
-            this.separateTypes  = separateTypes;
+        public SchemaHandler(CreateZip zip = null) {
             this.zip = zip;
         }
         
         public bool IsApplicable(RequestContext context) {
-            return context.method == "GET" && context.path.StartsWith(basePath);
+            return context.method == "GET" && context.path.StartsWith(SchemaBase);
         }
         
         public Task HandleRequest(RequestContext context) {
-            var path = context.path.Substring(basePath.Length);
+            var path        = context.path.Substring(SchemaBase.Length + 1);
+            var firstSlash  = path.IndexOf('/');
+            var schemaName  = firstSlash == -1 ? path : path.Substring(0, firstSlash);
+            if (!schemas.TryGetValue(schemaName, out var schemaSet)) {
+                context.WriteError("schema not found", schemaName, 404);
+                return Task.CompletedTask;
+            }
+            var schemaPath  = path.Substring(firstSlash + 1);
             Result result   = new Result();
-            bool success    = GetSchemaFile(path, ref result);
+            bool success    = schemaSet.GetSchemaFile(schemaPath, ref result, this);
             if (!success) {
                 context.WriteError("schema error", result.content, 404);
                 return Task.CompletedTask;
@@ -62,7 +51,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return Task.CompletedTask;
         }
         
-        private bool GetSchemaFile(string path, ref Result result) {
+        public void AddSchema(TypeSchema typeSchema, ICollection<TypeDef> sepTypes = null) {
+            sepTypes    = sepTypes ?? typeSchema.GetEntityTypes();
+            var schema  = new SchemaResource(typeSchema, sepTypes);
+            schemas.Add(schema.name, schema);
+        }
+    }
+        
+    internal class SchemaResource {
+        private  readonly   TypeSchema                      typeSchema;
+        private  readonly   ICollection<TypeDef>            separateTypes;
+
+        private             Dictionary<string, SchemaSet>   schemas;
+        internal readonly   string                          name;
+        
+        internal SchemaResource(TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
+            this.name           = typeSchema.RootType.Name;
+            this.typeSchema     = typeSchema;
+            this.separateTypes  = separateTypes;
+        }
+
+        internal bool GetSchemaFile(string path, ref Result result, SchemaHandler handler) {
             if (typeSchema == null) {
                 return result.Error("no schema attached to database");
             }
@@ -75,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"Hub", name}, $"Available schemas / languages for schema <b>{storeName}</b>");
+                HtmlHeader(sb, new []{"Hub", name}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -100,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"Hub", name, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>");
+                HtmlHeader(sb, new[]{"Hub", name, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
                 sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
                 sb.AppendLine("<ul>");
@@ -112,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Set(sb.ToString(), "text/html");
             }
             if (fileName == zipFile) {
-                result.bytes        = schemaSet.GetZipArchive(zip);
+                result.bytes        = schemaSet.GetZipArchive(handler.zip);
                 if (result.bytes == null)
                     return result.Error("ZipArchive not supported (Unity)");
                 result.contentType  = "application/zip";
@@ -128,8 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return result.Set(content, schemaSet.contentType);
         }
         
-        // override intended
-        public virtual Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer) {
+        private Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer) {
             var result              = new Dictionary<string, SchemaSet>();
             var options             = new JsonTypeOptions(typeSchema);
 
@@ -162,8 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return result;
         }
         
-        // override intended
-        public virtual void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
+        private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {
             var title = string.Join(" · ", titlePath);
             var titleElements = new List<string>();
             int n = titlePath.Length -1;
@@ -180,18 +187,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             sb.AppendLine($"<meta name='description' content='{description}'>");
             sb.AppendLine("<meta name='color-scheme' content='dark light'>");
-            sb.AppendLine($"<link rel='icon' href='{image}' type='image/x-icon'>");
+            sb.AppendLine($"<link rel='icon' href='{handler.image}' type='image/x-icon'>");
             sb.AppendLine($"<title>{title}</title>");
             sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body style='font-family: sans-serif'>");
-            sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox/Schema' target='_blank' rel='noopener'><img src='{image}' alt='friflo JSON Fliox' /></a>");
+            sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox/Schema' target='_blank' rel='noopener'><img src='{handler.image}' alt='friflo JSON Fliox' /></a>");
             sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
             sb.AppendLine($"<p>{description}</p>");
         }
         
         // override intended
-        public virtual void HtmlFooter(StringBuilder sb) {
+        private static void HtmlFooter(StringBuilder sb) {
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
         }

@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private     readonly    FlioxHub    hub;
         private     readonly    Pool        pool;
         
-        public RestHandler (FlioxHub    hub) {
+        public RestHandler (FlioxHub hub) {
             this.hub    = hub;
             pool        = hub.sharedEnv.Pool;
         }
