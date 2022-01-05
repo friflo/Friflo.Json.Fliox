@@ -58,7 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             if (requestHandler != null && requestHandler.IsApplicable(request)) {
-                return await requestHandler.HandleRequest(request).ConfigureAwait(false);
+                await requestHandler.HandleRequest(request).ConfigureAwait(false);
+                return true;
             }
             return false;
         }

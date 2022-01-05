@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Main
             return context.method == "GET";
         }
             
-        public async Task<bool> HandleRequest(RequestContext context) {
+        public async Task HandleRequest(RequestContext context) {
             try {
                 await GetHandler(context);
             }
@@ -26,7 +26,6 @@ namespace Friflo.Json.Tests.Main
                 var response = $"method: {context.method}, url: {context.path}";
                 context.WriteError("request exception", response, 500);
             }
-            return true; // return true to signal request was handled -> no subsequent handlers are invoked 
         }
         
         private async Task GetHandler (RequestContext context) {

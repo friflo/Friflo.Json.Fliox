@@ -39,16 +39,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return path[RestBase.Length] == '/';
         }
             
-        public async Task<bool> HandleRequest(RequestContext context) {
+        public async Task HandleRequest(RequestContext context) {
             var path    = context.path;
             if (path.Length == RestBase.Length) {
                 // ------------------    GET            (no path)
                 if (context.method == "GET") { 
                     await Command(context, ClusterDB.Name, StdCommand.DbList, new JsonValue()); 
-                    return true;
+                    return;
                 }
                 context.WriteError("invalid request", "access to root only applicable with GET", 400);
-                return true;
+                return;
             }
             var method          = context.method;
             var queryParams     = HttpUtility.ParseQueryString(context.query);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var database = resourcePath;
                 if (database.IndexOf('/') != -1) {
                     context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {database}", 400);
-                    return true;
+                    return;
                 }
                 if (database == EntityDatabase.MainDB)
                     database = null;
@@ -76,62 +76,62 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 if (!IsValidJson(pool, value, out string error)) {
                     context.WriteError(GetErrorType(command), error, 400);
-                    return true;
+                    return;
                 }
                 if (command != null) {
                     await Command(context, database, command, value);
-                    return true;
+                    return;
                 }
                 await Message(context, database, message, value);
-                return true;
+                return;
             }
             var resource = resourcePath.Split('/');
             var resourceError = GetResourceError(resource);
             if (resourceError != null) {
                 context.WriteError("invalid path /database/container/id", resourceError, 400);
-                return true;
+                return;
             }
             var isDelete = method == "DELETE";
 
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
                 await Command(context, resource[0], StdCommand.DbContainers, new JsonValue()); 
-                return true;
+                return;
             }
             // ------------------    GET            /database/container
             if (isGet && resource.Length == 2) {
                 await GetEntities(context, resource[0], resource[1], queryParams);
-                return true;
+                return;
             }
             // ------------------    GET / DELETE   /database/container/id
             if (isGet || isDelete) {
                 if (resource.Length == 3) {
                     if (isGet) {
                         await GetEntity(context, resource[0], resource[1], resource[2]);    
-                        return true;
+                        return;
                     }
                     await DeleteEntity(context, resource[0], resource[1], resource[2]);
-                    return true;
+                    return;
                 }
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
-                return true;
+                return;
             }
             // ------------------    PUT            /database/container
             if (method == "PUT") {
                 if (resource.Length != 3) {
                     context.WriteError("invalid PUT", "expect: /database/container/id", 400);
-                    return true;
+                    return;
                 }
                 var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 if (!IsValidJson(pool, value, out string error)) {
                     context.WriteError("PUT error", error, 400);
-                    return true;
+                    return;
                 }
                 var keyName = queryParams["keyName"];
                 await UpsertEntity(context, resource[0], resource[1], resource[2], keyName, value);
-                return true;
+                return;
             }
-            return false;
+            context.WriteError("invalid path/method", path, 400);
         }
         
         private static string GetResourceError(string[] resource) {

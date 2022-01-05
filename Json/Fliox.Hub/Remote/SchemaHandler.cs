@@ -46,20 +46,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return context.method == "GET" && context.path.StartsWith(basePath);
         }
         
-        public Task<bool> HandleRequest(RequestContext context) {
+        public Task HandleRequest(RequestContext context) {
             var path = context.path.Substring(basePath.Length);
             Result result   = new Result();
             bool success    = GetSchemaFile(path, ref result);
             if (!success) {
                 context.WriteError("schema error", result.content, 404);
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
             if (result.isText) {
                 context.WriteString(result.content, result.contentType);
-                return Task.FromResult(true);
+                return Task.CompletedTask;
             }
             context.Write(new JsonValue(result.bytes), 0, result.contentType, 200);
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
         
         private bool GetSchemaFile(string path, ref Result result) {
