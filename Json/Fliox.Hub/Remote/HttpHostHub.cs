@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             restHandler             = new RestHandler(hub);
         }
         
-        public async Task<bool> ExecuteHttpRequest(RequestContext reqCtx) {
-            if (reqCtx.method == "POST" && reqCtx.path == "/") {
-                var requestContent  = await JsonValue.ReadToEndAsync(reqCtx.body).ConfigureAwait(false);
+        public async Task<bool> ExecuteHttpRequest(RequestContext request) {
+            if (request.method == "POST" && request.path == "/") {
+                var requestContent  = await JsonValue.ReadToEndAsync(request.body).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
                 var pool            = new Pool(sharedEnv.Pool);
@@ -38,19 +38,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                 
                 messageContext.Release();
-                reqCtx.Write(result.body, 0, "application/json", (int)result.status);
+                request.Write(result.body, 0, "application/json", (int)result.status);
                 return true;
             }
-            return await HandleRequest(reqCtx).ConfigureAwait(false);
-        }
-
-        private async Task<bool> HandleRequest(RequestContext request) {
             if (schemaHandler != null && schemaHandler.IsApplicable(request)) {
                 await schemaHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
             if (restHandler.IsApplicable(request)) {
-                await restHandler.HandleRequest(request);
+                await restHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
             if (protocolSchemaHandler.IsApplicable(request)) {
