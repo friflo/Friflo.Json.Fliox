@@ -125,8 +125,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
                 sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
                 sb.AppendLine("<ul>");
+                var target = schemaSet.contentType == "text/html" ? "" : " target='_blank'";
                 foreach (var file in schemaSet.files.Keys) {
-                    sb.AppendLine($"<li><a href='./{file}' target='_blank'>{file}</a></li>");
+                    sb.AppendLine($"<li><a href='./{file}'{target}>{file}</a></li>");
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
@@ -185,9 +186,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {
             var title = string.Join(" · ", titlePath);
             var titleElements = new List<string>();
-            int n = titlePath.Length -1;
-            foreach (var titleSection in titlePath) {
-                var link = string.Join("", Enumerable.Repeat("../", n--));
+            int n       = titlePath.Length - 1;
+            for (int o = 0; o < titlePath.Length; o++) {
+                var titleSection    = titlePath[o];
+                var indexOffset     = o == 0 ? 1 : 0;
+                var link            = string.Join("", Enumerable.Repeat("../", indexOffset + n--));
                 titleElements.Add($"<a href='{link}index.html'>{titleSection}</a>");
             }
             var titleLinks = string.Join(" · ", titleElements);

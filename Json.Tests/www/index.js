@@ -822,7 +822,7 @@ class App {
     schemaLink(database) {
         const schema    = this.databaseSchemas[database];
         const name      = schema ? schema.schemaName : this.schemaLess;
-        return `<a title="database schema" href="./rest/${database}?command=DbSchema" target="_blank" rel="noopener noreferrer">${name}</a>`;
+        return `<a title="database schema" href="./schema/${database}/html/schema.html" target="_blank" rel="noopener noreferrer">${name}</a>`;
     }
 
     filter = {
