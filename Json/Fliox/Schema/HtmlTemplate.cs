@@ -79,9 +79,9 @@ namespace Friflo.Json.Fliox.Schema
         .docs-border{ overflow: auto; background: var(--bg); }
         .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
 
-        .title      { margin: 5px 20px; height: 24px; padding: 3px 10px; display: inline-flex; background: var(--bg); border: 1px solid var(--bg);  border-radius: 2px; cursor: pointer; }
-        .languages  { margin: 0px 20px; height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
-        .toggleTheme{ margin: 5px 20px; height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer;  }
+        .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; background: var(--bg); box-shadow: 0px 0px  7px  7px #0000000a; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer; }
+        .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .toggleTheme{ margin: 5px 20px;         height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer;  }
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
@@ -213,8 +213,11 @@ namespace Friflo.Json.Fliox.Schema
 
 <!-- ------------------------------- head ------------------------------- -->
 <div style='grid-area: body-head;' class='head'>
-    <div style='display:flex'>
-        <h2  class='title'><a href='#'>{{schemaName}}</a></h2>
+    <div style='display:flex; margin-left: 10px;'>
+        <div style='align-self: self-end;'>
+            <div style='flex-grow: 1;'></div>
+            <h2 class='title'><a href='#'>{{schemaName}}</a></h2>
+        </div>
         <div style='flex-grow: 1;'></div>
         <div class='languages'><a href='../index.html'>Typescript, C#, Kotlin, JSON Schema</a></div>
         <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
