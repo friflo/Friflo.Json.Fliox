@@ -131,7 +131,7 @@ $@"    <div class='type'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><br><disc>{unionType.discriminator}</disc></td>
+            <td><br><discUnion>{unionType.discriminator}</discUnion></td>
             <td><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
                 foreach (var polyType in unionType.types) {
@@ -308,6 +308,10 @@ $@"    <li><a href='#{ns}'>{ns}</a>
                     }
                     var disc        = type.Discriminator;
                     var discTag     = disc != null ? $"<disc style='float:right'>{disc}</disc>" : "";
+                    var union       = type.UnionType; 
+                    if (union != null) {
+                        discTag     = $"<discUnion style='float:right'>{union.discriminator}</discUnion>";
+                    }
                     sbNav.Append(
 $@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{tag}</div></a></li>
 ");

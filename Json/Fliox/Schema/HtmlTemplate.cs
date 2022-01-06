@@ -90,7 +90,8 @@ namespace Friflo.Json.Fliox.Schema
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
         refType     { color: var(--key); }
-        ref         { color: var(--field);    font-family: var(--mono-font);  }        
+        ref         { color: var(--field);    font-family: var(--mono-font);  }
+        discUnion   { color: var(--bg);       font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--field); }        
         disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--bg); }
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
@@ -113,8 +114,10 @@ namespace Friflo.Json.Fliox.Schema
         ul > li > a:hover               { background: var(--selected); }
 
         ul > li > ul > li > a           { display: block; }
-        ul > li > ul > li > a>div > key { font-size: 12px; }
+        ul > li > ul > li > a>div > key,
+        ul > li > ul > li > a>div > discUnion,
         ul > li > ul > li > a>div > disc{ font-size: 12px; }
+        
         ul > li > ul > li:hover         { background: var(--selected); }
 
         .namespace                          { scroll-margin-top: 5px; }
