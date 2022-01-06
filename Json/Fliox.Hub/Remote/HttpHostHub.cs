@@ -11,8 +11,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class HttpHostHub : RemoteHostHub
     {
-        public   readonly   SchemaHandler       schemaHandler;
-        public              IRequestHandler     requestHandler;
+        public              IRequestHandler     customHandler;
+        private  readonly   SchemaHandler       schemaHandler;
         private  readonly   RestHandler         restHandler;
 
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
@@ -47,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await restHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
-            if (requestHandler != null && requestHandler.IsApplicable(request)) {
-                await requestHandler.HandleRequest(request).ConfigureAwait(false);
+            if (customHandler != null && customHandler.IsApplicable(request)) {
+                await customHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
             return false;
