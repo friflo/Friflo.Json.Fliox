@@ -37,7 +37,6 @@ export class FieldType {
     format?               : string | null;
     $ref?                 : string | null;
     additionalProperties? : FieldType | null;
-    isKey?                : boolean | null;
     isAutoIncrement?      : boolean | null;
     relation?             : string | null;
 }

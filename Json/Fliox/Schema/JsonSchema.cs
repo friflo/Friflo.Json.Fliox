@@ -149,11 +149,10 @@ namespace Friflo.Json.Fliox.Schema
                 var indent = Indent(maxFieldName, field.name);
                 if (required)
                     requiredFields.Add(field.name);
-                var keyStr  = field.isKey           ? ", \"isKey\": true" : "";
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{keyStr}{autoStr}{relStr} }}");
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");

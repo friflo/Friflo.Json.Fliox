@@ -58,7 +58,6 @@
                 "format":               { "type": ["string", "null"] },
                 "$ref":                 { "type": ["string", "null"] },
                 "additionalProperties": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
-                "isKey":                { "type": ["boolean", "null"] },
                 "isAutoIncrement":      { "type": ["boolean", "null"] },
                 "relation":             { "type": ["string", "null"] }
             },

@@ -7,7 +7,7 @@
             "type": "object",
             "key": "customId2",
             "properties": {
-                "customId2": { "type": "string", "isKey": true }
+                "customId2": { "type": "string" }
             },
             "required": [
                 "customId2"
