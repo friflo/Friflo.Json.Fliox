@@ -76,8 +76,10 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// The type definition of field (also named property) in a <see cref="TypeDef"/>. E.g. a scalar type like boolean,
     /// int, float, double, DateTime, Guid, BigInteger or string or a complex type like an array, a map (= Dictionary) or a class.
     /// Fields also have a modifier to specify if a field is required or optional.
+    /// <br/>
     /// As <see cref="FieldDef"/>'s are also used within in a <see cref="TypeSchema"/> to define a database schema
     /// a field can be selected to be the primary key of a table / container in a database by <see cref="isKey"/>.
+    /// To simplify code generation the primary key is exposed by <see cref="TypeDef.KeyField"/>.
     /// </summary>
     public sealed class FieldDef {
         public  readonly    string          name;
