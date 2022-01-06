@@ -123,9 +123,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!schemas.TryGetValue(schemaType, out SchemaSet schemaSet)) {
                 return result.Error($"unknown schema type: {schemaType}");
             }
-            var zipFile = $"{storeName}.{schemaType}.zip";
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
+                var zipFile = $"{storeName}{schemaSet.zipName}";
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"Hub", schemaName, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
-            if (fileName == zipFile) {
+            if (fileName.StartsWith(storeName) && fileName.EndsWith(schemaSet.zipName)) {
                 result.bytes        = schemaSet.GetZipArchive(handler.zip);
                 if (result.bytes == null)
                     return result.Error("ZipArchive not supported (Unity)");
@@ -247,11 +247,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
 
     public class SchemaSet {
-        public  readonly    string                      name;
-        public  readonly    string                      contentType;
-        public  readonly    Dictionary<string, string>  files;
-        public  readonly    string                      fullSchema;
-        public  readonly    string                      directory;
+        public   readonly   string                      name;
+        public   readonly   string                      contentType;
+        public   readonly   Dictionary<string, string>  files;
+        public   readonly   string                      fullSchema;
+        public   readonly   string                      directory;
+        internal readonly   string                      zipName;
         private             byte[]                      zipArchive;
 
         public byte[] GetZipArchive (CreateZip zip) {
@@ -266,6 +267,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.contentType    = contentType;
             this.files          = files;
             this.fullSchema     = fullSchema;
+            zipName             = $".{name}.zip";
             directory           = writer.Write(files.Keys.ToList());
         }
     }
