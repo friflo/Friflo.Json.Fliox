@@ -483,7 +483,7 @@ class App {
             const databaseName = selectedElement.childNodes[1].innerText;
             var dbCommands  = commands.find  (c => c.id == databaseName);
             var dbContainer = dbContainers.find  (c => c.id == databaseName);
-            catalogSchema.innerHTML  = this.schemaLink(databaseName)
+            catalogSchema.innerHTML  = this.getSchemaType(databaseName)
             this.listCommands(databaseName, dbCommands, dbContainer);
             // var style = path[1].childNodes[1].style;
             // style.display = style.display == "none" ? "" : "none";
@@ -698,13 +698,22 @@ class App {
         return { $ref: "./" + schemaPath + $ref };
     }
 
-    getEntityType(schema, container) {
+    
+    getSchemaType(database) {
+        const schema        = this.databaseSchemas[database];
+        const name          = schema ? schema.schemaName : this.schemaLess;
+        return `<a title="database schema" href="./schema/${database}/html/schema.html" target="${database}">${name}</a>`;
+    }
+
+    getEntityType(database, container) {
+        const schema        = this.databaseSchemas[database];
         if (!schema)
-            return this.schemaLess;
-        var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
-        var ref = dbSchema.properties[container].additionalProperties["$ref"];
-        var lastSlashPos = ref.lastIndexOf('/');
-        return ref.substring(lastSlashPos + 1);
+            return this.schemaLess;        
+        var dbSchema        = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
+        var ref             = dbSchema.properties[container].additionalProperties["$ref"];
+        var qualifiedName   = ref.substring(2, ref.lastIndexOf('.json#/definitions'));
+        var typeName        = ref.substring(ref.lastIndexOf('/') + 1);
+        return `<a href="./schema/${database}/html/schema.html#${qualifiedName}" target="${database}">${typeName}</a>`;
     }
 
     setEditorHeader(show) {
@@ -819,12 +828,6 @@ class App {
         entityExplorer.appendChild(ulDatabase);
     }
 
-    schemaLink(database) {
-        const schema    = this.databaseSchemas[database];
-        const name      = schema ? schema.schemaName : this.schemaLess;
-        return `<a title="database schema" href="./schema/${database}/html/schema.html" target="_blank" rel="noopener noreferrer">${name}</a>`;
-    }
-
     filter = {
         database:   undefined,
         container:  undefined
@@ -886,7 +889,7 @@ class App {
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility   = "";
         entityFilter.style.visibility  = "";
-        catalogSchema.innerHTML  = this.schemaLink(p.database);
+        catalogSchema.innerHTML  = this.getSchemaType(p.database);
         readEntitiesDB.innerHTML = `<a title="open database in new tab" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
@@ -964,8 +967,7 @@ class App {
             entityId:   p.id
         };
         this.setEditorHeader("entity");
-        const schema            = this.databaseSchemas[p.database];
-        entityType.innerHTML    = this.getEntityType (schema, p.container);
+        entityType.innerHTML    = this.getEntityType (p.database, p.container);
         const containerRoute    = { database: p.database, container: p.container }
         let entityLink          = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${p.container}</a>`;
         entityLink             += `<a title="open entity in new tab" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
