@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace Friflo.Json.Tests.Main
+namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public static class Utils
+    public static class ZipUtils
     {
-#if !UNITY_2020_1_OR_NEWER
+// #if !UNITY_2020_1_OR_NEWER
         public static byte[] Zip (Dictionary<string, string> files) {
             using (var memoryStream = new MemoryStream()) {
                 using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true)) {
@@ -23,8 +26,8 @@ namespace Friflo.Json.Tests.Main
                 return memoryStream.ToArray();
             }
         }
-#else
-        public static byte[] Zip (Dictionary<string, string> files) => null;
-#endif
+// #else
+//        public static byte[] Zip (Dictionary<string, string> files) => null;
+// #endif
     }
 }
