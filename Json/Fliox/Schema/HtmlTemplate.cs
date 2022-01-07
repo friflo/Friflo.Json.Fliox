@@ -162,11 +162,22 @@ namespace Friflo.Json.Fliox.Schema
                 docsSelection?.classList.remove('selected');
                 docsSelection = element;
                 element.classList.add('selected');
-                const anchors  = element.querySelectorAll(`a`);
-                anchors[0].focus();
                 const parent = element.parentElement;
                 const block = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
                 parent.scrollIntoView({ behavior: 'smooth', block: block });
+
+                // set focus after scrolling finished. Calling focus() directly cancel the scroll animation
+                const anchors  = element.querySelectorAll(`a`);
+                function scrollFinished() {
+                    docs.onscroll = undefined;
+                    anchors[0].focus();
+                    // console.log('scroll finished');
+                }
+                var scrollTimeout = setTimeout(scrollFinished, 100);
+                docs.onscroll = function () {
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(scrollFinished, 100);
+                }
             }
         }
         // Required to support browser 'go back' 
@@ -239,7 +250,7 @@ namespace Friflo.Json.Fliox.Schema
 <div style='grid-area: body-docs-border;' class='docs-border'></div>
 
 <!-- ------------------------------- docs ------------------------------- -->
-<div style='grid-area: body-docs;' class='docs'>
+<div id='docs' style='grid-area: body-docs;' class='docs'>
 {{documentation}}
 </div>
 
