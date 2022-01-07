@@ -14,7 +14,9 @@
         window.setTheme = (mode) => {
             console.log("setTheme", mode);
             document.documentElement.setAttribute('data-theme', mode);
-            window.appConfig.monacoTheme = mode == 'dark' ? "vs-dark" : "light";
+            window.appConfig.monacoTheme    = mode == 'dark' ? "vs-dark" : "light";
+            const themeColor                = mode == 'dark' ? "#1e1e1e" :"#ffffff"; // var(--background2)
+            document.querySelector('meta[name="theme-color"]').setAttribute("content", themeColor);
             window.localStorage.setItem('theme', mode);
         }
         window.appConfig = {};
