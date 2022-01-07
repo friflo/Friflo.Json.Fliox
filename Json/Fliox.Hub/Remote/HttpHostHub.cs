@@ -1,19 +1,21 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 
+// ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class HttpHostHub : RemoteHostHub
     {
-        public              IRequestHandler     customHandler;
-        private  readonly   SchemaHandler       schemaHandler;
-        private  readonly   RestHandler         restHandler;
+        private  readonly   SchemaHandler           schemaHandler;
+        private  readonly   RestHandler             restHandler;
+        private  readonly   List<IRequestHandler>   customHandlers;
 
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
@@ -24,6 +26,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
             schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
             restHandler             = new RestHandler(hub);
+            customHandlers          = new List<IRequestHandler>();
+        }
+        
+        public void AddHandler(IRequestHandler requestHandler) {
+            customHandlers.Add(requestHandler);
+        }
+        
+        public void RemoveHandler(IRequestHandler requestHandler) {
+            customHandlers.Remove(requestHandler);
         }
         
         public async Task<bool> ExecuteHttpRequest(RequestContext request) {
@@ -47,8 +58,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await restHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
-            if (customHandler != null && customHandler.IsApplicable(request)) {
-                await customHandler.HandleRequest(request).ConfigureAwait(false);
+            foreach (var handler in customHandlers) {
+                if (!handler.IsApplicable(request))
+                    continue;
+                await handler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
             return false;
