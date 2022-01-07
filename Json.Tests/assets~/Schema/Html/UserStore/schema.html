@@ -3,9 +3,9 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name='description' content='Schema UserStore'>
+    <meta name='description' content='Schema - UserStore'>
     <meta name='color-scheme' content='dark light'>
-    <title>UserStore</title>
+    <title>UserStore - schema</title>
     <style>
         :root {
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
@@ -17,6 +17,7 @@
             --keyword:  #6f6f6f;
             --color:    #000;       --highlight:        #008;
             --bg:       #fff;       --bg-highlight:     #e0e0ff;
+            --bg2:      #fff;
             --bg-border:#ccc;
             --selected: #f8f8f8;    --selected-border:  #ddd;
             --link:     #0000ee;
@@ -31,8 +32,9 @@
             --keyword:  #bbb;
             --color:    #ddd;       --highlight:        #fff;
             --bg:       #000;       --bg-highlight:     #4040c0;
+            --bg2:      #1e1e1e;
             --bg-border:#666;
-            --selected: #202020;    --selected-border:  #404040;
+            --selected: #000;       --selected-border:  #404040;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
         }
@@ -67,13 +69,13 @@
                     font-family: sans-serif
                 }
         .head       { overflow: hidden; }
-        .nav        { overflow: auto; background: var(--bg); }
-        .docs-border{ overflow: auto; background: var(--bg); }
-        .docs       { overflow: auto; background: var(--bg);  padding-left: 30px; }
+        .nav        { overflow: auto; background: var(--bg2); }
+        .docs-border{ overflow: auto; background: var(--bg2); }
+        .docs       { overflow: auto; background: var(--bg2);  padding-left: 30px; }
 
-        .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; background: var(--bg); box-shadow: 0px 0px  7px  7px #0000000a; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer; }
-        .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
-        .toggleTheme{ margin: 5px 20px;         height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg); border-radius: 2px; cursor: pointer;  }
+        .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px  7px  7px #0000000a; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer; }
+        .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .toggleTheme{ margin: 5px 20px;         height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg2); border-radius: 2px; cursor: pointer;  }
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
