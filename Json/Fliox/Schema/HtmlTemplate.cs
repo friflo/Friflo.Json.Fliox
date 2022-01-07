@@ -162,6 +162,8 @@ namespace Friflo.Json.Fliox.Schema
                 docsSelection?.classList.remove('selected');
                 docsSelection = element;
                 element.classList.add('selected');
+                const anchors  = element.querySelectorAll(`a`);
+                anchors[0].focus();
                 const parent = element.parentElement;
                 const block = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
                 parent.scrollIntoView({ behavior: 'smooth', block: block });
