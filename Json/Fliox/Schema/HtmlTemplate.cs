@@ -173,10 +173,10 @@ namespace Friflo.Json.Fliox.Schema
                     anchors[0].focus();
                     // console.log('scroll finished');
                 }
-                var scrollTimeout = setTimeout(scrollFinished, 100);
+                var scrollTimeout = setTimeout(scrollFinished, 50);
                 docs.onscroll = function () {
                     clearTimeout(scrollTimeout);
-                    scrollTimeout = setTimeout(scrollFinished, 100);
+                    scrollTimeout = setTimeout(scrollFinished, 50);
                 }
             }
         }
