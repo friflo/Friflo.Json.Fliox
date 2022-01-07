@@ -122,20 +122,20 @@
         function setTheme (mode) {
             console.log(`toggleTheme(${mode})`);
             document.documentElement.setAttribute('data-theme', mode);
-            window.localStorage.setItem('docsTheme', mode);
+            window.localStorage.setItem('theme', mode);
         }
         var toggleTheme = () => {
             let mode = document.documentElement.getAttribute('data-theme');
             mode = mode == 'dark' ? 'light' : 'dark'
             setTheme(mode)
         }
-        var docsTheme = window.localStorage.getItem('docsTheme');
-        if (!docsTheme) {
+        var theme = window.localStorage.getItem('theme');
+        if (!theme) {
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                docsTheme = 'dark';
+                theme = 'dark';
             }
         }
-        setTheme(docsTheme);
+        setTheme(theme);
 
         // ----------------- scrolling / selection highlighting 
         var docsSelection;
