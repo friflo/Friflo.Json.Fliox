@@ -19,7 +19,7 @@
             --bg:       #fff;       --bg-highlight:     #e0e0ff;
             --bg2:      #fff;
             --bg-border:#ccc;
-            --selected: #f8f8f8;    --selected-border:  #ddd;
+            --selected: #fff;       --selected-shadow:  #eee;       --selected-offset: 3px; --selected-radius: 5px;
             --link:     #0000ee;
             --visited:  #551a8b;
         }
@@ -34,7 +34,7 @@
             --bg:       #000;       --bg-highlight:     #4040c0;
             --bg2:      #1e1e1e;
             --bg-border:#666;
-            --selected: #000;       --selected-border:  #404040;
+            --selected: #404040;    --selected-shadow:  #404040;    --selected-offset: 0px; --selected-radius: 1px;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
         }
@@ -96,9 +96,10 @@
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
 
-        h3      { margin-left: 30px; margin-bottom: 5px; }
-        h2.selected     { background: var(--selected); border: 1px solid var(--selected-border); border-radius: 3px; }
-        h3.selected     { background: var(--selected); border: 1px solid var(--selected-border); border-radius: 3px; }
+        h2      { margin-right: 30px;  }
+        h3      { margin-right: 30px; margin-left: 30px;  margin-bottom: 5px; }
+        h2.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
+        h3.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
 
         a.highlight, a.highlight div    { background: var(--bg-highlight) !important; color: var(--highlight) !important; }
         a                               { text-decoration:  none; }
