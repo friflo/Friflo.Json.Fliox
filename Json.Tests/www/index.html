@@ -11,11 +11,20 @@
     <title>JSON Fliox Hub</title>
     <script>
         // handle dark mode before everything else to avoid flickering
-        window.appConfig = { monacoTheme: "light" };
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            window.appConfig.monacoTheme = "vs-dark";
+        window.setTheme = (mode) => {
+            console.log("setTheme", mode);
+            document.documentElement.setAttribute('data-theme', mode);
+            window.appConfig.monacoTheme = mode == 'dark' ? "vs-dark" : "light";
+            window.localStorage.setItem('theme', mode);
         }
+        window.appConfig = {};
+        var theme = window.localStorage.getItem('theme');
+        if (!theme) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                theme = 'dark';
+            }
+        }
+        window.setTheme(theme);
     </script>
     <script src='bundle.js'></script> <!-- todo: load deferred -->
     <script type="module">
@@ -84,13 +93,11 @@
             position: absolute;
             z-index: -1;   
         }
-        /* dark mode color for firefox */
-        @media(prefers-color-scheme: dark) {
-            body  { background-color: #000; color: #fff; }
-            a:visited   { color: rgb(208, 173, 240) }
-            a           { color: rgb(158, 158, 255) }
-            body::after { opacity: 1;  } /* filter: invert(1); */
-        }
+
+        a,         a > *            { color: var(--link) }
+        a:visited, a:visited > *    { color: var(--visited) }
+        body                        { color: var(--color); }
+
         /** ---------------------------------------------- Grid Layout ----------------------- */
         body {
             display: grid;
@@ -204,7 +211,8 @@
         .miniHeader .toggleDescription::before  { content: unset }
         #toggleDescription                      { min-width: 33px;}
         .miniHeader #toggleDescription          { min-width: 60px;}
-        
+
+        .toggleTheme{ margin-right: 5px; padding: 4px; background: var(--background3); border: 1px solid var(--tab-border); border-radius: 2px; cursor: pointer;  }
         
 
         .tab            { cursor: pointer; background-color: var(--tab-color); color: var(--color)!important;;
@@ -359,6 +367,10 @@
         </div>
       </div>
     </span>
+    <span style="border-bottom: 1px solid var(--tab-border); font-size: 13px;">
+        <div class='toggleTheme' onclick='app.toggleTheme()'>☀ 🌘︎</div>
+    </span>
+    
   </div>
 
   <!-- ------------------------------------------- Playground ------------------------------------------- -->

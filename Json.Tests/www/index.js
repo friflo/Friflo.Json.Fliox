@@ -1581,6 +1581,13 @@ class App {
         });
     }
 
+    toggleTheme() {
+        let mode = document.documentElement.getAttribute('data-theme');
+        mode = mode == 'dark' ? 'light' : 'dark'
+        window.setTheme(mode)
+        this.setEditorOptions();
+    }
+
     initApp() {
         // --- methods without network requests
         this.loadConfig();
