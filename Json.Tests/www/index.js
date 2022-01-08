@@ -567,14 +567,22 @@ class App {
                     fileMatch:      [], // can have multiple in case schema is used by multiple editor models
                     _resolvedDef:   schema // not part of monaco > DiagnosticsOptions.schemas
                 }
-                schemaMap[uri] = schemaEntry;
-                const definitions = schema.definitions;
+                const namespace     = schemaPath.substring(0, schemaPath.length - ".json".length);
+                schemaMap[uri]      = schemaEntry;
+                const definitions   = schema.definitions;
+                const baseRefType   = schema.$ref ? schema.$ref.substring('#/definitions/'.length) : undefined;
                 for (var definitionName in definitions) {
-                    const definition = definitions[definitionName];
-                    var path            = "/" + schemaPath + "#/definitions/" + definitionName;
-                    var schemaId        = "." + path
-                    var uri             = "http://" + database + path;
-                    var containerName   = containerRefs[schemaId]
+                    const definition        = definitions[definitionName];
+                    definition._typeName    = definitionName;
+                    definition._namespace   = namespace;
+                    if (definitionName == baseRefType) {
+                        definition._namespace = namespace.substring(0, namespace.length - definitionName.length - 1);
+                    }
+                    // console.log("---", definition._namespace, definitionName);
+                    var path                = "/" + schemaPath + "#/definitions/" + definitionName;
+                    var schemaId            = "." + path
+                    var uri                 = "http://" + database + path;
+                    var containerName       = containerRefs[schemaId]
                     if (containerName) {
                         dbSchema.containerSchemas[containerName] = definition;
                     }
@@ -702,19 +710,37 @@ class App {
     getSchemaType(database) {
         const schema        = this.databaseSchemas[database];
         const name          = schema ? schema.schemaName : this.schemaLess;
-        return `<a title="database schema" href="./schema/${database}/html/schema.html" target="${database}">${name}</a>`;
+        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${name}</a>`;
+    }
+
+    getType(database, def) {
+        var ns          = def._namespace;
+        var name        = def._typeName;
+        return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
     }
 
     getEntityType(database, container) {
-        const schema        = this.databaseSchemas[database];
+        const schema    = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;        
-        var dbSchema        = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
-        var ref             = dbSchema.properties[container].additionalProperties["$ref"];
-        var qualifiedName   = ref.substring(2, ref.lastIndexOf('.json#/definitions'));
-        var typeName        = ref.substring(ref.lastIndexOf('/') + 1);
-        return `<a href="./schema/${database}/html/schema.html#${qualifiedName}" target="${database}">${typeName}</a>`;
+        var dbSchema    = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
+        var def         = dbSchema.properties[container].additionalProperties._resolvedDef;
+        return this.getType(database, def);
     }
+
+    getTypeLabel(database, type) {
+        if (type.type) {
+            return type.type;
+        }
+        const def = type._resolvedDef;
+        if (def) {
+            return this.getType(database, def);
+        }        
+        var result = JSON.stringify(type);
+        return result = result == "{}" ? "any" : result;
+    }
+
+    schemaLess = '<span style="opacity:0.5">(schema less)</span>';
 
     setEditorHeader(show) {
         var displayEntity  = show == "entity" ? "" : "none";
@@ -725,25 +751,11 @@ class App {
         document.getElementById("commandHeader").style.display = displayCommand;
     }
 
-    getTypeLabel(type) {
-        if (type.type) {
-            return type.type;
-        }
-        if (type.$ref) {
-            var lastSlash = type.$ref.lastIndexOf("/");
-            return type.$ref.substring(lastSlash + 1);
-        }        
-        var result = JSON.stringify(type);
-        return result = result == "{}" ? "any" : result;
-    }
-
-    schemaLess = '<span style="opacity:0.5">(schema less)</span>';
-
     getCommandTags(database, command, signature) {
         let label = this.schemaLess;
         if (signature) {
-            const param   = this.getTypeLabel(signature.param);
-            const result  = this.getTypeLabel(signature.result);
+            const param   = this.getTypeLabel(database, signature.param);
+            const result  = this.getTypeLabel(database, signature.result);
             label = `<span title="command parameter type"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result type">${result}</span>`
         }
         var link    = `command=${command}`;
