@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Main
         /// <list type="bullet">
         ///   <item> Providing all common database operations to query, read, create, updates and delete records</item>
         ///   <item> Expose access to the service in two ways:<br/>
-        ///     1. POST via a single path ./ enabling execution of multiple tasks in a single request<br/>
+        ///     1. POST via a single path ./ enabling batching multiple tasks in a single request<br/>
         ///     2. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id
         ///   </item>
         ///   <item> Enable Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
@@ -54,8 +54,8 @@ namespace Friflo.Json.Tests.Main
         ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db</item>
         ///   <item> Expose server Monitoring as an extension database to get statistics about requests and tasks executed by users and clients </item>
         ///   <item> Adding a database schema to:
-        ///     1. validate records written to the database and exposing it as JSON Schema
-        ///     2. create type definitions for various languages: Typescript, C#, Kotlin & Html.      
+        ///     1. validate records written to the database by its schema definition.
+        ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema & Html.      
         ///   </item>
         ///   <item> Adding a web App to with database Explorer and Playground to send and validate arbitrary requests to the Fliox.Hub server </item>
         /// </list>
