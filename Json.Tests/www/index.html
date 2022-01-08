@@ -82,7 +82,8 @@
         .refLinkDecoration          { color: var(--link-color) !important;  }
         .refLinkDecoration:hover    { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--link-deco) !important; }
 
-        .navigate           { cursor: pointer; font-size: 14px; height: 20px; width: 20px; text-align: center; user-select: none; border-radius: 2px;}
+        .navigate           { cursor: pointer; font-size: 14px; height: 22px; width: 22px; text-align: center; user-select: none; 
+                              background-color: var(--tab-color); border-radius: 2px;}
         .navigate:hover     { background-color: var(--tab-hover); }
         .navigate:active    { background-color: var(--background3); font-size: 13.5px; box-shadow: inset 1px 1px 1px #00000010; }
 
@@ -448,7 +449,10 @@
       <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
     </div>
     <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px;">
-        <span style="min-width: 350px;">
+        <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
+        <div style="width:4px;"></div>
+        <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
+        <div style="width:8px;"></div>
         <span id="entityTools" style="display: none;">
             <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
             <button type="button" onclick="app.saveEntity()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
@@ -461,8 +465,6 @@
             <small id="commandSignature">command</small>
         </span>
         </span>
-        <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
-        <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
     </div>
 
     <!-- ------- resource titles/links ------- -->
