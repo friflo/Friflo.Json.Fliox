@@ -565,7 +565,7 @@ class App {
                     uri:            uri,
                     schema:         schema,
                     fileMatch:      [], // can have multiple in case schema is used by multiple editor models
-                    resolvedDef:    schema // not part of monaco > DiagnosticsOptions.schemas
+                    _resolvedDef:   schema // not part of monaco > DiagnosticsOptions.schemas
                 }
                 schemaMap[uri] = schemaEntry;
                 const definitions = schema.definitions;
@@ -583,7 +583,7 @@ class App {
                         uri:            uri,
                         schema:         { $ref: schemaId },
                         fileMatch:      [], // can have multiple in case schema is used by multiple editor models
-                        resolvedDef:    definition // not part of monaco > DiagnosticsOptions.schemas
+                        _resolvedDef:   definition // not part of monaco > DiagnosticsOptions.schemas
                     }
                     schemaMap[uri] = definitionEntry;
                 }
@@ -613,18 +613,18 @@ class App {
             const ref = node.$ref;
             if (ref) {
                 if (ref[0] == "#") {
-                    const localName = ref.substring("#/definitions/".length);
-                    node.resolvedDef = schema.definitions[localName];
+                    const localName     = ref.substring("#/definitions/".length);
+                    node._resolvedDef   = schema.definitions[localName];
                 } else {
-                    const localNamePos = ref.indexOf ("#");
-                    const schemaPath = ref.substring(2, localNamePos); // start after './'
-                    const localName = ref.substring(localNamePos + "#/definitions/".length);
-                    const globalSchema = jsonSchemas[schemaPath];
-                    node.resolvedDef = globalSchema.definitions[localName];
+                    const localNamePos  = ref.indexOf ("#");
+                    const schemaPath    = ref.substring(2, localNamePos); // start after './'
+                    const localName     = ref.substring(localNamePos + "#/definitions/".length);
+                    const globalSchema  = jsonSchemas[schemaPath];
+                    node._resolvedDef   = globalSchema.definitions[localName];
                 }
             }
             for (const propertyName in node) {
-                if (propertyName == "resolvedDef")
+                if (propertyName == "_resolvedDef")
                     continue;
                 // if (propertyName == "employees") debugger;
                 const property = node[propertyName];
@@ -1125,13 +1125,13 @@ class App {
                     }
                     break;
                 case "Object":
-                    var resolvedDef = property.resolvedDef;
+                    var resolvedDef = property._resolvedDef;
                     if (resolvedDef) {
                         this.addRelationsFromAst(value, resolvedDef, addRelation);
                     }
                     break;
                 case "Array":
-                    var resolvedDef = property.items?.resolvedDef;
+                    var resolvedDef = property.items?._resolvedDef;
                     if (resolvedDef) {
                         this.addRelationsFromAst(value, resolvedDef, addRelation);
                     }
