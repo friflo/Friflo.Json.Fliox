@@ -1179,12 +1179,12 @@ class App {
         this.entityEditor.setModel (model);
     }
 
-    commandEditWidth = "200px";
+    commandEditWidth = "60px";
 
     explorerEditCommandVisible(visible) {
-        commandValueContainer.style.display     = visible ? "" : "none";
-        commandParamBar.style.display           = visible ? "" : "none";
-        explorerEdit.style.gridTemplateColumns  = visible ? `${this.commandEditWidth} var(--bar-width) 1fr` : "0 0 1fr";
+        commandValueContainer.style.display = visible ? "" : "none";
+        commandParamBar.style.display       = visible ? "" : "none";
+        explorerEdit.style.gridTemplateRows = visible ? `${this.commandEditWidth} var(--bar-width) 1fr` : "0 0 1fr";
     }
 
     showCommand(database, commandName) {
@@ -1513,32 +1513,34 @@ class App {
     dragTemplate;
     dragBar;
     dragOffset;
+    dragHorizontal;
 
-    startDrag(event, template, bar) {
+    startDrag(event, template, bar, horizontal) {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
-        this.dragOffset     = event.offsetX;
+        this.dragHorizontal = horizontal;
+        this.dragOffset     = horizontal ? event.offsetX : event.offsetY
         this.dragTemplate   = document.getElementById(template);
         this.dragBar        = document.getElementById(bar);
         document.body.style.cursor = "ew-resize";
         event.preventDefault();
     }
 
-    getGridColumns(x) {
+    getGridColumns(xy) {
         const prev = this.dragBar.previousElementSibling;
-        x = x - prev.offsetLeft;
-        if (x < 20) x = 20;
+        xy = xy - (this.dragHorizontal ? prev.offsetLeft : prev.offsetTop);
+        if (xy < 20) xy = 20;
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
-            case "playground":          return [x + "px", "var(--bar-width)", "1fr"];
+            case "playground":          return [xy + "px", "var(--bar-width)", "1fr"];
             case "explorer":
                 const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
                 switch (this.dragBar.id) { //  [150px var(--bar-width) 200px var(--bar-width) 1fr];
-                    case "exBar1":      return [x + "px", cols[1], cols[2], cols[3]];
-                    case "exBar2":      return [cols[0], cols[1], x + "px", cols[3]];
+                    case "exBar1":      return [xy + "px", cols[1], cols[2], cols[3]];
+                    case "exBar2":      return [cols[0], cols[1], xy + "px", cols[3]];
                 }
                 break;
             case "explorerEdit":
-                this.commandEditWidth = x + "px";
+                this.commandEditWidth = xy + "px";
                 return [this.commandEditWidth, "var(--bar-width)", "1fr"];
         }
     }
@@ -1547,9 +1549,14 @@ class App {
         if (!this.dragTemplate)
             return;
         // console.log(`  drag: ${event.clientX}`);
-        const x     = event.clientX - this.dragOffset;
-        const cols  = this.getGridColumns(x);
-        this.dragTemplate.style.gridTemplateColumns = cols.join(" ");
+        const clientXY  = this.dragHorizontal ? event.clientX : event.clientY;
+        const xy         = clientXY - this.dragOffset;
+        const cols      = this.getGridColumns(xy);
+        if (this.dragHorizontal) {
+            this.dragTemplate.style.gridTemplateColumns = cols.join(" ");
+        } else {
+            this.dragTemplate.style.gridTemplateRows = cols.join(" ");
+        }
         this.layoutEditors();
         event.preventDefault();
     }
