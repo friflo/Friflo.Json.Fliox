@@ -1183,7 +1183,7 @@ class App {
     explorerEditCommandVisible(visible) {
         commandValueContainer.style.display     = visible ? "" : "none";
         commandParamBar.style.display           = visible ? "" : "none";
-        explorerEdit.style.gridTemplateColumns  = visible ? `${this.commandEditWidth} 4px 1fr` : "0 0 1fr";
+        explorerEdit.style.gridTemplateColumns  = visible ? `${this.commandEditWidth} var(--bar-width) 1fr` : "0 0 1fr";
     }
 
     showCommand(database, commandName) {
@@ -1527,17 +1527,17 @@ class App {
         x = x - prev.offsetLeft;
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
-            case "playground":          return [x + "px", "4px", "1fr"];
+            case "playground":          return [x + "px", "var(--bar-width)", "1fr"];
             case "explorer":
                 const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
-                switch (this.dragBar.id) { //  [150px 5px 200px 5px 1fr];
+                switch (this.dragBar.id) { //  [150px var(--bar-width) 200px var(--bar-width) 1fr];
                     case "exBar1":      return [x + "px", cols[1], cols[2], cols[3]];
                     case "exBar2":      return [cols[0], cols[1], x + "px", cols[3]];
                 }
                 break;
             case "explorerEdit":
                 this.commandEditWidth = x + "px";
-                return [this.commandEditWidth, "4px", "1fr"];
+                return [this.commandEditWidth, "var(--bar-width)", "1fr"];
         }
     }
 

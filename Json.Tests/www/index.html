@@ -43,7 +43,7 @@
         :root {
             --header-height: 60px;
             --tab-height:    40px;
-            --vbar-width: 4px;            
+            --bar-width:      4px;
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
             /* light */
@@ -129,7 +129,7 @@
                 "pl-header          pl-header   pl-header"
                 "pl-title-req       .           pl-title-resp"
                 "pl-request         pl-bar      pl-response";
-            grid-template-columns:  300px 5px 1fr;  /* dynamically overwritten by #playground.style */
+            grid-template-columns:  300px var(--bar-width) 1fr;  /* dynamically overwritten by #playground.style */
             grid-template-rows:     28px  25px 1fr;
             grid-gap:   0px;
         }
@@ -141,7 +141,7 @@
                 ".              .           ex-schema           .                   ex-action"
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
-            grid-template-columns:  150px 5px 200px 5px 1fr;    /* dynamically overwritten by #explorer.style */
+            grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
             grid-template-rows:     28px 28px 20px 1fr;
             grid-gap:   0px;
         }
@@ -212,7 +212,7 @@
         option[value=""][disabled]  {  display: none;  }
         option                      {  color: black; }
 
-        .vbar           { width: var(--vbar-width); min-width: var(--vbar-width); padding: 0px; background-color: var(--background3); }
+        .vbar           { background-color: var(--background3); }
 
         .toggleDescription                      { width: 23px; height: 23px; transform: rotate(270deg) translate(-2px, 5px);
                                                   opacity: 1; cursor: pointer; border-radius: 2px; }
@@ -434,7 +434,7 @@
   </div>
 
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
-  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px 5px 200px 5px 1fr; padding-top: 5px;"
+  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px var(--bar-width) 200px var(--bar-width) 1fr; padding-top: 5px;"
        id="explorer" class="tabContent">
     <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden; margin-top: -2px;">
@@ -515,8 +515,8 @@
         <div id="commandValueContainer" style="grid-area: edit-command; display: unset; overflow: hidden;">
             <div class="editor" id="commandValue"></div>
         </div>
-        <div id="commandParamBar" style="grid-area: edit-bar; background-color: var(--command-bar); cursor: ew-resize;"
-            onmousedown="app.startDrag(event, 'explorerEdit', id)"></div>
+        <div id="commandParamBar" style="grid-area: edit-bar; cursor: ew-resize;"
+             class="vbar" onmousedown="app.startDrag(event, 'explorerEdit', id)"></div>
         <div style="grid-area: edit-response; overflow: hidden;">
             <div class="editor" id="entityContainer" style="display: block;"></div>
         </div>
