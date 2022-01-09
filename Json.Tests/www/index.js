@@ -709,8 +709,9 @@ class App {
     
     getSchemaType(database) {
         const schema        = this.databaseSchemas[database];
-        const name          = schema ? schema.schemaName : this.schemaLess;
-        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${name}</a>`;
+        if (!schema)
+            return this.schemaLess;
+        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
     }
 
     getType(database, def) {
@@ -740,7 +741,7 @@ class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    schemaLess = '<span style="opacity:0.5">(schema less)</span>';
+    schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
     setEditorHeader(show) {
         var displayEntity  = show == "entity" ? "" : "none";
