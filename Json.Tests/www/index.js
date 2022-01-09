@@ -1178,10 +1178,12 @@ class App {
         this.entityEditor.setModel (model);
     }
 
+    commandEditWidth = "200px";
+
     explorerEditCommandVisible(visible) {
         commandValueContainer.style.display     = visible ? "" : "none";
         commandParamBar.style.display           = visible ? "" : "none";
-        explorerEdit.style.gridTemplateColumns  = visible ? "200px 5px 1fr" : "0 0 1fr";
+        explorerEdit.style.gridTemplateColumns  = visible ? `${this.commandEditWidth} 4px 1fr` : "0 0 1fr";
     }
 
     showCommand(database, commandName) {
@@ -1533,7 +1535,9 @@ class App {
                     case "exBar2":      return [cols[0], cols[1], x + "px", cols[3]];
                 }
                 break;
-            case "explorerEdit":        return [x + "px", "4px", "1fr"];
+            case "explorerEdit":
+                this.commandEditWidth = x + "px";
+                return [this.commandEditWidth, "4px", "1fr"];
         }
     }
 

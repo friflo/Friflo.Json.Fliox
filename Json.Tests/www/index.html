@@ -150,7 +150,7 @@
             display: grid;
             grid-template-areas: 
                 "edit-command edit-bar edit-response";
-            grid-template-columns:  200px 5px 1fr; /* dynamically overwritten by #explorer.style */
+            grid-template-columns:  0 0 1fr; /* dynamically overwritten by #explorerEdit.style */
             grid-template-rows:     1fr;     
             grid-gap:   0px;
         }
@@ -510,7 +510,7 @@
 
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
 
-    <div id="explorerEdit" style="grid-area: ex-entity; overflow: hidden;">
+    <div id="explorerEdit" style="grid-area: ex-entity; grid-template-columns: 0 0 1fr; overflow: hidden;">
 
         <div id="commandValueContainer" style="grid-area: edit-command; display: unset; overflow: hidden;">
             <div class="editor" id="commandValue"></div>
