@@ -1184,7 +1184,7 @@ class App {
     explorerEditCommandVisible(visible) {
         commandValueContainer.style.display = visible ? "" : "none";
         commandParamBar.style.display       = visible ? "" : "none";
-        explorerEdit.style.gridTemplateRows = visible ? `${this.commandEditWidth} var(--bar-width) 1fr` : "0 0 1fr";
+        explorerEdit.style.gridTemplateRows = visible ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
     }
 
     showCommand(database, commandName) {
@@ -1541,7 +1541,7 @@ class App {
                 break;
             case "explorerEdit":
                 this.commandEditWidth = xy + "px";
-                return [this.commandEditWidth, "var(--bar-width)", "1fr"];
+                return [this.commandEditWidth, "var(--vbar-width)", "1fr"];
         }
     }
 

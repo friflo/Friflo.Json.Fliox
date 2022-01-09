@@ -44,6 +44,7 @@
             --header-height: 60px;
             --tab-height:    40px;
             --bar-width:      4px;
+            --vbar-width:    16px;
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
             /* light */
@@ -214,7 +215,7 @@
         option[value=""][disabled]  {  display: none;  }
         option                      {  color: black; }
 
-        .vbar           { background-color: var(--background3); }
+        .vbar           { background-color: var(--background); }
 
         .toggleDescription                      { width: 23px; height: 23px; transform: rotate(270deg) translate(-2px, 5px);
                                                   opacity: 1; cursor: pointer; border-radius: 2px; }
@@ -517,8 +518,10 @@
         <div id="commandValueContainer" style="grid-area: edit-command; display: unset; overflow: hidden;">
             <div class="editor" id="commandValue"></div>
         </div>
-        <div id="commandParamBar" style="grid-area: edit-bar; cursor: ns-resize; background: var(--command-bar);"
-             class="vbar" onmousedown="app.startDrag(event, 'explorerEdit', id, false)"></div>
+        <div id="commandParamBar" style="grid-area: edit-bar; cursor: ns-resize; background: var(--background); text-align: center;"
+             class="vbar" onmousedown="app.startDrag(event, 'explorerEdit', id, false)">
+             <small style="vertical-align: top; opacity: 0.5;">command response</small>
+        </div>
         <div style="grid-area: edit-response; overflow: hidden;">
             <div class="editor" id="entityContainer" style="display: block;"></div>
         </div>
