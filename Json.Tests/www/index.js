@@ -965,8 +965,8 @@ class App {
     }
 
     async loadEntity (p, preserveHistory, selection) {
-        commandValueContainer.style.display = "none";
-        commandParamBar.style.display = "none";
+        this.explorerEditCommandVisible(false);
+
         this.layoutEditors();
         if (!preserveHistory) {
             this.storeCursor();
@@ -1178,9 +1178,15 @@ class App {
         this.entityEditor.setModel (model);
     }
 
+    explorerEditCommandVisible(visible) {
+        commandValueContainer.style.display     = visible ? "" : "none";
+        commandParamBar.style.display           = visible ? "" : "none";
+        explorerEdit.style.gridTemplateColumns  = visible ? "200px 5px 1fr" : "0 0 1fr";
+    }
+
     showCommand(database, commandName) {
-        commandValueContainer.style.display = "";
-        commandParamBar.style.display = "";        
+        this.explorerEditCommandVisible(true);
+
         this.layoutEditors();
 
         const schema        = this.databaseSchemas[database];
@@ -1278,7 +1284,7 @@ class App {
 
     async setupEditors ()
     {
-        commandParamBar.style.display = "none";
+        this.explorerEditCommandVisible(false);
         
         // --- setup JSON Schema for monaco
         var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
@@ -1526,6 +1532,8 @@ class App {
                     case "exBar1":      return [x + "px", cols[1], cols[2], cols[3]];
                     case "exBar2":      return [cols[0], cols[1], x + "px", cols[3]];
                 }
+                break;
+            case "explorerEdit":        return [x + "px", "4px", "1fr"];
         }
     }
 
@@ -1547,52 +1555,6 @@ class App {
         document.body.style.cursor = "auto";
     }
 
-
-    addTableResize () {
-        var tdElm;
-        var startOffset;
-        const selector = document.querySelectorAll("table td, span div");
-
-        Array.prototype.forEach.call(selector, (td) =>
-        {
-            if (!td.classList.contains("vbar"))
-                return;
-            td.style.position = 'relative';
-
-            var grip = document.createElement('div');
-            grip.innerHTML = "&nbsp;";
-            grip.style.top = 0;
-            grip.style.right = 0;
-            grip.style.bottom = 0;
-            grip.style.width = '7px'; // 
-            grip.style.position = 'absolute';
-            grip.style.cursor = 'col-resize';
-            grip.style.userSelect = 'none'; // disable text selection while dragging
-            grip.addEventListener('mousedown', (e) => {
-                var previous = td.previousElementSibling;
-                tdElm = previous;
-                startOffset = previous.offsetWidth - e.pageX;
-            });
-
-            td.appendChild(grip);
-        });
-
-        document.addEventListener('mousemove', (e) => {
-        if (tdElm && tdElm.style) {
-            var width = startOffset + e.pageX + 'px'
-            tdElm.style.width = width;
-            var elem = tdElm.children[0];
-            elem.style.width    = width;
-            this.layoutEditors();
-            // console.log("---", width)
-        }
-        });
-
-        document.addEventListener('mouseup', () => {
-            tdElm = undefined;
-        });
-    }
-
     toggleTheme() {
         let mode = document.documentElement.getAttribute('data-theme');
         mode = mode == 'dark' ? 'light' : 'dark'
@@ -1604,7 +1566,6 @@ class App {
         // --- methods without network requests
         this.loadConfig();
         this.initUserToken();
-        this.addTableResize();
         this.openTab(app.getConfig("activeTab"));
 
         // --- methods performing network requests - note: methods are not awaited

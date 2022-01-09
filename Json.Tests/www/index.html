@@ -145,6 +145,15 @@
             grid-template-rows:     28px 28px 20px 1fr;
             grid-gap:   0px;
         }
+
+        #explorerEdit {
+            display: grid;
+            grid-template-areas: 
+                "edit-command edit-bar edit-response";
+            grid-template-columns:  200px 5px 1fr; /* dynamically overwritten by #explorer.style */
+            grid-template-rows:     1fr;     
+            grid-gap:   0px;
+        }
         /** ---------------------------------------------- Grid Layout end ----------------------- */
 
         .dropbtn {
@@ -476,7 +485,7 @@
         <span id="readEntitiesDB"><span style="opacity: 0.4;">database/</span></span><span id="readEntities"><span style="opacity: 0.4;">container</span></span>
         </small>
     </div>
-    <div style="grid-area: ex-link-entity; overflow:hidden; white-space:nowrap">
+    <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap">
         <span id="entityHeader" style="display: none;">
         <small id="entityId">entity id</small>
         </span>
@@ -492,21 +501,26 @@
         <!-- [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
       </div>
     </div>
+
     <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
+
     <div style="grid-area: ex-container; border-left: 0px; border-right: 0px; background-color: var(--background2); overflow: auto; ">
       <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
     </div>
+
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id)"></div>
-    <div style="grid-area: ex-entity; display: grid; border-left: 0px; overflow: hidden;">
-      <span style="display: inline-flex;">
-        <div id="commandValueContainer" style="width: 100%; display: none; overflow: hidden;">
+
+    <div id="explorerEdit" style="grid-area: ex-entity; border-left: 0px; overflow: hidden;">
+
+        <div id="commandValueContainer" style="grid-area: edit-command; display: unset; overflow: hidden;">
             <div class="editor" id="commandValue" style="border: 0px solid; border-right: 0px solid var(--background3);"></div>
         </div>
-        <div id="commandParamBar" class="vbar" style="min-width: var(--vbar-width); width: var(--vbar-width); background-color: var(--command-bar);"></div>
-        <div style="width: 100%; overflow: hidden;">
-            <div class="editor" id="entityContainer" style="border: 0px solid;"></div>
+        <div id="commandParamBar" style="grid-area: edit-bar; background-color: var(--command-bar); cursor: ew-resize;"
+            onmousedown="app.startDrag(event, 'explorerEdit', id)"></div>
+        <div style="grid-area: edit-response; overflow: hidden;">
+            <div class="editor" id="entityContainer" style="display: block; border: 0px solid;"></div>
         </div>
-      </span>
+
     </div>
   </div>
 
