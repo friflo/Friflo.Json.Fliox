@@ -1525,6 +1525,7 @@ class App {
     getGridColumns(x) {
         const prev = this.dragBar.previousElementSibling;
         x = x - prev.offsetLeft;
+        if (x < 20) x = 20;
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
             case "playground":          return [x + "px", "var(--bar-width)", "1fr"];
