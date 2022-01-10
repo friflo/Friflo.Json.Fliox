@@ -10,7 +10,6 @@ namespace UserStore2.Hub.DB.UserAuth {
 public class UserCredential {
     [Fri.Required]
     string  id;
-    string  passHash;
     string  token;
 }
 

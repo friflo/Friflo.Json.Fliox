@@ -3,9 +3,8 @@
     "definitions": {
         "UserCredential": {
             "properties": {
-                "id":       { "type": "string" },
-                "passHash": { "type": "string", "nullable": true },
-                "token":    { "type": "string", "nullable": true }
+                "id":    { "type": "string" },
+                "token": { "type": "string", "nullable": true }
             }
         },
         "UserPermission": {

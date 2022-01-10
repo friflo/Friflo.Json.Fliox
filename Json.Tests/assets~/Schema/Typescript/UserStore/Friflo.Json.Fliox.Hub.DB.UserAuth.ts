@@ -23,9 +23,8 @@ export interface UserStore {
 }
 
 export class UserCredential {
-    id        : string;
-    passHash? : string | null;
-    token?    : string | null;
+    id     : string;
+    token? : string | null;
 }
 
 export class UserPermission {

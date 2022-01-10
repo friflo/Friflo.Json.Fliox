@@ -54,7 +54,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     public class UserCredential {
         [Fri.Required]  public  JsonKey         id;
-                        public  string          passHash;
                         public  string          token;
                         
         public override         string ToString() => JsonSerializer.Serialize(this);

@@ -7,9 +7,8 @@ import UserStore.Hub.Host.Auth.Rights.*
 
 @Serializable
 data class UserCredential (
-              val id       : String,
-              val passHash : String? = null,
-              val token    : String? = null,
+              val id    : String,
+              val token : String? = null,
 )
 
 @Serializable
