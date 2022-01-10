@@ -61,18 +61,18 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             switch (node.TokenType)
             {
                 // --- binary tokens
-                case TT.Add:            b = Bin(node, cx, Num,     out error);  return new Add                  (b.left, b.right);
-                case TT.Sub:            b = Bin(node, cx, Num,     out error);  return new Subtract             (b.left, b.right);
-                case TT.Mul:            b = Bin(node, cx, Num,     out error);  return new Multiply             (b.left, b.right);
-                case TT.Div:            b = Bin(node, cx, Num,     out error);  return new Divide               (b.left, b.right);
-                case TT.Mod:            b = Bin(node, cx, Num,     out error);  return new Modulo               (b.left, b.right);
+                case TT.Add:            b = Bin(node, cx, Num,     out error);  return new Add              (b.left, b.right);
+                case TT.Sub:            b = Bin(node, cx, Num,     out error);  return new Subtract         (b.left, b.right);
+                case TT.Mul:            b = Bin(node, cx, Num,     out error);  return new Multiply         (b.left, b.right);
+                case TT.Div:            b = Bin(node, cx, Num,     out error);  return new Divide           (b.left, b.right);
+                case TT.Mod:            b = Bin(node, cx, Num,     out error);  return new Modulo           (b.left, b.right);
                 //
-                case TT.Greater:        b = Bin(node, cx, Num|Str, out error);  return new Greater              (b.left, b.right);
-                case TT.GreaterOrEqual: b = Bin(node, cx, Num|Str, out error);  return new GreaterOrEqual       (b.left, b.right);
-                case TT.Less:           b = Bin(node, cx, Num|Str, out error);  return new Less                 (b.left, b.right);
-                case TT.LessOrEqual:    b = Bin(node, cx, Num|Str, out error);  return new LessOrEqual          (b.left, b.right);
-                case TT.Equals:         b = Bin(node, cx, Var,     out error);  return new Equal                (b.left, b.right);
-                case TT.NotEquals:      b = Bin(node, cx, Var,     out error);  return new NotEqual             (b.left, b.right);
+                case TT.Greater:        b = Bin(node, cx, Num|Str, out error);  return new Greater          (b.left, b.right);
+                case TT.GreaterOrEqual: b = Bin(node, cx, Num|Str, out error);  return new GreaterOrEqual   (b.left, b.right);
+                case TT.Less:           b = Bin(node, cx, Num|Str, out error);  return new Less             (b.left, b.right);
+                case TT.LessOrEqual:    b = Bin(node, cx, Num|Str, out error);  return new LessOrEqual      (b.left, b.right);
+                case TT.Equals:         b = Bin(node, cx, Var,     out error);  return new Equal            (b.left, b.right);
+                case TT.NotEquals:      b = Bin(node, cx, Var,     out error);  return new NotEqual         (b.left, b.right);
                 
                 // --- n-ary tokens
                 case TT.Or:             f = FilterOps(node, cx, out error);     return new Or (f);
