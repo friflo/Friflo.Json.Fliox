@@ -67,10 +67,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TT.Div:            b = Bin(node, cx, Num,     out error);  return new Divide               (b.left, b.right);
                 case TT.Mod:            b = Bin(node, cx, Num,     out error);  return new Modulo               (b.left, b.right);
                 //
-                case TT.Greater:        b = Bin(node, cx, Num|Str, out error);  return new GreaterThan          (b.left, b.right);
-                case TT.GreaterOrEqual: b = Bin(node, cx, Num|Str, out error);  return new GreaterThanOrEqual   (b.left, b.right);
-                case TT.Less:           b = Bin(node, cx, Num|Str, out error);  return new LessThan             (b.left, b.right);
-                case TT.LessOrEqual:    b = Bin(node, cx, Num|Str, out error);  return new LessThanOrEqual      (b.left, b.right);
+                case TT.Greater:        b = Bin(node, cx, Num|Str, out error);  return new Greater              (b.left, b.right);
+                case TT.GreaterOrEqual: b = Bin(node, cx, Num|Str, out error);  return new GreaterOrEqual       (b.left, b.right);
+                case TT.Less:           b = Bin(node, cx, Num|Str, out error);  return new Less                 (b.left, b.right);
+                case TT.LessOrEqual:    b = Bin(node, cx, Num|Str, out error);  return new LessOrEqual          (b.left, b.right);
                 case TT.Equals:         b = Bin(node, cx, Var,     out error);  return new Equal                (b.left, b.right);
                 case TT.NotEquals:      b = Bin(node, cx, Var,     out error);  return new NotEqual             (b.left, b.right);
                 

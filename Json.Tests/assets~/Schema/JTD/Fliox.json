@@ -109,23 +109,23 @@
         "FilterOperation": {
             "discriminator": "op",
             "mapping": {
-                "equal":              { "ref":  "Equal" },
-                "notEqual":           { "ref":  "NotEqual" },
-                "lessThan":           { "ref":  "LessThan" },
-                "lessThanOrEqual":    { "ref":  "LessThanOrEqual" },
-                "greaterThan":        { "ref":  "GreaterThan" },
-                "greaterThanOrEqual": { "ref":  "GreaterThanOrEqual" },
-                "and":                { "ref":  "And" },
-                "or":                 { "ref":  "Or" },
-                "true":               { "ref":  "TrueLiteral" },
-                "false":              { "ref":  "FalseLiteral" },
-                "not":                { "ref":  "Not" },
-                "filter":             { "ref":  "Filter" },
-                "any":                { "ref":  "Any" },
-                "all":                { "ref":  "All" },
-                "contains":           { "ref":  "Contains" },
-                "startsWith":         { "ref":  "StartsWith" },
-                "endsWith":           { "ref":  "EndsWith" }
+                "equal":          { "ref":  "Equal" },
+                "notEqual":       { "ref":  "NotEqual" },
+                "less":           { "ref":  "Less" },
+                "lessOrEqual":    { "ref":  "LessOrEqual" },
+                "greater":        { "ref":  "Greater" },
+                "greaterOrEqual": { "ref":  "GreaterOrEqual" },
+                "and":            { "ref":  "And" },
+                "or":             { "ref":  "Or" },
+                "true":           { "ref":  "TrueLiteral" },
+                "false":          { "ref":  "FalseLiteral" },
+                "not":            { "ref":  "Not" },
+                "filter":         { "ref":  "Filter" },
+                "any":            { "ref":  "Any" },
+                "all":            { "ref":  "All" },
+                "contains":       { "ref":  "Contains" },
+                "startsWith":     { "ref":  "StartsWith" },
+                "endsWith":       { "ref":  "EndsWith" }
             },
             "properties": {
 
@@ -134,50 +134,50 @@
         "Operation": {
             "discriminator": "op",
             "mapping": {
-                "field":              { "ref":  "Field" },
-                "string":             { "ref":  "StringLiteral" },
-                "double":             { "ref":  "DoubleLiteral" },
-                "int64":              { "ref":  "LongLiteral" },
-                "null":               { "ref":  "NullLiteral" },
-                "PI":                 { "ref":  "PiLiteral" },
-                "E":                  { "ref":  "EulerLiteral" },
-                "Tau":                { "ref":  "TauLiteral" },
-                "abs":                { "ref":  "Abs" },
-                "ceiling":            { "ref":  "Ceiling" },
-                "floor":              { "ref":  "Floor" },
-                "exp":                { "ref":  "Exp" },
-                "log":                { "ref":  "Log" },
-                "sqrt":               { "ref":  "Sqrt" },
-                "negate":             { "ref":  "Negate" },
-                "add":                { "ref":  "Add" },
-                "subtract":           { "ref":  "Subtract" },
-                "multiply":           { "ref":  "Multiply" },
-                "divide":             { "ref":  "Divide" },
-                "modulo":             { "ref":  "Modulo" },
-                "min":                { "ref":  "Min" },
-                "max":                { "ref":  "Max" },
-                "sum":                { "ref":  "Sum" },
-                "average":            { "ref":  "Average" },
-                "count":              { "ref":  "Count" },
-                "equal":              { "ref":  "Equal" },
-                "notEqual":           { "ref":  "NotEqual" },
-                "lessThan":           { "ref":  "LessThan" },
-                "lessThanOrEqual":    { "ref":  "LessThanOrEqual" },
-                "greaterThan":        { "ref":  "GreaterThan" },
-                "greaterThanOrEqual": { "ref":  "GreaterThanOrEqual" },
-                "and":                { "ref":  "And" },
-                "or":                 { "ref":  "Or" },
-                "true":               { "ref":  "TrueLiteral" },
-                "false":              { "ref":  "FalseLiteral" },
-                "not":                { "ref":  "Not" },
-                "lambda":             { "ref":  "Lambda" },
-                "filter":             { "ref":  "Filter" },
-                "any":                { "ref":  "Any" },
-                "all":                { "ref":  "All" },
-                "countWhere":         { "ref":  "CountWhere" },
-                "contains":           { "ref":  "Contains" },
-                "startsWith":         { "ref":  "StartsWith" },
-                "endsWith":           { "ref":  "EndsWith" }
+                "field":          { "ref":  "Field" },
+                "string":         { "ref":  "StringLiteral" },
+                "double":         { "ref":  "DoubleLiteral" },
+                "int64":          { "ref":  "LongLiteral" },
+                "null":           { "ref":  "NullLiteral" },
+                "PI":             { "ref":  "PiLiteral" },
+                "E":              { "ref":  "EulerLiteral" },
+                "Tau":            { "ref":  "TauLiteral" },
+                "abs":            { "ref":  "Abs" },
+                "ceiling":        { "ref":  "Ceiling" },
+                "floor":          { "ref":  "Floor" },
+                "exp":            { "ref":  "Exp" },
+                "log":            { "ref":  "Log" },
+                "sqrt":           { "ref":  "Sqrt" },
+                "negate":         { "ref":  "Negate" },
+                "add":            { "ref":  "Add" },
+                "subtract":       { "ref":  "Subtract" },
+                "multiply":       { "ref":  "Multiply" },
+                "divide":         { "ref":  "Divide" },
+                "modulo":         { "ref":  "Modulo" },
+                "min":            { "ref":  "Min" },
+                "max":            { "ref":  "Max" },
+                "sum":            { "ref":  "Sum" },
+                "average":        { "ref":  "Average" },
+                "count":          { "ref":  "Count" },
+                "equal":          { "ref":  "Equal" },
+                "notEqual":       { "ref":  "NotEqual" },
+                "less":           { "ref":  "Less" },
+                "lessOrEqual":    { "ref":  "LessOrEqual" },
+                "greater":        { "ref":  "Greater" },
+                "greaterOrEqual": { "ref":  "GreaterOrEqual" },
+                "and":            { "ref":  "And" },
+                "or":             { "ref":  "Or" },
+                "true":           { "ref":  "TrueLiteral" },
+                "false":          { "ref":  "FalseLiteral" },
+                "not":            { "ref":  "Not" },
+                "lambda":         { "ref":  "Lambda" },
+                "filter":         { "ref":  "Filter" },
+                "any":            { "ref":  "Any" },
+                "all":            { "ref":  "All" },
+                "countWhere":     { "ref":  "CountWhere" },
+                "contains":       { "ref":  "Contains" },
+                "startsWith":     { "ref":  "StartsWith" },
+                "endsWith":       { "ref":  "EndsWith" }
             },
             "properties": {
 
@@ -367,25 +367,25 @@
                 "right": { "ref":  "Operation" }
             }
         },
-        "LessThan": {
+        "Less": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
             }
         },
-        "LessThanOrEqual": {
+        "LessOrEqual": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
             }
         },
-        "GreaterThan": {
+        "Greater": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
             }
         },
-        "GreaterThanOrEqual": {
+        "GreaterOrEqual": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }

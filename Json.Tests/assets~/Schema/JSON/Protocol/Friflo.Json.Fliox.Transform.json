@@ -7,10 +7,10 @@
             "oneOf": [
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Equal" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/NotEqual" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/LessThan" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/LessThanOrEqual" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/GreaterThan" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/GreaterThanOrEqual" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Less" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/LessOrEqual" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Greater" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/GreaterOrEqual" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/And" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Or" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/TrueLiteral" },
@@ -24,7 +24,7 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
             ],
             "properties": {
-                "op": { "enum": ["equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "filter", "any", "all", "contains", "startsWith", "endsWith"] }
+                "op": { "enum": ["equal", "notEqual", "less", "lessOrEqual", "greater", "greaterOrEqual", "and", "or", "true", "false", "not", "filter", "any", "all", "contains", "startsWith", "endsWith"] }
             },
             "required": [
                 "op"
@@ -61,10 +61,10 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Count" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Equal" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/NotEqual" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/LessThan" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/LessThanOrEqual" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/GreaterThan" },
-                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/GreaterThanOrEqual" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Less" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/LessOrEqual" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Greater" },
+                { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/GreaterOrEqual" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/And" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/Or" },
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/TrueLiteral" },
@@ -80,7 +80,7 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
             ],
             "properties": {
-                "op": { "enum": ["field", "string", "double", "int64", "null", "PI", "E", "Tau", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "modulo", "min", "max", "sum", "average", "count", "equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "lambda", "filter", "any", "all", "countWhere", "contains", "startsWith", "endsWith"] }
+                "op": { "enum": ["field", "string", "double", "int64", "null", "PI", "E", "Tau", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "modulo", "min", "max", "sum", "average", "count", "equal", "notEqual", "less", "lessOrEqual", "greater", "greaterOrEqual", "and", "or", "true", "false", "not", "lambda", "filter", "any", "all", "countWhere", "contains", "startsWith", "endsWith"] }
             },
             "required": [
                 "op"

@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 
                 bool IsPeter(Person p) => p.name == "Peter";
 
-                var  isAgeGreater35Op = new GreaterThan(new Field(".age"), new LongLiteral(35));
+                var  isAgeGreater35Op = new Greater(new Field(".age"), new LongLiteral(35));
                 var  isAgeGreater35  = isAgeGreater35Op.Filter();
                 bool IsAgeGreater35(Person p) => p.age > 35;
                 
@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var  hasChildPaul = new Any (new Field (".children"), "child", new Equal (new Field ("child.name"), new StringLiteral ("Paul"))).Filter();
                 bool HasChildPaul(Person p) => p.children.Any(child => child.name == "Paul");
                 
-                var hasChildAgeLess12 = new Any (new Field (".children"), "child", new LessThan (new Field ("child.age"), new LongLiteral (12))).Filter();
+                var hasChildAgeLess12 = new Any (new Field (".children"), "child", new Less (new Field ("child.age"), new LongLiteral (12))).Filter();
                 
                 IsTrue (HasChildPaul(Peter));
                 IsTrue (eval.Filter(peter, hasChildPaul));
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 Exception e;
                 // --- compare operations must not be reused
                 e = Throws<InvalidOperationException>(() => _ = new Equal(isAgeGreater35Op, isAgeGreater35Op).Filter());
-                AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: GreaterThan, instance: .age > 35", e.Message);
+                AreEqual("Used operation instance is not applicable for reuse. Use a clone. Type: Greater, instance: .age > 35", e.Message);
                 
                 // --- group operations must not be reused
                 var testGroupOp = new And(new List<FilterOperation> {new Equal(new StringLiteral("A"), new StringLiteral("B"))});
@@ -428,23 +428,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 AreEqual(".name != 'Peter'",  isNotEqual.Linq);
                 Cosmos  ("c.name != 'Peter'", isNotEqual.query.Cosmos);
             } {
-                var isLess =            (LessThan)          FromFilter((Person p) => p.age < 20);
-                AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
+                var isLess =            (Less)          FromFilter((Person p) => p.age < 20);
+                AssertJson(mapper, isLess, "{'op':'less','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age < 20",         isLess.Linq);
                 Cosmos  ("c.age < 20",        isLess.query.Cosmos);
             } {            
-                var isLessOrEqual =     (LessThanOrEqual)   FromFilter((Person p) => p.age <= 20);
-                AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
+                var isLessOrEqual =     (LessOrEqual)   FromFilter((Person p) => p.age <= 20);
+                AssertJson(mapper, isLessOrEqual, "{'op':'lessOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age <= 20",        isLessOrEqual.Linq);
                 Cosmos  ("c.age <= 20",       isLessOrEqual.query.Cosmos);
             } {
-                var isGreater =         (GreaterThan)       FromFilter((Person p) => p.age > 20);
-                AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
+                var isGreater =         (Greater)       FromFilter((Person p) => p.age > 20);
+                AssertJson(mapper, isGreater, "{'op':'greater','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age > 20",         isGreater.Linq);
                 Cosmos  ("c.age > 20",        isGreater.query.Cosmos);
             } {            
-                var isGreaterOrEqual =  (GreaterThanOrEqual)FromFilter((Person p) => p.age >= 20);
-                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
+                var isGreaterOrEqual =  (GreaterOrEqual)FromFilter((Person p) => p.age >= 20);
+                AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age >= 20",        isGreaterOrEqual.Linq);
                 Cosmos  ("c.age >= 20",       isGreaterOrEqual.query.Cosmos);
             }
@@ -452,12 +452,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- group operations
             {
                 var or =    (Or)        FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
-                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
+                AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 || .name == 'Peter'",    or.Linq);
                 Cosmos  ("c.age >= 20 || c.name = 'Peter'",   or.query.Cosmos);
             } {            
                 var and =   (And)       FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
-                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
+                AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 && .name == 'Peter'",    and.Linq);
                 Cosmos  ("c.age >= 20 && c.name = 'Peter'",   and.query.Cosmos);
             } {            
@@ -480,7 +480,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             // --- unary operations
             {
                 var isNot = (Not)       FromFilter((Person p) => !(p.age >= 20));
-                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
+                AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual("!(.age >= 20)",     isNot.Linq);
                 Cosmos  ("!(c.age >= 20)",    isNot.query.Cosmos);
             }

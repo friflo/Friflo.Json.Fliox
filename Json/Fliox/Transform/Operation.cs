@@ -49,10 +49,10 @@ namespace Friflo.Json.Fliox.Transform
     // --- FilterOperation
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
-    [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
-    [Fri.Polymorph(typeof(LessThanOrEqual),     Discriminant = "lessThanOrEqual")]
-    [Fri.Polymorph(typeof(GreaterThan),         Discriminant = "greaterThan")]
-    [Fri.Polymorph(typeof(GreaterThanOrEqual),  Discriminant = "greaterThanOrEqual")]
+    [Fri.Polymorph(typeof(Less),                Discriminant = "less")]
+    [Fri.Polymorph(typeof(LessOrEqual),         Discriminant = "lessOrEqual")]
+    [Fri.Polymorph(typeof(Greater),             Discriminant = "greater")]
+    [Fri.Polymorph(typeof(GreaterOrEqual),      Discriminant = "greaterOrEqual")]
     //
     [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
     [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
@@ -217,10 +217,10 @@ namespace Friflo.Json.Fliox.Transform
                 case Add                _:  return 3;
                 case Subtract           _:  return 3;
                 // --- binary compare
-                case GreaterThan        _:  return 4;
-                case GreaterThanOrEqual _:  return 4;
-                case LessThan           _:  return 4;
-                case LessThanOrEqual    _:  return 4;
+                case Greater            _:  return 4;
+                case GreaterOrEqual     _:  return 4;
+                case Less               _:  return 4;
+                case LessOrEqual        _:  return 4;
                 case NotEqual           _:  return 5;
                 case Equal              _:  return 5;
                 // -- n-ary logical
@@ -236,10 +236,10 @@ namespace Friflo.Json.Fliox.Transform
     // --- FilterOperation
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
-    [Fri.Polymorph(typeof(LessThan),            Discriminant = "lessThan")]
-    [Fri.Polymorph(typeof(LessThanOrEqual),     Discriminant = "lessThanOrEqual")]
-    [Fri.Polymorph(typeof(GreaterThan),         Discriminant = "greaterThan")]
-    [Fri.Polymorph(typeof(GreaterThanOrEqual),  Discriminant = "greaterThanOrEqual")]
+    [Fri.Polymorph(typeof(Less),                Discriminant = "less")]
+    [Fri.Polymorph(typeof(LessOrEqual),         Discriminant = "lessOrEqual")]
+    [Fri.Polymorph(typeof(Greater),             Discriminant = "greater")]
+    [Fri.Polymorph(typeof(GreaterOrEqual),      Discriminant = "greaterOrEqual")]
     //
     [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
     [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]

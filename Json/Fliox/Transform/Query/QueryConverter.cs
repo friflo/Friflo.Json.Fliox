@@ -250,12 +250,12 @@ namespace Friflo.Json.Fliox.Transform.Query
             var rightOp = TraceExpression(binary.Right, cx);
             switch (binary.NodeType) {
                 // --- binary comparison operations
-                case ExpressionType.Equal:              return new Equal                (leftOp, rightOp);
-                case ExpressionType.NotEqual:           return new NotEqual             (leftOp, rightOp);
-                case ExpressionType.LessThan:           return new LessThan             (leftOp, rightOp);
-                case ExpressionType.LessThanOrEqual:    return new LessThanOrEqual      (leftOp, rightOp);
-                case ExpressionType.GreaterThan:        return new GreaterThan          (leftOp, rightOp);
-                case ExpressionType.GreaterThanOrEqual: return new GreaterThanOrEqual   (leftOp, rightOp);
+                case ExpressionType.Equal:              return new Equal            (leftOp, rightOp);
+                case ExpressionType.NotEqual:           return new NotEqual         (leftOp, rightOp);
+                case ExpressionType.LessThan:           return new Less             (leftOp, rightOp);
+                case ExpressionType.LessThanOrEqual:    return new LessOrEqual      (leftOp, rightOp);
+                case ExpressionType.GreaterThan:        return new Greater          (leftOp, rightOp);
+                case ExpressionType.GreaterThanOrEqual: return new GreaterOrEqual   (leftOp, rightOp);
                 
                 // --- group operations:
                 case ExpressionType.OrElse:             return new Or (new List<FilterOperation> {(FilterOperation)leftOp, (FilterOperation)rightOp});

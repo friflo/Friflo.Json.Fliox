@@ -73,10 +73,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     }
 
     // --- non-associative comparison operations -> call Order() --- 
-    public sealed class LessThan : BinaryBoolOp
+    public sealed class Less : BinaryBoolOp
     {
-        public LessThan() { }
-        public LessThan(Operation left, Operation right) : base(left, right) { }
+        public Less() { }
+        public Less(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName => "<";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<", left, right);
@@ -96,10 +96,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public sealed class LessThanOrEqual : BinaryBoolOp
+    public sealed class LessOrEqual : BinaryBoolOp
     {
-        public LessThanOrEqual() { }
-        public LessThanOrEqual(Operation left, Operation right) : base(left, right) { }
+        public LessOrEqual() { }
+        public LessOrEqual(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName => "<=";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "<=", left, right);
@@ -119,10 +119,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public sealed class GreaterThan : BinaryBoolOp
+    public sealed class Greater : BinaryBoolOp
     {
-        public GreaterThan() { }
-        public GreaterThan(Operation left, Operation right) : base(left, right) { }
+        public Greater() { }
+        public Greater(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName => ">";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">", left, right);
@@ -142,10 +142,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public sealed class GreaterThanOrEqual : BinaryBoolOp
+    public sealed class GreaterOrEqual : BinaryBoolOp
     {
-        public GreaterThanOrEqual() { }
-        public GreaterThanOrEqual(Operation left, Operation right) : base(left, right) { }
+        public GreaterOrEqual() { }
+        public GreaterOrEqual(Operation left, Operation right) : base(left, right) { }
         
         public   override string    OperationName => ">=";
         public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, ">=", left, right);

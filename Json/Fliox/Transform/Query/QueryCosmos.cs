@@ -55,19 +55,19 @@ namespace Friflo.Json.Fliox.Transform.Query
                     left    = Traverse(notEqual.left);
                     right   = Traverse(notEqual.right);
                     return $"{left} != {right}";
-                case LessThan lessThan:
+                case Less lessThan:
                     left    = Traverse(lessThan.left);
                     right   = Traverse(lessThan.right);
                     return $"{left} < {right}";
-                case LessThanOrEqual lessThanOrEqual:
+                case LessOrEqual lessThanOrEqual:
                     left    = Traverse(lessThanOrEqual.left);
                     right   = Traverse(lessThanOrEqual.right);
                     return $"{left} <= {right}";
-                case GreaterThan greaterThan:
+                case Greater greaterThan:
                     left    = Traverse(greaterThan.left);
                     right   = Traverse(greaterThan.right);
                     return $"{left} > {right}";
-                case GreaterThanOrEqual greaterThanOrEqual:
+                case GreaterOrEqual greaterThanOrEqual:
                     left    = Traverse(greaterThanOrEqual.left);
                     right   = Traverse(greaterThanOrEqual.right);
                     return $"{left} >= {right}";

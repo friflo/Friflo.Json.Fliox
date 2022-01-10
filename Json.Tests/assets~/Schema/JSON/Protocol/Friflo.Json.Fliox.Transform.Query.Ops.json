@@ -452,11 +452,11 @@
             ],
             "additionalProperties": false
         },
-        "LessThan": {
+        "Less": {
             "type": "object",
             "extends": { "$ref": "#/definitions/BinaryBoolOp" },
             "properties": {
-                "op":    { "enum": ["lessThan"] },
+                "op":    { "enum": ["less"] },
                 "left":  { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
                 "right": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
             },
@@ -467,11 +467,11 @@
             ],
             "additionalProperties": false
         },
-        "LessThanOrEqual": {
+        "LessOrEqual": {
             "type": "object",
             "extends": { "$ref": "#/definitions/BinaryBoolOp" },
             "properties": {
-                "op":    { "enum": ["lessThanOrEqual"] },
+                "op":    { "enum": ["lessOrEqual"] },
                 "left":  { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
                 "right": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
             },
@@ -482,11 +482,11 @@
             ],
             "additionalProperties": false
         },
-        "GreaterThan": {
+        "Greater": {
             "type": "object",
             "extends": { "$ref": "#/definitions/BinaryBoolOp" },
             "properties": {
-                "op":    { "enum": ["greaterThan"] },
+                "op":    { "enum": ["greater"] },
                 "left":  { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
                 "right": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
             },
@@ -497,11 +497,11 @@
             ],
             "additionalProperties": false
         },
-        "GreaterThanOrEqual": {
+        "GreaterOrEqual": {
             "type": "object",
             "extends": { "$ref": "#/definitions/BinaryBoolOp" },
             "properties": {
-                "op":    { "enum": ["greaterThanOrEqual"] },
+                "op":    { "enum": ["greaterOrEqual"] },
                 "left":  { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
                 "right": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
             },

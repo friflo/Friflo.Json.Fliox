@@ -145,20 +145,20 @@ export class NotEqual extends BinaryBoolOp {
     op     : "notEqual";
 }
 
-export class LessThan extends BinaryBoolOp {
-    op     : "lessThan";
+export class Less extends BinaryBoolOp {
+    op     : "less";
 }
 
-export class LessThanOrEqual extends BinaryBoolOp {
-    op     : "lessThanOrEqual";
+export class LessOrEqual extends BinaryBoolOp {
+    op     : "lessOrEqual";
 }
 
-export class GreaterThan extends BinaryBoolOp {
-    op     : "greaterThan";
+export class Greater extends BinaryBoolOp {
+    op     : "greater";
 }
 
-export class GreaterThanOrEqual extends BinaryBoolOp {
-    op     : "greaterThanOrEqual";
+export class GreaterOrEqual extends BinaryBoolOp {
+    op     : "greaterOrEqual";
 }
 
 export abstract class BinaryLogicalOp extends FilterOperation {

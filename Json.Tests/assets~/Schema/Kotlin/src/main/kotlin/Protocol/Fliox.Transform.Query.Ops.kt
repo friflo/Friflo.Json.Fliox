@@ -212,29 +212,29 @@ data class NotEqual (
 ) : BinaryBoolOp()
 
 @Serializable
-@SerialName("lessThan")
-data class LessThan (
+@SerialName("less")
+data class Less (
     override  val left  : Operation,
     override  val right : Operation,
 ) : BinaryBoolOp()
 
 @Serializable
-@SerialName("lessThanOrEqual")
-data class LessThanOrEqual (
+@SerialName("lessOrEqual")
+data class LessOrEqual (
     override  val left  : Operation,
     override  val right : Operation,
 ) : BinaryBoolOp()
 
 @Serializable
-@SerialName("greaterThan")
-data class GreaterThan (
+@SerialName("greater")
+data class Greater (
     override  val left  : Operation,
     override  val right : Operation,
 ) : BinaryBoolOp()
 
 @Serializable
-@SerialName("greaterThanOrEqual")
-data class GreaterThanOrEqual (
+@SerialName("greaterOrEqual")
+data class GreaterOrEqual (
     override  val left  : Operation,
     override  val right : Operation,
 ) : BinaryBoolOp()
