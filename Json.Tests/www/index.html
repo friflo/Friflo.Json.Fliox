@@ -227,9 +227,8 @@
         #toggleDescription                      { min-width: 33px;}
         .miniHeader #toggleDescription          { min-width: 60px;}
 
-        toggleTheme          { padding: 4px; background: var(--background3); font-size: 12px;
-                                border: 1px solid var(--tab-border); border-radius: 2px; cursor: pointer;  }
-        toggleTheme::before  { content: "☀"; display: inline-block; text-align: center; }
+        toggleTheme          { padding: 0px; font-size: 12px; }
+        toggleTheme::before  { content: "☀"; text-align: center; }
         [data-theme="dark"]
         toggleTheme::before  { content: "🌘︎"; }
         
@@ -387,7 +386,10 @@
       </div>
     </span>
     <span title="toggle theme dark / light" style="border-bottom: 1px solid var(--tab-border); padding-left: 5px; padding-right: 5px;">
-        <toggleTheme onclick='app.toggleTheme()'></toggleTheme>
+        <div onclick='app.toggleTheme()' style="width: 22px; height: 22px; background: var(--background3);
+            display: flex; justify-content: center; align-items: center; border: 1px solid var(--tab-border); border-radius: 2px; cursor: pointer;">
+            <toggleTheme ></toggleTheme>
+        </div>
     </span>
     
   </div>
