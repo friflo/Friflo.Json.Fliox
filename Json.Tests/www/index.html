@@ -246,7 +246,7 @@
         .tabContent     { display: none; border-top: none; background-color: var(--background); }
 
         .applyFilter        { cursor: pointer; border-radius: 2px; width: 28px; height: 14px; display:inline-block; text-align: center;
-                              margin-right: 1px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; }
+                              margin-right: 1px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; margin-top: 2px; }
         .applyFilter:hover  { background-color: var(--tab-hover); }
         .applyFilter:active { background-color: var(--background3); font-size: 10px; box-shadow: inset 1px 1px 1px #00000010; }
 
@@ -453,7 +453,7 @@
     <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden; margin-top: -2px;">
       <div style="float: right; overflow-y: hidden; height: 28px;">
-         <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden;"
+         <a id="removeFilter" style="width: 20px; color: red; font-weight: bold; visibility: hidden; margin-left: 2px;"
             href="#" class="applyFilter" title="Remove filter" onclick="app.removeFilter()">✖</a><!--
       --><a href="#" class="applyFilter" title="Apply filter" onclick="app.applyFilter()">🔎</a><!--
       --><a id="filterLink" title="open filter in new tab" style="opacity: 0.7;" href="#" target="_blank" onclick="app.updateFilterLink()"><!--
