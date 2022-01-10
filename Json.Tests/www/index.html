@@ -401,7 +401,7 @@
 
   <!-- ------------------------------------------- Playground ------------------------------------------- -->
   <div style="grid-area: body-playground; overflow: hidden; padding-top: 10px;" id="playground" class="tabContent">
-    <div style="grid-area: pl-header; overflow:hidden; white-space:nowrap; padding-left: 7px;">
+    <div style="grid-area: pl-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
       <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
       <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
 
@@ -462,7 +462,7 @@
          <small style="margin-left: 5px; opacity: 0.5;" title="parameter o used for lambda expression body">o&nbsp;=></small>
       </div>
     </div>
-    <div style="grid-area: ex-filter-input;">
+    <div style="grid-area: ex-filter-input; display: flex;">
       <input id="entityFilter" style="visibility: hidden;" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="lambda expression predicate ⊂ LINQ where"
         onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
     </div>
@@ -471,7 +471,7 @@
     <div style="grid-area: ex-schema; overflow:auto; white-space:nowrap; text-align: center; overflow:hidden;">
       <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
     </div>
-    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px;">
+    <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px;">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
         <div style="width:4px;"></div>
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
@@ -494,12 +494,12 @@
     <div style="grid-area: ex-link-db; ; overflow:hidden; padding-left: 7px;">
         <small><a href="./rest" target="_blank" rel="noopener noreferrer" title="open databases hosted by Hub in new tab">databases</a></small>
     </div>
-    <div style="grid-area: ex-link-container; overflow:hidden; white-space:nowrap">
+    <div style="grid-area: ex-link-container; overflow:hidden; white-space:nowrap; padding-left: 2px;">
         <small>
         <span id="readEntitiesDB"><span style="opacity: 0.4;">database/</span></span><span id="readEntities"><span style="opacity: 0.4;">container</span></span>
         </small>
     </div>
-    <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap">
+    <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
         <span id="entityHeader" style="display: none;">
         <small id="entityId">entity id</small>
         </span>
