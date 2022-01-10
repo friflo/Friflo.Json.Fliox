@@ -72,6 +72,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 case TokenType.Sub:             return "-";
                 case TokenType.Mul:             return "*";
                 case TokenType.Div:             return "/";
+                case TokenType.Mod:             return "%";
                 //
                 case TokenType.Greater:         return ">";
                 case TokenType.GreaterOrEqual:  return ">=";
@@ -110,6 +111,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 //             name,                    arity,  precedence
                 new TokenShape(TokenType.Mul,           Binary, 2),
                 new TokenShape(TokenType.Div,           Binary, 2),
+                new TokenShape(TokenType.Mod,           Binary, 2),
                 new TokenShape(TokenType.Add,           Binary, 3),
                 new TokenShape(TokenType.Sub,           Binary, 3),
                 //

@@ -38,6 +38,7 @@ namespace Friflo.Json.Fliox.Transform
     [Fri.Polymorph(typeof(Subtract),            Discriminant = "subtract")]
     [Fri.Polymorph(typeof(Multiply),            Discriminant = "multiply")]
     [Fri.Polymorph(typeof(Divide),              Discriminant = "divide")]
+    [Fri.Polymorph(typeof(Modulo),              Discriminant = "modulo")]
     //  
     [Fri.Polymorph(typeof(Min),                 Discriminant = "min")]
     [Fri.Polymorph(typeof(Max),                 Discriminant = "max")]
@@ -212,6 +213,7 @@ namespace Friflo.Json.Fliox.Transform
                 // --- binary arithmetic
                 case Multiply           _:  return 2;
                 case Divide             _:  return 2;
+                case Modulo             _:  return 2;
                 case Add                _:  return 3;
                 case Subtract           _:  return 3;
                 // --- binary compare

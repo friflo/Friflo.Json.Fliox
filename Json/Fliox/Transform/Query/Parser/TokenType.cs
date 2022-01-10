@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         Sub,            //   -
         Mul,            //   *
         Div,            //   /
+        Mod,            //   %
         //
         Greater,        //   >
         GreaterOrEqual, //   >=

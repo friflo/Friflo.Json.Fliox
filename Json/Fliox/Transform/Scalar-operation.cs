@@ -130,6 +130,19 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   / other.LongValue);
         }
         
+        public Scalar Modulo(in Scalar other, Operation operation) {
+            if (!AreNumbers(other, operation, out Scalar result))
+                return result;
+            if (IsDouble) {
+                if (other.IsDouble)
+                    return new Scalar(DoubleValue % other.DoubleValue);
+                return     new Scalar(DoubleValue % other.LongValue);
+            }
+            if (other.IsDouble)
+                return     new Scalar(LongValue   % other.DoubleValue);
+            return         new Scalar(LongValue   % other.LongValue);
+        }
+        
         private bool AreNumbers(in Scalar other, Operation operation, out Scalar result) {
             if (IsNumber && other.IsNumber) {
                 result = default;

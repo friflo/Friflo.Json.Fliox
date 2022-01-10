@@ -107,6 +107,10 @@ export class Divide extends BinaryArithmeticOp {
     op     : "divide";
 }
 
+export class Modulo extends BinaryArithmeticOp {
+    op     : "modulo";
+}
+
 export abstract class BinaryAggregateOp extends Operation {
     field  : Field;
     arg    : string;

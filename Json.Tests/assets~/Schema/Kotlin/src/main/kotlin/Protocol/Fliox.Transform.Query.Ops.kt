@@ -148,6 +148,13 @@ data class Divide (
 ) : BinaryArithmeticOp()
 
 @Serializable
+@SerialName("modulo")
+data class Modulo (
+    override  val left  : Operation,
+    override  val right : Operation,
+) : BinaryArithmeticOp()
+
+@Serializable
 @SerialName("min")
 data class Min (
     override  val field : Field,

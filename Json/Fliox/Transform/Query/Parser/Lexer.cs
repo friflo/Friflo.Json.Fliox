@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                     return new Token(TokenType.Sub, pos);
                 case '*':   return new Token(TokenType.Mul, pos);
                 case '/':   return new Token(TokenType.Div, pos);
+                case '%':   return new Token(TokenType.Mod, pos);
                 case '(':   return new Token(TokenType.BracketOpen, pos);
                 case ')':   return new Token(TokenType.BracketClose, pos);
                 case '>':   

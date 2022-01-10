@@ -106,4 +106,23 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             return evalResult;
         }
     }
+    
+    public sealed class Modulo : BinaryArithmeticOp
+    {
+        public Modulo() { }
+        public Modulo(Operation left, Operation right) : base(left, right) { }
+
+        public   override string    OperationName => "%";
+        public   override void      AppendLinq(AppendCx cx) => AppendLinqBinary(cx, "%", left, right);
+        
+        internal override EvalResult Eval(EvalCx cx) {
+            evalResult.Clear();
+            var eval = new BinaryResult(left.Eval(cx), right.Eval(cx));
+            foreach (var pair in eval) {
+                var result = pair.left.Modulo(pair.right, this);
+                evalResult.Add(result);
+            }
+            return evalResult;
+        }
+    }
 }

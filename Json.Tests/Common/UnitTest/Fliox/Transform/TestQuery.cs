@@ -333,6 +333,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var divide   = new Divide(new LongLiteral(10), new LongLiteral(2));
                 AssertJson(mapper, divide, "{'op':'divide','left':{'op':'int64','value':10},'right':{'op':'int64','value':2}}");
                 AreEqual(5,         eval.Eval("{}", divide.Lambda()));
+            } {
+                var modulo   = new Modulo(new LongLiteral(7), new LongLiteral(3));
+                AssertJson(mapper, modulo, "{'op':'modulo','left':{'op':'int64','value':7},'right':{'op':'int64','value':3}}");
+                AreEqual(1,         eval.Eval("{}", modulo.Lambda()));
             }
             
             // --- unary aggregate operations

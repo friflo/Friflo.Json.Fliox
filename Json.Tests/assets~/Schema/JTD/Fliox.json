@@ -153,6 +153,7 @@
                 "subtract":           { "ref":  "Subtract" },
                 "multiply":           { "ref":  "Multiply" },
                 "divide":             { "ref":  "Divide" },
+                "modulo":             { "ref":  "Modulo" },
                 "min":                { "ref":  "Min" },
                 "max":                { "ref":  "Max" },
                 "sum":                { "ref":  "Sum" },
@@ -304,6 +305,12 @@
             }
         },
         "Divide": {
+            "properties": {
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
+            }
+        },
+        "Modulo": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }

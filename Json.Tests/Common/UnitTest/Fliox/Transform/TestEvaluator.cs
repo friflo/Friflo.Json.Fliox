@@ -51,6 +51,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var result = Eval ("o => Ceiling(2.5)", Json, eval, out error);
                     AreEqual(3, result);
                 }
+                // --- binary arithmetic
+                {
+                    var result = Eval ("o => 1 + 2", Json, eval, out error);
+                    AreEqual(3, result);
+                } {
+                    var result = Eval ("o => 1 - 2", Json, eval, out error);
+                    AreEqual(-1, result);
+                } {
+                    var result = Eval ("o => 2 * 3", Json, eval, out error);
+                    AreEqual(6, result);
+                } {
+                    var result = Eval ("o => 6 / 2", Json, eval, out error);
+                    AreEqual(3, result);
+                } {
+                    var result = Eval ("o => 7 % 3", Json, eval, out error);
+                    AreEqual(1, result);
+                }
                 // --- null
                 {
                     var result = Eval ("o => Abs(o.nullVal)", Json, eval, out error);

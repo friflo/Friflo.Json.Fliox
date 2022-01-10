@@ -313,6 +313,21 @@
             ],
             "additionalProperties": false
         },
+        "Modulo": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/BinaryArithmeticOp" },
+            "properties": {
+                "op":    { "enum": ["modulo"] },
+                "left":  { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" },
+                "right": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/Operation" }
+            },
+            "required": [
+                "op",
+                "left",
+                "right"
+            ],
+            "additionalProperties": false
+        },
         "Min": {
             "type": "object",
             "extends": { "$ref": "#/definitions/BinaryAggregateOp" },

@@ -266,6 +266,7 @@ namespace Friflo.Json.Fliox.Transform.Query
                 case ExpressionType.Subtract:           return new Subtract             (leftOp, rightOp);
                 case ExpressionType.Multiply:           return new Multiply             (leftOp, rightOp);
                 case ExpressionType.Divide:             return new Divide               (leftOp, rightOp);
+                case ExpressionType.Modulo:             return new Modulo               (leftOp, rightOp);
 
                 default:
                     throw NotSupported($"Method not supported. method: {binary}", cx);

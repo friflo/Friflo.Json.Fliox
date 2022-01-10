@@ -18,6 +18,7 @@ import { Add }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Subtract }           from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Multiply }           from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Divide }             from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { Modulo }             from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Min }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Max }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Sum }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
@@ -63,6 +64,7 @@ export type Operation_Union =
     | Subtract
     | Multiply
     | Divide
+    | Modulo
     | Min
     | Max
     | Sum
@@ -110,6 +112,7 @@ export abstract class Operation {
         | "subtract"
         | "multiply"
         | "divide"
+        | "modulo"
         | "min"
         | "max"
         | "sum"

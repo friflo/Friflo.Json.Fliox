@@ -103,6 +103,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             } {
                 var op = Parse("1/2", out _);
                 AreEqual("1 / 2", op.Linq);
+            } {
+                var op = Parse("7%3", out _);
+                AreEqual("7 % 3", op.Linq);
             }
             // --- comparison operation
             {
@@ -526,6 +529,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var op = Parse("1 / 2 * 3", out _);
                 That(op, Is.TypeOf<Multiply>());
                 AreEqual("1 / 2 * 3", op.Linq);
+            } {
+                var op = Parse("1 * 2 % 3", out _);
+                That(op, Is.TypeOf<Modulo>());
+                AreEqual("1 * 2 % 3", op.Linq);
             }
             // --- test with scopes
             {
