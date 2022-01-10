@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Schema
             --value:    #c7907a;
             --type:     #5a7eff;
             --keyword:  #bbb;
-            --color:    #ddd;       --highlight:        #fff;
+            --color:    #fff;       --highlight:        #fff;
             --bg:       #000;       --bg-highlight:     #4040c0;
             --bg2:      #1e1e1e;
             --bg-border:#666;
