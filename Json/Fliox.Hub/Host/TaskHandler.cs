@@ -63,20 +63,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task<DbContainers> DbContainers (Command<Empty> command) {
             var database        = command.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
-            dbContainers.id     = command.DatabaseName;
+            dbContainers.id     = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbContainers;
         }
         
         private static DbCommands DbCommands (Command<Empty> command) {
             var database        = command.Database;  
             var dbCommands      = database.GetDbCommands();
-            dbCommands.id       = command.DatabaseName;
+            dbCommands.id       = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbCommands;
         }
         
         private static DbSchema DbSchema (Command<Empty> command) {
             var database        = command.Database;  
-            var databaseName    = command.DatabaseName;
+            var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
