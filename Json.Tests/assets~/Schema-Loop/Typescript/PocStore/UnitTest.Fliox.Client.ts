@@ -31,6 +31,7 @@ export class Employee {
 }
 
 export interface PocStore {
+    // --- containers
     orders     : { [key: string]: Order };
     customers  : { [key: string]: Customer };
     articles   : { [key: string]: Article };
@@ -38,7 +39,7 @@ export interface PocStore {
     employees  : { [key: string]: Employee };
     types      : { [key: string]: TestType };
 
-    // commands
+    // --- commands
     TestCommand  (param: TestCommand) : boolean;
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;

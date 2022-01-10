@@ -11,6 +11,7 @@ import { int16 }        from "./Standard"
 import { uint8 }        from "./Standard"
 
 export interface EntityIdStore {
+    // --- containers
     guidEntities       : { [key: string]: GuidEntity };
     intEntities        : { [key: string]: IntEntity };
     intEntitiesAuto    : { [key: string]: AutoIntEntity };
@@ -21,7 +22,7 @@ export interface EntityIdStore {
     entityRefs         : { [key: string]: EntityRefs };
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
 
-    // commands
+    // --- commands
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;

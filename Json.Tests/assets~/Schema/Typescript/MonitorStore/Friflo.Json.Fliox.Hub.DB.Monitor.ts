@@ -9,12 +9,13 @@ import { int32 }        from "./Standard"
 import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks"
 
 export interface MonitorStore {
+    // --- containers
     hosts      : { [key: string]: HostInfo };
     clients    : { [key: string]: ClientInfo };
     users      : { [key: string]: UserInfo };
     histories  : { [key: string]: HistoryInfo };
 
-    // commands
+    // --- commands
     ClearStats   (param: ClearStats) : ClearStatsResult;
     DbInfo       (param: any) : DbInfo;
     DbContainers (param: any) : DbContainers;

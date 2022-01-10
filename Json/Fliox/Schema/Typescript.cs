@@ -102,6 +102,8 @@ namespace Friflo.Json.Fliox.Schema
             if (unionType == null) {
                 var typeName = type.Commands != null ? "interface" : type.IsAbstract ? "abstract class" : "class";
                 sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
+                if (type.Commands != null)
+                    sb.AppendLine("    // --- containers");
             } else {
                 sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
@@ -145,7 +147,7 @@ namespace Friflo.Json.Fliox.Schema
         
         private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
             var commands        = type.Commands;
-            sb.AppendLine("\n    // commands");
+            sb.AppendLine("\n    // --- commands");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in type.Commands) {
                 var commandParam    = GetTypeName(command.param,  context);
