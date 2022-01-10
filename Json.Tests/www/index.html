@@ -161,12 +161,13 @@
 
         .dropbtn {
             color:      var(--color);
-            opacity:    0.5;
+            background-color: var(--background);
             padding:    0px;
             border:     0px solid #aaa;
-            width:      23px;
-            height:     23px;
+            width:      22px;
+            height:     22px;
         }
+        .dropbtn::before { opacity: 0.4; content: "▼"; }
         .authInput { width: 100px; }
         .dropdown {
             position: relative;
@@ -189,9 +190,9 @@
             text-decoration: none;
             display: block;
         }
-        .dropdown-content div:hover         { background-color: #ddd;}
+        .dropdown-content div:hover         { background-color: #ddd; }
         .dropdown:hover .dropdown-content   { display: block;}
-        .dropdown:hover .dropbtn            { background-color: grey;}
+        .dropdown:hover .dropbtn            { background-color: var(--tab-hover); }
 
         
 
@@ -227,10 +228,15 @@
         #toggleDescription                      { min-width: 33px;}
         .miniHeader #toggleDescription          { min-width: 60px;}
 
-        toggleTheme          { padding: 0px; font-size: 12px; }
-        toggleTheme::before  { content: "☀"; text-align: center; }
+        .toggleTheme        { width: 22px; height: 22px; background: var(--background); border: 1px solid var(--tab-border); border-radius: 2px;
+                              display: flex; justify-content: center; align-items: center;  cursor: pointer; }
+        .toggleTheme:hover  { background-color: var(--tab-hover); }
+        
+        toggleTheme         { padding: 0px; font-size: 12px; }
+
+        toggleTheme::before { content: "☀"; text-align: center; }
         [data-theme="dark"]
-        toggleTheme::before  { content: "🌘︎"; }
+        toggleTheme::before { content: "🌘︎"; }
         
 
         .tab            { cursor: pointer; background-color: var(--tab-color); color: var(--color)!important;;
@@ -372,7 +378,7 @@
         <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
         <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
         <div class="dropdown">
-          <button class="dropbtn">▼</button>
+          <button class="dropbtn"></button>
           <div class="dropdown-content">
             <div onclick="app.selectUser(this)">admin</div>
             <div onclick="app.selectUser(this)">cluster-admin</div>
@@ -386,8 +392,7 @@
       </div>
     </span>
     <span title="toggle theme dark / light" style="border-bottom: 1px solid var(--tab-border); padding-left: 5px; padding-right: 5px;">
-        <div onclick='app.toggleTheme()' style="width: 22px; height: 22px; background: var(--background3);
-            display: flex; justify-content: center; align-items: center; border: 1px solid var(--tab-border); border-radius: 2px; cursor: pointer;">
+        <div onclick='app.toggleTheme()' class="toggleTheme">
             <toggleTheme ></toggleTheme>
         </div>
     </span>
