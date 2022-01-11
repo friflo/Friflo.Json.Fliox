@@ -548,6 +548,7 @@ class App {
             var database        = dbSchema.id;
             const containerRefs = {};
             const rootSchema    = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
+            dbSchema._rootSchema = rootSchema;
             const containers    = rootSchema.properties;
             for (const containerName in containers) {
                 const container = containers[containerName];
@@ -722,10 +723,9 @@ class App {
     }
 
     getEntityType(database, container) {
-        const schema    = this.databaseSchemas[database];
-        if (!schema)
-            return this.schemaLess;        
-        var dbSchema    = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
+        const dbSchema  = this.databaseSchemas[database]?._rootSchema;
+        if (!dbSchema)
+            return this.schemaLess; 
         var def         = dbSchema.properties[container].additionalProperties._resolvedDef;
         return this.getType(database, def);
     }
@@ -1041,13 +1041,25 @@ class App {
         this.setEntityValue(database, container, "");
     }
 
+    getEntityKeyName (database, container) {
+        const schema = this.databaseSchemas[database]._rootSchema;
+        if (schema) {
+            const containerType = schema.properties[container].additionalProperties._resolvedDef;
+            if (containerType.key) {
+                // container has a property "key", if primary key is not "id"
+                return containerType.key;
+            }
+        }
+        return "id";
+    }
+
     async saveEntity () {
         const database  = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
         let id;
         try {
-            var keyName = "id"; // could be different. keyName can be retrieved from schema
+            const keyName = this.getEntityKeyName(database, container);
             id = JSON.parse(jsonValue)[keyName];
         } catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
@@ -1236,9 +1248,8 @@ class App {
 
         this.layoutEditors();
 
-        const schema        = this.databaseSchemas[database];
-        const service       = schema ? schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName] : null;
-        const signature     = service ? service.commands[commandName] : null
+        const schema        = this.databaseSchemas[database]._rootSchema;
+        const signature     = schema ? schema.commands[commandName] : null
         const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
         const tags          = this.getCommandTags(database, commandName, signature);
         commandSignature.innerHTML      = tags.label;
