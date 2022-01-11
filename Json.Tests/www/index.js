@@ -787,6 +787,9 @@ class App {
     }
 
     listCommands (database, dbCommands, dbContainer) {
+        this.explorerEditCommandVisible(false);
+        this.clearEditor();
+        this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";
         readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
@@ -889,7 +892,6 @@ class App {
     }
 
     async loadEntities (p, query) {
-        // if (p.clearSelection) this.setEditorHeader();
         const storedFilter = this.filters[p.database]?.[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
         entityFilter.value = filter;
@@ -981,6 +983,7 @@ class App {
     async loadEntity (p, preserveHistory, selection) {
         this.explorerEditCommandVisible(false);
         this.layoutEditors();
+        this.setEditorHeader("entity");
 
         if (!preserveHistory) {
             this.storeCursor();
@@ -992,7 +995,6 @@ class App {
             container:  p.container,
             entityId:   p.id
         };
-        this.setEditorHeader("entity");
         entityType.innerHTML    = this.getEntityType (p.database, p.container);
         const entityLink        = this.getEntityLink(p.database, p.container, p.id);
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
@@ -1028,13 +1030,13 @@ class App {
     clearEntity (database, container) {
         this.explorerEditCommandVisible(false);
         this.layoutEditors();
+        this.setEditorHeader("entity");
 
         this.entityIdentity = {
             database:   database,
             container:  container,
             entityId:   undefined
         };
-        this.setEditorHeader("entity");
         entityType.innerHTML    = this.getEntityType (database, container);
         writeResult.innerHTML   = "";
         entityId.innerHTML      = this.getEntityLink(database, container);
@@ -1123,6 +1125,11 @@ class App {
             this.entityModels[url] = this.entityModel;
         }
         return this.entityModel;
+    }
+
+    clearEditor() {
+        // could show some basic database information instead
+        this.entityEditor.setModel (null);       
     }
 
     setEntityValue (database, container, value) {
@@ -1388,6 +1395,7 @@ class App {
         // --- create entity editor
         {
             this.entityEditor = monaco.editor.create(entityContainer, { });
+            this.entityEditor.setModel(null);
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
                     return;

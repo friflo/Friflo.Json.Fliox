@@ -378,7 +378,7 @@
         <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
         <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
         <div class="dropdown">
-          <button class="dropbtn"></button>
+          <button class="dropbtn" aria-label="selectUser"></button>
           <div class="dropdown-content">
             <div onclick="app.selectUser(this)">admin</div>
             <div onclick="app.selectUser(this)">cluster-admin</div>
