@@ -555,7 +555,7 @@ class App {
                 containerRefs[container.additionalProperties.$ref] = containerName;
             }
             this.databaseSchemas[database] = dbSchema;
-            dbSchema.containerSchemas = {}
+            dbSchema._containerSchemas = {}
 
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
@@ -586,7 +586,7 @@ class App {
                     var uri                 = "http://" + database + path;
                     var containerName       = containerRefs[schemaId]
                     if (containerName) {
-                        dbSchema.containerSchemas[containerName] = definition;
+                        dbSchema._containerSchemas[containerName] = definition;
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
                     var definitionEntry = {
@@ -723,10 +723,10 @@ class App {
     }
 
     getEntityType(database, container) {
-        const dbSchema  = this.databaseSchemas[database]?._rootSchema;
+        const dbSchema  = this.databaseSchemas[database];
         if (!dbSchema)
             return this.schemaLess; 
-        var def         = dbSchema.properties[container].additionalProperties._resolvedDef;
+        var def         = dbSchema._containerSchemas[container];
         return this.getType(database, def);
     }
 
@@ -1042,9 +1042,9 @@ class App {
     }
 
     getEntityKeyName (database, container) {
-        const schema = this.databaseSchemas[database]._rootSchema;
+        const schema = this.databaseSchemas[database];
         if (schema) {
-            const containerType = schema.properties[container].additionalProperties._resolvedDef;
+            const containerType = schema._containerSchemas[container];
             if (containerType.key) {
                 // container has a property "key", if primary key is not "id"
                 return containerType.key;
@@ -1136,7 +1136,7 @@ class App {
         if (!databaseSchema)
             return;
         try {
-            const containerSchema   = databaseSchema.containerSchemas[container];
+            const containerSchema   = databaseSchema._containerSchemas[container];
             this.decorateJson(this.entityEditor, value, containerSchema, database);
         } catch (error) {
             console.error("decorateJson", error);
@@ -1431,7 +1431,7 @@ class App {
             const ast               = parse(value, { loc: true });
             const database          = this.entityIdentity.database;
             const databaseSchema    = this.databaseSchemas[database];
-            const containerSchema   = databaseSchema.containerSchemas[this.entityIdentity.container];
+            const containerSchema   = databaseSchema._containerSchemas[this.entityIdentity.container];
 
             let entity;
             this.addRelationsFromAst(ast, containerSchema, (value, container) => {
