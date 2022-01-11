@@ -521,6 +521,7 @@ class App {
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
                 var params = { database: databaseName, container: containerName };
+                this.clearEntity(databaseName, containerName);
                 this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
@@ -906,6 +907,7 @@ class App {
         readEntitiesDB.innerHTML = `<a title="open database in new tab" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
+
         const response           = await this.restRequest("GET", null, p.database, p.container, null, query);
 
         const reload = `<span class="reload" title='reload container' onclick='app.loadEntities(${JSON.stringify(p)})'></span>`
@@ -967,8 +969,8 @@ class App {
 
     async loadEntity (p, preserveHistory, selection) {
         this.explorerEditCommandVisible(false);
-
         this.layoutEditors();
+
         if (!preserveHistory) {
             this.storeCursor();
             this.entityHistory[++this.entityHistoryPos] = { route: {...p} };
@@ -981,16 +983,13 @@ class App {
         };
         this.setEditorHeader("entity");
         entityType.innerHTML    = this.getEntityType (p.database, p.container);
-        const containerRoute    = { database: p.database, container: p.container }
-        let entityLink          = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${p.container}</a>`;
-        entityLink             += `<a title="open entity in new tab" href="./rest/${p.database}/${p.container}/${p.id}" target="_blank" rel="noopener noreferrer">${p.id}</a>`
+        const entityLink        = this.getEntityLink(p.database, p.container, p.id);
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        
         let content   = await response.text();
         content = this.formatJson(this.formatEntities, content);
-        const reload = `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`
-        entityId.innerHTML = entityLink + reload;
+        entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.id);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -999,6 +998,36 @@ class App {
         this.setEntityValue(p.database, p.container, content);
         if (selection)  this.entityEditor.setSelection(selection);        
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
+    }
+
+    getEntityLink (database, container, id) {
+        const containerRoute    = { database: database, container: container }
+        let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
+        if (id) {
+            link += `<a title="open entity in new tab" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
+        }
+        return link;
+    }
+
+    getEntityReload (database, container, id) {
+        const p = { database, container, id };
+        return `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`
+    }
+
+    clearEntity (database, container) {
+        this.explorerEditCommandVisible(false);
+        this.layoutEditors();
+
+        this.entityIdentity = {
+            database:   database,
+            container:  container,
+            entityId:   undefined
+        };
+        this.setEditorHeader("entity");
+        entityType.innerHTML    = this.getEntityType (database, container);
+        writeResult.innerHTML   = "";
+        entityId.innerHTML      = this.getEntityLink(database, container);
+        this.setEntityValue(database, container, "");
     }
 
     async saveEntity () {
@@ -1025,7 +1054,8 @@ class App {
         // add as HTML element to entityExplorer if new
         if (this.entityIdentity.entityId != id) {
             this.entityIdentity.entityId = id;
-            entityId.innerHTML = id;
+            const entityLink    = this.getEntityLink(database, container, id);
+            entityId.innerHTML  = entityLink + this.getEntityReload(database, container, id);
             var liId = document.createElement('li');
             liId.innerText = id;
             liId.classList = "selected";
