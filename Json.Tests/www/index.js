@@ -716,6 +716,13 @@ class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
     }
 
+    getSchemaExports(database) {
+        const schema        = this.databaseSchemas[database];
+        if (!schema)
+            return this.schemaLess;
+        return `<a title="open database schema in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
+    }
+
     getType(database, def) {
         var ns          = def._namespace;
         var name        = def._typeName;
@@ -743,6 +750,10 @@ class App {
     }
 
     schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
+
+    getDatabaseLink(database) {
+        return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`
+    }
 
     setEditorHeader(show) {
         var displayEntity  = show == "entity" ? "" : "none";
@@ -786,13 +797,21 @@ class App {
         this.entityEditor.setValue(content);
     }
 
+    setDatabaseInfo(database, dbContainer) {
+        databaseName.innerHTML      = this.getDatabaseLink(database);
+        databaseSchema.innerHTML    = this.getSchemaType(database);
+        databaseExports.innerHTML   = this.getSchemaExports(database);
+        databaseType.innerHTML      = dbContainer.databaseType;        
+    }
+
     listCommands (database, dbCommands, dbContainer) {
-        this.explorerEditCommandVisible(false);
-        this.clearEditor();
+        this.setDatabaseInfo(database, dbContainer);
+        this.setExplorerEditor("dbInfo");
+
         this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";
-        readEntitiesDB.innerHTML    = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
+        readEntitiesDB.innerHTML    = this.getDatabaseLink(database);
         readEntities.innerHTML      = "";
 
         var ulDatabase  = document.createElement('ul');
@@ -906,7 +925,7 @@ class App {
         filterRow.style.visibility   = "";
         entityFilter.style.visibility  = "";
         catalogSchema.innerHTML  = this.getSchemaType(p.database) + ' · ' + this.getEntityType(p.database, p.container);
-        readEntitiesDB.innerHTML = `<a title="open database in new tab" href="./rest/${p.database}" target="_blank" rel="noopener noreferrer">${p.database}/</a>`;
+        readEntitiesDB.innerHTML = this.getDatabaseLink(p.database) + "/";
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
 
@@ -981,8 +1000,7 @@ class App {
     }
 
     async loadEntity (p, preserveHistory, selection) {
-        this.explorerEditCommandVisible(false);
-        this.layoutEditors();
+        this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
 
         if (!preserveHistory) {
@@ -1028,8 +1046,7 @@ class App {
     }
 
     clearEntity (database, container) {
-        this.explorerEditCommandVisible(false);
-        this.layoutEditors();
+        this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
 
         this.entityIdentity = {
@@ -1125,11 +1142,6 @@ class App {
             this.entityModels[url] = this.entityModel;
         }
         return this.entityModel;
-    }
-
-    clearEditor() {
-        // could show some basic database information instead
-        this.entityEditor.setModel (null);       
     }
 
     setEntityValue (database, container, value) {
@@ -1244,16 +1256,22 @@ class App {
 
     commandEditWidth = "60px";
 
-    explorerEditCommandVisible(visible) {
-        commandValueContainer.style.display = visible ? "" : "none";
-        commandParamBar.style.display       = visible ? "" : "none";
-        explorerEdit.style.gridTemplateRows = visible ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
+    setExplorerEditor(edit) {
+        console.log("editor:", edit);
+        const commandActive = edit == "command";
+        commandValueContainer.style.display = commandActive ? "" : "none";
+        commandParamBar.style.display       = commandActive ? "" : "none";
+        explorerEdit.style.gridTemplateRows = commandActive ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
+
+        const editorActive              = edit == "command" || edit == "entity";
+        entityContainer.style.display   = editorActive      ? "" : "none";
+        dbInfo.style.display            = edit == "dbInfo"  ? "" : "none";
+        //
+        this.layoutEditors();
     }
 
     showCommand(database, commandName) {
-        this.explorerEditCommandVisible(true);
-
-        this.layoutEditors();
+        this.setExplorerEditor("command");
 
         const schema        = this.databaseSchemas[database]._rootSchema;
         const signature     = schema ? schema.commands[commandName] : null
@@ -1349,7 +1367,7 @@ class App {
 
     async setupEditors ()
     {
-        this.explorerEditCommandVisible(false);
+        this.setExplorerEditor("entity");
         
         // --- setup JSON Schema for monaco
         var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model

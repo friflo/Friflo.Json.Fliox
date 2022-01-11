@@ -533,8 +533,26 @@
              class="vbar" onmousedown="app.startDrag(event, 'explorerEdit', id, false)">
              <small style="vertical-align: top; opacity: 0.7;">command response</small>
         </div>
-        <div style="grid-area: edit-response; overflow: hidden;">
-            <div class="editor" id="entityContainer" style="display: block;"></div>
+        <div style="grid-area: edit-response; overflow: hidden; display: flex;">
+            <div id="entityContainer" style="flex-grow: 1; display: none;"></div>
+            <div id="dbInfo" style="flex-grow: 1; display: none; padding: 10px; font-size: 13px; border-top: 2px solid var(--tab-border);">
+                <div>
+                    <table style="border-spacing: 10px 0;">
+                        <tr>
+                            <td style="opacity: 0.6;">database</td> <td><span id="databaseName"></span></td>
+                        </tr>
+                        <tr style="opacity: 0.6;">
+                            <td style="padding-bottom: 10px;">type</td>   <td><span id="databaseType"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="opacity: 0.6;">schema</td> <td><span id="databaseSchema"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="opacity: 0.6;">exports</td> <td><span id="databaseExports" style="opacity: unset;"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
 
     </div>
