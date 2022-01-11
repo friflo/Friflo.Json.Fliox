@@ -942,6 +942,17 @@ class App {
         entityExplorer.appendChild(ulIds);
     }
 
+    findContainerEntity (id) {
+        const ulIds= entityExplorer.querySelector("ul");
+        const children = Array.prototype.slice.call(ulIds.children);
+        for(const child of children){
+            if (child.innerText == id) {
+                return child;
+            }
+        }
+        return null;
+    }
+
     entityIdentity = {
         database:   undefined,
         container:  undefined,
@@ -1056,11 +1067,14 @@ class App {
             this.entityIdentity.entityId = id;
             const entityLink    = this.getEntityLink(database, container, id);
             entityId.innerHTML  = entityLink + this.getEntityReload(database, container, id);
-            var liId = document.createElement('li');
-            liId.innerText = id;
-            liId.classList = "selected";
-            const ulIds= entityExplorer.querySelector("ul");
-            ulIds.append(liId);
+            let liId = this.findContainerEntity(id);
+            if (!liId) {
+                const ulIds= entityExplorer.querySelector("ul");
+                liId = document.createElement('li');
+                liId.innerText = id;
+                liId.classList = "selected";
+                ulIds.append(liId);
+            }
             this.setSelectedEntity(liId);
             liId.scrollIntoView();
             this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, id:id }};
