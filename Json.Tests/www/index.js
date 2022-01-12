@@ -1413,7 +1413,6 @@ class App {
         // --- create entity editor
         {
             this.entityEditor = monaco.editor.create(entityContainer, { });
-            this.entityEditor.setModel(null);
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
                     return;
