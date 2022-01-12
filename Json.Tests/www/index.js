@@ -480,13 +480,10 @@ class App {
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
-            const databaseName = selectedElement.childNodes[1].innerText;
-            var dbCommands  = commands.find  (c => c.id == databaseName);
-            var dbContainer = dbContainers.find  (c => c.id == databaseName);
-            catalogSchema.innerHTML  = this.getSchemaType(databaseName)
+            const databaseName  = selectedElement.childNodes[1].innerText;
+            var dbCommands      = commands.find  (c => c.id == databaseName);
+            var dbContainer     = dbContainers.find  (c => c.id == databaseName);
             this.listCommands(databaseName, dbCommands, dbContainer);
-            // var style = path[1].childNodes[1].style;
-            // style.display = style.display == "none" ? "" : "none";
         }
         let firstDatabase = true;
         for (var dbContainer of dbContainers) {
@@ -810,6 +807,7 @@ class App {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
+        catalogSchema.innerHTML  = this.getSchemaType(database)
         this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";
