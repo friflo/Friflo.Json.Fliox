@@ -1257,7 +1257,7 @@ class App {
     commandEditWidth = "60px";
 
     setExplorerEditor(edit) {
-        console.log("editor:", edit);
+        // console.log("editor:", edit);
         const commandActive = edit == "command";
         commandValueContainer.style.display = commandActive ? "" : "none";
         commandParamBar.style.display       = commandActive ? "" : "none";
