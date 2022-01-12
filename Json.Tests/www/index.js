@@ -1367,7 +1367,7 @@ class App {
 
     async setupEditors ()
     {
-        this.setExplorerEditor("entity");
+        // this.setExplorerEditor("none");
         
         // --- setup JSON Schema for monaco
         var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model

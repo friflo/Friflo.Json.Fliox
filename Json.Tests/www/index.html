@@ -524,16 +524,17 @@
 
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>
 
-    <div id="explorerEdit" style="grid-area: ex-entity; grid-template-rows: 0 0 1fr; overflow: hidden;">
+    <!-- used overflow: visible; to allow editor tooltip warning displayed outside editor rectangle -->
+    <div id="explorerEdit" style="grid-area: ex-entity; grid-template-rows: 0 0 1fr; overflow: visible;">
 
-        <div id="commandValueContainer" style="grid-area: edit-command; display: unset; overflow: hidden;">
+        <div id="commandValueContainer" style="grid-area: edit-command; display: unset;">
             <div class="editor" id="commandValue"></div>
         </div>
         <div id="commandParamBar" style="grid-area: edit-bar; cursor: ns-resize; background: var(--background); text-align: center;"
              class="vbar" onmousedown="app.startDrag(event, 'explorerEdit', id, false)">
              <small style="vertical-align: top; opacity: 0.7;">command response</small>
         </div>
-        <div style="grid-area: edit-response; overflow: hidden; display: flex;">
+        <div style="grid-area: edit-response; display: flex;">
             <div id="entityContainer" style="flex-grow: 1; display: none;"></div>
             <div id="dbInfo" style="flex-grow: 1; display: none; padding: 10px; font-size: 13px; border-top: 2px solid var(--tab-border);">
                 <div>
