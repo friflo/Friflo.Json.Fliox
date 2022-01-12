@@ -267,7 +267,7 @@
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'><div>DbInfo</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'><div>DbHubInfo</div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
@@ -312,7 +312,7 @@
             <td><cmd>AuthenticateUser</cmd></td><td>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></td>
         </tr>
         <tr>
-            <td><cmd>DbInfo</cmd></td>          <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'>DbInfo</a></td>
+            <td><cmd>DbHubInfo</cmd></td>       <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>DbHubInfo</a></td>
         </tr>
         <tr>
             <td><cmd>DbContainers</cmd></td>    <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></td>
@@ -626,19 +626,22 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
     </h2>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbInfo'>DbInfo</a>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>DbHubInfo</a>
         <keyword>class</keyword>
     </h3>
     <table>
         <tr>
-            <td><field>hubVersion</field></td>     <td><type>string</type></td>
+            <td><field>version</field></td>     <td><type>string</type></td>
         </tr>
         <tr>
-            <td><field>hubDescription</field>?</td> <td><type>string</type></td>
+            <td><field>hostName</field>?</td>    <td><type>string</type></td>
         </tr>
         <tr>
-            <td><field>hubWebsite</field>?</td>     <td><type>string</type></td>
+            <td><field>description</field>?</td> <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>website</field>?</td>     <td><type>string</type></td>
         </tr>
     </table>
     </div>

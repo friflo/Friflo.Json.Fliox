@@ -452,14 +452,14 @@ class App {
         this.selectedEntity.elem.classList.add("selected");
     }
 
-    dbInfo = {}
+    hubInfo = {}
 
     async loadCluster () {
         const tasks = [
             { "task": "query",  "container": "containers", "filterJson":{ "op": "true" }},
             { "task": "query",  "container": "schemas",    "filterJson":{ "op": "true" }},
             { "task": "query",  "container": "commands",   "filterJson":{ "op": "true" }},
-            { "task": "command","name": "DbInfo" }
+            { "task": "command","name": "DbHubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await this.postRequestTasks("cluster", tasks);
@@ -472,10 +472,10 @@ class App {
         const dbContainers  = content.containers[0].entities;
         const dbSchemas     = content.containers[1].entities;
         const commands      = content.containers[2].entities;
-        this.dbInfo         = content.tasks[3].result;
+        this.hubInfo         = content.tasks[3].result;
         //
-        let   description   = this.dbInfo.hubDescription
-        const website       = this.dbInfo.hubWebsite
+        let   description   = this.hubInfo.description
+        const website       = this.hubInfo.website
         if (description || website) {
             if (!description)
                 description = "Website";

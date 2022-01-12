@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public const string DbEcho          = "DbEcho";
         
-        public const string DbInfo          = "DbInfo";
+        public const string DbHubInfo       = "DbHubInfo";
         
         public const string DbContainers    = "DbContainers";
 
