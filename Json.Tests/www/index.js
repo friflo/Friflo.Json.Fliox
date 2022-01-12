@@ -419,17 +419,18 @@ class App {
     openTab (tabName) {
         this.activeTab = tabName;
         this.setClass(document.body, !this.showDescription, "miniHeader")
-        var tabContents = document.getElementsByClassName("tabContent");
-        var tabs = document.getElementsByClassName("tab");
-        const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
-        const headerHeight = getComputedStyle(document.body).getPropertyValue('--header-height');
-        gridTemplateRows[0] = this.showDescription ? headerHeight : "0";
+        var tabContents         = document.getElementsByClassName("tabContent");
+        var tabs                = document.getElementsByClassName("tab");
+        const gridTemplateRows  = document.body.style.gridTemplateRows.split(" ");
+        const headerHeight      = getComputedStyle(document.body).getPropertyValue('--header-height');
+        gridTemplateRows[0]     = this.showDescription ? headerHeight : "0";
         for (var i = 0; i < tabContents.length; i++) {
-            const tabContent = tabContents[i]
-            tabContent.style.display = tabContent.id == tabName ? "grid" : "none";
-            const isActiveTab = tabContent.id == tabName;
+            const tabContent            = tabContents[i]
+            const isActiveContent       = tabContent.id == tabName;
+            tabContent.style.display    = isActiveContent ? "grid" : "none";
+            gridTemplateRows[i + 2]     = isActiveContent ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
+            const isActiveTab           = tabs[i].getAttribute('value') == tabName;
             this.setClass(tabs[i], isActiveTab, "selected");
-            gridTemplateRows[i + 2] = isActiveTab ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
         }
         document.body.style.gridTemplateRows = gridTemplateRows.join(" ");
         this.layoutEditors();
@@ -1509,7 +1510,7 @@ class App {
     showMinimap     = false;
     formatEntities  = false;
     formatResponses = true;
-    activeTab       = "playground";
+    activeTab       = "explorer";
     showDescription = true;
     filters         = {};
 
