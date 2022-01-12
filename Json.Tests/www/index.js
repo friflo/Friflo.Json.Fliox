@@ -466,7 +466,7 @@ class App {
             return 
         }
         const dbContainers  = content.containers[0].entities;
-        const dbSchemas       = content.containers[1].entities;
+        const dbSchemas     = content.containers[1].entities;
         const commands      = content.containers[2].entities;
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
@@ -816,11 +816,11 @@ class App {
 
         var ulDatabase  = document.createElement('ul');
         ulDatabase.classList = "database"
-        var typeLabel = document.createElement('div');
+        /* var typeLabel = document.createElement('div');
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
-        ulDatabase.append(typeLabel)
+        ulDatabase.append(typeLabel); */
         var commandLabel = document.createElement('div');
-        const label = '<small style="opacity:0.5" title="open database commands in new tab">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;commands</small>';
+        const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
         ulDatabase.append(commandLabel)
 
