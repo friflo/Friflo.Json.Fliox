@@ -1269,8 +1269,10 @@ class App {
     }
 
     commandEditWidth = "60px";
+    activeExplorerEditor = undefined;
 
     setExplorerEditor(edit) {
+        this.activeExplorerEditor = edit;
         // console.log("editor:", edit);
         const commandActive = edit == "command";
         commandValueContainer.style.display = commandActive ? "" : "none";
@@ -1429,6 +1431,8 @@ class App {
             this.entityEditor = monaco.editor.create(entityContainer, { });
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
+                    return;
+                if (this.activeExplorerEditor != "entity")
                     return;
                 // console.log('mousedown - ', e);
                 const value     = this.entityEditor.getValue();
