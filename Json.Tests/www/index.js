@@ -537,6 +537,8 @@ class App {
         this.createEntitySchemas(dbSchemas)
         catalogExplorer.textContent = "";
         catalogExplorer.appendChild(ulCatalogs);
+
+        this.listCommands(commands[0].id, commands[0], dbContainers[0]);
     }
 
     databaseSchemas = {};
@@ -819,10 +821,10 @@ class App {
         /* var typeLabel = document.createElement('div');
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
         ulDatabase.append(typeLabel); */
-        var commandLabel = document.createElement('div');
+        var commandLabel = document.createElement('li');
         const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
-        ulDatabase.append(commandLabel)
+        ulDatabase.append(commandLabel);
 
         var liCommands  = document.createElement('li');
         ulDatabase.appendChild(liCommands);
