@@ -438,11 +438,12 @@
       </span>
     </div>
 
-    <div  style="grid-area: pl-request; overflow:hidden;">
+    <!-- used overflow: visible; to allow editor tooltip warning displayed outside editor rectangle -->
+    <div  style="grid-area: pl-request; overflow: visible;">
         <div class="editor" id="requestContainer"></div>
     </div>
     <div id="plBar" style="grid-area: pl-bar; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'playground', id, true)"></div>
-    <div class="editor" style="grid-area: pl-response; overflow:hidden;">
+    <div class="editor" style="grid-area: pl-response; overflow: visible;">
         <div class="editor" id="responseContainer"></div>
     </div>
   </div>
