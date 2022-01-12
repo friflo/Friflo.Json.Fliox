@@ -34,7 +34,9 @@ export class DbCommands {
 }
 
 export class DbInfo {
-    hubVersion  : string;
+    hubVersion      : string;
+    hubDescription? : string | null;
+    hubWebsite?     : string | null;
 }
 
 export class DbList {

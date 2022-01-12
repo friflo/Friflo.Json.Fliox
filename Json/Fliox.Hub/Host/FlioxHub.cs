@@ -88,6 +88,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         /// 
         public   readonly   string              hostName;
+        public              string              description;
+        public              string              website;
+        
         public   readonly   string              Version = "0.0.1";
         public   readonly   SharedEnv           sharedEnv;
         
@@ -109,6 +112,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.database   = database;
             this.hostName   = hostName ?? "host";
         }
+        
+        public FlioxHub SetInfo(string description, string website = null) {
+            this.description    = description;
+            this.website        = website;
+            return this;
+        }        
        
         public   virtual    void    AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
         public   virtual    void    RemoveEventTarget   (in JsonKey clientId) {}

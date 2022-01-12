@@ -54,8 +54,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static DbInfo DbInfo (Command<Empty> command) {
-            var info = new DbInfo {
-                hubVersion = command.Hub.Version
+            var hub     = command.Hub;
+            var info    = new DbInfo {
+                hubVersion      = hub.Version,
+                hubDescription  = hub.description,
+                hubWebsite      = hub.website
             };
             return info;
         }

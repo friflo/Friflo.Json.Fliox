@@ -5,7 +5,9 @@
         "DbInfo": {
             "type": "object",
             "properties": {
-                "hubVersion": { "type": "string" }
+                "hubVersion":     { "type": "string" },
+                "hubDescription": { "type": ["string", "null"] },
+                "hubWebsite":     { "type": ["string", "null"] }
             },
             "required": [
                 "hubVersion"
