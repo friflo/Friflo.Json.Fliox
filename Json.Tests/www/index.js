@@ -479,7 +479,7 @@ class App {
         if (description || website) {
             if (!description)
                 description = "Website";
-            hubInfo.innerHTML = website ? `<a href="${website}">${description}</a>` : description;
+            hubInfo.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${description}</a>` : description;
         }
 
         var ulCatalogs = document.createElement('ul');
