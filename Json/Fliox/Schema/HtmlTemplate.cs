@@ -235,7 +235,9 @@ namespace Friflo.Json.Fliox.Schema
             <h2 class='title'><a href='#'>{{schemaName}}</a></h2>
         </div>
         <div style='flex-grow: 1;'></div>
-        <div class='languages'><a href='../index.html'>Typescript, C#, Kotlin, JSON Schema</a></div>
+        <div class='languages' style='background-color: #363bff;'>
+            <a style='color: white;' href='../index.html'>Typescript, C#, Kotlin, JSON Schema</a>
+        </div>
         <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
         <div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>
     </div>
