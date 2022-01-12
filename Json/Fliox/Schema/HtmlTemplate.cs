@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Schema
             --keyword:  #bbb;
             --color:    #fff;       --highlight:        #fff;
             --bg:       #000;       --bg-highlight:     #4040c0;
-            --bg2:      #1e1e1e;
+            --bg2:      #000;
             --bg-border:#666;
             --selected: #404040;    --selected-shadow:  #404040;    --selected-offset: 0px; --selected-radius: 1px;
             --link:   	#d0adf0;
@@ -232,7 +232,7 @@ namespace Friflo.Json.Fliox.Schema
     <div style='display:flex; margin-left: 10px;'>
         <div style='align-self: self-end;'>
             <div style='flex-grow: 1;'></div>
-            <h2 class='title'><a href='#'>{{schemaName}}</a></h2>
+            <h2 class='title'><a style='color: var(--color)' href='#'>{{schemaName}}</a></h2>
         </div>
         <div style='flex-grow: 1;'></div>
         <div class='languages' style='background-color: #363bff;'>
