@@ -1,5 +1,8 @@
 /// <reference types="./node_modules/monaco-editor/monaco" />
 
+import { CommandType, FieldType, JsonSchema, JsonType } from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+
+
 declare const parse : any; // https://www.npmjs.com/package/json-to-ast
 
 declare global {
@@ -9,6 +12,33 @@ declare global {
         app: App;
     }
 }
+
+declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
+    interface JsonType {
+        _typeName:  string;
+        _namespace: string;
+        _resolvedDef: JsonType;
+    }
+
+    interface JsonSchema {
+        _resolvedDef: JsonType;
+    }
+
+    interface FieldType {
+        _resolvedDef: JsonType;
+    }
+}
+
+interface DbSchema {
+    id:                 string;
+    schemaName:         string;
+    schemaPath:         string;
+    jsonSchemas:        { [key: string] : JsonSchema};
+
+    _rootSchema:        JsonType;
+    _containerSchemas : { [key: string] : JsonType };
+}
+
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 type Resource = {
@@ -583,9 +613,9 @@ class App {
         this.listCommands(commands[0].id, commands[0], dbContainers[0]);
     }
 
-    databaseSchemas = {};
+    databaseSchemas: { [key: string]: DbSchema} = {};
 
-    createEntitySchemas (dbSchemas: any) {
+    createEntitySchemas (dbSchemas: DbSchema[]) {
         const schemaMap = {};
         for (const dbSchema of dbSchemas) {
             const jsonSchemas     = dbSchema.jsonSchemas;
@@ -649,7 +679,7 @@ class App {
         this.addSchemas(monacoSchemas);
     }
 
-    resolveRefs(jsonSchemas: any) {
+    resolveRefs(jsonSchemas: { [key: string] : JsonSchema }) {
         for (const schemaPath in jsonSchemas) {
             // if (schemaPath == "Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json") debugger;
             const schema      = jsonSchemas[schemaPath];
@@ -657,7 +687,7 @@ class App {
         }
     }
 
-    resolveNodeRefs(jsonSchemas: any, schema: any, node: any) {
+    resolveNodeRefs(jsonSchemas: { [key: string] : JsonSchema }, schema: JsonSchema, node: JsonSchema) {
         const nodeType = typeof node;
         switch (nodeType) {
         /* case "array":
@@ -689,11 +719,11 @@ class App {
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
-    addFileMatcher(database: string, dbSchema: any, schemaMap: any) {
+    addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: any) {
         const jsonSchemas     = dbSchema.jsonSchemas;
         const schemaName      = dbSchema.schemaName as string;
         const schemaPath      = dbSchema.schemaPath as string;
-        const jsonSchema      = jsonSchemas[schemaPath];
+        const jsonSchema      = jsonSchemas[schemaPath] as JsonSchema;
         const dbType          = jsonSchema.definitions[schemaName];
         const containers      = dbType.properties;
         for (const containerName in containers) {
@@ -743,7 +773,7 @@ class App {
         }
     }
 
-    getResolvedType (type: any, schemaPath: string) {
+    getResolvedType (type: FieldType, schemaPath: string) {
         const $ref = type.$ref;
         if (!$ref)
             return type;
@@ -767,7 +797,7 @@ class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
 
-    getType(database: string, def: any) {
+    getType(database: string, def: JsonType) {
         const ns          = def._namespace;
         const name        = def._typeName;
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
@@ -781,7 +811,7 @@ class App {
         return this.getType(database, def);
     }
 
-    getTypeLabel(database: string, type: any) {
+    getTypeLabel(database: string, type: FieldType) {
         if (type.type) {
             return type.type;
         }
@@ -808,7 +838,7 @@ class App {
         el("commandHeader").style.display = displayCommand;
     }
 
-    getCommandTags(database: string, command: string, signature: any) {
+    getCommandTags(database: string, command: string, signature: CommandType) {
         let label = this.schemaLess;
         if (signature) {
             const param   = this.getTypeLabel(database, signature.param);
@@ -1207,7 +1237,7 @@ class App {
         }
     }
 
-    decorateJson(editor: monaco.editor.IStandaloneCodeEditor, value: string, containerSchema, database: string) {
+    decorateJson(editor: monaco.editor.IStandaloneCodeEditor, value: string, containerSchema: JsonType, database: string) {
         JSON.parse(value);  // early out on invalid JSON
         // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
         // 2.) bundle.js created fom npm module 'json-to-ast' via:
@@ -1233,7 +1263,7 @@ class App {
         editor.deltaDecorations(oldDecorations, newDecorations);
     }
 
-    addRelationsFromAst(ast: any, schema: any, addRelation: any) {
+    addRelationsFromAst(ast: any, schema: JsonType, addRelation: any) {
         if (!ast.children) // ast is a 'Literal'
             return;
         for (const child of ast.children) {
