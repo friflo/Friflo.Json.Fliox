@@ -71,7 +71,7 @@ class App {
             connection = null;
         }
         const loc     = window.location;
-        const nr      = ("" + (++websocketCount)).padStart(3);
+        const nr      = ("" + (++websocketCount)).padStart(3, "0");
         const uri     = `ws://${loc.host}/ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
