@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Main
 {
     internal  static partial class  Program
     {
-        // Example requests for server at: /Json.Tests/www/example-requests/
+        // Example requests for server at: /Json.Tests/www~/example-requests/
         //
         //   Note:
         // Http server may require a permission to listen to the given host/port.
@@ -27,8 +27,8 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserName
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
-            var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json.Tests/www");
-        //  var hostHub = CreateMiniHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www");
+            var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json.Tests/www~");
+        //  var hostHub = CreateMiniHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www~");
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
             server.Run();
