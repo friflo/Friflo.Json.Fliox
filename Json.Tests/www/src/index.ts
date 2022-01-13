@@ -19,29 +19,33 @@ var requestStart:   number;
 var subSeq          = 0;
 var subCount        = 0;
 
-const hubInfoEl         = document.getElementById("hubInfo");
-const responseState     = document.getElementById("response-state");
-const subscriptionCount = document.getElementById("subscriptionCount");
-const subscriptionSeq   = document.getElementById("subscriptionSeq");
-const selectExample     = document.getElementById("example") as HTMLSelectElement;
-const socketStatus      = document.getElementById("socketStatus");
-const reqIdElement      = document.getElementById("req");
-const ackElement        = document.getElementById("ack");
-const cltElement        = document.getElementById("clt");
-const defaultUser       = document.getElementById("user")  as HTMLInputElement;
-const defaultToken      = document.getElementById("token") as HTMLInputElement;
-const catalogExplorer   = document.getElementById("catalogExplorer");
-const entityExplorer    = document.getElementById("entityExplorer");
-const writeResult       = document.getElementById("writeResult");
-const readEntitiesDB    = document.getElementById("readEntitiesDB");
-const readEntities      = document.getElementById("readEntities");
-const catalogSchema     = document.getElementById("catalogSchema");
-const entityType        = document.getElementById("entityType");
-const entityId          = document.getElementById("entityId");
-const entityFilter      = document.getElementById("entityFilter") as HTMLInputElement;
-const filterRow         = document.getElementById("filterRow");
-const commandSignature  = document.getElementById("commandSignature");
-const commandLink       = document.getElementById("commandLink");
+function el<T extends HTMLElement> (id: string) : T{
+    return document.getElementById(id) as T;
+}
+
+const hubInfoEl         = el("hubInfo");
+const responseState     = el("response-state");
+const subscriptionCount = el("subscriptionCount");
+const subscriptionSeq   = el("subscriptionSeq");
+const selectExample     = el("example") as HTMLSelectElement;
+const socketStatus      = el("socketStatus");
+const reqIdElement      = el("req");
+const ackElement        = el("ack");
+const cltElement        = el("clt");
+const defaultUser       = el("user")  as HTMLInputElement;
+const defaultToken      = el("token") as HTMLInputElement;
+const catalogExplorer   = el("catalogExplorer");
+const entityExplorer    = el("entityExplorer");
+const writeResult       = el("writeResult");
+const readEntitiesDB    = el("readEntitiesDB");
+const readEntities      = el("readEntities");
+const catalogSchema     = el("catalogSchema");
+const entityType        = el("entityType");
+const entityId          = el("entityId");
+const entityFilter      = el("entityFilter") as HTMLInputElement;
+const filterRow         = el("filterRow");
+const commandSignature  = el("commandSignature");
+const commandLink       = el("commandLink");
 
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
@@ -51,10 +55,6 @@ const commandLink       = document.getElementById("commandLink");
     });
 } */
 
-
-function el<T extends HTMLElement> (id: string) : T{
-    return document.getElementById(id) as T;
-}
 
 class App {
 
@@ -795,10 +795,10 @@ class App {
     setEditorHeader(show) {
         const displayEntity  = show == "entity" ? "" : "none";
         const displayCommand = show == "command" ? "" : "none";
-        document.getElementById("entityTools")  .style.display = displayEntity;        
-        document.getElementById("entityHeader") .style.display = displayEntity;        
-        document.getElementById("commandTools") .style.display = displayCommand;
-        document.getElementById("commandHeader").style.display = displayCommand;
+        el("entityTools")  .style.display = displayEntity;        
+        el("entityHeader") .style.display = displayEntity;        
+        el("commandTools") .style.display = displayCommand;
+        el("commandHeader").style.display = displayCommand;
     }
 
     getCommandTags(database, command, signature) {
@@ -821,7 +821,7 @@ class App {
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
         if (!method) {
-            const commandAnchor =  document.getElementById("commandAnchor") as HTMLAnchorElement;
+            const commandAnchor =  el("commandAnchor") as HTMLAnchorElement;
             let commandValue = value == "null" ? "" : `&value=${value}`;
             const path = this.getRestPath( database, null, null, `command=${command}${commandValue}`)
             commandAnchor.href = path;
@@ -1387,12 +1387,12 @@ class App {
     entityEditor;
     commandValueEditor;
 
-    requestContainer        = document.getElementById("requestContainer");
-    responseContainer       = document.getElementById("responseContainer")
-    commandValueContainer   = document.getElementById("commandValueContainer");
-    commandParamBar         = document.getElementById("commandParamBar");
-    commandValue            = document.getElementById("commandValue");
-    entityContainer         = document.getElementById("entityContainer");
+    requestContainer        = el("requestContainer");
+    responseContainer       = el("responseContainer")
+    commandValueContainer   = el("commandValueContainer");
+    commandParamBar         = el("commandParamBar");
+    commandValue            = el("commandValue");
+    entityContainer         = el("entityContainer");
 
     allMonacoSchemas = [];
 
@@ -1521,7 +1521,7 @@ class App {
 
     setConfig(key, value) {
         this[key] = value;
-        const elem = document.getElementById(key);
+        const elem = el(key);
         if (elem instanceof HTMLInputElement) {
             elem.value   = value;
             elem.checked = value;
@@ -1641,8 +1641,8 @@ class App {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
         this.dragHorizontal = horizontal;
         this.dragOffset     = horizontal ? event.offsetX : event.offsetY
-        this.dragTemplate   = document.getElementById(template);
-        this.dragBar        = document.getElementById(bar);
+        this.dragTemplate   = el(template);
+        this.dragBar        = el(bar);
         document.body.style.cursor = "ew-resize";
         event.preventDefault();
     }
