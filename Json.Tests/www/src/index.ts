@@ -1,3 +1,15 @@
+/// <reference types="./node_modules/monaco-editor/monaco" />
+
+declare var parse : any; // https://www.npmjs.com/package/json-to-ast
+
+declare global {
+    interface Window {
+        appConfig: { monacoTheme: string };
+        setTheme(mode: string) : void;
+        app: App;
+    }
+}
+
 // --------------------------------------- WebSocket ---------------------------------------
 var connection:     WebSocket;
 var websocketCount  = 0;
@@ -30,21 +42,6 @@ const entityFilter      = document.getElementById("entityFilter") as HTMLInputEl
 const filterRow         = document.getElementById("filterRow");
 const commandSignature  = document.getElementById("commandSignature");
 const commandLink       = document.getElementById("commandLink");
-
-
-declare var monaco : any;
-declare var parse : any;
-
-
-declare global {
-    interface Window {
-        appConfig: { monacoTheme: string };
-        setTheme(mode: string) : void;
-        app: App;
-    }
-}
-
-
 
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {

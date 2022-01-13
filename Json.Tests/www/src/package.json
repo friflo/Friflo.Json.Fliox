@@ -6,6 +6,7 @@
     "tsc": "tsc -w"
   },
   "devDependencies": {
+    "monaco-editor": "^0.31.1",
     "typescript": "^4.3.5"
   },
   "dependencies": {}
