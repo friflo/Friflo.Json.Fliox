@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Schema
             --bg:       #000;       --bg-highlight:     #4040c0;
             --bg2:      #000;
             --bg-border:#666;
-            --selected: #404040;    --selected-shadow:  #404040;    --selected-offset: 0px; --selected-radius: 1px;
+            --selected: #303030;    --selected-shadow:  #303030;    --selected-offset: 0px; --selected-radius: 1px;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
         }
