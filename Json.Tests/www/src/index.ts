@@ -1,6 +1,6 @@
 /// <reference types="./node_modules/monaco-editor/monaco" />
 
-declare var parse : any; // https://www.npmjs.com/package/json-to-ast
+declare const parse : any; // https://www.npmjs.com/package/json-to-ast
 
 declare global {
     interface Window {
@@ -18,13 +18,13 @@ type Resource = {
 };
 
 // --------------------------------------- WebSocket ---------------------------------------
-var connection:     WebSocket;
-var websocketCount  = 0;
-var req             = 1;
-var clt             = null;
-var requestStart:   number;
-var subSeq          = 0;
-var subCount        = 0;
+let connection:         WebSocket;
+let websocketCount      = 0;
+let req                 = 1;
+let clt: string | null  = null;
+let requestStart: number;
+let subSeq              = 0;
+let subCount            = 0;
 
 function el<T extends HTMLElement> (id: string) : T{
     return document.getElementById(id) as T;
@@ -131,7 +131,7 @@ class App {
         connection.close();
     }
 
-    getCookie  (name) {
+    getCookie  (name: string) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
@@ -374,7 +374,7 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    getRestPath(database: string, container: string, id: string, query) {
+    getRestPath(database: string, container: string, id: string, query: string) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (id)         path = `${path}/${id}`;
@@ -503,7 +503,7 @@ class App {
         const dbContainers  = content.containers[0].entities;
         const dbSchemas     = content.containers[1].entities;
         const commands      = content.containers[2].entities;
-        this.hubInfo         = content.tasks[3].result;
+        this.hubInfo        = content.tasks[3].result;
         //
         let   description   = this.hubInfo.description
         const website       = this.hubInfo.website
@@ -689,7 +689,7 @@ class App {
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
-    addFileMatcher(database: string, dbSchema, schemaMap) {
+    addFileMatcher(database: string, dbSchema: any, schemaMap: any) {
         const jsonSchemas     = dbSchema.jsonSchemas;
         const schemaName      = dbSchema.schemaName as string;
         const schemaPath      = dbSchema.schemaPath as string;
@@ -1230,7 +1230,7 @@ class App {
             const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
         });
-        const decorations = editor.deltaDecorations(oldDecorations, newDecorations);
+        editor.deltaDecorations(oldDecorations, newDecorations);
     }
 
     addRelationsFromAst(ast: any, schema: any, addRelation: any) {

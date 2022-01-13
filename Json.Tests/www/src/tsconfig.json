@@ -5,7 +5,10 @@
         "outDir": "./",
         "sourceRoot": "./",
         "rootDir": "./",        
-        "sourceMap": true
+        "sourceMap": true,
+        "noImplicitThis": true,
+        "strictFunctionTypes": true,
+        "noUnusedLocals": true, /* Report errors on unused locals. */
     },
     "include": ["**/*"],
     "exclude": []
