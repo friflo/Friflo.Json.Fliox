@@ -38,10 +38,8 @@
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
+      <!-- exclude folders: assets~ & www from build; keep them in IDEs -->
+      <Content Remove="assets~\**;www\**" />
     </ItemGroup>
-
-    <PropertyGroup>
-        <DefaultItemExcludes>$(DefaultItemExcludes);assets~\**;www\**</DefaultItemExcludes>
-    </PropertyGroup>
 
 </Project>
