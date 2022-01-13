@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Typescript () {
             // Use code generator directly
             var schema      = new NativeTypeSchema(typeof(PocStore));
-            var generator   = new Generator(schema, ".ts", Replacements);
+            var generator   = new Generator(schema, ".d.ts", Replacements);
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/PocStore");
         }

@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Typescript () {
             // Use code generator directly
             var schema      = new NativeTypeSchema(typeof(EntityIdStore));
-            var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
+            var generator   = new Generator(schema, ".d.ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/EntityIdStore");
         }
