@@ -325,7 +325,7 @@ class App {
             option = document.createElement("option");
             option.value                    = example;
             option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
-            option.style.backgroundColor    = groupCount % 2 ? "#ffffff;" : "#eeeeff;"
+            option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
             selectExample.add(option);
         }
     }
@@ -521,7 +521,7 @@ class App {
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
-            const databaseName  = selectedElement.childNodes[1].innerText;
+            const databaseName  = selectedElement.childNodes[1].textContent;
             const dbCommands      = commands.find  (c => c.id == databaseName);
             const dbContainer     = dbContainers.find  (c => c.id == databaseName);
             this.listCommands(databaseName, dbCommands, dbContainer);
@@ -539,7 +539,7 @@ class App {
             const catalogLabel          = document.createElement('span');
             catalogLabel.innerText      = dbContainer.id;
             liDatabase.title            = "database";
-            catalogLabel.style.pointerEvents = "none;"
+            catalogLabel.style.pointerEvents = "none"
             liDatabase.append(catalogCaret)
             liDatabase.append(catalogLabel)
             liCatalog.appendChild(liDatabase);
@@ -557,7 +557,7 @@ class App {
                 this.selectedCatalog = selectedElement;
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
-                const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
+                const databaseName  = path[3].childNodes[0].childNodes[1].textContent;
                 const params = { database: databaseName, container: containerName };
                 this.clearEntity(databaseName, containerName);
                 this.loadEntities(params, null);
@@ -879,7 +879,7 @@ class App {
             if (tagName == "SPAN" || tagName == "DIV") {
                 selectedElement = path[1];
             }
-            const commandName = selectedElement.children[0].innerText;
+            const commandName = selectedElement.children[0].textContent;
             this.setSelectedEntity(selectedElement);
 
             this.showCommand(database, commandName);
