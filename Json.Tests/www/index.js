@@ -41,10 +41,10 @@ class App {
             connection.close();
             connection = null;
         }
-        var loc     = window.location;
-        var nr      = ("" + (++websocketCount)).padStart(3,0)
-        var uri     = `ws://${loc.host}/ws-${nr}`;
-        // var uri  = `ws://google.com:8080/`; // test connection timeout
+        const loc     = window.location;
+        const nr      = ("" + (++websocketCount)).padStart(3,0)
+        const uri     = `ws://${loc.host}/ws-${nr}`;
+        // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
         try {
             connection = new WebSocket(uri);
@@ -73,8 +73,8 @@ class App {
 
         // Log messages from the server
         connection.onmessage = (e) => {
-            var duration = new Date().getTime() - requestStart;
-            var data = JSON.parse(e.data);
+            const duration = new Date().getTime() - requestStart;
+            const data = JSON.parse(e.data);
             // console.log('server:', e.data);
             switch (data.msg) {
             case "resp":
@@ -109,8 +109,8 @@ class App {
     }
 
     initUserToken  () {
-        var user    = this.getCookie("fliox-user")   ?? "admin";
-        var token   = this.getCookie("fliox-token")  ?? "admin";
+        const user    = this.getCookie("fliox-user")   ?? "admin";
+        const token   = this.getCookie("fliox-token")  ?? "admin";
         this.setUser(user);
         this.setToken(token);
     }
@@ -132,12 +132,12 @@ class App {
     };
 
     addUserToken (jsonRequest) {
-        var endBracket  = jsonRequest.lastIndexOf("}");
+        const endBracket  = jsonRequest.lastIndexOf("}");
         if (endBracket == -1)
             return jsonRequest;
-        var before      = jsonRequest.substring(0, endBracket);
-        var after       = jsonRequest.substring(endBracket);
-        var userToken   = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
+        const before      = jsonRequest.substring(0, endBracket);
+        const after       = jsonRequest.substring(endBracket);
+        let   userToken   = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
         userToken       = userToken.substring(1, userToken.length - 1);
         return `${before},${userToken}${after}`;
     }
@@ -147,10 +147,10 @@ class App {
             this.responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
             responseState.innerHTML = "";
         } else {
-            var jsonRequest = this.requestModel.getValue();
+            let jsonRequest = this.requestModel.getValue();
             jsonRequest = this.addUserToken(jsonRequest);
             try {
-                var request     = JSON.parse(jsonRequest);
+                const request     = JSON.parse(jsonRequest);
                 if (request) {
                     // Enable overrides of WebSocket specific members
                     if (request.req !== undefined) { req      = request.req; }
@@ -175,11 +175,11 @@ class App {
     }
 
     async postSyncRequest () {
-        var jsonRequest         = this.requestModel.getValue();
+        let jsonRequest         = this.requestModel.getValue();
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
         let start = new Date().getTime();
-        var duration;
+        let duration;
         try {
             const response = await this.postRequest(jsonRequest, "POST");
             let content = await response.text;
@@ -263,19 +263,19 @@ class App {
 
     // --------------------------------------- example requests ---------------------------------------
     async onExampleChange () {
-        var exampleName = selectExample.value;
+        const exampleName = selectExample.value;
         if (exampleName == "") {
             this.requestModel.setValue("")
             return;
         }
-        var response = await fetch(exampleName);
-        var example = await response.text();
+        const response = await fetch(exampleName);
+        const example = await response.text();
         this.requestModel.setValue(example)
     }
 
     async loadExampleRequestList () {
         // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
-        var option = document.createElement("option");
+        let option = document.createElement("option");
         option.value    = "";
         option.disabled = true;
         option.selected = true;
@@ -283,15 +283,15 @@ class App {
         option.text = "Select request ...";
         selectExample.add(option);
 
-        var folder = './example-requests'
-        var response = await fetch(folder);
-        var exampleRequests = await response.json();
-        var groupPrefix = "0";
-        var groupCount  = 0;
-        for (var example of exampleRequests) {
+        const folder = './example-requests'
+        const response = await fetch(folder);
+        const exampleRequests = await response.json();
+        let   groupPrefix = "0";
+        let   groupCount  = 0;
+        for (const example of exampleRequests) {
             if (!example.endsWith(".json"))
                 continue;
-            var name = example.substring(folder.length).replace(".sync.json", "");
+            const name = example.substring(folder.length).replace(".sync.json", "");
             if (groupPrefix != name[0]) {
                 groupPrefix = name[0];
                 groupCount++;
@@ -374,7 +374,7 @@ class App {
         if (content.msg == "error") {
             return content.message;
         }
-        var task = content.tasks[taskIndex];
+        const task = content.tasks[taskIndex];
         if (task.task == "error")
             return "task error:\n" + task.message;
         return undefined;
@@ -419,12 +419,12 @@ class App {
     openTab (tabName) {
         this.activeTab = tabName;
         this.setClass(document.body, !this.showDescription, "miniHeader")
-        var tabContents         = document.getElementsByClassName("tabContent");
-        var tabs                = document.getElementsByClassName("tab");
+        const tabContents       = document.getElementsByClassName("tabContent");
+        const tabs              = document.getElementsByClassName("tab");
         const gridTemplateRows  = document.body.style.gridTemplateRows.split(" ");
         const headerHeight      = getComputedStyle(document.body).getPropertyValue('--header-height');
         gridTemplateRows[0]     = this.showDescription ? headerHeight : "0";
-        for (var i = 0; i < tabContents.length; i++) {
+        for (let i = 0; i < tabContents.length; i++) {
             const tabContent            = tabContents[i]
             const isActiveContent       = tabContent.id == tabName;
             tabContent.style.display    = isActiveContent ? "grid" : "none";
@@ -464,7 +464,7 @@ class App {
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await this.postRequestTasks("cluster", tasks);
         const content = response.json;
-        var error = this.getTaskError (content, 0);
+        const error = this.getTaskError (content, 0);
         if (error) {
             catalogExplorer.innerHTML = this.errorAsHtml(error);
             return 
@@ -482,9 +482,9 @@ class App {
             hubInfo.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${description}</a>` : description;
         }
 
-        var ulCatalogs = document.createElement('ul');
+        const ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
-            var path = ev.composedPath();
+            const path = ev.composedPath();
             const selectedElement = path[0];
             if (selectedElement.classList.contains("caret")) {
                 path[2].classList.toggle("active");
@@ -495,21 +495,21 @@ class App {
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
             const databaseName  = selectedElement.childNodes[1].innerText;
-            var dbCommands      = commands.find  (c => c.id == databaseName);
-            var dbContainer     = dbContainers.find  (c => c.id == databaseName);
+            const dbCommands      = commands.find  (c => c.id == databaseName);
+            const dbContainer     = dbContainers.find  (c => c.id == databaseName);
             this.listCommands(databaseName, dbCommands, dbContainer);
         }
         let firstDatabase = true;
-        for (var dbContainer of dbContainers) {
-            var liCatalog       = document.createElement('li');
+        for (const dbContainer of dbContainers) {
+            const liCatalog       = document.createElement('li');
             if (firstDatabase) {
                 firstDatabase = false;
                 liCatalog.classList.add("active");
             }
-            var liDatabase          = document.createElement('div');
-            var catalogCaret        = document.createElement('div');
+            const liDatabase          = document.createElement('div');
+            const catalogCaret        = document.createElement('div');
             catalogCaret.classList  = "caret";
-            var catalogLabel        = document.createElement('span');
+            const catalogLabel        = document.createElement('span');
             catalogLabel.innerText  = dbContainer.id;
             liDatabase.title        = "database";
             catalogLabel.style = "pointer-events: none;"
@@ -518,10 +518,10 @@ class App {
             liCatalog.appendChild(liDatabase);
             ulCatalogs.append(liCatalog);
 
-            var ulContainers = document.createElement('ul');
+            const ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
-                var path = ev.composedPath();
+                const path = ev.composedPath();
                 const selectedElement = path[0];
                 // in case of a multiline text selection selectedElement is the parent
                 if (selectedElement.tagName.toLowerCase() != "div")
@@ -531,15 +531,15 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
-                var params = { database: databaseName, container: containerName };
+                const params = { database: databaseName, container: containerName };
                 this.clearEntity(databaseName, containerName);
                 this.loadEntities(params);
             }
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
-                var liContainer     = document.createElement('li');
+                const liContainer     = document.createElement('li');
                 liContainer.title   = "container";
-                var containerLabel  = document.createElement('div');
+                const containerLabel  = document.createElement('div');
                 containerLabel.innerHTML = "&nbsp;" + containerName;
                 liContainer.append(containerLabel)
                 ulContainers.append(liContainer);
@@ -555,10 +555,10 @@ class App {
     databaseSchemas = {};
 
     createEntitySchemas (dbSchemas) {
-        var schemaMap = {};
-        for (var dbSchema of dbSchemas) {
-            var jsonSchemas     = dbSchema.jsonSchemas;
-            var database        = dbSchema.id;
+        const schemaMap = {};
+        for (const dbSchema of dbSchemas) {
+            const jsonSchemas     = dbSchema.jsonSchemas;
+            const database        = dbSchema.id;
             const containerRefs = {};
             const rootSchema    = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
             dbSchema._rootSchema = rootSchema;
@@ -573,10 +573,10 @@ class App {
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json#/definitions/PocStore
-            for (var schemaPath in jsonSchemas) {
-                var schema      = jsonSchemas[schemaPath];
-                var uri         = "http://" + database + "/" + schemaPath;
-                var schemaEntry = {
+            for (const schemaPath in jsonSchemas) {
+                const schema      = jsonSchemas[schemaPath];
+                const uri         = "http://" + database + "/" + schemaPath;
+                const schemaEntry = {
                     uri:            uri,
                     schema:         schema,
                     fileMatch:      [], // can have multiple in case schema is used by multiple editor models
@@ -586,7 +586,7 @@ class App {
                 schemaMap[uri]      = schemaEntry;
                 const definitions   = schema.definitions;
                 const baseRefType   = schema.$ref ? schema.$ref.substring('#/definitions/'.length) : undefined;
-                for (var definitionName in definitions) {
+                for (const definitionName in definitions) {
                     const definition        = definitions[definitionName];
                     definition._typeName    = definitionName;
                     definition._namespace   = namespace;
@@ -594,15 +594,15 @@ class App {
                         definition._namespace = namespace.substring(0, namespace.length - definitionName.length - 1);
                     }
                     // console.log("---", definition._namespace, definitionName);
-                    var path                = "/" + schemaPath + "#/definitions/" + definitionName;
-                    var schemaId            = "." + path
-                    var uri                 = "http://" + database + path;
-                    var containerName       = containerRefs[schemaId]
+                    const path                = "/" + schemaPath + "#/definitions/" + definitionName;
+                    const schemaId            = "." + path
+                    const uri                 = "http://" + database + path;
+                    const containerName       = containerRefs[schemaId]
                     if (containerName) {
                         dbSchema._containerSchemas[containerName] = definition;
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
-                    var definitionEntry = {
+                    const definitionEntry = {
                         uri:            uri,
                         schema:         { $ref: schemaId },
                         fileMatch:      [], // can have multiple in case schema is used by multiple editor models
@@ -614,7 +614,7 @@ class App {
             this.resolveRefs(jsonSchemas);
             this.addFileMatcher(database, dbSchema, schemaMap);
         }
-        var monacoSchemas = Object.values(schemaMap);
+        const monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
     }
 
@@ -659,34 +659,34 @@ class App {
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
     addFileMatcher(database, dbSchema, schemaMap) {
-        var jsonSchemas     = dbSchema.jsonSchemas;
-        var schemaName      = dbSchema.schemaName;
-        var schemaPath      = dbSchema.schemaPath;
-        var dbSchema        = jsonSchemas[schemaPath];
-        var dbType          = dbSchema.definitions[schemaName];
-        var containers      = dbType.properties;
-        for (var containerName in containers) {
+        const jsonSchemas     = dbSchema.jsonSchemas;
+        const schemaName      = dbSchema.schemaName;
+        const schemaPath      = dbSchema.schemaPath;
+        const jsonSchema      = jsonSchemas[schemaPath];
+        const dbType          = jsonSchema.definitions[schemaName];
+        const containers      = dbType.properties;
+        for (const containerName in containers) {
             const container     = containers[containerName];
-            var containerType   = this.getResolvedType(container.additionalProperties, schemaPath);
-            var uri = "http://" + database + containerType.$ref.substring(1);
+            const containerType   = this.getResolvedType(container.additionalProperties, schemaPath);
+            const uri = "http://" + database + containerType.$ref.substring(1);
             const schema = schemaMap[uri];
-            var url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
+            const url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
             schema.fileMatch.push(url); // requires a lower case string
         }
-        var commandType     = dbSchema.definitions[schemaName];
-        var commands        = commandType.commands;
-        for (var commandName in commands) {
+        const commandType     = jsonSchema.definitions[schemaName];
+        const commands        = commandType.commands;
+        for (const commandName in commands) {
             const command   = commands[commandName];
             // assign file matcher for command param
-            var paramType   = this.getResolvedType(command.param, schemaPath);
-            var url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
+            const paramType   = this.getResolvedType(command.param, schemaPath);
+            let url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (paramType.$ref) {
-                var uri = "http://" + database + paramType.$ref.substring(1);
+                const uri = "http://" + database + paramType.$ref.substring(1);
                 const schema = schemaMap[uri];
                 schema.fileMatch.push(url); // requires a lower case string
             } else {
                 // uri is never referenced - create an arbitrary unique uri
-                var uri = "http://" + database + "/command/param" + commandName;
+                const uri = "http://" + database + "/command/param" + commandName;
                 const schema = {
                     schema:     paramType,
                     fileMatch:  [url]
@@ -694,15 +694,15 @@ class App {
                 schemaMap[uri] = schema;
             }
             // assign file matcher for command result
-            var resultType   = this.getResolvedType(command.result, schemaPath);
-            var url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
+            const resultType   = this.getResolvedType(command.result, schemaPath);
+            url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (resultType.$ref) {
-                var uri = "http://" + database + resultType.$ref.substring(1);
+                const uri = "http://" + database + resultType.$ref.substring(1);
                 const schema = schemaMap[uri];
                 schema.fileMatch.push(url); // requires a lower case string
             } else {
                 // uri is never referenced - create an arbitrary unique uri
-                var uri = "http://" + database + "/command/result" + commandName;
+                const uri = "http://" + database + "/command/result" + commandName;
                 const schema = {
                     schema:     resultType,
                     fileMatch: [url]
@@ -713,7 +713,7 @@ class App {
     }
 
     getResolvedType (type, schemaPath) {
-        var $ref = type.$ref;
+        const $ref = type.$ref;
         if (!$ref)
             return type;
         if ($ref[0] != "#")
@@ -737,16 +737,16 @@ class App {
     }
 
     getType(database, def) {
-        var ns          = def._namespace;
-        var name        = def._typeName;
+        const ns          = def._namespace;
+        const name        = def._typeName;
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
     }
 
     getEntityType(database, container) {
         const dbSchema  = this.databaseSchemas[database];
         if (!dbSchema)
-            return this.schemaLess; 
-        var def         = dbSchema._containerSchemas[container];
+            return this.schemaLess;
+        const def         = dbSchema._containerSchemas[container];
         return this.getType(database, def);
     }
 
@@ -757,8 +757,8 @@ class App {
         const def = type._resolvedDef;
         if (def) {
             return this.getType(database, def);
-        }        
-        var result = JSON.stringify(type);
+        }
+        let result = JSON.stringify(type);
         return result = result == "{}" ? "any" : result;
     }
 
@@ -769,8 +769,8 @@ class App {
     }
 
     setEditorHeader(show) {
-        var displayEntity  = show == "entity" ? "" : "none";
-        var displayCommand = show == "command" ? "" : "none";
+        const displayEntity  = show == "entity" ? "" : "none";
+        const displayCommand = show == "command" ? "" : "none";
         document.getElementById("entityTools")  .style.display = displayEntity;        
         document.getElementById("entityHeader") .style.display = displayEntity;        
         document.getElementById("commandTools") .style.display = displayCommand;
@@ -784,8 +784,8 @@ class App {
             const result  = this.getTypeLabel(database, signature.result);
             label = `<span title="command parameter type"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result type">${result}</span>`
         }
-        var link    = `command=${command}`;
-        var url     = `./rest/${database}?command=${command}`;
+        const link    = `command=${command}`;
+        const url     = `./rest/${database}?command=${command}`;
         return {
             link:   `<a id="commandAnchor" title="command" onclick="app.sendCommand()" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
             label:  label
@@ -828,23 +828,23 @@ class App {
         readEntitiesDB.innerHTML    = this.getDatabaseLink(database);
         readEntities.innerHTML      = "";
 
-        var ulDatabase  = document.createElement('ul');
+        const ulDatabase  = document.createElement('ul');
         ulDatabase.classList = "database"
-        /* var typeLabel = document.createElement('div');
+        /* const typeLabel = document.createElement('div');
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
         ulDatabase.append(typeLabel); */
-        var commandLabel = document.createElement('li');
+        const commandLabel = document.createElement('li');
         const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
         ulDatabase.append(commandLabel);
 
-        var liCommands  = document.createElement('li');
+        const liCommands  = document.createElement('li');
         ulDatabase.appendChild(liCommands);
 
-        var ulCommands = document.createElement('ul');
+        const ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
             this.setEditorHeader("command");
-            var path = ev.composedPath();
+            const path = ev.composedPath();
             let selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
 
@@ -862,11 +862,11 @@ class App {
             }
         }
         for (const command of dbCommands.commands) {
-            var liCommand = document.createElement('li');
-            var commandLabel = document.createElement('div');
+            const liCommand = document.createElement('li');
+            const commandLabel = document.createElement('div');
             commandLabel.innerText = command;
             liCommand.appendChild(commandLabel);
-            var runCommand = document.createElement('div');
+            const runCommand = document.createElement('div');
             runCommand.classList    = "command";
             runCommand.title        = "POST command"
             liCommand.appendChild(runCommand);
@@ -918,8 +918,8 @@ class App {
     }
 
     updateFilterLink() {
-        var filter  = entityFilter.value;
-        var query   = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
+        const filter  = entityFilter.value;
+        const query   = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         filterLink.href = url;
     }
@@ -968,8 +968,8 @@ class App {
             const params = { database: p.database, container: p.container, id: entityId };
             this.loadEntity(params);
         }
-        for (var id of ids) {
-            var liId = document.createElement('li');
+        for (const id of ids) {
+            const liId = document.createElement('li');
             liId.innerText = id;
             ulIds.append(liId);
         }
@@ -1129,18 +1129,18 @@ class App {
 
     async deleteEntity () {
         const id        = this.entityIdentity.entityId;
-        var container   = this.entityIdentity.container;
-        var database    = this.entityIdentity.database;
+        const container   = this.entityIdentity.container;
+        const database    = this.entityIdentity.database;
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
         const response = await this.restRequest("DELETE", null, database, container, id);
         if (!response.ok) {
-            var error = await response.text();
+            const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
         } else {
             writeResult.innerHTML = "Delete successful";
             entityId.innerHTML = "";
             this.setEntityValue(database, container, "");
-            var selected = entityExplorer.querySelector(`li.selected`);
+            const selected = entityExplorer.querySelector(`li.selected`);
             selected.remove();
         }
     }
@@ -1151,7 +1151,7 @@ class App {
     getModel (url) {
         this.entityModel = this.entityModels[url];
         if (!this.entityModel) {
-            var entityUri   = monaco.Uri.parse(url);
+            const entityUri   = monaco.Uri.parse(url);
             this.entityModel = monaco.editor.createModel(null, "json", entityUri);
             this.entityModels[url] = this.entityModel;
         }
@@ -1159,13 +1159,13 @@ class App {
     }
 
     setEntityValue (database, container, value) {
-        var url = `entity://${database}.${container}.json`;
-        var model = this.getModel(url);
+        const url = `entity://${database}.${container}.json`;
+        const model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
         if (value == "")
             return;
-        var databaseSchema = this.databaseSchemas[database];
+        const databaseSchema = this.databaseSchemas[database];
         if (!databaseSchema)
             return;
         try {
@@ -1199,7 +1199,7 @@ class App {
             const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
         });
-        var decorations = editor.deltaDecorations(oldDecorations, newDecorations);
+        const decorations = editor.deltaDecorations(oldDecorations, newDecorations);
     }
 
     addRelationsFromAst(ast, schema, addRelation) {
@@ -1221,27 +1221,27 @@ class App {
 
                 switch (value.type) {
                 case "Literal":
-                    var relation = property.relation;
+                    const relation = property.relation;
                     if (relation && value.value !== null) {
                         addRelation (value, relation);
                     }
                     break;
                 case "Object":
-                    var resolvedDef = property._resolvedDef;
+                    const resolvedDef = property._resolvedDef;
                     if (resolvedDef) {
                         this.addRelationsFromAst(value, resolvedDef, addRelation);
                     }
                     break;
                 case "Array":
-                    var resolvedDef = property.items?._resolvedDef;
-                    if (resolvedDef) {
-                        this.addRelationsFromAst(value, resolvedDef, addRelation);
+                    const resolvedDef2 = property.items?._resolvedDef;
+                    if (resolvedDef2) {
+                        this.addRelationsFromAst(value, resolvedDef2, addRelation);
                     }
-                    var relation = property.relation;
-                    if (relation) {
+                    const relation2 = property.relation;
+                    if (relation2) {
                         for (const item of value.children) {
                             if (item.type == "Literal") {
-                                addRelation(item, relation);
+                                addRelation(item, relation2);
                             }
                         }
                     }
@@ -1253,9 +1253,9 @@ class App {
     }
 
     setCommandParam (database, command, value) {
-        var url = `command-param://${database}.${command}.json`;
-        var isNewModel = this.entityModels[url] == undefined;
-        var model = this.getModel(url)
+        const url = `command-param://${database}.${command}.json`;
+        const isNewModel = this.entityModels[url] == undefined;
+        const model = this.getModel(url)
         if (isNewModel) {
             model.setValue(value);
         }
@@ -1263,8 +1263,8 @@ class App {
     }
 
     setCommandResult (database, command) {
-        var url = `command-result://${database}.${command}.json`;
-        var model = this.getModel(url)
+        const url = `command-result://${database}.${command}.json`;
+        const model = this.getModel(url)
         this.entityEditor.setModel (model);
     }
 
@@ -1335,15 +1335,15 @@ class App {
                     }
                 }
             }]; */
-        var schemas = [];
+        const schemas = [];
         try {
-            var jsonSchemaResponse  = await fetch("schema/protocol/json-schema.json");
-            var jsonSchema          = await jsonSchemaResponse.json();
+            const jsonSchemaResponse  = await fetch("schema/protocol/json-schema.json");
+            const jsonSchema          = await jsonSchemaResponse.json();
 
-            for (let schemaName in jsonSchema) {
-                var schema          = jsonSchema[schemaName];
-                var url             = "protocol/json-schema/" + schemaName;
-                var schemaEntry = {
+            for (const schemaName in jsonSchema) {
+                const schema          = jsonSchema[schemaName];
+                const url             = "protocol/json-schema/" + schemaName;
+                const schemaEntry = {
                     uri:    "http://" + url,
                     schema: schema            
                 }
@@ -1386,9 +1386,9 @@ class App {
         // this.setExplorerEditor("none");
         
         // --- setup JSON Schema for monaco
-        var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
-        var responseUri     = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
-        var monacoSchemas   = await this.createProtocolSchemas();
+        const requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
+        const responseUri     = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
+        const monacoSchemas   = await this.createProtocolSchemas();
 
         for (let i = 0; i < monacoSchemas.length; i++) {
             if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json") {
@@ -1406,7 +1406,7 @@ class App {
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel (this.requestModel);
 
-            var defaultRequest = `{
+            const defaultRequest = `{
     "msg": "sync",
     "tasks": [
         {
@@ -1515,7 +1515,7 @@ class App {
     }
 
     initConfigValue(key) {
-        var value = this.getConfig(key);
+        const value = this.getConfig(key);
         if (value == undefined) {
             this.setConfig(key, this[key]);
             return;
@@ -1592,16 +1592,16 @@ class App {
                 pairs.splice(n, 1);
             }
         }
-        for (var pair of pairs) {
+        for (const pair of pairs) {
             const style = pair.elem.children[0].style;
             style.width  = "0px";  // required to shrink width.  Found no alternative solution right now.
             style.height = "0px";  // required to shrink height. Found no alternative solution right now.
         }
-        for (var pair of pairs) {
+        for (const pair of pairs) {
             pair.editor.layout();
         }
         // set editor width/height to their container width/height
-        for (var pair of pairs) {
+        for (const pair of pairs) {
             const style  = pair.elem.children[0].style;
             style.width  = pair.elem.clientWidth  + "px";
             style.height = pair.elem.clientHeight + "px";
