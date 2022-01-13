@@ -40,4 +40,8 @@
       <None Remove="**/*.meta" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);assets~\**;www\**</DefaultItemExcludes>
+    </PropertyGroup>
+
 </Project>
