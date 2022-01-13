@@ -1,22 +1,23 @@
 // --------------------------------------- WebSocket ---------------------------------------
-var connection;
-var websocketCount = 0;
-var req = 1;
-var clt = null;
-var requestStart;
-var subSeq   = 0;
-var subCount = 0;
+var connection:     WebSocket;
+var websocketCount  = 0;
+var req             = 1;
+var clt             = null;
+var requestStart:   number;
+var subSeq          = 0;
+var subCount        = 0;
 
+const hubInfoEl         = document.getElementById("hubInfo");
 const responseState     = document.getElementById("response-state");
 const subscriptionCount = document.getElementById("subscriptionCount");
 const subscriptionSeq   = document.getElementById("subscriptionSeq");
-const selectExample     = document.getElementById("example");
+const selectExample     = document.getElementById("example") as HTMLSelectElement;
 const socketStatus      = document.getElementById("socketStatus");
 const reqIdElement      = document.getElementById("req");
 const ackElement        = document.getElementById("ack");
 const cltElement        = document.getElementById("clt");
-const defaultUser       = document.getElementById("user");
-const defaultToken      = document.getElementById("token");
+const defaultUser       = document.getElementById("user")  as HTMLInputElement;
+const defaultToken      = document.getElementById("token") as HTMLInputElement;
 const catalogExplorer   = document.getElementById("catalogExplorer");
 const entityExplorer    = document.getElementById("entityExplorer");
 const writeResult       = document.getElementById("writeResult");
@@ -25,6 +26,25 @@ const readEntities      = document.getElementById("readEntities");
 const catalogSchema     = document.getElementById("catalogSchema");
 const entityType        = document.getElementById("entityType");
 const entityId          = document.getElementById("entityId");
+const entityFilter      = document.getElementById("entityFilter") as HTMLInputElement;
+const filterRow         = document.getElementById("filterRow");
+const commandSignature  = document.getElementById("commandSignature");
+const commandLink       = document.getElementById("commandLink");
+
+
+declare var monaco : any;
+declare var parse : any;
+
+
+declare global {
+    interface Window {
+        appConfig: { monacoTheme: string };
+        setTheme(mode: string) : void;
+        app: App;
+    }
+}
+
+
 
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
@@ -34,6 +54,11 @@ const entityId          = document.getElementById("entityId");
     });
 } */
 
+
+function el<T extends HTMLElement> (id: string) : T{
+    return document.getElementById(id) as T;
+}
+
 class App {
 
     connectWebsocket () {
@@ -42,7 +67,7 @@ class App {
             connection = null;
         }
         const loc     = window.location;
-        const nr      = ("" + (++websocketCount)).padStart(3,0)
+        const nr      = ("" + (++websocketCount)).padStart(3);
         const uri     = `ws://${loc.host}/ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
@@ -86,12 +111,12 @@ class App {
                 responseState.innerHTML = `· ${duration} ms`;
                 break;
             case "ev":
-                subscriptionCount.innerText = ++subCount;
+                subscriptionCount.innerText = String(++subCount);
                 subSeq = data.seq;
                 // multiple clients can use the same WebSocket. Use the latest
                 if (clt == data.clt) {
-                    subscriptionSeq.innerText   = subSeq ? subSeq : " - ";
-                    ackElement.innerText        = subSeq ? subSeq : " - ";
+                    subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
+                    ackElement.innerText        = subSeq ? String(subSeq) : " - ";
                 }
                 break;
             }
@@ -171,7 +196,7 @@ class App {
             requestStart = new Date().getTime();
         }
         req++;
-        reqIdElement.innerText  = req;
+        reqIdElement.innerText  =  String(req);
     }
 
     async postSyncRequest () {
@@ -203,7 +228,8 @@ class App {
         if (!this.refLinkDecoration) {
             const cssRules = document.styleSheets[0].cssRules;
             for (let n = 0; n < cssRules.length; n++) {
-                if (cssRules[n].selectorText == ".refLinkDecoration:hover")
+                const rule = cssRules[n] as CSSStyleRule;
+                if (rule.selectorText == ".refLinkDecoration:hover")
                     this.refLinkDecoration = cssRules[n];
             }
         }
@@ -297,9 +323,9 @@ class App {
                 groupCount++;
             }
             option = document.createElement("option");
-            option.value    = example;
-            option.text     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
-            option.style    = groupCount % 2 ? "background-color: #ffffff;" : "background-color: #eeeeff;"
+            option.value                    = example;
+            option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
+            option.style.backgroundColor    = groupCount % 2 ? "#ffffff;" : "#eeeeff;"
             selectExample.add(option);
         }
     }
@@ -365,7 +391,8 @@ class App {
         } catch (error) {
             return {
                 ok:     false,
-                text:   () => error.message
+                text:   () => error.message,
+                json:   () => { throw error.message }
             }
         }
     }
@@ -425,7 +452,7 @@ class App {
         const headerHeight      = getComputedStyle(document.body).getPropertyValue('--header-height');
         gridTemplateRows[0]     = this.showDescription ? headerHeight : "0";
         for (let i = 0; i < tabContents.length; i++) {
-            const tabContent            = tabContents[i]
+            const tabContent            = tabContents[i] as HTMLElement;
             const isActiveContent       = tabContent.id == tabName;
             tabContent.style.display    = isActiveContent ? "grid" : "none";
             gridTemplateRows[i + 2]     = isActiveContent ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
@@ -452,7 +479,7 @@ class App {
         this.selectedEntity.elem.classList.add("selected");
     }
 
-    hubInfo = {}
+    hubInfo = { description: undefined, website: undefined };
 
     async loadCluster () {
         const tasks = [
@@ -462,11 +489,11 @@ class App {
             { "task": "command","name": "DbHubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response = await this.postRequestTasks("cluster", tasks);
+        const response = await this.postRequestTasks("cluster", tasks, null);
         const content = response.json;
         const error = this.getTaskError (content, 0);
         if (error) {
-            catalogExplorer.innerHTML = this.errorAsHtml(error);
+            catalogExplorer.innerHTML = this.errorAsHtml(error, null);
             return 
         }
         const dbContainers  = content.containers[0].entities;
@@ -479,12 +506,12 @@ class App {
         if (description || website) {
             if (!description)
                 description = "Website";
-            hubInfo.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${description}</a>` : description;
+            hubInfoEl.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${description}</a>` : description;
         }
 
         const ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
-            const path = ev.composedPath();
+            const path = ev.composedPath() as HTMLElement[];
             const selectedElement = path[0];
             if (selectedElement.classList.contains("caret")) {
                 path[2].classList.toggle("active");
@@ -506,13 +533,13 @@ class App {
                 firstDatabase = false;
                 liCatalog.classList.add("active");
             }
-            const liDatabase          = document.createElement('div');
-            const catalogCaret        = document.createElement('div');
-            catalogCaret.classList  = "caret";
-            const catalogLabel        = document.createElement('span');
-            catalogLabel.innerText  = dbContainer.id;
-            liDatabase.title        = "database";
-            catalogLabel.style = "pointer-events: none;"
+            const liDatabase            = document.createElement('div');
+            const catalogCaret          = document.createElement('div');
+            catalogCaret.classList.value= "caret";
+            const catalogLabel          = document.createElement('span');
+            catalogLabel.innerText      = dbContainer.id;
+            liDatabase.title            = "database";
+            catalogLabel.style.pointerEvents = "none;"
             liDatabase.append(catalogCaret)
             liDatabase.append(catalogLabel)
             liCatalog.appendChild(liDatabase);
@@ -521,7 +548,7 @@ class App {
             const ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
-                const path = ev.composedPath();
+                const path = ev.composedPath() as HTMLElement[];
                 const selectedElement = path[0];
                 // in case of a multiline text selection selectedElement is the parent
                 if (selectedElement.tagName.toLowerCase() != "div")
@@ -533,7 +560,7 @@ class App {
                 const databaseName  = path[3].childNodes[0].childNodes[1].innerText;
                 const params = { database: databaseName, container: containerName };
                 this.clearEntity(databaseName, containerName);
-                this.loadEntities(params);
+                this.loadEntities(params, null);
             }
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
@@ -629,9 +656,9 @@ class App {
     resolveNodeRefs(jsonSchemas, schema, node) {
         const nodeType = typeof node;
         switch (nodeType) {
-        case "array":
+        /* case "array":
             console.log("array"); // todo remove
-            return;
+            return; */
         case "object":
             const ref = node.$ref;
             if (ref) {
@@ -797,7 +824,7 @@ class App {
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
         if (!method) {
-            const commandAnchor =  document.getElementById("commandAnchor");
+            const commandAnchor =  document.getElementById("commandAnchor") as HTMLAnchorElement;
             let commandValue = value == "null" ? "" : `&value=${value}`;
             const path = this.getRestPath( database, null, null, `command=${command}${commandValue}`)
             commandAnchor.href = path;
@@ -811,10 +838,10 @@ class App {
     }
 
     setDatabaseInfo(database, dbContainer) {
-        databaseName.innerHTML      = this.getDatabaseLink(database);
-        databaseSchema.innerHTML    = this.getSchemaType(database);
-        databaseExports.innerHTML   = this.getSchemaExports(database);
-        databaseType.innerHTML      = dbContainer.databaseType;        
+        el("databaseName").innerHTML      = this.getDatabaseLink(database);
+        el("databaseSchema").innerHTML    = this.getSchemaType(database);
+        el("databaseExports").innerHTML   = this.getSchemaExports(database);
+        el("databaseType").innerHTML      = dbContainer.databaseType;        
     }
 
     listCommands (database, dbCommands, dbContainer) {
@@ -829,7 +856,7 @@ class App {
         readEntities.innerHTML      = "";
 
         const ulDatabase  = document.createElement('ul');
-        ulDatabase.classList = "database"
+        ulDatabase.classList.value = "database"
         /* const typeLabel = document.createElement('div');
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
         ulDatabase.append(typeLabel); */
@@ -844,7 +871,7 @@ class App {
         const ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
             this.setEditorHeader("command");
-            const path = ev.composedPath();
+            const path = ev.composedPath() as HTMLElement[];
             let selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
 
@@ -867,8 +894,8 @@ class App {
             commandLabel.innerText = command;
             liCommand.appendChild(commandLabel);
             const runCommand = document.createElement('div');
-            runCommand.classList    = "command";
-            runCommand.title        = "POST command"
+            runCommand.classList.value  = "command";
+            runCommand.title            = "POST command"
             liCommand.appendChild(runCommand);
 
             ulCommands.append(liCommand);
@@ -886,7 +913,7 @@ class App {
     filterOnKeyUp(event) {
         if (event.code != 'Enter')
             return;
-        this.applyFilter(this.filter.database, this.filter.container, entityFilter.value);
+        this.applyFilter();
     }
 
     applyFilter() {
@@ -901,7 +928,7 @@ class App {
 
     removeFilter() {
         const params  = { database: this.filter.database, container: this.filter.container };
-        this.loadEntities(params);
+        this.loadEntities(params, null);
     }
 
     saveFilter(database, container, filter) {
@@ -921,7 +948,7 @@ class App {
         const filter  = entityFilter.value;
         const query   = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
-        filterLink.href = url;
+        el<HTMLAnchorElement>("filterLink").href = url;
     }
 
     async loadEntities (p, query) {
@@ -930,7 +957,7 @@ class App {
         entityFilter.value = filter;
 
         const removeFilterVisibility = query ? "" : "hidden";
-        removeFilter.style.visibility = removeFilterVisibility;
+        el("removeFilter").style.visibility = removeFilterVisibility;
         
         this.filter.database     = p.database;
         this.filter.container    = p.container;
@@ -953,12 +980,12 @@ class App {
             entityExplorer.innerHTML = this.errorAsHtml(error, p);
             return;
         }
-        let     content = await response.json();
-        const   ids     = content.map(entity => entity.id);
-        const   ulIds   = document.createElement('ul');
-        ulIds.classList = "entities"
+        let     content         = await response.json();
+        const   ids             = content.map(entity => entity.id);
+        const   ulIds           = document.createElement('ul');
+        ulIds.classList.value   = "entities"
         ulIds.onclick = (ev) => {
-            const path = ev.composedPath();
+            const path = ev.composedPath() as HTMLElement[];
             const selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
             if (selectedElement.tagName.toLowerCase() != "li")
@@ -966,7 +993,7 @@ class App {
             this.setSelectedEntity(selectedElement);
             const entityId = selectedElement.innerText;
             const params = { database: p.database, container: p.container, id: entityId };
-            this.loadEntity(params);
+            this.loadEntity(params, false, null);
         }
         for (const id of ids) {
             const liId = document.createElement('li');
@@ -988,11 +1015,11 @@ class App {
         return null;
     }
 
-    entityIdentity = {
-        database:   undefined,
-        container:  undefined,
-        entityId:   undefined,
-        command:    undefined
+    entityIdentity = { } as {
+        database:   string,
+        container:  string,
+        entityId:   string,
+        command?:   string
     }
 
     entityHistoryPos    = -1;
@@ -1031,7 +1058,7 @@ class App {
         const entityLink        = this.getEntityLink(p.database, p.container, p.id);
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
-        const response  = await this.restRequest("GET", null, p.database, p.container, p.id);        
+        const response  = await this.restRequest("GET", null, p.database, p.container, p.id, null);        
         let content   = await response.text();
         content = this.formatJson(this.formatEntities, content);
         entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.id);
@@ -1070,7 +1097,7 @@ class App {
         };
         entityType.innerHTML    = this.getEntityType (database, container);
         writeResult.innerHTML   = "";
-        entityId.innerHTML      = this.getEntityLink(database, container);
+        entityId.innerHTML      = this.getEntityLink(database, container, null);
         this.setEntityValue(database, container, "");
     }
 
@@ -1100,7 +1127,7 @@ class App {
         }
         writeResult.innerHTML = 'save <span class="spinner"></span>';
 
-        const response = await this.restRequest("PUT", jsonValue, database, container, id);
+        const response = await this.restRequest("PUT", jsonValue, database, container, id, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
@@ -1132,7 +1159,7 @@ class App {
         const container   = this.entityIdentity.container;
         const database    = this.entityIdentity.database;
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
-        const response = await this.restRequest("DELETE", null, database, container, id);
+        const response = await this.restRequest("DELETE", null, database, container, id, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
@@ -1275,13 +1302,13 @@ class App {
         this.activeExplorerEditor = edit;
         // console.log("editor:", edit);
         const commandActive = edit == "command";
-        commandValueContainer.style.display = commandActive ? "" : "none";
-        commandParamBar.style.display       = commandActive ? "" : "none";
-        explorerEdit.style.gridTemplateRows = commandActive ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
+        this.commandValueContainer.style.display = commandActive ? "" : "none";
+        this.commandParamBar.style.display       = commandActive ? "" : "none";
+        el("explorerEdit").style.gridTemplateRows = commandActive ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
 
         const editorActive              = edit == "command" || edit == "entity";
-        entityContainer.style.display   = editorActive      ? "" : "none";
-        dbInfo.style.display            = edit == "dbInfo"  ? "" : "none";
+        this.entityContainer.style.display   = editorActive      ? "" : "none";
+        el("dbInfo").style.display            = edit == "dbInfo"  ? "" : "none";
         //
         this.layoutEditors();
     }
@@ -1402,7 +1429,7 @@ class App {
 
         // --- create request editor
         { 
-            this.requestEditor = monaco.editor.create(requestContainer, { /* model: model */ });
+            this.requestEditor = monaco.editor.create(this.requestContainer, { /* model: model */ });
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel (this.requestModel);
 
@@ -1421,14 +1448,14 @@ class App {
 
         // --- create response editor
         {
-            this.responseEditor = monaco.editor.create(responseContainer, { /* model: model */ });
+            this.responseEditor = monaco.editor.create(this.responseContainer, { /* model: model */ });
             this.responseModel = monaco.editor.createModel(null, "json", responseUri);
             this.responseEditor.setModel (this.responseModel);
         }
 
         // --- create entity editor
         {
-            this.entityEditor = monaco.editor.create(entityContainer, { });
+            this.entityEditor = monaco.editor.create(this.entityContainer, { });
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
                     return;
@@ -1443,7 +1470,7 @@ class App {
         }
         // --- create command value editor
         {
-            this.commandValueEditor = monaco.editor.create(commandValue, { });
+            this.commandValueEditor = monaco.editor.create(this.commandValue, { });
             // this.commandValueModel   = monaco.editor.createModel(null, "json");
             // this.commandValueEditor.setModel(this.commandValueModel);
             //this.commandValueEditor.setValue("{}");
@@ -1488,7 +1515,7 @@ class App {
                 }
             });
             if (entity) {
-                this.loadEntity(entity);
+                this.loadEntity(entity, false, null);
             }
         } catch (error) {
             writeResult.innerHTML = `<span style="color:#FF8C00">Follow link failed: ${error}</code>`;
@@ -1498,7 +1525,7 @@ class App {
     setConfig(key, value) {
         this[key] = value;
         const elem = document.getElementById(key);
-        if (elem) {
+        if (elem instanceof HTMLInputElement) {
             elem.value   = value;
             elem.checked = value;
         }
@@ -1569,16 +1596,16 @@ class App {
         switch (this.activeTab) {
         case "playground":
             const editors = [
-                { editor: this.responseEditor,  elem: responseContainer },               
-                { editor: this.requestEditor,   elem: requestContainer },
+                { editor: this.responseEditor,  elem: this.responseContainer },               
+                { editor: this.requestEditor,   elem: this.requestContainer },
             ]
             this.layoutMonacoEditors(editors);
             break;
         case "explorer":
             // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
             const editors2 = [
-                { editor: this.entityEditor,        elem: entityContainer },               
-                { editor: this.commandValueEditor,  elem: commandValue },
+                { editor: this.entityEditor,        elem: this.entityContainer },               
+                { editor: this.commandValueEditor,  elem: this.commandValue },
             ]
             this.layoutMonacoEditors(editors2);
             break;
@@ -1687,4 +1714,4 @@ class App {
 
 export const app = new App();
 window.addEventListener("keydown", event => app.onKeyDown(event), true);
-window.addEventListener("keyup", event => app.onKeyUp(event), true);
+window.addEventListener("keyup",   event => app.onKeyUp(event), true);

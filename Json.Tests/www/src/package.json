@@ -1,0 +1,12 @@
+{
+  "name": "friflo-fliox-explorer",
+  "version": "0.1.0",
+  "author": "Ullrich Praetz",
+  "scripts": {
+    "tsc": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {}
+}
