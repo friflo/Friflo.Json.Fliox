@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "author": "Ullrich Praetz",
   "scripts": {
-    "tsc": "tsc -w"
+    "tsc": "tsc",
+    "tsc-watch": "tsc -w"
   },
   "devDependencies": {
     "monaco-editor": "^0.31.1",

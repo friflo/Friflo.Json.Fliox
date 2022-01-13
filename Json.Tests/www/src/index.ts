@@ -10,6 +10,13 @@ declare global {
     }
 }
 
+type Method = "GET" | "POST" | "PUT" | "DELETE";
+type Resource = {
+    database:   string;
+    container:  string;
+    id?:        string;
+};
+
 // --------------------------------------- WebSocket ---------------------------------------
 var connection:     WebSocket;
 var websocketCount  = 0;
@@ -137,23 +144,23 @@ class App {
         this.setToken(token);
     }
 
-    setUser (user) {
+    setUser (user: string) {
         defaultUser.value   = user;
         document.cookie = `fliox-user=${user};`;
     }
 
-    setToken  (token) {
+    setToken  (token: string) {
         defaultToken.value  = token;
         document.cookie = `fliox-token=${token};`;
     }
 
-    selectUser (element) {
+    selectUser (element: HTMLElement) {
         let value = element.innerText;
         this.setUser(value);
         this.setToken(value);
     };
 
-    addUserToken (jsonRequest) {
+    addUserToken (jsonRequest: string) {
         const endBracket  = jsonRequest.lastIndexOf("}");
         if (endBracket == -1)
             return jsonRequest;
@@ -215,10 +222,10 @@ class App {
         responseState.innerHTML = `· ${duration} ms`;
     }
 
-    lastCtrlKey;
-    refLinkDecoration;
+    lastCtrlKey:        boolean;
+    refLinkDecoration:  CSSStyleRule;
 
-    applyCtrlKey(event) {
+    applyCtrlKey(event: KeyboardEvent) {
         if (this.lastCtrlKey == event.ctrlKey)
             return;
         this.lastCtrlKey = event.ctrlKey;
@@ -227,18 +234,18 @@ class App {
             for (let n = 0; n < cssRules.length; n++) {
                 const rule = cssRules[n] as CSSStyleRule;
                 if (rule.selectorText == ".refLinkDecoration:hover")
-                    this.refLinkDecoration = cssRules[n];
+                    this.refLinkDecoration = rule;
             }
         }
         this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
     }
 
-    onKeyUp (event) {
+    onKeyUp (event: KeyboardEvent) {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
     }
 
-    onKeyDown (event) {
+    onKeyDown (event: KeyboardEvent) {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
 
@@ -279,7 +286,7 @@ class App {
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
     }
 
-    execute(event, lambda) {
+    execute(event: KeyboardEvent, lambda: () => void) {
         lambda();
         event.preventDefault();
     }
@@ -329,7 +336,7 @@ class App {
     // --------------------------------------- Explorer ---------------------------------------
   
 
-    async postRequest (request, tag) {
+    async postRequest (request: string, tag: string) {
         let init = {        
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -354,7 +361,7 @@ class App {
         }
     }
 
-    async postRequestTasks (database, tasks, tag) {
+    async postRequestTasks (database: string, tasks: any[], tag: string) {
         const db = database == "main_db" ? undefined : database;
         const request = JSON.stringify({
             "msg":      "sync",
@@ -367,7 +374,7 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    getRestPath(database, container, id, query) {
+    getRestPath(database: string, container: string, id: string, query) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (id)         path = `${path}/${id}`;
@@ -375,7 +382,7 @@ class App {
         return path;
     }
 
-    async restRequest (method, body, database, container, id, query) {
+    async restRequest (method: Method, body: string, database: string, container: string, id: string, query: string) {
         const path = this.getRestPath(database, container, id, query);        
         const init = {        
             method:  method,
@@ -394,7 +401,7 @@ class App {
         }
     }
 
-    getTaskError (content, taskIndex) {
+    getTaskError (content: any, taskIndex: number) {
         if (content.msg == "error") {
             return content.message;
         }
@@ -406,7 +413,7 @@ class App {
 
     bracketValue = /\[(.*?)\]/;
 
-    errorAsHtml (message, p) {
+    errorAsHtml (message: string, p: Resource) {
         // first line: error type, second line: error message
         const pos = message.indexOf(' > ');
         let error = message;
@@ -426,7 +433,7 @@ class App {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
-    setClass(element, enable, className) {
+    setClass(element: Element, enable: boolean, className: string) {
         const classList = element.classList;
         if (enable) {
             classList.add(className);
@@ -440,7 +447,7 @@ class App {
         this.openTab(this.activeTab);
     }
 
-    openTab (tabName) {
+    openTab (tabName: string) {
         this.activeTab = tabName;
         this.setClass(document.body, !this.showDescription, "miniHeader")
         const tabContents       = document.getElementsByClassName("tabContent");
@@ -463,12 +470,12 @@ class App {
         }
     }
 
-    selectedCatalog;
+    selectedCatalog: HTMLElement;
     selectedEntity = {
         elem: null
     }
 
-    setSelectedEntity(elem) {
+    setSelectedEntity(elem: HTMLElement) {
         if (this.selectedEntity.elem) {
             this.selectedEntity.elem.classList.remove("selected");
         }
@@ -578,7 +585,7 @@ class App {
 
     databaseSchemas = {};
 
-    createEntitySchemas (dbSchemas) {
+    createEntitySchemas (dbSchemas: any) {
         const schemaMap = {};
         for (const dbSchema of dbSchemas) {
             const jsonSchemas     = dbSchema.jsonSchemas;
@@ -642,7 +649,7 @@ class App {
         this.addSchemas(monacoSchemas);
     }
 
-    resolveRefs(jsonSchemas) {
+    resolveRefs(jsonSchemas: any) {
         for (const schemaPath in jsonSchemas) {
             // if (schemaPath == "Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json") debugger;
             const schema      = jsonSchemas[schemaPath];
@@ -650,7 +657,7 @@ class App {
         }
     }
 
-    resolveNodeRefs(jsonSchemas, schema, node) {
+    resolveNodeRefs(jsonSchemas: any, schema: any, node: any) {
         const nodeType = typeof node;
         switch (nodeType) {
         /* case "array":
@@ -682,10 +689,10 @@ class App {
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
-    addFileMatcher(database, dbSchema, schemaMap) {
+    addFileMatcher(database: string, dbSchema, schemaMap) {
         const jsonSchemas     = dbSchema.jsonSchemas;
-        const schemaName      = dbSchema.schemaName;
-        const schemaPath      = dbSchema.schemaPath;
+        const schemaName      = dbSchema.schemaName as string;
+        const schemaPath      = dbSchema.schemaPath as string;
         const jsonSchema      = jsonSchemas[schemaPath];
         const dbType          = jsonSchema.definitions[schemaName];
         const containers      = dbType.properties;
@@ -736,7 +743,7 @@ class App {
         }
     }
 
-    getResolvedType (type, schemaPath) {
+    getResolvedType (type: any, schemaPath: string) {
         const $ref = type.$ref;
         if (!$ref)
             return type;
@@ -746,27 +753,27 @@ class App {
     }
 
     
-    getSchemaType(database) {
+    getSchemaType(database: string) {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
     }
 
-    getSchemaExports(database) {
+    getSchemaExports(database: string) {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
         return `<a title="open database schema in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
 
-    getType(database, def) {
+    getType(database: string, def: any) {
         const ns          = def._namespace;
         const name        = def._typeName;
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
     }
 
-    getEntityType(database, container) {
+    getEntityType(database: string, container: string) {
         const dbSchema  = this.databaseSchemas[database];
         if (!dbSchema)
             return this.schemaLess;
@@ -774,7 +781,7 @@ class App {
         return this.getType(database, def);
     }
 
-    getTypeLabel(database, type) {
+    getTypeLabel(database: string, type: any) {
         if (type.type) {
             return type.type;
         }
@@ -788,11 +795,11 @@ class App {
 
     schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
-    getDatabaseLink(database) {
+    getDatabaseLink(database: string) {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`
     }
 
-    setEditorHeader(show) {
+    setEditorHeader(show: "entity" | "command" | "none") {
         const displayEntity  = show == "entity" ? "" : "none";
         const displayCommand = show == "command" ? "" : "none";
         el("entityTools")  .style.display = displayEntity;        
@@ -801,7 +808,7 @@ class App {
         el("commandHeader").style.display = displayCommand;
     }
 
-    getCommandTags(database, command, signature) {
+    getCommandTags(database: string, command: string, signature: any) {
         let label = this.schemaLess;
         if (signature) {
             const param   = this.getTypeLabel(database, signature.param);
@@ -816,7 +823,7 @@ class App {
         }
     }
 
-    async sendCommand(method) {
+    async sendCommand(method: Method) {
         const value     = this.commandValueEditor.getValue();
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
@@ -834,14 +841,14 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    setDatabaseInfo(database, dbContainer) {
+    setDatabaseInfo(database: string, dbContainer: any) {
         el("databaseName").innerHTML      = this.getDatabaseLink(database);
         el("databaseSchema").innerHTML    = this.getSchemaType(database);
         el("databaseExports").innerHTML   = this.getSchemaExports(database);
         el("databaseType").innerHTML      = dbContainer.databaseType;        
     }
 
-    listCommands (database, dbCommands, dbContainer) {
+    listCommands (database: string, dbCommands: any, dbContainer: any) {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
@@ -907,7 +914,7 @@ class App {
         container:  undefined
     }
 
-    filterOnKeyUp(event) {
+    filterOnKeyUp(event: KeyboardEvent) {
         if (event.code != 'Enter')
             return;
         this.applyFilter();
@@ -928,7 +935,7 @@ class App {
         this.loadEntities(params, null);
     }
 
-    saveFilter(database, container, filter) {
+    saveFilter(database: string, container: string, filter: string) {
         if (filter.trim() == "") {
             const filterDatabase = this.filters[database];
             if (filterDatabase) {
@@ -948,7 +955,7 @@ class App {
         el<HTMLAnchorElement>("filterLink").href = url;
     }
 
-    async loadEntities (p, query) {
+    async loadEntities (p: Resource, query: string) {
         const storedFilter = this.filters[p.database]?.[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
         entityFilter.value = filter;
@@ -1001,7 +1008,7 @@ class App {
         entityExplorer.appendChild(ulIds);
     }
 
-    findContainerEntity (id) {
+    findContainerEntity (id: string) {
         const ulIds= entityExplorer.querySelector("ul");
         const children = Array.prototype.slice.call(ulIds.children);
         for(const child of children){
@@ -1028,7 +1035,7 @@ class App {
         this.entityHistory[this.entityHistoryPos].selection    = this.entityEditor.getSelection();
     }
 
-    navigateEntity(pos) {
+    navigateEntity(pos: number) {
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
         this.storeCursor();
@@ -1037,7 +1044,7 @@ class App {
         this.loadEntity(entry.route, true, entry.selection);
     }
 
-    async loadEntity (p, preserveHistory, selection) {
+    async loadEntity (p: Resource, preserveHistory: boolean, selection: monaco.IRange) {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
 
@@ -1069,7 +1076,7 @@ class App {
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
 
-    getEntityLink (database, container, id) {
+    getEntityLink (database: string, container: string, id: string) {
         const containerRoute    = { database: database, container: container }
         let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         if (id) {
@@ -1078,12 +1085,12 @@ class App {
         return link;
     }
 
-    getEntityReload (database, container, id) {
+    getEntityReload (database: string, container: string, id: string) {
         const p = { database, container, id };
         return `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`
     }
 
-    clearEntity (database, container) {
+    clearEntity (database: string, container: string) {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
 
@@ -1098,7 +1105,7 @@ class App {
         this.setEntityValue(database, container, "");
     }
 
-    getEntityKeyName (database, container) {
+    getEntityKeyName (database: string, container: string) {
         const schema = this.databaseSchemas[database];
         if (schema) {
             const containerType = schema._containerSchemas[container];
@@ -1169,10 +1176,10 @@ class App {
         }
     }
 
-    entityModel;
-    entityModels = {};
+    entityModel:    monaco.editor.ITextModel;
+    entityModels:   {[key: string]: monaco.editor.ITextModel} = { };
 
-    getModel (url) {
+    getModel (url: string) : monaco.editor.ITextModel {
         this.entityModel = this.entityModels[url];
         if (!this.entityModel) {
             const entityUri   = monaco.Uri.parse(url);
@@ -1182,7 +1189,7 @@ class App {
         return this.entityModel;
     }
 
-    setEntityValue (database, container, value) {
+    setEntityValue (database: string, container: string, value: string) {
         const url = `entity://${database}.${container}.json`;
         const model = this.getModel(url);
         model.setValue(value);
@@ -1200,7 +1207,7 @@ class App {
         }
     }
 
-    decorateJson(editor, value, containerSchema, database) {
+    decorateJson(editor: monaco.editor.IStandaloneCodeEditor, value: string, containerSchema, database: string) {
         JSON.parse(value);  // early out on invalid JSON
         // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
         // 2.) bundle.js created fom npm module 'json-to-ast' via:
@@ -1226,7 +1233,7 @@ class App {
         const decorations = editor.deltaDecorations(oldDecorations, newDecorations);
     }
 
-    addRelationsFromAst(ast, schema, addRelation) {
+    addRelationsFromAst(ast: any, schema: any, addRelation: any) {
         if (!ast.children) // ast is a 'Literal'
             return;
         for (const child of ast.children) {
@@ -1276,7 +1283,7 @@ class App {
         }
     }
 
-    setCommandParam (database, command, value) {
+    setCommandParam (database: string, command: string, value: string) {
         const url = `command-param://${database}.${command}.json`;
         const isNewModel = this.entityModels[url] == undefined;
         const model = this.getModel(url)
@@ -1286,7 +1293,7 @@ class App {
         this.commandValueEditor.setModel (model);
     }
 
-    setCommandResult (database, command) {
+    setCommandResult (database: string, command: string) {
         const url = `command-result://${database}.${command}.json`;
         const model = this.getModel(url)
         this.entityEditor.setModel (model);
@@ -1295,7 +1302,7 @@ class App {
     commandEditWidth = "60px";
     activeExplorerEditor = undefined;
 
-    setExplorerEditor(edit) {
+    setExplorerEditor(edit : "command" | "entity" | "dbInfo") {
         this.activeExplorerEditor = edit;
         // console.log("editor:", edit);
         const commandActive = edit == "command";
@@ -1310,7 +1317,7 @@ class App {
         this.layoutEditors();
     }
 
-    showCommand(database, commandName) {
+    showCommand(database: string, commandName: string) {
         this.setExplorerEditor("command");
 
         const schema        = this.databaseSchemas[database]._rootSchema;
@@ -1379,13 +1386,13 @@ class App {
         return schemas;
     }
 
-    requestModel;
-    responseModel;
+    requestModel:       monaco.editor.ITextModel;
+    responseModel:      monaco.editor.ITextModel;
 
-    requestEditor;
-    responseEditor;
-    entityEditor;
-    commandValueEditor;
+    requestEditor:      monaco.editor.IStandaloneCodeEditor;
+    responseEditor:     monaco.editor.IStandaloneCodeEditor;
+    entityEditor:       monaco.editor.IStandaloneCodeEditor;
+    commandValueEditor: monaco.editor.IStandaloneCodeEditor;
 
     requestContainer        = el("requestContainer");
     responseContainer       = el("responseContainer")
@@ -1480,7 +1487,7 @@ class App {
     }
 
     setEditorOptions() {
-        const editorSettings = {
+        const editorSettings: monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions= {
             lineNumbers:    this.showLineNumbers ? "on" : "off",
             minimap:        { enabled: this.showMinimap ? true : false },
             theme:          window.appConfig.monacoTheme,
@@ -1492,7 +1499,7 @@ class App {
         this.commandValueEditor.updateOptions ({ ...editorSettings });
     }
 
-    tryFollowLink(value, column, line) {
+    tryFollowLink(value: string, column: number, line: number) {
         try {
             JSON.parse(value);  // early out invalid JSON
             const ast               = parse(value, { loc: true });
@@ -1519,7 +1526,7 @@ class App {
         }
     }
 
-    setConfig(key, value) {
+    setConfig(key: string, value: any) {
         this[key] = value;
         const elem = el(key);
         if (elem instanceof HTMLInputElement) {
@@ -1530,7 +1537,7 @@ class App {
         window.localStorage.setItem(key, valueStr);
     }
 
-    getConfig(key) {
+    getConfig(key: string) {
         const valueStr = window.localStorage.getItem(key);
         try {
             return JSON.parse(valueStr);
@@ -1538,7 +1545,7 @@ class App {
         return undefined;
     }
 
-    initConfigValue(key) {
+    initConfigValue(key: string) {
         const value = this.getConfig(key);
         if (value == undefined) {
             this.setConfig(key, this[key]);
@@ -1565,7 +1572,7 @@ class App {
         this.initConfigValue("filters");
     }
 
-    changeConfig (key, value) {
+    changeConfig (key: string, value: boolean) {
         this.setConfig(key, value);
         switch (key) {
             case "showLineNumbers":
@@ -1575,7 +1582,7 @@ class App {
         }
     }
 
-    formatJson(format, text) {
+    formatJson(format: boolean, text: string) {
         if (format) {
             try {
                 // const action = editor.getAction("editor.action.formatDocument");
@@ -1609,7 +1616,7 @@ class App {
         }
     }
 
-    layoutMonacoEditors(pairs) {
+    layoutMonacoEditors(pairs: { editor: monaco.editor.IStandaloneCodeEditor, elem: HTMLElement }[]) {
         for (let n = pairs.length - 1; n >= 0; n--) {
             const pair = pairs[n];
             if (!pair.editor || !pair.elem.children[0]) {
@@ -1617,27 +1624,27 @@ class App {
             }
         }
         for (const pair of pairs) {
-            const style = pair.elem.children[0].style;
-            style.width  = "0px";  // required to shrink width.  Found no alternative solution right now.
-            style.height = "0px";  // required to shrink height. Found no alternative solution right now.
+            const child = pair.elem.children[0] as HTMLElement;
+            child.style.width  = "0px";  // required to shrink width.  Found no alternative solution right now.
+            child.style.height = "0px";  // required to shrink height. Found no alternative solution right now.
         }
         for (const pair of pairs) {
             pair.editor.layout();
         }
         // set editor width/height to their container width/height
         for (const pair of pairs) {
-            const style  = pair.elem.children[0].style;
-            style.width  = pair.elem.clientWidth  + "px";
-            style.height = pair.elem.clientHeight + "px";
+            const child  = pair.elem.children[0] as HTMLElement;
+            child.style.width  = pair.elem.clientWidth  + "px";
+            child.style.height = pair.elem.clientHeight + "px";
         }
     }
 
-    dragTemplate;
-    dragBar;
-    dragOffset;
-    dragHorizontal;
+    dragTemplate :  HTMLElement;
+    dragBar:        HTMLElement;
+    dragOffset:     number;
+    dragHorizontal: boolean;
 
-    startDrag(event, template, bar, horizontal) {
+    startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean) {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
         this.dragHorizontal = horizontal;
         this.dragOffset     = horizontal ? event.offsetX : event.offsetY
@@ -1647,8 +1654,8 @@ class App {
         event.preventDefault();
     }
 
-    getGridColumns(xy) {
-        const prev = this.dragBar.previousElementSibling;
+    getGridColumns(xy: number) {
+        const prev = this.dragBar.previousElementSibling as HTMLElement;
         xy = xy - (this.dragHorizontal ? prev.offsetLeft : prev.offsetTop);
         if (xy < 20) xy = 20;
         // console.log (`drag x: ${x}`);
@@ -1667,7 +1674,7 @@ class App {
         }
     }
 
-    onDrag(event) {
+    onDrag(event: MouseEvent) {
         if (!this.dragTemplate)
             return;
         // console.log(`  drag: ${event.clientX}`);
