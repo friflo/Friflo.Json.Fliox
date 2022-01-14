@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         private  const      string                              SchemaBase = "/schema";
         private  readonly   FlioxHub                            hub;
-        internal            string                              image = "/Json-Fliox-53x43.svg";
+        internal            string                              image = "/img/Json-Fliox-53x43.svg";
         internal readonly   CreateZip                           zip;
         private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
         
