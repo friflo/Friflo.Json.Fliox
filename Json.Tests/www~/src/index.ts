@@ -556,7 +556,7 @@ class App {
         }
         const dbContainers  = content.containers[0].entities    as DbContainers[];
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
-        const commands      = content.containers[2].entities    as DbCommands[];
+        const dbCommands      = content.containers[2].entities    as DbCommands[];
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
         this.hubInfo        = hubInfoResult.result              as DbHubInfo;
         //
@@ -580,10 +580,10 @@ class App {
             if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
             this.selectedCatalog =selectedElement;
             selectedElement.classList.add("selected");
-            const databaseName  = selectedElement.childNodes[1].textContent;
-            const dbCommands      = commands.find  (c => c.id == databaseName);
-            const dbContainer     = dbContainers.find  (c => c.id == databaseName);
-            this.listCommands(databaseName, dbCommands, dbContainer);
+            const databaseName      = selectedElement.childNodes[1].textContent;
+            const commands          = dbCommands.find   (c => c.id == databaseName);
+            const containers        = dbContainers.find (c => c.id == databaseName);
+            this.listCommands(databaseName, commands, containers);
         }
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
@@ -635,7 +635,7 @@ class App {
         catalogExplorer.textContent = "";
         catalogExplorer.appendChild(ulCatalogs);
 
-        this.listCommands(commands[0].id, commands[0], dbContainers[0]);
+        this.listCommands(dbCommands[0].id, dbCommands[0], dbContainers[0]);
     }
 
     databaseSchemas: { [key: string]: DbSchema} = {};
