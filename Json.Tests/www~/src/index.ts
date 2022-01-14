@@ -443,7 +443,7 @@ class App {
 
     bracketValue = /\[(.*?)\]/;
 
-    errorAsHtml (message: string, p: Resource) {
+    errorAsHtml (message: string, p: Resource | null) {
         // first line: error type, second line: error message
         const pos = message.indexOf(' > ');
         let error = message;
@@ -939,9 +939,9 @@ class App {
         entityExplorer.appendChild(ulDatabase);
     }
 
-    filter = {
-        database:   undefined,
-        container:  undefined
+    filter = {} as {
+        database:   string,
+        container:  string
     }
 
     filterOnKeyUp(event: KeyboardEvent) {
