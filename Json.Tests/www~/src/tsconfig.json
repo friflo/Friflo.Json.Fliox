@@ -4,8 +4,9 @@
         "target": "ES2020",
         "outDir": "../",
         "sourceRoot": "./src/",
-        "rootDir": "./",        
+        "rootDir": "./",
         "sourceMap": true,
+        "pretty": false,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
         "noUnusedLocals": true, // Report errors on unused locals.

@@ -24,4 +24,6 @@ riderModule.iml
 *.sync.resp.md
 *.sync.resp.json
 
+/node_modules
+package-lock.json
 /Json.Tests/assets~/paint-splatter-2.svg

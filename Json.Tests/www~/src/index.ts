@@ -1,4 +1,4 @@
-/// <reference types="./node_modules/monaco-editor/monaco" />
+/// <reference types="../../../node_modules/monaco-editor/monaco" />
 
 import { CommandType, FieldType, JsonSchema, JsonType }
                                     from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";

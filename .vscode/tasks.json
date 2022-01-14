@@ -60,6 +60,17 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "www~ tsc-watch",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "tsc-watch"],
+            "problemMatcher": ["$tsc-watch"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }          
     ]
 }
