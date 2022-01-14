@@ -2,7 +2,7 @@
 
 import { CommandType, FieldType, JsonSchema, JsonType }
                 from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbCommands }
+import { DbSchema, DbContainers, DbCommands, DbHubInfo }
                 from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 
@@ -513,7 +513,7 @@ class App {
         this.selectedEntity.elem.classList.add("selected");
     }
 
-    hubInfo = { description: undefined, website: undefined };
+    hubInfo = { } as DbHubInfo;
 
     async loadCluster () {
         const tasks = [
@@ -530,10 +530,10 @@ class App {
             catalogExplorer.innerHTML = this.errorAsHtml(error, null);
             return 
         }
-        const dbContainers  = content.containers[0].entities as DbContainers[];
-        const dbSchemas     = content.containers[1].entities as DbSchema[];
-        const commands      = content.containers[2].entities as DbCommands[];
-        this.hubInfo        = content.tasks[3].result;
+        const dbContainers  = content.containers[0].entities    as DbContainers[];
+        const dbSchemas     = content.containers[1].entities    as DbSchema[];
+        const commands      = content.containers[2].entities    as DbCommands[];
+        this.hubInfo        = content.tasks[3].result           as DbHubInfo;
         //
         let   description   = this.hubInfo.description
         const website       = this.hubInfo.website
