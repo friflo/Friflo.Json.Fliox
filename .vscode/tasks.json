@@ -67,6 +67,7 @@
             "command": "npm",
             "args": ["run", "tsc-watch"],
             "problemMatcher": ["$tsc-watch"],
+            "isBackground": true,
             "group": {
                 "kind": "build",
                 "isDefault": true
