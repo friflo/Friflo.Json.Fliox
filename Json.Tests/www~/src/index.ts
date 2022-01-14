@@ -556,7 +556,7 @@ class App {
         }
         const dbContainers  = content.containers[0].entities    as DbContainers[];
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
-        const dbCommands      = content.containers[2].entities    as DbCommands[];
+        const dbCommands    = content.containers[2].entities    as DbCommands[];
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
         this.hubInfo        = hubInfoResult.result              as DbHubInfo;
         //
