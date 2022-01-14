@@ -39,6 +39,23 @@ declare module "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.H
     }
 }
 
+type MonacoSchema = {
+    readonly uri: string;
+    /**
+     * A list of glob patterns that describe for which file URIs the JSON schema will be used.
+     * '*' and '**' wildcards are supported. Exclusion patterns start with '!'.
+     * For example '*.schema.json', 'package.json', '!foo*.schema.json', 'foo/**\/BADRESP.json'.
+     * A match succeeds when there is at least one pattern matching and last matching pattern does not start with '!'.
+     */
+    fileMatch?: string[];
+    /**
+     * The schema for the given URI.
+     */
+    readonly schema?: any;
+
+    _resolvedDef?: any
+}
+
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 type Resource = {
@@ -616,7 +633,7 @@ class App {
     databaseSchemas: { [key: string]: DbSchema} = {};
 
     createEntitySchemas (dbSchemas: DbSchema[]) {
-        const schemaMap = {};
+        const schemaMap: { [key: string]: MonacoSchema } = {};
         for (const dbSchema of dbSchemas) {
             const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
             const database        = dbSchema.id;
@@ -637,7 +654,7 @@ class App {
             for (const schemaPath in jsonSchemas) {
                 const schema      = jsonSchemas[schemaPath];
                 const uri         = "http://" + database + "/" + schemaPath;
-                const schemaEntry = {
+                const schemaEntry: MonacoSchema = {
                     uri:            uri,
                     schema:         schema,
                     fileMatch:      [], // can have multiple in case schema is used by multiple editor models
@@ -1396,7 +1413,7 @@ class App {
                     }
                 }
             }]; */
-        const schemas = [];
+        const schemas: MonacoSchema[] = [];
         try {
             const jsonSchemaResponse  = await fetch("schema/protocol/json-schema.json");
             const jsonSchema          = await jsonSchemaResponse.json();
@@ -1404,7 +1421,7 @@ class App {
             for (const schemaName in jsonSchema) {
                 const schema          = jsonSchema[schemaName];
                 const url             = "protocol/json-schema/" + schemaName;
-                const schemaEntry = {
+                const schemaEntry: MonacoSchema = {
                     uri:    "http://" + url,
                     schema: schema            
                 }
@@ -1431,9 +1448,9 @@ class App {
     commandValue            = el("commandValue");
     entityContainer         = el("entityContainer");
 
-    allMonacoSchemas = [];
+    allMonacoSchemas: MonacoSchema[] = [];
 
-    addSchemas (monacoSchemas) {
+    addSchemas (monacoSchemas: MonacoSchema[]) {
         this.allMonacoSchemas.push(...monacoSchemas);
         // [LanguageServiceDefaults | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.LanguageServiceDefaults.html
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
