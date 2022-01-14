@@ -736,7 +736,7 @@ class App {
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
-    addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: any) {
+    addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: { [key: string]: MonacoSchema }) {
         const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
         const schemaName      = dbSchema.schemaName;
         const schemaPath      = dbSchema.schemaPath;
@@ -765,7 +765,8 @@ class App {
             } else {
                 // uri is never referenced - create an arbitrary unique uri
                 const uri = "http://" + database + "/command/param" + commandName;
-                const schema = {
+                const schema: MonacoSchema = {
+                    uri:        uri,
                     schema:     paramType,
                     fileMatch:  [url]
                 };
@@ -782,6 +783,7 @@ class App {
                 // uri is never referenced - create an arbitrary unique uri
                 const uri = "http://" + database + "/command/result" + commandName;
                 const schema = {
+                    uri:        uri,
                     schema:     resultType,
                     fileMatch: [url]
                 };
