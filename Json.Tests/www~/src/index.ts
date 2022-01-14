@@ -1,14 +1,15 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
 
 import { CommandType, FieldType, JsonSchema, JsonType }
-                                    from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+            from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+            
 import { DbSchema, DbContainers, DbCommands, DbHubInfo }
-                                    from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+            from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 import { SyncRequest, SyncResponse, ProtocolResponse_Union }
-                from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+            from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }
-                from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
+            from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 
 declare const parse : any; // https://www.npmjs.com/package/json-to-ast
