@@ -10,7 +10,8 @@ const contentToCache = [
     "/js/bundle.js",
     "/js/index.js",
     "/img/Json-Fliox-53x43.svg",
-    "/img/fliox-512x512.png"
+    "/img/fliox-512x512.png",
+    "/img/paint-splatter.svg",    
 ];
 
 self.addEventListener("install",  e => {
