@@ -1,6 +1,9 @@
 /// <reference types="./node_modules/monaco-editor/monaco" />
 
-import { CommandType, FieldType, JsonSchema, JsonType } from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { CommandType, FieldType, JsonSchema, JsonType }
+                from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbSchema, DbContainers, DbCommands }
+                from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 
 declare const parse : any; // https://www.npmjs.com/package/json-to-ast
@@ -29,14 +32,11 @@ declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Sch
     }
 }
 
-interface DbSchema {
-    id:                 string;
-    schemaName:         string;
-    schemaPath:         string;
-    jsonSchemas:        { [key: string] : JsonSchema};
-
-    _rootSchema:        JsonType;
-    _containerSchemas : { [key: string] : JsonType };
+declare module "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
+    interface DbSchema {
+        _rootSchema:        JsonType;
+        _containerSchemas : { [key: string] : JsonType };        
+    }
 }
 
 
@@ -530,9 +530,9 @@ class App {
             catalogExplorer.innerHTML = this.errorAsHtml(error, null);
             return 
         }
-        const dbContainers  = content.containers[0].entities;
-        const dbSchemas     = content.containers[1].entities;
-        const commands      = content.containers[2].entities;
+        const dbContainers  = content.containers[0].entities as DbContainers[];
+        const dbSchemas     = content.containers[1].entities as DbSchema[];
+        const commands      = content.containers[2].entities as DbCommands[];
         this.hubInfo        = content.tasks[3].result;
         //
         let   description   = this.hubInfo.description
@@ -618,7 +618,7 @@ class App {
     createEntitySchemas (dbSchemas: DbSchema[]) {
         const schemaMap = {};
         for (const dbSchema of dbSchemas) {
-            const jsonSchemas     = dbSchema.jsonSchemas;
+            const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
             const database        = dbSchema.id;
             const containerRefs = {};
             const rootSchema    = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
@@ -720,10 +720,10 @@ class App {
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
     addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: any) {
-        const jsonSchemas     = dbSchema.jsonSchemas;
-        const schemaName      = dbSchema.schemaName as string;
-        const schemaPath      = dbSchema.schemaPath as string;
-        const jsonSchema      = jsonSchemas[schemaPath] as JsonSchema;
+        const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
+        const schemaName      = dbSchema.schemaName;
+        const schemaPath      = dbSchema.schemaPath;
+        const jsonSchema      = jsonSchemas[schemaPath];
         const dbType          = jsonSchema.definitions[schemaName];
         const containers      = dbType.properties;
         for (const containerName in containers) {
@@ -871,14 +871,14 @@ class App {
         this.entityEditor.setValue(content);
     }
 
-    setDatabaseInfo(database: string, dbContainer: any) {
+    setDatabaseInfo(database: string, dbContainer: DbContainers) {
         el("databaseName").innerHTML      = this.getDatabaseLink(database);
         el("databaseSchema").innerHTML    = this.getSchemaType(database);
         el("databaseExports").innerHTML   = this.getSchemaExports(database);
         el("databaseType").innerHTML      = dbContainer.databaseType;        
     }
 
-    listCommands (database: string, dbCommands: any, dbContainer: any) {
+    listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 

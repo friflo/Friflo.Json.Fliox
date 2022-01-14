@@ -8,7 +8,8 @@
         "sourceMap": true,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
-        "noUnusedLocals": true, /* Report errors on unused locals. */
+        "noUnusedLocals": true, // Report errors on unused locals.
+        "noImplicitAny": false, // todo: set to true
     },
     "include": ["**/*"],
     "exclude": []
