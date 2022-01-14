@@ -2,8 +2,8 @@
     "compilerOptions": {
         "module": "ES6",
         "target": "ES2020",
-        "outDir": "../",
-        "sourceRoot": "./src/",
+        "outDir": "../js/",
+        "sourceRoot": "../src/",
         "rootDir": "./",
         "sourceMap": true,
         "pretty": false,

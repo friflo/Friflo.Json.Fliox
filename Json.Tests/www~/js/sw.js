@@ -7,10 +7,10 @@ const cacheName = 'static-v1';
 
 const contentToCache = [
     "/",
-    "/bundle.js",
-    "/index.js",
-    "/Json-Fliox-53x43.svg",
-    "/fliox-512x512.png"
+    "/js/bundle.js",
+    "/js/index.js",
+    "/img/Json-Fliox-53x43.svg",
+    "/img/fliox-512x512.png"
 ];
 
 self.addEventListener("install",  e => {

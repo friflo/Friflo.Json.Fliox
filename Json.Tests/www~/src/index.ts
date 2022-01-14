@@ -2,7 +2,7 @@
 
 import { CommandType, FieldType, JsonSchema, JsonType }
             from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-            
+
 import { DbSchema, DbContainers, DbCommands, DbHubInfo }
             from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
@@ -108,7 +108,7 @@ const commandSignature  = el("commandSignature");
 const commandLink       = el("commandLink");
 
 /* if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js").then(registration => {
+    navigator.serviceWorker.register("./js/sw.js").then(registration => {
         console.log("SW registered");
     }).catch(error => {
         console.error(`SW failed: ${error}`);
