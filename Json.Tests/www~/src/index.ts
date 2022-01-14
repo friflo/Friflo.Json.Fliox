@@ -1,9 +1,14 @@
 /// <reference types="./node_modules/monaco-editor/monaco" />
 
 import { CommandType, FieldType, JsonSchema, JsonType }
-                from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+                                    from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema, DbContainers, DbCommands, DbHubInfo }
-                from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+                                    from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+
+import { SyncRequest, SyncResponse, ProtocolResponse_Union }
+                from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { SyncRequestTask_Union, SendCommandResult }
+                from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 
 declare const parse : any; // https://www.npmjs.com/package/json-to-ast
@@ -408,15 +413,16 @@ class App {
         }
     }
 
-    async postRequestTasks (database: string, tasks: any[], tag: string) {
+    async postRequestTasks (database: string, tasks: SyncRequestTask_Union[], tag: string) {
         const db = database == "main_db" ? undefined : database;
-        const request = JSON.stringify({
+        const sync: SyncRequest = {
             "msg":      "sync",
             "database": db,
             "tasks":    tasks,
             "user":     defaultUser.value,
             "token":    defaultToken.value
-        });
+        }
+        const request = JSON.stringify(sync);
         tag = tag ? tag : "";
         return await this.postRequest(request, `${database}/${tag}`);
     }
@@ -448,7 +454,7 @@ class App {
         }
     }
 
-    getTaskError (content: any, taskIndex: number) {
+    getTaskError (content: ProtocolResponse_Union, taskIndex: number) {
         if (content.msg == "error") {
             return content.message;
         }
@@ -533,15 +539,15 @@ class App {
     hubInfo = { } as DbHubInfo;
 
     async loadCluster () {
-        const tasks = [
-            { "task": "query",  "container": "containers", "filterJson":{ "op": "true" }},
-            { "task": "query",  "container": "schemas",    "filterJson":{ "op": "true" }},
-            { "task": "query",  "container": "commands",   "filterJson":{ "op": "true" }},
+        const tasks: SyncRequestTask_Union[] = [
+            { "task": "query",  "container": "containers"},
+            { "task": "query",  "container": "schemas"},
+            { "task": "query",  "container": "commands"},
             { "task": "command","name": "DbHubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await this.postRequestTasks("cluster", tasks, null);
-        const content = response.json;
+        const content = response.json as SyncResponse;
         const error = this.getTaskError (content, 0);
         if (error) {
             catalogExplorer.innerHTML = this.errorAsHtml(error, null);
@@ -550,7 +556,8 @@ class App {
         const dbContainers  = content.containers[0].entities    as DbContainers[];
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
         const commands      = content.containers[2].entities    as DbCommands[];
-        this.hubInfo        = content.tasks[3].result           as DbHubInfo;
+        const hubInfoResult = content.tasks[3]                  as SendCommandResult;
+        this.hubInfo        = hubInfoResult.result              as DbHubInfo;
         //
         let   description   = this.hubInfo.description
         const website       = this.hubInfo.website
