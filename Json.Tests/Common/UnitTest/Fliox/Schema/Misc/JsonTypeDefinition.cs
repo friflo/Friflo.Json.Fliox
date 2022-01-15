@@ -198,14 +198,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
         public static Generator Generate(NativeTypeOptions options, string name) {
             var schema      = new NativeTypeSchema(options.types, options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".json", options.replacements, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".jtd.json", options.replacements, sepTypes, options.getPath);
             Generate(generator, name);
             return generator;
         }
         
         public static Generator Generate(GeneratorOptions options) {
-            var generator   = new Generator(options.typeSchema, ".json", options.replacements, options.separateTypes);
-            Generate(generator, options.name);
+            var generator   = new Generator(options.typeSchema, ".jtd.json", options.replacements, options.separateTypes);
+            var name        = options.typeSchema.RootType.Name;
+            Generate(generator, name);
             return generator;
         }
     }
