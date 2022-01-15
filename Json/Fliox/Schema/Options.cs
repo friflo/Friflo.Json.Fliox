@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Schema
         }
     }
     
-    public class GeneratorOptions {
+    public sealed class GeneratorOptions {
         public readonly     string                  type;
         public readonly     string                  name;
         public readonly     TypeSchema              typeSchema;

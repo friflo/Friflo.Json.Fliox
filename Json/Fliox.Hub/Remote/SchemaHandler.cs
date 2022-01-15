@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
-    public class SchemaHandler : IRequestHandler
+    public sealed class SchemaHandler : IRequestHandler
     {
         private  const      string                              SchemaBase = "/schema";
         private  readonly   FlioxHub                            hub;
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
         private  readonly   List<CustomGenerator>               generators = new List<CustomGenerator>();
 
-        public SchemaHandler(FlioxHub hub, CreateZip zip = null) {
+        internal SchemaHandler(FlioxHub hub, CreateZip zip = null) {
             this.hub    = hub;
             this.zip    = zip;
         }
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    internal class CustomGenerator
+    internal sealed class CustomGenerator
     {
         internal readonly string                            type;
         internal readonly string                            name;
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
 
 
-    internal class SchemaResource {
+    internal sealed class SchemaResource {
         private  readonly   TypeSchema                      typeSchema;
         private  readonly   ICollection<TypeDef>            separateTypes;
 
@@ -279,7 +279,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
 
-    public class SchemaSet {
+    public sealed class SchemaSet {
         public   readonly   string                      name;
         public   readonly   string                      contentType;
         public   readonly   Dictionary<string, string>  files;
