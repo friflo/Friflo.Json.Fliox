@@ -9,10 +9,13 @@
     "schema:run": "npm run run -w Json.Tests/assets~/Schema/Typescript",
 
     "www:tsc":       "tsc --project Json.Tests/www~/src",
-    "www:tsc-watch": "tsc --project Json.Tests/www~/src -w"
+    "www:tsc-watch": "tsc --project Json.Tests/www~/src -w",
+
+    "postinstall": "node scripts/postinstall.js"
   },
   "devDependencies": {
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "winattr": "^3.0.0"
   },
   "dependencies": {},
   "workspaces": [
