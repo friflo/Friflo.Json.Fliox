@@ -78,6 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public void AddGenerator(string name, Func<GeneratorOptions, SchemaSet> generate) {
+            if (name == null) throw new NullReferenceException(nameof(name));
             var generator = new CustomGenerator(name, generate);
             generators.Add(generator);
         }
@@ -114,8 +115,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             var generatorOpt = new GeneratorOptions(options.schema, options.replacements, options.separateTypes, writer);
             foreach (var generator in generators) {
-                var schemaSet = generator.generateSchemaSet(generatorOpt);
-                result.Add(generator.name, schemaSet);
+                try {
+                    var schemaSet = generator.generateSchemaSet(generatorOpt);
+                    result.Add(generator.name, schemaSet);
+                } catch (Exception e) {
+                    Console.WriteLine($"SchemaSet generation failed for: {generator.name}. error: {e.Message}");
+                }
             }
             return result;
         }
