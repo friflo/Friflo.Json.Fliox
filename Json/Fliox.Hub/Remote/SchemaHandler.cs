@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
             result.Add("kotlin",       kotlinSchema);
 
-            var generatorOpt = new GeneratorOpt(options, writer);
+            var generatorOpt = new GeneratorOpt(options.schema, writer);
             foreach (var generator in generators) {
                 var schemaSet = generator.generateSchemaSet(generatorOpt);
                 result.Add(generator.name, schemaSet);
@@ -122,11 +122,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     public class GeneratorOpt {
-        public readonly     JsonTypeOptions options;
+        public readonly     TypeSchema      typeSchema;
         public readonly     ObjectWriter    writer;
         
-        internal GeneratorOpt(JsonTypeOptions options, ObjectWriter writer) {
-            this.options    = options;
+        internal GeneratorOpt(TypeSchema typeSchema, ObjectWriter writer) {
+            this.typeSchema = typeSchema;
             this.writer     = writer;
         }
     }
