@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Main
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new RequestHandler(wwwPath));     // optional - used to serve static web content
-            hostHub.schemaHandler.AddGenerator("JTD", JsonTypeDefinition.GenerateJTD);  // optional - add additional code generator: JTD
+            hostHub.schemaHandler.AddGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }
         

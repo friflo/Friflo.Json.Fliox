@@ -76,13 +76,15 @@ namespace Friflo.Json.Fliox.Schema
     }
     
     public class GeneratorOptions {
+        public readonly     string                  type;
         public readonly     string                  name;
         public readonly     TypeSchema              typeSchema;
         public readonly     ICollection<Replace>    replacements;
         public readonly     ICollection<TypeDef>    separateTypes;
         public readonly     ObjectWriter            writer;
 
-        public GeneratorOptions(string name, TypeSchema typeSchema, ICollection<Replace> replacements, ICollection<TypeDef> separateTypes, ObjectWriter writer) {
+        public GeneratorOptions(string type, string name, TypeSchema typeSchema, ICollection<Replace> replacements, ICollection<TypeDef> separateTypes, ObjectWriter writer) {
+            this.type           = type;
             this.name           = name;
             this.typeSchema     = typeSchema;
             this.replacements   = replacements;
