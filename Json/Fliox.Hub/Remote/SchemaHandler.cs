@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return schema;
         }
         
-        public void AddGenerator(string name, Func<GeneratorOpt, SchemaSet> generate) {
+        public void AddGenerator(string name, Func<GeneratorOptions, SchemaSet> generate) {
             var generator = new CustomGenerator(name, generate);
             generators.Add(generator);
         }
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
             result.Add("kotlin",       kotlinSchema);
 
-            var generatorOpt = new GeneratorOpt(options.schema, writer);
+            var generatorOpt = new GeneratorOptions(options.schema, options.replacements, options.separateTypes, writer);
             foreach (var generator in generators) {
                 var schemaSet = generator.generateSchemaSet(generatorOpt);
                 result.Add(generator.name, schemaSet);
@@ -121,22 +121,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    public class GeneratorOpt {
-        public readonly     TypeSchema      typeSchema;
-        public readonly     ObjectWriter    writer;
-        
-        internal GeneratorOpt(TypeSchema typeSchema, ObjectWriter writer) {
-            this.typeSchema = typeSchema;
-            this.writer     = writer;
-        }
-    }
-    
     internal class CustomGenerator
     {
-        internal readonly string                        name;
-        internal readonly Func<GeneratorOpt, SchemaSet> generateSchemaSet;
+        internal readonly string                            name;
+        internal readonly Func<GeneratorOptions, SchemaSet> generateSchemaSet;
         
-        internal CustomGenerator (string name, Func<GeneratorOpt, SchemaSet> generateSchemaSet) {
+        internal CustomGenerator (string name, Func<GeneratorOptions, SchemaSet> generateSchemaSet) {
             this.name               = name;
             this.generateSchemaSet  = generateSchemaSet;
         }
