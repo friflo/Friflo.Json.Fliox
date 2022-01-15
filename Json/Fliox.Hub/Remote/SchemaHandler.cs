@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal            string                              image = "/img/Json-Fliox-53x43.svg";
         internal readonly   CreateZip                           zip;
         private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
-        
+        private  readonly   List<CustomGenerator>               generators = new List<CustomGenerator>();
+
         public SchemaHandler(FlioxHub hub, CreateZip zip = null) {
             this.hub    = hub;
             this.zip    = zip;
@@ -74,8 +76,73 @@ namespace Friflo.Json.Fliox.Hub.Remote
             schemas.Add(name, schema);
             return schema;
         }
-    }
         
+        public void AddGenerator(string name, Func<GeneratorOpt, SchemaSet> generate) {
+            var generator = new CustomGenerator(name, generate);
+            generators.Add(generator);
+        }
+        
+        internal Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema, ICollection<TypeDef> separateTypes, ObjectWriter writer) {
+            var result              = new Dictionary<string, SchemaSet>();
+            var options             = new JsonTypeOptions(typeSchema);
+
+            var htmlGenerator       = HtmlGenerator.Generate(options);
+            var htmlSchema          = new SchemaSet (writer, "HTML",        "text/html",        htmlGenerator.files);
+            result.Add("html",       htmlSchema);
+            
+            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
+            var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
+            var jsonSchemaMap       = new Dictionary<string, JsonValue>();
+            foreach (var pair in jsonGenerator.files) {
+                jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
+            }
+            var fullSchema          = writer.Write(jsonSchemaMap);
+            var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
+            result.Add("json-schema",  jsonSchema);
+            
+            var typescriptGenerator = TypescriptGenerator.Generate(options);
+            var typescriptSchema    = new SchemaSet (writer, "Typescript",  "text/plain",       typescriptGenerator.files);
+            result.Add("typescript",   typescriptSchema);
+            
+            var csharpGenerator     = CSharpGenerator.Generate(options);
+            var csharpSchema        = new SchemaSet (writer, "C#",          "text/plain",       csharpGenerator.files);
+            result.Add("csharp",       csharpSchema);
+            
+            var kotlinGenerator     = KotlinGenerator.Generate(options);
+            var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
+            result.Add("kotlin",       kotlinSchema);
+
+            var generatorOpt = new GeneratorOpt(options, writer);
+            foreach (var generator in generators) {
+                var schemaSet = generator.generateSchemaSet(generatorOpt);
+                result.Add(generator.name, schemaSet);
+            }
+            return result;
+        }
+    }
+    
+    public class GeneratorOpt {
+        public readonly     JsonTypeOptions options;
+        public readonly     ObjectWriter    writer;
+        
+        internal GeneratorOpt(JsonTypeOptions options, ObjectWriter writer) {
+            this.options    = options;
+            this.writer     = writer;
+        }
+    }
+    
+    internal class CustomGenerator
+    {
+        internal readonly string                        name;
+        internal readonly Func<GeneratorOpt, SchemaSet> generateSchemaSet;
+        
+        internal CustomGenerator (string name, Func<GeneratorOpt, SchemaSet> generateSchemaSet) {
+            this.name               = name;
+            this.generateSchemaSet  = generateSchemaSet;
+        }
+    }
+
+
     internal class SchemaResource {
         private  readonly   TypeSchema                      typeSchema;
         private  readonly   ICollection<TypeDef>            separateTypes;
@@ -97,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (schemas == null) {
                 using (var writer = new ObjectWriter(new TypeStore())) {
                     writer.Pretty = true;
-                    schemas = GenerateSchemas(writer);
+                    schemas = handler.GenerateSchemas(typeSchema, separateTypes, writer);
                 }
             }
             if (path == "index.html") {
@@ -156,38 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return result.Set(content, schemaSet.contentType);
         }
         
-        private Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer) {
-            var result              = new Dictionary<string, SchemaSet>();
-            var options             = new JsonTypeOptions(typeSchema);
 
-            var htmlGenerator       = HtmlGenerator.Generate(options);
-            var htmlSchema          = new SchemaSet (writer, "HTML",        "text/html",        htmlGenerator.files);
-            result.Add("html",       htmlSchema);
-            
-            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
-            var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonSchemaMap       = new Dictionary<string, JsonValue>();
-            foreach (var pair in jsonGenerator.files) {
-                jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
-            }
-            var fullSchema          = writer.Write(jsonSchemaMap);
-            var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
-            result.Add("json-schema",  jsonSchema);
-            
-            var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet (writer, "Typescript",  "text/plain",       typescriptGenerator.files);
-            result.Add("typescript",   typescriptSchema);
-            
-            var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet (writer, "C#",          "text/plain",       csharpGenerator.files);
-            result.Add("csharp",       csharpSchema);
-            
-            var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
-            result.Add("kotlin",       kotlinSchema);
-            
-            return result;
-        }
         
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {
             var title = string.Join(" · ", titlePath);
