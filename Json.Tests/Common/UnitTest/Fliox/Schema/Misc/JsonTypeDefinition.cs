@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
@@ -208,6 +209,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             var name        = options.typeSchema.RootType.Name;
             Generate(generator, name);
             return generator;
+        }
+        
+        public static SchemaSet GenerateJTD(GeneratorOptions options) {
+            var generator = Generate(options);
+            return new SchemaSet(options.writer, options.name, "application/json", generator.files);
         }
     }
 }
