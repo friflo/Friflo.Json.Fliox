@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
             result.Add("kotlin",       kotlinSchema);
 
-            var generatorOpt = new GeneratorOptions(options.schema, options.replacements, options.separateTypes, writer);
             foreach (var generator in generators) {
+                var generatorOpt = new GeneratorOptions(generator.name, options.schema, options.replacements, options.separateTypes, writer);
                 try {
                     var schemaSet = generator.generateSchemaSet(generatorOpt);
                     result.Add(generator.name, schemaSet);

@@ -4,10 +4,12 @@ using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Main
@@ -78,6 +80,7 @@ namespace Friflo.Json.Tests.Main
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new RequestHandler(wwwPath));     // optional - used to serve static web content
+            hostHub.schemaHandler.AddGenerator("JTD", GenerateJTD);     // optional - add additional JTD code generator
             return hostHub;
         }
         
@@ -93,6 +96,11 @@ namespace Friflo.Json.Tests.Main
         private static TypeSchema CreateTypeSchema() {
             var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
             return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
+        }
+        
+        private static SchemaSet GenerateJTD(GeneratorOptions options) {
+            var generator = JsonTypeDefinition.Generate(options);
+            return new SchemaSet(options.writer, options.name, "application/json", generator.files);
         }
     }
 }

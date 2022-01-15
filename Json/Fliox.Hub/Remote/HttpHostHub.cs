@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class HttpHostHub : RemoteHostHub
     {
-        private  readonly   SchemaHandler           schemaHandler;
+        public   readonly   SchemaHandler           schemaHandler;
         private  readonly   RestHandler             restHandler;
         private  readonly   List<IRequestHandler>   customHandlers;
 

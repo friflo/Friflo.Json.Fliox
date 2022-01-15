@@ -202,5 +202,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             Generate(generator, name);
             return generator;
         }
+        
+        public static Generator Generate(GeneratorOptions options) {
+            var generator   = new Generator(options.typeSchema, ".json", options.replacements, options.separateTypes);
+            Generate(generator, options.name);
+            return generator;
+        }
     }
 }
