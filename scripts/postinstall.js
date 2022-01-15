@@ -1,10 +1,13 @@
-const winattr = require("winattr");
+var fsWin = require('fswin');
 
 const isWindows = process.platform.startsWith("win");
 
 const hide = (path) => {
     if (isWindows) {
-        winattr.set(path,  {hidden:true}, () => {});
+        var attributes = {
+            IS_HIDDEN: true, //false means no
+        };
+        fsWin.setAttributesSync(path, attributes)
     }
 }
 

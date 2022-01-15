@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "typescript": "^4.3.5",
-    "winattr": "^3.0.0"
+    "fswin": "^3.21.1015"
   },
   "dependencies": {},
   "workspaces": [
