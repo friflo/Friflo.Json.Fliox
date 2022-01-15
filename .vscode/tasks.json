@@ -12,7 +12,7 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        },        
+        },
         {
             "label": "test",
             "command": "dotnet",
@@ -62,16 +62,21 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "www~ tsc-watch",
+            "label": "www:tsc-watch",
             "type": "shell",
             "command": "npm",
-            "args": ["run", "tsc-watch"],
-            "problemMatcher": ["$tsc-watch"],
+            "args": [
+                "run",
+                "www:tsc-watch"
+            ],
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
             "isBackground": true,
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-        }          
+        }
     ]
 }

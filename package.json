@@ -1,14 +1,22 @@
 {
-  "name": "friflo-fliox-explorer",
+  "name": "friflo-fliox",
   "version": "0.1.0",
   "author": "Ullrich Praetz",
   "scripts": {
-    "tsc":       "tsc --project Json.Tests/www~/src",
-    "tsc-watch": "tsc --project Json.Tests/www~/src -w"
+    "all": "npm run www:tsc && npm run schema:tsc && npm run schema:run",
+
+    "schema:tsc": "tsc --project Json.Tests/assets~/Schema/Typescript",
+    "schema:run": "npm run run -w Json.Tests/assets~/Schema/Typescript",
+
+    "www:tsc":       "tsc --project Json.Tests/www~/src",
+    "www:tsc-watch": "tsc --project Json.Tests/www~/src -w"
   },
   "devDependencies": {
-    "monaco-editor": "^0.31.1",
     "typescript": "^4.3.5"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "workspaces": [
+      "Json.Tests/www~/src",
+      "Json.Tests/assets~/Schema/Typescript"
+  ]
 }

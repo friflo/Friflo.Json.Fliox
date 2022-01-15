@@ -1,0 +1,11 @@
+{
+  "name": "friflo-fliox-explorer",
+  "version": "0.1.0",
+  "author": "Ullrich Praetz",
+  "scripts": {
+  },
+  "devDependencies": {
+    "monaco-editor": "^0.31.1"
+  },
+  "dependencies": {}
+}
