@@ -1,11 +1,13 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Native;
 
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
@@ -13,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class HttpHostHub : RemoteHostHub
     {
-        public   readonly   SchemaHandler           schemaHandler;
+        private  readonly   SchemaHandler           schemaHandler;
         private  readonly   RestHandler             restHandler;
         private  readonly   List<IRequestHandler>   customHandlers;
 
@@ -35,6 +37,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public void RemoveHandler(IRequestHandler requestHandler) {
             customHandlers.Remove(requestHandler);
+        }
+        
+        public void AddSchemaGenerator(string type, string name, Func<GeneratorOptions, SchemaSet> generate) {
+            schemaHandler.AddGenerator(type, name, generate);
         }
         
         public async Task<bool> ExecuteHttpRequest(RequestContext request) {

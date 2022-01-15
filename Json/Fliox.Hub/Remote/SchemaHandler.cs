@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
-    public sealed class SchemaHandler : IRequestHandler
+    internal sealed class SchemaHandler : IRequestHandler
     {
         private  const      string                              SchemaBase = "/schema";
         private  readonly   FlioxHub                            hub;
