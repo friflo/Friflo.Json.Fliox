@@ -122,6 +122,15 @@ const filterRow         = el("filterRow");
 const commandSignature  = el("commandSignature");
 const commandLink       = el("commandLink");
 
+// request response editor
+const requestContainer       = el("requestContainer");
+const responseContainer      = el("responseContainer")
+// entity/command editor
+const commandValueContainer  = el("commandValueContainer");
+const commandParamBar        = el("commandParamBar");
+const commandValue           = el("commandValue");
+const entityContainer        = el("entityContainer");
+
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
         console.log("SW registered");
@@ -1382,13 +1391,13 @@ class App {
         this.activeExplorerEditor = edit;
         // console.log("editor:", edit);
         const commandActive = edit == "command";
-        this.commandValueContainer.style.display = commandActive ? "" : "none";
-        this.commandParamBar.style.display       = commandActive ? "" : "none";
+        commandValueContainer.style.display = commandActive ? "" : "none";
+        commandParamBar.style.display       = commandActive ? "" : "none";
         el("explorerEdit").style.gridTemplateRows = commandActive ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
 
         const editorActive              = edit == "command" || edit == "entity";
-        this.entityContainer.style.display   = editorActive      ? "" : "none";
-        el("dbInfo").style.display            = edit == "dbInfo"  ? "" : "none";
+        entityContainer.style.display   = editorActive      ? "" : "none";
+        el("dbInfo").style.display      = edit == "dbInfo"  ? "" : "none";
         //
         this.layoutEditors();
     }
@@ -1470,13 +1479,6 @@ class App {
     entityEditor:       monaco.editor.IStandaloneCodeEditor;
     commandValueEditor: monaco.editor.IStandaloneCodeEditor;
 
-    requestContainer        = el("requestContainer");
-    responseContainer       = el("responseContainer")
-    commandValueContainer   = el("commandValueContainer");
-    commandParamBar         = el("commandParamBar");
-    commandValue            = el("commandValue");
-    entityContainer         = el("entityContainer");
-
     allMonacoSchemas: MonacoSchema[] = [];
 
     addSchemas (monacoSchemas: MonacoSchema[]) {
@@ -1509,8 +1511,8 @@ class App {
 
         // --- create request editor
         { 
-            this.requestEditor = monaco.editor.create(this.requestContainer, { /* model: model */ });
-            this.requestModel = monaco.editor.createModel(null, "json", requestUri);
+            this.requestEditor  = monaco.editor.create(requestContainer, { /* model: model */ });
+            this.requestModel   = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel (this.requestModel);
 
             const defaultRequest = `{
@@ -1528,14 +1530,14 @@ class App {
 
         // --- create response editor
         {
-            this.responseEditor = monaco.editor.create(this.responseContainer, { /* model: model */ });
-            this.responseModel = monaco.editor.createModel(null, "json", responseUri);
+            this.responseEditor = monaco.editor.create(responseContainer, { /* model: model */ });
+            this.responseModel  = monaco.editor.createModel(null, "json", responseUri);
             this.responseEditor.setModel (this.responseModel);
         }
 
         // --- create entity editor
         {
-            this.entityEditor = monaco.editor.create(this.entityContainer, { });
+            this.entityEditor   = monaco.editor.create(entityContainer, { });
             this.entityEditor.onMouseDown((e) => {
                 if (!e.event.ctrlKey)
                     return;
@@ -1550,7 +1552,7 @@ class App {
         }
         // --- create command value editor
         {
-            this.commandValueEditor = monaco.editor.create(this.commandValue, { });
+            this.commandValueEditor     = monaco.editor.create(commandValue, { });
             // this.commandValueModel   = monaco.editor.createModel(null, "json");
             // this.commandValueEditor.setModel(this.commandValueModel);
             //this.commandValueEditor.setValue("{}");
@@ -1670,16 +1672,16 @@ class App {
         switch (this.config.activeTab) {
         case "playground":
             const editors = [
-                { editor: this.responseEditor,  elem: this.responseContainer },               
-                { editor: this.requestEditor,   elem: this.requestContainer },
+                { editor: this.responseEditor,  elem: responseContainer },               
+                { editor: this.requestEditor,   elem: requestContainer },
             ]
             this.layoutMonacoEditors(editors);
             break;
         case "explorer":
             // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
             const editors2 = [
-                { editor: this.entityEditor,        elem: this.entityContainer },               
-                { editor: this.commandValueEditor,  elem: this.commandValue },
+                { editor: this.entityEditor,        elem: entityContainer },               
+                { editor: this.commandValueEditor,  elem: commandValue },
             ]
             this.layoutMonacoEditors(editors2);
             break;
