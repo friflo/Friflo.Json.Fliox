@@ -637,33 +637,30 @@ class App {
     }
     resolveNodeRefs(jsonSchemas, schema, node) {
         const nodeType = typeof node;
-        switch (nodeType) {
-            /* case "array":
-                console.log("array"); // todo remove
-                return; */
-            case "object":
-                const ref = node.$ref;
-                if (ref) {
-                    if (ref[0] == "#") {
-                        const localName = ref.substring("#/definitions/".length);
-                        node._resolvedDef = schema.definitions[localName];
-                    }
-                    else {
-                        const localNamePos = ref.indexOf("#");
-                        const schemaPath = ref.substring(2, localNamePos); // start after './'
-                        const localName = ref.substring(localNamePos + "#/definitions/".length);
-                        const globalSchema = jsonSchemas[schemaPath];
-                        node._resolvedDef = globalSchema.definitions[localName];
-                    }
-                }
-                for (const propertyName in node) {
-                    if (propertyName == "_resolvedDef")
-                        continue;
-                    // if (propertyName == "employees") debugger;
-                    const property = node[propertyName];
-                    this.resolveNodeRefs(jsonSchemas, schema, property);
-                }
-                return;
+        if (nodeType != "object")
+            return;
+        if (Array.isArray(node))
+            return;
+        const ref = node.$ref;
+        if (ref) {
+            if (ref[0] == "#") {
+                const localName = ref.substring("#/definitions/".length);
+                node._resolvedDef = schema.definitions[localName];
+            }
+            else {
+                const localNamePos = ref.indexOf("#");
+                const schemaPath = ref.substring(2, localNamePos); // start after './'
+                const localName = ref.substring(localNamePos + "#/definitions/".length);
+                const globalSchema = jsonSchemas[schemaPath];
+                node._resolvedDef = globalSchema.definitions[localName];
+            }
+        }
+        for (const propertyName in node) {
+            if (propertyName == "_resolvedDef")
+                continue;
+            // if (propertyName == "employees") debugger;
+            const property = node[propertyName];
+            this.resolveNodeRefs(jsonSchemas, schema, property);
         }
     }
     // add a "fileMatch" property to all container entity type schemas used for editor validation
