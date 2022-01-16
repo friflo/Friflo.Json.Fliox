@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             fileExtensions.Add(fileExt);
         }
         
-        public bool IsApplicable(RequestContext context) {
+        public bool IsMatch(RequestContext context) {
             return context.method == "GET";
         }
             

@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.zip    = zip;
         }
         
-        public bool IsApplicable(RequestContext context) {
+        public bool IsMatch(RequestContext context) {
             if (context.method != "GET")
                 return false;
             return RequestContext.IsBasePath(SchemaBase, context.path);

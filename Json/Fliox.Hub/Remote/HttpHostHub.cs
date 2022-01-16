@@ -56,16 +56,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 request.Write(result.body, 0, "application/json", (int)result.status);
                 return true;
             }
-            if (schemaHandler != null && schemaHandler.IsApplicable(request)) {
+            if (schemaHandler != null && schemaHandler.IsMatch(request)) {
                 await schemaHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
-            if (restHandler.IsApplicable(request)) {
+            if (restHandler.IsMatch(request)) {
                 await restHandler.HandleRequest(request).ConfigureAwait(false);
                 return true;
             }
             foreach (var handler in customHandlers) {
-                if (!handler.IsApplicable(request))
+                if (!handler.IsMatch(request))
                     continue;
                 await handler.HandleRequest(request).ConfigureAwait(false);
                 return true;

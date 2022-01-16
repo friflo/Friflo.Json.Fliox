@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             pool        = hub.sharedEnv.Pool;
         }
         
-        public bool IsApplicable(RequestContext context) {
+        public bool IsMatch(RequestContext context) {
             return RequestContext.IsBasePath(RestBase, context.path);
         }
             

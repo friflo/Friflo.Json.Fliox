@@ -9,8 +9,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public interface IRequestHandler
     {
-        bool        IsApplicable(RequestContext context);
-        Task        HandleRequest(RequestContext context);
+        bool        IsMatch         (RequestContext context);
+        Task        HandleRequest   (RequestContext context);
     }
     
     public sealed class RequestContext
