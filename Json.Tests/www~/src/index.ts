@@ -70,6 +70,8 @@ type Resource = {
     id?:        string;
 };
 
+type ExplorerEditor = "command" | "entity" | "dbInfo"
+
 // --------------------------------------- WebSocket ---------------------------------------
 let connection:         WebSocket;
 let websocketCount      = 0;
@@ -261,7 +263,7 @@ class App {
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
         let start = new Date().getTime();
-        let duration;
+        let duration: number;
         try {
             const response = await this.postRequest(jsonRequest, "POST");
             let content = await response.text;
@@ -525,9 +527,9 @@ class App {
     }
 
     selectedCatalog: HTMLElement;
-    selectedEntity = {
-        elem: null
-    }
+    selectedEntity = {}  as {
+        elem?: HTMLElement
+    };
 
     setSelectedEntity(elem: HTMLElement) {
         if (this.selectedEntity.elem) {
@@ -643,12 +645,12 @@ class App {
     createEntitySchemas (dbSchemas: DbSchema[]) {
         const schemaMap: { [key: string]: MonacoSchema } = {};
         for (const dbSchema of dbSchemas) {
-            const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
-            const database        = dbSchema.id;
-            const containerRefs = {};
-            const rootSchema    = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
-            dbSchema._rootSchema = rootSchema;
-            const containers    = rootSchema.properties;
+            const jsonSchemas       = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
+            const database          = dbSchema.id;
+            const containerRefs     = {} as { [key: string] : string };
+            const rootSchema        = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
+            dbSchema._rootSchema    = rootSchema;
+            const containers        = rootSchema.properties;
             for (const containerName in containers) {
                 const container = containers[containerName];
                 containerRefs[container.additionalProperties.$ref] = containerName;
@@ -688,7 +690,7 @@ class App {
                         dbSchema._containerSchemas[containerName] = definition;
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
-                    const definitionEntry = {
+                    const definitionEntry: MonacoSchema = {
                         uri:            uri,
                         schema:         { $ref: schemaId },
                         fileMatch:      [], // can have multiple in case schema is used by multiple editor models
@@ -1084,7 +1086,10 @@ class App {
     }
 
     entityHistoryPos    = -1;
-    entityHistory       = [];
+    entityHistory: {
+        selection?: monaco.Selection,
+        route:      Resource
+    }[] = [];
 
     storeCursor() {
         if (this.entityHistoryPos < 0)
@@ -1178,7 +1183,7 @@ class App {
         const database  = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let id;
+        let id: string;
         try {
             const keyName = this.getEntityKeyName(database, container);
             id = JSON.parse(jsonValue)[keyName];
@@ -1275,8 +1280,7 @@ class App {
         // console.log ("AST", ast);
         
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
-        const oldDecorations = [];
-        const newDecorations = [
+        const newDecorations: monaco.editor.IModelDeltaDecoration[] = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
         this.addRelationsFromAst(ast, containerSchema, (value, container) => {
@@ -1287,7 +1291,7 @@ class App {
             const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
         });
-        editor.deltaDecorations(oldDecorations, newDecorations);
+        editor.deltaDecorations([], newDecorations);
     }
 
     addRelationsFromAst(ast: any, schema: JsonType, addRelation: any) {
@@ -1357,9 +1361,9 @@ class App {
     }
 
     commandEditWidth = "60px";
-    activeExplorerEditor = undefined;
+    activeExplorerEditor: ExplorerEditor = undefined;
 
-    setExplorerEditor(edit : "command" | "entity" | "dbInfo") {
+    setExplorerEditor(edit : ExplorerEditor) {
         this.activeExplorerEditor = edit;
         // console.log("editor:", edit);
         const commandActive = edit == "command";
@@ -1564,7 +1568,7 @@ class App {
             const databaseSchema    = this.databaseSchemas[database];
             const containerSchema   = databaseSchema._containerSchemas[this.entityIdentity.container];
 
-            let entity;
+            let entity: Resource;
             this.addRelationsFromAst(ast, containerSchema, (value, container) => {
                 if (entity)
                     return;
@@ -1617,7 +1621,7 @@ class App {
     formatResponses = true;
     activeTab       = "explorer";
     showDescription = true;
-    filters         = {};
+    filters         = {} as { [database: string]: { [container: string]: string[]}}
 
     loadConfig() {
         this.initConfigValue("showLineNumbers");

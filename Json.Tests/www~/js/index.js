@@ -43,9 +43,7 @@ const commandLink = el("commandLink");
 class App {
     constructor() {
         this.bracketValue = /\[(.*?)\]/;
-        this.selectedEntity = {
-            elem: null
-        };
+        this.selectedEntity = {};
         this.hubInfo = {};
         this.databaseSchemas = {};
         this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
@@ -1134,7 +1132,6 @@ class App {
         const ast = parse(value, { loc: true });
         // console.log ("AST", ast);
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
-        const oldDecorations = [];
         const newDecorations = [
         // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
@@ -1146,7 +1143,7 @@ class App {
             const hoverMessage = [{ value: markdownText }];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage } });
         });
-        editor.deltaDecorations(oldDecorations, newDecorations);
+        editor.deltaDecorations([], newDecorations);
     }
     addRelationsFromAst(ast, schema, addRelation) {
         var _a;
