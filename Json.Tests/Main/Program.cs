@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Main
         //  var typeSchema          = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new RequestHandler(wwwPath));     // optional - used to serve static web content
+            hostHub.AddHandler       (new StaticFileHandler(wwwPath));  // optional - used to serve static web content
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Main
             var database            = new FileDatabase(dbPath);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new RequestHandler(wwwPath));     // optional. Used to serve static web content
+            hostHub.AddHandler       (new StaticFileHandler(wwwPath));  // optional. Used to serve static web content
             return hostHub;
         }
         

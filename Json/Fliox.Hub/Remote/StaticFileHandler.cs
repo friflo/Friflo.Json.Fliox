@@ -1,17 +1,18 @@
-﻿using System;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Tests.Main
+namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class RequestHandler : IRequestHandler
+    public class StaticFileHandler : IRequestHandler
     {
-        private readonly string wwwRoot;
+        private readonly string     rootFolder;
         
-        public RequestHandler (string wwwRoot) {
-            this.wwwRoot = wwwRoot;    
+        public StaticFileHandler (string rootFolder) {
+            this.rootFolder = rootFolder;    
         }
         
         public bool IsApplicable(RequestContext context) {
@@ -37,14 +38,14 @@ namespace Friflo.Json.Tests.Main
                 ListDirectory(context);
                 return;
             }
-            var filePath = wwwRoot + path;
+            var filePath = rootFolder + path;
             var content = await ReadFile(filePath).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
             context.Write(new JsonValue(content), 0, contentType, 200);
         }
         
         private void ListDirectory (RequestContext context) {
-            var path = wwwRoot + context.path;
+            var path = rootFolder + context.path;
             if (!Directory.Exists(path)) {
                 var msg = $"directory doesnt exist: {path}";
                 context.WriteError("list directory", msg, 404);
@@ -52,7 +53,7 @@ namespace Friflo.Json.Tests.Main
             }
             string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
             for (int n = 0; n < fileNames.Length; n++) {
-                fileNames[n] = fileNames[n].Substring(wwwRoot.Length).Replace('\\', '/');
+                fileNames[n] = fileNames[n].Substring(rootFolder.Length).Replace('\\', '/');
             }
             var options = new SerializerOptions{ Pretty = true };
             var jsonList = JsonSerializer.Serialize(fileNames, options);
