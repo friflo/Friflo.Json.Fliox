@@ -1,4 +1,13 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
+const defaultConfig = {
+    showLineNumbers: false,
+    showMinimap: false,
+    formatEntities: false,
+    formatResponses: true,
+    activeTab: "explorer",
+    showDescription: true,
+    filters: {}
+};
 // --------------------------------------- WebSocket ---------------------------------------
 let connection;
 let websocketCount = 0;
@@ -61,13 +70,7 @@ class App {
         this.commandValue = el("commandValue");
         this.entityContainer = el("entityContainer");
         this.allMonacoSchemas = [];
-        this.showLineNumbers = false;
-        this.showMinimap = false;
-        this.formatEntities = false;
-        this.formatResponses = true;
-        this.activeTab = "explorer";
-        this.showDescription = true;
-        this.filters = {};
+        this.config = defaultConfig;
     }
     connectWebsocket() {
         if (connection) {
@@ -112,7 +115,7 @@ class App {
                 case "error":
                     clt = data.clt;
                     cltElement.innerText = clt !== null && clt !== void 0 ? clt : " - ";
-                    const content = this.formatJson(this.formatResponses, e.data);
+                    const content = this.formatJson(this.config.formatResponses, e.data);
                     this.responseModel.setValue(content);
                     responseState.innerHTML = `· ${duration} ms`;
                     break;
@@ -215,7 +218,7 @@ class App {
         try {
             const response = await this.postRequest(jsonRequest, "POST");
             let content = await response.text;
-            content = this.formatJson(this.formatResponses, content);
+            content = this.formatJson(this.config.formatResponses, content);
             duration = new Date().getTime() - start;
             this.responseModel.setValue(content);
         }
@@ -246,7 +249,7 @@ class App {
     onKeyDown(event) {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
-        switch (this.activeTab) {
+        switch (this.config.activeTab) {
             case "playground":
                 if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
                     this.sendSyncRequest();
@@ -431,17 +434,18 @@ class App {
         classList.remove(className);
     }
     toggleDescription() {
-        this.changeConfig("showDescription", !this.showDescription);
-        this.openTab(this.activeTab);
+        this.changeConfig("showDescription", !this.config.showDescription);
+        this.openTab(this.config.activeTab);
     }
     openTab(tabName) {
-        this.activeTab = tabName;
-        this.setClass(document.body, !this.showDescription, "miniHeader");
+        const config = this.config;
+        config.activeTab = tabName;
+        this.setClass(document.body, !config.showDescription, "miniHeader");
         const tabContents = document.getElementsByClassName("tabContent");
         const tabs = document.getElementsByClassName("tab");
         const gridTemplateRows = document.body.style.gridTemplateRows.split(" ");
         const headerHeight = getComputedStyle(document.body).getPropertyValue('--header-height');
-        gridTemplateRows[0] = this.showDescription ? headerHeight : "0";
+        gridTemplateRows[0] = config.showDescription ? headerHeight : "0";
         for (let i = 0; i < tabContents.length; i++) {
             const tabContent = tabContents[i];
             const isActiveContent = tabContent.id == tabName;
@@ -800,7 +804,7 @@ class App {
         }
         const response = await this.restRequest(method, value, database, null, null, `command=${command}`);
         let content = await response.text();
-        content = this.formatJson(this.formatResponses, content);
+        content = this.formatJson(this.config.formatResponses, content);
         this.entityEditor.setValue(content);
     }
     setDatabaseInfo(database, dbContainer) {
@@ -880,18 +884,19 @@ class App {
         this.loadEntities(params, null);
     }
     saveFilter(database, container, filter) {
+        const filters = this.config.filters;
         if (filter.trim() == "") {
-            const filterDatabase = this.filters[database];
+            const filterDatabase = filters[database];
             if (filterDatabase) {
                 delete filterDatabase[container];
             }
         }
         else {
-            if (!this.filters[database])
-                this.filters[database] = {};
-            this.filters[database][container] = [filter];
+            if (!filters[database])
+                filters[database] = {};
+            filters[database][container] = [filter];
         }
-        this.setConfig("filters", this.filters);
+        this.setConfig("filters", filters);
     }
     updateFilterLink() {
         const filter = entityFilter.value;
@@ -901,7 +906,7 @@ class App {
     }
     async loadEntities(p, query) {
         var _a;
-        const storedFilter = (_a = this.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
+        const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";
         entityFilter.value = filter;
         const removeFilterVisibility = query ? "" : "hidden";
@@ -989,7 +994,7 @@ class App {
         writeResult.innerHTML = "";
         const response = await this.restRequest("GET", null, p.database, p.container, p.id, null);
         let content = await response.text();
-        content = this.formatJson(this.formatEntities, content);
+        content = this.formatJson(this.config.formatEntities, content);
         entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.id);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
@@ -1360,8 +1365,8 @@ class App {
     }
     setEditorOptions() {
         const editorSettings = {
-            lineNumbers: this.showLineNumbers ? "on" : "off",
-            minimap: { enabled: this.showMinimap ? true : false },
+            lineNumbers: this.config.showLineNumbers ? "on" : "off",
+            minimap: { enabled: this.config.showMinimap ? true : false },
             theme: window.appConfig.monacoTheme,
             mouseWheelZoom: true
         };
@@ -1397,7 +1402,7 @@ class App {
         }
     }
     setConfig(key, value) {
-        this[key] = value;
+        this.config[key] = value;
         const elem = el(key);
         if (elem instanceof HTMLInputElement) {
             elem.value = value;
@@ -1417,7 +1422,7 @@ class App {
     initConfigValue(key) {
         const value = this.getConfig(key);
         if (value == undefined) {
-            this.setConfig(key, this[key]);
+            this.setConfig(key, this.config[key]);
             return;
         }
         this.setConfig(key, value);
@@ -1454,7 +1459,7 @@ class App {
     }
     layoutEditors() {
         // console.log("layoutEditors - activeTab: " + activeTab)
-        switch (this.activeTab) {
+        switch (this.config.activeTab) {
             case "playground":
                 const editors = [
                     { editor: this.responseEditor, elem: this.responseContainer },

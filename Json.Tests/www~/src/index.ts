@@ -72,6 +72,19 @@ type Resource = {
 
 type ExplorerEditor = "command" | "entity" | "dbInfo"
 
+const defaultConfig = {
+    showLineNumbers : false,
+    showMinimap     : false,
+    formatEntities  : false,
+    formatResponses : true,
+    activeTab       : "explorer",
+    showDescription : true,
+    filters         : {} as { [database: string]: { [container: string]: string[]}}
+}
+
+type Config     = typeof defaultConfig
+type ConfigKey  = keyof Config;
+
 // --------------------------------------- WebSocket ---------------------------------------
 let connection:         WebSocket;
 let websocketCount      = 0;
@@ -165,7 +178,7 @@ class App {
             case "error":
                 clt = data.clt;
                 cltElement.innerText  = clt ?? " - ";
-                const content = this.formatJson(this.formatResponses, e.data);
+                const content = this.formatJson(this.config.formatResponses, e.data);
                 this.responseModel.setValue(content)
                 responseState.innerHTML = `· ${duration} ms`;
                 break;
@@ -267,7 +280,7 @@ class App {
         try {
             const response = await this.postRequest(jsonRequest, "POST");
             let content = await response.text;
-            content = this.formatJson(this.formatResponses, content);
+            content = this.formatJson(this.config.formatResponses, content);
             duration = new Date().getTime() - start;
             this.responseModel.setValue(content);
         } catch(error) {
@@ -304,7 +317,7 @@ class App {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
 
-        switch (this.activeTab) {
+        switch (this.config.activeTab) {
         case "playground":
             if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
                 this.sendSyncRequest();
@@ -499,18 +512,19 @@ class App {
     }
 
     toggleDescription() {
-        this.changeConfig("showDescription", !this.showDescription);   
-        this.openTab(this.activeTab);
+        this.changeConfig("showDescription", !this.config.showDescription);   
+        this.openTab(this.config.activeTab);
     }
 
     openTab (tabName: string) {
-        this.activeTab = tabName;
-        this.setClass(document.body, !this.showDescription, "miniHeader")
+        const config            = this.config;
+        config.activeTab        = tabName;
+        this.setClass(document.body, !config.showDescription, "miniHeader")
         const tabContents       = document.getElementsByClassName("tabContent");
         const tabs              = document.getElementsByClassName("tab");
         const gridTemplateRows  = document.body.style.gridTemplateRows.split(" ");
         const headerHeight      = getComputedStyle(document.body).getPropertyValue('--header-height');
-        gridTemplateRows[0]     = this.showDescription ? headerHeight : "0";
+        gridTemplateRows[0]     = config.showDescription ? headerHeight : "0";
         for (let i = 0; i < tabContents.length; i++) {
             const tabContent            = tabContents[i] as HTMLElement;
             const isActiveContent       = tabContent.id == tabName;
@@ -896,7 +910,7 @@ class App {
         }
         const response = await this.restRequest(method, value, database, null, null, `command=${command}`);
         let content = await response.text();
-        content = this.formatJson(this.formatResponses, content);
+        content = this.formatJson(this.config.formatResponses, content);
         this.entityEditor.setValue(content);
     }
 
@@ -995,16 +1009,17 @@ class App {
     }
 
     saveFilter(database: string, container: string, filter: string) {
+        const filters = this.config.filters;
         if (filter.trim() == "") {
-            const filterDatabase = this.filters[database];
+            const filterDatabase = filters[database];
             if (filterDatabase) {
                 delete filterDatabase[container];
             }
         } else {
-            if (!this.filters[database]) this.filters[database] = {}            
-            this.filters[database][container] = [filter];
+            if (!filters[database]) filters[database] = {}            
+            filters[database][container] = [filter];
         }
-        this.setConfig("filters", this.filters);
+        this.setConfig("filters", filters);
     }
 
     updateFilterLink() {
@@ -1015,7 +1030,7 @@ class App {
     }
 
     async loadEntities (p: Resource, query: string) {
-        const storedFilter = this.filters[p.database]?.[p.container];
+        const storedFilter = this.config.filters[p.database]?.[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
         entityFilter.value = filter;
 
@@ -1126,7 +1141,7 @@ class App {
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, p.database, p.container, p.id, null);        
         let content   = await response.text();
-        content = this.formatJson(this.formatEntities, content);
+        content = this.formatJson(this.config.formatEntities, content);
         entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.id);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
@@ -1294,7 +1309,7 @@ class App {
         editor.deltaDecorations([], newDecorations);
     }
 
-    addRelationsFromAst(ast: any, schema: JsonType, addRelation: any) {
+    addRelationsFromAst(ast: any, schema: JsonType, addRelation: (value: any, container: string) => void) {
         if (!ast.children) // ast is a 'Literal'
             return;
         for (const child of ast.children) {
@@ -1549,8 +1564,8 @@ class App {
 
     setEditorOptions() {
         const editorSettings: monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions= {
-            lineNumbers:    this.showLineNumbers ? "on" : "off",
-            minimap:        { enabled: this.showMinimap ? true : false },
+            lineNumbers:    this.config.showLineNumbers ? "on" : "off",
+            minimap:        { enabled: this.config.showMinimap ? true : false },
             theme:          window.appConfig.monacoTheme,
             mouseWheelZoom: true
         }
@@ -1587,18 +1602,18 @@ class App {
         }
     }
 
-    setConfig(key: string, value: any) {
-        this[key] = value;
+    setConfig<K extends ConfigKey>(key: K, value: Config[K]) {
+        this.config[key] = value;
         const elem = el(key);
         if (elem instanceof HTMLInputElement) {
-            elem.value   = value;
-            elem.checked = value;
+            elem.value   = value as string;
+            elem.checked = value as boolean;
         }
         const valueStr = JSON.stringify(value, null, 2);
         window.localStorage.setItem(key, valueStr);
     }
 
-    getConfig(key: string) {
+    getConfig(key: keyof Config) {
         const valueStr = window.localStorage.getItem(key);
         try {
             return JSON.parse(valueStr);
@@ -1606,22 +1621,16 @@ class App {
         return undefined;
     }
 
-    initConfigValue(key: string) {
+    initConfigValue(key: ConfigKey) {
         const value = this.getConfig(key);
         if (value == undefined) {
-            this.setConfig(key, this[key]);
+            this.setConfig(key, this.config[key]);
             return;
         }
         this.setConfig(key, value);
     }
 
-    showLineNumbers = false;
-    showMinimap     = false;
-    formatEntities  = false;
-    formatResponses = true;
-    activeTab       = "explorer";
-    showDescription = true;
-    filters         = {} as { [database: string]: { [container: string]: string[]}}
+    config = defaultConfig;
 
     loadConfig() {
         this.initConfigValue("showLineNumbers");
@@ -1633,7 +1642,7 @@ class App {
         this.initConfigValue("filters");
     }
 
-    changeConfig (key: string, value: boolean) {
+    changeConfig (key: ConfigKey, value: boolean) {
         this.setConfig(key, value);
         switch (key) {
             case "showLineNumbers":
@@ -1658,7 +1667,7 @@ class App {
 
     layoutEditors () {
         // console.log("layoutEditors - activeTab: " + activeTab)
-        switch (this.activeTab) {
+        switch (this.config.activeTab) {
         case "playground":
             const editors = [
                 { editor: this.responseEditor,  elem: this.responseContainer },               
