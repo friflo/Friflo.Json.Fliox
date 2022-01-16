@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -9,10 +11,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class StaticFileHandler : IRequestHandler
     {
-        private readonly string     rootFolder;
+        private readonly string         rootFolder;
+        private readonly List<FileExt>  fileExtensions = new List<FileExt> {
+            new FileExt(".html",  "text/html; charset=UTF-8"),
+            new FileExt(".js",    "application/javascript"),
+            new FileExt(".png",   "image/png"),
+            new FileExt(".css",   "text/css"),
+            new FileExt(".svg",   "image/svg+xml"),
+            new FileExt(".ico",   "image/x-icon"),
+        };
         
         public StaticFileHandler (string rootFolder) {
             this.rootFolder = rootFolder;    
+        }
+        
+        public void AddFileExtension(string  extension, string  mediaType) {
+            var fileExt = new FileExt(extension, mediaType);
+            fileExtensions.Add(fileExt);
         }
         
         public bool IsApplicable(RequestContext context) {
@@ -60,19 +75,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString(jsonList, "application/json");
         }
         
-        private static string ContentTypeFromPath(string path) {
-            if (path.EndsWith(".html"))
-                return "text/html; charset=UTF-8";
-            if (path.EndsWith(".js"))
-                return "application/javascript";
-            if (path.EndsWith(".png"))
-                return "image/png";
-            if (path.EndsWith(".css"))
-                return "text/css";
-            if (path.EndsWith(".svg"))
-                return "image/svg+xml";
-            if (path.EndsWith(".ico"))
-                return "image/x-icon";
+        private string ContentTypeFromPath(string path) {
+            foreach (var fileExt in fileExtensions) {
+                if (path.EndsWith(fileExt.extension))
+                    return fileExt.mediaType;
+            }
             return "text/plain";
         }
         
@@ -86,6 +93,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 return memoryStream.ToArray();
             }
+        }
+    }
+    
+    public struct FileExt {
+        public readonly     string  extension;
+        public readonly     string  mediaType;
+        
+        public FileExt (string  extension, string  mediaType) {
+            this.extension  = extension;
+            this.mediaType  = mediaType;
         }
     }
 }
