@@ -752,7 +752,7 @@ class App {
                 if (propertyName == "_resolvedDef")
                     continue;
                 // if (propertyName == "employees") debugger;
-                const property = node[propertyName];
+                const property = (node as any)[propertyName];
                 this.resolveNodeRefs(jsonSchemas, schema, property);
             }
             return;
@@ -1058,7 +1058,7 @@ class App {
             entityExplorer.innerHTML = this.errorAsHtml(error, p);
             return;
         }
-        let     content         = await response.json();
+        let     content         = await response.json() as { id: string | number }[];
         const   ids             = content.map(entity => entity.id);
         const   ulIds           = document.createElement('ul');
         ulIds.classList.value   = "entities"
@@ -1075,7 +1075,7 @@ class App {
         }
         for (const id of ids) {
             const liId = document.createElement('li');
-            liId.innerText = id;
+            liId.innerText = String(id);
             ulIds.append(liId);
         }
         entityExplorer.innerText = ""

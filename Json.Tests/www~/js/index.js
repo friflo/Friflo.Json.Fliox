@@ -946,7 +946,7 @@ class App {
         };
         for (const id of ids) {
             const liId = document.createElement('li');
-            liId.innerText = id;
+            liId.innerText = String(id);
             ulIds.append(liId);
         }
         entityExplorer.innerText = "";
