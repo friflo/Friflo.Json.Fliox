@@ -7,5 +7,8 @@
       "count":        10
     }
   ],
-  "info": "Reserve keys for given container"
+  "info": [
+      "IN DEVELOPMENT",
+      "Reserve keys for given container"
+  ]
 }
