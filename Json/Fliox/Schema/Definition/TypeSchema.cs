@@ -71,8 +71,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// <summary>
         /// Must to be called after collecting all <see cref="Types"/> and their <see cref="TypeDef.Fields"/>.
         /// </summary>
-        protected void MarkDerivedFields () {
-            foreach (var type in Types) {
+        protected static void MarkDerivedFields (ICollection<TypeDef> types) {
+            foreach (var type in types) {
                 var fields = type.Fields;
                 if (fields == null)
                     continue;
@@ -82,8 +82,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
             }
         }
         
-        protected void SetRelationTypes (TypeDef rootTypeDef) {
-            foreach (var type in Types) {
+        protected static  void SetRelationTypes (TypeDef rootTypeDef, ICollection<TypeDef> types) {
+            foreach (var type in types) {
                 var fields = type.Fields;
                 if (fields == null)
                     continue;
@@ -92,6 +92,41 @@ namespace Friflo.Json.Fliox.Schema.Definition
                     if (relation == null)
                         continue;
                     typeField.relationType = rootTypeDef.FindField(relation).type;
+                }
+            }
+        }
+        
+        protected static List<TypeDef>  OrderTypes(TypeDef rootType, List<TypeDef> types)
+        {
+            if (rootType == null)
+                return types;
+            var orderedTypes    = new Dictionary<string, TypeDef> (types.Count);
+            AddTypes(orderedTypes, rootType);
+            var rootFields = rootType.Fields;
+            foreach (var field in rootFields) {
+                var jsonType = field.type;
+                if (jsonType.keyField == null)
+                    jsonType.keyField = "id";
+            }
+            
+            foreach (var typeDef in types) {
+                if (orderedTypes.TryAdd(typeDef.fullName, typeDef)) {
+                    AddTypes(orderedTypes, typeDef);
+                }
+            }
+            return new List<TypeDef>(orderedTypes.Values);
+        }
+        
+        private static void  AddTypes(Dictionary<string, TypeDef> orderedTypes, TypeDef typeDef) {
+            if (typeDef == null)
+                return;
+            orderedTypes.TryAdd(typeDef.fullName, typeDef);
+            var fields = typeDef.Fields; 
+            if (fields != null) {
+                foreach (var field in fields) {
+                    orderedTypes.TryAdd(field.type.fullName, field.type);
+                    AddTypes(orderedTypes, field.type);
+                    AddTypes(orderedTypes, field.RelationType);
                 }
             }
         }

@@ -56,8 +56,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public  abstract    bool                IsEnum          { get; }
         public  abstract    ICollection<string> EnumValues      { get; }
+        internal readonly   string              fullName;
+        internal            string              keyField;
+
         
         protected TypeDef (string name, string @namespace) {
+            fullName    = @namespace + "#" + name;
             Name        = name;
             Namespace   = @namespace;
         }

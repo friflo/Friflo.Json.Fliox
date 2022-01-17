@@ -24,13 +24,6 @@ namespace Friflo.Json.Fliox.Schema.Native
         
 
         public NativeTypeSchema (Type rootType) : this (new [] { rootType }, rootType){
-            var rootTypeDef = TypeAsTypeDef(rootType);
-            if (rootTypeDef == null)
-                throw new InvalidOperationException($"rootType not found: {rootType}");
-            if (!rootTypeDef.IsClass)
-                throw new InvalidOperationException($"rootType must be a class: {rootType}");
-            RootType = rootTypeDef;
-            SetRelationTypes(rootTypeDef);
         }
 
         public NativeTypeSchema (ICollection<Type> typeList, Type rootType = null) {
@@ -61,7 +54,6 @@ namespace Friflo.Json.Fliox.Schema.Native
             typeMappers = typeStore.GetTypeMappers();
             
             var standardTypes = new NativeStandardTypes(nativeTypes);
-            Types           = types;
             StandardTypes   = standardTypes;
 
             // set the base type (base class or parent class) for all types. 
@@ -167,7 +159,17 @@ namespace Friflo.Json.Fliox.Schema.Native
                     }
                 }
             }
-            MarkDerivedFields();
+            MarkDerivedFields(types);
+            if (rootType != null) {
+                var rootTypeDef = TypeAsTypeDef(rootType);
+                if (rootTypeDef == null)
+                    throw new InvalidOperationException($"rootType not found: {rootType}");
+                if (!rootTypeDef.IsClass)
+                    throw new InvalidOperationException($"rootType must be a class: {rootType}");
+                RootType = rootTypeDef;
+                SetRelationTypes(rootTypeDef, types);
+            }
+            Types           = types;
           }
         }
         

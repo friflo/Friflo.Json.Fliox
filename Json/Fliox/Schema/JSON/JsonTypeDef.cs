@@ -28,7 +28,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
 
         // --- private
         internal            JsonTypeDef         baseType;
-        internal            string              keyField;
         internal            List<FieldDef>      fields;
         internal            List<CommandDef>    commands;
         internal            UnionType           unionType;
@@ -36,12 +35,14 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal            string              discriminator;
         internal            bool                isStruct;
         internal            bool                isAbstract;
+        internal readonly   JsonSchema          schema;
 
-        public JsonTypeDef (JsonType type, string name, string ns) :
+        public JsonTypeDef (JsonType type, string name, string ns, JsonSchema schema) :
             base (name, ns)
         {
             this.name   = name;
             this.type   = type;
+            this.schema = schema;
             if (type.enums != null) {
                 EnumValues = type.enums; 
             }

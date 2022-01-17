@@ -25,83 +25,83 @@ namespace Friflo.Json.Fliox.Schema.JSON
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
         public JsonTypeSchema(List<JsonSchema> schemaList, string rootType = null) {
-            typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
+            typeMap = new Dictionary<string, JsonTypeDef>();
             foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var @namespace  = GetNamespace(schema, typeName);
-                    var typeDef     = new JsonTypeDef (type, typeName, @namespace);
-                    var schemaId = $"./{schema.fileName}#/definitions/{typeName}";
+                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, schema);
+                    var schemaId    = $"./{schema.fileName}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
                     schema.typeDefs.Add(localId, typeDef);
                 }
             }
             
-            Types               = new List<TypeDef>(typeMap.Values);
             var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
             
             using (var typeStore    = new TypeStore())
             using (var reader       = new ObjectReader(typeStore))
             {
-                foreach (JsonSchema schema in schemaList) {
+                foreach (var pair in typeMap) {
+                    JsonTypeDef typeDef = pair.Value;
+                    JsonType    type    = typeDef.type;
+                    var schema          = typeDef.schema; 
                     var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
                     var rootRef = schema.rootRef;
                     if (rootRef != null) {
                         FindRef(schema.rootRef, context);
                     }
-                    foreach (var pair in schema.typeDefs) {
-                        JsonTypeDef typeDef = pair.Value;
-                        JsonType    type    = typeDef.type;
-                        var         extends = type.extends;
-                        typeDef.keyField    = type.key;
-                        type.name           = pair.Key;
-                        if (extends != null) {
-                            typeDef.baseType = FindRef(extends.reference, context);
-                        }
-                        var typeType    = type.type;
-                        var oneOf       = type.oneOf;
-                        if (oneOf != null || typeType == "object") {
-                            typeDef.isAbstract  = type.isAbstract.HasValue && type.isAbstract.Value;
-                            typeDef.isStruct    = type.isStruct.HasValue && type.isStruct.Value;
-                            var properties      = type.properties;
-                            if (properties != null) {
-                                typeDef.fields = new List<FieldDef>(properties.Count);
-                                foreach (var propPair in properties) {
-                                    string      fieldName   = propPair.Key;
-                                    FieldType   field       = propPair.Value;
-                                    // discriminator field is not a real member -> skip it
-                                    if (type.discriminator == fieldName)
-                                        continue;
-                                    SetField(typeDef, fieldName, field, context);
-                                }
-                            }
-                            var commands      = type.commands;
-                            if (commands != null) {
-                                typeDef.commands = new List<CommandDef>(commands.Count);
-                                foreach (var msgPair in commands) {
-                                    string      messageName = msgPair.Key;
-                                    CommandType command     = msgPair.Value;
-                                    SetCommand(typeDef, messageName, command, context);
-                                }
+                    
+                    var         extends = type.extends;
+                    typeDef.keyField    = type.key;
+                    type.name           = pair.Key;
+                    if (extends != null) {
+                        typeDef.baseType = FindRef(extends.reference, context);
+                    }
+                    var typeType    = type.type;
+                    var oneOf       = type.oneOf;
+                    if (oneOf != null || typeType == "object") {
+                        typeDef.isAbstract  = type.isAbstract.HasValue && type.isAbstract.Value;
+                        typeDef.isStruct    = type.isStruct.HasValue && type.isStruct.Value;
+                        var properties      = type.properties;
+                        if (properties != null) {
+                            typeDef.fields = new List<FieldDef>(properties.Count);
+                            foreach (var propPair in properties) {
+                                string      fieldName   = propPair.Key;
+                                FieldType   field       = propPair.Value;
+                                // discriminator field is not a real member -> skip it
+                                if (type.discriminator == fieldName)
+                                    continue;
+                                SetField(typeDef, fieldName, field, context);
                             }
                         }
-                        if (oneOf != null) {
-                            var unionTypes = new List<UnionItem>(oneOf.Count);
-                            foreach (var item in oneOf) {
-                                var itemRef             = FindRef(item.reference, context);
-                                var discriminantMember  = itemRef.type.properties[type.discriminator];
-                                var discriminant        = discriminantMember.discriminant[0];
-                                var unionItem           = new UnionItem(itemRef, discriminant);
-                                unionTypes.Add(unionItem);
+                        var commands      = type.commands;
+                        if (commands != null) {
+                            typeDef.commands = new List<CommandDef>(commands.Count);
+                            foreach (var msgPair in commands) {
+                                string      messageName = msgPair.Key;
+                                CommandType command     = msgPair.Value;
+                                SetCommand(typeDef, messageName, command, context);
                             }
-                            typeDef.isAbstract = true;
-                            typeDef.unionType  = new UnionType (type.discriminator, unionTypes);
                         }
                     }
+                    if (oneOf != null) {
+                        var unionTypes = new List<UnionItem>(oneOf.Count);
+                        foreach (var item in oneOf) {
+                            var itemRef             = FindRef(item.reference, context);
+                            var discriminantMember  = itemRef.type.properties[type.discriminator];
+                            var discriminant        = discriminantMember.discriminant[0];
+                            var unionItem           = new UnionItem(itemRef, discriminant);
+                            unionTypes.Add(unionItem);
+                        }
+                        typeDef.isAbstract = true;
+                        typeDef.unionType  = new UnionType (type.discriminator, unionTypes);
+                    }
+                    
                 }
                 foreach (JsonSchema schema in schemaList) {
                     foreach (var pair in schema.typeDefs) {
@@ -122,16 +122,18 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     }
                 }
             }
-            MarkDerivedFields();
+            var types = new List<TypeDef>(typeMap.Values);
+            MarkDerivedFields(types);
             if (rootType != null) {
                 var rootTypeDef = TypeAsTypeDef(rootType);
                 if (rootTypeDef == null)
                     throw new InvalidOperationException($"rootType not found: {rootType}");
-                SetRelationTypes(rootTypeDef);
                 if (!rootTypeDef.IsClass)
                     throw new InvalidOperationException($"rootType must be a class: {rootType}");
                 RootType = rootTypeDef;
+                SetRelationTypes(rootTypeDef, types);
             }
+            Types = OrderTypes(RootType, types);
         }
         
         public void Dispose() { }
