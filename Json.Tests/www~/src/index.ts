@@ -394,6 +394,8 @@ class App {
 
         const folder = './example-requests'
         const response = await fetch(folder);
+        if (!response.ok)
+            return;
         const exampleRequests = await response.json();
         let   groupPrefix = "0";
         let   groupCount  = 0;
