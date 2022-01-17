@@ -91,7 +91,9 @@ namespace Friflo.Json.Fliox.Schema
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
-        refType     { color: var(--key); }
+        rel         { color: var(--key);  }
+        rel::before { content: ' ➞ '; }
+
         ref         { color: var(--field);    font-family: var(--mono-font);  }
         discUnion   { color: var(--bg);       font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--field); }        
         disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--bg); }

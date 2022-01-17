@@ -83,7 +83,9 @@
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
-        refType     { color: var(--key); }
+        rel         { color: var(--key);  }
+        rel::before { content: ' ➞ '; }
+
         ref         { color: var(--field);    font-family: var(--mono-font);  }
         discUnion   { color: var(--bg);       font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--field); }        
         disc        { color: var(--field);    font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--field-border); background: var(--bg); }
@@ -351,7 +353,7 @@
             <td><key>id</key></td>       <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>customer</ref>?</td> <td><type>string</type><refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a><refType></td>
+            <td><ref>customer</ref>?</td> <td><type>string</type><rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></td>
         </tr>
         <tr>
             <td><field>created</field></td>  <td><a href='#Standard.DateTime'>DateTime</a></td>
@@ -382,7 +384,7 @@
     </h3>
     <table>
         <tr>
-            <td><ref>article</ref></td> <td><type>string</type><refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>Article</a><refType></td>
+            <td><ref>article</ref></td> <td><type>string</type><rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>Article</a></td>
         </tr>
         <tr>
             <td><field>amount</field></td>  <td><a href='#Standard.int32'>int32</a></td>
@@ -405,7 +407,7 @@
             <td><field>name</field></td>     <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>producer</ref>?</td> <td><type>string</type><refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a><refType></td>
+            <td><ref>producer</ref>?</td> <td><type>string</type><rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a></td>
         </tr>
     </table>
     </div>
@@ -422,7 +424,7 @@
             <td><field>name</field></td>      <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>employees</ref>?</td> <td><type>string</type>[]<refType> ➞ <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a><refType></td>
+            <td><ref>employees</ref>?</td> <td><type>string</type>[]<rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a></td>
         </tr>
     </table>
     </div>

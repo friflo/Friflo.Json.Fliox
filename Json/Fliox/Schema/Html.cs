@@ -171,7 +171,7 @@ $@"        <tr>
                 var relation    = field.RelationType;
                 if (relation != null) {
                     fieldTag    = "ref";
-                    reference   = $"<refType> ➞ {GetTypeName(relation, context)}<refType>";
+                    reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
