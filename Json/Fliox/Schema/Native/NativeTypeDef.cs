@@ -14,7 +14,6 @@ public sealed class NativeTypeDef : TypeDef
         // --- internal
         internal readonly   Type                native;
         internal readonly   TypeMapper          mapper;
-        internal            string              keyField;
         internal            NativeTypeDef       baseType;
         internal            List<FieldDef>      fields;
         internal            List<CommandDef>    commands;
@@ -27,7 +26,6 @@ public sealed class NativeTypeDef : TypeDef
         public   override   bool                IsEnum          { get; }
         public   override   bool                IsClass         { get; }
         public   override   bool                IsStruct        { get; }
-        public   override   string              KeyField        => keyField;
         public   override   List<FieldDef>      Fields          => fields;
         public   override   List<CommandDef>    Commands        => commands;
         public   override   string              Discriminant    { get; }

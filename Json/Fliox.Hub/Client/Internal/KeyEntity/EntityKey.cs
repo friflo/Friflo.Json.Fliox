@@ -68,10 +68,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
                 if (member.Name == "id")
                     return member;
             }
-            foreach (var member in members) {
+            /* foreach (var member in members) {
                 if (member.Name == "Id")
                     return member;
-            }
+            } */
             return null;
         }
 

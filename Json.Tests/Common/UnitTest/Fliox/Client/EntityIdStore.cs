@@ -40,6 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class LongEntity {
+        [Fri.Key]
         public long Id { get; set; }
     }
     

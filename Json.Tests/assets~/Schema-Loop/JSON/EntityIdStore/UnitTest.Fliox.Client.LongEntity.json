@@ -5,6 +5,7 @@
     "definitions": {
         "LongEntity": {
             "type": "object",
+            "key": "Id",
             "properties": {
                 "Id": { "$ref": "./Standard.json#/definitions/int64" }
             },

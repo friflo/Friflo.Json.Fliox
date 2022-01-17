@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Schema.Definition
@@ -96,38 +97,17 @@ namespace Friflo.Json.Fliox.Schema.Definition
             }
         }
         
-        protected static List<TypeDef>  OrderTypes(TypeDef rootType, List<TypeDef> types)
-        {
-            if (rootType == null)
-                return types;
-            var orderedTypes    = new Dictionary<string, TypeDef> (types.Count);
-            AddTypes(orderedTypes, rootType);
+        protected static void  SetKeyField(TypeDef rootType) {
+            if (rootType.Commands == null)
+                return;
             var rootFields = rootType.Fields;
             foreach (var field in rootFields) {
                 var jsonType = field.type;
-                if (jsonType.keyField == null)
-                    jsonType.keyField = "id";
-            }
-            
-            foreach (var typeDef in types) {
-                if (orderedTypes.TryAdd(typeDef.fullName, typeDef)) {
-                    AddTypes(orderedTypes, typeDef);
-                }
-            }
-            return new List<TypeDef>(orderedTypes.Values);
-        }
-        
-        private static void  AddTypes(Dictionary<string, TypeDef> orderedTypes, TypeDef typeDef) {
-            if (typeDef == null)
-                return;
-            orderedTypes.TryAdd(typeDef.fullName, typeDef);
-            var fields = typeDef.Fields; 
-            if (fields != null) {
-                foreach (var field in fields) {
-                    orderedTypes.TryAdd(field.type.fullName, field.type);
-                    AddTypes(orderedTypes, field.type);
-                    AddTypes(orderedTypes, field.RelationType);
-                }
+                if (jsonType.keyField != null)
+                    continue;
+                if (jsonType.Fields.Find(f => f.name == "id") == null)
+                    throw new InvalidOperationException($"missing entity identifier at: {jsonType}");
+                jsonType.keyField = "id";
             }
         }
     }

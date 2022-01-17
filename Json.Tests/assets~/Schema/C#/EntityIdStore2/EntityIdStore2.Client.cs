@@ -20,6 +20,7 @@ public class AutoIntEntity {
 }
 
 public class LongEntity {
+    [Fri.Key]
     long  Id;
 }
 
