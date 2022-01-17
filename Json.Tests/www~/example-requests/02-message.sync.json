@@ -9,9 +9,9 @@
   ],
   "info": [
     "Send a message to host.",
-    "The host simply confirm its arival.",
+    "The host simply confirm its arrival.",
     "Need no message handler at host.",
     "Enables other clients subscribing messages.",
-    "In constrast to command it returns no result"
+    "In contrast to command it returns no result"
   ]
 }

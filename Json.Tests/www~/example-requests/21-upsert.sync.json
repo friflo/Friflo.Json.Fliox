@@ -11,7 +11,7 @@
   ],
   "info": [
       "upsert an article in the given container",
-      "update if entity exsit or insert a new one"
+      "update if entity exists or insert a new one"
   ]
 }
   
