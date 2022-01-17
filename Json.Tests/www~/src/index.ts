@@ -211,7 +211,9 @@ class App {
     getCookie  (name: string) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
+        if (parts.length === 2)
+            return parts.pop().split(';').shift();
+        return null;
     }
 
     initUserToken  () {
@@ -1741,6 +1743,7 @@ class App {
                 this.commandEditWidth = xy + "px";
                 return [this.commandEditWidth, "var(--vbar-width)", "1fr"];
         }
+        throw `unhandled condition in getGridColumns() id: ${this.dragTemplate?.id}`
     }
 
     onDrag(event: MouseEvent) {

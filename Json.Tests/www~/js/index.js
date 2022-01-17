@@ -141,6 +141,7 @@ class App {
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2)
             return parts.pop().split(';').shift();
+        return null;
     }
     initUserToken() {
         var _a, _b;
@@ -1508,6 +1509,7 @@ class App {
         event.preventDefault();
     }
     getGridColumns(xy) {
+        var _a;
         const prev = this.dragBar.previousElementSibling;
         xy = xy - (this.dragHorizontal ? prev.offsetLeft : prev.offsetTop);
         if (xy < 20)
@@ -1526,6 +1528,7 @@ class App {
                 this.commandEditWidth = xy + "px";
                 return [this.commandEditWidth, "var(--vbar-width)", "1fr"];
         }
+        throw `unhandled condition in getGridColumns() id: ${(_a = this.dragTemplate) === null || _a === void 0 ? void 0 : _a.id}`;
     }
     onDrag(event) {
         if (!this.dragTemplate)
