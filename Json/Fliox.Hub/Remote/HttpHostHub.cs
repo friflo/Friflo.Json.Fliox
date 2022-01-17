@@ -43,6 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             schemaHandler.AddGenerator(type, name, generate);
         }
         
+        /// <summary>
+        /// Central point where all Fliox related HTTP requests arrive.
+        /// Each request is dispatched by a matching request handler. 
+        /// <br/>
+        /// Note:
+        /// Request matching and execution are seperated to ensure no heap allocation caused by awaited method calls. 
+        /// </summary>
         public async Task<bool> ExecuteHttpRequest(RequestContext request) {
             if (request.method == "POST" && request.path == "/") {
                 var requestContent  = await JsonValue.ReadToEndAsync(request.body).ConfigureAwait(false);
