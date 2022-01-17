@@ -9,7 +9,7 @@ Each `EntitySet<>` field in `PocStore` describe the model used for the entities 
 This means that all payloads in a container folder are of a specific type.  
 These are `Article`, `Customer`, `Employee`, `Order` and `Producer`.
 
-## FlioxClient / FlioxHub -> EntityDatabase
+## FlioxClient / FlioxHub ➞ EntityDatabase
 The schema and its models are only utilized by `FlioxClient` and `EntitySet<>`.  
 The database itself can be used without a schema. This means all `EntityDatabase` implementations (e.g. a memory, file or remote database)
 perform their commands without a schema definition. A schema validation can be optionally assigned to an `EntityDatabase`.
