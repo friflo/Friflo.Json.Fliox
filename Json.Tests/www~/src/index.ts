@@ -710,23 +710,20 @@ class App {
                         definition._namespace = namespace.substring(0, namespace.length - definitionName.length - 1);
                     }
                     // console.log("---", definition._namespace, definitionName);
-                    const path                = "/" + schemaPath + "#/definitions/" + definitionName;
-                    const schemaId            = "." + path
-                    const uri                 = "http://" + database + path;
-                    const containerName       = containerRefs[schemaId]
+                    const path          = "/" + schemaPath + "#/definitions/" + definitionName;
+                    const schemaId      = "." + path
+                    const uri           = "http://" + database + path;
+                    const containerName = containerRefs[schemaId];
+                    let schemaRef : any = { $ref: schemaId };
                     if (containerName) {
                         dbSchema._containerSchemas[containerName] = definition;
+                        // entityEditor type can either be its entity type or an array using this type
+                        schemaRef = { "oneOf": [schemaRef, { type: "array", items: schemaRef } ] };
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
                     const definitionEntry: MonacoSchema = {
                         uri:            uri,
-                        schema:         {
-                            // entityEditor type can either be its entity type or an array using this type
-                            "oneOf": [
-                                { $ref: schemaId },
-                                { type: "array", items: { $ref: schemaId } }
-                            ]
-                        },
+                        schema:         schemaRef,
                         fileMatch:      [], // can have multiple in case schema is used by multiple editor models
                         _resolvedDef:   definition // not part of monaco > DiagnosticsOptions.schemas
                     }

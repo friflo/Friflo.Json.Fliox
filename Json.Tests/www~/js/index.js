@@ -616,19 +616,16 @@ class App {
                     const schemaId = "." + path;
                     const uri = "http://" + database + path;
                     const containerName = containerRefs[schemaId];
+                    let schemaRef = { $ref: schemaId };
                     if (containerName) {
                         dbSchema._containerSchemas[containerName] = definition;
+                        // entityEditor type can either be its entity type or an array using this type
+                        schemaRef = { "oneOf": [schemaRef, { type: "array", items: schemaRef }] };
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
                     const definitionEntry = {
                         uri: uri,
-                        schema: {
-                            // entityEditor type can either be its entity type or an array using this type
-                            "oneOf": [
-                                { $ref: schemaId },
-                                { type: "array", items: { $ref: schemaId } }
-                            ]
-                        },
+                        schema: schemaRef,
                         fileMatch: [],
                         _resolvedDef: definition // not part of monaco > DiagnosticsOptions.schemas
                     };
