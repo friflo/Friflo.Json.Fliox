@@ -1227,13 +1227,10 @@ class App {
         const jsonValue = this.entityModel.getValue();
         let id: string  = null;
         let ids: string[];
-        let isArray     = false;
         try {
             const keyName = this.getEntityKeyName(database, container);
             const value = JSON.parse(jsonValue) as any | [];
-            isArray = Array.isArray(value);
             if (Array.isArray(value)) {
-                isArray = true;
                 ids = [];
                 for (const item of value) {
                     const itemId = item[keyName];
