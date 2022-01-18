@@ -250,6 +250,15 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'><div>AuthenticateUserResult</div></a></li>
         </ul>
     </li>
+    <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
+        <ul>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'><div>DbHubInfo</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'><div>DbList</div></a></li>
+        </ul>
+    </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
         <ul>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div>Right<discUnion style='float:right'>type</discUnion></div></a></li>
@@ -267,15 +276,6 @@
         <ul>
             <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'><div>TaskType<keyword style='float:right'>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'><div>Change<keyword style='float:right'>enum</keyword></div></a></li>
-        </ul>
-    </li>
-    <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
-        <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'><div>DbHubInfo</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'><div>DbList</div></a></li>
         </ul>
     </li>
 </ul>
@@ -402,6 +402,94 @@
     <table>
         <tr>
             <td><field>isValid</field></td> <td><type>boolean</type></td>
+        </tr>
+    </table>
+    </div>
+</div>
+
+<div class='namespace'>
+    <h2 id='Friflo.Json.Fliox.Hub.DB.Cluster'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
+    </h2>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>DbHubInfo</a>
+        <keyword>class</keyword>
+    </h3>
+    <table>
+        <tr>
+            <td><field>version</field></td>     <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>hostName</field>?</td>    <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>description</field>?</td> <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>website</field>?</td>     <td><type>string</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>
+        <keyword>class</keyword>
+    </h3>
+    <table>
+        <tr>
+            <td><key>id</key></td>           <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>databaseType</field></td> <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>containers</field></td>   <td><type>string</type>[]</td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a>
+        <keyword>class</keyword>
+    </h3>
+    <table>
+        <tr>
+            <td><key>id</key></td>       <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>commands</field></td> <td><type>string</type>[]</td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a>
+        <keyword>class</keyword>
+    </h3>
+    <table>
+        <tr>
+            <td><key>id</key></td>          <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>schemaName</field></td>  <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>schemaPath</field></td>  <td><type>string</type></td>
+        </tr>
+        <tr>
+            <td><field>jsonSchemas</field></td> <td>key ➞ <type>any</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>DbList</a>
+        <keyword>class</keyword>
+    </h3>
+    <table>
+        <tr>
+            <td><field>databases</field></td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</td>
         </tr>
     </table>
     </div>
@@ -622,94 +710,6 @@
         <li>patch</li>
         <li>delete</li>
     </ul>
-    </div>
-</div>
-
-<div class='namespace'>
-    <h2 id='Friflo.Json.Fliox.Hub.DB.Cluster'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
-    </h2>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'>DbHubInfo</a>
-        <keyword>class</keyword>
-    </h3>
-    <table>
-        <tr>
-            <td><field>version</field></td>     <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>hostName</field>?</td>    <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>description</field>?</td> <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>website</field>?</td>     <td><type>string</type></td>
-        </tr>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>
-        <keyword>class</keyword>
-    </h3>
-    <table>
-        <tr>
-            <td><key>id</key></td>           <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>databaseType</field></td> <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>containers</field></td>   <td><type>string</type>[]</td>
-        </tr>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a>
-        <keyword>class</keyword>
-    </h3>
-    <table>
-        <tr>
-            <td><key>id</key></td>       <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>commands</field></td> <td><type>string</type>[]</td>
-        </tr>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a>
-        <keyword>class</keyword>
-    </h3>
-    <table>
-        <tr>
-            <td><key>id</key></td>          <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>schemaName</field></td>  <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>schemaPath</field></td>  <td><type>string</type></td>
-        </tr>
-        <tr>
-            <td><field>jsonSchemas</field></td> <td>key ➞ <type>any</type></td>
-        </tr>
-    </table>
-    </div>
-    <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>
-        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'>DbList</a>
-        <keyword>class</keyword>
-    </h3>
-    <table>
-        <tr>
-            <td><field>databases</field></td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</td>
-        </tr>
-    </table>
     </div>
 </div>
 

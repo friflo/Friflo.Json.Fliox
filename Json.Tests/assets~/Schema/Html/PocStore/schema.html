@@ -256,6 +256,15 @@
             <li><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'><div>TestCommand</div></a></li>
         </ul>
     </li>
+    <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
+        <ul>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'><div>DbHubInfo</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'><div>DbList</div></a></li>
+        </ul>
+    </li>
     <li><a href='#Standard'>Standard</a>
         <ul>
             <li><a href='#Standard.DateTime'><div>DateTime</div></a></li>
@@ -266,15 +275,6 @@
             <li><a href='#Standard.int64'><div>int64</div></a></li>
             <li><a href='#Standard.float'><div>float</div></a></li>
             <li><a href='#Standard.double'><div>double</div></a></li>
-        </ul>
-    </li>
-    <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
-        <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbHubInfo'><div>DbHubInfo</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbList'><div>DbList</div></a></li>
         </ul>
     </li>
 </ul>
@@ -580,60 +580,6 @@
 </div>
 
 <div class='namespace'>
-    <h2 id='Standard'>
-        <a href='#Standard'>Standard</a>
-    </h2>
-    <div class='type'>
-    <h3 id='Standard.DateTime'>
-        <a href='#Standard.DateTime'>DateTime</a>
-    </h3>
-    <desc>timestamp as RFC 3339 + milliseconds</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.int32'>
-        <a href='#Standard.int32'>int32</a>
-    </h3>
-    <desc>signed integer 32-bit. Range: [-2147483648, 2147483647]</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.BigInteger'>
-        <a href='#Standard.BigInteger'>BigInteger</a>
-    </h3>
-    <desc>integer with arbitrary precision</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.uint8'>
-        <a href='#Standard.uint8'>uint8</a>
-    </h3>
-    <desc>unsigned integer 8-bit. Range: [0 - 255]</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.int16'>
-        <a href='#Standard.int16'>int16</a>
-    </h3>
-    <desc>signed integer 16-bit. Range: [-32768, 32767]</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.int64'>
-        <a href='#Standard.int64'>int64</a>
-    </h3>
-    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.float'>
-        <a href='#Standard.float'>float</a>
-    </h3>
-    <desc>single precision floating point number</desc>
-    </div>
-    <div class='type'>
-    <h3 id='Standard.double'>
-        <a href='#Standard.double'>double</a>
-    </h3>
-    <desc>double precision floating point number</desc>
-    </div>
-</div>
-
-<div class='namespace'>
     <h2 id='Friflo.Json.Fliox.Hub.DB.Cluster'>
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
     </h2>
@@ -718,6 +664,60 @@
             <td><field>databases</field></td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</td>
         </tr>
     </table>
+    </div>
+</div>
+
+<div class='namespace'>
+    <h2 id='Standard'>
+        <a href='#Standard'>Standard</a>
+    </h2>
+    <div class='type'>
+    <h3 id='Standard.DateTime'>
+        <a href='#Standard.DateTime'>DateTime</a>
+    </h3>
+    <desc>timestamp as RFC 3339 + milliseconds</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int32'>
+        <a href='#Standard.int32'>int32</a>
+    </h3>
+    <desc>signed integer 32-bit. Range: [-2147483648, 2147483647]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.BigInteger'>
+        <a href='#Standard.BigInteger'>BigInteger</a>
+    </h3>
+    <desc>integer with arbitrary precision</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.uint8'>
+        <a href='#Standard.uint8'>uint8</a>
+    </h3>
+    <desc>unsigned integer 8-bit. Range: [0 - 255]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int16'>
+        <a href='#Standard.int16'>int16</a>
+    </h3>
+    <desc>signed integer 16-bit. Range: [-32768, 32767]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.int64'>
+        <a href='#Standard.int64'>int64</a>
+    </h3>
+    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.float'>
+        <a href='#Standard.float'>float</a>
+    </h3>
+    <desc>single precision floating point number</desc>
+    </div>
+    <div class='type'>
+    <h3 id='Standard.double'>
+        <a href='#Standard.double'>double</a>
+    </h3>
+    <desc>double precision floating point number</desc>
     </div>
 </div>
 

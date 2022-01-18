@@ -274,10 +274,10 @@ $@"        <tr>
         private static void EmitHtmlFile(Generator generator, string template, StringBuilder sb) {
             var sbNav = new StringBuilder();
             sb.Clear();
+            var fileEmits = OrderNamespaces(generator);
             sbNav.Append("<ul>\n");
-            foreach (var pair in generator.fileEmits) {
-                string      ns          = pair.Key;
-                EmitFile    emitFile    = pair.Value;
+            foreach (var emitFile in fileEmits) {
+                string ns = emitFile.@namespace;
                 // var lastDot = ns.LastIndexOf('.') + 1;
                 // var shortNs = lastDot == 0 ? ns : ns.Substring(lastDot); 
                 sb.Append(
@@ -335,6 +335,28 @@ $@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{tag}</div
             htmlFile            = htmlFile.Replace("{{navigation}}",    navigation);
             htmlFile            = htmlFile.Replace("{{documentation}}", documentation);
             generator.files.Add("schema.html", htmlFile);
+        }
+        
+        private static List<EmitFile> OrderNamespaces(Generator generator) {
+            var emitFiles = new List<EmitFile>(generator.fileEmits.Values);
+            var rootType = generator.rootType;
+            emitFiles.Sort((file1, file2) => {
+                // namespace Standard to bottom
+                if (file1.@namespace == "Standard")
+                    return +1;
+                if (file2.@namespace == "Standard")
+                    return -1;
+                // namespace containing root type (schema) on top
+                var type1 = file1.emitTypes[0].type; 
+                var type2 = file2.emitTypes[0].type; 
+                if (type1 == rootType)
+                    return -1;
+                if (type2 == rootType)
+                    return +1;
+                // remaining namespace by comparing theirs names
+                return string.Compare(file1.@namespace, file2.@namespace, StringComparison.Ordinal);
+            });
+            return emitFiles;
         }
     }
 }
