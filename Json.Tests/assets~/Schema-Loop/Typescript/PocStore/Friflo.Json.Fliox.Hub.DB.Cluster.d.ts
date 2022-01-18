@@ -7,6 +7,10 @@ export class DbHubInfo {
     website?     : string | null;
 }
 
+export class DbHubCluster {
+    databases  : DbContainers[];
+}
+
 export class DbContainers {
     id            : string;
     databaseType  : string;
@@ -23,9 +27,5 @@ export class DbSchema {
     schemaName   : string;
     schemaPath   : string;
     jsonSchemas  : { [key: string]: any };
-}
-
-export class DbList {
-    databases  : DbContainers[];
 }
 

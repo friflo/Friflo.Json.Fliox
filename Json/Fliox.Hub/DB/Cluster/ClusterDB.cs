@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return schema;
         }
         
-        internal static async Task<DbList> GetDbList (FlioxHub hub) {
+        internal static async Task<DbHubCluster> GetDbList (FlioxHub hub) {
             var databases = hub.GetDatabases();
             var catalogs = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 dbContainers.id     = pair.Key;
                 catalogs.Add(dbContainers);
             }
-            return new DbList{ databases = catalogs };
+            return new DbHubCluster{ databases = catalogs };
         }
     }
 }

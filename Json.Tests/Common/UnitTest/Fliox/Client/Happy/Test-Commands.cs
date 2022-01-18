@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var containers      = store.DbContainers();
             var commands        = store.DbCommands();
             var catalogSchema   = store.DbSchema();
-            var dbList          = store.DbList();
+            var dbList          = store.DbHubCluster();
             await store.SyncTasks();
             
             var containersResult = containers.Result;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var containers       = store.DbContainers();
             var commands        = store.DbCommands();
             var catalogSchema   = store.DbSchema();
-            var dbList          = store.DbList();
+            var dbList          = store.DbHubCluster();
             await store.SyncTasks();
             
             var containersResult = containers.Result;

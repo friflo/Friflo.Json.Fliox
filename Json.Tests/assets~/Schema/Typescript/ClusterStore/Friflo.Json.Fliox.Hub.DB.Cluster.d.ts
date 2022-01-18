@@ -8,10 +8,10 @@ export interface ClusterStore {
 
     // --- commands
     DbHubInfo    (param: any) : DbHubInfo;
+    DbHubCluster (param: any) : DbHubCluster;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;
     DbSchema     (param: any) : DbSchema;
-    DbList       (param: any) : DbList;
     DbEcho       (param: any) : any;
 }
 
@@ -40,7 +40,7 @@ export class DbHubInfo {
     website?     : string | null;
 }
 
-export class DbList {
+export class DbHubCluster {
     databases  : DbContainers[];
 }
 

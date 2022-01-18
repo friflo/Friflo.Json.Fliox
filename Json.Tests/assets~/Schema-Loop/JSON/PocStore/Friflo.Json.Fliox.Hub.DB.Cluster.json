@@ -15,6 +15,16 @@
             ],
             "additionalProperties": false
         },
+        "DbHubCluster": {
+            "type": "object",
+            "properties": {
+                "databases": { "type": "array", "items": { "$ref": "#/definitions/DbContainers" } }
+            },
+            "required": [
+                "databases"
+            ],
+            "additionalProperties": false
+        },
         "DbContainers": {
             "type": "object",
             "properties": {
@@ -54,16 +64,6 @@
                 "schemaName",
                 "schemaPath",
                 "jsonSchemas"
-            ],
-            "additionalProperties": false
-        },
-        "DbList": {
-            "type": "object",
-            "properties": {
-                "databases": { "type": "array", "items": { "$ref": "#/definitions/DbContainers" } }
-            },
-            "required": [
-                "databases"
             ],
             "additionalProperties": false
         }

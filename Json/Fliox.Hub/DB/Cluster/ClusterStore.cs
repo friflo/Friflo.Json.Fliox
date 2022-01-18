@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                         public  string                          website;
     }
     
-    public class DbList {
+    public class DbHubCluster {
         [Fri.Required]  public  List<DbContainers>              databases;
     }
 }

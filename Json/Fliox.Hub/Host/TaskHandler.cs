@@ -41,12 +41,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public TaskHandler () {
             // todo add handler via scanning TaskHandler
-            AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>(DbEcho));
-            AddCommandHandler       (StdCommand.DbHubInfo,        new CommandHandler<Empty,     DbHubInfo>            (DbHubInfo));
+            AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>         (DbEcho));
+            AddCommandHandler       (StdCommand.DbHubInfo,     new CommandHandler<Empty,     DbHubInfo>         (DbHubInfo));
+            AddCommandHandlerAsync  (StdCommand.DbHubCluster,  new CommandHandler<Empty,     Task<DbHubCluster>>(DbHubCluster));
             AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
             AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
             AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
-            AddCommandHandlerAsync  (StdCommand.DbList,        new CommandHandler<Empty,     Task<DbList>>      (DbList));
         }
         
         private static JsonValue DbEcho (Command<JsonValue> command) {
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static async Task<DbList> DbList (Command<Empty> command) {
+        private static async Task<DbHubCluster> DbHubCluster (Command<Empty> command) {
             var hub = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }

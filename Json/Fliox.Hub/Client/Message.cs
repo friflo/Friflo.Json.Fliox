@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public const string DbSchema        = "DbSchema";
         
-        public const string DbList          = "DbList";
+        public const string DbHubCluster    = "DbHubCluster";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);
