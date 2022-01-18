@@ -5,10 +5,10 @@ import { DbCommands }   from "./Friflo.Json.Fliox.Hub.DB.Cluster"
 import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster"
 import { DbList }       from "./Friflo.Json.Fliox.Hub.DB.Cluster"
 import { DateTime }     from "./Standard"
-import { int32 }        from "./Standard"
 import { BigInteger }   from "./Standard"
 import { uint8 }        from "./Standard"
 import { int16 }        from "./Standard"
+import { int32 }        from "./Standard"
 import { int64 }        from "./Standard"
 import { float }        from "./Standard"
 import { double }       from "./Standard"
@@ -42,12 +42,6 @@ export class Order {
 export class Customer {
     id    : string;
     name  : string;
-}
-
-export class OrderItem {
-    article  : string;
-    amount   : int32;
-    name?    : string | null;
 }
 
 export class Article {
@@ -99,6 +93,12 @@ export class TestType extends PocEntity {
     jsonValue?        : any | null;
     derivedClass      : DerivedClass;
     derivedClassNull? : DerivedClass | null;
+}
+
+export class OrderItem {
+    article  : string;
+    amount   : int32;
+    name?    : string | null;
 }
 
 export class PocStruct {

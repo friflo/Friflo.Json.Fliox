@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 SetRelationTypes(rootTypeDef, types);
                 RootType = rootTypeDef;
             }
-            Types           = types;
+            Types = OrderTypes(RootType, types);
           }
         }
         

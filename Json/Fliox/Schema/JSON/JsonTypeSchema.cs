@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 SetKeyField(rootTypeDef);
                 RootType = rootTypeDef;
             }
-            Types = types;
+            Types = OrderTypes(RootType, types);
         }
         
         public void Dispose() { }

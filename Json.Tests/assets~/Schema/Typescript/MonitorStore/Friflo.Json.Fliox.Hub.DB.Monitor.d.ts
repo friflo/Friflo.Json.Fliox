@@ -43,6 +43,12 @@ export class UserInfo {
     counts?  : RequestCount[] | null;
 }
 
+export class HistoryInfo {
+    id          : int32;
+    counters    : int32[];
+    lastUpdate  : int32;
+}
+
 export class EventInfo {
     seq          : int32;
     queued       : int32;
@@ -54,12 +60,6 @@ export class ChangeSubscriptions {
     container  : string;
     changes    : Change[];
     filter?    : string | null;
-}
-
-export class HistoryInfo {
-    id          : int32;
-    counters    : int32[];
-    lastUpdate  : int32;
 }
 
 export class ClearStats {

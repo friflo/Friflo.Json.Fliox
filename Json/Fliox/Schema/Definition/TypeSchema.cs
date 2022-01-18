@@ -110,6 +110,29 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 jsonType.keyField = "id";
             }
         }
+        
+        /// <summary>
+        /// Create a list from the given  <see cref="types"/> in the order:
+        /// <list>
+        ///   <item>root type - schema</item>
+        ///   <item>field types of root type - entity types</item>
+        ///   <item>remaining types</item>
+        /// </list>
+        /// </summary>
+        protected static List<TypeDef> OrderTypes(TypeDef rootType, List<TypeDef> types) {
+            if (rootType == null)
+                return types;
+            var typeMap = new Dictionary<string, TypeDef>(types.Count);
+            typeMap.Add(rootType.fullName, rootType);
+            foreach (var entityField in rootType.Fields) {
+                var type = entityField.type;
+                typeMap.TryAdd(type.fullName, type);
+            }
+            foreach (var type in types) {
+                typeMap.TryAdd(type.fullName, type);
+            }
+            return new List<TypeDef>(typeMap.Values);
+        }
     }
     
     internal class TypeDefKey
