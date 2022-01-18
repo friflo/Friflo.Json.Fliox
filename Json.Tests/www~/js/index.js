@@ -778,8 +778,8 @@ class App {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
     setEditorHeader(show) {
-        const displayEntity = show == "entity" ? "" : "none";
-        const displayCommand = show == "command" ? "" : "none";
+        const displayEntity = show == "entity" ? "contents" : "none";
+        const displayCommand = show == "command" ? "contents" : "none";
         el("entityTools").style.display = displayEntity;
         el("entityHeader").style.display = displayEntity;
         el("commandTools").style.display = displayCommand;

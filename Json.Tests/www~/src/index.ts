@@ -887,8 +887,8 @@ class App {
     }
 
     setEditorHeader(show: "entity" | "command" | "none") {
-        const displayEntity  = show == "entity" ? "" : "none";
-        const displayCommand = show == "command" ? "" : "none";
+        const displayEntity  = show == "entity"  ? "contents" : "none";
+        const displayCommand = show == "command" ? "contents" : "none";
         el("entityTools")  .style.display = displayEntity;        
         el("entityHeader") .style.display = displayEntity;        
         el("commandTools") .style.display = displayCommand;

@@ -87,6 +87,7 @@
                               background-color: var(--tab-color); border-radius: 2px;}
         .navigate:hover     { background-color: var(--tab-hover); }
         .navigate:active    { background-color: var(--background3); font-size: 13.5px; box-shadow: inset 1px 1px 1px #00000010; }
+        .verticalAlign      { display: flex; justify-content: center; align-items: center; }
 
         body::after {
             content: "";
@@ -478,17 +479,23 @@
         <div style="width:4px;"></div>
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
         <div style="width:8px;"></div>
-        <span id="entityTools" style="display: none;">
-            <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
-            <button type="button" onclick="app.saveEntity()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
-            &nbsp;&nbsp;
-            <small id="entityType" title="entity type"><span style="opacity: 0.4;">entity type</span></small>
+        <span id="entityTools" style="display: contents;">
+            <button type="button" style="margin-right: 2px" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
+            <button type="button" style="margin-right: 4px" onclick="app.saveEntity()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
+            <div title="format JSON" class="navigate verticalAlign" onclick="app.navigateEntity(app.entityHistoryPos + 1)">
+                <small style="opacity: 0.7;">{ }</small>
+            </div>
+            &nbsp;
+            <small id="entityType" title="entity type" style="display: flex; justify-content: center; align-items: center;"><span style="opacity: 0.4;">entity type</span></small>
         </span>
         <span id="commandTools" style="display: none;">
             <button type="button" onclick="app.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
             &nbsp;
-            <small id="commandSignature">command</small>
-        </span>
+            <div title="format JSON" class="navigate verticalAlign" onclick="app.navigateEntity(app.entityHistoryPos + 1)">
+                <small style="opacity: 0.7;">{ }</small>
+            </div>
+            &nbsp;
+            <small id="commandSignature" class="verticalAlign">command</small>
         </span>
     </div>
 
