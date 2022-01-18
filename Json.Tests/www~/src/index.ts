@@ -554,16 +554,17 @@ class App {
     }
 
     selectedCatalog: HTMLElement;
-    selectedEntity = {}  as {
-        elem?: HTMLElement
-    };
+    selectedEntities = [] as HTMLElement[];    
 
-    setSelectedEntity(elem: HTMLElement) {
-        if (this.selectedEntity.elem) {
-            this.selectedEntity.elem.classList.remove("selected");
+    setSelectedEntities(elements: HTMLElement[]) {
+        for (const entityEl of this.selectedEntities) {
+            entityEl.classList.remove("selected");
         }
-        this.selectedEntity.elem = elem;
-        this.selectedEntity.elem.classList.add("selected");
+        this.selectedEntities.length = 0;
+        this.selectedEntities = [...elements];
+        for (const entityEl of elements) {
+            entityEl.classList.add("selected");
+        }
     }
 
     hubInfo = { } as DbHubInfo;
@@ -973,7 +974,7 @@ class App {
                 selectedElement = path[1];
             }
             const commandName = selectedElement.children[0].textContent;
-            this.setSelectedEntity(selectedElement);
+            this.setSelectedEntities([selectedElement]);
 
             this.showCommand(database, commandName);
 
@@ -1084,7 +1085,7 @@ class App {
             // in case of a multiline text selection selectedElement is the parent
             if (selectedElement.tagName.toLowerCase() != "li")
                 return;
-            this.setSelectedEntity(selectedElement);
+            this.setSelectedEntities([selectedElement]);
             const entityId = selectedElement.innerText;
             const params = { database: p.database, container: p.container, id: entityId };
             this.loadEntity(params, false, null);
@@ -1098,7 +1099,7 @@ class App {
         entityExplorer.appendChild(ulIds);
     }
 
-    findContainerEntity (id: string) {
+    findContainerEntity (id: string) : HTMLElement | null {
         const ulIds= entityExplorer.querySelector("ul");
         const children = Array.prototype.slice.call(ulIds.children);
         for(const child of children){
@@ -1214,14 +1215,23 @@ class App {
         const database  = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let id: string = null;
-        let isArray: boolean;
+        let id: string  = null;
+        let ids: string[];
+        let isArray     = false;
         try {
             const keyName = this.getEntityKeyName(database, container);
-            const value = JSON.parse(jsonValue);
+            const value = JSON.parse(jsonValue) as any | [];
             isArray = Array.isArray(value);
-            if (!isArray) {
+            if (Array.isArray(value)) {
+                isArray = true;
+                ids = [];
+                for (const item of value) {
+                    const itemId = item[keyName];
+                    ids.push(itemId);
+                }
+            } else {
                 id = value[keyName];
+                ids = [id];
             }
         } catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
@@ -1238,7 +1248,7 @@ class App {
         writeResult.innerHTML = "Save successful";
         // add as HTML element to entityExplorer if new
         if (this.entityIdentity.entityId != id) {
-            this.entityIdentity.entityId = id;
+            this.entityIdentity.entityId = ids[0];
             const entityLink    = this.getEntityLink(database, container, id);
             entityId.innerHTML  = entityLink + this.getEntityReload(database, container, id);
             let liId = this.findContainerEntity(id);
@@ -1246,10 +1256,10 @@ class App {
                 const ulIds= entityExplorer.querySelector("ul");
                 liId = document.createElement('li');
                 liId.innerText = id;
-                liId.classList = "selected";
+                liId.classList.add("selected");
                 ulIds.append(liId);
             }
-            this.setSelectedEntity(liId);
+            this.setSelectedEntities([liId]);
             liId.scrollIntoView();
             this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, id:id }};
             this.entityHistory.length = this.entityHistoryPos + 1;
