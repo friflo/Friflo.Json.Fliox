@@ -1090,24 +1090,34 @@ class App {
             const params = { database: p.database, container: p.container, id: entityId };
             this.loadEntity(params, false, null);
         }
-        for (const id of ids) {
-            const liId = document.createElement('li');
-            liId.innerText = String(id);
-            ulIds.append(liId);
-        }
-        entityExplorer.innerText = ""
+        this.explorerEntities = {};
+        this.addExplorerIds(ulIds, ids)
+        entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
 
-    findContainerEntity (id: string) : HTMLElement | null {
-        const ulIds= entityExplorer.querySelector("ul");
-        const children = Array.prototype.slice.call(ulIds.children);
-        for(const child of children){
-            if (child.innerText == id) {
-                return child;
-            }
+    explorerEntities: { [key: string] : HTMLLIElement } = {};
+
+    addExplorerIds(ulIds : HTMLUListElement, ids: (string | number)[]) {
+        for (const id of ids) {
+            if (this.explorerEntities[id])
+                continue;
+            const liId = document.createElement('li');
+            this.explorerEntities[id] = liId;
+            liId.innerText = String(id);
+            ulIds.append(liId);
         }
-        return null;
+    }
+
+    findContainerEntities (ids: string[]) : HTMLLIElement[] {
+        const result = [] as HTMLLIElement[];
+        for(const id of ids){
+            const li = this.explorerEntities[id];
+            if (!li)
+                continue;
+            result.push(li);
+        }
+        return result;
     }
 
     entityIdentity = { } as {
@@ -1251,16 +1261,13 @@ class App {
             this.entityIdentity.entityId = ids[0];
             const entityLink    = this.getEntityLink(database, container, id);
             entityId.innerHTML  = entityLink + this.getEntityReload(database, container, id);
-            let liId = this.findContainerEntity(id);
-            if (!liId) {
-                const ulIds= entityExplorer.querySelector("ul");
-                liId = document.createElement('li');
-                liId.innerText = id;
-                liId.classList.add("selected");
-                ulIds.append(liId);
-            }
-            this.setSelectedEntities([liId]);
-            liId.scrollIntoView();
+
+            const ulIds= entityExplorer.querySelector("ul");
+            this.addExplorerIds(ulIds, ids);
+            let liIds = this.findContainerEntities(ids);
+
+            this.setSelectedEntities(liIds);
+            liIds[0].scrollIntoView();
             this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, id:id }};
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
