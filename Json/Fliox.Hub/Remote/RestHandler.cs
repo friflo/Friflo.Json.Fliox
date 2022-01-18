@@ -95,6 +95,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             // ------------------    GET            /database/container
             if (isGet && resource.Length == 2) {
+                var idsParam = queryParams["ids"];
+                if (idsParam != null) {
+                    var ids = idsParam.Split(',');
+                    await GetEntitiesById (context, resource[0], resource[1], ids).ConfigureAwait(false);
+                    return;
+                }
                 await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
                 return;
             }
@@ -159,6 +165,41 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
+        private async Task GetEntitiesById(RequestContext context, string database, string container, string[] ids) {
+            if (database == EntityDatabase.MainDB)
+                database = null;
+            var readEntitiesSet = new ReadEntitiesSet ();
+            readEntitiesSet.ids.EnsureCapacity(ids.Length);
+            foreach (var id in ids) {
+                readEntitiesSet.ids.Add(new JsonKey(id));    
+            }
+            var readEntities = new ReadEntities {
+                container   = container,
+                sets        = new List<ReadEntitiesSet> { readEntitiesSet }
+            };
+            var restResult = await ExecuteTask(context, database, readEntities).ConfigureAwait(false);
+            
+            if (restResult.taskResult == null)
+                return;
+            var readResult  = (ReadEntitiesResult)restResult.taskResult;
+            var resultSet   = readResult.sets[0];
+            var resultError = resultSet.Error;
+            if (resultError != null) {
+                context.WriteError("read error", resultError.message, 500);
+                return;
+            }
+            var entityMap   = restResult.syncResponse.resultMap[container].entityMap;
+            var entities    = new List<JsonValue>(entityMap.Count);
+            foreach (var pair in entityMap) {
+                entities.Add(pair.Value.Json);
+            }
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var writer = pooled.instance.writer;
+                var entitiesJson = writer.Write(entities);
+                context.Write(new JsonValue(entitiesJson), 0, "application/json", 200);
+            }
+        }
+        
         private async Task GetEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
             if (database == EntityDatabase.MainDB)
                 database = null;
