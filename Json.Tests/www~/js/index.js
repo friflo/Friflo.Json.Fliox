@@ -1054,10 +1054,15 @@ class App {
         const database = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let id;
+        let id = null;
+        let isArray;
         try {
             const keyName = this.getEntityKeyName(database, container);
-            id = JSON.parse(jsonValue)[keyName];
+            const value = JSON.parse(jsonValue);
+            isArray = Array.isArray(value);
+            if (!isArray) {
+                id = value[keyName];
+            }
         }
         catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;

@@ -456,7 +456,7 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    getRestPath(database: string, container: string, id: string, query: string) {
+    getRestPath(database: string, container: string, id: string | null, query: string) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (id)         path = `${path}/${id}`;
@@ -464,7 +464,7 @@ class App {
         return path;
     }
 
-    async restRequest (method: Method, body: string, database: string, container: string, id: string, query: string) {
+    async restRequest (method: Method, body: string, database: string, container: string, id: string | null, query: string) {
         const path = this.getRestPath(database, container, id, query);        
         const init = {        
             method:  method,
@@ -1214,10 +1214,15 @@ class App {
         const database  = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let id: string;
+        let id: string = null;
+        let isArray: boolean;
         try {
             const keyName = this.getEntityKeyName(database, container);
-            id = JSON.parse(jsonValue)[keyName];
+            const value = JSON.parse(jsonValue);
+            isArray = Array.isArray(value);
+            if (!isArray) {
+                id = value[keyName];
+            }
         } catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;

@@ -113,8 +113,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             // ------------------    PUT            /database/container
             if (method == "PUT") {
-                if (resource.Length != 3) {
-                    context.WriteError("invalid PUT", "expect: /database/container/id", 400);
+                int len = resource.Length; 
+                if (len != 2 && len != 3) {
+                    context.WriteError("invalid PUT", "expect: /database/container or /database/container/id", 400);
                     return;
                 }
                 var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
@@ -123,7 +124,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 var keyName = queryParams["keyName"];
-                await UpsertEntity(context, resource[0], resource[1], resource[2], keyName, value).ConfigureAwait(false);
+                var resource2 = len == 3 ? resource[2] : null;
+                await UpsertEntity(context, resource[0], resource[1], resource2, keyName, value).ConfigureAwait(false);
                 return;
             }
             context.WriteError("invalid path/method", path, 400);
@@ -282,23 +284,34 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task UpsertEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
             if (database == EntityDatabase.MainDB)
                 database = null;
+            List<JsonValue> entities;
+            if (id != null) {
+                entities = new List<JsonValue> {value};
+            } else {
+                using (var pooled = pool.ObjectMapper.Get()) {
+                    var reader = pooled.instance.reader;
+                    entities = reader.Read<List<JsonValue>>(value);
+                }
+            }
             var entityId = new JsonKey(id);
             keyName = keyName ?? "id";
-            using (var pooled = pool.EntityProcessor.Get()) {
-                var processor = pooled.instance;
-                if (!processor.GetEntityKey(value, keyName, out JsonKey key, out string entityError)) {
-                    context.WriteError("PUT error", entityError, 400);
-                    return;
-                }
-                if (!entityId.IsEqual(key)) {
-                    context.WriteError("PUT error", $"entity {keyName} != resource id. expect: {id}, was: {key.AsString()}", 400);
-                    return;
+            if (id != null) {
+                using (var pooled = pool.EntityProcessor.Get()) {
+                    var processor = pooled.instance;
+                    if (!processor.GetEntityKey(value, keyName, out JsonKey key, out string entityError)) {
+                        context.WriteError("PUT error", entityError, 400);
+                        return;
+                    }
+                    if (!entityId.IsEqual(key)) {
+                        context.WriteError("PUT error", $"entity {keyName} != resource id. expect: {id}, was: {key.AsString()}", 400);
+                        return;
+                    }
                 }
             }
             var upsertEntities  = new UpsertEntities {
                 container   = container,
                 keyName     = keyName,
-                entities    = new List<JsonValue> {value} 
+                entities    = entities
             };
             var restResult  = await ExecuteTask(context, database, upsertEntities).ConfigureAwait(false);
             
