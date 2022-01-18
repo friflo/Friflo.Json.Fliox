@@ -618,7 +618,13 @@ class App {
                     // add reference for definitionName pointing to definition in current schemaPath
                     const definitionEntry = {
                         uri: uri,
-                        schema: { $ref: schemaId },
+                        schema: {
+                            // entityEditor type can either be its entity type or an array using this type
+                            "oneOf": [
+                                { $ref: schemaId },
+                                { type: "array", items: { $ref: schemaId } }
+                            ]
+                        },
                         fileMatch: [],
                         _resolvedDef: definition // not part of monaco > DiagnosticsOptions.schemas
                     };
