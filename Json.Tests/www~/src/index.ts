@@ -1078,14 +1078,14 @@ class App {
         }
         let     content         = await response.json() as { id: string | number }[];
         const   ids             = content.map(entity => entity.id);
-        const   ulIds           = createEl('ul');
+        const   ulIds           = createEl('table');
         ulIds.classList.value   = "entities"
         ulIds.onclick = (ev) => {
             const path = ev.composedPath() as HTMLElement[];
-            const selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
-            if (selectedElement.tagName.toLowerCase() != "li")
+            if (path[0].tagName != "TD")
                 return;
+            const selectedElement = path[1];
             this.setSelectedEntities([selectedElement]);
             const entityId = selectedElement.innerText;
             const params = { database: p.database, container: p.container, id: entityId };
@@ -1097,21 +1097,23 @@ class App {
         entityExplorer.appendChild(ulIds);
     }
 
-    explorerEntities: { [key: string] : HTMLLIElement } = {};
+    explorerEntities: { [key: string] : HTMLTableRowElement } = {};
 
-    addExplorerIds(ulIds : HTMLUListElement, ids: (string | number)[]) {
+    addExplorerIds(ulIds : HTMLTableElement, ids: (string | number)[]) {
         for (const id of ids) {
             if (this.explorerEntities[id])
                 continue;
-            const liId = createEl('li');
-            this.explorerEntities[id] = liId;
-            liId.innerText = String(id);
-            ulIds.append(liId);
+            const row = createEl('tr');
+            this.explorerEntities[id] = row;
+            const td = createEl('td');
+            td.innerText = String(id);
+            row.append(td);
+            ulIds.append(row);
         }
     }
 
-    findContainerEntities (ids: string[]) : HTMLLIElement[] {
-        const result = [] as HTMLLIElement[];
+    findContainerEntities (ids: string[]) : HTMLTableRowElement[] {
+        const result = [] as HTMLTableRowElement[];
         for(const id of ids){
             const li = this.explorerEntities[id];
             if (!li)
@@ -1260,7 +1262,7 @@ class App {
             const entityLink    = this.getEntityLink(database, container, id);
             entityId.innerHTML  = entityLink + this.getEntityReload(database, container, id);
 
-            const ulIds= entityExplorer.querySelector("ul");
+            const ulIds= entityExplorer.querySelector("table");
             this.addExplorerIds(ulIds, ids);
             let liIds = this.findContainerEntities(ids);
 
@@ -1284,8 +1286,9 @@ class App {
             writeResult.innerHTML = "Delete successful";
             entityId.innerHTML = "";
             this.setEntityValue(database, container, "");
-            const selected = entityExplorer.querySelector(`li.selected`);
-            selected.remove();
+            const selected = this.findContainerEntities([id]);
+            for (const el of selected)
+                el.remove();
         }
     }
 

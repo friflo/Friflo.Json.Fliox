@@ -272,10 +272,11 @@
         .catalogs li div.selected   { background-color: var(--selected-color); }
         .catalogs ul li div:hover   { background-color: var(--item-hover); }
 
-        .entities                   { padding-left: 0px; }
-        .entities li                { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
-        .entities li.selected       { background-color: var(--selected-color); }
-        .entities li:hover          { background-color: var(--item-hover); }
+        .entities                   { padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 4px;}
+        .entities tr td:first-child { padding-left: 4px; }
+        .entities tr *              { cursor: pointer; list-style:none; display: flex; justify-content: space-between; }
+        .entities tr.selected *     { background-color: var(--selected-color); }
+        .entities tr:hover *        { background-color: var(--item-hover); }
 
         .database                           { padding-left: 0px; margin-right: 0px; }
         .database li > ul                   { padding-left: 0px; margin-top: 0px; margin-left: 0px; }
