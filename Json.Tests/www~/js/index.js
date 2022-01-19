@@ -19,6 +19,9 @@ let subCount = 0;
 function el(id) {
     return document.getElementById(id);
 }
+function createEl(tagName) {
+    return document.createElement(tagName);
+}
 const hubInfoEl = el("hubInfo");
 const responseState = el("response-state");
 const subscriptionCount = el("subscriptionCount");
@@ -306,7 +309,7 @@ class App {
     }
     async loadExampleRequestList() {
         // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
-        let option = document.createElement("option");
+        let option = createEl("option");
         option.value = "";
         option.disabled = true;
         option.selected = true;
@@ -328,7 +331,7 @@ class App {
                 groupPrefix = name[0];
                 groupCount++;
             }
-            option = document.createElement("option");
+            option = createEl("option");
             option.value = example;
             option.text = (groupCount % 2 ? "\xA0\xA0" : "") + name;
             option.style.backgroundColor = groupCount % 2 ? "#ffffff" : "#eeeeff";
@@ -504,7 +507,7 @@ class App {
                 description = "Website";
             hubInfoEl.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${description}</a>` : description;
         }
-        const ulCatalogs = document.createElement('ul');
+        const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {
             const path = ev.composedPath();
             const selectedElement = path[0];
@@ -524,15 +527,15 @@ class App {
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
-            const liCatalog = document.createElement('li');
+            const liCatalog = createEl('li');
             if (firstDatabase) {
                 firstDatabase = false;
                 liCatalog.classList.add("active");
             }
-            const liDatabase = document.createElement('div');
-            const catalogCaret = document.createElement('div');
+            const liDatabase = createEl('div');
+            const catalogCaret = createEl('div');
             catalogCaret.classList.value = "caret";
-            const catalogLabel = document.createElement('span');
+            const catalogLabel = createEl('span');
             catalogLabel.innerText = dbContainer.id;
             liDatabase.title = "database";
             catalogLabel.style.pointerEvents = "none";
@@ -540,7 +543,7 @@ class App {
             liDatabase.append(catalogLabel);
             liCatalog.appendChild(liDatabase);
             ulCatalogs.append(liCatalog);
-            const ulContainers = document.createElement('ul');
+            const ulContainers = createEl('ul');
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
                 const path = ev.composedPath();
@@ -560,9 +563,9 @@ class App {
             };
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
-                const liContainer = document.createElement('li');
+                const liContainer = createEl('li');
                 liContainer.title = "container";
-                const containerLabel = document.createElement('div');
+                const containerLabel = createEl('div');
                 containerLabel.innerHTML = "&nbsp;" + containerName;
                 liContainer.append(containerLabel);
                 ulContainers.append(liContainer);
@@ -831,18 +834,18 @@ class App {
         entityFilter.style.visibility = "hidden";
         readEntitiesDB.innerHTML = this.getDatabaseLink(database);
         readEntities.innerHTML = "";
-        const ulDatabase = document.createElement('ul');
+        const ulDatabase = createEl('ul');
         ulDatabase.classList.value = "database";
-        /* const typeLabel = document.createElement('div');
+        /* const typeLabel = create('div');
         typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
         ulDatabase.append(typeLabel); */
-        const commandLabel = document.createElement('li');
+        const commandLabel = createEl('li');
         const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
         ulDatabase.append(commandLabel);
-        const liCommands = document.createElement('li');
+        const liCommands = createEl('li');
         ulDatabase.appendChild(liCommands);
-        const ulCommands = document.createElement('ul');
+        const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
             this.setEditorHeader("command");
             const path = ev.composedPath();
@@ -860,11 +863,11 @@ class App {
             }
         };
         for (const command of dbCommands.commands) {
-            const liCommand = document.createElement('li');
-            const commandLabel = document.createElement('div');
+            const liCommand = createEl('li');
+            const commandLabel = createEl('div');
             commandLabel.innerText = command;
             liCommand.appendChild(commandLabel);
-            const runCommand = document.createElement('div');
+            const runCommand = createEl('div');
             runCommand.classList.value = "command";
             runCommand.title = "POST command";
             liCommand.appendChild(runCommand);
@@ -940,7 +943,7 @@ class App {
         }
         let content = await response.json();
         const ids = content.map(entity => entity.id);
-        const ulIds = document.createElement('ul');
+        const ulIds = createEl('ul');
         ulIds.classList.value = "entities";
         ulIds.onclick = (ev) => {
             const path = ev.composedPath();
@@ -962,7 +965,7 @@ class App {
         for (const id of ids) {
             if (this.explorerEntities[id])
                 continue;
-            const liId = document.createElement('li');
+            const liId = createEl('li');
             this.explorerEntities[id] = liId;
             liId.innerText = String(id);
             ulIds.append(liId);
