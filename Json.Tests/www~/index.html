@@ -280,6 +280,9 @@
                                                           visibility: hidden; min-width: 14px; display: block; overflow: hidden; 
                                                           background-color: var(--background2); padding-left: 0; padding-right: 0px; }
         .entities tr.selected td:nth-child(1)           { visibility: visible; }
+        .entities tr.selected:hover td:nth-child(1)     { opacity: 1; }
+        .entities tr:hover td:nth-child(1)              { visibility: visible;  opacity: 0.3; }
+        
         .entities tr *              { cursor: pointer; }        
         .entities tr.selected *     { background-color: var(--selected-color); }
         .entities tr:hover *        { background-color: var(--item-hover); }

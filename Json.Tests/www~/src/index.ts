@@ -562,17 +562,12 @@ class App {
     }
 
     selectedCatalog: HTMLElement;
-    selectedEntities = [] as HTMLElement[];    
+    selectedCommand = undefined as HTMLElement;
 
-    setSelectedEntities(elements: HTMLElement[]) {
-        for (const entityEl of this.selectedEntities) {
-            entityEl.classList.remove("selected");
-        }
-        this.selectedEntities.length = 0;
-        this.selectedEntities = [...elements];
-        for (const entityEl of elements) {
-            entityEl.classList.add("selected");
-        }
+    setSelectedCommand(element: HTMLElement) {
+        this.selectedCommand?.classList.remove("selected");
+        this.selectedCommand = element;
+        element.classList.add("selected");        
     }
 
     hubInfo = { } as DbHubInfo;
@@ -979,8 +974,7 @@ class App {
                 selectedElement = path[1];
             }
             const commandName = selectedElement.children[0].textContent;
-            this.setSelectedEntities([selectedElement]);
-
+            this.setSelectedCommand(selectedElement);
             this.showCommand(database, commandName);
 
             if (path[0].classList.contains("command")) {
@@ -1087,13 +1081,29 @@ class App {
         ulIds.onclick = (ev) => {
             const path = ev.composedPath() as HTMLElement[];
             // in case of a multiline text selection selectedElement is the parent
-            if (path[0].tagName != "TD")
-                return;
-            const selectedElement = path[1];
-            this.setSelectedEntities([selectedElement]);
-            const children = Array.from(selectedElement.children) as HTMLElement[];
-            const entityId = children[1].innerText;
-            const params: Resource = { database: p.database, container: p.container, ids: [entityId] };
+            const tagName = path[0].tagName;
+            let selectedIds: string[];
+            switch (tagName) {
+                case "INPUT":
+                    const selectedElement = path[2];
+                    const id = selectedElement.innerText;
+                    selectedIds = Object.keys(this.selectedEntities);
+                    const index = selectedIds.indexOf(id);
+                    if (index == -1) {
+                        selectedIds.push(id);
+                    } else {
+                        selectedIds.splice(index, 1);
+                    }
+                    ev.preventDefault();
+                    break;
+                case "TD":
+                    selectedIds = [path[1].innerText];
+                    break;
+                default:
+                    return;
+            }
+            this.setSelectedEntities(selectedIds);
+            const params: Resource = { database: p.database, container: p.container, ids: selectedIds };
             this.loadEntity(params, false, null);
         }
         this.explorerEntities = {};
@@ -1102,6 +1112,18 @@ class App {
         entityExplorer.appendChild(ulIds);
     }
 
+    setSelectedEntities(ids: string[]) {
+        for (const id in this.selectedEntities) {
+            const entityEl = this.selectedEntities[id];
+            entityEl.classList.remove("selected");
+        }
+        this.selectedEntities = this.findContainerEntities(ids);
+        for (const id in this.selectedEntities) {
+            this.selectedEntities[id].classList.add("selected");
+        }
+    }
+
+    selectedEntities: { [key: string] : HTMLTableRowElement } = {};
     explorerEntities: { [key: string] : HTMLTableRowElement } = {};
 
     addExplorerIds(ulIds : HTMLTableElement, ids: (string | number)[]) {
@@ -1125,20 +1147,20 @@ class App {
 
     removeExplorerIds(ids: string[]) {
         const selected = this.findContainerEntities(ids);
-        for (const el of selected)
-            el.remove();
+        for (const id in selected)
+            selected[id].remove();
         for (const id of ids) {
             delete this.explorerEntities[id];
         }
     }
 
-    findContainerEntities (ids: string[]) : HTMLTableRowElement[] {
-        const result = [] as HTMLTableRowElement[];
+    findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
+        const result : {[key: string] : HTMLTableRowElement} = {}
         for(const id of ids){
             const li = this.explorerEntities[id];
             if (!li)
                 continue;
-            result.push(li);
+            result[id] = li;
         }
         return result;
     }
@@ -1292,8 +1314,8 @@ class App {
             this.addExplorerIds(ulIds, ids);
             let liIds = this.findContainerEntities(ids);
 
-            this.setSelectedEntities(liIds);
-            liIds[0].scrollIntoView();
+            this.setSelectedEntities(ids);
+            liIds[ids[0]].scrollIntoView();
             this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
