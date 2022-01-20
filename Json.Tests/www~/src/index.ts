@@ -67,7 +67,7 @@ type Method = "GET" | "POST" | "PUT" | "DELETE";
 type Resource = {
     database:   string;
     container:  string;
-    id?:        string;
+    ids:        string[];
 };
 
 type ExplorerEditor = "command" | "entity" | "dbInfo"
@@ -508,7 +508,8 @@ class App {
             if (reason.startsWith("at ")) {
                 const id = reason.match(this.bracketValue)[1];
                 if (p && id) {
-                    const coordinate = JSON.stringify({ database: p.database, container: p.container, id: id });
+                    const c: Resource = { database: p.database, container: p.container, ids: [id] };
+                    const coordinate = JSON.stringify(c);
                     const link = `<a  href="#" onclick='app.loadEntity(${coordinate})'>${id}</a>`;
                     reason = reason.replace(id, link);
                 }
@@ -651,7 +652,7 @@ class App {
                 this.selectedCatalog.classList.add("selected");
                 const containerName = this.selectedCatalog.innerText.trim();
                 const databaseName  = path[3].childNodes[0].childNodes[1].textContent;
-                const params = { database: databaseName, container: containerName };
+                const params: Resource = { database: databaseName, container: containerName, ids: [] };
                 this.clearEntity(databaseName, containerName);
                 this.loadEntities(params, null);
             }
@@ -1015,14 +1016,14 @@ class App {
         const database  = this.filter.database;
         const container = this.filter.container;
         const filter    = entityFilter.value;
-        const query   = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
-        const params  = { database: database, container: container };
+        const query     = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
+        const params: Resource    = { database: database, container: container, ids: [] };
         this.saveFilter(database, container, filter)
         this.loadEntities(params, query);
     }
 
     removeFilter() {
-        const params  = { database: this.filter.database, container: this.filter.container };
+        const params: Resource  = { database: this.filter.database, container: this.filter.container, ids: [] };
         this.loadEntities(params, null);
     }
 
@@ -1088,7 +1089,7 @@ class App {
             const selectedElement = path[1];
             this.setSelectedEntities([selectedElement]);
             const entityId = selectedElement.innerText;
-            const params = { database: p.database, container: p.container, id: entityId };
+            const params: Resource = { database: p.database, container: p.container, ids: [entityId] };
             this.loadEntity(params, false, null);
         }
         this.explorerEntities = {};
@@ -1163,16 +1164,16 @@ class App {
         this.entityIdentity = {
             database:   p.database,
             container:  p.container,
-            entityIds:  [p.id]
+            entityIds:  [...p.ids]
         };
         entityType.innerHTML    = this.getEntityType (p.database, p.container);
-        const entityLink        = this.getEntityLink(p.database, p.container, p.id);
+        const entityLink        = this.getEntityLink(p.database, p.container, p.ids[0]);
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
-        const response  = await this.restRequest("GET", null, p.database, p.container, p.id, null);        
+        const response  = await this.restRequest("GET", null, p.database, p.container, p.ids[0], null);        
         let content   = await response.text();
         content = this.formatJson(this.config.formatEntities, content);
-        entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.id);
+        entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.ids[0]);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -1193,7 +1194,7 @@ class App {
     }
 
     getEntityReload (database: string, container: string, id: string) {
-        const p = { database, container, id };
+        const p: Resource = { database, container, ids: [id] };
         return `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`
     }
 
@@ -1269,7 +1270,7 @@ class App {
 
             this.setSelectedEntities(liIds);
             liIds[0].scrollIntoView();
-            this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, id:id }};
+            this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
     }
@@ -1634,7 +1635,7 @@ class App {
                 const end   = value.loc.end;
                 if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
                     // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                    entity = { database: database, container: container, id: value.value };
+                    entity = { database: database, container: container, ids: [value.value] };
                 }
             });
             if (entity) {

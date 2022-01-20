@@ -64,7 +64,6 @@
         { "fileMatch": ["/**/*.sync.resp.json"],   "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json" }        
         
     ],
-    "editor.lineNumbers": "off",
     "cSpell.ignorePaths": [
         "package-lock.json",
         "node_modules",
