@@ -1151,6 +1151,7 @@ class App {
             selected[id].remove();
         for (const id of ids) {
             delete this.explorerEntities[id];
+            delete this.selectedEntities[id];
         }
     }
 
