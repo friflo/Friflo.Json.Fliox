@@ -957,7 +957,8 @@ class App {
                 return;
             const selectedElement = path[1];
             this.setSelectedEntities([selectedElement]);
-            const entityId = selectedElement.innerText;
+            const children = Array.from(selectedElement.children);
+            const entityId = children[1].innerText;
             const params = { database: p.database, container: p.container, ids: [entityId] };
             this.loadEntity(params, false, null);
         };
@@ -972,9 +973,11 @@ class App {
                 continue;
             const row = createEl('tr');
             this.explorerEntities[id] = row;
-            const td = createEl('td');
-            td.innerText = String(id);
-            row.append(td);
+            const td0 = createEl('td');
+            row.append(td0);
+            const td1 = createEl('td');
+            td1.innerText = String(id);
+            row.append(td1);
             ulIds.append(row);
         }
     }
