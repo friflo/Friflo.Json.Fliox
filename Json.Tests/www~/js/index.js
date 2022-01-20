@@ -949,29 +949,7 @@ class App {
         ulIds.classList.value = "entities";
         ulIds.onclick = (ev) => {
             const path = ev.composedPath();
-            // in case of a multiline text selection selectedElement is the parent
-            const tagName = path[0].tagName;
-            let selectedIds;
-            switch (tagName) {
-                case "INPUT":
-                    const selectedElement = path[2];
-                    const id = selectedElement.innerText;
-                    selectedIds = Object.keys(this.selectedEntities);
-                    const index = selectedIds.indexOf(id);
-                    if (index == -1) {
-                        selectedIds.push(id);
-                    }
-                    else {
-                        selectedIds.splice(index, 1);
-                    }
-                    ev.preventDefault();
-                    break;
-                case "TD":
-                    selectedIds = [path[1].innerText];
-                    break;
-                default:
-                    return;
-            }
+            const selectedIds = this.getSelectionFromPath(path);
             this.setSelectedEntities(selectedIds);
             const params = { database: p.database, container: p.container, ids: selectedIds };
             this.loadEntity(params, false, null);
@@ -981,6 +959,29 @@ class App {
         this.addExplorerIds(ulIds, ids);
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
+    }
+    getSelectionFromPath(path) {
+        // in case of a multiline text selection selectedElement is the parent
+        const td = path[0];
+        if (td.tagName != "TD")
+            return null;
+        const children = path[1].children; // tr children
+        const id = children[1].innerText;
+        if (td == children[0]) {
+            const selectedIds = Object.keys(this.selectedEntities);
+            const index = selectedIds.indexOf(id);
+            if (index == -1) {
+                selectedIds.push(id);
+            }
+            else {
+                selectedIds.splice(index, 1);
+            }
+            return selectedIds;
+        }
+        if (td == children[1]) {
+            return [id];
+        }
+        return null;
     }
     setSelectedEntities(ids) {
         for (const id in this.selectedEntities) {
