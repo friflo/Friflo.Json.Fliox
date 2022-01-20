@@ -974,6 +974,10 @@ class App {
             const row = createEl('tr');
             this.explorerEntities[id] = row;
             const td0 = createEl('td');
+            const checked = createEl('input');
+            checked.type = "checkbox";
+            checked.checked = true;
+            td0.append(checked);
             row.append(td0);
             const td1 = createEl('td');
             td1.innerText = String(id);
