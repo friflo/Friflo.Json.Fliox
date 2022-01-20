@@ -1116,6 +1116,15 @@ class App {
         }
     }
 
+    removeExplorerIds(ids: string[]) {
+        const selected = this.findContainerEntities(ids);
+        for (const el of selected)
+            el.remove();
+        for (const id of ids) {
+            delete this.explorerEntities[id];
+        }
+    }
+
     findContainerEntities (ids: string[]) : HTMLTableRowElement[] {
         const result = [] as HTMLTableRowElement[];
         for(const id of ids){
@@ -1306,9 +1315,7 @@ class App {
             writeResult.innerHTML = "Delete successful";
             entityId.innerHTML = "";
             this.setEntityValue(database, container, "");
-            const selected = this.findContainerEntities(ids);
-            for (const el of selected)
-                el.remove();
+            this.removeExplorerIds(ids);
         }
     }
 

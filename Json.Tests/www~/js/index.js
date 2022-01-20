@@ -978,6 +978,14 @@ class App {
             ulIds.append(row);
         }
     }
+    removeExplorerIds(ids) {
+        const selected = this.findContainerEntities(ids);
+        for (const el of selected)
+            el.remove();
+        for (const id of ids) {
+            delete this.explorerEntities[id];
+        }
+    }
     findContainerEntities(ids) {
         const result = [];
         for (const id of ids) {
@@ -1143,9 +1151,7 @@ class App {
             writeResult.innerHTML = "Delete successful";
             entityId.innerHTML = "";
             this.setEntityValue(database, container, "");
-            const selected = this.findContainerEntities(ids);
-            for (const el of selected)
-                el.remove();
+            this.removeExplorerIds(ids);
         }
     }
     getModel(url) {
