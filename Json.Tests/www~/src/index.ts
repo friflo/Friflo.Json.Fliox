@@ -1107,6 +1107,7 @@ class App {
             this.loadEntity(params, false, null);
         }
         this.explorerEntities = {};
+        this.selectedEntities = {};
         this.addExplorerIds(ulIds, ids)
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
