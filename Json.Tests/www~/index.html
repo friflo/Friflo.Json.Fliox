@@ -274,17 +274,15 @@
 
         .entities                   { padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 4px 4px 4px 0px;}
         .entities tr td:first-child { padding-left: 0px; }
-        .entities tr td             { padding-left: 2px; }
+        .entities tr td             { padding-left: 2px; overflow: hidden; height: 16px; line-height: 16px; } /* fixed height for all rows */
         .entities tr td input       { height: 12px; margin: 0px 2px 0 2px; vertical-align: middle; pointer-events: none; }
-        .entities tr td:nth-child(1)                    { height: 16px;
-                                                          min-width: 14px; display: block; overflow: hidden; 
-                                                          background-color: var(--background2); padding-left: 0; padding-right: 0px; }
+        .entities tr td:nth-child(1){ min-width: 14px; background-color: var(--background2); padding-left: 0; padding-right: 0px; }
         .entities tr td:nth-child(1) input                      { visibility: hidden; }
         .entities tr.selected td:nth-child(1) input             { visibility: visible; }
         .entities tr                td:nth-child(1):hover input { visibility: visible;  opacity: 0.4;  }
         .entities tr.selected:hover td:nth-child(1)       input { opacity: 1; background-color: red; }
 
-        .entities tr *              { cursor: pointer; }        
+        .entities tr *              { cursor: pointer; }
         .entities tr.selected *     { background-color: var(--selected-color); }
         .entities tr:hover *        { background-color: var(--item-hover); }
 
