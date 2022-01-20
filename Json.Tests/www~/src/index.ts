@@ -460,16 +460,19 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    getRestPath(database: string, container: string, id: string | null, query: string) {
+    getRestPath(database: string, container: string, ids: string[] | null, query: string) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
-        if (id)         path = `${path}/${id}`;
+        if (ids) {
+            if (ids.length == 1)        path = `${path}/${ids[0]}`;
+            if (ids.length >  1)        path = `${path}?ids=${ids.join(',')}`;
+        }
         if (query)      path = `${path}?${query}`;
         return path;
     }
 
-    async restRequest (method: Method, body: string, database: string, container: string, id: string | null, query: string) {
-        const path = this.getRestPath(database, container, id, query);        
+    async restRequest (method: Method, body: string, database: string, container: string, ids: string[] | null, query: string) {
+        const path = this.getRestPath(database, container, ids, query);        
         const init = {        
             method:  method,
             headers: { 'Content-Type': 'application/json' },
@@ -1167,13 +1170,13 @@ class App {
             entityIds:  [...p.ids]
         };
         entityType.innerHTML    = this.getEntityType (p.database, p.container);
-        const entityLink        = this.getEntityLink(p.database, p.container, p.ids[0]);
+        const entityLink        = this.getEntityLink(p.database, p.container, p.ids);
         entityId.innerHTML      = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML   = "";
-        const response  = await this.restRequest("GET", null, p.database, p.container, p.ids[0], null);        
+        const response  = await this.restRequest("GET", null, p.database, p.container, p.ids, null);        
         let content   = await response.text();
         content = this.formatJson(this.config.formatEntities, content);
-        entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.ids[0]);
+        entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -1184,17 +1187,22 @@ class App {
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
 
-    getEntityLink (database: string, container: string, id: string) {
+    getEntityLink (database: string, container: string, ids: string[]) {
         const containerRoute    = { database: database, container: container }
         let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
-        if (id) {
+        if (ids.length == 1) {
+            const id = ids[0];
             link += `<a title="open entity in new tab" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
+        }
+        else if (ids.length > 1) {
+            const idsStr = ids.join(',');
+            link += `<a title="open entity in new tab" href="./rest/${database}/${container}?ids=${idsStr}" target="_blank" rel="noopener noreferrer">${idsStr}</a>`;
         }
         return link;
     }
 
-    getEntityReload (database: string, container: string, id: string) {
-        const p: Resource = { database, container, ids: [id] };
+    getEntityReload (database: string, container: string, ids: string[]) {
+        const p: Resource = { database, container, ids: ids };
         return `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`
     }
 
@@ -1209,7 +1217,7 @@ class App {
         };
         entityType.innerHTML    = this.getEntityType (database, container);
         writeResult.innerHTML   = "";
-        entityId.innerHTML      = this.getEntityLink(database, container, null);
+        entityId.innerHTML      = this.getEntityLink(database, container, []);
         this.setEntityValue(database, container, "");
     }
 
@@ -1250,7 +1258,7 @@ class App {
         }
         writeResult.innerHTML = 'save <span class="spinner"></span>';
 
-        const response = await this.restRequest("PUT", jsonValue, database, container, id, null);
+        const response = await this.restRequest("PUT", jsonValue, database, container, ids, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
@@ -1261,8 +1269,8 @@ class App {
         
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
-            const entityLink    = this.getEntityLink(database, container, id);
-            entityId.innerHTML  = entityLink + this.getEntityReload(database, container, id);
+            const entityLink    = this.getEntityLink(database, container, ids);
+            entityId.innerHTML  = entityLink + this.getEntityReload(database, container, ids);
 
             const ulIds= entityExplorer.querySelector("table");
             this.addExplorerIds(ulIds, ids);
@@ -1290,7 +1298,7 @@ class App {
         const container = this.entityIdentity.container;
         const database  = this.entityIdentity.database;
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
-        const response = await this.restRequest("DELETE", null, database, container, ids[0], null);
+        const response = await this.restRequest("DELETE", null, database, container, ids, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
