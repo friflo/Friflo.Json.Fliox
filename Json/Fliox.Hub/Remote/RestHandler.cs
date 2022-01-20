@@ -86,7 +86,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid path /database/container/id", resourceError, 400);
                 return;
             }
-            var isDelete = method == "DELETE";
 
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
@@ -104,20 +103,33 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
                 return;
             }
-            // ------------------    GET / DELETE   /database/container/id
-            if (isGet || isDelete) {
+            // ------------------    GET            /database/container/id
+            if (isGet) {
                 if (resource.Length == 3) {
-                    if (isGet) {
-                        await GetEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);    
-                        return;
-                    }
-                    await DeleteEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);
+                    await GetEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);    
                     return;
                 }
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
                 return;
             }
-            // ------------------    PUT            /database/container
+            
+            // ------------------    DELETE         /database/container/id  or /database/container?ids=id1,id2,...
+            var isDelete = method == "DELETE";
+            if (isDelete) {
+                if (resource.Length == 3) {
+                    await DeleteEntity(context, resource[0], resource[1], new []{resource[2]}).ConfigureAwait(false);
+                    return;
+                }
+                if (resource.Length == 2) {
+                    var idsParam = queryParams["ids"];
+                    var ids = idsParam.Split(',');
+                    await DeleteEntity(context, resource[0], resource[1], ids).ConfigureAwait(false);
+                    return;
+                }
+                context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
+                return;
+            }
+            // ------------------    PUT            /database/container/id  or  /database/container
             if (method == "PUT") {
                 int len = resource.Length; 
                 if (len != 2 && len != 3) {
@@ -303,12 +315,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, 0, "application/json", entityStatus);
         }
         
-        private async Task DeleteEntity(RequestContext context, string database, string container, string id) {
+        private async Task DeleteEntity(RequestContext context, string database, string container, string[] ids) {
             if (database == EntityDatabase.MainDB)
                 database = null;
-            var entityId        = new JsonKey(id);
             var deleteEntities  = new DeleteEntities { container = container };
-            deleteEntities.ids.Add(entityId);
+            deleteEntities.ids.EnsureCapacity(ids.Length);
+            foreach (var id in ids) {
+                var entityId = new JsonKey(id);
+                deleteEntities.ids.Add(entityId);
+            }
             var restResult  = await ExecuteTask(context, database, deleteEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)

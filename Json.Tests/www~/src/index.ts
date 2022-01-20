@@ -1312,6 +1312,7 @@ class App {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
         } else {
+            this.entityIdentity.entityIds = [];
             writeResult.innerHTML = "Delete successful";
             entityId.innerHTML = "";
             this.setEntityValue(database, container, "");
