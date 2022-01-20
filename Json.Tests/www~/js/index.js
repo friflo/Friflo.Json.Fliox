@@ -1007,7 +1007,7 @@ class App {
         this.entityIdentity = {
             database: p.database,
             container: p.container,
-            entityId: p.id
+            entityIds: [p.id]
         };
         entityType.innerHTML = this.getEntityType(p.database, p.container);
         const entityLink = this.getEntityLink(p.database, p.container, p.id);
@@ -1045,7 +1045,7 @@ class App {
         this.entityIdentity = {
             database: database,
             container: container,
-            entityId: undefined
+            entityIds: []
         };
         entityType.innerHTML = this.getEntityType(database, container);
         writeResult.innerHTML = "";
@@ -1097,8 +1097,8 @@ class App {
         }
         writeResult.innerHTML = "Save successful";
         // add as HTML element to entityExplorer if new
-        if (this.entityIdentity.entityId != id) {
-            this.entityIdentity.entityId = ids[0];
+        if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
+            this.entityIdentity.entityIds = ids;
             const entityLink = this.getEntityLink(database, container, id);
             entityId.innerHTML = entityLink + this.getEntityReload(database, container, id);
             const ulIds = entityExplorer.querySelector("table");
@@ -1110,12 +1110,21 @@ class App {
             this.entityHistory.length = this.entityHistoryPos + 1;
         }
     }
+    static arraysEquals(left, right) {
+        if (left.length != right.length)
+            return false;
+        for (let i = 0; i < left.length; i++) {
+            if (left[i] != right[i])
+                return false;
+        }
+        return true;
+    }
     async deleteEntity() {
-        const id = this.entityIdentity.entityId;
+        const ids = this.entityIdentity.entityIds;
         const container = this.entityIdentity.container;
         const database = this.entityIdentity.database;
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
-        const response = await this.restRequest("DELETE", null, database, container, id, null);
+        const response = await this.restRequest("DELETE", null, database, container, ids[0], null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
@@ -1124,7 +1133,7 @@ class App {
             writeResult.innerHTML = "Delete successful";
             entityId.innerHTML = "";
             this.setEntityValue(database, container, "");
-            const selected = this.findContainerEntities([id]);
+            const selected = this.findContainerEntities(ids);
             for (const el of selected)
                 el.remove();
         }
