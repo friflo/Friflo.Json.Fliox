@@ -275,9 +275,10 @@
         .entities                   { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px; }
         .entities tr th             { text-align: left; font-weight: bold; font-size: 10px; padding-left: 2px; position: sticky; top: 0;
                                       background-color: var(--background); border-bottom: 4px solid var(--background2);}
+        .entities tr th:first-child { left: 0; z-index: 1; } /* sticky top/left cell */
         .entities tr th:last-child  { padding: 0; width: 4px; }
 
-        .entities tr td:first-child { padding-left: 0px; }
+        .entities tr td:first-child { position: sticky; left: 0; padding-left: 0px; }
         .entities tr td             { padding-left: 2px; overflow: hidden; height: 16px; line-height: 16px; } /* fixed height for all rows */
         .entities tr td input       { height: 12px; margin: 0px 2px 0 2px; vertical-align: middle; pointer-events: none; }
         .entities tr td:nth-child(1){ width: 14px; background-color: var(--background2); padding-left: 0; padding-right: 0px; }
