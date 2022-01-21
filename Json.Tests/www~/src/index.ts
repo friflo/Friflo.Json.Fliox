@@ -1090,6 +1090,8 @@ class App {
         ulIds.onclick = (ev) => {
             const path = ev.composedPath() as HTMLElement[];
             const selectedIds = this.getSelectionFromPath(path);
+            if (selectedIds === null)
+                return;
             this.setSelectedEntities(selectedIds);
             const params: Resource = { database: p.database, container: p.container, ids: selectedIds };
             this.loadEntities(params, false, null);
