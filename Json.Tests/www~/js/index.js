@@ -561,7 +561,7 @@ class App {
                 const databaseName = path[3].childNodes[0].childNodes[1].textContent;
                 const params = { database: databaseName, container: containerName, ids: [] };
                 this.clearEntity(databaseName, containerName);
-                this.loadEntities(params, null);
+                this.loadContainer(params, null);
             };
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
@@ -891,11 +891,11 @@ class App {
         const query = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params = { database: database, container: container, ids: [] };
         this.saveFilter(database, container, filter);
-        this.loadEntities(params, query);
+        this.loadContainer(params, query);
     }
     removeFilter() {
         const params = { database: this.filter.database, container: this.filter.container, ids: [] };
-        this.loadEntities(params, null);
+        this.loadContainer(params, null);
     }
     saveFilter(database, container, filter) {
         const filters = this.config.filters;
@@ -918,7 +918,7 @@ class App {
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el("filterLink").href = url;
     }
-    async loadEntities(p, query) {
+    async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";
@@ -935,7 +935,7 @@ class App {
         const containerLink = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML = `${containerLink}<span class="spinner"></span>`;
         const response = await this.restRequest("GET", null, p.database, p.container, null, query);
-        const reload = `<span class="reload" title='reload container' onclick='app.loadEntities(${JSON.stringify(p)})'></span>`;
+        const reload = `<span class="reload" title='reload container' onclick='app.loadContainer(${JSON.stringify(p)})'></span>`;
         writeResult.innerHTML = "";
         readEntities.innerHTML = containerLink + reload;
         if (!response.ok) {
@@ -1076,7 +1076,7 @@ class App {
     }
     getEntityLink(database, container, ids) {
         const containerRoute = { database: database, container: container };
-        let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadEntities(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
+        let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         if (ids.length == 1) {
             const id = ids[0];
             link += `<a title="open entity in new tab" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
