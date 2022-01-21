@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
@@ -146,6 +147,67 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                         error = $"missing key in JSON value. keyName: '{keyName}'";
                         return false;
                     case JsonEvent.ArrayEnd:
+                        throw new InvalidOperationException($"unexpected event: {ev}");
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Parse the given <see cref="json"/> while expecting the value is a JSON array of objects (entities).
+        /// The JSON objects returned by this method are 1:1 byte identical to its JSON input
+        /// to preserve line feeds and white spaces.
+        /// <br/>
+        /// The common approach using an <see cref="ObjectReader"/> with a List of JsonValue's is not used
+        /// as it does not preserve white spaces.   
+        /// <br/>
+        /// Note: The method is independent from <see cref="Traverse"/> related methods.
+        /// It is placed here as it shares all required parser related properties and
+        /// its purpose is also related to parsing entities.
+        /// </summary>
+        public List<JsonValue> ReadJsonArray(JsonValue json, out string error) {
+            jsonBytes.Clear();
+            jsonBytes.AppendArray(json);
+            parser.InitParser(jsonBytes);
+            var ev = parser.NextEvent();
+            if (ev != JsonEvent.ArrayStart) {
+                error   = $"expect JSON array";
+                return null;
+            }
+            var srcArray    = jsonBytes.buffer.array;
+            var array       = new List<JsonValue>();
+            while (true) {
+                ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ValueString:
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                    case JsonEvent.ValueNull:
+                    case JsonEvent.ArrayStart:
+                        error   = $"expect only objects in JSON array";
+                        return null;
+                    case JsonEvent.ObjectStart:
+                        var objStart = parser.Position - 1;
+                        parser.SkipTree();
+                        if (parser.error.ErrSet) {
+                            error = parser.error.msg.AsString();
+                            return null;
+                        }
+                        var end     = parser.Position;
+                        var len     = end - objStart; 
+                        var payload = new byte[len];
+                        for (int n = 0; n < len; n++) {
+                            payload[n] = srcArray[objStart + n];
+                        }
+                        var element = new JsonValue(payload);
+                        array.Add(element);
+                        break;
+                    case JsonEvent.ArrayEnd:
+                        error = null;
+                        return array;
+                    case JsonEvent.Error:
+                        error = parser.error.msg.AsString();
+                        return null;
+                    case JsonEvent.ObjectEnd:
                         throw new InvalidOperationException($"unexpected event: {ev}");
                 }
             }

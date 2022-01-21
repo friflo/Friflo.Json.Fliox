@@ -346,9 +346,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (id != null) {
                 entities = new List<JsonValue> {value};
             } else {
-                using (var pooled = pool.ObjectMapper.Get()) {
-                    var reader = pooled.instance.reader;
-                    entities = reader.Read<List<JsonValue>>(value);
+                using (var pooled = pool.EntityProcessor.Get()) {
+                    var processor = pooled.instance;
+                    entities = processor.ReadJsonArray(value, out string error);
+                    if (error != null) {
+                        context.WriteError("PUT error", error, 400);
+                        return;
+                    }
                 }
             }
             var entityId = new JsonKey(id);
