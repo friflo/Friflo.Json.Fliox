@@ -1046,6 +1046,15 @@ class App {
     async loadEntities(p, preserveHistory, selection) {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
+        entityType.innerHTML = this.getEntityType(p.database, p.container);
+        writeResult.innerHTML = "";
+        const entityLink = this.getEntitiesLink(p.database, p.container, p.ids);
+        if (p.ids.length == 0) {
+            entityIdsEl.innerHTML = entityLink;
+            this.setEntityValue(p.database, p.container, "");
+            return;
+        }
+        entityIdsEl.innerHTML = `${entityLink}<span class="spinner"></span>`;
         if (!preserveHistory) {
             this.storeCursor();
             this.entityHistory[++this.entityHistoryPos] = { route: Object.assign({}, p) };
@@ -1056,10 +1065,7 @@ class App {
             container: p.container,
             entityIds: [...p.ids]
         };
-        entityType.innerHTML = this.getEntityType(p.database, p.container);
-        const entityLink = this.getEntitiesLink(p.database, p.container, p.ids);
-        entityIdsEl.innerHTML = `${entityLink}<span class="spinner"></span>`;
-        writeResult.innerHTML = "";
+        // execute GET request
         const response = await this.restRequest("GET", null, p.database, p.container, p.ids, null);
         let content = await response.text();
         content = this.formatJson(this.config.formatEntities, content);
