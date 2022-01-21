@@ -1081,7 +1081,7 @@ class App {
         const   thCheckbox      = createEl('th');
         const   thId            = createEl('th');
         const   thLast          = createEl('th');
-        thId.innerText          = "id";
+        thId.innerText          = this.getEntityKeyName(p.database, p.container);
         head.append(thCheckbox);
         head.append(thId);
         head.append(thLast);
