@@ -40,7 +40,7 @@ const readEntitiesDB = el("readEntitiesDB");
 const readEntities = el("readEntities");
 const catalogSchema = el("catalogSchema");
 const entityType = el("entityType");
-const entityId = el("entityId");
+const entityIdsEl = el("entityIdsEl");
 const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
 const commandSignature = el("commandSignature");
@@ -431,7 +431,7 @@ class App {
                 if (p && id) {
                     const c = { database: p.database, container: p.container, ids: [id] };
                     const coordinate = JSON.stringify(c);
-                    const link = `<a  href="#" onclick='app.loadEntity(${coordinate})'>${id}</a>`;
+                    const link = `<a  href="#" onclick='app.loadEntities(${coordinate})'>${id}</a>`;
                     reason = reason.replace(id, link);
                 }
                 reason = reason.replace("] ", "]<br>");
@@ -952,7 +952,7 @@ class App {
             const selectedIds = this.getSelectionFromPath(path);
             this.setSelectedEntities(selectedIds);
             const params = { database: p.database, container: p.container, ids: selectedIds };
-            this.loadEntity(params, false, null);
+            this.loadEntities(params, false, null);
         };
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1041,9 +1041,9 @@ class App {
         this.storeCursor();
         this.entityHistoryPos = pos;
         const entry = this.entityHistory[pos];
-        this.loadEntity(entry.route, true, entry.selection);
+        this.loadEntities(entry.route, true, entry.selection);
     }
-    async loadEntity(p, preserveHistory, selection) {
+    async loadEntities(p, preserveHistory, selection) {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
         if (!preserveHistory) {
@@ -1057,13 +1057,13 @@ class App {
             entityIds: [...p.ids]
         };
         entityType.innerHTML = this.getEntityType(p.database, p.container);
-        const entityLink = this.getEntityLink(p.database, p.container, p.ids);
-        entityId.innerHTML = `${entityLink}<span class="spinner"></span>`;
+        const entityLink = this.getEntitiesLink(p.database, p.container, p.ids);
+        entityIdsEl.innerHTML = `${entityLink}<span class="spinner"></span>`;
         writeResult.innerHTML = "";
         const response = await this.restRequest("GET", null, p.database, p.container, p.ids, null);
         let content = await response.text();
         content = this.formatJson(this.config.formatEntities, content);
-        entityId.innerHTML = entityLink + this.getEntityReload(p.database, p.container, p.ids);
+        entityIdsEl.innerHTML = entityLink + this.getEntitiesReload(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -1074,7 +1074,7 @@ class App {
             this.entityEditor.setSelection(selection);
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
-    getEntityLink(database, container, ids) {
+    getEntitiesLink(database, container, ids) {
         const containerRoute = { database: database, container: container };
         let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         if (ids.length == 1) {
@@ -1094,9 +1094,9 @@ class App {
         }
         return link;
     }
-    getEntityReload(database, container, ids) {
+    getEntitiesReload(database, container, ids) {
         const p = { database, container, ids: ids };
-        return `<span class="reload" title='reload entity' onclick='app.loadEntity(${JSON.stringify(p)}, true)'></span>`;
+        return `<span class="reload" title='reload entity' onclick='app.loadEntities(${JSON.stringify(p)}, true)'></span>`;
     }
     clearEntity(database, container) {
         this.setExplorerEditor("entity");
@@ -1108,7 +1108,7 @@ class App {
         };
         entityType.innerHTML = this.getEntityType(database, container);
         writeResult.innerHTML = "";
-        entityId.innerHTML = this.getEntityLink(database, container, []);
+        entityIdsEl.innerHTML = this.getEntitiesLink(database, container, []);
         this.setEntityValue(database, container, "");
     }
     getEntityKeyName(database, container) {
@@ -1158,8 +1158,8 @@ class App {
         // add as HTML element to entityExplorer if new
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
-            const entityLink = this.getEntityLink(database, container, ids);
-            entityId.innerHTML = entityLink + this.getEntityReload(database, container, ids);
+            const entityLink = this.getEntitiesLink(database, container, ids);
+            entityIdsEl.innerHTML = entityLink + this.getEntitiesReload(database, container, ids);
             const ulIds = entityExplorer.querySelector("table");
             this.addExplorerIds(ulIds, ids);
             let liIds = this.findContainerEntities(ids);
@@ -1191,7 +1191,7 @@ class App {
         else {
             this.entityIdentity.entityIds = [];
             writeResult.innerHTML = "Delete successful";
-            entityId.innerHTML = "";
+            entityIdsEl.innerHTML = "";
             this.setEntityValue(database, container, "");
             this.removeExplorerIds(ids);
         }
@@ -1490,7 +1490,7 @@ class App {
                 }
             });
             if (entity) {
-                this.loadEntity(entity, false, null);
+                this.loadEntities(entity, false, null);
             }
         }
         catch (error) {
