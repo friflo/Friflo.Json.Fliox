@@ -1237,8 +1237,14 @@ class App {
             link += `<a title="open entity in new tab" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
         }
         else if (ids.length > 1) {
-            const idsStr = ids.join(',');
-            link += `<a title="open entity in new tab" href="./rest/${database}/${container}?ids=${idsStr}" target="_blank" rel="noopener noreferrer">${idsStr}</a>`;
+            const idsStr = ids.join (",");
+            let idLabels: string;
+            if (ids.length <= 3) {
+                idLabels = ids.join (", ");
+            } else {
+                idLabels = `${ids.slice(0, 3).join(", ")}, ... (${ids.length} entities)`;
+            }
+            link += `<a title="open entity in new tab" href="./rest/${database}/${container}?ids=${idsStr}" target="_blank" rel="noopener noreferrer">${idLabels}</a>`;
         }
         return link;
     }
