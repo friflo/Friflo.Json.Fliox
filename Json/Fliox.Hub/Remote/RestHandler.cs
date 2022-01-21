@@ -16,6 +16,7 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 
+// ReSharper disable ConvertIfStatementToSwitchStatement
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
 {
@@ -87,24 +88,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
 
-            // ------------------    GET            /database
-            if (isGet && resource.Length == 1) {
-                await Command(context, resource[0], StdCommand.DbContainers, new JsonValue()).ConfigureAwait(false); 
-                return;
-            }
-            // ------------------    GET            /database/container
-            if (isGet && resource.Length == 2) {
-                var idsParam = queryParams["ids"];
-                if (idsParam != null) {
-                    var ids = idsParam.Split(',');
-                    await GetEntitiesById (context, resource[0], resource[1], ids).ConfigureAwait(false);
+            if (isGet) {
+                // --------------    GET            /database
+                if (resource.Length == 1) {
+                    await Command(context, resource[0], StdCommand.DbContainers, new JsonValue()).ConfigureAwait(false); 
                     return;
                 }
-                await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
-                return;
-            }
-            // ------------------    GET            /database/container/id
-            if (isGet) {
+                // --------------    GET            /database/container
+                if (resource.Length == 2) {
+                    var idsParam = queryParams["ids"];
+                    if (idsParam != null) {
+                        var ids = idsParam.Split(',');
+                        await GetEntitiesById (context, resource[0], resource[1], ids).ConfigureAwait(false);
+                        return;
+                    }
+                    await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
+                    return;
+                }
+                // --------------    GET            /database/container/id
                 if (resource.Length == 3) {
                     await GetEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);    
                     return;
@@ -113,13 +114,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             
-            // ------------------    DELETE         /database/container/id  or /database/container?ids=id1,id2,...
             var isDelete = method == "DELETE";
             if (isDelete) {
+                // --------------    DELETE         /database/container/id
                 if (resource.Length == 3) {
                     await DeleteEntity(context, resource[0], resource[1], new []{resource[2]}).ConfigureAwait(false);
                     return;
                 }
+                // --------------    DELETE         /database/container?ids=id1,id2,...
                 if (resource.Length == 2) {
                     var idsParam = queryParams["ids"];
                     var ids = idsParam.Split(',');
@@ -129,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
                 return;
             }
-            // ------------------    PUT            /database/container/id  or  /database/container
+            // ------------------    PUT            /database/container  or  /database/container/id
             if (method == "PUT") {
                 int len = resource.Length; 
                 if (len != 2 && len != 3) {
