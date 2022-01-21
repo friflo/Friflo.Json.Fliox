@@ -272,7 +272,11 @@
         .catalogs li div.selected   { background-color: var(--selected-color); }
         .catalogs ul li div:hover   { background-color: var(--item-hover); }
 
-        .entities                   { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 4px 4px 4px 0px;}
+        .entities                   { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px; }
+        .entities tr th             { text-align: left; font-weight: bold; font-size: 10px; 
+                                      background-color: var(--background); border-bottom: 4px solid var(--background2);}
+        .entities tr th:last-child  { padding: 0; width: 4px; }
+
         .entities tr td:first-child { padding-left: 0px; }
         .entities tr td             { padding-left: 2px; overflow: hidden; height: 16px; line-height: 16px; } /* fixed height for all rows */
         .entities tr td input       { height: 12px; margin: 0px 2px 0 2px; vertical-align: middle; pointer-events: none; }
@@ -539,7 +543,7 @@
     <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>
 
     <div style="grid-area: ex-container; background-color: var(--background2); overflow: auto; ">
-      <div id="entityExplorer"  style="display: block; white-space:nowrap; margin-right: 4px;"></div>
+      <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
     </div>
 
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>

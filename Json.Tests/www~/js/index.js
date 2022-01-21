@@ -946,6 +946,15 @@ class App {
         let content = await response.json();
         const ids = content.map(entity => entity.id);
         const ulIds = createEl('table');
+        const head = createEl('tr');
+        const thCheckbox = createEl('th');
+        const thId = createEl('th');
+        const thLast = createEl('th');
+        thId.innerText = "id";
+        head.append(thCheckbox);
+        head.append(thId);
+        head.append(thLast);
+        ulIds.append(head);
         ulIds.classList.value = "entities";
         ulIds.onclick = (ev) => {
             const path = ev.composedPath();
