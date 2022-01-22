@@ -1278,7 +1278,7 @@ class App {
                         return Array.isArray(i) ? "[]" : "{}";
                     return i;
                 })
-                return `${value.length}: [${items.join(", ")}]`;
+                return `${value.length}:[${items.join(", ")}]`;
             }
             return "";
         }
