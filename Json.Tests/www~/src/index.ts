@@ -1078,18 +1078,21 @@ class App {
         const   ids             = content.map(entity => entity.id);
         const   ulIds           = createEl('table');
         const   head            = createEl('tr');
+        // cell: checkbox
         const   thCheckbox      = createEl('th');
-        const   thCheckboxDiv   = createEl('div');
-        const   thId            = createEl('th');
-        const   thIdDiv         = createEl('div');
-        const   thLast          = createEl('th');
-
-        thIdDiv.innerText          = this.getEntityKeyName(p.database, p.container);
-        thId.append(thIdDiv);
+        const   thCheckboxDiv   = createEl('div');        
         thCheckbox.append(thCheckboxDiv);
         head.append(thCheckbox);
+        // cell: id
+        const   thId            = createEl('th');
+        const   thIdDiv         = createEl('div');
+        thIdDiv.innerText       = this.getEntityKeyName(p.database, p.container);
+        thId.append(thIdDiv);
         head.append(thId);
+        // cell: last
+        const   thLast          = createEl('th');
         head.append(thLast);
+        
         ulIds.append(head);
         ulIds.classList.value   = "entities"
         ulIds.onclick = (ev) => {
