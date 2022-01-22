@@ -465,7 +465,7 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    getRestPath(database: string, container: string, ids: string[] | null, query: string) {
+    static getRestPath(database: string, container: string, ids: string[] | null, query: string) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (ids) {
@@ -476,8 +476,8 @@ class App {
         return path;
     }
 
-    async restRequest (method: Method, body: string, database: string, container: string, ids: string[] | null, query: string) {
-        const path = this.getRestPath(database, container, ids, query);        
+    static async restRequest (method: Method, body: string, database: string, container: string, ids: string[] | null, query: string) {
+        const path = App.getRestPath(database, container, ids, query);        
         const init = {        
             method:  method,
             headers: { 'Content-Type': 'application/json' },
@@ -495,7 +495,7 @@ class App {
         }
     }
 
-    getTaskError (content: ProtocolResponse_Union, taskIndex: number) {
+    static getTaskError (content: ProtocolResponse_Union, taskIndex: number) {
         if (content.msg == "error") {
             return content.message;
         }
@@ -505,16 +505,16 @@ class App {
         return undefined;
     }
 
-    bracketValue = /\[(.*?)\]/;
+    static bracketValue = /\[(.*?)\]/;
 
-    errorAsHtml (message: string, p: Resource | null) {
+    static errorAsHtml (message: string, p: Resource | null) {
         // first line: error type, second line: error message
         const pos = message.indexOf(' > ');
         let error = message;
         if (pos > 0) {
             let reason = message.substring(pos + 3);
             if (reason.startsWith("at ")) {
-                const id = reason.match(this.bracketValue)[1];
+                const id = reason.match(App.bracketValue)[1];
                 if (p && id) {
                     const c: Resource = { database: p.database, container: p.container, ids: [id] };
                     const coordinate = JSON.stringify(c);
@@ -528,7 +528,7 @@ class App {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
-    setClass(element: Element, enable: boolean, className: string) {
+    static setClass(element: Element, enable: boolean, className: string) {
         const classList = element.classList;
         if (enable) {
             classList.add(className);
@@ -545,7 +545,7 @@ class App {
     openTab (tabName: string) {
         const config            = this.config;
         config.activeTab        = tabName;
-        this.setClass(document.body, !config.showDescription, "miniHeader")
+        App.setClass(document.body, !config.showDescription, "miniHeader")
         const tabContents       = document.getElementsByClassName("tabContent");
         const tabs              = document.getElementsByClassName("tab");
         const gridTemplateRows  = document.body.style.gridTemplateRows.split(" ");
@@ -557,7 +557,7 @@ class App {
             tabContent.style.display    = isActiveContent ? "grid" : "none";
             gridTemplateRows[i + 2]     = isActiveContent ? "1fr" : "0"; // + 2  ->  "body-header" & "body-tabs"
             const isActiveTab           = tabs[i].getAttribute('value') == tabName;
-            this.setClass(tabs[i], isActiveTab, "selected");
+            App.setClass(tabs[i], isActiveTab, "selected");
         }
         document.body.style.gridTemplateRows = gridTemplateRows.join(" ");
         this.layoutEditors();
@@ -587,9 +587,9 @@ class App {
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await this.postRequestTasks("cluster", tasks, null);
         const content = response.json as SyncResponse;
-        const error = this.getTaskError (content, 0);
+        const error = App.getTaskError (content, 0);
         if (error) {
-            catalogExplorer.innerHTML = this.errorAsHtml(error, null);
+            catalogExplorer.innerHTML = App.errorAsHtml(error, null);
             return 
         }
         const dbContainers  = content.containers[0].entities    as DbContainers[];
@@ -738,22 +738,22 @@ class App {
                     schemaMap[uri] = definitionEntry;
                 }
             }
-            this.resolveRefs(jsonSchemas);
+            App.resolveRefs(jsonSchemas);
             this.addFileMatcher(database, dbSchema, schemaMap);
         }
         const monacoSchemas = Object.values(schemaMap);
         this.addSchemas(monacoSchemas);
     }
 
-    resolveRefs(jsonSchemas: { [key: string] : JsonSchema }) {
+    static resolveRefs(jsonSchemas: { [key: string] : JsonSchema }) {
         for (const schemaPath in jsonSchemas) {
             // if (schemaPath == "Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json") debugger;
             const schema      = jsonSchemas[schemaPath];
-            this.resolveNodeRefs(jsonSchemas, schema, schema);
+            App.resolveNodeRefs(jsonSchemas, schema, schema);
         }
     }
 
-    resolveNodeRefs(jsonSchemas: { [key: string] : JsonSchema }, schema: JsonSchema, node: JsonSchema) {
+    static resolveNodeRefs(jsonSchemas: { [key: string] : JsonSchema }, schema: JsonSchema, node: JsonSchema) {
         const nodeType = typeof node;
         if (nodeType != "object")
             return;
@@ -800,7 +800,7 @@ class App {
         const containers      = dbType.properties;
         for (const containerName in containers) {
             const container     = containers[containerName];
-            const containerType   = this.getResolvedType(container.additionalProperties, schemaPath);
+            const containerType   = App.getResolvedType(container.additionalProperties, schemaPath);
             const uri = "http://" + database + containerType.$ref.substring(1);
             const schema = schemaMap[uri];
             const url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
@@ -811,7 +811,7 @@ class App {
         for (const commandName in commands) {
             const command   = commands[commandName];
             // assign file matcher for command param
-            const paramType   = this.getResolvedType(command.param, schemaPath);
+            const paramType   = App.getResolvedType(command.param, schemaPath);
             let url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (paramType.$ref) {
                 const uri = "http://" + database + paramType.$ref.substring(1);
@@ -828,7 +828,7 @@ class App {
                 schemaMap[uri] = schema;
             }
             // assign file matcher for command result
-            const resultType   = this.getResolvedType(command.result, schemaPath);
+            const resultType   = App.getResolvedType(command.result, schemaPath);
             url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (resultType.$ref) {
                 const uri = "http://" + database + resultType.$ref.substring(1);
@@ -847,7 +847,7 @@ class App {
         }
     }
 
-    getResolvedType (type: FieldType, schemaPath: string) {
+    static getResolvedType (type: FieldType, schemaPath: string) {
         const $ref = type.$ref;
         if (!$ref)
             return type;
@@ -871,7 +871,7 @@ class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
 
-    getType(database: string, def: JsonType) {
+    static getType(database: string, def: JsonType) {
         const ns          = def._namespace;
         const name        = def._typeName;
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
@@ -881,7 +881,7 @@ class App {
         const def  = this.getContainerSchema(database, container);
         if (!def)
             return this.schemaLess;
-        return this.getType(database, def);
+        return App.getType(database, def);
     }
 
     getTypeLabel(database: string, type: FieldType) {
@@ -890,7 +890,7 @@ class App {
         }
         const def = type._resolvedDef;
         if (def) {
-            return this.getType(database, def);
+            return App.getType(database, def);
         }
         let result = JSON.stringify(type);
         return result = result == "{}" ? "any" : result;
@@ -898,7 +898,7 @@ class App {
 
     schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
-    getDatabaseLink(database: string) {
+    static getDatabaseLink(database: string) {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`
     }
 
@@ -933,19 +933,19 @@ class App {
         if (!method) {
             const commandAnchor =  el("commandAnchor") as HTMLAnchorElement;
             let commandValue = value == "null" ? "" : `&value=${value}`;
-            const path = this.getRestPath( database, null, null, `command=${command}${commandValue}`)
+            const path = App.getRestPath( database, null, null, `command=${command}${commandValue}`)
             commandAnchor.href = path;
             // window.open(path, '_blank');
             return;
         }
-        const response = await this.restRequest(method, value, database, null, null, `command=${command}`);
+        const response = await App.restRequest(method, value, database, null, null, `command=${command}`);
         let content = await response.text();
         content = this.formatJson(this.config.formatResponses, content);
         this.entityEditor.setValue(content);
     }
 
     setDatabaseInfo(database: string, dbContainer: DbContainers) {
-        el("databaseName").innerHTML      = this.getDatabaseLink(database);
+        el("databaseName").innerHTML      = App.getDatabaseLink(database);
         el("databaseSchema").innerHTML    = this.getSchemaType(database);
         el("databaseExports").innerHTML   = this.getSchemaExports(database);
         el("databaseType").innerHTML      = dbContainer.databaseType;        
@@ -959,7 +959,7 @@ class App {
         this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";
-        readEntitiesDB.innerHTML    = this.getDatabaseLink(database);
+        readEntitiesDB.innerHTML    = App.getDatabaseLink(database);
         readEntities.innerHTML      = "";
 
         const ulDatabase  = createEl('ul');
@@ -1073,25 +1073,26 @@ class App {
         filterRow.style.visibility   = "";
         entityFilter.style.visibility  = "";
         catalogSchema.innerHTML  = this.getSchemaType(p.database) + ' · ' + this.getEntityType(p.database, p.container);
-        readEntitiesDB.innerHTML = this.getDatabaseLink(p.database) + "/";
+        readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
 
-        const response           = await this.restRequest("GET", null, p.database, p.container, null, query);
+        const response           = await App.restRequest("GET", null, p.database, p.container, null, query);
 
         const reload = `<span class="reload" title='reload container' onclick='app.loadContainer(${JSON.stringify(p)})'></span>`
         writeResult.innerHTML   = "";        
         readEntities.innerHTML  = containerLink + reload;
         if (!response.ok) {
             const error = await response.text();
-            entityExplorer.innerHTML = this.errorAsHtml(error, p);
+            entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
         const   entityType  = this.getContainerSchema(p.database, p.container);
         let     entities    = await response.json() as Entity[];
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const   ulIds       = createEl('table');
-        const   head        = this.createExplorerHead(entityType);
+        this.entityFields   = {};
+        const   head        = App.createExplorerHead(entityType, this.entityFields);
 
         ulIds.append(head);
         ulIds.classList.value   = "entities"
@@ -1196,9 +1197,8 @@ class App {
         return result;
     }
 
-    createExplorerHead (entityType: JsonType) : HTMLTableRowElement {
-        const keyName       = this.getEntityKeyName(entityType);
-        this.entityFields   = {};
+    static createExplorerHead (entityType: JsonType, entityFields: { [key: string] : number }) : HTMLTableRowElement {
+        const keyName       = App.getEntityKeyName(entityType);
         if (entityType) {
             let index           = 0;
             const properties    =  entityType.properties;
@@ -1206,11 +1206,11 @@ class App {
                 const fieldType = properties[fieldName];
                 const columns   = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
-                    this.entityFields[column]    = index++;
+                    entityFields[column]    = index++;
                 }
             }
         } else {
-            this.entityFields[keyName] = 0;
+            entityFields[keyName] = 0;
         }
         const   head            = createEl('tr');
 
@@ -1221,7 +1221,7 @@ class App {
         head.append(thCheckbox);
 
         // cell: fields (id, ...)
-        for (const fieldName in this.entityFields) {
+        for (const fieldName in entityFields) {
             const thId      = createEl('th');
             const thIdDiv   = createEl('div');
             thIdDiv.innerText   = fieldName;
@@ -1236,7 +1236,7 @@ class App {
     }
 
     addExplorerEntities(table : HTMLTableElement, entities: Entity[], entityType: JsonType) {
-        const keyName = this.getEntityKeyName(entityType);
+        const keyName = App.getEntityKeyName(entityType);
         // console.log("entities", entities);
         for (const entity of entities) {
             const id = entity[keyName];
@@ -1358,7 +1358,7 @@ class App {
             entityIds:  [...p.ids]
         };
         // execute GET request
-        const response  = await this.restRequest("GET", null, p.database, p.container, p.ids, null);        
+        const response  = await App.restRequest("GET", null, p.database, p.container, p.ids, null);        
         let content     = await response.text();
 
         content                 = this.formatJson(this.config.formatEntities, content);
@@ -1421,7 +1421,7 @@ class App {
         return null;
     }
 
-    getEntityKeyName (entityType: JsonType) {
+    static getEntityKeyName (entityType: JsonType) {
         if (entityType?.key)
             return entityType.key;
         return "id";
@@ -1445,11 +1445,11 @@ class App {
             return;
         }
         const type              = this.getContainerSchema(database, container);
-        const keyName           = this.getEntityKeyName(type);
+        const keyName           = App.getEntityKeyName(type);
         const ids               = entities.map(entity => entity[keyName]) as string[];
         writeResult.innerHTML   = 'save <span class="spinner"></span>';
 
-        const response = await this.restRequest("PUT", jsonValue, database, container, ids, null);
+        const response = await App.restRequest("PUT", jsonValue, database, container, ids, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
@@ -1489,7 +1489,7 @@ class App {
         const container = this.entityIdentity.container;
         const database  = this.entityIdentity.database;
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
-        const response = await this.restRequest("DELETE", null, database, container, ids, null);
+        const response = await App.restRequest("DELETE", null, database, container, ids, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
