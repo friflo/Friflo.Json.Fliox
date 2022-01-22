@@ -1007,31 +1007,40 @@ class App {
             this.selectedEntities[id].classList.add("selected");
         }
     }
-    static getFieldTypeName(fieldType) {
+    static getFieldType(fieldType) {
         const ref = fieldType._resolvedDef;
         if (ref)
             return ref.type;
         const oneOf = fieldType.oneOf;
-        if (!oneOf)
-            return fieldType.type;
-        for (const oneOfType of oneOf) {
-            if (oneOfType.type == "null")
-                continue;
-            return App.getFieldTypeName(oneOfType);
+        if (oneOf) {
+            for (const oneOfType of oneOf) {
+                if (oneOfType.type == "null")
+                    continue;
+                return App.getFieldType(oneOfType);
+            }
         }
+        const items = fieldType.items;
+        if (items) {
+            return App.getFieldType(items);
+        }
+        return fieldType.type;
     }
-    static getColumnNames(fieldName, fieldType) {
-        const result = [];
-        const type = App.getFieldTypeName(fieldType);
-        let nonNull = type;
+    static getTypeName(type) {
         if (Array.isArray(type)) {
             for (const item of type) {
                 if (item == "null")
                     continue;
-                nonNull = item;
+                return item;
             }
+            throw `missing type in type array`;
         }
-        switch (nonNull) {
+        return type;
+    }
+    static getColumnNames(fieldName, fieldType) {
+        const result = [];
+        const type = App.getFieldType(fieldType);
+        const typeName = App.getTypeName(type);
+        switch (typeName) {
             case "string":
             case "integer":
             case "number":

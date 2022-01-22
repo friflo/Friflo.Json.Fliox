@@ -22,6 +22,10 @@ declare global {
     }
 }
 
+type TypeName = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
+type DataType = TypeName | TypeName[];
+
+
 declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
     interface JsonType {
         _typeName:  string;
@@ -1145,32 +1149,43 @@ class App {
     selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
     explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
-    static getFieldTypeName(fieldType: FieldType) : any {
+    static getFieldType(fieldType: FieldType) : DataType {
         const   ref = fieldType._resolvedDef;
         if (ref)
-            return ref.type;
+            return ref.type as TypeName;
         const oneOf = fieldType.oneOf;
-        if (!oneOf)
-            return fieldType.type;
-        for (const oneOfType of oneOf) {
-            if (oneOfType.type == "null")
-                continue;
-            return App.getFieldTypeName(oneOfType);
-        }      
+        if (oneOf) {
+            for (const oneOfType of oneOf) {
+                if (oneOfType.type == "null")
+                    continue;
+                return App.getFieldType(oneOfType);
+            }      
+    
+        }
+        const items = fieldType.items;
+        if (items) {
+            return App.getFieldType(items);
+        }
+        return fieldType.type;
     }
 
-    static getColumnNames(fieldName: string, fieldType: FieldType) : string [] {
-        const result: string[]  = [];
-        const type              = App.getFieldTypeName(fieldType);        
-        let   nonNull           = type;
+    static getTypeName(type: DataType) : TypeName {
         if (Array.isArray(type)) {
             for (const item of type) {
                 if (item == "null")
                     continue;
-                nonNull = item;
+                return item;
             }
+            throw `missing type in type array`;
         }
-        switch (nonNull) {
+        return type;
+    }
+
+    static getColumnNames(fieldName: string, fieldType: FieldType) : string [] {
+        const result: string[]  = [];
+        const type              = App.getFieldType(fieldType);
+        const typeName          = App.getTypeName(type);
+        switch (typeName) {
             case "string":
             case "integer":
             case "number":
