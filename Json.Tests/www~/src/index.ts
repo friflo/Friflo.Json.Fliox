@@ -1079,9 +1079,14 @@ class App {
         const   ulIds           = createEl('table');
         const   head            = createEl('tr');
         const   thCheckbox      = createEl('th');
+        const   thCheckboxDiv   = createEl('div');
         const   thId            = createEl('th');
+        const   thIdDiv         = createEl('div');
         const   thLast          = createEl('th');
-        thId.innerText          = this.getEntityKeyName(p.database, p.container);
+
+        thIdDiv.innerText          = this.getEntityKeyName(p.database, p.container);
+        thId.append(thIdDiv);
+        thCheckbox.append(thCheckboxDiv);
         head.append(thCheckbox);
         head.append(thId);
         head.append(thLast);
