@@ -1074,11 +1074,11 @@ class App {
             entityExplorer.innerHTML = this.errorAsHtml(error, p);
             return;
         }
-        const   keyName     = this.getEntityKeyName(p.database, p.container);
+        const   entityType  = this.getContainerSchema(p.database, p.container);
         let     entities    = await response.json() as Entity[];
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const   ulIds       = createEl('table');
-        const   head        = this.createExplorerHead(keyName)
+        const   head        = this.createExplorerHead(entityType);
 
         ulIds.append(head);
         ulIds.classList.value   = "entities"
@@ -1093,7 +1093,7 @@ class App {
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
-        this.addExplorerEntities(ulIds, entities, keyName)
+        this.addExplorerEntities(ulIds, entities, entityType)
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
@@ -1136,7 +1136,8 @@ class App {
     selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
     explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
-    createExplorerHead (keyName: string) : HTMLTableRowElement {
+    createExplorerHead (entityType: JsonType) : HTMLTableRowElement {
+        const   keyName         = this.getEntityKeyName(entityType);
         const   head            = createEl('tr');
         // cell: checkbox
         const   thCheckbox      = createEl('th');
@@ -1155,7 +1156,8 @@ class App {
         return head;
     }
 
-    addExplorerEntities(table : HTMLTableElement, entities: Entity[], keyName: string) {
+    addExplorerEntities(table : HTMLTableElement, entities: Entity[], entityType: JsonType) {
+        const keyName = this.getEntityKeyName(entityType);
         // console.log("entities", entities);
         for (const entity of entities) {
             const id = entity[keyName];
@@ -1312,10 +1314,9 @@ class App {
         return null;
     }
 
-    getEntityKeyName (database: string, container: string) {
-        const schema = this.getContainerSchema(database, container);
-        if (schema?.key)
-            return schema.key;
+    getEntityKeyName (entityType: JsonType) {
+        if (entityType?.key)
+            return entityType.key;
         return "id";
     }
 
@@ -1325,7 +1326,6 @@ class App {
         const jsonValue = this.entityModel.getValue();
 
         let entities:   Entity[];
-        const keyName = this.getEntityKeyName(database, container);
         try {
             const value = JSON.parse(jsonValue) as Entity | Entity[];
             if (Array.isArray(value)) {
@@ -1337,8 +1337,10 @@ class App {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
-        const ids = entities.map(entity => entity[keyName]) as string[];
-        writeResult.innerHTML = 'save <span class="spinner"></span>';
+        const type              = this.getContainerSchema(database, container);
+        const keyName           = this.getEntityKeyName(type);
+        const ids               = entities.map(entity => entity[keyName]) as string[];
+        writeResult.innerHTML   = 'save <span class="spinner"></span>';
 
         const response = await this.restRequest("PUT", jsonValue, database, container, ids, null);
         if (!response.ok) {
@@ -1355,7 +1357,7 @@ class App {
             entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
 
             const ulIds= entityExplorer.querySelector("table");
-            this.addExplorerEntities(ulIds, entities, keyName);
+            this.addExplorerEntities(ulIds, entities, type);
             let liIds = this.findContainerEntities(ids);
 
             this.setSelectedEntities(ids);
