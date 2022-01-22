@@ -22,8 +22,8 @@ declare global {
     }
 }
 
-type TypeName = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
-type DataType = TypeName | TypeName[];
+type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
+type DataType   = TypeName | TypeName[];
 
 
 declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
@@ -1189,6 +1189,7 @@ class App {
             case "integer":
             case "number":
             case "boolean":
+            case "object":
                 result.push(fieldName);
                 break;
         }
@@ -1255,12 +1256,33 @@ class App {
             // cell: fields
             for (const fieldName in this.entityFields) {
                 const value         = entity[fieldName];
+                const str           = App.getFieldValue(value);
+                const subStr        = str.length > 100 ? `${str.substring(0, 100)}...` : str;
                 const tdField       = createEl('td');
-                tdField.innerText   = String(value);
+                tdField.innerText   = subStr;
                 row.append(tdField);
                 table.append(row);
             }
         }
+    }
+
+    static getFieldValue(value: any) : string {
+        const type = typeof value;
+        if (type != "object")
+            return String(value);
+        if (Array.isArray(value)) {
+            if (value.length > 0) {
+                const items = value.map(i => {
+                    const type = typeof i;
+                    if (type == "object")
+                        return Array.isArray(i) ? "[]" : "{}";
+                    return i;
+                })
+                return `${value.length}: [${items.join(", ")}]`;
+            }
+            return "";
+        }
+        return JSON.stringify(value); // todo show object fields in separate columns            
     }
 
     removeExplorerIds(ids: string[]) {
