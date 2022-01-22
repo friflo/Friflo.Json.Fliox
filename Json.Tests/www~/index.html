@@ -43,7 +43,7 @@
         :root {
             --header-height: 60px;
             --tab-height:    40px;
-            --bar-width:      4px;
+            --bar-width:      6px;
             --vbar-width:    16px;
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
@@ -61,6 +61,7 @@
             --link-color:       #d400b8;
             --link-deco:        #00000040;
             --color:            #000;
+            --table-bar:        #e8e8e8;
         }
         [data-theme="dark"] {
             --selected-color:   #44fa;
@@ -76,6 +77,7 @@
             --link-color:       #e64bd1;
             --link-deco:        #ffffff60;
             --color:            #fff;
+            --table-bar:        #444;
         }
 
         /* text-decoration: underline;      text-decoration-color: var(--link-deco) !important;
@@ -277,7 +279,7 @@
                                           margin: 0; padding: 0; pointer-events: none; }
         .entities tr th:first-child     { left: 0; z-index: 1;  } /* sticky top/left cell */
         .entities tr th:last-child      { padding: 0; width: 4px; }
-        .entities tr th div             { height: 14px; background-color: var(--background2); border-bottom: 2px solid var(--background);
+        .entities tr th div             { height: 14px; background-color: var(--background2); border-bottom: 2px solid var(--table-bar);
                                           margin-bottom: 2px; padding-top: 4px; padding-left: 2px; }
         .entities tr th:first-child div { border-bottom: 2px solid var(--background2); }
 

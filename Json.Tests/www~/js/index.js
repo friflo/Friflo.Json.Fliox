@@ -677,16 +677,15 @@ class App {
             // if (propertyName == "dateTimeNull") debugger;
             const property = node[propertyName];
             const oneOf = property.oneOf;
-            if (!oneOf) {
-                this.resolveNodeRefs(jsonSchemas, schema, property); // todo fix cast
-            }
-            else {
+            if (oneOf) {
                 for (const oneOfType of oneOf) {
                     if (oneOfType.type == "null")
                         continue;
                     this.resolveNodeRefs(jsonSchemas, schema, oneOfType); // todo fix cast
                 }
+                continue;
             }
+            this.resolveNodeRefs(jsonSchemas, schema, property); // todo fix cast            
         }
     }
     // add a "fileMatch" property to all container entity type schemas used for editor validation

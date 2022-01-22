@@ -774,15 +774,15 @@ class App {
             // if (propertyName == "dateTimeNull") debugger;
             const property  = (node as any)[propertyName] as FieldType;
             const oneOf     = property.oneOf;
-            if (!oneOf) {
-                this.resolveNodeRefs(jsonSchemas, schema, property as JsonSchema); // todo fix cast
-            } else {
+            if (oneOf) {
                 for (const oneOfType of oneOf) {
                     if (oneOfType.type == "null")
                         continue;
                     this.resolveNodeRefs(jsonSchemas, schema, oneOfType as JsonSchema); // todo fix cast
                 }
-            }            
+                continue;                
+            }
+            this.resolveNodeRefs(jsonSchemas, schema, property as JsonSchema); // todo fix cast            
         }
     }
 
