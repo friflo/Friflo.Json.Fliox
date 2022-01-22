@@ -68,6 +68,7 @@ class App {
         this.databaseSchemas = {};
         this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
         this.filter = {};
+        this.entityFields = {};
         this.selectedEntities = {};
         this.explorerEntities = {};
         this.entityIdentity = {};
@@ -762,10 +763,9 @@ class App {
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
     }
     getEntityType(database, container) {
-        const dbSchema = this.databaseSchemas[database];
-        if (!dbSchema)
+        const def = this.getContainerSchema(database, container);
+        if (!def)
             return this.schemaLess;
-        const def = dbSchema._containerSchemas[container];
         return this.getType(database, def);
     }
     getTypeLabel(database, type) {
@@ -945,23 +945,9 @@ class App {
         }
         const keyName = this.getEntityKeyName(p.database, p.container);
         let entities = await response.json();
-        // const ids            = entities.map(entity => entity[keyName]) as string[];
+        // const ids        = entities.map(entity => entity[keyName]) as string[];
         const ulIds = createEl('table');
-        const head = createEl('tr');
-        // cell: checkbox
-        const thCheckbox = createEl('th');
-        const thCheckboxDiv = createEl('div');
-        thCheckbox.append(thCheckboxDiv);
-        head.append(thCheckbox);
-        // cell: id
-        const thId = createEl('th');
-        const thIdDiv = createEl('div');
-        thIdDiv.innerText = this.getEntityKeyName(p.database, p.container);
-        thId.append(thIdDiv);
-        head.append(thId);
-        // cell: last
-        const thLast = createEl('th');
-        head.append(thLast);
+        const head = this.createExplorerHead(keyName);
         ulIds.append(head);
         ulIds.classList.value = "entities";
         ulIds.onclick = (ev) => {
@@ -1012,8 +998,26 @@ class App {
             this.selectedEntities[id].classList.add("selected");
         }
     }
-    addExplorerEntities(ulIds, entities, keyName) {
-        console.log("entities", entities);
+    createExplorerHead(keyName) {
+        const head = createEl('tr');
+        // cell: checkbox
+        const thCheckbox = createEl('th');
+        const thCheckboxDiv = createEl('div');
+        thCheckbox.append(thCheckboxDiv);
+        head.append(thCheckbox);
+        // cell: id
+        const thId = createEl('th');
+        const thIdDiv = createEl('div');
+        thIdDiv.innerText = keyName;
+        thId.append(thIdDiv);
+        head.append(thId);
+        // cell: last
+        const thLast = createEl('th');
+        head.append(thLast);
+        return head;
+    }
+    addExplorerEntities(table, entities, keyName) {
+        // console.log("entities", entities);
         for (const entity of entities) {
             const id = entity[keyName];
             if (this.explorerEntities[id])
@@ -1029,7 +1033,7 @@ class App {
             const td1 = createEl('td');
             td1.innerText = String(id);
             row.append(td1);
-            ulIds.append(row);
+            table.append(row);
         }
     }
     removeExplorerIds(ids) {
@@ -1138,15 +1142,17 @@ class App {
         entityIdsEl.innerHTML = this.getEntitiesLink(database, container, []);
         this.setEntityValue(database, container, "");
     }
-    getEntityKeyName(database, container) {
+    getContainerSchema(database, container) {
         const schema = this.databaseSchemas[database];
         if (schema) {
-            const containerType = schema._containerSchemas[container];
-            if (containerType.key) {
-                // container has a property "key", if primary key is not "id"
-                return containerType.key;
-            }
+            return schema._containerSchemas[container];
         }
+        return null;
+    }
+    getEntityKeyName(database, container) {
+        const schema = this.getContainerSchema(database, container);
+        if (schema === null || schema === void 0 ? void 0 : schema.key)
+            return schema.key;
         return "id";
     }
     async saveEntity() {
@@ -1234,11 +1240,10 @@ class App {
         this.entityEditor.setModel(model);
         if (value == "")
             return;
-        const databaseSchema = this.databaseSchemas[database];
-        if (!databaseSchema)
+        const containerSchema = this.getContainerSchema(database, container);
+        if (!containerSchema)
             return;
         try {
-            const containerSchema = databaseSchema._containerSchemas[container];
             this.decorateJson(this.entityEditor, value, containerSchema, database);
         }
         catch (error) {
@@ -1498,8 +1503,7 @@ class App {
             JSON.parse(value); // early out invalid JSON
             const ast = parse(value, { loc: true });
             const database = this.entityIdentity.database;
-            const databaseSchema = this.databaseSchemas[database];
-            const containerSchema = databaseSchema._containerSchemas[this.entityIdentity.container];
+            const containerSchema = this.getContainerSchema(database, this.entityIdentity.container);
             let entity;
             this.addRelationsFromAst(ast, containerSchema, (value, container) => {
                 if (entity)
