@@ -1170,21 +1170,20 @@ class App {
     }
 
     static getTypeName(type: DataType) : TypeName {
-        if (Array.isArray(type)) {
-            for (const item of type) {
-                if (item == "null")
-                    continue;
-                return item;
-            }
-            throw `missing type in type array`;
+        if (!Array.isArray(type))
+            return type;
+        for (const item of type) {
+            if (item == "null")
+                continue;
+            return item;
         }
-        return type;
+        throw `missing type in type array`;
     }
 
     static getColumnNames(fieldName: string, fieldType: FieldType) : string [] {
-        const result: string[]  = [];
-        const type              = App.getFieldType(fieldType);
-        const typeName          = App.getTypeName(type);
+        const result:   string[]    = [];
+        const type:     DataType    = App.getFieldType(fieldType);
+        const typeName: TypeName    = App.getTypeName(type);
         switch (typeName) {
             case "string":
             case "integer":

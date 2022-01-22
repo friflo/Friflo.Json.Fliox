@@ -1026,15 +1026,14 @@ class App {
         return fieldType.type;
     }
     static getTypeName(type) {
-        if (Array.isArray(type)) {
-            for (const item of type) {
-                if (item == "null")
-                    continue;
-                return item;
-            }
-            throw `missing type in type array`;
+        if (!Array.isArray(type))
+            return type;
+        for (const item of type) {
+            if (item == "null")
+                continue;
+            return item;
         }
-        return type;
+        throw `missing type in type array`;
     }
     static getColumnNames(fieldName, fieldType) {
         const result = [];
