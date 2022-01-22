@@ -998,20 +998,58 @@ class App {
             this.selectedEntities[id].classList.add("selected");
         }
     }
+    getColumnNames(fieldName, fieldType) {
+        const result = [];
+        const type = fieldType.type;
+        let nonNull = type;
+        if (Array.isArray(type)) {
+            for (const item of type) {
+                if (item == "null")
+                    continue;
+                nonNull = item;
+            }
+        }
+        switch (nonNull) {
+            case "string":
+            case "integer":
+            case "number":
+            case "boolean":
+                result.push(fieldName);
+                break;
+        }
+        return result;
+    }
     createExplorerHead(entityType) {
         const keyName = this.getEntityKeyName(entityType);
+        this.entityFields = {};
+        if (entityType) {
+            let index = 0;
+            const properties = entityType.properties;
+            for (const fieldName in properties) {
+                const fieldType = properties[fieldName];
+                const columns = this.getColumnNames(fieldName, fieldType);
+                for (const column of columns) {
+                    this.entityFields[column] = index++;
+                }
+            }
+        }
+        else {
+            this.entityFields[keyName] = 0;
+        }
         const head = createEl('tr');
         // cell: checkbox
         const thCheckbox = createEl('th');
         const thCheckboxDiv = createEl('div');
         thCheckbox.append(thCheckboxDiv);
         head.append(thCheckbox);
-        // cell: id
-        const thId = createEl('th');
-        const thIdDiv = createEl('div');
-        thIdDiv.innerText = keyName;
-        thId.append(thIdDiv);
-        head.append(thId);
+        // cell: fields (id, ...)
+        for (const fieldName in this.entityFields) {
+            const thId = createEl('th');
+            const thIdDiv = createEl('div');
+            thIdDiv.innerText = fieldName;
+            thId.append(thIdDiv);
+            head.append(thId);
+        }
         // cell: last
         const thLast = createEl('th');
         head.append(thLast);
@@ -1026,16 +1064,21 @@ class App {
                 continue;
             const row = createEl('tr');
             this.explorerEntities[id] = row;
-            const td0 = createEl('td');
+            // cell: checkbox
+            const tdCheckbox = createEl('td');
             const checked = createEl('input');
             checked.type = "checkbox";
             checked.checked = true;
-            td0.append(checked);
-            row.append(td0);
-            const td1 = createEl('td');
-            td1.innerText = String(id);
-            row.append(td1);
-            table.append(row);
+            tdCheckbox.append(checked);
+            row.append(tdCheckbox);
+            // cell: fields
+            for (const fieldName in this.entityFields) {
+                const value = entity[fieldName];
+                const tdField = createEl('td');
+                tdField.innerText = String(value);
+                row.append(tdField);
+                table.append(row);
+            }
         }
     }
     removeExplorerIds(ids) {
