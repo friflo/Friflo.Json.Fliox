@@ -943,8 +943,9 @@ class App {
             entityExplorer.innerHTML = this.errorAsHtml(error, p);
             return;
         }
-        let content = await response.json();
-        const ids = content.map(entity => entity.id);
+        const keyName = this.getEntityKeyName(p.database, p.container);
+        let entities = await response.json();
+        // const ids            = entities.map(entity => entity[keyName]) as string[];
         const ulIds = createEl('table');
         const head = createEl('tr');
         // cell: checkbox
@@ -974,7 +975,7 @@ class App {
         };
         this.explorerEntities = {};
         this.selectedEntities = {};
-        this.addExplorerIds(ulIds, ids);
+        this.addExplorerEntities(ulIds, entities, keyName);
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
@@ -1011,8 +1012,10 @@ class App {
             this.selectedEntities[id].classList.add("selected");
         }
     }
-    addExplorerIds(ulIds, ids) {
-        for (const id of ids) {
+    addExplorerEntities(ulIds, entities, keyName) {
+        console.log("entities", entities);
+        for (const entity of entities) {
+            const id = entity[keyName];
             if (this.explorerEntities[id])
                 continue;
             const row = createEl('tr');
@@ -1150,27 +1153,22 @@ class App {
         const database = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let id = null;
-        let ids;
+        let entities;
+        const keyName = this.getEntityKeyName(database, container);
         try {
-            const keyName = this.getEntityKeyName(database, container);
             const value = JSON.parse(jsonValue);
             if (Array.isArray(value)) {
-                ids = [];
-                for (const item of value) {
-                    const itemId = item[keyName];
-                    ids.push(itemId);
-                }
+                entities = value;
             }
             else {
-                id = value[keyName];
-                ids = [id];
+                entities = [value];
             }
         }
         catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
+        const ids = entities.map(entity => entity[keyName]);
         writeResult.innerHTML = 'save <span class="spinner"></span>';
         const response = await this.restRequest("PUT", jsonValue, database, container, ids, null);
         if (!response.ok) {
@@ -1185,7 +1183,7 @@ class App {
             const entityLink = this.getEntitiesLink(database, container, ids);
             entityIdsEl.innerHTML = entityLink + this.getEntitiesReload(database, container, ids);
             const ulIds = entityExplorer.querySelector("table");
-            this.addExplorerIds(ulIds, ids);
+            this.addExplorerEntities(ulIds, entities, keyName);
             let liIds = this.findContainerEntities(ids);
             this.setSelectedEntities(ids);
             liIds[ids[0]].scrollIntoView();

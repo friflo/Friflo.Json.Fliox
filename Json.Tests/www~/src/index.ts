@@ -85,6 +85,7 @@ const defaultConfig = {
 type Config     = typeof defaultConfig
 type ConfigKey  = keyof Config;
 
+type Entity = { [key: string] : any };
 // --------------------------------------- WebSocket ---------------------------------------
 let connection:         WebSocket;
 let websocketCount      = 0;
@@ -1074,8 +1075,9 @@ class App {
             entityExplorer.innerHTML = this.errorAsHtml(error, p);
             return;
         }
-        let     content         = await response.json() as { id: string | number }[];
-        const   ids             = content.map(entity => entity.id);
+        const   keyName         =  this.getEntityKeyName(p.database, p.container);
+        let     entities        = await response.json() as Entity[];
+        // const ids            = entities.map(entity => entity[keyName]) as string[];
         const   ulIds           = createEl('table');
         const   head            = createEl('tr');
         // cell: checkbox
@@ -1092,7 +1094,7 @@ class App {
         // cell: last
         const   thLast          = createEl('th');
         head.append(thLast);
-        
+
         ulIds.append(head);
         ulIds.classList.value   = "entities"
         ulIds.onclick = (ev) => {
@@ -1106,7 +1108,7 @@ class App {
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
-        this.addExplorerIds(ulIds, ids)
+        this.addExplorerEntities(ulIds, entities, keyName)
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
@@ -1148,8 +1150,10 @@ class App {
     selectedEntities: { [key: string] : HTMLTableRowElement } = {};
     explorerEntities: { [key: string] : HTMLTableRowElement } = {};
 
-    addExplorerIds(ulIds : HTMLTableElement, ids: (string | number)[]) {
-        for (const id of ids) {
+    addExplorerEntities(ulIds : HTMLTableElement, entities: Entity[], keyName: string) {
+        console.log("entities", entities);
+        for (const entity of entities) {
+            const id = entity[keyName];
             if (this.explorerEntities[id])
                 continue;
             const row = createEl('tr');
@@ -1311,25 +1315,21 @@ class App {
         const database  = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let id: string  = null;
-        let ids: string[];
+
+        let entities:   Entity[];
+        const keyName = this.getEntityKeyName(database, container);
         try {
-            const keyName = this.getEntityKeyName(database, container);
-            const value = JSON.parse(jsonValue) as any | [];
+            const value = JSON.parse(jsonValue) as Entity | Entity[];
             if (Array.isArray(value)) {
-                ids = [];
-                for (const item of value) {
-                    const itemId = item[keyName];
-                    ids.push(itemId);
-                }
+                entities = value;
             } else {
-                id = value[keyName];
-                ids = [id];
+                entities = [value]
             }
         } catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
+        const ids = entities.map(entity => entity[keyName]) as string[];
         writeResult.innerHTML = 'save <span class="spinner"></span>';
 
         const response = await this.restRequest("PUT", jsonValue, database, container, ids, null);
@@ -1347,7 +1347,7 @@ class App {
             entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
 
             const ulIds= entityExplorer.querySelector("table");
-            this.addExplorerIds(ulIds, ids);
+            this.addExplorerEntities(ulIds, entities, keyName);
             let liIds = this.findContainerEntities(ids);
 
             this.setSelectedEntities(ids);
