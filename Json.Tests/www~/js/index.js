@@ -674,9 +674,19 @@ class App {
         for (const propertyName in node) {
             if (propertyName == "_resolvedDef")
                 continue;
-            // if (propertyName == "employees") debugger;
+            // if (propertyName == "dateTimeNull") debugger;
             const property = node[propertyName];
-            this.resolveNodeRefs(jsonSchemas, schema, property);
+            const oneOf = property.oneOf;
+            if (!oneOf) {
+                this.resolveNodeRefs(jsonSchemas, schema, property); // todo fix cast
+            }
+            else {
+                for (const oneOfType of oneOf) {
+                    if (oneOfType.type == "null")
+                        continue;
+                    this.resolveNodeRefs(jsonSchemas, schema, oneOfType); // todo fix cast
+                }
+            }
         }
     }
     // add a "fileMatch" property to all container entity type schemas used for editor validation
@@ -998,9 +1008,22 @@ class App {
             this.selectedEntities[id].classList.add("selected");
         }
     }
-    getColumnNames(fieldName, fieldType) {
+    static getFieldTypeName(fieldType) {
+        const ref = fieldType._resolvedDef;
+        if (ref)
+            return ref.type;
+        const oneOf = fieldType.oneOf;
+        if (!oneOf)
+            return fieldType.type;
+        for (const oneOfType of oneOf) {
+            if (oneOfType.type == "null")
+                continue;
+            return App.getFieldTypeName(oneOfType);
+        }
+    }
+    static getColumnNames(fieldName, fieldType) {
         const result = [];
-        const type = fieldType.type;
+        const type = App.getFieldTypeName(fieldType);
         let nonNull = type;
         if (Array.isArray(type)) {
             for (const item of type) {
@@ -1027,7 +1050,7 @@ class App {
             const properties = entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
-                const columns = this.getColumnNames(fieldName, fieldType);
+                const columns = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
                     this.entityFields[column] = index++;
                 }

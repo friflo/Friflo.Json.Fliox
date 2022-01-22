@@ -771,9 +771,18 @@ class App {
         for (const propertyName in node) {
             if (propertyName == "_resolvedDef")
                 continue;
-            // if (propertyName == "employees") debugger;
-            const property = (node as any)[propertyName];
-            this.resolveNodeRefs(jsonSchemas, schema, property);
+            // if (propertyName == "dateTimeNull") debugger;
+            const property  = (node as any)[propertyName] as FieldType;
+            const oneOf     = property.oneOf;
+            if (!oneOf) {
+                this.resolveNodeRefs(jsonSchemas, schema, property as JsonSchema); // todo fix cast
+            } else {
+                for (const oneOfType of oneOf) {
+                    if (oneOfType.type == "null")
+                        continue;
+                    this.resolveNodeRefs(jsonSchemas, schema, oneOfType as JsonSchema); // todo fix cast
+                }
+            }            
         }
     }
 
@@ -1136,10 +1145,24 @@ class App {
     selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
     explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
-    getColumnNames(fieldName: string, fieldType: FieldType) : string [] {
-        const   result: string[]  = [];
-        const   type              = fieldType.type;
-        let     nonNull           = type;
+    static getFieldTypeName(fieldType: FieldType) : any {
+        const   ref = fieldType._resolvedDef;
+        if (ref)
+            return ref.type;
+        const oneOf = fieldType.oneOf;
+        if (!oneOf)
+            return fieldType.type;
+        for (const oneOfType of oneOf) {
+            if (oneOfType.type == "null")
+                continue;
+            return App.getFieldTypeName(oneOfType);
+        }      
+    }
+
+    static getColumnNames(fieldName: string, fieldType: FieldType) : string [] {
+        const result: string[]  = [];
+        const type              = App.getFieldTypeName(fieldType);        
+        let   nonNull           = type;
         if (Array.isArray(type)) {
             for (const item of type) {
                 if (item == "null")
@@ -1166,7 +1189,7 @@ class App {
             const properties    =  entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
-                const columns   = this.getColumnNames(fieldName, fieldType);
+                const columns   = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
                     this.entityFields[column]    = index++;
                 }
