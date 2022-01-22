@@ -1256,10 +1256,12 @@ class App {
             // cell: fields
             for (const fieldName in this.entityFields) {
                 const value         = entity[fieldName];
-                const str           = App.getFieldValue(value);
-                const subStr        = str.length > 100 ? `${str.substring(0, 100)}...` : str;
                 const tdField       = createEl('td');
-                tdField.innerText   = subStr;
+                if (value !== undefined) {
+                    const str           = App.getFieldValue(value);
+                    const subStr        = str.length > 100 ? `${str.substring(0, 100)}...` : str;
+                    tdField.innerText   = subStr;
+                }
                 row.append(tdField);
                 table.append(row);
             }
