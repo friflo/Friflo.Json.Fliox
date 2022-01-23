@@ -1458,7 +1458,7 @@ class App {
         let content     = await response.text();
 
         content                 = this.formatJson(this.config.formatEntities, content);
-        entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(p.database, p.container, p.ids);
+        entityIdsEl.innerHTML   = entityLink;
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -1471,21 +1471,22 @@ class App {
 
     getEntitiesLink (database: string, container: string, ids: string[]) {
         const containerRoute    = { database: database, container: container }
-        let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
-        if (ids.length == 1) {
-            const id = ids[0];
-            link += `<a title="open entity in new tab" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
-        }
-        else if (ids.length > 1) {
-            const idsStr = ids.join (",");
-            let idLabels: string;
-            if (ids.length <= 3) {
-                idLabels = ids.join (", ");
+        let   link   = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
+        const idsStr = ids.join (",");
+        const len    = ids.length;
+        const reload = this.getEntitiesReload(database, container, ids);
+        if (len >= 1) {
+            let getUrl: string;
+            let count = "";
+            if (len == 1) {
+                getUrl = `./rest/${database}/${container}/${ids[0]}`;
             } else {
-                idLabels = `${ids.slice(0, 3).join(", ")}, ... (${ids.length} entities)`;
+                getUrl = `./rest/${database}/${container}?ids=${idsStr}`;
+                count = ` [${len}]`;
             }
-            link += `<a title="open entity in new tab" href="./rest/${database}/${container}?ids=${idsStr}" target="_blank" rel="noopener noreferrer">${idLabels}</a>`;
+            link += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
         }
+        link += `<input class="input" style="width: 400px; text-overflow: ellipsis;" value="${idsStr}" placeholder="read entities by id">`;
         return link;
     }
 
@@ -1558,8 +1559,8 @@ class App {
         
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
-            const entityLink        = this.getEntitiesLink(database, container, ids);
-            entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
+            entityIdsEl.innerHTML        = this.getEntitiesLink(database, container, ids);
+            // entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
 
             let liIds = this.findContainerEntities(ids);
 

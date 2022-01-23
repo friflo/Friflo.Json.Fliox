@@ -141,7 +141,7 @@
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     28px 28px 20px 1fr;
+            grid-template-rows:     28px 28px 22px 1fr;
             grid-gap:   0px;
         }
 
@@ -248,11 +248,11 @@
         .applyFilter:hover  { background-color: var(--tab-hover); }
         .applyFilter:active { background-color: var(--background3); font-size: 10px; box-shadow: inset 1px 1px 1px #00000010; }
 
-        .filter         { height: 18px; font-size: var(--mono-size); color: var(--color); font-family: var(--mono-font); width:100%; 
+        .input          { height: 18px; font-size: var(--mono-size); color: var(--color); font-family: var(--mono-font); 
                           background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
-        .filter:hover   { background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid var(--tab-border); }
-        .filter:focus   { background-color: var(--background2);  outline: none !important;              border: 0.5px solid #88888800;}
-        .filter::placeholder { opacity: 0.3; color: var(--color); font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+        .input:hover    { background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid var(--tab-border); }
+        .input:focus    { background-color: var(--background2);  outline: none !important;              border: 0.5px solid #88888800;       }
+        .input::placeholder { opacity: 0.3; color: var(--color); font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
 
 
         .caret                      { display: inline-block; width: 12px; height: 12px; cursor: default; text-align: center; font-size: 10px;}
@@ -488,8 +488,8 @@
       </div>
     </div>
     <div style="grid-area: ex-filter-input; display: flex;">
-      <input id="entityFilter" style="visibility: hidden;" title="entity filter" class="filter" type="text" spellcheck="false" placeholder="lambda expression predicate ⊂ LINQ where"
-        onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
+      <input id="entityFilter" style="visibility: hidden; width: 100%;" title="entity filter" class="input" type="text" spellcheck="false"
+             placeholder="lambda expression predicate ⊂ LINQ where" onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
     </div>
 
     <!-- ------- schema link, entity command/type ------- -->
