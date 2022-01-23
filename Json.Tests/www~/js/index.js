@@ -974,7 +974,7 @@ class App {
         ulIds.classList.value = "entities";
         ulIds.onclick = (ev) => {
             const path = ev.composedPath();
-            const selectedIds = this.getSelectionFromPath(path);
+            const selectedIds = this.getSelectionFromPath(path, ev.ctrlKey);
             if (selectedIds === null)
                 return;
             this.setSelectedEntities(selectedIds);
@@ -988,15 +988,25 @@ class App {
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
-    getSelectionFromPath(path) {
+    getSelectionFromPath(path, toggleSelection) {
         // in case of a multiline text selection selectedElement is the parent
         const td = path[0];
         if (td.tagName != "TD")
             return null;
         const children = path[1].children; // tr children
         const id = children[1].innerText;
+        const selectedIds = Object.keys(this.selectedEntities);
         if (td == children[0]) {
-            const selectedIds = Object.keys(this.selectedEntities);
+            const index = selectedIds.indexOf(id);
+            if (index == -1) {
+                selectedIds.push(id);
+            }
+            else {
+                selectedIds.splice(index, 1);
+            }
+            return selectedIds;
+        }
+        if (toggleSelection) {
             const index = selectedIds.indexOf(id);
             if (index == -1) {
                 selectedIds.push(id);
