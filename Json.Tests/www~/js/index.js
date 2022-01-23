@@ -1180,14 +1180,11 @@ class App {
             for (const fieldName in entityFields) {
                 const value = entity[fieldName];
                 const tdField = tds[tdIndex++];
-                if (value !== undefined) {
-                    const str = App.getFieldValue(value);
-                    // const subStr     = str.length > 100 ? `${str.substring(0, 100)}...` : str;
-                    tdField.innerText = str;
-                    // measure text width is expensive => measure only the first 20 rows
-                    if (entityCount < 20) {
-                        App.calcColumnWidth(entityFields[fieldName], str);
-                    }
+                const str = value === undefined ? "" : App.getFieldValue(value);
+                tdField.innerText = str;
+                // measure text width is expensive => measure only the first 20 rows
+                if (entityCount < 20) {
+                    App.calcColumnWidth(entityFields[fieldName], str);
                 }
             }
             entityCount++;
