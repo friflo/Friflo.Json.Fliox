@@ -1127,7 +1127,7 @@ class App {
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
-        this.addExplorerEntities(ulIds, entities, entityType);
+        this.updateExplorerEntities(ulIds, entities, entityType);
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
@@ -1311,40 +1311,55 @@ class App {
     }
 
 
-    addExplorerEntities(table : HTMLTableElement, entities: Entity[], entityType: JsonType) {
-        let entityCount = 0;
-        const keyName = App.getEntityKeyName(entityType);
+    updateExplorerEntities(table : HTMLTableElement, entities: Entity[], entityType: JsonType) {
+        let entityCount     = 0;
+        const keyName       = App.getEntityKeyName(entityType);
+        const entityFields  = this.entityFields;
+        const tds           = [] as HTMLTableCellElement[];
         // console.log("entities", entities);
         for (const entity of entities) {
-            const id = entity[keyName];
-            if (this.explorerEntities[id])
-                continue;
-            const row = createEl('tr');
-            this.explorerEntities[id] = row;
+            tds.length = 0;
+            const id    = entity[keyName];
+            let   row   = this.explorerEntities[id];
+            if (!row) {
+                row = createEl('tr');
+                this.explorerEntities[id] = row;
 
-            // cell: checkbox
-            const tdCheckbox = createEl('td');
-            const checked = createEl('input');
-            checked.type = "checkbox";
-            checked.checked = true;
-            tdCheckbox.append(checked);
-            row.append(tdCheckbox);
+                // cell: add checkbox
+                const tdCheckbox = createEl('td');
+                const checked = createEl('input');
+                checked.type = "checkbox";
+                checked.checked = true;
+                tdCheckbox.append(checked);
+                row.append(tdCheckbox);
+                tds.push(tdCheckbox);
 
-            // cell: fields
-            for (const fieldName in this.entityFields) {
+                // cell: add fields
+                for (const _ in entityFields) {
+                    const tdField = createEl('td');
+                    row.append(tdField);
+                    tds.push(tdField);
+                }
+                table.append(row);
+            } else {
+                for (const td of row.childNodes) {
+                    tds.push(td as HTMLTableCellElement);
+                }            
+            }
+            // cell: set fields
+            let tdIndex = 1;
+            for (const fieldName in entityFields) {
                 const value         = entity[fieldName];
-                const tdField       = createEl('td');
+                const tdField       = tds[tdIndex++];
                 if (value !== undefined) {
                     const str           = App.getFieldValue(value);
                     // const subStr     = str.length > 100 ? `${str.substring(0, 100)}...` : str;
                     tdField.innerText   = str;
                     // measure text width is expensive => measure only the first 20 rows
                     if (entityCount < 20) {
-                        App.calcColumnWidth(this.entityFields[fieldName], str);
+                        App.calcColumnWidth(entityFields[fieldName], str);
                     }
                 }
-                row.append(tdField);
-                table.append(row);
             }
             entityCount++;
         }
@@ -1540,15 +1555,15 @@ class App {
             return;
         }
         writeResult.innerHTML = "Save successful";
-        // add as HTML element to entityExplorer if new
+        // add or update explorer entities
+        const ulIds= entityExplorer.querySelector("table");
+        this.updateExplorerEntities(ulIds, entities, type);
         
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
             const entityLink        = this.getEntitiesLink(database, container, ids);
             entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
 
-            const ulIds= entityExplorer.querySelector("table");
-            this.addExplorerEntities(ulIds, entities, type);
             let liIds = this.findContainerEntities(ids);
 
             this.setSelectedEntities(ids);
