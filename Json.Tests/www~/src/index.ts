@@ -89,6 +89,26 @@ const defaultConfig = {
 type Config     = typeof defaultConfig
 type ConfigKey  = keyof Config;
 
+type Column = {
+    width:  number,
+    th?:    HTMLTableCellElement
+}
+
+function createMeasureTextWidth(width: number) : HTMLElement {
+    const div = document.createElement("div");
+    document.body.appendChild(div);
+    const style = div.style;
+    style.fontSize      = `${width}px`;
+    style.height        = "auto";
+    style.width         = "auto";
+    style.position      = "absolute";
+    style.whiteSpace    = "no-wrap";
+    style.visibility    = "hidden";
+    return div;
+}
+const measureTextWidth = createMeasureTextWidth (14);
+
+
 type Entity = { [key: string] : any };
 // --------------------------------------- WebSocket ---------------------------------------
 let connection:         WebSocket;
@@ -1107,7 +1127,8 @@ class App {
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
-        this.addExplorerEntities(ulIds, entities, entityType)
+        this.addExplorerEntities(ulIds, entities, entityType);
+        this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
@@ -1146,7 +1167,7 @@ class App {
         }
     }
 
-    entityFields:       { [key: string] : number }              = {}
+    entityFields:       { [key: string] : Column }              = {}
     selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
     explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
@@ -1197,20 +1218,19 @@ class App {
         return result;
     }
 
-    createExplorerHead (entityType: JsonType, entityFields: { [key: string] : number }) : HTMLTableRowElement {
+    createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
         const keyName       = App.getEntityKeyName(entityType);
         if (entityType) {
-            let index           = 0;
             const properties    =  entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
                 const columns   = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
-                    entityFields[column]    = index++;
+                    entityFields[column] = { width: App.defaultColumnWidth };
                 }
             }
         } else {
-            entityFields[keyName] = 0;
+            entityFields[keyName] = { width: App.defaultColumnWidth };
         }
         const   head            = createEl('tr');
 
@@ -1224,7 +1244,7 @@ class App {
         // cell: fields (id, ...)
         for (const fieldName in entityFields) {
             const th            = createEl('th');
-            th.style.width      = "100px";
+            th.style.width      = `${App.defaultColumnWidth}px`;
             const thIdDiv       = createEl('div');
             thIdDiv.innerText   = fieldName;
             th.append(thIdDiv);
@@ -1236,6 +1256,7 @@ class App {
             grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th) );
             th.appendChild(grip);
             head.append(th);
+            entityFields[fieldName].th = th;
         }
 
         // cell: last
@@ -1243,6 +1264,25 @@ class App {
         thLast.style.width      = "100%";
         head.append(thLast);
         return head;
+    }
+
+    static defaultColumnWidth = 50;
+
+    static calcColumnWidth(colum: Column, text: string) {
+        measureTextWidth.innerHTML = text;
+        let width = Math.ceil(measureTextWidth.clientWidth);
+        if (width < colum.width)
+            return;
+        if (width > 200)
+            width = 200;
+        colum.width = width;
+    }
+
+    setColumnWidths() {
+        for (const fieldName in this.entityFields) {
+            const column = this.entityFields[fieldName];
+            column.th.style.width = `${column.width + 10}px`;
+        }
     }
 
     thDrag          : HTMLElement;
@@ -1294,8 +1334,9 @@ class App {
                 const tdField       = createEl('td');
                 if (value !== undefined) {
                     const str           = App.getFieldValue(value);
-                    const subStr        = str.length > 100 ? `${str.substring(0, 100)}...` : str;
-                    tdField.innerText   = subStr;
+                    // const subStr     = str.length > 100 ? `${str.substring(0, 100)}...` : str;
+                    tdField.innerText   = str;
+                    App.calcColumnWidth(this.entityFields[fieldName], str);
                 }
                 row.append(tdField);
                 table.append(row);

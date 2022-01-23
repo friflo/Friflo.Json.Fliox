@@ -8,6 +8,19 @@ const defaultConfig = {
     showDescription: true,
     filters: {}
 };
+function createMeasureTextWidth(width) {
+    const div = document.createElement("div");
+    document.body.appendChild(div);
+    const style = div.style;
+    style.fontSize = `${width}px`;
+    style.height = "auto";
+    style.width = "auto";
+    style.position = "absolute";
+    style.whiteSpace = "no-wrap";
+    style.visibility = "hidden";
+    return div;
+}
+const measureTextWidth = createMeasureTextWidth(14);
 // --------------------------------------- WebSocket ---------------------------------------
 let connection;
 let websocketCount = 0;
@@ -971,6 +984,7 @@ class App {
         this.explorerEntities = {};
         this.selectedEntities = {};
         this.addExplorerEntities(ulIds, entities, entityType);
+        this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulIds);
     }
@@ -1053,18 +1067,17 @@ class App {
     createExplorerHead(entityType, entityFields) {
         const keyName = App.getEntityKeyName(entityType);
         if (entityType) {
-            let index = 0;
             const properties = entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
                 const columns = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
-                    entityFields[column] = index++;
+                    entityFields[column] = { width: App.defaultColumnWidth };
                 }
             }
         }
         else {
-            entityFields[keyName] = 0;
+            entityFields[keyName] = { width: App.defaultColumnWidth };
         }
         const head = createEl('tr');
         // cell: checkbox
@@ -1076,7 +1089,7 @@ class App {
         // cell: fields (id, ...)
         for (const fieldName in entityFields) {
             const th = createEl('th');
-            th.style.width = "100px";
+            th.style.width = `${App.defaultColumnWidth}px`;
             const thIdDiv = createEl('div');
             thIdDiv.innerText = fieldName;
             th.append(thIdDiv);
@@ -1088,12 +1101,28 @@ class App {
             grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th));
             th.appendChild(grip);
             head.append(th);
+            entityFields[fieldName].th = th;
         }
         // cell: last
         const thLast = createEl('th');
         thLast.style.width = "100%";
         head.append(thLast);
         return head;
+    }
+    static calcColumnWidth(colum, text) {
+        measureTextWidth.innerHTML = text;
+        let width = Math.ceil(measureTextWidth.clientWidth);
+        if (width < colum.width)
+            return;
+        if (width > 200)
+            width = 200;
+        colum.width = width;
+    }
+    setColumnWidths() {
+        for (const fieldName in this.entityFields) {
+            const column = this.entityFields[fieldName];
+            column.th.style.width = `${column.width + 10}px`;
+        }
     }
     thStartDrag(event, th) {
         this.thDragOffset = event.offsetX - event.target.clientWidth;
@@ -1135,8 +1164,9 @@ class App {
                 const tdField = createEl('td');
                 if (value !== undefined) {
                     const str = App.getFieldValue(value);
-                    const subStr = str.length > 100 ? `${str.substring(0, 100)}...` : str;
-                    tdField.innerText = subStr;
+                    // const subStr     = str.length > 100 ? `${str.substring(0, 100)}...` : str;
+                    tdField.innerText = str;
+                    App.calcColumnWidth(this.entityFields[fieldName], str);
                 }
                 row.append(tdField);
                 table.append(row);
@@ -1820,6 +1850,7 @@ class App {
     }
 }
 App.bracketValue = /\[(.*?)\]/;
+App.defaultColumnWidth = 50;
 export const app = new App();
 window.addEventListener("keydown", event => app.onKeyDown(event), true);
 window.addEventListener("keyup", event => app.onKeyUp(event), true);
