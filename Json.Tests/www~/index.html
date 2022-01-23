@@ -285,6 +285,8 @@
         .entities tr th:first-child div { border-bottom: 2px solid var(--background2); }
         .thGrip                         { top: 0; right: 0; bottom: 0; width: 7px; position: absolute; pointer-events: all;
                                           user-select: none; /* disable text selection while dragging */}
+        .entities tr:first-child:hover *{ background-color: var(--background2); }
+        .entities tr th div.thGrip:hover{ background: var(--table-bar); }
 
         .entities tr td:first-child { position: sticky; left: 0; padding-left: 0px;  }
         .entities tr td             { padding-left: 2px; overflow: hidden; height: 16px; line-height: 16px; text-overflow: ellipsis; } /* fixed height for all rows */
