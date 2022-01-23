@@ -1216,21 +1216,24 @@ class App {
 
         // cell: checkbox
         const   thCheckbox      = createEl('th');
+        thCheckbox.style.width  = "16px";
         const   thCheckboxDiv   = createEl('div');        
         thCheckbox.append(thCheckboxDiv);
         head.append(thCheckbox);
 
         // cell: fields (id, ...)
         for (const fieldName in entityFields) {
-            const thId      = createEl('th');
-            const thIdDiv   = createEl('div');
+            const th            = createEl('th');
+            th.style.width      = "100px";
+            const thIdDiv       = createEl('div');
             thIdDiv.innerText   = fieldName;
-            thId.append(thIdDiv);
-            head.append(thId);
+            th.append(thIdDiv);
+            head.append(th);
         }
 
         // cell: last
         const   thLast          = createEl('th');
+        thLast.style.width      = "100%";
         head.append(thLast);
         return head;
     }
