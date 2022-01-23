@@ -1150,10 +1150,7 @@ class App {
             }
             return selectedIds;
         }
-        if (td == children[1]) {
-            return [id];
-        }
-        return null;        
+        return [id];
     }
 
     setSelectedEntities(ids: string[]) {
