@@ -1298,7 +1298,8 @@ class App {
     }
 
     thOnDrag(event: MouseEvent) {
-        const width             = event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
+        let width             = event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
+        if (width < 20) width = 20;
         this.thDrag.style.width = `${width}px`;
         event.preventDefault();
     }
