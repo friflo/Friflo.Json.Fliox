@@ -1080,6 +1080,17 @@ class App {
             const thIdDiv = createEl('div');
             thIdDiv.innerText = fieldName;
             th.append(thIdDiv);
+            var grip = createEl('div');
+            grip.classList.add("thGrip");
+            grip.style.cursor = "ew-resize";
+            // grip.style.background   = 'red';
+            // grip.style.userSelect = "none"; // disable text selection while dragging */
+            /* grip.addEventListener('mousedown', (e) => {
+                var previous = td.previousElementSibling;
+                tdElm = previous;
+                startOffset = previous.offsetWidth - e.pageX;
+            }); */
+            th.appendChild(grip);
             head.append(th);
         }
         // cell: last
