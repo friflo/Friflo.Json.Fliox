@@ -996,17 +996,7 @@ class App {
         const children = path[1].children; // tr children
         const id = children[1].innerText;
         const selectedIds = Object.keys(this.selectedEntities);
-        if (td == children[0]) {
-            const index = selectedIds.indexOf(id);
-            if (index == -1) {
-                selectedIds.push(id);
-            }
-            else {
-                selectedIds.splice(index, 1);
-            }
-            return selectedIds;
-        }
-        if (toggleSelection) {
+        if (td == children[0] || toggleSelection) {
             const index = selectedIds.indexOf(id);
             if (index == -1) {
                 selectedIds.push(id);

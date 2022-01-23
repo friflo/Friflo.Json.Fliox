@@ -1141,18 +1141,9 @@ class App {
         const children = path[1].children; // tr children
         const id = (children[1] as HTMLElement).innerText;
         const selectedIds = Object.keys(this.selectedEntities);
-        if (td == children[0]) {        
+        if (td == children[0] || toggleSelection) {        
             const index = selectedIds.indexOf(id);
             if (index == -1) {
-                selectedIds.push(id);
-            } else {
-                selectedIds.splice(index, 1);
-            }
-            return selectedIds;
-        }
-        if (toggleSelection) {
-            const index = selectedIds.indexOf(id);
-            if (index == - 1) {
                 selectedIds.push(id);
             } else {
                 selectedIds.splice(index, 1);
