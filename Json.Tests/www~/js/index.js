@@ -956,7 +956,7 @@ class App {
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const ulIds = createEl('table');
         this.entityFields = {};
-        const head = App.createExplorerHead(entityType, this.entityFields);
+        const head = this.createExplorerHead(entityType, this.entityFields);
         ulIds.append(head);
         ulIds.classList.value = "entities";
         ulIds.onclick = (ev) => {
@@ -1050,7 +1050,7 @@ class App {
         }
         return result;
     }
-    static createExplorerHead(entityType, entityFields) {
+    createExplorerHead(entityType, entityFields) {
         const keyName = App.getEntityKeyName(entityType);
         if (entityType) {
             let index = 0;
@@ -1080,16 +1080,12 @@ class App {
             const thIdDiv = createEl('div');
             thIdDiv.innerText = fieldName;
             th.append(thIdDiv);
-            var grip = createEl('div');
+            const grip = createEl('div');
             grip.classList.add("thGrip");
             grip.style.cursor = "ew-resize";
             // grip.style.background   = 'red';
             // grip.style.userSelect = "none"; // disable text selection while dragging */
-            /* grip.addEventListener('mousedown', (e) => {
-                var previous = td.previousElementSibling;
-                tdElm = previous;
-                startOffset = previous.offsetWidth - e.pageX;
-            }); */
+            grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th));
             th.appendChild(grip);
             head.append(th);
         }
@@ -1098,6 +1094,24 @@ class App {
         thLast.style.width = "100%";
         head.append(thLast);
         return head;
+    }
+    thStartDrag(event, th) {
+        this.thDragOffset = event.offsetX - event.target.clientWidth;
+        this.thDrag = th;
+        document.body.style.cursor = "ew-resize";
+        document.body.onmousemove = (event) => app.thOnDrag(event);
+        document.body.onmouseup = () => app.thEndDrag();
+        event.preventDefault();
+    }
+    thOnDrag(event) {
+        const width = event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
+        this.thDrag.style.width = `${width}px`;
+        event.preventDefault();
+    }
+    thEndDrag() {
+        document.body.onmousemove = undefined;
+        document.body.onmouseup = undefined;
+        document.body.style.cursor = "auto";
     }
     addExplorerEntities(table, entities, entityType) {
         const keyName = App.getEntityKeyName(entityType);
@@ -1739,6 +1753,8 @@ class App {
         this.dragTemplate = el(template);
         this.dragBar = el(bar);
         document.body.style.cursor = "ew-resize";
+        document.body.onmousemove = (event) => app.onDrag(event);
+        document.body.onmouseup = () => app.endDrag();
         event.preventDefault();
     }
     getGridColumns(xy) {
@@ -1782,6 +1798,8 @@ class App {
     endDrag() {
         if (!this.dragTemplate)
             return;
+        document.body.onmousemove = undefined;
+        document.body.onmouseup = undefined;
         this.dragTemplate = undefined;
         document.body.style.cursor = "auto";
     }

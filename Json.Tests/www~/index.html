@@ -33,11 +33,6 @@
         import { app  } from  "./js/index.js";
         window.app = app;
         app.initApp();
-        window.onload = function() {
-            const body = document.body;
-            body.onmousemove = (event)  => app.onDrag(event);
-            body.onmouseup   = ()       => app.endDrag();
-        }
     </script>
     <style>
         :root {
@@ -283,7 +278,7 @@
         .entities tr th div             { height: 14px; background-color: var(--background2); border-bottom: 2px solid var(--table-bar);
                                           margin-bottom: 2px; padding-top: 4px; padding-left: 2px; }
         .entities tr th:first-child div { border-bottom: 2px solid var(--background2); }
-        .thGrip                         { top: 0; right: 0; bottom: 0; width: 7px; position: absolute; pointer-events: all;
+        .thGrip                         { top: 0; right: 0; bottom: 0; width: 6px; position: absolute; pointer-events: all;
                                           user-select: none; /* disable text selection while dragging */}
         .entities tr:first-child:hover *{ background-color: var(--background2); }
         .entities tr th div.thGrip:hover{ background: var(--table-bar); }
