@@ -1312,6 +1312,7 @@ class App {
 
 
     addExplorerEntities(table : HTMLTableElement, entities: Entity[], entityType: JsonType) {
+        let entityCount = 0;
         const keyName = App.getEntityKeyName(entityType);
         // console.log("entities", entities);
         for (const entity of entities) {
@@ -1337,11 +1338,15 @@ class App {
                     const str           = App.getFieldValue(value);
                     // const subStr     = str.length > 100 ? `${str.substring(0, 100)}...` : str;
                     tdField.innerText   = str;
-                    App.calcColumnWidth(this.entityFields[fieldName], str);
+                    // measure text width is expensive => measure only the first 20 rows
+                    if (entityCount < 20) {
+                        App.calcColumnWidth(this.entityFields[fieldName], str);
+                    }
                 }
                 row.append(tdField);
                 table.append(row);
             }
+            entityCount++;
         }
     }
 
