@@ -1,4 +1,5 @@
 {
     "id": "article-1",
-    "name": "Changed name"
+    "name": "Changed name",
+    "producer": "producer-canon"
 }
