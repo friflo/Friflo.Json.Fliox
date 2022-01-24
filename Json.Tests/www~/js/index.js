@@ -1298,7 +1298,8 @@ class App {
             }
             link += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
         }
-        link += `<input class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis;" value="${idsStr}" placeholder="read entities by id">`;
+        link += `<input id="entityIds" class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis;"
+                  value="${idsStr}" onkeyup="app.onEntityIdsKeyUp(event,'${database}','${container}')" placeholder="read entities by id">`;
         link += `<div style="width:6px"></div></div>`;
         return link;
     }
@@ -1313,6 +1314,14 @@ class App {
     getEntitiesReload(database, container, ids) {
         const p = { database, container, ids: ids };
         return `<span class="reload" title='reload entity' onclick='app.loadEntities(${JSON.stringify(p)}, true)'></span>`;
+    }
+    onEntityIdsKeyUp(event, database, container) {
+        if (event.code != 'Enter')
+            return;
+        const input = event.target;
+        const ids = input.value.split(",");
+        const p = { database, container, ids };
+        this.loadEntities(p, false, null);
     }
     clearEntity(database, container) {
         this.setExplorerEditor("entity");
