@@ -1293,7 +1293,7 @@ class App {
             len = 0;
         if (len == 0) {
             entityIdsGET.innerHTML = "";
-            entityIdsReload.innerHTML = "";
+            entityIdsReload.style.display = "none";
             return;
         }
         let getUrl;
@@ -1307,7 +1307,8 @@ class App {
         }
         entityIdsGET.href = getUrl;
         entityIdsGET.innerHTML = `GET${count}`;
-        entityIdsReload.innerHTML = this.getEntitiesReload(database, container, ids);
+        entityIdsReload.style.display = "";
+        entityIdsReload.onclick = _ => app.loadEntities({ database, container, ids }, true, null);
     }
     setEntitiesIds(database, container, ids) {
         entityIds.onkeyup = event => app.onEntityIdsKeyUp(event, database, container);
@@ -1321,10 +1322,6 @@ class App {
             <span style="color: ${color};">${statusCode} ${status}</span>
             <span>${message}</span>
         </small>`;
-    }
-    getEntitiesReload(database, container, ids) {
-        const p = { database, container, ids: ids };
-        return `<span class="reload" title='reload entity' onclick='app.loadEntities(${JSON.stringify(p)}, true)'></span>`;
     }
     onEntityIdsKeyUp(event, database, container) {
         if (event.code != 'Enter')
@@ -1394,7 +1391,6 @@ class App {
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
             this.setEntitiesIds(database, container, ids);
-            // entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
             let liIds = this.findContainerEntities(ids);
             this.setSelectedEntities(ids);
             liIds[ids[0]].scrollIntoView();
