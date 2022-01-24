@@ -419,6 +419,8 @@ class App {
         catch (error) {
             return {
                 ok: false,
+                status: 0,
+                statusText: "exception",
                 text: () => error.message,
                 json: () => { throw error.message; }
             };
@@ -1279,7 +1281,8 @@ class App {
     }
     getEntitiesLink(database, container, ids) {
         const containerRoute = { database: database, container: container };
-        let link = `<a href="#" style="opacity:0.7; margin-right:20px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
+        let link = `<div style="display: flex; height: 16px; margin-bottom: 2px;">`;
+        link += `<a href="#" style="opacity:0.7; margin-right:10px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         const idsStr = ids.join(",");
         const len = ids.length;
         const reload = this.getEntitiesReload(database, container, ids);
@@ -1295,8 +1298,17 @@ class App {
             }
             link += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
         }
-        link += `<input class="input" style="width: 400px; text-overflow: ellipsis;" value="${idsStr}" placeholder="read entities by id">`;
+        link += `<input class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis;" value="${idsStr}" placeholder="read entities by id">`;
+        link += `<div style="width:6px"></div></div>`;
         return link;
+    }
+    formatResult(action, statusCode, status, message) {
+        const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
+        return `<small>
+            <span style="opacity:0.7">${action} status:</span>
+            <span style="color: ${color};">${statusCode} ${status}</span>
+            <span>${message}</span>
+        </small>`;
     }
     getEntitiesReload(database, container, ids) {
         const p = { database, container, ids: ids };
@@ -1352,10 +1364,10 @@ class App {
         const response = await App.restRequest("PUT", jsonValue, database, container, ids, null);
         if (!response.ok) {
             const error = await response.text();
-            writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
+            writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, error);
             return;
         }
-        writeResult.innerHTML = "Save successful";
+        writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, "");
         // add or update explorer entities
         const ulIds = entityExplorer.querySelector("table");
         this.updateExplorerEntities(ulIds, entities, type);
@@ -1387,12 +1399,11 @@ class App {
         const response = await App.restRequest("DELETE", null, database, container, ids, null);
         if (!response.ok) {
             const error = await response.text();
-            writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
+            writeResult.innerHTML = this.formatResult("Delete", response.status, response.statusText, error);
         }
         else {
             this.entityIdentity.entityIds = [];
-            writeResult.innerHTML = "Delete successful";
-            entityIdsEl.innerHTML = "";
+            writeResult.innerHTML = this.formatResult("Delete", response.status, response.statusText, "");
             this.setEntityValue(database, container, "");
             this.removeExplorerIds(ids);
         }
