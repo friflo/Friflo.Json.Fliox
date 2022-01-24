@@ -1248,7 +1248,7 @@ class App {
         this.setEditorHeader("entity");
         entityType.innerHTML = this.getEntityType(p.database, p.container);
         writeResult.innerHTML = "";
-        this.setEntitiesLink(p.database, p.container, p.ids);
+        this.setEntitiesIds(p.database, p.container, p.ids);
         if (p.ids.length == 0) {
             this.setEntityValue(p.database, p.container, "");
             return;
@@ -1268,7 +1268,7 @@ class App {
         const response = await App.restRequest("GET", null, p.database, p.container, p.ids, null);
         let content = await response.text();
         content = this.formatJson(this.config.formatEntities, content);
-        this.setEntitiesLink(p.database, p.container, p.ids);
+        this.setEntitiesIds(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -1279,27 +1279,30 @@ class App {
             this.entityEditor.setSelection(selection);
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
-    setEntitiesLink(database, container, ids) {
+    createEntitiesGetAnchor(database, container, ids) {
         const containerRoute = { database: database, container: container };
         let GET = `<a href="#" style="opacity:0.7; margin-right:10px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         const idsStr = ids.join(",");
         const len = ids.length;
         const reload = this.getEntitiesReload(database, container, ids);
-        if (len >= 1) {
-            let getUrl;
-            let count = "";
-            if (len == 1) {
-                getUrl = `./rest/${database}/${container}/${ids[0]}`;
-            }
-            else {
-                getUrl = `./rest/${database}/${container}?ids=${idsStr}`;
-                count = ` [${len}]`;
-            }
-            GET += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
+        if (len == 0)
+            return GET;
+        let getUrl;
+        let count = "";
+        if (len == 1) {
+            getUrl = `./rest/${database}/${container}/${ids[0]}`;
         }
-        entityIdsGET.innerHTML = GET;
+        else {
+            getUrl = `./rest/${database}/${container}?ids=${idsStr}`;
+            count = ` [${len}]`;
+        }
+        GET += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
+        return GET;
+    }
+    setEntitiesIds(database, container, ids) {
+        entityIdsGET.innerHTML = this.createEntitiesGetAnchor(database, container, ids);
         entityIds.onkeyup = event => app.onEntityIdsKeyUp(event, database, container);
-        entityIds.value = idsStr;
+        entityIds.value = ids.join(",");
     }
     formatResult(action, statusCode, status, message) {
         const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
@@ -1331,7 +1334,7 @@ class App {
         };
         entityType.innerHTML = this.getEntityType(database, container);
         writeResult.innerHTML = "";
-        this.setEntitiesLink(database, container, []);
+        this.setEntitiesIds(database, container, []);
         this.setEntityValue(database, container, "");
     }
     getContainerSchema(database, container) {
@@ -1380,7 +1383,7 @@ class App {
         this.updateExplorerEntities(ulIds, entities, type);
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
-            this.setEntitiesLink(database, container, ids);
+            this.setEntitiesIds(database, container, ids);
             // entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
             let liIds = this.findContainerEntities(ids);
             this.setSelectedEntities(ids);
