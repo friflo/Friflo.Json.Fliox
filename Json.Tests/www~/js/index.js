@@ -400,10 +400,12 @@ class App {
         if (container)
             path = `${path}/${container}`;
         if (ids) {
-            if (ids.length == 1)
-                path = `${path}/${ids[0]}`;
-            if (ids.length > 1)
+            if (Array.isArray(ids)) {
                 path = `${path}?ids=${ids.join(',')}`;
+            }
+            else {
+                path = `${path}/${ids}`;
+            }
         }
         if (query)
             path = `${path}?${query}`;
@@ -1268,7 +1270,8 @@ class App {
             entityIds: [...p.ids]
         };
         // execute GET request
-        const response = await App.restRequest("GET", null, p.database, p.container, p.ids, null);
+        const requestIds = p.ids.length == 1 ? p.ids[0] : p.ids; // load as object if exact one id
+        const response = await App.restRequest("GET", null, p.database, p.container, requestIds, null);
         let content = await response.text();
         content = this.formatJson(this.config.formatEntities, content);
         this.setEntitiesIds(p.database, p.container, p.ids);
@@ -1371,25 +1374,21 @@ class App {
         const database = this.entityIdentity.database;
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
-        let entities;
+        let value;
         try {
-            const value = JSON.parse(jsonValue);
-            if (Array.isArray(value)) {
-                entities = value;
-            }
-            else {
-                entities = [value];
-            }
+            value = JSON.parse(jsonValue);
         }
         catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
+        const entities = Array.isArray(value) ? value : [value];
         const type = this.getContainerSchema(database, container);
         const keyName = App.getEntityKeyName(type);
         const ids = entities.map(entity => entity[keyName]);
         writeResult.innerHTML = 'save <span class="spinner"></span>';
-        const response = await App.restRequest("PUT", jsonValue, database, container, ids, null);
+        const requestIds = Array.isArray(value) ? ids : ids[0];
+        const response = await App.restRequest("PUT", jsonValue, database, container, requestIds, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, error);

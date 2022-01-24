@@ -491,18 +491,21 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    static getRestPath(database: string, container: string, ids: string[] | null, query: string) {
+    static getRestPath(database: string, container: string, ids: string | string[], query: string) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (ids) {
-            if (ids.length == 1)        path = `${path}/${ids[0]}`;
-            if (ids.length >  1)        path = `${path}?ids=${ids.join(',')}`;
+            if (Array.isArray(ids)) {
+                path = `${path}?ids=${ids.join(',')}`;
+            } else {
+                path = `${path}/${ids}`;
+            }
         }
         if (query)      path = `${path}?${query}`;
         return path;
     }
 
-    static async restRequest (method: Method, body: string, database: string, container: string, ids: string[] | null, query: string) {
+    static async restRequest (method: Method, body: string, database: string, container: string, ids: string | string[], query: string) {
         const path = App.getRestPath(database, container, ids, query);        
         const init = {        
             method:  method,
@@ -1458,10 +1461,11 @@ class App {
             entityIds:  [...p.ids]
         };
         // execute GET request
-        const response  = await App.restRequest("GET", null, p.database, p.container, p.ids, null);        
-        let content     = await response.text();
+        const requestIds    = p.ids.length == 1 ? p.ids[0] : p.ids; // load as object if exact one id
+        const response      = await App.restRequest("GET", null, p.database, p.container, requestIds, null);        
+        let content         = await response.text();
 
-        content         = this.formatJson(this.config.formatEntities, content);
+        content             = this.formatJson(this.config.formatEntities, content);
         this.setEntitiesIds(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
@@ -1570,24 +1574,20 @@ class App {
         const container = this.entityIdentity.container;
         const jsonValue = this.entityModel.getValue();
 
-        let entities:   Entity[];
+        let value:      Entity | Entity[];
         try {
-            const value = JSON.parse(jsonValue) as Entity | Entity[];
-            if (Array.isArray(value)) {
-                entities = value;
-            } else {
-                entities = [value]
-            }
+            value = JSON.parse(jsonValue) as Entity | Entity[];
         } catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
+        const entities          = Array.isArray(value) ? value : [value];
         const type              = this.getContainerSchema(database, container);
         const keyName           = App.getEntityKeyName(type);
         const ids               = entities.map(entity => entity[keyName]) as string[];
         writeResult.innerHTML   = 'save <span class="spinner"></span>';
-
-        const response = await App.restRequest("PUT", jsonValue, database, container, ids, null);
+        const requestIds        = Array.isArray(value) ? ids : ids[0];
+        const response          = await App.restRequest("PUT", jsonValue, database, container, requestIds, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, error);
