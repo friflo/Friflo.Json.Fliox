@@ -15,6 +15,7 @@ function createMeasureTextWidth(width) {
     style.fontSize = `${width}px`;
     style.height = "auto";
     style.width = "auto";
+    style.maxWidth = "1000px"; // ensure not measuring crazy long texts
     style.position = "absolute";
     style.whiteSpace = "no-wrap";
     style.visibility = "hidden";
@@ -1115,12 +1116,20 @@ class App {
         return head;
     }
     static calcColumnWidth(colum, text) {
-        measureTextWidth.innerHTML = text;
-        let width = Math.ceil(measureTextWidth.clientWidth);
-        if (width < colum.width)
-            return;
-        if (width > 200)
-            width = 200;
+        let width;
+        if (text.length > 40) {
+            // avoid measuring long texts
+            // 30 characters => 234px. Sample: "012345678901234567890123456789"
+            width = App.maxColumnWidth;
+        }
+        else {
+            measureTextWidth.innerHTML = text;
+            width = Math.ceil(measureTextWidth.clientWidth);
+            if (width < colum.width)
+                return;
+            if (width > App.maxColumnWidth)
+                width = App.maxColumnWidth;
+        }
         colum.width = width;
     }
     setColumnWidths() {
@@ -1910,6 +1919,7 @@ class App {
 }
 App.bracketValue = /\[(.*?)\]/;
 App.defaultColumnWidth = 50;
+App.maxColumnWidth = 200;
 export const app = new App();
 window.addEventListener("keydown", event => app.onKeyDown(event), true);
 window.addEventListener("keyup", event => app.onKeyUp(event), true);

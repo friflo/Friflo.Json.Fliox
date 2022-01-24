@@ -101,6 +101,7 @@ function createMeasureTextWidth(width: number) : HTMLElement {
     style.fontSize      = `${width}px`;
     style.height        = "auto";
     style.width         = "auto";
+    style.maxWidth      = "1000px"; // ensure not measuring crazy long texts
     style.position      = "absolute";
     style.whiteSpace    = "no-wrap";
     style.visibility    = "hidden";
@@ -1274,15 +1275,23 @@ class App {
         return head;
     }
 
-    static defaultColumnWidth = 50;
+    static defaultColumnWidth   = 50;
+    static maxColumnWidth       = 200;
 
     static calcColumnWidth(colum: Column, text: string) {
-        measureTextWidth.innerHTML = text;
-        let width = Math.ceil(measureTextWidth.clientWidth);
-        if (width < colum.width)
-            return;
-        if (width > 200)
-            width = 200;
+        let width: number;
+        if (text.length > 40) {
+            // avoid measuring long texts
+            // 30 characters => 234px. Sample: "012345678901234567890123456789"
+            width = App.maxColumnWidth;
+        } else {
+            measureTextWidth.innerHTML = text;
+            width = Math.ceil(measureTextWidth.clientWidth);
+            if (width < colum.width)
+                return;
+            if (width > App.maxColumnWidth)
+                width = App.maxColumnWidth;
+        }        
         colum.width = width;
     }
 
