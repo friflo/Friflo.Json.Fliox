@@ -1253,7 +1253,7 @@ class App {
         this.setEntitiesIds(p.database, p.container, p.ids);
         if (p.ids.length == 0) {
             this.setEntityValue(p.database, p.container, "");
-            return;
+            return null;
         }
         // entityIdsEl.innerHTML   = `${entityLink}<span class="spinner"></span>`;
         if (!preserveHistory) {
@@ -1273,13 +1273,14 @@ class App {
         this.setEntitiesIds(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
-            return;
+            return null;
         }
         // console.log(entityJson);
         this.setEntityValue(p.database, p.container, content);
         if (selection)
             this.entityEditor.setSelection(selection);
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
+        return content;
     }
     updateGetEntitiesAnchor() {
         // console.log("updateGetEntitiesAnchor");
@@ -1303,7 +1304,6 @@ class App {
         entityIdsGET.href = getUrl;
     }
     setEntitiesIds(database, container, ids) {
-        entityIds.onkeyup = event => app.onEntityIdsKeyUp(event, database, container);
         entityIds.value = ids.join(",");
         this.updateGetEntitiesAnchor();
     }
@@ -1315,13 +1315,32 @@ class App {
             <span>${message}</span>
         </small>`;
     }
-    onEntityIdsKeyUp(event, database, container) {
+    async loadInputEntityIds() {
+        const database = this.entityIdentity.database;
+        const container = this.entityIdentity.container;
+        const ids = entityIds.value.split(",");
+        const unchangedSelection = App.arraysEquals(this.entityIdentity.entityIds, ids);
+        const p = { database, container, ids };
+        const response = await this.loadEntities(p, false, null);
+        if (unchangedSelection)
+            return;
+        let json = JSON.parse(response);
+        if (json == null) {
+            json = [];
+        }
+        else {
+            if (!Array.isArray(json))
+                json = [json];
+        }
+        const ulIds = entityExplorer.querySelector("table");
+        const type = this.getContainerSchema(database, container);
+        this.updateExplorerEntities(ulIds, json, type);
+        this.selectEntities(database, container, ids);
+    }
+    onEntityIdsKeyUp(event) {
         if (event.code != 'Enter')
             return;
-        const input = event.target;
-        const ids = input.value.split(",");
-        const p = { database, container, ids };
-        this.loadEntities(p, false, null);
+        this.loadInputEntityIds();
     }
     clearEntity(database, container) {
         this.setExplorerEditor("entity");
@@ -1380,15 +1399,19 @@ class App {
         // add or update explorer entities
         const ulIds = entityExplorer.querySelector("table");
         this.updateExplorerEntities(ulIds, entities, type);
-        if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
-            this.entityIdentity.entityIds = ids;
-            this.setEntitiesIds(database, container, ids);
-            let liIds = this.findContainerEntities(ids);
-            this.setSelectedEntities(ids);
-            liIds[ids[0]].scrollIntoView();
-            this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
-            this.entityHistory.length = this.entityHistoryPos + 1;
-        }
+        if (App.arraysEquals(this.entityIdentity.entityIds, ids))
+            return;
+        this.selectEntities(database, container, ids);
+    }
+    selectEntities(database, container, ids) {
+        this.entityIdentity.entityIds = ids;
+        this.setEntitiesIds(database, container, ids);
+        let liIds = this.findContainerEntities(ids);
+        this.setSelectedEntities(ids);
+        const firstRow = liIds[ids[0]];
+        firstRow === null || firstRow === void 0 ? void 0 : firstRow.scrollIntoView();
+        this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
+        this.entityHistory.length = this.entityHistoryPos + 1;
     }
     static arraysEquals(left, right) {
         if (left.length != right.length)
@@ -1399,7 +1422,7 @@ class App {
         }
         return true;
     }
-    async deleteEntity() {
+    async deleteEntities() {
         const ids = this.entityIdentity.entityIds;
         const container = this.entityIdentity.container;
         const database = this.entityIdentity.database;
