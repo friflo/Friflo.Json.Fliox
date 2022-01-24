@@ -145,7 +145,9 @@ const readEntitiesDB    = el("readEntitiesDB");
 const readEntities      = el("readEntities");
 const catalogSchema     = el("catalogSchema");
 const entityType        = el("entityType");
-const entityIdsEl       = el("entityIdsEl");
+const entityIdsGET      = el("entityIdsGET");
+const entityIds         = el("entityIds") as HTMLInputElement;
+
 const entityFilter      = el("entityFilter") as HTMLInputElement;
 const filterRow         = el("filterRow");
 const commandSignature  = el("commandSignature");
@@ -1434,13 +1436,12 @@ class App {
         this.setEditorHeader("entity");
         entityType.innerHTML    = this.getEntityType  (p.database, p.container);
         writeResult.innerHTML   = "";
-        const entityLink        = this.getEntitiesLink(p.database, p.container, p.ids);
+        this.setEntitiesLink(p.database, p.container, p.ids);
         if (p.ids.length == 0) {
-            entityIdsEl.innerHTML = entityLink;
             this.setEntityValue(p.database, p.container, "");
             return;
         }
-        entityIdsEl.innerHTML   = `${entityLink}<span class="spinner"></span>`;
+        // entityIdsEl.innerHTML   = `${entityLink}<span class="spinner"></span>`;
 
         if (!preserveHistory) {
             this.storeCursor();
@@ -1457,7 +1458,7 @@ class App {
         let content     = await response.text();
 
         content                 = this.formatJson(this.config.formatEntities, content);
-        entityIdsEl.innerHTML   = entityLink;
+        this.setEntitiesLink(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
             return;
@@ -1468,10 +1469,9 @@ class App {
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
 
-    getEntitiesLink (database: string, container: string, ids: string[]) {
+    setEntitiesLink (database: string, container: string, ids: string[]) {
         const containerRoute    = { database: database, container: container }
-        let   link   = `<div style="display: flex; height: 16px; margin-bottom: 2px;">`;
-        link   += `<a href="#" style="opacity:0.7; margin-right:10px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
+        let GET   = `<a href="#" style="opacity:0.7; margin-right:10px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         const idsStr = ids.join (",");
         const len    = ids.length;
         const reload = this.getEntitiesReload(database, container, ids);
@@ -1484,12 +1484,11 @@ class App {
                 getUrl = `./rest/${database}/${container}?ids=${idsStr}`;
                 count = ` [${len}]`;
             }
-            link += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
+            GET += `<a title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"><small>GET${count}</small></a>${reload}`;
         }
-        link += `<input id="entityIds" class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis;"
-                  value="${idsStr}" onkeyup="app.onEntityIdsKeyUp(event,'${database}','${container}')" placeholder="read entities by id">`;
-        link += `<div style="width:6px"></div></div>`;
-        return link;
+        entityIdsGET.innerHTML = GET;
+        entityIds.onkeyup =  event => app.onEntityIdsKeyUp(event, database, container);
+        entityIds.value   = idsStr;
     }
 
     formatResult (action: string, statusCode: number, status: string, message: string) {
@@ -1526,7 +1525,7 @@ class App {
         };
         entityType.innerHTML    = this.getEntityType (database, container);
         writeResult.innerHTML   = "";
-        entityIdsEl.innerHTML   = this.getEntitiesLink(database, container, []);
+        this.setEntitiesLink(database, container, []);
         this.setEntityValue(database, container, "");
     }
 
@@ -1579,7 +1578,7 @@ class App {
         
         if (!App.arraysEquals(this.entityIdentity.entityIds, ids)) {
             this.entityIdentity.entityIds = ids;
-            entityIdsEl.innerHTML        = this.getEntitiesLink(database, container, ids);
+            this.setEntitiesLink(database, container, ids);
             // entityIdsEl.innerHTML   = entityLink + this.getEntitiesReload(database, container, ids);
 
             let liIds = this.findContainerEntities(ids);
