@@ -534,8 +534,11 @@
     <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
         <span id="entityHeader" style="display: none;">
             <small style="display: flex; height: 16px; margin-bottom: 2px;">
-                <span id="entityIdsGET"></span>
-                <input id="entityIds" class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis;" placeholder="read entities by id"/>
+                <span id="entityIdsContainer"></span>
+                <a id="entityIdsGET" title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer"></a>
+                <span id="entityIdsReload"></span>
+                <input id="entityIds" class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis;"
+                    onchange="app.updateGetEntitiesAnchor()" placeholder="read entities by id"/>
                 <div style="width:6px"></div>
             </small>
         </span>
