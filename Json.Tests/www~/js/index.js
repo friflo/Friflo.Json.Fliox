@@ -1318,7 +1318,7 @@ class App {
     async loadInputEntityIds() {
         const database = this.entityIdentity.database;
         const container = this.entityIdentity.container;
-        const ids = entityIds.value.split(",");
+        const ids = entityIds.value == "" ? [] : entityIds.value.split(",");
         const unchangedSelection = App.arraysEquals(this.entityIdentity.entityIds, ids);
         const p = { database, container, ids };
         const response = await this.loadEntities(p, false, null);
