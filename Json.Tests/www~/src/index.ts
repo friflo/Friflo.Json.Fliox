@@ -131,13 +131,13 @@ const hubInfoEl         = el("hubInfo");
 const responseState     = el("response-state");
 const subscriptionCount = el("subscriptionCount");
 const subscriptionSeq   = el("subscriptionSeq");
-const selectExample     = el("example") as HTMLSelectElement;
+const selectExample     = el("example")         as HTMLSelectElement;
 const socketStatus      = el("socketStatus");
 const reqIdElement      = el("req");
 const ackElement        = el("ack");
 const cltElement        = el("clt");
-const defaultUser       = el("user")  as HTMLInputElement;
-const defaultToken      = el("token") as HTMLInputElement;
+const defaultUser       = el("user")            as HTMLInputElement;
+const defaultToken      = el("token")           as HTMLInputElement;
 const catalogExplorer   = el("catalogExplorer");
 const entityExplorer    = el("entityExplorer");
 const writeResult       = el("writeResult");
@@ -147,10 +147,12 @@ const catalogSchema     = el("catalogSchema");
 const entityType        = el("entityType");
 const entityIdsContainer= el("entityIdsContainer");
 const entityIdsCount    = el("entityIdsCount");
-const entityIdsGET      = el("entityIdsGET") as HTMLAnchorElement;
-const entityIds         = el("entityIds") as HTMLInputElement;
+const entityIdsGET      = el("entityIdsGET")    as HTMLAnchorElement;
+const entityIdsInput    = el("entityIdsInput")  as HTMLInputElement;
+const entityIdsReload   = el("entityIdsReload");
 
-const entityFilter      = el("entityFilter") as HTMLInputElement;
+
+const entityFilter      = el("entityFilter")    as HTMLInputElement;
 const filterRow         = el("filterRow");
 const commandSignature  = el("commandSignature");
 const commandLink       = el("commandLink");
@@ -1472,11 +1474,9 @@ class App {
         return content;
     }
 
-    updateGetEntitiesAnchor() {
+    updateGetEntitiesAnchor(database: string, container: string) {
         // console.log("updateGetEntitiesAnchor");
-        const database          = this.entityIdentity.database;
-        const container         = this.entityIdentity.container;
-        const idsStr = entityIds.value;
+        const idsStr = entityIdsInput.value;
         const ids    = idsStr.split(",");
         let   len    = ids.length;
         if (len == 1 && ids[0] == "") len = 0;
@@ -1494,8 +1494,11 @@ class App {
     }
 
     setEntitiesIds (database: string, container: string, ids: string[]) {
-        entityIds.value         = ids.join (",");
-        this.updateGetEntitiesAnchor();
+        entityIdsReload.onclick = _ => this.loadInputEntityIds      (database, container);
+        entityIdsInput.onchange = _ => this.updateGetEntitiesAnchor (database, container);
+        entityIdsInput.onkeyup  = e => this.onEntityIdsKeyUp     (e, database, container);
+        entityIdsInput.value    = ids.join (",");
+        this.updateGetEntitiesAnchor(database, container);
     }
 
     formatResult (action: string, statusCode: number, status: string, message: string) {
@@ -1507,10 +1510,8 @@ class App {
         </small>`;
     }
 
-    async loadInputEntityIds () {
-        const database          = this.entityIdentity.database;
-        const container         = this.entityIdentity.container;
-        const ids               = entityIds.value == "" ? [] : entityIds.value.split(",")
+    async loadInputEntityIds (database: string, container: string) {
+        const ids               = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",")
         const unchangedSelection= App.arraysEquals(this.entityIdentity.entityIds, ids)
         const p: Resource       = { database, container, ids };
         const response          = await this.loadEntities(p, false, null);
@@ -1529,10 +1530,10 @@ class App {
         this.selectEntities(database, container, ids);
     }
 
-    onEntityIdsKeyUp(event: KeyboardEvent) {
+    onEntityIdsKeyUp(event: KeyboardEvent, database: string, container: string) {
         if (event.code != 'Enter')
             return;
-        this.loadInputEntityIds();
+        this.loadInputEntityIds(database, container);
     }
 
     clearEntity (database: string, container: string) {

@@ -534,12 +534,12 @@
     <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
         <span id="entityHeader" style="display: none;">
             <small style="display: flex; height: 16px; margin-bottom: 2px;">
-                <a    id="entityIdsContainer" href="#" style="opacity:0.7; margin-right:3px;"></a>
-                <span id="entityIdsCount" style="opacity:0.7; min-width: 30px;"></span>
-                <a    id="entityIdsGET" style="text-align: end;" title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer">GET</a>
-                <span class="reload" title='reload entity' onclick="app.loadInputEntityIds()"></span>
-                <input id="entityIds" class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis; font-size: 12px; font-family: unset;"
-                       onchange="app.updateGetEntitiesAnchor()" placeholder="read entities by id" onkeyup="app.onEntityIdsKeyUp(event)"/>
+                <a     id="entityIdsContainer" href="#" style="opacity:0.7; margin-right:3px;"></a>
+                <span  id="entityIdsCount"  style="opacity:0.7; min-width: 30px;"></span>
+                <a     id="entityIdsGET"    style="text-align: end;" title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer">GET</a>
+                <span  id="entityIdsReload" class="reload" title='reload entity'></span>
+                <input id="entityIdsInput"  class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis; font-size: 12px; font-family: unset;"
+                       placeholder="read entities by id"/>
                 <div style="width:6px"></div>
             </small>
         </span>

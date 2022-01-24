@@ -56,7 +56,8 @@ const entityType = el("entityType");
 const entityIdsContainer = el("entityIdsContainer");
 const entityIdsCount = el("entityIdsCount");
 const entityIdsGET = el("entityIdsGET");
-const entityIds = el("entityIds");
+const entityIdsInput = el("entityIdsInput");
+const entityIdsReload = el("entityIdsReload");
 const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
 const commandSignature = el("commandSignature");
@@ -1282,11 +1283,9 @@ class App {
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
         return content;
     }
-    updateGetEntitiesAnchor() {
+    updateGetEntitiesAnchor(database, container) {
         // console.log("updateGetEntitiesAnchor");
-        const database = this.entityIdentity.database;
-        const container = this.entityIdentity.container;
-        const idsStr = entityIds.value;
+        const idsStr = entityIdsInput.value;
         const ids = idsStr.split(",");
         let len = ids.length;
         if (len == 1 && ids[0] == "")
@@ -1304,8 +1303,11 @@ class App {
         entityIdsGET.href = getUrl;
     }
     setEntitiesIds(database, container, ids) {
-        entityIds.value = ids.join(",");
-        this.updateGetEntitiesAnchor();
+        entityIdsReload.onclick = _ => this.loadInputEntityIds(database, container);
+        entityIdsInput.onchange = _ => this.updateGetEntitiesAnchor(database, container);
+        entityIdsInput.onkeyup = e => this.onEntityIdsKeyUp(e, database, container);
+        entityIdsInput.value = ids.join(",");
+        this.updateGetEntitiesAnchor(database, container);
     }
     formatResult(action, statusCode, status, message) {
         const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
@@ -1315,10 +1317,8 @@ class App {
             <span>${message}</span>
         </small>`;
     }
-    async loadInputEntityIds() {
-        const database = this.entityIdentity.database;
-        const container = this.entityIdentity.container;
-        const ids = entityIds.value == "" ? [] : entityIds.value.split(",");
+    async loadInputEntityIds(database, container) {
+        const ids = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",");
         const unchangedSelection = App.arraysEquals(this.entityIdentity.entityIds, ids);
         const p = { database, container, ids };
         const response = await this.loadEntities(p, false, null);
@@ -1337,10 +1337,10 @@ class App {
         this.updateExplorerEntities(ulIds, json, type);
         this.selectEntities(database, container, ids);
     }
-    onEntityIdsKeyUp(event) {
+    onEntityIdsKeyUp(event, database, container) {
         if (event.code != 'Enter')
             return;
-        this.loadInputEntityIds();
+        this.loadInputEntityIds(database, container);
     }
     clearEntity(database, container) {
         this.setExplorerEditor("entity");
