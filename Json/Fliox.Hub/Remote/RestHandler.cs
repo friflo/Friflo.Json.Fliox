@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
@@ -98,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (resource.Length == 2) {
                     var idsParam = queryParams["ids"];
                     if (idsParam != null) {
-                        var ids = idsParam.Split(',');
+                        var ids = idsParam == "" ? Array.Empty<string>() : idsParam.Split(',');
                         await GetEntitiesById (context, resource[0], resource[1], ids).ConfigureAwait(false);
                         return;
                     }

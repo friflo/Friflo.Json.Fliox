@@ -1293,7 +1293,7 @@ class App {
             len = 0;
         entityIdsContainer.onclick = _ => this.loadContainer({ database: database, container: container, ids: null }, null);
         entityIdsContainer.innerText = `« ${container}`;
-        entityIdsCount.innerText = len > 1 ? `(${len})` : "";
+        entityIdsCount.innerText = len > 0 ? `(${len})` : "";
         let getUrl;
         if (len == 1) {
             getUrl = `./rest/${database}/${container}/${ids[0]}`;

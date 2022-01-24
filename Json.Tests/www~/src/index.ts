@@ -1482,7 +1482,7 @@ class App {
         if (len == 1 && ids[0] == "") len = 0;
         entityIdsContainer.onclick      = _ => this.loadContainer({ database: database, container: container, ids: null }, null);
         entityIdsContainer.innerText    = `« ${container}`;
-        entityIdsCount.innerText        = len > 1 ? `(${len})` : "";
+        entityIdsCount.innerText        = len > 0 ? `(${len})` : "";
 
         let getUrl: string;        
         if (len == 1) {
