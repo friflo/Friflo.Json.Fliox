@@ -54,8 +54,8 @@ const readEntities = el("readEntities");
 const catalogSchema = el("catalogSchema");
 const entityType = el("entityType");
 const entityIdsContainer = el("entityIdsContainer");
+const entityIdsCount = el("entityIdsCount");
 const entityIdsGET = el("entityIdsGET");
-const entityIdsReload = el("entityIdsReload");
 const entityIds = el("entityIds");
 const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
@@ -1282,15 +1282,17 @@ class App {
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
     }
     updateGetEntitiesAnchor() {
+        // console.log("updateGetEntitiesAnchor");
         const database = this.entityIdentity.database;
         const container = this.entityIdentity.container;
-        const containerRoute = { database: database, container: container };
-        entityIdsContainer.innerHTML = `<a href="#" style="opacity:0.7; margin-right:10px;" onclick='app.loadContainer(${JSON.stringify(containerRoute)})'>« ${container}</a>`;
         const idsStr = entityIds.value;
         const ids = idsStr.split(",");
         let len = ids.length;
         if (len == 1 && ids[0] == "")
             len = 0;
+        entityIdsContainer.onclick = _ => this.loadContainer({ database: database, container: container, ids: null }, null);
+        entityIdsContainer.innerText = `« ${container}`;
+        entityIdsCount.innerText = len > 1 ? `(${len})` : "";
         let getUrl;
         if (len == 1) {
             getUrl = `./rest/${database}/${container}/${ids[0]}`;
@@ -1298,10 +1300,7 @@ class App {
         else {
             getUrl = `./rest/${database}/${container}?ids=${idsStr}`;
         }
-        const count = len > 1 ? ` [${len}]` : "";
         entityIdsGET.href = getUrl;
-        entityIdsGET.innerHTML = `GET${count}`;
-        entityIdsReload.onclick = _ => app.loadEntities({ database, container, ids }, true, null);
     }
     setEntitiesIds(database, container, ids) {
         entityIds.onkeyup = event => app.onEntityIdsKeyUp(event, database, container);
