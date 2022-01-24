@@ -1291,23 +1291,16 @@ class App {
         let len = ids.length;
         if (len == 1 && ids[0] == "")
             len = 0;
-        if (len == 0) {
-            entityIdsGET.innerHTML = "";
-            entityIdsReload.style.display = "none";
-            return;
-        }
         let getUrl;
-        let count = "";
         if (len == 1) {
             getUrl = `./rest/${database}/${container}/${ids[0]}`;
         }
         else {
             getUrl = `./rest/${database}/${container}?ids=${idsStr}`;
-            count = ` [${len}]`;
         }
+        const count = len > 1 ? ` [${len}]` : "";
         entityIdsGET.href = getUrl;
         entityIdsGET.innerHTML = `GET${count}`;
-        entityIdsReload.style.display = "";
         entityIdsReload.onclick = _ => app.loadEntities({ database, container, ids }, true, null);
     }
     setEntitiesIds(database, container, ids) {
