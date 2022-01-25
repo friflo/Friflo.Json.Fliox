@@ -273,11 +273,11 @@
         .entities                       { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px; 
                                           table-layout: fixed;}        
         .entities tr th                 { text-align: left; font-weight: bold; font-size: 12px;  position: sticky; top: 0; color: #999;
-                                          margin: 0; padding: 0; pointer-events: none;  }
+                                          margin: 0; padding: 0; }
         .entities tr th:first-child     { left: 0; z-index: 1;  } /* sticky top/left cell */
         .entities tr th:last-child      { padding: 0; width: 4px; }
         .entities tr th div             { height: 14px; border-bottom: 2px solid var(--table-bar); overflow: hidden; text-overflow: ellipsis;
-                                          margin-bottom: 2px; padding-top: 4px; padding-left: 2px; }
+                                          margin-bottom: 2px; padding-top: 4px; padding-left: 2px; cursor: default; }
         .entities tr th div:first-child { background-color: var(--background2); }
 
         .entities tr th:first-child div { border-bottom: 2px solid var(--background2); }

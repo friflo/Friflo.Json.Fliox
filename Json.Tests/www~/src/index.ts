@@ -1279,10 +1279,13 @@ class App {
 
         // cell: fields (id, ...)
         for (const fieldName in entityFields) {
+            const column        = entityFields[fieldName];
             const th            = createEl('th');
             th.style.width      = `${App.defaultColumnWidth}px`;
             const thIdDiv       = createEl('div');
-            thIdDiv.innerText   = fieldName;
+            const path          = column.path;
+            thIdDiv.innerText   = path[path.length-1];
+            thIdDiv.title       = fieldName;
             th.append(thIdDiv);
             const grip          = createEl('div');
             grip.classList.add("thGrip");
@@ -1292,7 +1295,7 @@ class App {
             grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th) );
             th.appendChild(grip);
             head.append(th);
-            entityFields[fieldName].th = th;
+            column.th = th;
         }
 
         // cell: last
