@@ -22,10 +22,6 @@ declare global {
     }
 }
 
-type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
-type DataType   = TypeName | TypeName[];
-
-
 declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
     interface JsonType {
         _typeName:  string;
@@ -91,8 +87,19 @@ type ConfigKey  = keyof Config;
 
 type Column = {
     width:  number,
+    name:   string,
+    // path:   string[],
     th?:    HTMLTableCellElement
 }
+
+type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
+
+type DataType   = {
+    typeName:   TypeName,
+    jsonType?:  JsonType
+}
+
+
 
 function createMeasureTextWidth(width: number) : HTMLElement {
     const div = document.createElement("div");
@@ -1180,48 +1187,51 @@ class App {
     selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
     explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
-    static getFieldType(fieldType: FieldType) : DataType {
+    static getDataType(fieldType: FieldType) : DataType {
         const   ref = fieldType._resolvedDef;
         if (ref)
-            return ref.type as TypeName;
+            return this.getDataType(ref as {} as FieldType);
         const oneOf = fieldType.oneOf;
         if (oneOf) {
+            const jsonType = fieldType as { } as JsonType;
+            if (jsonType.discriminator) {
+                return { typeName: "object", jsonType: jsonType }
+            }            
             for (const oneOfType of oneOf) {
                 if (oneOfType.type == "null")
                     continue;
-                return App.getFieldType(oneOfType);
-            }      
-    
+                return App.getDataType(oneOfType);
+            }    
         }
-        const items = fieldType.items;
-        if (items) {
-            return App.getFieldType(items);
+        const type = fieldType.type;        
+        if (type == "array") {
+            return App.getDataType(fieldType.items);
         }
-        return fieldType.type;
-    }
-
-    static getTypeName(type: DataType) : TypeName {
         if (!Array.isArray(type))
-            return type;
+            return { typeName: fieldType.type }
         for (const item of type) {
             if (item == "null")
                 continue;
-            return item;
+            return { typeName: item }
         }
-        throw `missing type in type array`;
+        throw `missing type in type array`;      
     }
 
-    static getColumnNames(fieldName: string, fieldType: FieldType) : string [] {
-        const result:   string[]    = [];
-        const type:     DataType    = App.getFieldType(fieldType);
-        const typeName: TypeName    = App.getTypeName(type);
+    static getColumnNames(fieldName: string, fieldType: FieldType) : Column [] {
+        // if (fieldName == "rights") debugger;
+        const result:   Column[]    = [];
+        const type:     DataType    = App.getDataType(fieldType);
+        const typeName: TypeName    = type.typeName;
         switch (typeName) {
             case "string":
             case "integer":
             case "number":
             case "boolean":
+                result.push({name: fieldName, width: App.defaultColumnWidth });
+                break;
             case "object":
-                result.push(fieldName);
+            case "array":
+                result.push({name: fieldName, width: App.defaultColumnWidth });
                 break;
         }
         return result;
@@ -1235,11 +1245,11 @@ class App {
                 const fieldType = properties[fieldName];
                 const columns   = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
-                    entityFields[column] = { width: App.defaultColumnWidth };
+                    entityFields[column.name] = column;
                 }
             }
         } else {
-            entityFields[keyName] = { width: App.defaultColumnWidth };
+            entityFields[keyName] = { name: keyName, width: App.defaultColumnWidth };
         }
         const   head            = createEl('tr');
 

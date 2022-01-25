@@ -1027,45 +1027,50 @@ class App {
             this.selectedEntities[id].classList.add("selected");
         }
     }
-    static getFieldType(fieldType) {
+    static getDataType(fieldType) {
         const ref = fieldType._resolvedDef;
         if (ref)
-            return ref.type;
+            return this.getDataType(ref);
         const oneOf = fieldType.oneOf;
         if (oneOf) {
+            const jsonType = fieldType;
+            if (jsonType.discriminator) {
+                return { typeName: "object", jsonType: jsonType };
+            }
             for (const oneOfType of oneOf) {
                 if (oneOfType.type == "null")
                     continue;
-                return App.getFieldType(oneOfType);
+                return App.getDataType(oneOfType);
             }
         }
-        const items = fieldType.items;
-        if (items) {
-            return App.getFieldType(items);
+        const type = fieldType.type;
+        if (type == "array") {
+            return App.getDataType(fieldType.items);
         }
-        return fieldType.type;
-    }
-    static getTypeName(type) {
         if (!Array.isArray(type))
-            return type;
+            return { typeName: fieldType.type };
         for (const item of type) {
             if (item == "null")
                 continue;
-            return item;
+            return { typeName: item };
         }
         throw `missing type in type array`;
     }
     static getColumnNames(fieldName, fieldType) {
+        // if (fieldName == "rights") debugger;
         const result = [];
-        const type = App.getFieldType(fieldType);
-        const typeName = App.getTypeName(type);
+        const type = App.getDataType(fieldType);
+        const typeName = type.typeName;
         switch (typeName) {
             case "string":
             case "integer":
             case "number":
             case "boolean":
+                result.push({ name: fieldName, width: App.defaultColumnWidth });
+                break;
             case "object":
-                result.push(fieldName);
+            case "array":
+                result.push({ name: fieldName, width: App.defaultColumnWidth });
                 break;
         }
         return result;
@@ -1078,12 +1083,12 @@ class App {
                 const fieldType = properties[fieldName];
                 const columns = App.getColumnNames(fieldName, fieldType);
                 for (const column of columns) {
-                    entityFields[column] = { width: App.defaultColumnWidth };
+                    entityFields[column.name] = column;
                 }
             }
         }
         else {
-            entityFields[keyName] = { width: App.defaultColumnWidth };
+            entityFields[keyName] = { name: keyName, width: App.defaultColumnWidth };
         }
         const head = createEl('tr');
         // cell: checkbox
