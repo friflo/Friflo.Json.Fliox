@@ -1332,7 +1332,7 @@ class App {
         const ids = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",");
         const unchangedSelection = App.arraysEquals(this.entityIdentity.entityIds, ids);
         const p = { database, container, ids };
-        const response = await this.loadEntities(p, false, null);
+        const response = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
         let json = JSON.parse(response);
