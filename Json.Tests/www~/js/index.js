@@ -1061,7 +1061,7 @@ class App {
         throw `missing type in type array`;
     }
     static getColumnNames(columns, path, fieldType) {
-        // if (fieldName == "pocStruct") debugger;
+        // if (path[0] == "jsonSchemas") debugger;
         const type = App.getDataType(fieldType);
         const typeName = type.typeName;
         switch (typeName) {
@@ -1074,6 +1074,14 @@ class App {
                 columns.push({ name: name, path: path, width: App.defaultColumnWidth });
                 break;
             case "object":
+                const addProps = type.jsonType.additionalProperties;
+                //    isAny == true   <=>   additionalProperties == {}
+                const isAny = addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
+                if (isAny) {
+                    const name = path.join(".");
+                    columns.push({ name: name, path: path, width: App.defaultColumnWidth });
+                    break;
+                }
                 const properties = type.jsonType.properties;
                 for (const name in properties) {
                     const property = properties[name];

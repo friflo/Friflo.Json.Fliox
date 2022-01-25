@@ -1222,7 +1222,7 @@ class App {
     }
 
     static getColumnNames(columns: Column[], path: string[], fieldType: FieldType) {
-        // if (fieldName == "pocStruct") debugger;
+        // if (path[0] == "jsonSchemas") debugger;
         const type:     DataType    = App.getDataType(fieldType);
         const typeName: TypeName    = type.typeName;
         switch (typeName) {
@@ -1234,7 +1234,15 @@ class App {
                 const name = path.join(".");
                 columns.push({name: name, path: path, width: App.defaultColumnWidth });
                 break;
-            case "object":                
+            case "object":
+                const addProps = type.jsonType.additionalProperties;
+                //    isAny == true   <=>   additionalProperties == {}
+                const isAny =   addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
+                if (isAny) {
+                    const name = path.join(".");
+                    columns.push({name: name, path: path, width: App.defaultColumnWidth });
+                    break;
+                }
                 const properties = type.jsonType.properties;
                 for (const name in properties) {
                     const property  = properties[name];
