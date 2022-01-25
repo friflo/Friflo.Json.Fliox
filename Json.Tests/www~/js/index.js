@@ -1323,11 +1323,11 @@ class App {
     }
     formatResult(action, statusCode, status, message) {
         const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
-        return `<small>
+        return `<span>
             <span style="opacity:0.7">${action} status:</span>
             <span style="color: ${color};">${statusCode} ${status}</span>
             <span>${message}</span>
-        </small>`;
+        </span>`;
     }
     async loadInputEntityIds(database, container) {
         const ids = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",");

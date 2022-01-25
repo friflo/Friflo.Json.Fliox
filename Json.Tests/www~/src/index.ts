@@ -1516,11 +1516,11 @@ class App {
 
     formatResult (action: string, statusCode: number, status: string, message: string) {
         const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
-        return `<small>
+        return `<span>
             <span style="opacity:0.7">${action} status:</span>
             <span style="color: ${color};">${statusCode} ${status}</span>
             <span>${message}</span>
-        </small>`;
+        </span>`;
     }
 
     async loadInputEntityIds (database: string, container: string) {

@@ -142,7 +142,7 @@
                 "ex-result      ex-result   ex-result           ex-result           ex-result"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
             grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
-            grid-template-rows:     28px 28px 17px 16px 1fr;
+            grid-template-rows:     28px 28px 19px 14px 1fr;
             grid-gap:   0px;
         }
 
@@ -531,14 +531,14 @@
         <span id="readEntitiesDB"><span style="opacity: 0.4;">database/</span></span><span id="readEntities"><span style="opacity: 0.4;">container</span></span>
         </small>
     </div>
-    <div style="grid-area: ex-link-entity; overflow:hidden; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
+    <div style="grid-area: ex-link-entity; overflow:visible; grid-template-columns: 200px 5px 1fr; white-space:nowrap; padding-left: 2px;">
         <span id="entityHeader" style="display: none;">
-            <small style="display: flex; height: 16px; margin-bottom: 2px;">
+            <small style="display: flex; align-items: center;">
                 <a     id="entityIdsContainer" href="#" style="opacity:0.7; margin-right:3px;"></a>
                 <span  id="entityIdsCount"  style="opacity:0.7; min-width: 30px;"></span>
                 <a     id="entityIdsGET"    style="text-align: end;" title="open entity in new tab" href="${getUrl}" target="_blank" rel="noopener noreferrer">GET</a>
                 <span  id="entityIdsReload" class="reload" title='reload entity'></span>
-                <input id="entityIdsInput"  class="input" style="flex-grow: 1; height: 16px; text-overflow: ellipsis; font-size: 12px; font-family: unset;"
+                <input id="entityIdsInput"  class="input" style="flex-grow: 1; height: 16px; margin: 0; text-overflow: ellipsis; font-size: 12px; font-family: unset;"
                        placeholder="read entities by id" spellcheck="false"/>
                 <div style="width:6px"></div>
             </small>
@@ -548,7 +548,7 @@
         </span>
     </div>
     <div style="grid-area: ex-result; overflow:hidden;">
-        <small id="writeResult" style="float:right; margin-right: 10px;"></small>
+        <div id="writeResult" style="float:right; margin-right: 10px; font-size: 11px;"></div>
     </div>
 
     <!-- ------- database tree, container list, editors ------- -->
