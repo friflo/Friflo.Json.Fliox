@@ -1164,9 +1164,7 @@ class App {
         }
     }
     thStartDrag(event, th) {
-        const parent = th.parentNode.parentNode.parentNode.parentNode;
-        const scrollOffset = parent.scrollLeft;
-        this.thDragOffset = -scrollOffset + event.offsetX - event.target.clientWidth;
+        this.thDragOffset = event.offsetX - event.target.clientWidth;
         this.thDrag = th;
         document.body.style.cursor = "ew-resize";
         document.body.onmousemove = (event) => app.thOnDrag(event);
@@ -1174,9 +1172,11 @@ class App {
         event.preventDefault();
     }
     thOnDrag(event) {
-        let width = event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
-        if (width < 20)
-            width = 20;
+        const parent = this.thDrag.parentNode.parentNode.parentNode.parentNode;
+        const scrollOffset = parent.scrollLeft;
+        let width = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
+        if (width < 25)
+            width = 25;
         this.thDrag.style.width = `${width}px`;
         event.preventDefault();
     }
