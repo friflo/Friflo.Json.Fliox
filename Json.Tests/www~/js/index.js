@@ -1121,7 +1121,7 @@ class App {
             th.style.width = `${App.defaultColumnWidth}px`;
             const thIdDiv = createEl('div');
             const path = column.path;
-            thIdDiv.innerText = path[path.length - 1];
+            thIdDiv.innerText = path.length == 1 ? path[0] : `.${path[path.length - 1]}`;
             thIdDiv.title = fieldName;
             th.append(thIdDiv);
             const grip = createEl('div');
