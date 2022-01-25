@@ -1385,12 +1385,11 @@ class App {
             return String(value);
         if (Array.isArray(value)) {
             if (value.length > 0) {
-                const items = value.map(i => {
-                    const type = typeof i;
-                    if (type == "object")
-                        return Array.isArray(i) ? "[]" : "{}";
-                    return i;
-                })
+                for (const item of value) {
+                    if (typeof item == "object")
+                        return `${value.length}:[...]`;
+                }
+                const items = value.map(i => i);
                 return `${value.length}:[${items.join(", ")}]`;
             }
             return "";
