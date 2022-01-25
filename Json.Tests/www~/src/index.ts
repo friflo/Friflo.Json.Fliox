@@ -1336,7 +1336,10 @@ class App {
     thDragOffset    : number;    
 
     thStartDrag(event: MouseEvent, th: HTMLElement) {
-        this.thDragOffset           = event.offsetX - (event.target as HTMLElement).clientWidth;
+        const parent        = (th.parentNode.parentNode.parentNode.parentNode as HTMLElement);
+        const scrollOffset  = parent.scrollLeft;
+
+        this.thDragOffset           = -scrollOffset + event.offsetX - (event.target as HTMLElement).clientWidth;
         this.thDrag                 = th;
         document.body.style.cursor  = "ew-resize";
         document.body.onmousemove   = (event)  => app.thOnDrag(event);
