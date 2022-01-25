@@ -88,7 +88,7 @@ type ConfigKey  = keyof Config;
 type Column = {
     width:  number,
     name:   string,
-    // path:   string[],
+    path:   string[],
     th?:    HTMLTableCellElement
 }
 
@@ -1221,7 +1221,7 @@ class App {
         throw `missing type in type array`;      
     }
 
-    static getColumnNames(columns: Column[], fieldName: string, fieldType: FieldType) {
+    static getColumnNames(columns: Column[], path: string[], fieldType: FieldType) {
         // if (fieldName == "pocStruct") debugger;
         const type:     DataType    = App.getDataType(fieldType);
         const typeName: TypeName    = type.typeName;
@@ -1231,14 +1231,15 @@ class App {
             case "number":
             case "boolean":
             case "array":
-                columns.push({name: fieldName, width: App.defaultColumnWidth });
+                const name = path.join(".");
+                columns.push({name: name, path: path, width: App.defaultColumnWidth });
                 break;
             case "object":                
                 const properties = type.jsonType.properties;
                 for (const name in properties) {
                     const property  = properties[name];
-                    const pathName  = `${fieldName}.${name}`;
-                    this.getColumnNames(columns, pathName, property);
+                    const fieldPath = [...path, name];
+                    this.getColumnNames(columns, fieldPath, property);
                 }
                 break;
         }
@@ -1251,13 +1252,13 @@ class App {
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
                 const columns   = [] as Column[];
-                App.getColumnNames(columns, fieldName, fieldType);
+                App.getColumnNames(columns, [fieldName], fieldType);
                 for (const column of columns) {
                     entityFields[column.name] = column;
                 }
             }
         } else {
-            entityFields[keyName] = { name: keyName, width: App.defaultColumnWidth };
+            entityFields[keyName] = { name: keyName, path: [keyName], width: App.defaultColumnWidth };
         }
         const   head            = createEl('tr');
 
@@ -1384,7 +1385,18 @@ class App {
             // cell: set fields
             let tdIndex = 1;
             for (const fieldName in entityFields) {
-                const value         = entity[fieldName];
+                // if (fieldName == "derivedClassNull.derivedVal") debugger;
+                const path      = entityFields[fieldName].path;
+                let   value     = entity;
+                const pathLen   = path.length;
+                let   i         = 0
+                for (; i < pathLen; i++) {
+                    value = value[path[i]];
+                    if (value === null || value === undefined || typeof value != "object")
+                        break;
+                }
+                if (i < pathLen - 1)
+                    value = undefined;
                 const tdField       = tds[tdIndex++];
                 const str           = value === undefined ? "" : App.getFieldValue(value);
                 tdField.innerText   = str;
@@ -1410,7 +1422,7 @@ class App {
                 const items = value.map(i => i);
                 return `${value.length}:[${items.join(", ")}]`;
             }
-            return "";
+            return "0:[]";
         }
         return JSON.stringify(value); // todo show object fields in separate columns            
     }
