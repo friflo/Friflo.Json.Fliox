@@ -1205,7 +1205,11 @@ class App {
         }
         const type = fieldType.type;        
         if (type == "array") {
-            return App.getDataType(fieldType.items);
+            const itemType = App.getDataType(fieldType.items);
+            return { typeName: "array", jsonType: itemType.jsonType }
+        }
+        if (type == "object") {
+            return { typeName: "object", jsonType: fieldType as {} as JsonType }
         }
         if (!Array.isArray(type))
             return { typeName: fieldType.type }
@@ -1217,9 +1221,8 @@ class App {
         throw `missing type in type array`;      
     }
 
-    static getColumnNames(fieldName: string, fieldType: FieldType) : Column [] {
-        // if (fieldName == "rights") debugger;
-        const result:   Column[]    = [];
+    static getColumnNames(columns: Column[], fieldName: string, fieldType: FieldType) {
+        // if (fieldName == "pocStruct") debugger;
         const type:     DataType    = App.getDataType(fieldType);
         const typeName: TypeName    = type.typeName;
         switch (typeName) {
@@ -1227,14 +1230,18 @@ class App {
             case "integer":
             case "number":
             case "boolean":
-                result.push({name: fieldName, width: App.defaultColumnWidth });
-                break;
-            case "object":
             case "array":
-                result.push({name: fieldName, width: App.defaultColumnWidth });
+                columns.push({name: fieldName, width: App.defaultColumnWidth });
+                break;
+            case "object":                
+                const properties = type.jsonType.properties;
+                for (const name in properties) {
+                    const property  = properties[name];
+                    const pathName  = `${fieldName}.${name}`;
+                    this.getColumnNames(columns, pathName, property);
+                }
                 break;
         }
-        return result;
     }
 
     createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
@@ -1243,7 +1250,8 @@ class App {
             const properties    =  entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
-                const columns   = App.getColumnNames(fieldName, fieldType);
+                const columns   = [] as Column[];
+                App.getColumnNames(columns, fieldName, fieldType);
                 for (const column of columns) {
                     entityFields[column.name] = column;
                 }

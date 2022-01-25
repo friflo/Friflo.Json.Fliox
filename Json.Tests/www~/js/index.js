@@ -1045,7 +1045,11 @@ class App {
         }
         const type = fieldType.type;
         if (type == "array") {
-            return App.getDataType(fieldType.items);
+            const itemType = App.getDataType(fieldType.items);
+            return { typeName: "array", jsonType: itemType.jsonType };
+        }
+        if (type == "object") {
+            return { typeName: "object", jsonType: fieldType };
         }
         if (!Array.isArray(type))
             return { typeName: fieldType.type };
@@ -1056,9 +1060,8 @@ class App {
         }
         throw `missing type in type array`;
     }
-    static getColumnNames(fieldName, fieldType) {
-        // if (fieldName == "rights") debugger;
-        const result = [];
+    static getColumnNames(columns, fieldName, fieldType) {
+        // if (fieldName == "pocStruct") debugger;
         const type = App.getDataType(fieldType);
         const typeName = type.typeName;
         switch (typeName) {
@@ -1066,14 +1069,18 @@ class App {
             case "integer":
             case "number":
             case "boolean":
-                result.push({ name: fieldName, width: App.defaultColumnWidth });
+            case "array":
+                columns.push({ name: fieldName, width: App.defaultColumnWidth });
                 break;
             case "object":
-            case "array":
-                result.push({ name: fieldName, width: App.defaultColumnWidth });
+                const properties = type.jsonType.properties;
+                for (const name in properties) {
+                    const property = properties[name];
+                    const pathName = `${fieldName}.${name}`;
+                    this.getColumnNames(columns, pathName, property);
+                }
                 break;
         }
-        return result;
     }
     createExplorerHead(entityType, entityFields) {
         const keyName = App.getEntityKeyName(entityType);
@@ -1081,7 +1088,8 @@ class App {
             const properties = entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
-                const columns = App.getColumnNames(fieldName, fieldType);
+                const columns = [];
+                App.getColumnNames(columns, fieldName, fieldType);
                 for (const column of columns) {
                     entityFields[column.name] = column;
                 }
