@@ -1218,29 +1218,33 @@ class App {
                 }
             }
             // cell: set fields
-            let tdIndex = 1;
-            for (const fieldName in entityFields) {
-                // if (fieldName == "derivedClassNull.derivedVal") debugger;
-                const path = entityFields[fieldName].path;
-                let value = entity;
-                const pathLen = path.length;
-                let i = 0;
-                for (; i < pathLen; i++) {
-                    value = value[path[i]];
-                    if (value === null || value === undefined || typeof value != "object")
-                        break;
-                }
-                if (i < pathLen - 1)
-                    value = undefined;
-                const tdField = tds[tdIndex++];
-                const str = value === undefined ? "" : App.getFieldValue(value);
-                tdField.innerText = str;
-                // measure text width is expensive => measure only the first 20 rows
-                if (entityCount < 20) {
-                    App.calcColumnWidth(entityFields[fieldName], str);
-                }
-            }
+            const calcWidth = entityCount < 20;
+            App.assignRowCells(tds, entity, entityFields, calcWidth);
             entityCount++;
+        }
+    }
+    static assignRowCells(tds, entity, entityFields, calcWidth) {
+        let tdIndex = 1;
+        for (const fieldName in entityFields) {
+            // if (fieldName == "derivedClassNull.derivedVal") debugger;
+            const path = entityFields[fieldName].path;
+            let value = entity;
+            const pathLen = path.length;
+            let i = 0;
+            for (; i < pathLen; i++) {
+                value = value[path[i]];
+                if (value === null || value === undefined || typeof value != "object")
+                    break;
+            }
+            if (i < pathLen - 1)
+                value = undefined;
+            const tdField = tds[tdIndex++];
+            const str = value === undefined ? "" : App.getFieldValue(value);
+            tdField.innerText = str;
+            // measure text width is expensive => measure only the first 20 rows
+            if (calcWidth) {
+                App.calcColumnWidth(entityFields[fieldName], str);
+            }
         }
     }
     static getFieldValue(value) {
