@@ -1023,7 +1023,7 @@ class App {
         (_a = this.focusedCell) === null || _a === void 0 ? void 0 : _a.classList.remove("focus");
         td.classList.add("focus");
         this.focusedCell = td;
-        td.scrollIntoView();
+        td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
     explorerKeyDown(event) {
         event.preventDefault();

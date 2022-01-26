@@ -1184,7 +1184,7 @@ class App {
         this.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
         this.focusedCell = td as HTMLTableCellElement;
-        td.scrollIntoView();
+        td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     explorerKeyDown(event: KeyboardEvent) {
