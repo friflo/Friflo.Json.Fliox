@@ -1140,22 +1140,14 @@ class App {
         head.append(thLast);
         return head;
     }
-    static calcColumnWidth(colum, text) {
-        let width;
+    static calcWidth(text) {
         if (text.length > 40) {
             // avoid measuring long texts
             // 30 characters => 234px. Sample: "012345678901234567890123456789"
-            width = App.maxColumnWidth;
+            return App.maxColumnWidth;
         }
-        else {
-            measureTextWidth.innerHTML = text;
-            width = Math.ceil(measureTextWidth.clientWidth);
-            if (width < colum.width)
-                return;
-            if (width > App.maxColumnWidth)
-                width = App.maxColumnWidth;
-        }
-        colum.width = width;
+        measureTextWidth.innerHTML = text;
+        return Math.ceil(measureTextWidth.clientWidth);
     }
     setColumnWidths() {
         for (const fieldName in this.entityFields) {
@@ -1229,7 +1221,8 @@ class App {
         let tdIndex = 1;
         for (const fieldName in entityFields) {
             // if (fieldName == "derivedClassNull.derivedVal") debugger;
-            const path = entityFields[fieldName].path;
+            const column = entityFields[fieldName];
+            const path = column.path;
             let value = entity;
             const pathLen = path.length;
             let i = 0;
@@ -1241,30 +1234,48 @@ class App {
             if (i < pathLen - 1)
                 value = undefined;
             const tdField = tds[tdIndex++];
-            const str = value === undefined ? "" : App.getFieldValue(value);
-            tdField.innerText = str;
+            const content = App.getCellContent(value);
+            if (content.count === undefined) {
+                tdField.innerText = content.value;
+            }
+            else {
+                const spanCount = createEl("span");
+                spanCount.innerText = `${content.count}:`;
+                spanCount.classList.add("cellCount");
+                tdField.append(spanCount);
+                const spanValue = createEl("span");
+                spanValue.innerText = content.value;
+                tdField.append(spanValue);
+            }
             // measure text width is expensive => measure only the first 20 rows
             if (calcWidth) {
-                App.calcColumnWidth(entityFields[fieldName], str);
+                let width = App.calcWidth(content.value);
+                if (content.count)
+                    width += App.calcWidth(String(content.count));
+                if (column.width < width) {
+                    column.width = width;
+                }
             }
         }
     }
-    static getFieldValue(value) {
+    static getCellContent(value) {
+        if (value === undefined)
+            return { value: "" };
         const type = typeof value;
         if (type != "object")
-            return String(value);
+            return { value: value };
         if (Array.isArray(value)) {
             if (value.length > 0) {
                 for (const item of value) {
                     if (typeof item == "object")
-                        return `${value.length}:[...]`;
+                        return { count: value.length, value: "[...]" }; // `${value.length}:[...]`;
                 }
                 const items = value.map(i => i);
-                return `${value.length}:[${items.join(", ")}]`;
+                return { value: `[${items.join(", ")}]`, count: value.length }; // `${value.length}:[${items.join(", ")}]`;
             }
-            return "0:[]";
+            return { value: "[]", count: 0 }; // "0:[]";
         }
-        return JSON.stringify(value); // todo show object fields in separate columns            
+        return { value: JSON.stringify(value) }; // JSON.stringify(value);
     }
     removeExplorerIds(ids) {
         const selected = this.findContainerEntities(ids);
