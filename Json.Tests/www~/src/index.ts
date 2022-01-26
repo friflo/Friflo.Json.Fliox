@@ -1189,30 +1189,31 @@ class App {
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl: Element, el: Element, offsetLeft: number, offsetTop: number) {
+    static ensureVisible(containerEl: Element, el: HTMLElement, offsetLeft: number, offsetTop: number) {
         const parentEl  = containerEl.parentElement;
-        const container = containerEl.getBoundingClientRect();
-        const cell      = el.getBoundingClientRect();
+        // const parent    = parentEl.getBoundingClientRect();
+        // const container = containerEl.getBoundingClientRect();
+        // const cell      = el.getBoundingClientRect();
 
         const width     = parentEl.clientWidth;
         const height    = parentEl.clientHeight;
-        let x           = cell.x - offsetLeft - container.x;
-        let y           = cell.y - offsetTop  - container.y;
+        const x         = el.offsetLeft - offsetLeft;  // cell.x - offsetLeft - container.x;
+        const y         = el.offsetTop  - offsetTop;   // cell.y - offsetTop  - container.y;
 
         const minLeft   = parentEl.scrollLeft;
         const minTop    = parentEl.scrollTop;
-        const maxLeft   = minLeft + width  - cell.width  - offsetLeft;
-        const maxTop    = minTop  + height - cell.height - offsetTop;
+        const maxLeft   = minLeft + width  - el.clientWidth  - offsetLeft;
+        const maxTop    = minTop  + height - el.clientHeight - offsetTop;
 
         if (x < minLeft ||
             y < minTop  ||
             x > maxLeft ||
             y > maxTop)
         {
-            console.log("scrollTo")
-            var opt: ScrollToOptions = {
-                left:       Math.min (x, minLeft),
-                top:        Math.min (y, minTop),
+
+            var opt: ScrollToOptions = {                
+                left:       x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth  - width)  : Math.min (x, minLeft),
+                top:        y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop),
                 behavior:   "smooth"
             };
             parentEl.scrollTo(opt);
