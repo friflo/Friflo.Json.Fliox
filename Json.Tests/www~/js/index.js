@@ -1044,11 +1044,9 @@ class App {
             y < minTop ||
             x > maxLeft ||
             y > maxTop) {
-            var opt = {
-                left: x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth - width) : Math.min(x, minLeft),
-                top: y > maxTop ? Math.min(y, el.offsetTop + el.clientHeight - height) : Math.min(y, minTop),
-                behavior: "smooth"
-            };
+            const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth - width) : Math.min(x, minLeft);
+            const top = y > maxTop ? Math.min(y, el.offsetTop + el.clientHeight - height) : Math.min(y, minTop);
+            var opt = { left, top, behavior: "smooth" };
             parentEl.scrollTo(opt);
         }
     }

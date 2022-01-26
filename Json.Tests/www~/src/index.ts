@@ -1210,12 +1210,10 @@ class App {
             x > maxLeft ||
             y > maxTop)
         {
+            const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth  - width)  : Math.min (x, minLeft);
+            const top  = y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop);
 
-            var opt: ScrollToOptions = {                
-                left:       x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth  - width)  : Math.min (x, minLeft),
-                top:        y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop),
-                behavior:   "smooth"
-            };
+            var opt: ScrollToOptions = { left, top, behavior: "smooth" };
             parentEl.scrollTo(opt);
         }
     }
