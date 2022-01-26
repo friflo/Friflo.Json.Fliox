@@ -1184,7 +1184,26 @@ class App {
         this.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
         this.focusedCell = td as HTMLTableCellElement;
-        td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        App.ensureVisible(entityExplorer, td, 16, 22);
+    }
+
+    // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
+    static ensureVisible(containerEl: Element, el: Element, offsetLeft: number, offsetTop: number) {
+        const parentEl  = containerEl.parentElement;
+        const parent    = containerEl.getBoundingClientRect();
+        const cell      = el.getBoundingClientRect();
+        const left      = cell.x - parent.x - offsetLeft;
+        const top       = cell.y - parent.y - offsetTop;
+        
+        if (left < parentEl.scrollLeft || top < parentEl.scrollTop) {
+            var opt: ScrollToOptions = {
+                left:       Math.min(left, parentEl.scrollLeft),
+                top:        Math.min(top,  parentEl.scrollTop),
+                behavior:   "smooth"
+            };
+            parentEl.scrollTo(opt);
+        }
     }
 
     explorerKeyDown(event: KeyboardEvent) {
