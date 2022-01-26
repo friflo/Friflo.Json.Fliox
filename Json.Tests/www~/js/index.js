@@ -1030,7 +1030,38 @@ class App {
         const td = this.focusedCell;
         if (!td)
             return;
+        const table = this.explorerTable;
         switch (event.code) {
+            case 'Home':
+                if (event.ctrlKey) {
+                    this.setFocusCell(table.rows[1].cells[td.cellIndex]);
+                }
+                else {
+                    this.setFocusCell(td.parentElement.cells[1]);
+                }
+                break;
+            case 'End':
+                if (event.ctrlKey) {
+                    const rows = table.rows;
+                    this.setFocusCell(rows[rows.length - 1].cells[td.cellIndex]);
+                }
+                else {
+                    const cells = td.parentElement.cells;
+                    this.setFocusCell(cells[cells.length - 1]);
+                }
+                break;
+            case 'PageUp': {
+                const row = td.parentElement;
+                const index = Math.max(1, row.rowIndex - 2);
+                this.setFocusCell(table.rows[index].cells[td.cellIndex]);
+                break;
+            }
+            case 'PageDown': {
+                const row = td.parentElement;
+                const index = Math.min(table.rows.length - 1, row.rowIndex + 2);
+                this.setFocusCell(table.rows[index].cells[td.cellIndex]);
+                break;
+            }
             case 'ArrowUp':
                 const prevRow = td.parentElement.previousElementSibling;
                 this.setFocusCell(prevRow.cells[td.cellIndex]);
