@@ -301,7 +301,9 @@
         .entities tr.selected *                 { background-color: var(--selected-color); }
         .entities tr:hover:not(:first-child) *  { background-color: var(--item-hover); }
 
-        .cellCount                              { color: grey; }
+        .cellCount                          { color: grey; }
+        .entities tr td:hover               { outline: 1px solid lightgray; outline-offset: -1px; }
+        .entities tr td.focus               { outline: 1px solid #0000ff80; outline-offset: -1px; }
 
         .database                           { padding-left: 0px; margin-right: 0px; }
         .database li > ul                   { padding-left: 0px; margin-top: 0px; margin-left: 0px; }
@@ -564,7 +566,8 @@
     <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>
 
     <div style="grid-area: ex-container; background-color: var(--background2); overflow: auto; ">
-      <div id="entityExplorer"  style="display: block; white-space:nowrap;"></div>
+      <div id="entityExplorer"  style="display: block; white-space:nowrap; outline: 0px solid transparent;"
+           onkeydown="app.explorerKeyDown(event)" tabindex="0"></div>
     </div>
 
     <div id="exBar2" style="grid-area: ex-bar2; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>

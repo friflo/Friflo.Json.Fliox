@@ -1101,6 +1101,9 @@ class App {
         el<HTMLAnchorElement>("filterLink").href = url;
     }
 
+    explorerTable:  HTMLTableElement;
+    focusedCell?:   HTMLTableCellElement;
+
     async loadContainer (p: Resource, query: string) {
         const storedFilter = this.config.filters[p.database]?.[p.container];
         const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
@@ -1133,13 +1136,13 @@ class App {
         const   entityType  = this.getContainerSchema(p.database, p.container);
         let     entities    = await response.json() as Entity[];
         // const ids        = entities.map(entity => entity[keyName]) as string[];
-        const   ulIds       = createEl('table');
+        const   table       = this.explorerTable = createEl('table');
         this.entityFields   = {};
         const   head        = this.createExplorerHead(entityType, this.entityFields);
 
-        ulIds.append(head);
-        ulIds.classList.value   = "entities"
-        ulIds.onclick = (ev) => {
+        table.append(head);
+        table.classList.value   = "entities"
+        table.onclick = (ev) => {
             const path = ev.composedPath() as HTMLElement[];
             const selectedIds = this.getSelectionFromPath(path, ev.ctrlKey);
             if (selectedIds === null)
@@ -1150,10 +1153,10 @@ class App {
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
-        this.updateExplorerEntities(ulIds, entities, entityType);
+        this.updateExplorerEntities(entities, entityType);
         this.setColumnWidths();
         entityExplorer.innerText = "";
-        entityExplorer.appendChild(ulIds);
+        entityExplorer.appendChild(table);
     }
 
     getSelectionFromPath(path: HTMLElement[], toggleSelection: boolean) : string[] {
@@ -1161,6 +1164,7 @@ class App {
         const td = path[0];
         if (td.tagName != "TD")
             return null;
+        this.setFocusCell(td);
         const children = path[1].children; // tr children
         const id = (children[1] as HTMLElement).innerText;
         const selectedIds = Object.keys(this.selectedEntities);
@@ -1174,6 +1178,38 @@ class App {
             return selectedIds;
         }
         return [id];
+    }
+
+    setFocusCell(td: Element) {
+        this.focusedCell?.classList.remove("focus");
+        td.classList.add("focus");
+        this.focusedCell = td as HTMLTableCellElement;
+        td.scrollIntoView();
+    }
+
+    explorerKeyDown(event: KeyboardEvent) {
+        event.preventDefault();
+        const td = this.focusedCell as HTMLTableCellElement;
+        if (!td)
+            return;
+        switch (event.code) {
+            case 'ArrowUp':
+                const prevRow = td.parentElement.previousElementSibling as HTMLTableRowElement;
+                this.setFocusCell(prevRow.cells[td.cellIndex]);
+                break;
+            case 'ArrowDown':
+                const nextRow = td.parentElement.nextElementSibling as HTMLTableRowElement;
+                this.setFocusCell(nextRow.cells[td.cellIndex]);
+                break;
+            case 'ArrowLeft':
+                if (td.previousElementSibling)
+                    this.setFocusCell(td.previousElementSibling);
+                break;
+            case 'ArrowRight':
+                if (td.nextElementSibling)
+                    this.setFocusCell(td.nextElementSibling);
+                break;
+        }       
     }
 
     setSelectedEntities(ids: string[]) {
@@ -1357,7 +1393,8 @@ class App {
     }
 
 
-    updateExplorerEntities(table : HTMLTableElement, entities: Entity[], entityType: JsonType) {
+    updateExplorerEntities(entities: Entity[], entityType: JsonType) {
+        const table         = this.explorerTable;
         let entityCount     = 0;
         const keyName       = App.getEntityKeyName(entityType);
         const entityFields  = this.entityFields;
@@ -1599,9 +1636,8 @@ class App {
             if (!Array.isArray(json))
                 json = [json];
         }
-        const ulIds         = entityExplorer.querySelector("table");
         const type          = this.getContainerSchema(database, container);
-        this.updateExplorerEntities(ulIds, json, type);
+        this.updateExplorerEntities(json, type);
         this.selectEntities(database, container, ids);
     }
 
@@ -1666,8 +1702,7 @@ class App {
         }
         writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, "");
         // add or update explorer entities
-        const ulIds= entityExplorer.querySelector("table");
-        this.updateExplorerEntities(ulIds, entities, type);
+        this.updateExplorerEntities(entities, type);
         if (App.arraysEquals(this.entityIdentity.entityIds, ids))
             return;
         this.selectEntities(database, container, ids);        
