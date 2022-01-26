@@ -1164,7 +1164,7 @@ class App {
         const td = path[0];
         if (td.tagName != "TD")
             return null;
-        this.setFocusCell(td);
+        this.setFocusCell(td as HTMLTableCellElement);
         const children = path[1].children; // tr children
         const id = (children[1] as HTMLElement).innerText;
         const selectedIds = Object.keys(this.selectedEntities);
@@ -1180,16 +1180,16 @@ class App {
         return [id];
     }
 
-    setFocusCell(td: Element) {
+    setFocusCell(td: HTMLTableCellElement) {
         this.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
-        this.focusedCell = td as HTMLTableCellElement;
+        this.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22);
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl: Element, el: HTMLElement, offsetLeft: number, offsetTop: number) {
+    static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number) {
         const parentEl  = containerEl.parentElement;
         // const parent    = parentEl.getBoundingClientRect();
         // const container = containerEl.getBoundingClientRect();
@@ -1265,11 +1265,11 @@ class App {
                 break;
             case 'ArrowLeft':
                 if (td.previousElementSibling)
-                    this.setFocusCell(td.previousElementSibling);
+                    this.setFocusCell(td.previousElementSibling as HTMLTableCellElement);
                 break;
             case 'ArrowRight':
                 if (td.nextElementSibling)
-                    this.setFocusCell(td.nextElementSibling);
+                    this.setFocusCell(td.nextElementSibling as HTMLTableCellElement);
                 break;
         }       
     }
