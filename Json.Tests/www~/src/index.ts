@@ -1137,8 +1137,10 @@ class App {
         let     entities    = await response.json() as Entity[];
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const   table       = this.explorerTable = createEl('table');
+
         this.entityFields   = {};
         const   head        = this.createExplorerHead(entityType, this.entityFields);
+
 
         table.append(head);
         table.classList.value   = "entities"
@@ -1186,6 +1188,8 @@ class App {
         this.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22);
+
+
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
@@ -1213,7 +1217,7 @@ class App {
             const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth  - width)  : Math.min (x, minLeft);
             const top  = y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop);
 
-            var opt: ScrollToOptions = { left, top, behavior: "smooth" };
+            var opt: ScrollToOptions = { left, top };
             parentEl.scrollTo(opt);
         }
     }

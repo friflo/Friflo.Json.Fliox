@@ -51,7 +51,8 @@
             --background:       #f4f4f4;
             --background2:      #ffffff;    --bg-transparent:  #ffffffe8;
             --background3:      #f0f0f0;
-            --item-hover:       #e8e8e8;
+            --item-hover:       #f4f4f4;
+            --cell-hover:       #e8e8e8;
             --command-bar:      #d9d9ff;
             --link-color:       #d400b8;
             --link-deco:        #00000040;
@@ -67,7 +68,8 @@
             --background:       #000;
             --background2:      #1e1e1e;    --bg-transparent:  #000000c0;
             --background3:      #000;
-            --item-hover:       #444;
+            --item-hover:       #303030;
+            --cell-hover:       #404040;
             --command-bar:      #5f5f92;
             --link-color:       #e64bd1;
             --link-deco:        #ffffff60;
@@ -286,7 +288,7 @@
         .entities tr th div.thGrip:hover{ background: var(--background); border-right: 3px solid #3c94ed;}
 
         .entities tr td:first-child { position: sticky; left: 0; padding-left: 0px;  }
-        .entities tr td             { padding-left: 2px; overflow: hidden; height: 16px; line-height: 16px; text-overflow: ellipsis; } /* fixed height for all rows */
+        .entities tr td             { padding-left: 2px; overflow: hidden; height: 20px; line-height: 20px; text-overflow: ellipsis; } /* fixed height for all rows */
         .entities tr td input       { height: 12px; margin: 0px 2px 0 2px; vertical-align: middle;  }
         .entities tr td *           { pointer-events: none; }
         .entities tr td:nth-child(1){ width: 14px; background-color: var(--background2); padding-left: 0; padding-right: 0px; }
@@ -302,8 +304,8 @@
         .entities tr:hover:not(:first-child) *  { background-color: var(--item-hover); }
 
         .cellCount                          { color: grey; }
-        .entities tr td:hover               { outline: 1px solid lightgray; outline-offset: -1px; }
-        .entities tr td.focus               { outline: 1px solid #0000ff80; outline-offset: -1px; }
+        .entities tr td:hover               { background-color: var(--cell-hover) !important; }
+        .entities tr td.focus               { outline: 2px solid rgb(145, 145, 255); outline-offset: -2px; }
         .entities tr td                     { scroll-margin-top: 20px; scroll-margin-left: 16px; }
         
 
