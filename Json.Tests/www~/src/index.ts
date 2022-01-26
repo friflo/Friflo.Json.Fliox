@@ -1442,22 +1442,22 @@ class App {
 
     static getCellContent(value: any) : CellData {
         if (value === undefined)
-            return { value: "" };
+            return { value: "" };                                               // 
         const type = typeof value;
         if (type != "object")
-            return { value: value }
+            return { value: value }                                             // abc
         if (Array.isArray(value)) {
             if (value.length > 0) {
                 for (const item of value) {
                     if (typeof item == "object")
-                        return { count: value.length, value: "[...]"}; // `${value.length}:[...]`;
+                        return { count: value.length, value: "[...]"};          // 4:[...]
                 }
                 const items = value.map(i => i);
-                return { value: `[${items.join(", ")}]`, count: value.length}; // `${value.length}:[${items.join(", ")}]`;
+                return { value: `[${items.join(", ")}]`, count: value.length};  // 2:[abc,xyz]
             }
-            return { value: "[]", count: 0 } // "0:[]";
+            return { value: "[]", count: 0 }                                    // 0:[];
         }
-        return { value: JSON.stringify(value) }; // JSON.stringify(value);
+        return { value: JSON.stringify(value) };                                // {"foo": "bar", ... }
     }
 
     removeExplorerIds(ids: string[]) {
