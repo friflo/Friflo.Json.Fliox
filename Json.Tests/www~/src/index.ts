@@ -1191,15 +1191,28 @@ class App {
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
     static ensureVisible(containerEl: Element, el: Element, offsetLeft: number, offsetTop: number) {
         const parentEl  = containerEl.parentElement;
-        const parent    = containerEl.getBoundingClientRect();
+        const container = containerEl.getBoundingClientRect();
         const cell      = el.getBoundingClientRect();
-        const left      = cell.x - parent.x - offsetLeft;
-        const top       = cell.y - parent.y - offsetTop;
-        
-        if (left < parentEl.scrollLeft || top < parentEl.scrollTop) {
+
+        const width     = parentEl.clientWidth;
+        const height    = parentEl.clientHeight;
+        let x           = cell.x - offsetLeft - container.x;
+        let y           = cell.y - offsetTop  - container.y;
+
+        const minLeft   = parentEl.scrollLeft;
+        const minTop    = parentEl.scrollTop;
+        const maxLeft   = minLeft + width  - cell.width  - offsetLeft;
+        const maxTop    = minTop  + height - cell.height - offsetTop;
+
+        if (x < minLeft ||
+            y < minTop  ||
+            x > maxLeft ||
+            y > maxTop)
+        {
+            console.log("scrollTo")
             var opt: ScrollToOptions = {
-                left:       Math.min(left, parentEl.scrollLeft),
-                top:        Math.min(top,  parentEl.scrollTop),
+                left:       Math.min (x, minLeft),
+                top:        Math.min (y, minTop),
                 behavior:   "smooth"
             };
             parentEl.scrollTo(opt);
