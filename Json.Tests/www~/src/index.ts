@@ -1305,6 +1305,15 @@ class App {
                 this.loadEntities(params, false, null);
                 break;
             }
+            case 'KeyA': {
+                if (!event.ctrlKey)
+                    return;
+                const ids   = Object.keys(this.explorerEntities);
+                this.setSelectedEntities(ids);
+                const params: Resource = { database: explorer.database, container: explorer.container, ids };
+                this.loadEntities(params, false, null);
+                break;
+            }
             default:
                 return;
         }
