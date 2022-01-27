@@ -1028,7 +1028,7 @@ class App {
         }
         return ids;
     }
-    setFocusCell(rowIndex, cellIndex) {
+    setFocusCell(rowIndex, cellIndex, scroll = null) {
         var _a;
         const table = this.explorerTable;
         if (rowIndex < 1 || cellIndex < 1)
@@ -1044,10 +1044,10 @@ class App {
         td.classList.add("focus");
         this.explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        App.ensureVisible(entityExplorer, td, 16, 22);
+        App.ensureVisible(entityExplorer, td, 16, 22, scroll);
     }
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl, el, offsetLeft, offsetTop) {
+    static ensureVisible(containerEl, el, offsetLeft, offsetTop, scroll) {
         const parentEl = containerEl.parentElement;
         // const parent    = parentEl.getBoundingClientRect();
         // const container = containerEl.getBoundingClientRect();
@@ -1066,7 +1066,7 @@ class App {
             y > maxTop) {
             const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth - width) : Math.min(x, minLeft);
             const top = y > maxTop ? Math.min(y, el.offsetTop + el.clientHeight - height) : Math.min(y, minTop);
-            const smooth = top == parentEl.scrollTop;
+            const smooth = scroll == "smooth" || top == parentEl.scrollTop;
             var opt = { left, top, behavior: smooth ? "smooth" : undefined };
             parentEl.scrollTo(opt);
         }
@@ -1599,7 +1599,7 @@ class App {
         const firstRow = liIds[ids[0]];
         if (firstRow) {
             const columnIndex = (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1;
-            this.setFocusCell(firstRow.rowIndex, columnIndex);
+            this.setFocusCell(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
         this.entityHistory.length = this.entityHistoryPos + 1;

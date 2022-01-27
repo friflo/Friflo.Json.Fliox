@@ -1198,7 +1198,7 @@ class App {
         return ids;
     }
 
-    setFocusCell(rowIndex: number, cellIndex: number) {
+    setFocusCell(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
         const table = this.explorerTable;
         if (rowIndex < 1 || cellIndex < 1)
             return;
@@ -1215,11 +1215,11 @@ class App {
         td.classList.add("focus");
         this.explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        App.ensureVisible(entityExplorer, td, 16, 22);
+        App.ensureVisible(entityExplorer, td, 16, 22, scroll);
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number) {
+    static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number, scroll: "smooth" | null) {
         const parentEl  = containerEl.parentElement;
         // const parent    = parentEl.getBoundingClientRect();
         // const container = containerEl.getBoundingClientRect();
@@ -1243,7 +1243,7 @@ class App {
             const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth  - width)  : Math.min (x, minLeft);
             const top  = y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop);
 
-            const smooth = top == parentEl.scrollTop;
+            const smooth = scroll == "smooth" || top == parentEl.scrollTop;
             var opt: ScrollToOptions = { left, top, behavior: smooth ? "smooth" : undefined };
             parentEl.scrollTo(opt);
         }
@@ -1828,7 +1828,7 @@ class App {
         const firstRow = liIds[ids[0]];
         if (firstRow) {
             const columnIndex = this.explorer.focusedCell?.cellIndex ?? 1;
-            this.setFocusCell(firstRow.rowIndex, columnIndex);
+            this.setFocusCell(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};
         this.entityHistory.length = this.entityHistoryPos + 1;        
