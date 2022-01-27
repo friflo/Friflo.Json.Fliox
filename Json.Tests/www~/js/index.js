@@ -1138,6 +1138,12 @@ class App {
                 this.loadEntities(params, false, null);
                 break;
             }
+            case 'KeyC':
+                if (!event.ctrlKey)
+                    return;
+                const editorValue = this.entityEditor.getValue();
+                navigator.clipboard.writeText(editorValue);
+                break;
             default:
                 return;
         }
