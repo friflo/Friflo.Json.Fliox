@@ -1021,7 +1021,7 @@ class App {
         return [id];
     }
     setFocusCell(rowIndex, cellIndex) {
-        var _a;
+        var _a, _b;
         const table = this.explorerTable;
         if (rowIndex < 1 || cellIndex < 1)
             return;
@@ -1031,15 +1031,17 @@ class App {
         const row = rows[rowIndex];
         if (cellIndex >= row.cells.length)
             return;
+        const focusRow = (_a = this.focusedCell) === null || _a === void 0 ? void 0 : _a.parentElement;
+        const sameRow = (focusRow === null || focusRow === void 0 ? void 0 : focusRow.rowIndex) == rowIndex;
         const td = row.cells[cellIndex];
-        (_a = this.focusedCell) === null || _a === void 0 ? void 0 : _a.classList.remove("focus");
+        (_b = this.focusedCell) === null || _b === void 0 ? void 0 : _b.classList.remove("focus");
         td.classList.add("focus");
         this.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        App.ensureVisible(entityExplorer, td, 16, 22);
+        App.ensureVisible(entityExplorer, td, 16, 22, sameRow);
     }
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl, el, offsetLeft, offsetTop) {
+    static ensureVisible(containerEl, el, offsetLeft, offsetTop, smooth) {
         const parentEl = containerEl.parentElement;
         // const parent    = parentEl.getBoundingClientRect();
         // const container = containerEl.getBoundingClientRect();
@@ -1058,12 +1060,11 @@ class App {
             y > maxTop) {
             const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth - width) : Math.min(x, minLeft);
             const top = y > maxTop ? Math.min(y, el.offsetTop + el.clientHeight - height) : Math.min(y, minTop);
-            var opt = { left, top };
+            var opt = { left, top, behavior: smooth ? "smooth" : undefined };
             parentEl.scrollTo(opt);
         }
     }
     explorerKeyDown(event) {
-        event.preventDefault();
         const td = this.focusedCell;
         if (!td)
             return;
@@ -1104,7 +1105,10 @@ class App {
             case 'ArrowRight':
                 this.setFocusCell(row.rowIndex, td.cellIndex + 1);
                 break;
+            default:
+                return;
         }
+        event.preventDefault();
     }
     setSelectedEntities(ids) {
         for (const id in this.selectedEntities) {
