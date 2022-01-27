@@ -1166,7 +1166,9 @@ class App {
         const td = path[0];
         if (td.tagName != "TD")
             return null;
-        this.setFocusCell(td as HTMLTableCellElement);
+        const cell  = td as HTMLTableCellElement;
+        const row   = td.parentElement as HTMLTableRowElement;
+        this.setFocusCell(row.rowIndex, cell.cellIndex);
         const children = path[1].children; // tr children
         const id = (children[1] as HTMLElement).innerText;
         const selectedIds = Object.keys(this.selectedEntities);
@@ -1182,14 +1184,23 @@ class App {
         return [id];
     }
 
-    setFocusCell(td: HTMLTableCellElement) {
+    setFocusCell(rowIndex: number, cellIndex: number) {
+        const table = this.explorerTable;
+        if (rowIndex < 1 || cellIndex < 1)
+            return;
+        const rows = table.rows;
+        if (rowIndex >= rows.length)
+            return;
+        const row = rows[rowIndex];
+        if (cellIndex >= row.cells.length)
+            return;       
+        
+        const td = row.cells[cellIndex];
         this.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
         this.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22);
-
-
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
@@ -1227,51 +1238,40 @@ class App {
         const td = this.focusedCell as HTMLTableCellElement;
         if (!td)
             return;
-        const table = this.explorerTable;        
+        const table = this.explorerTable;
+        const row   = td.parentElement as HTMLTableRowElement;
         switch (event.code) {
             case 'Home':                
                 if (event.ctrlKey) {
-                    this.setFocusCell (table.rows[1].cells[td.cellIndex]);
+                    this.setFocusCell (1, td.cellIndex);
                 } else {
-                    this.setFocusCell ((td.parentElement as HTMLTableRowElement).cells[1]);
-                }                
+                    this.setFocusCell (row.rowIndex, 1);
+                }
                 break;
             case 'End':
                 if (event.ctrlKey) {
-                    const rows = table.rows;
-                    this.setFocusCell (rows[rows.length - 1].cells[td.cellIndex]);
+                    this.setFocusCell (table.rows.length - 1, td.cellIndex);
                 } else {
-                    const cells = (td.parentElement as HTMLTableRowElement).cells;
-                    this.setFocusCell (cells[cells.length - 1]);
+                    this.setFocusCell (row.rowIndex, row.cells.length - 1);
                 }                
                 break;
-            case 'PageUp': {
-                    const row = td.parentElement as HTMLTableRowElement;
-                    const index = Math.max(1, row.rowIndex - 2);
-                    this.setFocusCell(table.rows[index].cells[td.cellIndex]);
-                    break;
-                }
-            case 'PageDown': {
-                    const row = td.parentElement as HTMLTableRowElement;
-                    const index = Math.min(table.rows.length - 1, row.rowIndex + 2);
-                    this.setFocusCell(table.rows[index].cells[td.cellIndex]);
-                    break;
-                }
+            case 'PageUp':
+                this.setFocusCell(row.rowIndex - 3, td.cellIndex);
+                break;                
+            case 'PageDown':
+                this.setFocusCell(row.rowIndex + 3, td.cellIndex);
+                break;                
             case 'ArrowUp':
-                const prevRow = td.parentElement.previousElementSibling as HTMLTableRowElement;
-                this.setFocusCell(prevRow.cells[td.cellIndex]);
+                this.setFocusCell(row.rowIndex - 1, td.cellIndex);
                 break;
             case 'ArrowDown':
-                const nextRow = td.parentElement.nextElementSibling as HTMLTableRowElement;
-                this.setFocusCell(nextRow.cells[td.cellIndex]);
+                this.setFocusCell(row.rowIndex + 1, td.cellIndex);
                 break;
             case 'ArrowLeft':
-                if (td.previousElementSibling)
-                    this.setFocusCell(td.previousElementSibling as HTMLTableCellElement);
+                this.setFocusCell(row.rowIndex, td.cellIndex - 1);
                 break;
             case 'ArrowRight':
-                if (td.nextElementSibling)
-                    this.setFocusCell(td.nextElementSibling as HTMLTableCellElement);
+                this.setFocusCell(row.rowIndex, td.cellIndex + 1);
                 break;
         }       
     }
