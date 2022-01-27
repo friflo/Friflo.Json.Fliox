@@ -512,8 +512,8 @@
         <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
         <div style="width:8px;"></div>
         <span id="entityTools" style="display: contents;">
-            <button type="button" style="margin-right: 2px" onclick="app.deleteEntities()" title="Delete entity via a DELETE request">Delete</button>
-            <button type="button" style="margin-right: 4px" onclick="app.saveEntity()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
+            <button type="button" style="margin-right: 2px" onclick="app.deleteEntitiesAction()" title="Delete entity via a DELETE request">Delete</button>
+            <button type="button" style="margin-right: 4px" onclick="app.saveEntitiesAction()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
             <div title="format JSON" class="navigate verticalAlign" onclick="app.navigateEntity(app.entityHistoryPos + 1)">
                 <small style="opacity: 0.7;">{ }</small>
             </div>

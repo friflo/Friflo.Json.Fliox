@@ -393,7 +393,7 @@ class App {
             switch (event.code) {
                 case 'KeyS':
                     if (event.ctrlKey)
-                        this.execute(event, () => this.saveEntity());
+                        this.execute(event, () => this.saveEntitiesAction());
                     break;
                 case 'KeyP':
                     if (event.ctrlKey && event.altKey)
@@ -1321,7 +1321,11 @@ class App {
                 const editorValue = this.entityEditor.getValue();
                 navigator.clipboard.writeText(editorValue);
                 break;
-            
+            case 'Delete': {
+                const ids   = Object.keys(this.selectedEntities);
+                this.deleteEntities(explorer.database, explorer.container, ids);
+                break;
+            }
             default:
                 return;
         }
@@ -1804,11 +1808,14 @@ class App {
         return "id";
     }
 
-    async saveEntity () {
-        const database  = this.entityIdentity.database;
-        const container = this.entityIdentity.container;
+    async saveEntitiesAction () {
+        const ei        = this.entityIdentity;
         const jsonValue = this.entityModel.getValue();
+        await this.saveEntities(ei.database, ei.container, jsonValue);
+    }
 
+    async saveEntities (database: string, container: string, jsonValue: string)
+    {
         let value:      Entity | Entity[];
         try {
             value = JSON.parse(jsonValue) as Entity | Entity[];
@@ -1861,10 +1868,12 @@ class App {
         return true;
     }
 
-    async deleteEntities () {
-        const ids       = this.entityIdentity.entityIds;
-        const container = this.entityIdentity.container;
-        const database  = this.entityIdentity.database;
+    async deleteEntitiesAction () {
+        const ei = this.entityIdentity;
+        await this.deleteEntities (ei.database, ei.container, ei.entityIds);
+    }
+
+    async deleteEntities (database: string, container: string, ids: string[]) {
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
         const response = await App.restRequest("DELETE", null, database, container, ids, null);        
         if (!response.ok) {
