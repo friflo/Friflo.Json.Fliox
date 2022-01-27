@@ -1195,19 +1195,17 @@ class App {
         if (cellIndex >= row.cells.length)
             return;
 
-        const focusRow  = this.focusedCell?.parentElement as HTMLTableRowElement; 
-        const sameRow   = focusRow?.rowIndex == rowIndex;
         
         const td = row.cells[cellIndex];
         this.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
         this.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        App.ensureVisible(entityExplorer, td, 16, 22, sameRow);
+        App.ensureVisible(entityExplorer, td, 16, 22);
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number, smooth: boolean) {
+    static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number) {
         const parentEl  = containerEl.parentElement;
         // const parent    = parentEl.getBoundingClientRect();
         // const container = containerEl.getBoundingClientRect();
@@ -1231,6 +1229,7 @@ class App {
             const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth  - width)  : Math.min (x, minLeft);
             const top  = y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop);
 
+            const smooth = top == parentEl.scrollTop;
             var opt: ScrollToOptions = { left, top, behavior: smooth ? "smooth" : undefined };
             parentEl.scrollTo(opt);
         }
