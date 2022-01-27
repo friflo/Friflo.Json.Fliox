@@ -1584,24 +1584,25 @@ class App {
             }
             if (i < pathLen - 1)
                 value = undefined;
-            const tdField       = tds[tdIndex++];
-            const content = App.getCellContent(value);
-            if (content.count === undefined) {
-                tdField.innerText = content.value
+            const tdField   = tds[tdIndex++];
+            const content   = App.getCellContent(value);
+            const count     = content.count;
+            if (count === undefined) {
+                tdField.innerText = `${content.value} `
             } else {
                 const spanCount = createEl("span");
-                spanCount.innerText = `${content.count}:`;
+                spanCount.innerText = count == 0 ? '0' : `${count}: `;
                 spanCount.classList.add("cellCount");
                 tdField.append(spanCount);
 
-                const spanValue = createEl("span");
+                const spanValue     = createEl("span");
                 spanValue.innerText = content.value;
                 tdField.append(spanValue);    
             }
             // measure text width is expensive => measure only the first 20 rows
             if (calcWidth) {
-                let width                   = App.calcWidth(content.value);
-                if (content.count) width   += App.calcWidth(String(content.count));                
+                let width           = App.calcWidth(content.value);
+                if (count) width   += App.calcWidth(String(count));                
                 if (column.width < width) {
                     column.width = width
                 }
@@ -1611,22 +1612,22 @@ class App {
 
     static getCellContent(value: any) : CellData {
         if (value === undefined)
-            return { value: "" };                                               // 
+            return { value: "" };                                           // 
         const type = typeof value;
         if (type != "object")
-            return { value: value }                                             // abc
+            return { value: value }                                         // abc
         if (Array.isArray(value)) {
             if (value.length > 0) {
                 for (const item of value) {
                     if (typeof item == "object")
-                        return { count: value.length, value: "[...]"};          // 4:[...]
+                        return { value: " items", count: value.length};     // 4: items
                 }
                 const items = value.map(i => i);
-                return { value: `[${items.join(", ")}]`, count: value.length};  // 2:[abc,xyz]
+                return { value: items.join(", "), count: value.length};     // 2: abc,xyz
             }
-            return { value: "[]", count: 0 }                                    // 0:[];
+            return { value: "", count: 0 }                                  // 0;
         }
-        return { value: JSON.stringify(value) };                                // {"foo": "bar", ... }
+        return { value: JSON.stringify(value) };                            // {"foo": "bar", ... }
     }
 
     removeExplorerIds(ids: string[]) {
