@@ -1290,6 +1290,8 @@ class App {
         return head;
     }
     static calcWidth(text) {
+        if (text === undefined)
+            return 0;
         if (text.length > 40) {
             // avoid measuring long texts
             // 30 characters => 234px. Sample: "012345678901234567890123456789"
@@ -1390,13 +1392,17 @@ class App {
                 tdField.innerText = `${content.value} `;
             }
             else {
+                const isObjectArray = content.isObjectArray;
+                const countStr = count == 0 ? '0' : `${count}: `;
                 const spanCount = createEl("span");
-                spanCount.innerText = count == 0 ? '0' : `${count}: `;
+                spanCount.innerText = isObjectArray ? `${countStr} ${fieldName}` : countStr;
                 spanCount.classList.add("cellCount");
                 tdField.append(spanCount);
-                const spanValue = createEl("span");
-                spanValue.innerText = content.value;
-                tdField.append(spanValue);
+                if (!isObjectArray) {
+                    const spanValue = createEl("span");
+                    spanValue.innerText = content.value;
+                    tdField.append(spanValue);
+                }
             }
             // measure text width is expensive => measure only the first 20 rows
             if (calcWidth) {
@@ -1418,8 +1424,9 @@ class App {
         if (Array.isArray(value)) {
             if (value.length > 0) {
                 for (const item of value) {
-                    if (typeof item == "object")
-                        return { value: " items", count: value.length }; // 4: items
+                    if (typeof item == "object") { // 3: objects
+                        return { count: value.length, isObjectArray: true };
+                    }
                 }
                 const items = value.map(i => i);
                 return { value: items.join(", "), count: value.length }; // 2: abc,xyz

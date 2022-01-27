@@ -119,8 +119,9 @@ const measureTextWidth = createMeasureTextWidth (14);
 
 type Entity = { [key: string] : any };
 type CellData = {
-    value:  string,
-    count?: number
+    value?:         string,
+    count?:         number,
+    isObjectArray?: boolean
 };
 // --------------------------------------- WebSocket ---------------------------------------
 let connection:         WebSocket;
@@ -1481,6 +1482,8 @@ class App {
     static maxColumnWidth       = 200;
 
     static calcWidth(text: string) : number {
+        if (text === undefined)
+            return 0;
         if (text.length > 40) {
             // avoid measuring long texts
             // 30 characters => 234px. Sample: "012345678901234567890123456789"
@@ -1590,14 +1593,17 @@ class App {
             if (count === undefined) {
                 tdField.innerText = `${content.value} `
             } else {
-                const spanCount = createEl("span");
-                spanCount.innerText = count == 0 ? '0' : `${count}: `;
+                const isObjectArray = content.isObjectArray;
+                const countStr      = count == 0 ? '0' : `${count}: `
+                const spanCount     = createEl("span");
+                spanCount.innerText = isObjectArray ? `${countStr} ${fieldName}` : countStr;
                 spanCount.classList.add("cellCount");
                 tdField.append(spanCount);
-
-                const spanValue     = createEl("span");
-                spanValue.innerText = content.value;
-                tdField.append(spanValue);    
+                if (!isObjectArray) {
+                    const spanValue     = createEl("span");
+                    spanValue.innerText = content.value;
+                    tdField.append(spanValue);
+                } 
             }
             // measure text width is expensive => measure only the first 20 rows
             if (calcWidth) {
@@ -1612,22 +1618,23 @@ class App {
 
     static getCellContent(value: any) : CellData {
         if (value === undefined)
-            return { value: "" };                                           // 
+            return { value: "" };                                       // 
         const type = typeof value;
         if (type != "object")
-            return { value: value }                                         // abc
+            return { value: value }                                     // abc
         if (Array.isArray(value)) {
             if (value.length > 0) {
                 for (const item of value) {
-                    if (typeof item == "object")
-                        return { value: " items", count: value.length};     // 4: items
+                    if (typeof item == "object") {                      // 3: objects
+                        return { count: value.length, isObjectArray: true};
+                    }
                 }
                 const items = value.map(i => i);
-                return { value: items.join(", "), count: value.length};     // 2: abc,xyz
+                return { value: items.join(", "), count: value.length}; // 2: abc,xyz
             }
-            return { value: "", count: 0 }                                  // 0;
+            return { value: "", count: 0 }                              // 0;
         }
-        return { value: JSON.stringify(value) };                            // {"foo": "bar", ... }
+        return { value: JSON.stringify(value) };                        // {"foo": "bar", ... }
     }
 
     removeExplorerIds(ids: string[]) {
