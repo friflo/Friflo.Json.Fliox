@@ -1591,12 +1591,16 @@ class App {
         this.selectEntities(database, container, ids);
     }
     selectEntities(database, container, ids) {
+        var _a, _b;
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
         let liIds = this.findContainerEntities(ids);
         this.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
-        firstRow === null || firstRow === void 0 ? void 0 : firstRow.scrollIntoView();
+        if (firstRow) {
+            const columnIndex = (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1;
+            this.setFocusCell(firstRow.rowIndex, columnIndex);
+        }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
         this.entityHistory.length = this.entityHistoryPos + 1;
     }

@@ -1826,7 +1826,10 @@ class App {
 
         this.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
-        firstRow?.scrollIntoView();
+        if (firstRow) {
+            const columnIndex = this.explorer.focusedCell?.cellIndex ?? 1;
+            this.setFocusCell(firstRow.rowIndex, columnIndex);
+        }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};
         this.entityHistory.length = this.entityHistoryPos + 1;        
     }
