@@ -1081,18 +1081,18 @@ class App {
         switch (event.code) {
             case 'Home':
                 if (event.ctrlKey) {
-                    this.setFocusCell(1, td.cellIndex);
+                    this.setFocusCell(1, td.cellIndex, "smooth");
                 }
                 else {
-                    this.setFocusCell(row.rowIndex, 1);
+                    this.setFocusCell(row.rowIndex, 1, "smooth");
                 }
                 break;
             case 'End':
                 if (event.ctrlKey) {
-                    this.setFocusCell(table.rows.length - 1, td.cellIndex);
+                    this.setFocusCell(table.rows.length - 1, td.cellIndex, "smooth");
                 }
                 else {
-                    this.setFocusCell(row.rowIndex, row.cells.length - 1);
+                    this.setFocusCell(row.rowIndex, row.cells.length - 1, "smooth");
                 }
                 break;
             case 'PageUp':
