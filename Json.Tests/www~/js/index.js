@@ -1075,6 +1075,7 @@ class App {
         const td = this.explorer.focusedCell;
         if (!td)
             return;
+        const explorer = this.explorer;
         const table = this.explorerTable;
         const row = td.parentElement;
         switch (event.code) {
@@ -1112,16 +1113,22 @@ class App {
             case 'ArrowRight':
                 this.setFocusCell(row.rowIndex, td.cellIndex + 1);
                 break;
-            case 'Space':
+            case 'Space': {
                 const id = this.getRowId(row);
-                const selectedIds = Object.keys(this.selectedEntities);
-                const newIds = App.toggleIds(selectedIds, id);
+                const ids = Object.keys(this.selectedEntities);
+                const newIds = App.toggleIds(ids, id);
                 this.setSelectedEntities(newIds);
+                const params = { database: explorer.database, container: explorer.container, ids };
+                this.loadEntities(params, false, null);
                 break;
-            case 'Enter':
-                const selectId = this.getRowId(row);
-                this.setSelectedEntities([selectId]);
+            }
+            case 'Enter': {
+                const ids = [this.getRowId(row)];
+                this.setSelectedEntities(ids);
+                const params = { database: explorer.database, container: explorer.container, ids };
+                this.loadEntities(params, false, null);
                 break;
+            }
             default:
                 return;
         }
