@@ -1101,8 +1101,13 @@ class App {
         el<HTMLAnchorElement>("filterLink").href = url;
     }
 
+    explorer: {
+        database:       string;
+        container:      string;
+        entityType?:    JsonType;
+        focusedCell?:   HTMLTableCellElement;
+    }
     explorerTable:  HTMLTableElement;
-    focusedCell?:   HTMLTableCellElement;
 
     async loadContainer (p: Resource, query: string) {
         const storedFilter = this.config.filters[p.database]?.[p.container];
@@ -1112,9 +1117,14 @@ class App {
         const removeFilterVisibility = query ? "" : "hidden";
         el("removeFilter").style.visibility = removeFilterVisibility;
         
-        this.filter.database     = p.database;
-        this.filter.container    = p.container;
-        
+        const entityType    = this.getContainerSchema(p.database, p.container);
+        this.filter.database    = p.database;
+        this.filter.container   = p.container;
+        this.explorer = {
+            database:   p.database,
+            container:  p.container,
+            entityType: entityType
+        };        
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility   = "";
         entityFilter.style.visibility  = "";
@@ -1133,7 +1143,7 @@ class App {
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        const   entityType  = this.getContainerSchema(p.database, p.container);
+
         let     entities    = await response.json() as Entity[];
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const   table       = this.explorerTable = createEl('table');
@@ -1171,17 +1181,21 @@ class App {
         this.setFocusCell(row.rowIndex, cell.cellIndex);
         const children = path[1].children; // tr children
         const id = (children[1] as HTMLElement).innerText;
-        const selectedIds = Object.keys(this.selectedEntities);
         if (td == children[0] || toggleSelection) {        
-            const index = selectedIds.indexOf(id);
-            if (index == -1) {
-                selectedIds.push(id);
-            } else {
-                selectedIds.splice(index, 1);
-            }
-            return selectedIds;
+            const selectedIds = Object.keys(this.selectedEntities);
+            return App.toggleIds(selectedIds, id);
         }
         return [id];
+    }
+
+    static toggleIds(ids: string[], id: string) {
+        const index = ids.indexOf(id);
+        if (index == -1) {
+            ids.push(id);
+        } else {
+            ids.splice(index, 1);
+        }
+        return ids;
     }
 
     setFocusCell(rowIndex: number, cellIndex: number) {
@@ -1197,9 +1211,9 @@ class App {
 
         
         const td = row.cells[cellIndex];
-        this.focusedCell?.classList.remove("focus");
+        this.explorer.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
-        this.focusedCell = td;
+        this.explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22);
     }
@@ -1236,7 +1250,7 @@ class App {
     }
 
     explorerKeyDown(event: KeyboardEvent) {
-        const td = this.focusedCell as HTMLTableCellElement;
+        const td = this.explorer.focusedCell;
         if (!td)
             return;
         const table = this.explorerTable;
@@ -1274,10 +1288,32 @@ class App {
             case 'ArrowRight':
                 this.setFocusCell(row.rowIndex, td.cellIndex + 1);
                 break;
+            case 'Space':
+                const id            = this.getRowId(row);
+                const selectedIds   = Object.keys(this.selectedEntities);
+                const newIds        = App.toggleIds(selectedIds, id);
+                this.setSelectedEntities(newIds);
+                break;
+            case 'Enter':
+                const selectId      = this.getRowId(row);
+                this.setSelectedEntities([selectId]);
+                break;
             default:
                 return;
         }
         event.preventDefault();
+    }
+
+    getRowId(row: HTMLTableRowElement) : string {
+        const keyName = App.getEntityKeyName(this.explorer.entityType);
+        const table = this.explorerTable;
+        const headerCells = table.rows[0].cells;
+        for (let i = 1; i < headerCells.length; i++) {
+            if (headerCells[i].innerText != keyName)
+                continue;
+            return row.cells[i].innerText;
+        }
+        return null;
     }
 
     setSelectedEntities(ids: string[]) {
