@@ -988,7 +988,8 @@ class App {
         table.classList.value = "entities";
         table.onclick = (ev) => {
             const path = ev.composedPath();
-            const selectedIds = this.getSelectionFromPath(path, ev.ctrlKey);
+            const select = ev.ctrlKey ? "toggle" : "id";
+            const selectedIds = this.getSelectionFromPath(path, select);
             if (selectedIds === null)
                 return;
             this.setSelectedEntities(selectedIds);
@@ -1002,7 +1003,7 @@ class App {
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
     }
-    getSelectionFromPath(path, toggleSelection) {
+    getSelectionFromPath(path, select) {
         // in case of a multiline text selection selectedElement is the parent
         const td = path[0];
         if (td.tagName != "TD")
@@ -1012,7 +1013,7 @@ class App {
         this.setFocusCell(row.rowIndex, cell.cellIndex);
         const children = path[1].children; // tr children
         const id = children[1].innerText;
-        if (td == children[0] || toggleSelection) {
+        if (td == children[0] || select == "toggle") {
             const selectedIds = Object.keys(this.selectedEntities);
             return App.toggleIds(selectedIds, id);
         }
