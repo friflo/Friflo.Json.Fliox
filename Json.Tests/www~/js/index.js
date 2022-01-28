@@ -987,7 +987,7 @@ class App {
         const head = this.createExplorerHead(entityType, this.entityFields);
         table.append(head);
         table.classList.value = "entities";
-        table.onclick = (ev) => {
+        table.onclick = async (ev) => {
             const path = ev.composedPath();
             const select = ev.ctrlKey ? "toggle" : "id";
             const selectedIds = this.getSelectionFromPath(path, select);
@@ -995,7 +995,10 @@ class App {
                 return;
             this.setSelectedEntities(selectedIds);
             const params = { database: p.database, container: p.container, ids: selectedIds };
-            this.loadEntities(params, false, null);
+            const content = await this.loadEntities(params, false, null);
+            if (content.ast) {
+                App.findPathRange(content.ast, "");
+            }
         };
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1500,11 +1503,11 @@ class App {
             return null;
         }
         // console.log(entityJson);
-        this.setEntityValue(p.database, p.container, content);
+        const ast = this.setEntityValue(p.database, p.container, content);
         if (selection)
             this.entityEditor.setSelection(selection);
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
-        return content;
+        return { value: content, ast: ast };
     }
     updateGetEntitiesAnchor(database, container) {
         // console.log("updateGetEntitiesAnchor");
@@ -1547,7 +1550,7 @@ class App {
         const response = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
-        let json = JSON.parse(response);
+        let json = JSON.parse(response.value);
         if (json == null) {
             json = [];
         }
@@ -1678,26 +1681,39 @@ class App {
         model.setValue(value);
         this.entityEditor.setModel(model);
         if (value == "")
-            return;
+            return null;
+        const ast = App.parseAst(value);
+        if (!ast)
+            return null;
         const containerSchema = this.getContainerSchema(database, container);
-        if (!containerSchema)
-            return;
+        if (containerSchema) {
+            try {
+                this.decorateJson(this.entityEditor, ast, containerSchema, database);
+            }
+            catch (error) {
+                console.error("decorateJson", error);
+            }
+        }
+        return null;
+    }
+    static parseAst(value) {
         try {
-            this.decorateJson(this.entityEditor, value, containerSchema, database);
+            JSON.parse(value); // early out on invalid JSON
+            // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
+            // 2.) bundle.js created fom npm module 'json-to-ast' via:
+            //     [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
+            // 3.) browserify main.js | uglifyjs > bundle.js
+            //     [javascript - How to get minified output with browserify? - Stack Overflow] https://stackoverflow.com/questions/15590702/how-to-get-minified-output-with-browserify
+            const ast = parse(value, { loc: true });
+            // console.log ("AST", ast);
+            return ast;
         }
         catch (error) {
-            console.error("decorateJson", error);
+            console.error("parseAst", error);
         }
+        return null;
     }
-    decorateJson(editor, value, containerSchema, database) {
-        JSON.parse(value); // early out on invalid JSON
-        // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
-        // 2.) bundle.js created fom npm module 'json-to-ast' via:
-        //     [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
-        // 3.) browserify main.js | uglifyjs > bundle.js
-        //     [javascript - How to get minified output with browserify? - Stack Overflow] https://stackoverflow.com/questions/15590702/how-to-get-minified-output-with-browserify
-        const ast = parse(value, { loc: true });
-        // console.log ("AST", ast);
+    decorateJson(editor, ast, containerSchema, database) {
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
         const newDecorations = [
         // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
@@ -1760,12 +1776,6 @@ class App {
                     break;
             }
         }
-    }
-    selectEntityPathValue(path) {
-        const value = this.entityEditor.getValue();
-        const ast = parse(value, { loc: true });
-        const range = App.findPathRange(ast, path);
-        console.log("range", path, range);
     }
     static findPathRange(ast, pathString) {
         const path = pathString.split('.');

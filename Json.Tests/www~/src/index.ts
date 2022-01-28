@@ -120,6 +120,10 @@ function createMeasureTextWidth(width: number) : HTMLElement {
 }
 const measureTextWidth = createMeasureTextWidth (14);
 
+type EntityContent = {
+    value:  string,
+    ast:    jsonToAst.ValueNode
+}
 
 type Entity = { [key: string] : any };
 type CellData = {
@@ -537,8 +541,8 @@ class App {
                 ok:     false,
                 status:     0,
                 statusText: "exception",
-                text:   () => error.message,
-                json:   () => { throw error.message }
+                text:   () : string => error.message,
+                json:   ()          => { throw error.message }
             }
         }
     }
@@ -1159,15 +1163,19 @@ class App {
 
         table.append(head);
         table.classList.value   = "entities"
-        table.onclick = (ev) => {
+        table.onclick = async (ev) => {
             const path          = ev.composedPath() as HTMLElement[];
             const select        = ev.ctrlKey ? "toggle" : "id"
             const selectedIds   = this.getSelectionFromPath(path, select);
             if (selectedIds === null)
                 return;
             this.setSelectedEntities(selectedIds);
-            const params: Resource = { database: p.database, container: p.container, ids: selectedIds };
-            this.loadEntities(params, false, null);
+            const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
+            const content           = await this.loadEntities(params, false, null);
+
+            if (content.ast) {
+                App.findPathRange(content.ast, "");
+            }
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1690,7 +1698,7 @@ class App {
         this.loadEntities(entry.route, true, entry.selection);
     }
 
-    async loadEntities (p: Resource, preserveHistory: boolean, selection: monaco.IRange) : Promise<string> {
+    async loadEntities (p: Resource, preserveHistory: boolean, selection: monaco.IRange) : Promise<EntityContent> {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
         entityType.innerHTML    = this.getEntityType  (p.database, p.container);
@@ -1724,10 +1732,10 @@ class App {
             return null;
         }
         // console.log(entityJson);
-        this.setEntityValue(p.database, p.container, content);
+        const ast = this.setEntityValue(p.database, p.container, content);
         if (selection)  this.entityEditor.setSelection(selection);        
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
-        return content;
+        return { value: content, ast: ast };
     }
 
     updateGetEntitiesAnchor(database: string, container: string) {
@@ -1773,7 +1781,7 @@ class App {
         const response          = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
-        let   json              = JSON.parse(response) as Entity[];
+        let   json              = JSON.parse(response.value) as Entity[];
         if (json == null) {
             json = [];
         } else {
@@ -1912,33 +1920,45 @@ class App {
         return this.entityModel;
     }
 
-    setEntityValue (database: string, container: string, value: string) {
+    setEntityValue (database: string, container: string, value: string) : jsonToAst.ValueNode {
         const url = `entity://${database}.${container}.json`;
         const model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
         if (value == "")
-            return;
+            return null;
+        const ast = App.parseAst(value);
+        if (!ast)
+            return null;
         const containerSchema = this.getContainerSchema(database, container);
-        if (!containerSchema)
-            return;
-        try {
-            this.decorateJson(this.entityEditor, value, containerSchema, database);
-        } catch (error) {
-            console.error("decorateJson", error);
+        if (containerSchema) {
+            try {
+                this.decorateJson(this.entityEditor, ast, containerSchema, database);
+            } catch (error) {
+                console.error("decorateJson", error);
+            }
         }
+        return null;
     }
 
-    decorateJson(editor: monaco.editor.IStandaloneCodeEditor, value: string, containerSchema: JsonType, database: string) {
-        JSON.parse(value);  // early out on invalid JSON
-        // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
-        // 2.) bundle.js created fom npm module 'json-to-ast' via:
-        //     [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
-        // 3.) browserify main.js | uglifyjs > bundle.js
-        //     [javascript - How to get minified output with browserify? - Stack Overflow] https://stackoverflow.com/questions/15590702/how-to-get-minified-output-with-browserify
-        const ast = parse(value, { loc: true });
-        // console.log ("AST", ast);
-        
+    static parseAst(value: string) : jsonToAst.ValueNode {
+        try {
+            JSON.parse(value);  // early out on invalid JSON
+            // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
+            // 2.) bundle.js created fom npm module 'json-to-ast' via:
+            //     [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
+            // 3.) browserify main.js | uglifyjs > bundle.js
+            //     [javascript - How to get minified output with browserify? - Stack Overflow] https://stackoverflow.com/questions/15590702/how-to-get-minified-output-with-browserify
+            const ast = parse(value, { loc: true });
+            // console.log ("AST", ast);
+            return ast;
+        } catch (error) {
+            console.error("parseAst", error);
+        }
+        return null;
+    }
+
+    decorateJson(editor: monaco.editor.IStandaloneCodeEditor, ast: jsonToAst.ValueNode, containerSchema: JsonType, database: string) {        
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
         const newDecorations: monaco.editor.IModelDeltaDecoration[] = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
@@ -2002,13 +2022,6 @@ class App {
                 break;
             }
         }
-    }
-
-    selectEntityPathValue(path: string) {
-        const value = this.entityEditor.getValue();
-        const ast   = parse(value, { loc: true });
-        const range = App.findPathRange(ast, path);
-        console.log("range", path, range);
     }
 
     static findPathRange(ast: jsonToAst.ValueNode, pathString: string ) : monaco.Range {
@@ -2320,7 +2333,7 @@ class App {
         }
     }
 
-    formatJson(format: boolean, text: string) {
+    formatJson(format: boolean, text: string) : string {
         if (format) {
             try {
                 // const action = editor.getAction("editor.action.formatDocument");
