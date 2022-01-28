@@ -1943,7 +1943,7 @@ class App {
         const newDecorations: monaco.editor.IModelDeltaDecoration[] = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
-        this.addRelationsFromAst(ast, containerSchema, (value, container) => {
+        App.addRelationsFromAst(ast, containerSchema, (value, container) => {
             const start         = value.loc.start;
             const end           = value.loc.end;
             const range         = new monaco.Range(start.line, start.column, end.line, end.column);
@@ -1954,13 +1954,13 @@ class App {
         editor.deltaDecorations([], newDecorations);
     }
 
-    addRelationsFromAst(ast: jsonToAst.ValueNode, schema: JsonType, addRelation: AddRelation) {
+    static addRelationsFromAst(ast: jsonToAst.ValueNode, schema: JsonType, addRelation: AddRelation) {
         if (ast.type == "Literal")
             return;
         for (const child of ast.children) {
             switch (child.type) {
             case "Object":
-                this.addRelationsFromAst(child, schema, addRelation);
+                App.addRelationsFromAst(child, schema, addRelation);
                 break;
             case "Array":
                 break;
@@ -1981,13 +1981,13 @@ class App {
                 case "Object":
                     const resolvedDef = property._resolvedDef;
                     if (resolvedDef) {
-                        this.addRelationsFromAst(value, resolvedDef, addRelation);
+                        App.addRelationsFromAst(value, resolvedDef, addRelation);
                     }
                     break;
                 case "Array":
                     const resolvedDef2 = property.items?._resolvedDef;
                     if (resolvedDef2) {
-                        this.addRelationsFromAst(value, resolvedDef2, addRelation);
+                        App.addRelationsFromAst(value, resolvedDef2, addRelation);
                     }
                     const relation2 = property.relation;
                     if (relation2) {
@@ -2002,6 +2002,36 @@ class App {
                 break;
             }
         }
+    }
+
+    selectEntityPathValue(path: string) {
+        const value = this.entityEditor.getValue();
+        const ast   = parse(value, { loc: true });
+        const range = App.findPathRange(ast, path);
+        console.log("range", path, range);
+    }
+
+    static findPathRange(ast: jsonToAst.ValueNode, pathString: string ) : monaco.Range {
+        const path  = pathString.split('.');
+        let   node  = ast;
+        for (let i = 0; i < path.length; i++) {
+            const name = path[i];
+            if (node.type != "Object")
+                return null;
+            let foundChild: jsonToAst.PropertyNode = null;
+            for (const child of node.children) {
+                if (child.key.value == name) {
+                    foundChild = child;
+                    break;
+                }
+            }
+            if (!foundChild)
+                return null;
+            node = foundChild.value;
+        }
+        const start = node.loc.start;
+        const end   = node.loc.end;
+        return new monaco.Range(start.line, start.column, end.line, end.column);
     }
 
     setCommandParam (database: string, command: string, value: string) {
@@ -2221,7 +2251,7 @@ class App {
             const containerSchema   = this.getContainerSchema(database, this.entityIdentity.container);
 
             let entity: Resource;
-            this.addRelationsFromAst(ast, containerSchema, (value, container) => {
+            App.addRelationsFromAst(ast, containerSchema, (value, container) => {
                 if (entity || value.type != "Literal")
                     return;
                 const start = value.loc.start;
