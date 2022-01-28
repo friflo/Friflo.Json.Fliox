@@ -1979,10 +1979,7 @@ class App {
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
         ];
         App.addRelationsFromAst(ast, containerSchema, (value, container) => {
-            const start         = value.loc.start;
-            const end           = value.loc.end;
-            const trim          = value.type == "Literal" && typeof value.value == "string" ? 1 : 0;
-            const range         = new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
+            const range         = App.RangeFromNode(value);
             const markdownText  = `${database}/${container}  \nFollow: (ctrl + click)`;
             const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
@@ -2076,8 +2073,11 @@ class App {
             }
             if (!foundChild)
                 return null;
-            node = foundChild.value;
+            return App.RangeFromNode(foundChild.value);
         }
+    }
+
+    static RangeFromNode(node: jsonToAst.ValueNode) : monaco.Range{
         const trim  = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
         const start = node.loc.start;
         const end   = node.loc.end;
