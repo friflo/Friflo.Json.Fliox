@@ -1111,10 +1111,12 @@ class App {
     }
 
     explorer: {
-        database:       string;
-        container:      string;
-        entityType?:    JsonType;
-        focusedCell?:   HTMLTableCellElement;
+        database:           string;
+        container:          string;
+        entityType?:        JsonType;
+        focusedCell?:       HTMLTableCellElement;
+        cachedJsonValue?:   string;
+        cachedJsonAst?:     jsonToAst.ValueNode;
     }
     explorerTable:  HTMLTableElement;
 
@@ -1172,8 +1174,9 @@ class App {
             this.setSelectedEntities(selectedIds);
             const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
             await this.loadEntities(params, false, null);
-
-            this.selectEditorValue(this.entityIdentity.ast, this.explorer.focusedCell);
+            const json  = this.entityEditor.getValue();
+            const ast   = this.getAstFromJson(json);
+            this.selectEditorValue(ast, this.explorer.focusedCell);
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1181,6 +1184,18 @@ class App {
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
+    }
+
+    getAstFromJson(json: string) : jsonToAst.ValueNode | null {
+        if (json == "")
+            return null;
+        const explorer = this.explorer;
+        if (json == explorer.cachedJsonValue)
+            return explorer.cachedJsonAst;
+        const ast = App.parseAst(json);
+        explorer.cachedJsonAst      = ast;
+        explorer.cachedJsonValue    = json;
+        return ast;
     }
 
     selectEditorValue(ast: jsonToAst.ValueNode, focus: HTMLTableCellElement) {
@@ -1240,14 +1255,16 @@ class App {
         if (cellIndex >= row.cells.length)
             return;
 
-        
+        const explorer = this.explorer;
         const td = row.cells[cellIndex];
-        this.explorer.focusedCell?.classList.remove("focus");
+        explorer.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
-        this.explorer.focusedCell = td;
+        explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22, scroll);
-        this.selectEditorValue(this.entityIdentity.ast, td);
+        const json  = this.entityEditor.getValue();
+        const ast   = this.getAstFromJson(json);
+        this.selectEditorValue(ast, td);
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
@@ -1693,8 +1710,7 @@ class App {
         database:   string,
         container:  string,
         entityIds:  string[],
-        command?:   string,
-        ast?:       jsonToAst.ValueNode
+        command?:   string
     }
 
     entityHistoryPos    = -1;
@@ -1752,8 +1768,7 @@ class App {
             return null;
         }
         // console.log(entityJson);
-        const ast = this.setEntityValue(p.database, p.container, content);
-        this.entityIdentity.ast = ast;
+        this.setEntityValue(p.database, p.container, content);
         if (selection)  this.entityEditor.setSelection(selection);        
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
         return content;
