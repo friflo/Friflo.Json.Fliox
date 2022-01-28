@@ -5,7 +5,8 @@
   "scripts": {
   },
   "devDependencies": {
-    "monaco-editor": "^0.31.1"
+    "monaco-editor": "^0.31.1",
+    "@types/json-to-ast": "2.1.2"
   },
   "dependencies": {}
 }

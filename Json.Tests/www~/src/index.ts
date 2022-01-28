@@ -1,4 +1,6 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
+/// <reference types="../../../node_modules/@types/json-to-ast/index" />
+
 
 import { CommandType, FieldType, JsonSchema, JsonType }
             from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
@@ -11,8 +13,10 @@ import { SyncRequest, SyncResponse, ProtocolResponse_Union }
 import { SyncRequestTask_Union, SendCommandResult }
             from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
+// declare const parse : any; // https://www.npmjs.com/package/json-to-ast
+declare function parse(json: string, settings?: jsonToAst.Options): jsonToAst.ValueNode;
 
-declare const parse : any; // https://www.npmjs.com/package/json-to-ast
+type AddRelation = (value: jsonToAst.ValueNode, container: string) => void;
 
 declare global {
     interface Window {
@@ -1950,8 +1954,8 @@ class App {
         editor.deltaDecorations([], newDecorations);
     }
 
-    addRelationsFromAst(ast: any, schema: JsonType, addRelation: (value: any, container: string) => void) {
-        if (!ast.children) // ast is a 'Literal'
+    addRelationsFromAst(ast: jsonToAst.ValueNode, schema: JsonType, addRelation: AddRelation) {
+        if (ast.type == "Literal")
             return;
         for (const child of ast.children) {
             switch (child.type) {
@@ -2218,13 +2222,14 @@ class App {
 
             let entity: Resource;
             this.addRelationsFromAst(ast, containerSchema, (value, container) => {
-                if (entity)
+                if (entity || value.type != "Literal")
                     return;
                 const start = value.loc.start;
                 const end   = value.loc.end;
                 if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
                     // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                    entity = { database: database, container: container, ids: [value.value] };
+                    const literalValue = value.value as string;
+                    entity = { database: database, container: container, ids: [literalValue] };
                 }
             });
             if (entity) {

@@ -1,4 +1,5 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
+/// <reference types="../../../node_modules/@types/json-to-ast/index" />
 const defaultConfig = {
     showLineNumbers: false,
     showMinimap: false,
@@ -1713,7 +1714,7 @@ class App {
     }
     addRelationsFromAst(ast, schema, addRelation) {
         var _a;
-        if (!ast.children) // ast is a 'Literal'
+        if (ast.type == "Literal")
             return;
         for (const child of ast.children) {
             switch (child.type) {
@@ -1944,13 +1945,14 @@ class App {
             const containerSchema = this.getContainerSchema(database, this.entityIdentity.container);
             let entity;
             this.addRelationsFromAst(ast, containerSchema, (value, container) => {
-                if (entity)
+                if (entity || value.type != "Literal")
                     return;
                 const start = value.loc.start;
                 const end = value.loc.end;
                 if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
                     // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                    entity = { database: database, container: container, ids: [value.value] };
+                    const literalValue = value.value;
+                    entity = { database: database, container: container, ids: [literalValue] };
                 }
             });
             if (entity) {
