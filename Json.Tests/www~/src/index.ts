@@ -1632,22 +1632,26 @@ class App {
             }
             if (i < pathLen - 1)
                 value = undefined;
-            const tdField   = tds[tdIndex++];
+            const td        = tds[tdIndex++];
+            // clear all children added previously
+            while (td.firstChild) {
+                td.removeChild(td.lastChild);
+            }
             const content   = App.getCellContent(value);
             const count     = content.count;
             if (count === undefined) {
-                tdField.innerText   = `${content.value} `
+                td.textContent   = `${content.value} `
             } else {
-                const isObjectArray = content.isObjectArray;
-                const countStr      = count == 0 ? '0' : `${count}: `
-                const spanCount     = createEl("span");
-                spanCount.innerText = isObjectArray ? `${countStr} ${fieldName}` : countStr;
+                const isObjectArray     = content.isObjectArray;
+                const countStr          = count == 0 ? '0' : `${count}: `
+                const spanCount         = createEl("span");
+                spanCount.textContent   = isObjectArray ? `${countStr} ${fieldName}` : countStr;
                 spanCount.classList.add("cellCount");
-                tdField.append(spanCount);
+                td.append(spanCount);
                 if (!isObjectArray) {
-                    const spanValue     = createEl("span");
-                    spanValue.innerText = content.value;
-                    tdField.append(spanValue);
+                    const spanValue         = createEl("span");
+                    spanValue.textContent   = content.value;
+                    td.append(spanValue);
                 } 
             }
             // measure text width is expensive => measure only the first 20 rows
