@@ -1173,8 +1173,12 @@ class App {
             const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
             const content           = await this.loadEntities(params, false, null);
 
-            if (content.ast) {
-                App.findPathRange(content.ast, "");
+            const focus = this.explorer.focusedCell;
+            if (content.ast && focus) {
+                const thDiv = this.explorerTable.rows[0].cells[focus.cellIndex].children[0] as HTMLDivElement;
+                const path  = thDiv.innerText;
+                const range = App.findPathRange(content.ast, path);
+                this.entityEditor.setSelection(range);
             }
         }
         this.explorerEntities = {};
@@ -1938,7 +1942,7 @@ class App {
                 console.error("decorateJson", error);
             }
         }
-        return null;
+        return ast;
     }
 
     static parseAst(value: string) : jsonToAst.ValueNode {
@@ -1966,7 +1970,8 @@ class App {
         App.addRelationsFromAst(ast, containerSchema, (value, container) => {
             const start         = value.loc.start;
             const end           = value.loc.end;
-            const range         = new monaco.Range(start.line, start.column, end.line, end.column);
+            const trim          = value.type == "Literal" && typeof value.value == "string" ? 1 : 0;
+            const range         = new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
             const markdownText  = `${database}/${container}  \nFollow: (ctrl + click)`;
             const hoverMessage  = [ { value: markdownText } ];
             newDecorations.push({ range: range, options: { inlineClassName: 'refLinkDecoration', hoverMessage: hoverMessage }});
@@ -2042,9 +2047,10 @@ class App {
                 return null;
             node = foundChild.value;
         }
+        const trim  = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
         const start = node.loc.start;
         const end   = node.loc.end;
-        return new monaco.Range(start.line, start.column, end.line, end.column);
+        return new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
     }
 
     setCommandParam (database: string, command: string, value: string) {
