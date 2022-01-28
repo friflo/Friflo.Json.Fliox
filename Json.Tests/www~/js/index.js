@@ -996,13 +996,7 @@ class App {
             this.setSelectedEntities(selectedIds);
             const params = { database: p.database, container: p.container, ids: selectedIds };
             const content = await this.loadEntities(params, false, null);
-            const focus = this.explorer.focusedCell;
-            if (content.ast && focus) {
-                const thDiv = this.explorerTable.rows[0].cells[focus.cellIndex].children[0];
-                const path = thDiv.innerText;
-                const range = App.findPathRange(content.ast, path);
-                this.entityEditor.setSelection(range);
-            }
+            this.selectEditorValue(content.ast, this.explorer.focusedCell);
         };
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1010,6 +1004,16 @@ class App {
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
+    }
+    selectEditorValue(ast, focus) {
+        if (!ast || !focus)
+            return;
+        const thDiv = this.explorerTable.rows[0].cells[focus.cellIndex].children[0];
+        const path = thDiv.innerText;
+        const r = App.findPathRange(ast, path);
+        const visibleRange = new monaco.Range(r.startLineNumber - 1, r.startColumn, r.endLineNumber, r.endColumn);
+        this.entityEditor.setSelection(r);
+        this.entityEditor.revealRange(visibleRange);
     }
     getSelectionFromPath(path, select) {
         // in case of a multiline text selection selectedElement is the parent
