@@ -1008,9 +1008,17 @@ class App {
     selectEditorValue(ast, focus) {
         if (!ast || !focus)
             return;
-        const thDiv = this.explorerTable.rows[0].cells[focus.cellIndex].children[0];
+        const row = focus.parentNode;
+        const th = this.explorerTable.rows[0].cells[focus.cellIndex];
+        const thDiv = th.children[0];
         const path = thDiv.innerText;
-        const r = App.findPathRange(ast, path);
+        const keyName = App.getEntityKeyName(this.explorer.entityType);
+        const id = row.cells[1].innerText;
+        const r = App.findPathRange(ast, path, keyName, id);
+        if (!r) {
+            console.log("path not found:", path);
+            return;
+        }
         const visibleRange = new monaco.Range(r.startLineNumber - 1, r.startColumn, r.endLineNumber, r.endColumn);
         this.entityEditor.setSelection(r);
         this.entityEditor.revealRange(visibleRange);
@@ -1786,9 +1794,28 @@ class App {
             }
         }
     }
-    static findPathRange(ast, pathString) {
+    static findArrayItem(arrayNode, keyName, id) {
+        for (const item of arrayNode.children) {
+            if (item.type != "Object")
+                continue;
+            for (const property of item.children) {
+                if (property.key.value != keyName)
+                    continue;
+                const value = property.value;
+                if (value.type == "Literal" && value.value == id)
+                    return item;
+            }
+        }
+        return null;
+    }
+    static findPathRange(ast, pathString, keyName, id) {
         const path = pathString.split('.');
         let node = ast;
+        if (ast.type == "Array") {
+            node = App.findArrayItem(ast, keyName, id);
+            if (!node)
+                return null;
+        }
         for (let i = 0; i < path.length; i++) {
             const name = path[i];
             if (node.type != "Object")
