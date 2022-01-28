@@ -120,11 +120,6 @@ function createMeasureTextWidth(width: number) : HTMLElement {
 }
 const measureTextWidth = createMeasureTextWidth (14);
 
-type EntityContent = {
-    value:  string,
-    ast:    jsonToAst.ValueNode
-}
-
 type Entity = { [key: string] : any };
 type CellData = {
     value?:         string,
@@ -1171,9 +1166,9 @@ class App {
                 return;
             this.setSelectedEntities(selectedIds);
             const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
-            const content           = await this.loadEntities(params, false, null);
+            await this.loadEntities(params, false, null);
 
-            this.selectEditorValue(content.ast, this.explorer.focusedCell)
+            this.selectEditorValue(this.entityIdentity.ast, this.explorer.focusedCell);
         }
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1247,6 +1242,7 @@ class App {
         this.explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22, scroll);
+        this.selectEditorValue(this.entityIdentity.ast, td);
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
@@ -1691,7 +1687,8 @@ class App {
         database:   string,
         container:  string,
         entityIds:  string[],
-        command?:   string
+        command?:   string,
+        ast?:       jsonToAst.ValueNode
     }
 
     entityHistoryPos    = -1;
@@ -1715,7 +1712,7 @@ class App {
         this.loadEntities(entry.route, true, entry.selection);
     }
 
-    async loadEntities (p: Resource, preserveHistory: boolean, selection: monaco.IRange) : Promise<EntityContent> {
+    async loadEntities (p: Resource, preserveHistory: boolean, selection: monaco.IRange) : Promise<string> {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
         entityType.innerHTML    = this.getEntityType  (p.database, p.container);
@@ -1750,9 +1747,10 @@ class App {
         }
         // console.log(entityJson);
         const ast = this.setEntityValue(p.database, p.container, content);
+        this.entityIdentity.ast = ast;
         if (selection)  this.entityEditor.setSelection(selection);        
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
-        return { value: content, ast: ast };
+        return content;
     }
 
     updateGetEntitiesAnchor(database: string, container: string) {
@@ -1798,7 +1796,7 @@ class App {
         const response          = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
-        let   json              = JSON.parse(response.value) as Entity[];
+        let   json              = JSON.parse(response) as Entity[];
         if (json == null) {
             json = [];
         } else {

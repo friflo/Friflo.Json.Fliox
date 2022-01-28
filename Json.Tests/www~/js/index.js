@@ -995,8 +995,8 @@ class App {
                 return;
             this.setSelectedEntities(selectedIds);
             const params = { database: p.database, container: p.container, ids: selectedIds };
-            const content = await this.loadEntities(params, false, null);
-            this.selectEditorValue(content.ast, this.explorer.focusedCell);
+            await this.loadEntities(params, false, null);
+            this.selectEditorValue(this.entityIdentity.ast, this.explorer.focusedCell);
         };
         this.explorerEntities = {};
         this.selectedEntities = {};
@@ -1066,6 +1066,7 @@ class App {
         this.explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22, scroll);
+        this.selectEditorValue(this.entityIdentity.ast, td);
     }
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
     static ensureVisible(containerEl, el, offsetLeft, offsetTop, scroll) {
@@ -1520,10 +1521,11 @@ class App {
         }
         // console.log(entityJson);
         const ast = this.setEntityValue(p.database, p.container, content);
+        this.entityIdentity.ast = ast;
         if (selection)
             this.entityEditor.setSelection(selection);
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
-        return { value: content, ast: ast };
+        return content;
     }
     updateGetEntitiesAnchor(database, container) {
         // console.log("updateGetEntitiesAnchor");
@@ -1566,7 +1568,7 @@ class App {
         const response = await this.loadEntities(p, true, null);
         if (unchangedSelection)
             return;
-        let json = JSON.parse(response.value);
+        let json = JSON.parse(response);
         if (json == null) {
             json = [];
         }
