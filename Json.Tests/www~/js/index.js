@@ -869,9 +869,6 @@ class App {
         readEntities.innerHTML = "";
         const ulDatabase = createEl('ul');
         ulDatabase.classList.value = "database";
-        /* const typeLabel = create('div');
-        typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
-        ulDatabase.append(typeLabel); */
         const commandLabel = createEl('li');
         const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;

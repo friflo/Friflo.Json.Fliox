@@ -242,8 +242,8 @@ class App {
             case "resp":
             case "error":
                 clt = data.clt;
-                cltElement.innerText  = clt ?? " - ";
-                const content = this.formatJson(this.config.formatResponses, e.data);
+                cltElement.innerText    = clt ?? " - ";
+                const content           = this.formatJson(this.config.formatResponses, e.data);
                 this.responseModel.setValue(content)
                 responseState.innerHTML = `· ${duration} ms`;
                 break;
@@ -345,10 +345,10 @@ class App {
         let start = new Date().getTime();
         let duration: number;
         try {
-            const response = await this.postRequest(jsonRequest, "POST");
-            let content = await response.text;
-            content = this.formatJson(this.config.formatResponses, content);
-            duration = new Date().getTime() - start;
+            const response  = await this.postRequest(jsonRequest, "POST");
+            let content     = await response.text;
+            content         = this.formatJson(this.config.formatResponses, content);
+            duration        = new Date().getTime() - start;
             this.responseModel.setValue(content);
         } catch(error) {
             duration = new Date().getTime() - start;
@@ -445,16 +445,16 @@ class App {
         option.disabled = true;
         option.selected = true;
         option.hidden   = true;
-        option.text = "Select request ...";
+        option.text     = "Select request ...";
         selectExample.add(option);
 
-        const folder = './example-requests'
-        const response = await fetch(folder);
+        const folder    = './example-requests'
+        const response  = await fetch(folder);
         if (!response.ok)
             return;
-        const exampleRequests = await response.json();
-        let   groupPrefix = "0";
-        let   groupCount  = 0;
+        const exampleRequests   = await response.json();
+        let   groupPrefix       = "0";
+        let   groupCount        = 0;
         for (const example of exampleRequests) {
             if (!example.endsWith(".json"))
                 continue;
@@ -568,8 +568,8 @@ class App {
             if (reason.startsWith("at ")) {
                 const id = reason.match(App.bracketValue)[1];
                 if (p && id) {
-                    const c: Resource = { database: p.database, container: p.container, ids: [id] };
-                    const coordinate = JSON.stringify(c);
+                    const c: Resource   = { database: p.database, container: p.container, ids: [id] };
+                    const coordinate    = JSON.stringify(c);
                     const link = `<a  href="#" onclick='app.loadEntities(${coordinate})'>${id}</a>`;
                     reason = reason.replace(id, link);
                 }
@@ -637,9 +637,9 @@ class App {
             { "task": "command","name": "DbHubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response = await this.postRequestTasks("cluster", tasks, null);
-        const content = response.json as SyncResponse;
-        const error = App.getTaskError (content, 0);
+        const response  = await this.postRequestTasks("cluster", tasks, null);
+        const content   = response.json as SyncResponse;
+        const error     = App.getTaskError (content, 0);
         if (error) {
             catalogExplorer.innerHTML = App.errorAsHtml(error, null);
             return 
@@ -703,20 +703,20 @@ class App {
                 if (selectedElement.tagName.toLowerCase() != "div")
                     return;
                 if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-                this.selectedCatalog = selectedElement;
+                this.selectedCatalog    = selectedElement;
                 this.selectedCatalog.classList.add("selected");
-                const containerName = this.selectedCatalog.innerText.trim();
-                const databaseName  = path[3].childNodes[0].childNodes[1].textContent;
-                const params: Resource = { database: databaseName, container: containerName, ids: [] };
+                const containerName     = this.selectedCatalog.innerText.trim();
+                const databaseName      = path[3].childNodes[0].childNodes[1].textContent;
+                const params: Resource  = { database: databaseName, container: containerName, ids: [] };
                 this.clearEntity(databaseName, containerName);
                 this.loadContainer(params, null);
             }
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
-                const liContainer     = createEl('li');
-                liContainer.title   = "container";
-                const containerLabel  = createEl('div');
-                containerLabel.innerHTML = "&nbsp;" + containerName;
+                const liContainer       = createEl('li');
+                liContainer.title       = "container";
+                const containerLabel    = createEl('div');
+                containerLabel.innerHTML= "&nbsp;" + containerName;
                 liContainer.append(containerLabel)
                 ulContainers.append(liContainer);
             }
@@ -743,8 +743,8 @@ class App {
                 const container = containers[containerName];
                 containerRefs[container.additionalProperties.$ref] = containerName;
             }
-            this.databaseSchemas[database] = dbSchema;
-            dbSchema._containerSchemas = {}
+            this.databaseSchemas[database]  = dbSchema;
+            dbSchema._containerSchemas      = {}
 
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
@@ -852,10 +852,10 @@ class App {
         const containers      = dbType.properties;
         for (const containerName in containers) {
             const container     = containers[containerName];
-            const containerType   = App.getResolvedType(container.additionalProperties, schemaPath);
-            const uri = "http://" + database + containerType.$ref.substring(1);
-            const schema = schemaMap[uri];
-            const url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
+            const containerType = App.getResolvedType(container.additionalProperties, schemaPath);
+            const uri       = "http://" + database + containerType.$ref.substring(1);
+            const schema    = schemaMap[uri];
+            const url       = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
             schema.fileMatch.push(url); // requires a lower case string
         }
         const commandType     = jsonSchema.definitions[schemaName];
@@ -863,11 +863,11 @@ class App {
         for (const commandName in commands) {
             const command   = commands[commandName];
             // assign file matcher for command param
-            const paramType   = App.getResolvedType(command.param, schemaPath);
+            const paramType = App.getResolvedType(command.param, schemaPath);
             let url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (paramType.$ref) {
-                const uri = "http://" + database + paramType.$ref.substring(1);
-                const schema = schemaMap[uri];
+                const uri       = "http://" + database + paramType.$ref.substring(1);
+                const schema    = schemaMap[uri];
                 schema.fileMatch.push(url); // requires a lower case string
             } else {
                 // uri is never referenced - create an arbitrary unique uri
@@ -883,12 +883,12 @@ class App {
             const resultType   = App.getResolvedType(command.result, schemaPath);
             url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (resultType.$ref) {
-                const uri = "http://" + database + resultType.$ref.substring(1);
-                const schema = schemaMap[uri];
+                const uri       = "http://" + database + resultType.$ref.substring(1);
+                const schema    = schemaMap[uri];
                 schema.fileMatch.push(url); // requires a lower case string
             } else {
                 // uri is never referenced - create an arbitrary unique uri
-                const uri = "http://" + database + "/command/result" + commandName;
+                const uri    = "http://" + database + "/command/result" + commandName;
                 const schema = {
                     uri:        uri,
                     schema:     resultType,
@@ -984,15 +984,15 @@ class App {
         const command   = this.entityIdentity.command;
         if (!method) {
             const commandAnchor =  el("commandAnchor") as HTMLAnchorElement;
-            let commandValue = value == "null" ? "" : `&value=${value}`;
-            const path = App.getRestPath( database, null, null, `command=${command}${commandValue}`)
-            commandAnchor.href = path;
+            let commandValue    = value == "null" ? "" : `&value=${value}`;
+            const path          = App.getRestPath( database, null, null, `command=${command}${commandValue}`)
+            commandAnchor.href  = path;
             // window.open(path, '_blank');
             return;
         }
-        const response = await App.restRequest(method, value, database, null, null, `command=${command}`);
-        let content = await response.text();
-        content = this.formatJson(this.config.formatResponses, content);
+        const response  = await App.restRequest(method, value, database, null, null, `command=${command}`);
+        let content     = await response.text();
+        content         = this.formatJson(this.config.formatResponses, content);
         this.entityEditor.setValue(content);
     }
 
@@ -1007,30 +1007,27 @@ class App {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
-        catalogSchema.innerHTML  = this.getSchemaType(database)
+        catalogSchema.innerHTML     = this.getSchemaType(database)
         this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";
         readEntitiesDB.innerHTML    = App.getDatabaseLink(database);
         readEntities.innerHTML      = "";
 
-        const ulDatabase  = createEl('ul');
-        ulDatabase.classList.value = "database"
-        /* const typeLabel = create('div');
-        typeLabel.innerHTML = `<small style="opacity:0.5">type: ${dbContainer.databaseType}</small>`;
-        ulDatabase.append(typeLabel); */
-        const commandLabel = createEl('li');
-        const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
+        const ulDatabase            = createEl('ul');
+        ulDatabase.classList.value  = "database"
+        const commandLabel  = createEl('li');
+        const label         = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
         ulDatabase.append(commandLabel);
 
         const liCommands  = createEl('li');
         ulDatabase.appendChild(liCommands);
 
-        const ulCommands = createEl('ul');
-        ulCommands.onclick = (ev) => {
+        const ulCommands    = createEl('ul');
+        ulCommands.onclick  = (ev) => {
             this.setEditorHeader("command");
-            const path = ev.composedPath() as HTMLElement[];
+            const path      = ev.composedPath() as HTMLElement[];
             let selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
 
@@ -1047,11 +1044,11 @@ class App {
             }
         }
         for (const command of dbCommands.commands) {
-            const liCommand = createEl('li');
-            const commandLabel = createEl('div');
-            commandLabel.innerText = command;
+            const liCommand             = createEl('li');
+            const commandLabel          = createEl('div');
+            commandLabel.innerText      = command;
             liCommand.appendChild(commandLabel);
-            const runCommand = createEl('div');
+            const runCommand            = createEl('div');
             runCommand.classList.value  = "command";
             runCommand.title            = "POST command"
             liCommand.appendChild(runCommand);
@@ -1104,9 +1101,9 @@ class App {
     }
 
     updateFilterLink() {
-        const filter  = entityFilter.value;
-        const query   = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
-        const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
+        const filter    = entityFilter.value;
+        const query     = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
+        const url       = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el<HTMLAnchorElement>("filterLink").href = url;
     }
 
@@ -1121,14 +1118,14 @@ class App {
     explorerTable:  HTMLTableElement;
 
     async loadContainer (p: Resource, query: string) {
-        const storedFilter = this.config.filters[p.database]?.[p.container];
-        const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
-        entityFilter.value = filter;
+        const storedFilter  = this.config.filters[p.database]?.[p.container];
+        const filter        = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
+        entityFilter.value  = filter;
 
         const removeFilterVisibility = query ? "" : "hidden";
         el("removeFilter").style.visibility = removeFilterVisibility;
         
-        const entityType    = this.getContainerSchema(p.database, p.container);
+        const entityType        = this.getContainerSchema(p.database, p.container);
         this.filter.database    = p.database;
         this.filter.container   = p.container;
         this.explorer = {
@@ -1137,8 +1134,8 @@ class App {
             entityType: entityType
         };        
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
-        filterRow.style.visibility   = "";
-        entityFilter.style.visibility  = "";
+        filterRow.style.visibility      = "";
+        entityFilter.style.visibility   = "";
         catalogSchema.innerHTML  = this.getSchemaType(p.database) + ' · ' + this.getEntityType(p.database, p.container);
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
@@ -1222,10 +1219,10 @@ class App {
         const td = path[0];
         if (td.tagName != "TD")
             return null;
-        const cell  = td as HTMLTableCellElement;
-        const row   = td.parentElement as HTMLTableRowElement;
+        const cell      = td as HTMLTableCellElement;
+        const row       = td.parentElement as HTMLTableRowElement;
         this.setFocusCell(row.rowIndex, cell.cellIndex);
-        const children = path[1].children; // tr children
+        const children  = path[1].children; // tr children
         const id = (children[1] as HTMLElement).innerText;
         if (td == children[0] || select == "toggle") {
             const selectedIds = Object.keys(this.selectedEntities);
@@ -1348,18 +1345,18 @@ class App {
                 break;
             }
             case 'Enter': {
-                const ids       = [this.getRowId(row)];                
+                const ids               = [this.getRowId(row)];                
                 this.setSelectedEntities(ids);
-                const params: Resource = { database: explorer.database, container: explorer.container, ids };
+                const params: Resource  = { database: explorer.database, container: explorer.container, ids };
                 this.loadEntities(params, false, null);
                 break;
             }
             case 'KeyA': {
                 if (!event.ctrlKey)
                     return;
-                const ids   = Object.keys(this.explorerEntities);
+                const ids               = Object.keys(this.explorerEntities);
                 this.setSelectedEntities(ids);
-                const params: Resource = { database: explorer.database, container: explorer.container, ids };
+                const params: Resource  = { database: explorer.database, container: explorer.container, ids };
                 this.loadEntities(params, false, null);
                 break;
             }
@@ -1381,9 +1378,9 @@ class App {
     }
 
     getRowId(row: HTMLTableRowElement) : string {
-        const keyName = App.getEntityKeyName(this.explorer.entityType);
-        const table = this.explorerTable;
-        const headerCells = table.rows[0].cells;
+        const keyName       = App.getEntityKeyName(this.explorer.entityType);
+        const table         = this.explorerTable;
+        const headerCells   = table.rows[0].cells;
         for (let i = 1; i < headerCells.length; i++) {
             if (headerCells[i].innerText != keyName)
                 continue;
@@ -1474,7 +1471,7 @@ class App {
     }
 
     createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
-        const keyName       = App.getEntityKeyName(entityType);
+        const keyName   = App.getEntityKeyName(entityType);
         if (entityType) {
             const properties    =  entityType.properties;
             for (const fieldName in properties) {
@@ -1583,7 +1580,7 @@ class App {
         const tds           = [] as HTMLTableCellElement[];
         // console.log("entities", entities);
         for (const entity of entities) {
-            tds.length = 0;
+            tds.length  = 0;
             const id    = entity[keyName];
             let   row   = this.explorerEntities[id];
             if (!row) {
@@ -1639,7 +1636,7 @@ class App {
             const content   = App.getCellContent(value);
             const count     = content.count;
             if (count === undefined) {
-                tdField.innerText = `${content.value} `
+                tdField.innerText   = `${content.value} `
             } else {
                 const isObjectArray = content.isObjectArray;
                 const countStr      = count == 0 ? '0' : `${count}: `
@@ -1949,15 +1946,15 @@ class App {
     getModel (url: string) : monaco.editor.ITextModel {
         this.entityModel = this.entityModels[url];
         if (!this.entityModel) {
-            const entityUri   = monaco.Uri.parse(url);
-            this.entityModel = monaco.editor.createModel(null, "json", entityUri);
-            this.entityModels[url] = this.entityModel;
+            const entityUri         = monaco.Uri.parse(url);
+            this.entityModel        = monaco.editor.createModel(null, "json", entityUri);
+            this.entityModels[url]  = this.entityModel;
         }
         return this.entityModel;
     }
 
     setEntityValue (database: string, container: string, value: string) : jsonToAst.ValueNode {
-        const url = `entity://${database}.${container}.json`;
+        const url   = `entity://${database}.${container}.json`;
         const model = this.getModel(url);
         model.setValue(value);
         this.entityEditor.setModel (model);
@@ -2074,9 +2071,9 @@ class App {
     }
 
     static findPathRange(ast: jsonToAst.ValueNode, pathString: string, keyName: string, id: string) : FindRange {
-        const astRange = App.RangeFromNode(ast);
-        const path  = pathString.split('.');
-        let   node  = ast;
+        const astRange  = App.RangeFromNode(ast);
+        const path      = pathString.split('.');
+        let   node      = ast;
         if (ast.type == "Array") {
             node = App.findArrayItem(ast, keyName, id);
             if (!node)
@@ -2110,9 +2107,9 @@ class App {
     }
 
     setCommandParam (database: string, command: string, value: string) {
-        const url = `command-param://${database}.${command}.json`;
-        const isNewModel = this.entityModels[url] == undefined;
-        const model = this.getModel(url)
+        const url           = `command-param://${database}.${command}.json`;
+        const isNewModel    = this.entityModels[url] == undefined;
+        const model         = this.getModel(url)
         if (isNewModel) {
             model.setValue(value);
         }
@@ -2120,7 +2117,7 @@ class App {
     }
 
     setCommandResult (database: string, command: string) {
-        const url = `command-result://${database}.${command}.json`;
+        const url   = `command-result://${database}.${command}.json`;
         const model = this.getModel(url)
         this.entityEditor.setModel (model);
     }
@@ -2129,9 +2126,9 @@ class App {
     activeExplorerEditor: ExplorerEditor = undefined;
 
     setExplorerEditor(edit : ExplorerEditor) {
-        this.activeExplorerEditor = edit;
+        this.activeExplorerEditor   = edit;
         // console.log("editor:", edit);
-        const commandActive = edit == "command";
+        const commandActive         = edit == "command";
         commandValueContainer.style.display = commandActive ? "" : "none";
         commandParamBar.style.display       = commandActive ? "" : "none";
         el("explorerEdit").style.gridTemplateRows = commandActive ? `${this.commandEditWidth} var(--vbar-width) 1fr` : "0 0 1fr";
@@ -2346,8 +2343,8 @@ class App {
     }
 
     setConfig<K extends ConfigKey>(key: K, value: Config[K]) {
-        this.config[key] = value;
-        const elem = el(key);
+        this.config[key]    = value;
+        const elem          = el(key);
         if (elem instanceof HTMLInputElement) {
             elem.value   = value as string;
             elem.checked = value as boolean;
@@ -2437,18 +2434,18 @@ class App {
             }
         }
         for (const pair of pairs) {
-            const child = pair.elem.children[0] as HTMLElement;
-            child.style.width  = "0px";  // required to shrink width.  Found no alternative solution right now.
-            child.style.height = "0px";  // required to shrink height. Found no alternative solution right now.
+            const child         = pair.elem.children[0] as HTMLElement;
+            child.style.width   = "0px";  // required to shrink width.  Found no alternative solution right now.
+            child.style.height  = "0px";  // required to shrink height. Found no alternative solution right now.
         }
         for (const pair of pairs) {
             pair.editor.layout();
         }
         // set editor width/height to their container width/height
         for (const pair of pairs) {
-            const child  = pair.elem.children[0] as HTMLElement;
-            child.style.width  = pair.elem.clientWidth  + "px";
-            child.style.height = pair.elem.clientHeight + "px";
+            const child         = pair.elem.children[0] as HTMLElement;
+            child.style.width   = pair.elem.clientWidth  + "px";
+            child.style.height  = pair.elem.clientHeight + "px";
         }
     }
 
@@ -2495,12 +2492,12 @@ class App {
             return;
         // console.log(`  drag: ${event.clientX}`);
         const clientXY  = this.dragHorizontal ? event.clientX : event.clientY;
-        const xy         = clientXY - this.dragOffset;
+        const xy        = clientXY - this.dragOffset;
         const cols      = this.getGridColumns(xy);
         if (this.dragHorizontal) {
             this.dragTemplate.style.gridTemplateColumns = cols.join(" ");
         } else {
-            this.dragTemplate.style.gridTemplateRows = cols.join(" ");
+            this.dragTemplate.style.gridTemplateRows    = cols.join(" ");
         }
         this.layoutEditors();
         event.preventDefault();
@@ -2509,10 +2506,10 @@ class App {
     endDrag() {
         if (!this.dragTemplate)
             return;
-        document.body.onmousemove = undefined;
-        document.body.onmouseup   = undefined;
-        this.dragTemplate = undefined;
-        document.body.style.cursor = "auto";
+        document.body.onmousemove   = undefined;
+        document.body.onmouseup     = undefined;
+        this.dragTemplate           = undefined;
+        document.body.style.cursor  = "auto";
     }
 
     toggleTheme() {
