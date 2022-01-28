@@ -1014,14 +1014,15 @@ class App {
         const path = thDiv.innerText;
         const keyName = App.getEntityKeyName(this.explorer.entityType);
         const id = row.cells[1].innerText;
-        const r = App.findPathRange(ast, path, keyName, id);
-        if (!r) {
-            console.log("path not found:", path);
-            return;
+        const range = App.findPathRange(ast, path, keyName, id);
+        this.entityEditor.revealRange(range.entity);
+        if (range.value) {
+            this.entityEditor.setSelection(range.value);
+            this.entityEditor.revealRange(range.value);
         }
-        const visibleRange = new monaco.Range(r.startLineNumber - 1, r.startColumn, r.endLineNumber, r.endColumn);
-        this.entityEditor.setSelection(r);
-        this.entityEditor.revealRange(visibleRange);
+        else {
+            console.log("path not found:", path);
+        }
     }
     getSelectionFromPath(path, select) {
         // in case of a multiline text selection selectedElement is the parent
@@ -1808,17 +1809,19 @@ class App {
         return null;
     }
     static findPathRange(ast, pathString, keyName, id) {
+        const astRange = App.RangeFromNode(ast);
         const path = pathString.split('.');
         let node = ast;
         if (ast.type == "Array") {
             node = App.findArrayItem(ast, keyName, id);
             if (!node)
-                return null;
+                return { entity: astRange, value: null };
         }
+        const entityRange = App.RangeFromNode(node);
         for (let i = 0; i < path.length; i++) {
             const name = path[i];
             if (node.type != "Object")
-                return null;
+                return { entity: astRange, value: null };
             let foundChild = null;
             for (const child of node.children) {
                 if (child.key.value == name) {
@@ -1827,9 +1830,11 @@ class App {
                 }
             }
             if (!foundChild)
-                return null;
-            return App.RangeFromNode(foundChild.value);
+                return { entity: entityRange, value: null };
+            const valueRange = App.RangeFromNode(foundChild.value);
+            return { entity: entityRange, value: valueRange };
         }
+        return { entity: entityRange, value: null };
     }
     static RangeFromNode(node) {
         const trim = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
