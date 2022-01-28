@@ -1368,6 +1368,7 @@ class App {
                 const tdCheckbox = createEl('td');
                 const checked = createEl('input');
                 checked.type = "checkbox";
+                checked.tabIndex = -1;
                 checked.checked = true;
                 tdCheckbox.append(checked);
                 row.append(tdCheckbox);

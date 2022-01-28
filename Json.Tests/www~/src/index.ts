@@ -1574,10 +1574,11 @@ class App {
                 this.explorerEntities[id] = row;
 
                 // cell: add checkbox
-                const tdCheckbox = createEl('td');
-                const checked = createEl('input');
-                checked.type = "checkbox";
-                checked.checked = true;
+                const tdCheckbox    = createEl('td');
+                const checked       = createEl('input');
+                checked.type        = "checkbox";
+                checked.tabIndex    = -1;
+                checked.checked     = true;
                 tdCheckbox.append(checked);
                 row.append(tdCheckbox);
                 tds.push(tdCheckbox);
