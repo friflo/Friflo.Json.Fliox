@@ -1171,6 +1171,7 @@ class App {
             this.setSelectedEntities(selectedIds);
             const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
             await this.loadEntities(params, false, null);
+
             const json  = this.entityEditor.getValue();
             const ast   = this.getAstFromJson(json);
             this.selectEditorValue(ast, this.explorer.focusedCell);
@@ -1241,16 +1242,25 @@ class App {
         return ids;
     }
 
-    setFocusCell(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
+    setFocusCellSelectValue(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
+        const td = this.setFocusCell(rowIndex, cellIndex, scroll);
+        if (!td)
+            return;
+        const json  = this.entityEditor.getValue();
+        const ast   = this.getAstFromJson(json);
+        this.selectEditorValue(ast, td);
+    }
+
+    setFocusCell(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) : HTMLTableCellElement | null {
         const table = this.explorerTable;
         if (rowIndex < 1 || cellIndex < 1)
-            return;
+            return null;
         const rows = table.rows;
         if (rowIndex >= rows.length)
-            return;
+            return null;
         const row = rows[rowIndex];
         if (cellIndex >= row.cells.length)
-            return;
+            return null;
 
         const explorer = this.explorer;
         const td = row.cells[cellIndex];
@@ -1259,9 +1269,7 @@ class App {
         explorer.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         App.ensureVisible(entityExplorer, td, 16, 22, scroll);
-        const json  = this.entityEditor.getValue();
-        const ast   = this.getAstFromJson(json);
-        this.selectEditorValue(ast, td);
+        return td;
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
@@ -1305,35 +1313,35 @@ class App {
         switch (event.code) {
             case 'Home':                
                 if (event.ctrlKey) {
-                    this.setFocusCell (1, td.cellIndex, "smooth");
+                    this.setFocusCellSelectValue (1, td.cellIndex, "smooth");
                 } else {
-                    this.setFocusCell (row.rowIndex, 1, "smooth");
+                    this.setFocusCellSelectValue (row.rowIndex, 1, "smooth");
                 }
                 break;
             case 'End':
                 if (event.ctrlKey) {
-                    this.setFocusCell (table.rows.length - 1, td.cellIndex, "smooth");
+                    this.setFocusCellSelectValue (table.rows.length - 1, td.cellIndex, "smooth");
                 } else {
-                    this.setFocusCell (row.rowIndex, row.cells.length - 1, "smooth");
+                    this.setFocusCellSelectValue (row.rowIndex, row.cells.length - 1, "smooth");
                 }                
                 break;
             case 'PageUp':
-                this.setFocusCell(row.rowIndex - 3, td.cellIndex);
+                this.setFocusCellSelectValue(row.rowIndex - 3, td.cellIndex);
                 break;                
             case 'PageDown':
-                this.setFocusCell(row.rowIndex + 3, td.cellIndex);
+                this.setFocusCellSelectValue(row.rowIndex + 3, td.cellIndex);
                 break;                
             case 'ArrowUp':
-                this.setFocusCell(row.rowIndex - 1, td.cellIndex);
+                this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
                 break;
             case 'ArrowDown':
-                this.setFocusCell(row.rowIndex + 1, td.cellIndex);
+                this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
                 break;
             case 'ArrowLeft':
-                this.setFocusCell(row.rowIndex, td.cellIndex - 1);
+                this.setFocusCellSelectValue(row.rowIndex, td.cellIndex - 1);
                 break;
             case 'ArrowRight':
-                this.setFocusCell(row.rowIndex, td.cellIndex + 1);
+                this.setFocusCellSelectValue(row.rowIndex, td.cellIndex + 1);
                 break;
             case 'Space': {
                 const id        = this.getRowId(row);
@@ -2059,17 +2067,23 @@ class App {
         }
     }
 
-    static findArrayItem(arrayNode: jsonToAst.ArrayNode, keyName: string, id: string) : jsonToAst.ValueNode {
+    static hasProperty(objectNode: jsonToAst.ObjectNode, keyName: string, id: string) : boolean {
+        for (const property of objectNode.children) {
+            if (property.key.value != keyName)
+                continue;
+            const value = property.value;
+            if (value.type == "Literal" && value.value == id)
+                return true;
+        }
+        return false;
+    }
+
+    static findArrayItem(arrayNode: jsonToAst.ArrayNode, keyName: string, id: string) : jsonToAst.ObjectNode | null {
         for(const item of arrayNode.children) {
             if (item.type != "Object")
                 continue;
-            for (const property of item.children) {
-                if (property.key.value != keyName)
-                    continue;
-                const value = property.value;
-                if (value.type == "Literal" && value.value == id)
-                    return item;
-            }
+            if (App.hasProperty(item, keyName, id))
+                return item;
         }
         return null;
     }
@@ -2078,9 +2092,17 @@ class App {
         const astRange  = App.RangeFromNode(ast);
         const path      = pathString.split('.');
         let   node      = ast;
-        if (ast.type == "Array") {
-            node = App.findArrayItem(ast, keyName, id);
-            if (!node)
+        switch (ast.type) {
+            case "Array":
+                node = App.findArrayItem(ast, keyName, id);
+                if (!node)
+                    return { entity: astRange, value: null };
+                break;
+            case "Object":
+                if (!App.hasProperty(ast, keyName, id))
+                    return { entity: astRange, value: null };
+                break;
+            default:
                 return { entity: astRange, value: null };
         }
         const entityRange = App.RangeFromNode(node);
