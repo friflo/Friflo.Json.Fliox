@@ -1183,6 +1183,8 @@ class App {
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
+        // set initial focus cell
+        this.setFocusCell(1, 1);
     }
 
     getAstFromJson(json: string) : jsonToAst.ValueNode | null {
@@ -1322,10 +1324,10 @@ class App {
     }
 
     async explorerKeyDown(event: KeyboardEvent) {
-        const td = this.explorer.focusedCell;
+        const explorer  = this.explorer;
+        const td = explorer.focusedCell;
         if (!td)
             return;
-        const explorer  = this.explorer;
         const table     = this.explorerTable;
         const row       = td.parentElement as HTMLTableRowElement;
         switch (event.code) {
@@ -1952,7 +1954,7 @@ class App {
         const firstRow = liIds[ids[0]];
         if (firstRow) {
             const columnIndex = this.explorer.focusedCell?.cellIndex ?? 1;
-            this.setFocusCell(firstRow.rowIndex, columnIndex, "smooth");
+            this.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};
         this.entityHistory.length = this.entityHistoryPos + 1;        

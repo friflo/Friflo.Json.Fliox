@@ -1003,6 +1003,8 @@ class App {
         this.setColumnWidths();
         entityExplorer.innerText = "";
         entityExplorer.appendChild(table);
+        // set initial focus cell
+        this.setFocusCell(1, 1);
     }
     getAstFromJson(json) {
         if (json == "")
@@ -1131,10 +1133,10 @@ class App {
         }
     }
     async explorerKeyDown(event) {
-        const td = this.explorer.focusedCell;
+        const explorer = this.explorer;
+        const td = explorer.focusedCell;
         if (!td)
             return;
-        const explorer = this.explorer;
         const table = this.explorerTable;
         const row = td.parentElement;
         switch (event.code) {
@@ -1708,7 +1710,7 @@ class App {
         const firstRow = liIds[ids[0]];
         if (firstRow) {
             const columnIndex = (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1;
-            this.setFocusCell(firstRow.rowIndex, columnIndex, "smooth");
+            this.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
         this.entityHistory.length = this.entityHistoryPos + 1;
