@@ -2167,7 +2167,13 @@ class App {
                 // const action = editor.getAction("editor.action.formatDocument");
                 // action.run();
                 const obj = JSON.parse(text);
-                return JSON.stringify(obj, null, 4);
+                const formatted = JSON.stringify(obj, null, 4);
+                if (!Array.isArray(obj))
+                    return formatted;
+                let lines = formatted.split('\n');
+                lines = lines.slice(1, lines.length - 1);
+                lines = lines.map(l => l.substring(4)); // remove 4 leading spaces
+                return `[${lines.join('\n')}]`;
             }
             catch (error) { }
         }
