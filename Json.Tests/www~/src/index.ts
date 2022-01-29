@@ -67,7 +67,7 @@ type MonacoSchema = {
 }
 
 type FindRange = {
-    entity: monaco.Range;
+    entity: monaco.Range | null;
     value:  monaco.Range | null;
 }
 
@@ -1206,11 +1206,19 @@ class App {
         const keyName   = App.getEntityKeyName(this.explorer.entityType);
         const id        = row.cells[1].innerText;
         const range     = App.findPathRange(ast, path, keyName, id);
-        this.entityEditor.revealRange(range.entity);
+        if (range.entity) {
+            this.entityEditor.revealRange(range.entity);
+        }
         if (range.value) {
             this.entityEditor.setSelection(range.value);
-            this.entityEditor.revealRange (range.value);
+            this.entityEditor.revealRange (range.value);            
         } else {
+            // clear editor selection as focused cell not found in editor value
+            const pos               = this.entityEditor.getPosition();
+            const line              = pos.lineNumber    ?? 0;
+            const column            = pos.column        ?? 0; 
+            const clearedSelection  = new monaco.Selection(line, column, line, column);
+            this.entityEditor.setSelection(clearedSelection);
             console.log("path not found:", path)
         }        
     }
@@ -2096,14 +2104,14 @@ class App {
             case "Array":
                 node = App.findArrayItem(ast, keyName, id);
                 if (!node)
-                    return { entity: astRange, value: null };
+                    return { entity: null, value: null };
                 break;
             case "Object":
                 if (!App.hasProperty(ast, keyName, id))
-                    return { entity: astRange, value: null };
+                    return { entity: null, value: null };
                 break;
             default:
-                return { entity: astRange, value: null };
+                return { entity: null, value: null };
         }
         const entityRange = App.RangeFromNode(node);
         for (let i = 0; i < path.length; i++) {
