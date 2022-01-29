@@ -43,7 +43,8 @@
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
             /* light */
-            --selected-color:   #dbebff;
+            --selected-color:   #e1eeff;
+            --selected-hover:   #cde3ff;
             --tab-color:        #e8e8e8;
             --tab-hover:        #e0e0e0;
             --tab-border:       #ffffff;
@@ -60,7 +61,8 @@
             --table-bar:        #e8e8e8;
         }
         [data-theme="dark"] {
-            --selected-color:   #44fa;
+            --selected-color:   #3b38b7;
+            --selected-hover:   #4e4cc7;
             --tab-color:        #303030;
             --tab-hover:        #606060;
             --tab-border:       #1e1e1e;
@@ -300,11 +302,13 @@
         .entities tr.selected:hover td:nth-child(1)       input { opacity: 1; background-color: red; }
 
         .entities tr *                          { cursor: pointer; }
-        .entities tr.selected *                 { background-color: var(--selected-color); }
-        .entities tr:hover:not(:first-child) *  { background-color: var(--item-hover); }
+        .entities tr.selected *                             { background-color: var(--selected-color); }
+        .entities tr:hover td:not(:first-child)             { background-color: var(--item-hover); }
+        .entities tr.selected:hover td:not(:first-child)    { background-color: var(--selected-color); }
 
-        .cellCount                          { color: grey; }
-        .entities tr td:hover               { background-color: var(--cell-hover) !important; }
+        .cellCount                                          { color: grey; }
+        .entities tr          td:not(:first-child):hover    { background-color: var(--cell-hover)     !important; }
+        .entities tr.selected td:not(:first-child):hover    { background-color: var(--selected-hover) !important; }
         .entities tr td.focus               { outline: 2px solid rgb(145, 145, 255); outline-offset: -2px; }
         .entities tr td                     { scroll-margin-top: 20px; scroll-margin-left: 16px; }
         
