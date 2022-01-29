@@ -1228,26 +1228,30 @@ class App {
         const td = path[0];
         if (td.tagName != "TD")
             return null;
-        const cell      = td as HTMLTableCellElement;
-        const row       = td.parentElement as HTMLTableRowElement;
-        this.setFocusCell(row.rowIndex, cell.cellIndex);
-        const children  = path[1].children; // tr children
-        const id = (children[1] as HTMLElement).innerText;
-        if (td == children[0] || select == "toggle") {
+        const cell          = td as HTMLTableCellElement;
+        const row           = td.parentElement as HTMLTableRowElement;
+        const children      = path[1].children; // tr children
+        const id            = (children[1] as HTMLElement).innerText;
+        const isCheckbox    = td == children[0];
+        if (isCheckbox || select == "toggle") {
             const selectedIds = Object.keys(this.selectedEntities);
-            return App.toggleIds(selectedIds, id);
+            if (App.toggleIds(selectedIds, id) == "added") {
+                this.setFocusCell(row.rowIndex, this.explorer.focusedCell?.cellIndex ?? 1);
+            }
+            return selectedIds;
         }
+        this.setFocusCell(row.rowIndex, cell.cellIndex);
         return [id];
     }
 
-    static toggleIds(ids: string[], id: string) {
+    static toggleIds(ids: string[], id: string) : "added" | "removed" {
         const index = ids.indexOf(id);
         if (index == -1) {
             ids.push(id);
-        } else {
-            ids.splice(index, 1);
+            return "added";
         }
-        return ids;
+        ids.splice(index, 1);        
+        return "removed";
     }
 
     setFocusCellSelectValue(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
@@ -1354,8 +1358,8 @@ class App {
             case 'Space': {
                 const id        = this.getRowId(row);
                 const ids       = Object.keys(this.selectedEntities);
-                const newIds    = App.toggleIds(ids, id);
-                this.setSelectedEntities(newIds);
+                App.toggleIds(ids, id);
+                this.setSelectedEntities(ids);
                 const params: Resource = { database: explorer.database, container: explorer.container, ids };
                 this.loadEntities(params, false, null);
                 break;

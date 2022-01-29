@@ -1044,30 +1044,34 @@ class App {
         }
     }
     getSelectionFromPath(path, select) {
+        var _a, _b;
         // in case of a multiline text selection selectedElement is the parent
         const td = path[0];
         if (td.tagName != "TD")
             return null;
         const cell = td;
         const row = td.parentElement;
-        this.setFocusCell(row.rowIndex, cell.cellIndex);
         const children = path[1].children; // tr children
         const id = children[1].innerText;
-        if (td == children[0] || select == "toggle") {
+        const isCheckbox = td == children[0];
+        if (isCheckbox || select == "toggle") {
             const selectedIds = Object.keys(this.selectedEntities);
-            return App.toggleIds(selectedIds, id);
+            if (App.toggleIds(selectedIds, id) == "added") {
+                this.setFocusCell(row.rowIndex, (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1);
+            }
+            return selectedIds;
         }
+        this.setFocusCell(row.rowIndex, cell.cellIndex);
         return [id];
     }
     static toggleIds(ids, id) {
         const index = ids.indexOf(id);
         if (index == -1) {
             ids.push(id);
+            return "added";
         }
-        else {
-            ids.splice(index, 1);
-        }
-        return ids;
+        ids.splice(index, 1);
+        return "removed";
     }
     setFocusCellSelectValue(rowIndex, cellIndex, scroll = null) {
         const td = this.setFocusCell(rowIndex, cellIndex, scroll);
@@ -1167,8 +1171,8 @@ class App {
             case 'Space': {
                 const id = this.getRowId(row);
                 const ids = Object.keys(this.selectedEntities);
-                const newIds = App.toggleIds(ids, id);
-                this.setSelectedEntities(newIds);
+                App.toggleIds(ids, id);
+                this.setSelectedEntities(ids);
                 const params = { database: explorer.database, container: explorer.container, ids };
                 this.loadEntities(params, false, null);
                 break;
