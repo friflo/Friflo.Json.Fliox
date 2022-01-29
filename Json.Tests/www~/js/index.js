@@ -1078,6 +1078,9 @@ class App {
         const td = this.setFocusCell(rowIndex, cellIndex, scroll);
         if (!td)
             return;
+        this.selectCellValue(td);
+    }
+    selectCellValue(td) {
         const json = this.entityEditor.getValue();
         const ast = this.getAstFromJson(json);
         this.selectEditorValue(ast, td);
@@ -1127,7 +1130,7 @@ class App {
             parentEl.scrollTo(opt);
         }
     }
-    explorerKeyDown(event) {
+    async explorerKeyDown(event) {
         const td = this.explorer.focusedCell;
         if (!td)
             return;
@@ -1136,79 +1139,94 @@ class App {
         const row = td.parentElement;
         switch (event.code) {
             case 'Home':
+                event.preventDefault();
                 if (event.ctrlKey) {
                     this.setFocusCellSelectValue(1, td.cellIndex, "smooth");
                 }
                 else {
                     this.setFocusCellSelectValue(row.rowIndex, 1, "smooth");
                 }
-                break;
+                return;
             case 'End':
+                event.preventDefault();
                 if (event.ctrlKey) {
                     this.setFocusCellSelectValue(table.rows.length - 1, td.cellIndex, "smooth");
                 }
                 else {
                     this.setFocusCellSelectValue(row.rowIndex, row.cells.length - 1, "smooth");
                 }
-                break;
+                return;
             case 'PageUp':
+                event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex - 3, td.cellIndex);
-                break;
+                return;
             case 'PageDown':
+                event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 3, td.cellIndex);
-                break;
+                return;
             case 'ArrowUp':
+                event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
-                break;
+                return;
             case 'ArrowDown':
+                event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
-                break;
+                return;
             case 'ArrowLeft':
+                event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex, td.cellIndex - 1);
-                break;
+                return;
             case 'ArrowRight':
+                event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex, td.cellIndex + 1);
-                break;
+                return;
             case 'Space': {
+                event.preventDefault();
                 const id = this.getRowId(row);
                 const ids = Object.keys(this.selectedEntities);
-                App.toggleIds(ids, id);
+                const toggle = App.toggleIds(ids, id);
                 this.setSelectedEntities(ids);
                 const params = { database: explorer.database, container: explorer.container, ids };
-                this.loadEntities(params, false, null);
-                break;
+                await this.loadEntities(params, false, null);
+                if (toggle == "added")
+                    this.selectCellValue(explorer.focusedCell);
+                return;
             }
             case 'Enter': {
+                event.preventDefault();
                 const ids = [this.getRowId(row)];
                 this.setSelectedEntities(ids);
                 const params = { database: explorer.database, container: explorer.container, ids };
-                this.loadEntities(params, false, null);
-                break;
+                await this.loadEntities(params, false, null);
+                this.selectCellValue(explorer.focusedCell);
+                return;
             }
             case 'KeyA': {
                 if (!event.ctrlKey)
                     return;
+                event.preventDefault();
                 const ids = Object.keys(this.explorerEntities);
                 this.setSelectedEntities(ids);
                 const params = { database: explorer.database, container: explorer.container, ids };
                 this.loadEntities(params, false, null);
-                break;
+                return;
             }
             case 'KeyC':
                 if (!event.ctrlKey)
                     return;
+                event.preventDefault();
                 const editorValue = this.entityEditor.getValue();
                 navigator.clipboard.writeText(editorValue);
-                break;
+                return;
             case 'Delete': {
+                event.preventDefault();
                 const ids = Object.keys(this.selectedEntities);
                 this.deleteEntities(explorer.database, explorer.container, ids);
-                break;
+                return;
             }
             default:
                 return;
         }
-        event.preventDefault();
     }
     getRowId(row) {
         const keyName = App.getEntityKeyName(this.explorer.entityType);
