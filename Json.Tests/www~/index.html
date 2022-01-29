@@ -309,7 +309,9 @@
         .cellCount                                          { color: grey; }
         .entities tr          td:not(:first-child):hover    { background-color: var(--cell-hover)     !important; }
         .entities tr.selected td:not(:first-child):hover    { background-color: var(--selected-hover) !important; }
-        .entities tr td.focus               { outline: 2px solid rgb(145, 145, 255); outline-offset: -2px; }
+        #entityExplorer:focus .entities tr td.focus         { outline: 2px solid rgb(145, 145, 255); outline-offset: -2px; }
+    /*  .entities tr td.focus                               { outline: 2px solid rgb(145, 145, 255);   outline-offset: -2px; } */
+
         .entities tr td                     { scroll-margin-top: 20px; scroll-margin-left: 16px; }
         
 
