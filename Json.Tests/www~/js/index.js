@@ -1048,14 +1048,17 @@ class App {
     getSelectionFromPath(path, select) {
         var _a, _b;
         // in case of a multiline text selection selectedElement is the parent
-        const td = path[0];
-        if (td.tagName != "TD")
+        const element = path[0];
+        if (element.tagName == "TABLE") {
+            return [];
+        }
+        if (element.tagName != "TD")
             return null;
-        const cell = td;
-        const row = td.parentElement;
+        const cell = element;
+        const row = cell.parentElement;
         const children = path[1].children; // tr children
         const id = children[1].innerText;
-        const isCheckbox = td == children[0];
+        const isCheckbox = cell == children[0];
         const selectedIds = Object.keys(this.selectedEntities);
         if (isCheckbox || select == "toggle") {
             if (App.toggleIds(selectedIds, id) == "added") {
