@@ -84,7 +84,8 @@
         .refLinkDecoration          { color: var(--link-color) !important;  }
         .refLinkDecoration:hover    { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--link-deco) !important; }
 
-        .navigate           { cursor: pointer; font-size: 14px; height: 22px; width: 22px; text-align: center; user-select: none; 
+        .navigate           { cursor: pointer; font-size: 14px; height: 22px; width: 22px; text-align: center;
+                              user-select: none; -moz-user-select: none;
                               background-color: var(--tab-color); border-radius: 2px;}
         .navigate:hover     { background-color: var(--tab-hover); }
         .navigate:active    { background-color: var(--background3); font-size: 13.5px; box-shadow: inset 1px 1px 1px #00000010; }
@@ -274,8 +275,9 @@
         .catalogs li div.selected   { background-color: var(--selected-color); }
         .catalogs ul li div:hover   { background-color: var(--item-hover); }
 
-        .entities                       { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px; 
-                                          table-layout: fixed;}        
+        .entities                       { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px;
+                                          table-layout: fixed;
+                                          user-select: none; -moz-user-select: none; /* Firefox: otherwise artifact for outline used for focused cell */ }
         .entities tr th                 { text-align: left; font-weight: bold; font-size: 12px;  position: sticky; top: 0; color: #999;
                                           margin: 0; padding: 0; }
         .entities tr th:first-child     { left: 0; z-index: 1;  } /* sticky top/left cell */
@@ -286,7 +288,7 @@
 
         .entities tr th:first-child div { border-bottom: 2px solid var(--background2); }
         .thGrip                         { top: 0; right: 0; bottom: 0; width: 6px; position: absolute; pointer-events: all;
-                                          user-select: none; /* disable text selection while dragging */}
+                                          user-select: none; -moz-user-select: none; /* disable text selection while dragging */ }
         .entities tr th div.thGrip:hover{ background: var(--background); border-right: 3px solid #3c94ed;}
 
         .entities tr td:first-child { position: sticky; left: 0; padding-left: 0px;  }
@@ -330,7 +332,8 @@
 
         .settings li                { list-style: none; }
 
-        .reload                     { cursor:pointer; opacity:0.5; user-select: none; font-size: 13px; border-radius: 2px; }
+        .reload                     { cursor:pointer; opacity:0.5; font-size: 13px; border-radius: 2px;
+                                      user-select: none; -moz-user-select: none; }
         .reload::after              { content: "⭮"; padding-left: 7px; padding-right: 7px; }    /* using ::after avoids getting copied to clipboard */
         .reload:hover               { background-color: var(--tab-hover); opacity:1; }
         .reload:active::after       { background-color: var(--background3); font-size: 12px; box-shadow: inset 1px 1px 1px #00000010; }
