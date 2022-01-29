@@ -1016,7 +1016,7 @@ class App {
         return ast;
     }
     selectEditorValue(ast, focus) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         if (!ast || !focus)
             return;
         const row = focus.parentNode;
@@ -1035,9 +1035,9 @@ class App {
         }
         else {
             // clear editor selection as focused cell not found in editor value
-            const pos = this.entityEditor.getPosition();
-            const line = (_a = pos.lineNumber) !== null && _a !== void 0 ? _a : 0;
-            const column = (_b = pos.column) !== null && _b !== void 0 ? _b : 0;
+            const pos = (_b = (_a = range.lastProperty) === null || _a === void 0 ? void 0 : _a.getEndPosition()) !== null && _b !== void 0 ? _b : this.entityEditor.getPosition();
+            const line = (_c = pos.lineNumber) !== null && _c !== void 0 ? _c : 0;
+            const column = (_d = pos.column) !== null && _d !== void 0 ? _d : 0;
             const clearedSelection = new monaco.Selection(line, column, line, column);
             this.entityEditor.setSelection(clearedSelection);
             // console.log("path not found:", path)
@@ -1872,24 +1872,26 @@ class App {
         const astRange = App.RangeFromNode(ast);
         const path = pathString.split('.');
         let node = ast;
-        switch (ast.type) {
+        switch (node.type) {
             case "Array":
-                node = App.findArrayItem(ast, keyName, id);
+                node = App.findArrayItem(node, keyName, id);
                 if (!node)
-                    return { entity: null, value: null };
+                    return { entity: null, value: null, lastProperty: null };
                 break;
             case "Object":
-                if (!App.hasProperty(ast, keyName, id))
-                    return { entity: null, value: null };
+                if (!App.hasProperty(node, keyName, id))
+                    return { entity: null, value: null, lastProperty: null };
                 break;
             default:
-                return { entity: null, value: null };
+                return { entity: null, value: null, lastProperty: null };
         }
         const entityRange = App.RangeFromNode(node);
+        const lastProperty = node.children[node.children.length - 1];
+        const lastRange = App.RangeFromLoc(lastProperty.loc, 0);
         for (let i = 0; i < path.length; i++) {
             const name = path[i];
             if (node.type != "Object")
-                return { entity: astRange, value: null };
+                return { entity: astRange, value: null, lastProperty: lastRange };
             let foundChild = null;
             for (const child of node.children) {
                 if (child.key.value == name) {
@@ -1898,16 +1900,19 @@ class App {
                 }
             }
             if (!foundChild)
-                return { entity: entityRange, value: null };
+                return { entity: entityRange, value: null, lastProperty: lastRange };
             const valueRange = App.RangeFromNode(foundChild.value);
-            return { entity: entityRange, value: valueRange };
+            return { entity: entityRange, value: valueRange, lastProperty: lastRange };
         }
-        return { entity: entityRange, value: null };
+        return { entity: entityRange, value: null, lastProperty: lastRange };
     }
     static RangeFromNode(node) {
         const trim = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
-        const start = node.loc.start;
-        const end = node.loc.end;
+        return App.RangeFromLoc(node.loc, trim);
+    }
+    static RangeFromLoc(loc, trim) {
+        const start = loc.start;
+        const end = loc.end;
         return new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
     }
     setCommandParam(database, command, value) {

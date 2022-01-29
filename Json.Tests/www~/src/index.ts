@@ -67,8 +67,9 @@ type MonacoSchema = {
 }
 
 type FindRange = {
-    entity: monaco.Range | null;
-    value:  monaco.Range | null;
+    entity:         monaco.Range | null;
+    value:          monaco.Range | null;
+    lastProperty:   monaco.Range | null;
 }
 
 
@@ -1214,9 +1215,9 @@ class App {
             this.entityEditor.revealRange (range.value);            
         } else {
             // clear editor selection as focused cell not found in editor value
-            const pos               = this.entityEditor.getPosition();
+            const pos               = range.lastProperty?.getEndPosition()  ?? this.entityEditor.getPosition();
             const line              = pos.lineNumber    ?? 0;
-            const column            = pos.column        ?? 0; 
+            const column            = pos.column        ?? 0;
             const clearedSelection  = new monaco.Selection(line, column, line, column);
             this.entityEditor.setSelection(clearedSelection);
             // console.log("path not found:", path)
@@ -1376,7 +1377,7 @@ class App {
                 this.setSelectedEntities(ids);
                 const params: Resource = { database: explorer.database, container: explorer.container, ids };
                 await this.loadEntities(params, false, null);
-                
+
                 if (toggle == "added")
                     this.selectCellValue(explorer.focusedCell);                
                 return;
@@ -2126,24 +2127,26 @@ class App {
         const astRange  = App.RangeFromNode(ast);
         const path      = pathString.split('.');
         let   node      = ast;
-        switch (ast.type) {
+        switch (node.type) {
             case "Array":
-                node = App.findArrayItem(ast, keyName, id);
+                node = App.findArrayItem(node, keyName, id);
                 if (!node)
-                    return { entity: null, value: null };
+                    return { entity: null, value: null, lastProperty: null };
                 break;
             case "Object":
-                if (!App.hasProperty(ast, keyName, id))
-                    return { entity: null, value: null };
+                if (!App.hasProperty(node, keyName, id))
+                    return { entity: null, value: null, lastProperty: null };
                 break;
             default:
-                return { entity: null, value: null };
+                return { entity: null, value: null, lastProperty: null };
         }
-        const entityRange = App.RangeFromNode(node);
+        const entityRange   = App.RangeFromNode(node);
+        const lastProperty  = node.children[node.children.length - 1];
+        const lastRange     = App.RangeFromLoc(lastProperty.loc, 0);
         for (let i = 0; i < path.length; i++) {
             const name = path[i];
             if (node.type != "Object")
-                return { entity: astRange, value: null };
+                return { entity: astRange, value: null, lastProperty: lastRange };
             let foundChild: jsonToAst.PropertyNode = null;
             for (const child of node.children) {
                 if (child.key.value == name) {
@@ -2152,17 +2155,21 @@ class App {
                 }
             }
             if (!foundChild)
-                return { entity: entityRange, value: null };
+                return { entity: entityRange, value: null, lastProperty: lastRange };
             const valueRange = App.RangeFromNode(foundChild.value);
-            return { entity: entityRange, value: valueRange };
+            return { entity: entityRange, value: valueRange, lastProperty: lastRange };
         }
-        return { entity: entityRange, value: null };
+        return { entity: entityRange, value: null, lastProperty: lastRange };
     }
 
     static RangeFromNode(node: jsonToAst.ValueNode) : monaco.Range{
         const trim  = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
-        const start = node.loc.start;
-        const end   = node.loc.end;
+        return App.RangeFromLoc(node.loc, trim);
+    }
+
+    static RangeFromLoc(loc: jsonToAst.Location, trim: number) : monaco.Range{
+        const start = loc.start;
+        const end   = loc.end;
         return new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
     }
 
