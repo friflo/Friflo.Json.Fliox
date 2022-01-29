@@ -1040,7 +1040,7 @@ class App {
             const column = (_b = pos.column) !== null && _b !== void 0 ? _b : 0;
             const clearedSelection = new monaco.Selection(line, column, line, column);
             this.entityEditor.setSelection(clearedSelection);
-            console.log("path not found:", path);
+            // console.log("path not found:", path)
         }
     }
     getSelectionFromPath(path, select) {
@@ -1057,7 +1057,8 @@ class App {
         if (isCheckbox || select == "toggle") {
             const selectedIds = Object.keys(this.selectedEntities);
             if (App.toggleIds(selectedIds, id) == "added") {
-                this.setFocusCell(row.rowIndex, (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1);
+                const cellIndex = isCheckbox ? (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1 : cell.cellIndex;
+                this.setFocusCell(row.rowIndex, cellIndex);
             }
             return selectedIds;
         }
