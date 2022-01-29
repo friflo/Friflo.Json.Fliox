@@ -907,7 +907,7 @@ class App {
         liCommands.append(ulCommands);
         entityExplorer.appendChild(ulDatabase);
     }
-    filterOnKeyUp(event) {
+    filterOnKeyDown(event) {
         if (event.code != 'Enter')
             return;
         this.applyFilter();
@@ -1582,7 +1582,7 @@ class App {
     setEntitiesIds(database, container, ids) {
         entityIdsReload.onclick = _ => this.loadInputEntityIds(database, container);
         entityIdsInput.onchange = _ => this.updateGetEntitiesAnchor(database, container);
-        entityIdsInput.onkeyup = e => this.onEntityIdsKeyUp(e, database, container);
+        entityIdsInput.onkeydown = e => this.onEntityIdsKeyDown(e, database, container);
         entityIdsInput.value = ids.join(",");
         this.updateGetEntitiesAnchor(database, container);
     }
@@ -1613,7 +1613,7 @@ class App {
         this.updateExplorerEntities(json, type);
         this.selectEntities(database, container, ids);
     }
-    onEntityIdsKeyUp(event, database, container) {
+    onEntityIdsKeyDown(event, database, container) {
         if (event.code != 'Enter')
             return;
         this.loadInputEntityIds(database, container);

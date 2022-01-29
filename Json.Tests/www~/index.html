@@ -499,7 +499,7 @@
     </div>
     <div style="grid-area: ex-filter-input; display: flex;">
       <input id="entityFilter" style="visibility: hidden; width: 100%;" title="entity filter" class="input" type="text" spellcheck="false"
-             placeholder="lambda expression predicate ⊂ LINQ where" onkeyup="app.filterOnKeyUp(event)" onchange="app.updateFilterLink()">     
+             placeholder="lambda expression predicate ⊂ LINQ where" onkeydown="app.filterOnKeyDown(event)" onchange="app.updateFilterLink()">     
     </div>
 
     <!-- ------- schema link, entity command/type ------- -->

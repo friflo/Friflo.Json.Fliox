@@ -1065,7 +1065,7 @@ class App {
         container:  string
     }
 
-    filterOnKeyUp(event: KeyboardEvent) {
+    filterOnKeyDown(event: KeyboardEvent) {
         if (event.code != 'Enter')
             return;
         this.applyFilter();
@@ -1811,10 +1811,10 @@ class App {
     }
 
     setEntitiesIds (database: string, container: string, ids: string[]) {
-        entityIdsReload.onclick = _ => this.loadInputEntityIds      (database, container);
-        entityIdsInput.onchange = _ => this.updateGetEntitiesAnchor (database, container);
-        entityIdsInput.onkeyup  = e => this.onEntityIdsKeyUp     (e, database, container);
-        entityIdsInput.value    = ids.join (",");
+        entityIdsReload.onclick     = _ => this.loadInputEntityIds      (database, container);
+        entityIdsInput.onchange     = _ => this.updateGetEntitiesAnchor (database, container);
+        entityIdsInput.onkeydown    = e => this.onEntityIdsKeyDown   (e, database, container);
+        entityIdsInput.value        = ids.join (",");
         this.updateGetEntitiesAnchor(database, container);
     }
 
@@ -1846,7 +1846,7 @@ class App {
         this.selectEntities(database, container, ids);
     }
 
-    onEntityIdsKeyUp(event: KeyboardEvent, database: string, container: string) {
+    onEntityIdsKeyDown(event: KeyboardEvent, database: string, container: string) {
         if (event.code != 'Enter')
             return;
         this.loadInputEntityIds(database, container);
