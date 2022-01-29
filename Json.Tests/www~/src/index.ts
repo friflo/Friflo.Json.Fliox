@@ -1236,8 +1236,8 @@ class App {
         const children      = path[1].children; // tr children
         const id            = (children[1] as HTMLElement).innerText;
         const isCheckbox    = td == children[0];
+        const selectedIds   = Object.keys(this.selectedEntities);
         if (isCheckbox || select == "toggle") {
-            const selectedIds = Object.keys(this.selectedEntities);
             if (App.toggleIds(selectedIds, id) == "added") {
                 const cellIndex = isCheckbox ? this.explorer.focusedCell?.cellIndex ?? 1 : cell.cellIndex;
                 this.setFocusCell(row.rowIndex, cellIndex);
@@ -1245,6 +1245,10 @@ class App {
             return selectedIds;
         }
         this.setFocusCell(row.rowIndex, cell.cellIndex);
+        // Preserve selection if clicked cell is already selected
+        if (selectedIds.indexOf(id) != -1) {
+            return selectedIds;
+        }
         return [id];
     }
 
@@ -1401,6 +1405,13 @@ class App {
                 const ids               = Object.keys(this.explorerEntities);
                 this.setSelectedEntities(ids);
                 const params: Resource  = { database: explorer.database, container: explorer.container, ids };
+                this.loadEntities(params, false, null);
+                return;
+            }
+            case 'Escape': {
+                event.preventDefault();
+                this.setSelectedEntities([]);
+                const params: Resource  = { database: explorer.database, container: explorer.container, ids: [] };
                 this.loadEntities(params, false, null);
                 return;
             }
