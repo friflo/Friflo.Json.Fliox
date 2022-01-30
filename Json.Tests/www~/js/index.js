@@ -1194,19 +1194,20 @@ class App {
                 const id = this.getRowId(row);
                 const ids = Object.keys(this.selectedEntities);
                 const toggle = App.toggleIds(ids, id);
-                this.setSelectedEntities(ids);
-                const params = { database: explorer.database, container: explorer.container, ids };
-                await this.loadEntities(params, false, null);
+                await this.selectExplorerEntities(ids);
                 if (toggle == "added")
                     this.selectCellValue(explorer.focusedCell);
                 return;
             }
             case 'Enter': {
                 event.preventDefault();
+                if (event.shiftKey) {
+                    await this.selectEntityRange(row.rowIndex);
+                    this.selectCellValue(explorer.focusedCell);
+                    return;
+                }
                 const ids = [this.getRowId(row)];
-                this.setSelectedEntities(ids);
-                const params = { database: explorer.database, container: explorer.container, ids };
-                await this.loadEntities(params, false, null);
+                await this.selectExplorerEntities(ids);
                 this.selectCellValue(explorer.focusedCell);
                 return;
             }
@@ -1215,16 +1216,12 @@ class App {
                     return;
                 event.preventDefault();
                 const ids = Object.keys(this.explorerEntities);
-                this.setSelectedEntities(ids);
-                const params = { database: explorer.database, container: explorer.container, ids };
-                this.loadEntities(params, false, null);
+                this.selectExplorerEntities(ids);
                 return;
             }
             case 'Escape': {
                 event.preventDefault();
-                this.setSelectedEntities([]);
-                const params = { database: explorer.database, container: explorer.container, ids: [] };
-                this.loadEntities(params, false, null);
+                this.selectExplorerEntities([]);
                 return;
             }
             case 'KeyC':
@@ -1243,6 +1240,27 @@ class App {
             default:
                 return;
         }
+    }
+    async selectExplorerEntities(ids) {
+        const explorer = this.explorer;
+        this.setSelectedEntities(ids);
+        const params = { database: explorer.database, container: explorer.container, ids: ids };
+        await this.loadEntities(params, false, null);
+    }
+    async selectEntityRange(lastIndex) {
+        const selection = Object.values(this.selectedEntities);
+        const firstSelection = selection[selection.length - 1];
+        let firstIndex = firstSelection.rowIndex;
+        if (lastIndex > firstIndex) {
+            [lastIndex, firstIndex] = [firstIndex, lastIndex];
+        }
+        const ids = [];
+        const rows = this.explorerTable.rows;
+        for (let i = lastIndex; i <= firstIndex; i++) {
+            ids.push(rows[i].cells[1].textContent);
+        }
+        await this.selectExplorerEntities(ids);
+        this.selectCellValue(this.explorer.focusedCell);
     }
     getRowId(row) {
         const keyName = App.getEntityKeyName(this.explorer.entityType);
@@ -1483,7 +1501,7 @@ class App {
             const content = App.getCellContent(value);
             const count = content.count;
             if (count === undefined) {
-                td.textContent = `${content.value} `;
+                td.textContent = content.value;
             }
             else {
                 const isObjectArray = content.isObjectArray;

@@ -1383,22 +1383,22 @@ class App {
                 const id        = this.getRowId(row);
                 const ids       = Object.keys(this.selectedEntities);
                 const toggle    = App.toggleIds(ids, id);
-                this.setSelectedEntities(ids);
-                const params: Resource = { database: explorer.database, container: explorer.container, ids };
-                await this.loadEntities(params, false, null);
+                await this.selectExplorerEntities(ids);
 
                 if (toggle == "added")
-                    this.selectCellValue(explorer.focusedCell);                
+                    this.selectCellValue(explorer.focusedCell);
                 return;
             }
             case 'Enter': {
-                event.preventDefault();
-                const ids               = [this.getRowId(row)];                
-                this.setSelectedEntities(ids);
-                const params: Resource  = { database: explorer.database, container: explorer.container, ids };
-                await this.loadEntities(params, false, null);
-
-                this.selectCellValue(explorer.focusedCell);    
+                event.preventDefault();                
+                if (event.shiftKey) {
+                    await this.selectEntityRange(row.rowIndex);
+                    this.selectCellValue(explorer.focusedCell);
+                    return;
+                }
+                const ids = [this.getRowId(row)];
+                await this.selectExplorerEntities(ids);
+                this.selectCellValue(explorer.focusedCell);
                 return;
             }
             case 'KeyA': {
@@ -1406,16 +1406,12 @@ class App {
                     return;
                 event.preventDefault();
                 const ids               = Object.keys(this.explorerEntities);
-                this.setSelectedEntities(ids);
-                const params: Resource  = { database: explorer.database, container: explorer.container, ids };
-                this.loadEntities(params, false, null);
+                this.selectExplorerEntities(ids);
                 return;
             }
             case 'Escape': {
                 event.preventDefault();
-                this.setSelectedEntities([]);
-                const params: Resource  = { database: explorer.database, container: explorer.container, ids: [] };
-                this.loadEntities(params, false, null);
+                this.selectExplorerEntities([]);
                 return;
             }
             case 'KeyC':
@@ -1434,6 +1430,29 @@ class App {
             default:
                 return;
         }        
+    }
+
+    async selectExplorerEntities(ids: string[]) {
+        const explorer  = this.explorer;
+        this.setSelectedEntities(ids);
+        const params: Resource  = { database: explorer.database, container: explorer.container, ids: ids };
+        await this.loadEntities(params, false, null);
+    }
+
+    async selectEntityRange(lastIndex: number) {
+        const selection         = Object.values(this.selectedEntities);
+        const firstSelection    = selection[selection.length - 1];
+        let firstIndex          = firstSelection.rowIndex;
+        if (lastIndex > firstIndex) {
+            [lastIndex, firstIndex] = [firstIndex, lastIndex];
+        }
+        const ids: string[] = [];
+        const rows          = this.explorerTable.rows;
+        for (let i = lastIndex; i <= firstIndex; i++) {
+            ids.push(rows[i].cells[1].textContent);
+        }
+        await this.selectExplorerEntities(ids);
+        this.selectCellValue(this.explorer.focusedCell);
     }
 
     getRowId(row: HTMLTableRowElement) : string {
@@ -1699,7 +1718,7 @@ class App {
             const content   = App.getCellContent(value);
             const count     = content.count;
             if (count === undefined) {
-                td.textContent   = `${content.value} `
+                td.textContent   = content.value;
             } else {
                 const isObjectArray     = content.isObjectArray;
                 const countStr          = count == 0 ? '0' : `${count}: `
