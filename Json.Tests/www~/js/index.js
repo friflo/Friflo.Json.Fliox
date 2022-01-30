@@ -1184,14 +1184,28 @@ class App {
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 3, td.cellIndex);
                 return;
-            case 'ArrowUp':
+            case 'ArrowUp': {
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
+                const focused = explorer.focusedCell.parentElement;
+                if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
+                    const id = this.getRowId(focused);
+                    await this.selectExplorerEntities([id]);
+                    this.selectCellValue(explorer.focusedCell);
+                }
                 return;
-            case 'ArrowDown':
+            }
+            case 'ArrowDown': {
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
+                const focused = explorer.focusedCell.parentElement;
+                if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
+                    const id = this.getRowId(focused);
+                    await this.selectExplorerEntities([id]);
+                    this.selectCellValue(explorer.focusedCell);
+                }
                 return;
+            }
             case 'ArrowLeft':
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex, td.cellIndex - 1);
