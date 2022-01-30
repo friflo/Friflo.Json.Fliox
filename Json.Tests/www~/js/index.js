@@ -1,30 +1,9 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
 /// <reference types="../../../node_modules/@types/json-to-ast/index" />
 // import { Explorer } from "./explorer.js"
+import { el, createEl, defaultConfig } from "./types.js";
 import { Schema } from "./schema.js";
-const defaultConfig = {
-    showLineNumbers: false,
-    showMinimap: false,
-    formatEntities: false,
-    formatResponses: true,
-    activeTab: "explorer",
-    showDescription: true,
-    filters: {}
-};
-function createMeasureTextWidth(width) {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-    const style = div.style;
-    style.fontSize = `${width}px`;
-    style.height = "auto";
-    style.width = "auto";
-    style.maxWidth = "1000px"; // ensure not measuring crazy long texts
-    style.position = "absolute";
-    style.whiteSpace = "no-wrap";
-    style.visibility = "hidden";
-    return div;
-}
-const measureTextWidth = createMeasureTextWidth(14);
+import { Explorer } from "./explorer.js";
 // --------------------------------------- WebSocket ---------------------------------------
 let connection;
 let websocketCount = 0;
@@ -33,12 +12,6 @@ let clt = null;
 let requestStart;
 let subSeq = 0;
 let subCount = 0;
-function el(id) {
-    return document.getElementById(id);
-}
-function createEl(tagName) {
-    return document.createElement(tagName);
-}
 const hubInfoEl = el("hubInfo");
 const responseState = el("response-state");
 const subscriptionCount = el("subscriptionCount");
@@ -81,16 +54,13 @@ const entityContainer = el("entityContainer");
         console.error(`SW failed: ${error}`);
     });
 } */
-class App {
+export class App {
     constructor() {
         this.selectedCommand = undefined;
         this.hubInfo = {};
         this.databaseSchemas = {};
         this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
         this.filter = {};
-        this.entityFields = {};
-        this.selectedEntities = {};
-        this.explorerEntities = {};
         this.entityIdentity = {};
         this.entityHistoryPos = -1;
         this.entityHistory = [];
@@ -99,6 +69,7 @@ class App {
         this.activeExplorerEditor = undefined;
         this.allMonacoSchemas = [];
         this.config = defaultConfig;
+        this.explorer = new Explorer(this.config);
     }
     connectWebsocket() {
         if (connection) {
@@ -597,7 +568,7 @@ class App {
                 const databaseName = path[3].childNodes[0].childNodes[1].textContent;
                 const params = { database: databaseName, container: containerName, ids: [] };
                 this.clearEntity(databaseName, containerName);
-                this.loadContainer(params, null);
+                this.explorer.loadContainer(params, null);
             };
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
@@ -759,11 +730,11 @@ class App {
         const query = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params = { database: database, container: container, ids: [] };
         this.saveFilter(database, container, filter);
-        this.loadContainer(params, query);
+        this.explorer.loadContainer(params, query);
     }
     removeFilter() {
         const params = { database: this.filter.database, container: this.filter.container, ids: [] };
-        this.loadContainer(params, null);
+        this.explorer.loadContainer(params, null);
     }
     saveFilter(database, container, filter) {
         const filters = this.config.filters;
@@ -785,650 +756,6 @@ class App {
         const query = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el("filterLink").href = url;
-    }
-    async loadContainer(p, query) {
-        var _a;
-        const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
-        const filter = storedFilter && storedFilter[0] ? storedFilter[0] : "";
-        entityFilter.value = filter;
-        const removeFilterVisibility = query ? "" : "hidden";
-        el("removeFilter").style.visibility = removeFilterVisibility;
-        const entityType = this.getContainerSchema(p.database, p.container);
-        this.filter.database = p.database;
-        this.filter.container = p.container;
-        this.explorer = {
-            database: p.database,
-            container: p.container,
-            entityType: entityType,
-            focusedCell: null
-        };
-        // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
-        filterRow.style.visibility = "";
-        entityFilter.style.visibility = "";
-        catalogSchema.innerHTML = this.getSchemaType(p.database) + ' · ' + this.getEntityType(p.database, p.container);
-        readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
-        const containerLink = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
-        readEntities.innerHTML = `${containerLink}<span class="spinner"></span>`;
-        const response = await App.restRequest("GET", null, p.database, p.container, null, query);
-        const reload = `<span class="reload" title='reload container' onclick='app.loadContainer(${JSON.stringify(p)})'></span>`;
-        writeResult.innerHTML = "";
-        readEntities.innerHTML = containerLink + reload;
-        if (!response.ok) {
-            const error = await response.text();
-            entityExplorer.innerHTML = App.errorAsHtml(error, p);
-            return;
-        }
-        let entities = await response.json();
-        // const ids        = entities.map(entity => entity[keyName]) as string[];
-        const table = this.explorerTable = createEl('table');
-        this.entityFields = {};
-        const head = this.createExplorerHead(entityType, this.entityFields);
-        table.append(head);
-        table.classList.value = "entities";
-        table.onclick = async (ev) => this.explorerOnClick(ev, p);
-        this.explorerEntities = {};
-        this.selectedEntities = {};
-        this.updateExplorerEntities(entities, entityType);
-        this.setColumnWidths();
-        entityExplorer.innerText = "";
-        entityExplorer.appendChild(table);
-        // set initial focus cell
-        this.setFocusCell(1, 1);
-    }
-    async explorerOnClick(ev, p) {
-        var _a;
-        const path = ev.composedPath();
-        if (ev.shiftKey) {
-            this.getSelectionFromPath(path, "id");
-            const lastRow = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.parentElement;
-            if (!lastRow)
-                return;
-            await this.selectEntityRange(lastRow.rowIndex);
-            return;
-        }
-        const select = ev.ctrlKey ? "toggle" : "id";
-        const selectedIds = this.getSelectionFromPath(path, select);
-        if (selectedIds === null)
-            return;
-        this.setSelectedEntities(selectedIds);
-        const params = { database: p.database, container: p.container, ids: selectedIds };
-        await this.loadEntities(params, false, null);
-        const json = this.entityEditor.getValue();
-        const ast = this.getAstFromJson(json);
-        this.selectEditorValue(ast, this.explorer.focusedCell);
-    }
-    getAstFromJson(json) {
-        if (json == "")
-            return null;
-        const explorer = this.explorer;
-        if (json == explorer.cachedJsonValue)
-            return explorer.cachedJsonAst;
-        const ast = App.parseAst(json);
-        explorer.cachedJsonAst = ast;
-        explorer.cachedJsonValue = json;
-        return ast;
-    }
-    selectEditorValue(ast, focus) {
-        var _a, _b, _c, _d;
-        if (!ast || !focus)
-            return;
-        const row = focus.parentNode;
-        const th = this.explorerTable.rows[0].cells[focus.cellIndex];
-        const thDiv = th.children[0];
-        const path = thDiv.innerText;
-        const keyName = App.getEntityKeyName(this.explorer.entityType);
-        const id = row.cells[1].innerText;
-        const range = App.findPathRange(ast, path, keyName, id);
-        if (range.entity) {
-            this.entityEditor.revealRange(range.entity);
-        }
-        if (range.value) {
-            this.entityEditor.setSelection(range.value);
-            this.entityEditor.revealRange(range.value);
-        }
-        else {
-            // clear editor selection as focused cell not found in editor value
-            const pos = (_b = (_a = range.lastProperty) === null || _a === void 0 ? void 0 : _a.getEndPosition()) !== null && _b !== void 0 ? _b : this.entityEditor.getPosition();
-            const line = (_c = pos.lineNumber) !== null && _c !== void 0 ? _c : 0;
-            const column = (_d = pos.column) !== null && _d !== void 0 ? _d : 0;
-            const clearedSelection = new monaco.Selection(line, column, line, column);
-            this.entityEditor.setSelection(clearedSelection);
-            // console.log("path not found:", path)
-        }
-    }
-    getSelectionFromPath(path, select) {
-        var _a, _b;
-        // in case of a multiline text selection selectedElement is the parent
-        const element = path[0];
-        if (element.tagName == "TABLE") {
-            return [];
-        }
-        if (element.tagName != "TD")
-            return null;
-        const cell = element;
-        const row = cell.parentElement;
-        const children = path[1].children; // tr children
-        const id = children[1].innerText;
-        const isCheckbox = cell == children[0];
-        const selectedIds = Object.keys(this.selectedEntities);
-        if (isCheckbox || select == "toggle") {
-            if (App.toggleIds(selectedIds, id) == "added") {
-                const cellIndex = isCheckbox ? (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1 : cell.cellIndex;
-                this.setFocusCell(row.rowIndex, cellIndex);
-            }
-            return selectedIds;
-        }
-        this.setFocusCell(row.rowIndex, cell.cellIndex);
-        // Preserve selection if clicked cell is already selected
-        if (selectedIds.indexOf(id) != -1) {
-            return selectedIds;
-        }
-        return [id];
-    }
-    static toggleIds(ids, id) {
-        const index = ids.indexOf(id);
-        if (index == -1) {
-            ids.push(id);
-            return "added";
-        }
-        ids.splice(index, 1);
-        return "removed";
-    }
-    setFocusCellSelectValue(rowIndex, cellIndex, scroll = null) {
-        const td = this.setFocusCell(rowIndex, cellIndex, scroll);
-        if (!td)
-            return;
-        this.selectCellValue(td);
-    }
-    selectCellValue(td) {
-        const json = this.entityEditor.getValue();
-        const ast = this.getAstFromJson(json);
-        this.selectEditorValue(ast, td);
-    }
-    setFocusCell(rowIndex, cellIndex, scroll = null) {
-        var _a;
-        const table = this.explorerTable;
-        if (rowIndex < 1 || cellIndex < 1)
-            return null;
-        const rows = table.rows;
-        if (rowIndex >= rows.length)
-            return null;
-        const row = rows[rowIndex];
-        if (cellIndex >= row.cells.length)
-            return null;
-        const explorer = this.explorer;
-        const td = row.cells[cellIndex];
-        (_a = explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.classList.remove("focus");
-        td.classList.add("focus");
-        explorer.focusedCell = td;
-        // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        App.ensureVisible(entityExplorer, td, 16, 22, scroll);
-        return td;
-    }
-    // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl, el, offsetLeft, offsetTop, scroll) {
-        const parentEl = containerEl.parentElement;
-        // const parent    = parentEl.getBoundingClientRect();
-        // const container = containerEl.getBoundingClientRect();
-        // const cell      = el.getBoundingClientRect();
-        const width = parentEl.clientWidth;
-        const height = parentEl.clientHeight;
-        const x = el.offsetLeft - offsetLeft; // cell.x - offsetLeft - container.x;
-        const y = el.offsetTop - offsetTop; // cell.y - offsetTop  - container.y;
-        const minLeft = parentEl.scrollLeft;
-        const minTop = parentEl.scrollTop;
-        const maxLeft = minLeft + width - el.clientWidth - offsetLeft;
-        const maxTop = minTop + height - el.clientHeight - offsetTop;
-        if (x < minLeft ||
-            y < minTop ||
-            x > maxLeft ||
-            y > maxTop) {
-            const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth - width) : Math.min(x, minLeft);
-            const top = y > maxTop ? Math.min(y, el.offsetTop + el.clientHeight - height) : Math.min(y, minTop);
-            const smooth = scroll == "smooth" || top == parentEl.scrollTop;
-            var opt = { left, top, behavior: smooth ? "smooth" : undefined };
-            parentEl.scrollTo(opt);
-        }
-    }
-    async explorerKeyDown(event) {
-        const explorer = this.explorer;
-        const td = explorer.focusedCell;
-        if (!td)
-            return;
-        const table = this.explorerTable;
-        const row = td.parentElement;
-        switch (event.code) {
-            case 'Home':
-                event.preventDefault();
-                if (event.ctrlKey) {
-                    this.setFocusCellSelectValue(1, td.cellIndex, "smooth");
-                }
-                else {
-                    this.setFocusCellSelectValue(row.rowIndex, 1, "smooth");
-                }
-                return;
-            case 'End':
-                event.preventDefault();
-                if (event.ctrlKey) {
-                    this.setFocusCellSelectValue(table.rows.length - 1, td.cellIndex, "smooth");
-                }
-                else {
-                    this.setFocusCellSelectValue(row.rowIndex, row.cells.length - 1, "smooth");
-                }
-                return;
-            case 'PageUp':
-                event.preventDefault();
-                this.setFocusCellSelectValue(row.rowIndex - 3, td.cellIndex);
-                return;
-            case 'PageDown':
-                event.preventDefault();
-                this.setFocusCellSelectValue(row.rowIndex + 3, td.cellIndex);
-                return;
-            case 'ArrowUp': {
-                event.preventDefault();
-                this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
-                const focused = explorer.focusedCell.parentElement;
-                if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
-                    const id = this.getRowId(focused);
-                    await this.selectExplorerEntities([id]);
-                    this.selectCellValue(explorer.focusedCell);
-                }
-                return;
-            }
-            case 'ArrowDown': {
-                event.preventDefault();
-                this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
-                const focused = explorer.focusedCell.parentElement;
-                if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
-                    const id = this.getRowId(focused);
-                    await this.selectExplorerEntities([id]);
-                    this.selectCellValue(explorer.focusedCell);
-                }
-                return;
-            }
-            case 'ArrowLeft':
-                event.preventDefault();
-                this.setFocusCellSelectValue(row.rowIndex, td.cellIndex - 1);
-                return;
-            case 'ArrowRight':
-                event.preventDefault();
-                this.setFocusCellSelectValue(row.rowIndex, td.cellIndex + 1);
-                return;
-            case 'Space': {
-                event.preventDefault();
-                const id = this.getRowId(row);
-                const ids = Object.keys(this.selectedEntities);
-                const toggle = App.toggleIds(ids, id);
-                await this.selectExplorerEntities(ids);
-                if (toggle == "added")
-                    this.selectCellValue(explorer.focusedCell);
-                return;
-            }
-            case 'Enter': {
-                event.preventDefault();
-                if (event.shiftKey) {
-                    await this.selectEntityRange(row.rowIndex);
-                    this.selectCellValue(explorer.focusedCell);
-                    return;
-                }
-                const ids = [this.getRowId(row)];
-                await this.selectExplorerEntities(ids);
-                this.selectCellValue(explorer.focusedCell);
-                return;
-            }
-            case 'KeyA': {
-                if (!event.ctrlKey)
-                    return;
-                event.preventDefault();
-                const ids = Object.keys(this.explorerEntities);
-                this.selectExplorerEntities(ids);
-                return;
-            }
-            case 'Escape': {
-                event.preventDefault();
-                this.selectExplorerEntities([]);
-                return;
-            }
-            case 'KeyC':
-                if (!event.ctrlKey)
-                    return;
-                event.preventDefault();
-                const editorValue = this.entityEditor.getValue();
-                navigator.clipboard.writeText(editorValue);
-                return;
-            case 'Delete': {
-                event.preventDefault();
-                const ids = Object.keys(this.selectedEntities);
-                this.deleteEntities(explorer.database, explorer.container, ids);
-                return;
-            }
-            default:
-                return;
-        }
-    }
-    async selectExplorerEntities(ids) {
-        const explorer = this.explorer;
-        this.setSelectedEntities(ids);
-        const params = { database: explorer.database, container: explorer.container, ids: ids };
-        await this.loadEntities(params, false, null);
-    }
-    async selectEntityRange(lastIndex) {
-        const selection = Object.values(this.selectedEntities);
-        let firstIndex = selection.length == 0 ? 1 : selection[selection.length - 1].rowIndex;
-        if (lastIndex > firstIndex) {
-            [lastIndex, firstIndex] = [firstIndex, lastIndex];
-        }
-        const ids = [];
-        const rows = this.explorerTable.rows;
-        for (let i = lastIndex; i <= firstIndex; i++) {
-            ids.push(rows[i].cells[1].textContent);
-        }
-        await this.selectExplorerEntities(ids);
-        this.selectCellValue(this.explorer.focusedCell);
-    }
-    getRowId(row) {
-        const keyName = App.getEntityKeyName(this.explorer.entityType);
-        const table = this.explorerTable;
-        const headerCells = table.rows[0].cells;
-        for (let i = 1; i < headerCells.length; i++) {
-            if (headerCells[i].innerText != keyName)
-                continue;
-            return row.cells[i].innerText;
-        }
-        return null;
-    }
-    setSelectedEntities(ids) {
-        for (const id in this.selectedEntities) {
-            const entityEl = this.selectedEntities[id];
-            entityEl.classList.remove("selected");
-        }
-        this.selectedEntities = this.findContainerEntities(ids);
-        for (const id in this.selectedEntities) {
-            this.selectedEntities[id].classList.add("selected");
-        }
-    }
-    static getDataType(fieldType) {
-        const ref = fieldType._resolvedDef;
-        if (ref)
-            return this.getDataType(ref);
-        const oneOf = fieldType.oneOf;
-        if (oneOf) {
-            const jsonType = fieldType;
-            if (jsonType.discriminator) {
-                return { typeName: "object", jsonType: jsonType };
-            }
-            for (const oneOfType of oneOf) {
-                if (oneOfType.type == "null")
-                    continue;
-                return App.getDataType(oneOfType);
-            }
-        }
-        const type = fieldType.type;
-        if (type == "array") {
-            const itemType = App.getDataType(fieldType.items);
-            return { typeName: "array", jsonType: itemType.jsonType };
-        }
-        if (type == "object") {
-            return { typeName: "object", jsonType: fieldType };
-        }
-        if (!Array.isArray(type))
-            return { typeName: fieldType.type };
-        for (const item of type) {
-            if (item == "null")
-                continue;
-            return { typeName: item };
-        }
-        throw `missing type in type array`;
-    }
-    static getColumnNames(columns, path, fieldType) {
-        // if (path[0] == "jsonSchemas") debugger;
-        const type = App.getDataType(fieldType);
-        const typeName = type.typeName;
-        switch (typeName) {
-            case "string":
-            case "integer":
-            case "number":
-            case "boolean":
-            case "array":
-                const name = path.join(".");
-                columns.push({ name: name, path: path, width: App.defaultColumnWidth });
-                break;
-            case "object":
-                const addProps = type.jsonType.additionalProperties;
-                //    isAny == true   <=>   additionalProperties == {}
-                const isAny = addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
-                if (isAny) {
-                    const name = path.join(".");
-                    columns.push({ name: name, path: path, width: App.defaultColumnWidth });
-                    break;
-                }
-                const properties = type.jsonType.properties;
-                for (const name in properties) {
-                    const property = properties[name];
-                    const fieldPath = [...path, name];
-                    this.getColumnNames(columns, fieldPath, property);
-                }
-                break;
-        }
-    }
-    createExplorerHead(entityType, entityFields) {
-        const keyName = App.getEntityKeyName(entityType);
-        if (entityType) {
-            const properties = entityType.properties;
-            for (const fieldName in properties) {
-                const fieldType = properties[fieldName];
-                const columns = [];
-                App.getColumnNames(columns, [fieldName], fieldType);
-                for (const column of columns) {
-                    entityFields[column.name] = column;
-                }
-            }
-        }
-        else {
-            entityFields[keyName] = { name: keyName, path: [keyName], width: App.defaultColumnWidth };
-        }
-        const head = createEl('tr');
-        // cell: checkbox
-        const thCheckbox = createEl('th');
-        thCheckbox.style.width = "16px";
-        const thCheckboxDiv = createEl('div');
-        thCheckbox.append(thCheckboxDiv);
-        head.append(thCheckbox);
-        // cell: fields (id, ...)
-        for (const fieldName in entityFields) {
-            const column = entityFields[fieldName];
-            const th = createEl('th');
-            th.style.width = `${App.defaultColumnWidth}px`;
-            const thIdDiv = createEl('div');
-            const path = column.path;
-            thIdDiv.innerText = path.length == 1 ? path[0] : `.${path[path.length - 1]}`;
-            thIdDiv.title = fieldName;
-            th.append(thIdDiv);
-            const grip = createEl('div');
-            grip.classList.add("thGrip");
-            grip.style.cursor = "ew-resize";
-            // grip.style.background   = 'red';
-            // grip.style.userSelect = "none"; // disable text selection while dragging */
-            grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th));
-            th.appendChild(grip);
-            head.append(th);
-            column.th = th;
-        }
-        // cell: last
-        const thLast = createEl('th');
-        thLast.style.width = "100%";
-        head.append(thLast);
-        return head;
-    }
-    static calcWidth(text) {
-        if (text === undefined)
-            return 0;
-        if (text.length > 40) {
-            // avoid measuring long texts
-            // 30 characters => 234px. Sample: "012345678901234567890123456789"
-            return App.maxColumnWidth;
-        }
-        measureTextWidth.innerHTML = text;
-        return Math.ceil(measureTextWidth.clientWidth);
-    }
-    setColumnWidths() {
-        for (const fieldName in this.entityFields) {
-            const column = this.entityFields[fieldName];
-            column.th.style.width = `${column.width + 10}px`;
-        }
-    }
-    thStartDrag(event, th) {
-        this.thDragOffset = event.offsetX - event.target.clientWidth;
-        this.thDrag = th;
-        document.body.style.cursor = "ew-resize";
-        document.body.onmousemove = (event) => app.thOnDrag(event);
-        document.body.onmouseup = () => app.thEndDrag();
-        event.preventDefault();
-    }
-    thOnDrag(event) {
-        const parent = this.thDrag.parentNode.parentNode.parentNode.parentNode;
-        const scrollOffset = parent.scrollLeft;
-        let width = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
-        if (width < 25)
-            width = 25;
-        this.thDrag.style.width = `${width}px`;
-        event.preventDefault();
-    }
-    thEndDrag() {
-        document.body.onmousemove = undefined;
-        document.body.onmouseup = undefined;
-        document.body.style.cursor = "auto";
-    }
-    updateExplorerEntities(entities, entityType) {
-        const table = this.explorerTable;
-        let entityCount = 0;
-        const keyName = App.getEntityKeyName(entityType);
-        const entityFields = this.entityFields;
-        const tds = [];
-        // console.log("entities", entities);
-        for (const entity of entities) {
-            tds.length = 0;
-            const id = entity[keyName];
-            let row = this.explorerEntities[id];
-            if (!row) {
-                row = createEl('tr');
-                this.explorerEntities[id] = row;
-                // cell: add checkbox
-                const tdCheckbox = createEl('td');
-                const checked = createEl('input');
-                checked.type = "checkbox";
-                checked.tabIndex = -1;
-                checked.checked = true;
-                tdCheckbox.append(checked);
-                row.append(tdCheckbox);
-                tds.push(tdCheckbox);
-                // cell: add fields
-                for (const _ in entityFields) {
-                    const tdField = createEl('td');
-                    row.append(tdField);
-                    tds.push(tdField);
-                }
-                table.append(row);
-            }
-            else {
-                for (const td of row.childNodes) {
-                    tds.push(td);
-                }
-            }
-            // cell: set fields
-            const calcWidth = entityCount < 20;
-            App.assignRowCells(tds, entity, entityFields, calcWidth);
-            entityCount++;
-        }
-    }
-    static assignRowCells(tds, entity, entityFields, calcWidth) {
-        let tdIndex = 1;
-        for (const fieldName in entityFields) {
-            // if (fieldName == "derivedClassNull.derivedVal") debugger;
-            const column = entityFields[fieldName];
-            const path = column.path;
-            let value = entity;
-            const pathLen = path.length;
-            let i = 0;
-            for (; i < pathLen; i++) {
-                value = value[path[i]];
-                if (value === null || value === undefined || typeof value != "object")
-                    break;
-            }
-            if (i < pathLen - 1)
-                value = undefined;
-            const td = tds[tdIndex++];
-            // clear all children added previously
-            while (td.firstChild) {
-                td.removeChild(td.lastChild);
-            }
-            const content = App.getCellContent(value);
-            const count = content.count;
-            if (count === undefined) {
-                td.textContent = content.value;
-            }
-            else {
-                const isObjectArray = content.isObjectArray;
-                const countStr = count == 0 ? '0' : `${count}: `;
-                const spanCount = createEl("span");
-                spanCount.textContent = isObjectArray ? `${countStr} ${fieldName}` : countStr;
-                spanCount.classList.add("cellCount");
-                td.append(spanCount);
-                if (!isObjectArray) {
-                    const spanValue = createEl("span");
-                    spanValue.textContent = content.value;
-                    td.append(spanValue);
-                }
-            }
-            // measure text width is expensive => measure only the first 20 rows
-            if (calcWidth) {
-                let width = App.calcWidth(content.value);
-                if (count)
-                    width += App.calcWidth(String(count));
-                if (column.width < width) {
-                    column.width = width;
-                }
-            }
-        }
-    }
-    static getCellContent(value) {
-        if (value === undefined)
-            return { value: "" }; // 
-        const type = typeof value;
-        if (type != "object")
-            return { value: value }; // abc
-        if (Array.isArray(value)) {
-            if (value.length > 0) {
-                for (const item of value) {
-                    if (typeof item == "object") { // 3: objects
-                        return { count: value.length, isObjectArray: true };
-                    }
-                }
-                const items = value.map(i => i);
-                return { value: items.join(", "), count: value.length }; // 2: abc,xyz
-            }
-            return { value: "", count: 0 }; // 0;
-        }
-        return { value: JSON.stringify(value) }; // {"foo": "bar", ... }
-    }
-    removeExplorerIds(ids) {
-        const selected = this.findContainerEntities(ids);
-        for (const id in selected)
-            selected[id].remove();
-        for (const id of ids) {
-            delete this.explorerEntities[id];
-            delete this.selectedEntities[id];
-        }
-    }
-    findContainerEntities(ids) {
-        const result = {};
-        for (const id of ids) {
-            const li = this.explorerEntities[id];
-            if (!li)
-                continue;
-            result[id] = li;
-        }
-        return result;
     }
     storeCursor() {
         if (this.entityHistoryPos < 0)
@@ -1488,7 +815,7 @@ class App {
         let len = ids.length;
         if (len == 1 && ids[0] == "")
             len = 0;
-        entityIdsContainer.onclick = _ => this.loadContainer({ database: database, container: container, ids: null }, null);
+        entityIdsContainer.onclick = _ => this.explorer.loadContainer({ database: database, container: container, ids: null }, null);
         entityIdsContainer.innerText = `« ${container}`;
         entityIdsCount.innerText = len > 0 ? `(${len})` : "";
         let getUrl;
@@ -1531,7 +858,7 @@ class App {
                 json = [json];
         }
         const type = this.getContainerSchema(database, container);
-        this.updateExplorerEntities(json, type);
+        this.explorer.updateExplorerEntities(json, type);
         this.selectEntities(database, container, ids);
     }
     onEntityIdsKeyDown(event, database, container) {
@@ -1592,7 +919,7 @@ class App {
         }
         writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, "");
         // add or update explorer entities
-        this.updateExplorerEntities(entities, type);
+        this.explorer.updateExplorerEntities(entities, type);
         if (App.arraysEquals(this.entityIdentity.entityIds, ids))
             return;
         this.selectEntities(database, container, ids);
@@ -1601,12 +928,12 @@ class App {
         var _a, _b;
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
-        let liIds = this.findContainerEntities(ids);
-        this.setSelectedEntities(ids);
+        let liIds = this.explorer.findContainerEntities(ids);
+        this.explorer.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
         if (firstRow) {
-            const columnIndex = (_b = (_a = this.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1;
-            this.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
+            const columnIndex = (_b = (_a = this.explorer.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1;
+            this.explorer.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
         this.entityHistory.length = this.entityHistoryPos + 1;
@@ -1635,7 +962,7 @@ class App {
             this.entityIdentity.entityIds = [];
             writeResult.innerHTML = this.formatResult("Delete", response.status, response.statusText, "");
             this.setEntityValue(database, container, "");
-            this.removeExplorerIds(ids);
+            this.explorer.removeExplorerIds(ids);
         }
     }
     getModel(url) {
@@ -2193,8 +1520,6 @@ class App {
     }
 }
 App.bracketValue = /\[(.*?)\]/;
-App.defaultColumnWidth = 50;
-App.maxColumnWidth = 200;
 export const app = new App();
 window.addEventListener("keydown", event => app.onKeyDown(event), true);
 window.addEventListener("keyup", event => app.onKeyUp(event), true);
