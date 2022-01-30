@@ -1111,8 +1111,8 @@ class App {
     explorer: {
         database:           string;
         container:          string;
-        entityType?:        JsonType;
-        focusedCell?:       HTMLTableCellElement;
+        entityType:         JsonType             | null;
+        focusedCell:        HTMLTableCellElement | null;
         cachedJsonValue?:   string;
         cachedJsonAst?:     jsonToAst.ValueNode;
     }
@@ -1130,9 +1130,10 @@ class App {
         this.filter.database    = p.database;
         this.filter.container   = p.container;
         this.explorer = {
-            database:   p.database,
-            container:  p.container,
-            entityType: entityType
+            database:       p.database,
+            container:      p.container,
+            entityType:     entityType,
+            focusedCell:    null
         };        
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility      = "";
@@ -1163,20 +1164,8 @@ class App {
 
         table.append(head);
         table.classList.value   = "entities"
-        table.onclick = async (ev) => {
-            const path          = ev.composedPath() as HTMLElement[];
-            const select        = ev.ctrlKey ? "toggle" : "id"
-            const selectedIds   = this.getSelectionFromPath(path, select);
-            if (selectedIds === null)
-                return;
-            this.setSelectedEntities(selectedIds);
-            const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
-            await this.loadEntities(params, false, null);
-
-            const json  = this.entityEditor.getValue();
-            const ast   = this.getAstFromJson(json);
-            this.selectEditorValue(ast, this.explorer.focusedCell);
-        }
+        table.onclick = async (ev) => this.explorerOnClick(ev, p);
+        
         this.explorerEntities = {};
         this.selectedEntities = {};
         this.updateExplorerEntities(entities, entityType);
@@ -1185,6 +1174,29 @@ class App {
         entityExplorer.appendChild(table);
         // set initial focus cell
         this.setFocusCell(1, 1);
+    }
+
+    async explorerOnClick(ev: MouseEvent, p: Resource) {
+        const path          = ev.composedPath() as HTMLElement[];
+        if (ev.shiftKey) {
+            this.getSelectionFromPath(path, "id");
+            const lastRow = this.explorer.focusedCell?.parentElement as HTMLTableRowElement;
+            if (!lastRow)
+                return;            
+            await this.selectEntityRange(lastRow.rowIndex);            
+            return;
+        }
+        const select        = ev.ctrlKey ? "toggle" : "id"
+        const selectedIds   = this.getSelectionFromPath(path, select);
+        if (selectedIds === null)
+            return;
+        this.setSelectedEntities(selectedIds);
+        const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
+        await this.loadEntities(params, false, null);
+
+        const json  = this.entityEditor.getValue();
+        const ast   = this.getAstFromJson(json);
+        this.selectEditorValue(ast, this.explorer.focusedCell);
     }
 
     getAstFromJson(json: string) : jsonToAst.ValueNode | null {
@@ -1440,9 +1452,8 @@ class App {
     }
 
     async selectEntityRange(lastIndex: number) {
-        const selection         = Object.values(this.selectedEntities);
-        const firstSelection    = selection[selection.length - 1];
-        let firstIndex          = firstSelection.rowIndex;
+        const selection     = Object.values(this.selectedEntities);
+        let   firstIndex    = selection.length == 0 ? 1 : selection[selection.length - 1].rowIndex;
         if (lastIndex > firstIndex) {
             [lastIndex, firstIndex] = [firstIndex, lastIndex];
         }
