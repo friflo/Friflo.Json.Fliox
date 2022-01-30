@@ -517,23 +517,23 @@
       <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
     </div>
     <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px;">
-        <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.navigateEntity(app.entityHistoryPos - 1)">⏴</div>
+        <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
         <div style="width:4px;"></div>
-        <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.navigateEntity(app.entityHistoryPos + 1)">⏵</div>
+        <div title="Go forward (Alt + ➞)" class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">⏵</div>
         <div style="width:8px;"></div>
         <span id="entityTools" style="display: contents;">
-            <button type="button" style="margin-right: 2px" onclick="app.deleteEntitiesAction()" title="Delete entity via a DELETE request">Delete</button>
-            <button type="button" style="margin-right: 4px" onclick="app.saveEntitiesAction()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
-            <div title="format JSON" class="navigate verticalAlign" onclick="app.navigateEntity(app.entityHistoryPos + 1)">
+            <button type="button" style="margin-right: 2px" onclick="app.editor.deleteEntitiesAction()" title="Delete entity via a DELETE request">Delete</button>
+            <button type="button" style="margin-right: 4px" onclick="app.editor.saveEntitiesAction()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
+            <div title="format JSON" class="navigate verticalAlign" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">
                 <small style="opacity: 0.7;">{ }</small>
             </div>
             &nbsp;
             <small id="entityType" title="entity type" style="display: flex; justify-content: center; align-items: center;"><span style="opacity: 0.4;">entity type</span></small>
         </span>
         <span id="commandTools" style="display: none;">
-            <button type="button" onclick="app.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
+            <button type="button" onclick="app.editor.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
             &nbsp;
-            <div title="format JSON" class="navigate verticalAlign" onclick="app.navigateEntity(app.entityHistoryPos + 1)">
+            <div title="format JSON" class="navigate verticalAlign" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">
                 <small style="opacity: 0.7;">{ }</small>
             </div>
             &nbsp;

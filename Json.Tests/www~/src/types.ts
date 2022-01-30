@@ -28,3 +28,5 @@ export function createEl<K extends keyof HTMLElementTagNameMap>(tagName: K): HTM
 }
 
 export type Entity = { [key: string] : any };
+
+export type Method = "GET" | "POST" | "PUT" | "DELETE";

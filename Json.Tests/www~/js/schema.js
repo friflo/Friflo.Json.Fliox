@@ -1,3 +1,4 @@
+// ----------------------------------------------- Schema -----------------------------------------------
 export class Schema {
     static createEntitySchemas(databaseSchemas, dbSchemas) {
         const schemaMap = {};

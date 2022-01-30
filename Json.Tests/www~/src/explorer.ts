@@ -1,7 +1,8 @@
 
 import { FieldType, JsonType }  from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { Resource, Config, el, createEl, Entity }             from "./types.js";
-import { App, app }             from "./index.js";
+import { Resource, Config, el, createEl, Entity }   from "./types.js";
+import { App, app }                                 from "./index.js";
+import { EntityEditor }                             from "./entity-editor.js";
 
 function createMeasureTextWidth(width: number) : HTMLElement {
     const div = document.createElement("div");
@@ -48,7 +49,9 @@ const entityFilter      = el("entityFilter")    as HTMLInputElement;
 const filterRow         = el("filterRow");
 
 
-export class Explorer {
+// ----------------------------------------------- Explorer -----------------------------------------------
+export class Explorer
+{
     private explorer: {
         database:           string;
         container:          string;
@@ -140,9 +143,9 @@ export class Explorer {
             return;
         this.setSelectedEntities(selectedIds);
         const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
-        await app.loadEntities(params, false, null);
+        await app.editor.loadEntities(params, false, null);
 
-        const json  = app.entityEditor.getValue();
+        const json  = app.editor.entityEditor.getValue();
         const ast   = this.getAstFromJson(json);
         this.selectEditorValue(ast, this.explorer.focusedCell);
     }
@@ -166,9 +169,9 @@ export class Explorer {
         const th        = this.explorerTable.rows[0].cells[focus.cellIndex];
         const thDiv     = th.children[0] as HTMLDivElement;
         const path      = thDiv.innerText;
-        const keyName   = App.getEntityKeyName(this.explorer.entityType);
+        const keyName   = EntityEditor.getEntityKeyName(this.explorer.entityType);
         const id        = row.cells[1].innerText;
-        const range     = App.findPathRange(ast, path, keyName, id);
+        const range     = EntityEditor.findPathRange(ast, path, keyName, id);
         if (range.entity) {
             app.entityEditor.revealRange(range.entity);
         }
@@ -398,7 +401,7 @@ export class Explorer {
             case 'Delete': {
                 event.preventDefault();
                 const ids   = Object.keys(this.selectedEntities);
-                app.deleteEntities(explorer.database, explorer.container, ids);
+                app.editor.deleteEntities(explorer.database, explorer.container, ids);
                 return;
             }
             default:
@@ -410,7 +413,7 @@ export class Explorer {
         const explorer  = this.explorer;
         this.setSelectedEntities(ids);
         const params: Resource  = { database: explorer.database, container: explorer.container, ids: ids };
-        await app.loadEntities(params, false, null);
+        await app.editor.loadEntities(params, false, null);
     }
 
     private async selectEntityRange(lastIndex: number) {
@@ -429,7 +432,7 @@ export class Explorer {
     }
 
     private getRowId(row: HTMLTableRowElement) : string {
-        const keyName       = App.getEntityKeyName(this.explorer.entityType);
+        const keyName       = EntityEditor.getEntityKeyName(this.explorer.entityType);
         const table         = this.explorerTable;
         const headerCells   = table.rows[0].cells;
         for (let i = 1; i < headerCells.length; i++) {
@@ -522,7 +525,7 @@ export class Explorer {
     }
 
     private createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
-        const keyName   = App.getEntityKeyName(entityType);
+        const keyName   = EntityEditor.getEntityKeyName(entityType);
         if (entityType) {
             const properties    =  entityType.properties;
             for (const fieldName in properties) {
@@ -626,7 +629,7 @@ export class Explorer {
     updateExplorerEntities(entities: Entity[], entityType: JsonType) {
         const table         = this.explorerTable;
         let entityCount     = 0;
-        const keyName       = App.getEntityKeyName(entityType);
+        const keyName       = EntityEditor.getEntityKeyName(entityType);
         const entityFields  = this.entityFields;
         const tds           = [] as HTMLTableCellElement[];
         // console.log("entities", entities);

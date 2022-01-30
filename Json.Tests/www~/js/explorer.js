@@ -1,5 +1,6 @@
 import { el, createEl } from "./types.js";
 import { App, app } from "./index.js";
+import { EntityEditor } from "./entity-editor.js";
 function createMeasureTextWidth(width) {
     const div = document.createElement("div");
     document.body.appendChild(div);
@@ -21,6 +22,7 @@ const readEntities = el("readEntities");
 const catalogSchema = el("catalogSchema");
 const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
+// ----------------------------------------------- Explorer -----------------------------------------------
 export class Explorer {
     constructor(config) {
         this.entityFields = {};
@@ -96,8 +98,8 @@ export class Explorer {
             return;
         this.setSelectedEntities(selectedIds);
         const params = { database: p.database, container: p.container, ids: selectedIds };
-        await app.loadEntities(params, false, null);
-        const json = app.entityEditor.getValue();
+        await app.editor.loadEntities(params, false, null);
+        const json = app.editor.entityEditor.getValue();
         const ast = this.getAstFromJson(json);
         this.selectEditorValue(ast, this.explorer.focusedCell);
     }
@@ -120,9 +122,9 @@ export class Explorer {
         const th = this.explorerTable.rows[0].cells[focus.cellIndex];
         const thDiv = th.children[0];
         const path = thDiv.innerText;
-        const keyName = App.getEntityKeyName(this.explorer.entityType);
+        const keyName = EntityEditor.getEntityKeyName(this.explorer.entityType);
         const id = row.cells[1].innerText;
-        const range = App.findPathRange(ast, path, keyName, id);
+        const range = EntityEditor.findPathRange(ast, path, keyName, id);
         if (range.entity) {
             app.entityEditor.revealRange(range.entity);
         }
@@ -343,7 +345,7 @@ export class Explorer {
             case 'Delete': {
                 event.preventDefault();
                 const ids = Object.keys(this.selectedEntities);
-                app.deleteEntities(explorer.database, explorer.container, ids);
+                app.editor.deleteEntities(explorer.database, explorer.container, ids);
                 return;
             }
             default:
@@ -354,7 +356,7 @@ export class Explorer {
         const explorer = this.explorer;
         this.setSelectedEntities(ids);
         const params = { database: explorer.database, container: explorer.container, ids: ids };
-        await app.loadEntities(params, false, null);
+        await app.editor.loadEntities(params, false, null);
     }
     async selectEntityRange(lastIndex) {
         const selection = Object.values(this.selectedEntities);
@@ -371,7 +373,7 @@ export class Explorer {
         this.selectCellValue(this.explorer.focusedCell);
     }
     getRowId(row) {
-        const keyName = App.getEntityKeyName(this.explorer.entityType);
+        const keyName = EntityEditor.getEntityKeyName(this.explorer.entityType);
         const table = this.explorerTable;
         const headerCells = table.rows[0].cells;
         for (let i = 1; i < headerCells.length; i++) {
@@ -456,7 +458,7 @@ export class Explorer {
         }
     }
     createExplorerHead(entityType, entityFields) {
-        const keyName = App.getEntityKeyName(entityType);
+        const keyName = EntityEditor.getEntityKeyName(entityType);
         if (entityType) {
             const properties = entityType.properties;
             for (const fieldName in properties) {
@@ -546,7 +548,7 @@ export class Explorer {
     updateExplorerEntities(entities, entityType) {
         const table = this.explorerTable;
         let entityCount = 0;
-        const keyName = App.getEntityKeyName(entityType);
+        const keyName = EntityEditor.getEntityKeyName(entityType);
         const entityFields = this.entityFields;
         const tds = [];
         // console.log("entities", entities);
