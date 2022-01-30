@@ -2,9 +2,10 @@
 /// <reference types="../../../node_modules/@types/json-to-ast/index" />
 
 import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig } from "./types.js"
-import { Schema, MonacoSchema } from "./schema.js"
-import { Explorer }     from "./explorer.js";
-import { EntityEditor } from "./entity-editor.js";
+import { Schema, MonacoSchema }     from "./schema.js"
+import { Explorer }                 from "./explorer.js";
+import { EntityEditor }             from "./entity-editor.js";
+import { Playground }               from "./playground.js";
 
 import { FieldType, JsonType }                                  from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema, DbContainers, DbCommands, DbHubInfo }        from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
@@ -23,41 +24,23 @@ declare global {
     }
 }
 
+const hubInfoEl             = el("hubInfo");
+const selectExample         = el("example")         as HTMLSelectElement;
+const defaultUser           = el("user")            as HTMLInputElement;
+const defaultToken          = el("token")           as HTMLInputElement;
+const catalogExplorer       = el("catalogExplorer");
+const entityExplorer        = el("entityExplorer");
+const writeResult           = el("writeResult");
 
-// --------------------------------------- WebSocket ---------------------------------------
-let connection:         WebSocket;
-let websocketCount      = 0;
-let req                 = 1;
-let clt: string | null  = null;
-let requestStart: number;
-let subSeq              = 0;
-let subCount            = 0;
-
-
-const hubInfoEl         = el("hubInfo");
-const responseState     = el("response-state");
-const subscriptionCount = el("subscriptionCount");
-const subscriptionSeq   = el("subscriptionSeq");
-const selectExample     = el("example")         as HTMLSelectElement;
-const socketStatus      = el("socketStatus");
-const reqIdElement      = el("req");
-const ackElement        = el("ack");
-const cltElement        = el("clt");
-const defaultUser       = el("user")            as HTMLInputElement;
-const defaultToken      = el("token")           as HTMLInputElement;
-const catalogExplorer   = el("catalogExplorer");
-const entityExplorer    = el("entityExplorer");
-const writeResult       = el("writeResult");
-
-const entityFilter      = el("entityFilter")    as HTMLInputElement;
+const entityFilter          = el("entityFilter")    as HTMLInputElement;
 
 // request response editor
-const requestContainer       = el("requestContainer");
-const responseContainer      = el("responseContainer")
+const requestContainer      = el("requestContainer");
+const responseContainer     = el("responseContainer")
 
 // entity/command editor
-const commandValue           = el("commandValue");
-const entityContainer        = el("entityContainer");
+const commandValue          = el("commandValue");
+const entityContainer       = el("entityContainer");
 
 /* if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(registration => {
@@ -69,81 +52,17 @@ const entityContainer        = el("entityContainer");
 
 
 export class App {
-    readonly explorer:  Explorer;
-    readonly editor:    EntityEditor;
+    readonly explorer:      Explorer;
+    readonly editor:        EntityEditor;
+    readonly playground:    Playground;
 
     constructor() {
         this.explorer   = new Explorer(this.config);
         this.editor     = new EntityEditor();
+        this.playground = new Playground();
     }
 
-    connectWebsocket () {
-        if (connection) {
-            connection.close();
-            connection = null;
-        }
-        const loc     = window.location;
-        const nr      = ("" + (++websocketCount)).padStart(3, "0");
-        const uri     = `ws://${loc.host}/ws-${nr}`;
-        // const uri  = `ws://google.com:8080/`; // test connection timeout
-        socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
-        try {
-            connection = new WebSocket(uri);
-        } catch (err) {
-            socketStatus.innerText = "connect failed: err";
-            return;
-        }
-        connection.onopen = () => {
-            socketStatus.innerHTML = "connected <small>🟢</small>";
-            console.log('WebSocket connected');
-            req         = 1;
-            subCount    = 0;
-        };
-
-        connection.onclose = (e) => {
-            socketStatus.innerText = "closed (code: " + e.code + ")";
-            responseState.innerText = "";
-            console.log('WebSocket closed');
-        };
-
-        // Log errors
-        connection.onerror = (error) => {
-            socketStatus.innerText = "error";
-            console.log('WebSocket Error ' + error);
-        };
-
-        // Log messages from the server
-        connection.onmessage = (e) => {
-            const duration = new Date().getTime() - requestStart;
-            const data = JSON.parse(e.data);
-            // console.log('server:', e.data);
-            switch (data.msg) {
-            case "resp":
-            case "error":
-                clt = data.clt;
-                cltElement.innerText    = clt ?? " - ";
-                const content           = this.formatJson(this.config.formatResponses, e.data);
-                this.responseModel.setValue(content)
-                responseState.innerHTML = `· ${duration} ms`;
-                break;
-            case "ev":
-                subscriptionCount.innerText = String(++subCount);
-                subSeq = data.seq;
-                // multiple clients can use the same WebSocket. Use the latest
-                if (clt == data.clt) {
-                    subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
-                    ackElement.innerText        = subSeq ? String(subSeq) : " - ";
-                }
-                break;
-            }
-        };
-    }
-
-    closeWebsocket  () {
-        connection.close();
-    }
-
-    getCookie  (name: string) {
+    private getCookie  (name: string) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2)
@@ -151,95 +70,34 @@ export class App {
         return null;
     }
 
-    initUserToken  () {
+    private initUserToken  () {
         const user    = this.getCookie("fliox-user")   ?? "admin";
         const token   = this.getCookie("fliox-token")  ?? "admin";
         this.setUser(user);
         this.setToken(token);
     }
 
-    setUser (user: string) {
+    public setUser (user: string) {
         defaultUser.value   = user;
         document.cookie = `fliox-user=${user};`;
     }
 
-    setToken  (token: string) {
+    public setToken  (token: string) {
         defaultToken.value  = token;
         document.cookie = `fliox-token=${token};`;
     }
 
-    selectUser (element: HTMLElement) {
+    public selectUser (element: HTMLElement) {
         let value = element.innerText;
         this.setUser(value);
         this.setToken(value);
     };
 
-    addUserToken (jsonRequest: string) {
-        const endBracket  = jsonRequest.lastIndexOf("}");
-        if (endBracket == -1)
-            return jsonRequest;
-        const before      = jsonRequest.substring(0, endBracket);
-        const after       = jsonRequest.substring(endBracket);
-        let   userToken   = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
-        userToken       = userToken.substring(1, userToken.length - 1);
-        return `${before},${userToken}${after}`;
-    }
 
-    sendSyncRequest () {
-        if (!connection || connection.readyState != 1) { // 1 == OPEN {
-            this.responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
-            responseState.innerHTML = "";
-        } else {
-            let jsonRequest = this.requestModel.getValue();
-            jsonRequest = this.addUserToken(jsonRequest);
-            try {
-                const request     = JSON.parse(jsonRequest);
-                if (request) {
-                    // Enable overrides of WebSocket specific members
-                    if (request.req !== undefined) { req      = request.req; }
-                    if (request.ack !== undefined) { subSeq   = request.ack; }
-                    if (request.clt !== undefined) { clt      = request.clt; }
-                    
-                    // Add WebSocket specific members to request
-                    request.req     = req;
-                    request.ack     = subSeq;
-                    if (clt) {
-                        request.clt     = clt;
-                    }
-                }
-                jsonRequest = JSON.stringify(request);                
-            } catch { }
-            responseState.innerHTML = '<span class="spinner"></span>';
-            connection.send(jsonRequest);
-            requestStart = new Date().getTime();
-        }
-        req++;
-        reqIdElement.innerText  =  String(req);
-    }
+    private lastCtrlKey:        boolean;
+    public  refLinkDecoration:  CSSStyleRule;
 
-    async postSyncRequest () {
-        let jsonRequest         = this.requestModel.getValue();
-        jsonRequest             = this.addUserToken(jsonRequest);
-        responseState.innerHTML = '<span class="spinner"></span>';
-        let start = new Date().getTime();
-        let duration: number;
-        try {
-            const response  = await this.postRequest(jsonRequest, "POST");
-            let content     = await response.text;
-            content         = this.formatJson(this.config.formatResponses, content);
-            duration        = new Date().getTime() - start;
-            this.responseModel.setValue(content);
-        } catch(error) {
-            duration = new Date().getTime() - start;
-            this.responseModel.setValue("POST error: " + error.message);
-        }
-        responseState.innerHTML = `· ${duration} ms`;
-    }
-
-    lastCtrlKey:        boolean;
-    refLinkDecoration:  CSSStyleRule;
-
-    applyCtrlKey(event: KeyboardEvent) {
+    private applyCtrlKey(event: KeyboardEvent) {
         if (this.lastCtrlKey == event.ctrlKey)
             return;
         this.lastCtrlKey = event.ctrlKey;
@@ -254,12 +112,12 @@ export class App {
         this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
     }
 
-    onKeyUp (event: KeyboardEvent) {
+    public onKeyUp (event: KeyboardEvent) {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
     }
 
-    onKeyDown (event: KeyboardEvent) {
+    public onKeyDown (event: KeyboardEvent) {
         const editor = this.editor;
 
         if (event.code == "ControlLeft")
@@ -268,11 +126,11 @@ export class App {
         switch (this.config.activeTab) {
         case "playground":
             if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
-                this.sendSyncRequest();
+                this.playground.sendSyncRequest();
                 event.preventDefault();
             }
             if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                this.postSyncRequest();
+                this.playground.postSyncRequest();
                 event.preventDefault();
             }
             if (event.code == 'KeyS' && event.ctrlKey) {
@@ -307,20 +165,20 @@ export class App {
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
     }
 
-    switchTab () {
+    private switchTab () {
         if (document.activeElement == entityExplorer)
             this.entityEditor.focus();
         else
             entityExplorer.focus();
     }
 
-    execute(event: KeyboardEvent, lambda: () => void) {
+    private execute(event: KeyboardEvent, lambda: () => void) {
         lambda();
         event.preventDefault();
     }
 
     // --------------------------------------- example requests ---------------------------------------
-    async onExampleChange () {
+    public async onExampleChange () {
         const exampleName = selectExample.value;
         if (exampleName == "") {
             this.requestModel.setValue("")
@@ -331,7 +189,7 @@ export class App {
         this.requestModel.setValue(example)
     }
 
-    async loadExampleRequestList () {
+    private async loadExampleRequestList () {
         // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
         let option      = createEl("option");
         option.value    = "";
@@ -363,10 +221,9 @@ export class App {
             selectExample.add(option);
         }
     }
-    // --------------------------------------- Explorer ---------------------------------------
-  
 
-    async postRequest (request: string, tag: string) {
+    // --------------------------------------- Fliox HTTP --------------------------------------- 
+    public static async postRequest (request: string, tag: string) {
         let init = {        
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -391,7 +248,7 @@ export class App {
         }
     }
 
-    async postRequestTasks (database: string, tasks: SyncRequestTask_Union[], tag: string) {
+    private static async postRequestTasks (database: string, tasks: SyncRequestTask_Union[], tag: string) {
         const db = database == "main_db" ? undefined : database;
         const sync: SyncRequest = {
             "msg":      "sync",
@@ -402,10 +259,10 @@ export class App {
         }
         const request = JSON.stringify(sync);
         tag = tag ? tag : "";
-        return await this.postRequest(request, `${database}/${tag}`);
+        return await App.postRequest(request, `${database}/${tag}`);
     }
 
-    static getRestPath(database: string, container: string, ids: string | string[], query: string) {
+    public static getRestPath(database: string, container: string, ids: string | string[], query: string) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (ids) {
@@ -440,7 +297,7 @@ export class App {
         }
     }
 
-    static getTaskError (content: ProtocolResponse_Union, taskIndex: number) {
+    private static getTaskError (content: ProtocolResponse_Union, taskIndex: number) {
         if (content.msg == "error") {
             return content.message;
         }
@@ -450,9 +307,9 @@ export class App {
         return undefined;
     }
 
-    static bracketValue = /\[(.*?)\]/;
+    private static bracketValue = /\[(.*?)\]/;
 
-    static errorAsHtml (message: string, p: Resource | null) {
+    public static errorAsHtml (message: string, p: Resource | null) {
         // first line: error type, second line: error message
         const pos = message.indexOf(' > ');
         let error = message;
@@ -473,7 +330,7 @@ export class App {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
-    static setClass(element: Element, enable: boolean, className: string) {
+    private static setClass(element: Element, enable: boolean, className: string) {
         const classList = element.classList;
         if (enable) {
             classList.add(className);
@@ -482,12 +339,12 @@ export class App {
         classList.remove(className);        
     }
 
-    toggleDescription() {
+    public toggleDescription() {
         this.changeConfig("showDescription", !this.config.showDescription);   
         this.openTab(this.config.activeTab);
     }
 
-    openTab (tabName: string) {
+    public openTab (tabName: string) {
         const config            = this.config;
         config.activeTab        = tabName;
         App.setClass(document.body, !config.showDescription, "miniHeader")
@@ -511,12 +368,10 @@ export class App {
         }
     }
 
-    selectedCatalog: HTMLElement;
+    private selectedCatalog:    HTMLElement;
+    private hubInfo:            DbHubInfo;
 
-
-    hubInfo = { } as DbHubInfo;
-
-    async loadCluster () {
+    private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
             { "task": "query",  "container": "containers"},
             { "task": "query",  "container": "schemas"},
@@ -524,7 +379,7 @@ export class App {
             { "task": "command","name": "DbHubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response  = await this.postRequestTasks("cluster", tasks, null);
+        const response  = await App.postRequestTasks("cluster", tasks, null);
         const content   = response.json as SyncResponse;
         const error     = App.getTaskError (content, 0);
         if (error) {
@@ -618,36 +473,36 @@ export class App {
         this.editor.listCommands(dbCommands[0].id, dbCommands[0], dbContainers[0]);
     }
 
-    databaseSchemas: { [key: string]: DbSchema} = {};
+    public databaseSchemas: { [key: string]: DbSchema} = {};
     
-    getSchemaType(database: string) {
+    public getSchemaType(database: string) {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
     }
 
-    getSchemaExports(database: string) {
+    public getSchemaExports(database: string) {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
         return `<a title="open database schema in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
 
-    static getType(database: string, def: JsonType) {
+    private static getType(database: string, def: JsonType) {
         const ns          = def._namespace;
         const name        = def._typeName;
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
     }
 
-    getEntityType(database: string, container: string) {
+    public getEntityType(database: string, container: string) {
         const def  = this.getContainerSchema(database, container);
         if (!def)
             return this.schemaLess;
         return App.getType(database, def);
     }
 
-    getTypeLabel(database: string, type: FieldType) {
+    public getTypeLabel(database: string, type: FieldType) {
         if (type.type) {
             return type.type;
         }
@@ -659,13 +514,13 @@ export class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
+    public schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
-    static getDatabaseLink(database: string) {
+    public static getDatabaseLink(database: string) {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`
     }
 
-    getContainerSchema (database: string, container: string) : JsonType | null{
+    public getContainerSchema (database: string, container: string) : JsonType | null{
         const schema = app.databaseSchemas[database];
         if (schema) {
             return schema._containerSchemas[container];
@@ -674,18 +529,18 @@ export class App {
     }
 
     // =======================================================================================================
-    filter = {} as {
+    public filter = {} as {
         database:   string,
         container:  string
     }
 
-    filterOnKeyDown(event: KeyboardEvent) {
+    public filterOnKeyDown(event: KeyboardEvent) {
         if (event.code != 'Enter')
             return;
         this.applyFilter();
     }
 
-    applyFilter() {
+    public applyFilter() {
         const database  = this.filter.database;
         const container = this.filter.container;
         const filter    = entityFilter.value;
@@ -695,12 +550,12 @@ export class App {
         this.explorer.loadContainer(params, query);
     }
 
-    removeFilter() {
+    public removeFilter() {
         const params: Resource  = { database: this.filter.database, container: this.filter.container, ids: [] };
         this.explorer.loadContainer(params, null);
     }
 
-    saveFilter(database: string, container: string, filter: string) {
+    private saveFilter(database: string, container: string, filter: string) {
         const filters = this.config.filters;
         if (filter.trim() == "") {
             const filterDatabase = filters[database];
@@ -714,7 +569,7 @@ export class App {
         this.setConfig("filters", filters);
     }
 
-    updateFilterLink() {
+    public updateFilterLink() {
         const filter    = entityFilter.value;
         const query     = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url       = `./rest/${this.filter.database}/${this.filter.container}${query}`;
@@ -722,7 +577,7 @@ export class App {
     }
 
 
-    static parseAst(value: string) : jsonToAst.ValueNode {
+    public static parseAst(value: string) : jsonToAst.ValueNode {
         try {
             JSON.parse(value);  // early out on invalid JSON
             // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
@@ -743,7 +598,7 @@ export class App {
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
 
-    async createProtocolSchemas () {
+    private async createProtocolSchemas () {
 
         // configure the JSON language support with schemas and schema associations
         // var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
@@ -793,13 +648,13 @@ export class App {
         return schemas;
     }
 
-    requestModel:       monaco.editor.ITextModel;
-    responseModel:      monaco.editor.ITextModel;
+    public requestModel:       monaco.editor.ITextModel;
+    public responseModel:      monaco.editor.ITextModel;
 
-    requestEditor:      monaco.editor.IStandaloneCodeEditor;
-    responseEditor:     monaco.editor.IStandaloneCodeEditor;
-    entityEditor:       monaco.editor.IStandaloneCodeEditor;
-    commandValueEditor: monaco.editor.IStandaloneCodeEditor;
+    public requestEditor:      monaco.editor.IStandaloneCodeEditor;
+    public responseEditor:     monaco.editor.IStandaloneCodeEditor;
+    public entityEditor:       monaco.editor.IStandaloneCodeEditor;
+    public commandValueEditor: monaco.editor.IStandaloneCodeEditor;
 
     allMonacoSchemas: MonacoSchema[] = [];
 
@@ -888,7 +743,7 @@ export class App {
         };
     }
 
-    setEditorOptions() {
+    private setEditorOptions() {
         const editorSettings: monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions= {
             lineNumbers:    this.config.showLineNumbers ? "on" : "off",
             minimap:        { enabled: this.config.showMinimap ? true : false },
@@ -901,7 +756,7 @@ export class App {
         this.commandValueEditor.updateOptions ({ ...editorSettings });
     }
 
-    tryFollowLink(value: string, column: number, line: number) {
+    private tryFollowLink(value: string, column: number, line: number) {
         try {
             JSON.parse(value);  // early out invalid JSON
             const editor            = this.editor;
@@ -929,7 +784,7 @@ export class App {
         }
     }
 
-    setConfig<K extends ConfigKey>(key: K, value: Config[K]) {
+    private setConfig<K extends ConfigKey>(key: K, value: Config[K]) {
         this.config[key]    = value;
         const elem          = el(key);
         if (elem instanceof HTMLInputElement) {
@@ -940,7 +795,7 @@ export class App {
         window.localStorage.setItem(key, valueStr);
     }
 
-    getConfig(key: keyof Config) {
+    private getConfig(key: keyof Config) {
         const valueStr = window.localStorage.getItem(key);
         try {
             return JSON.parse(valueStr);
@@ -948,7 +803,7 @@ export class App {
         return undefined;
     }
 
-    initConfigValue(key: ConfigKey) {
+    private initConfigValue(key: ConfigKey) {
         const value = this.getConfig(key);
         if (value == undefined) {
             this.setConfig(key, this.config[key]);
@@ -957,9 +812,9 @@ export class App {
         this.setConfig(key, value);
     }
 
-    config = defaultConfig;
+    public config = defaultConfig;
 
-    loadConfig() {
+    private loadConfig() {
         this.initConfigValue("showLineNumbers");
         this.initConfigValue("showMinimap");
         this.initConfigValue("formatEntities");
@@ -969,7 +824,7 @@ export class App {
         this.initConfigValue("filters");
     }
 
-    changeConfig (key: ConfigKey, value: boolean) {
+    public changeConfig (key: ConfigKey, value: boolean) {
         this.setConfig(key, value);
         switch (key) {
             case "showLineNumbers":
@@ -979,7 +834,7 @@ export class App {
         }
     }
 
-    formatJson(format: boolean, text: string) : string {
+    public formatJson(format: boolean, text: string) : string {
         if (format) {
             try {
                 // const action = editor.getAction("editor.action.formatDocument");
@@ -998,7 +853,7 @@ export class App {
         return text;
     }
 
-    layoutEditors () {
+    public layoutEditors () {
         // console.log("layoutEditors - activeTab: " + activeTab)
         switch (this.config.activeTab) {
         case "playground":
@@ -1019,7 +874,7 @@ export class App {
         }
     }
 
-    layoutMonacoEditors(pairs: { editor: monaco.editor.IStandaloneCodeEditor, elem: HTMLElement }[]) {
+    private layoutMonacoEditors(pairs: { editor: monaco.editor.IStandaloneCodeEditor, elem: HTMLElement }[]) {
         for (let n = pairs.length - 1; n >= 0; n--) {
             const pair = pairs[n];
             if (!pair.editor || !pair.elem.children[0]) {
@@ -1042,12 +897,12 @@ export class App {
         }
     }
 
-    dragTemplate :  HTMLElement;
-    dragBar:        HTMLElement;
-    dragOffset:     number;
-    dragHorizontal: boolean;
+    private dragTemplate :  HTMLElement;
+    private dragBar:        HTMLElement;
+    private dragOffset:     number;
+    private dragHorizontal: boolean;
 
-    startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean) {
+    public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean) {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
         this.dragHorizontal = horizontal;
         this.dragOffset     = horizontal ? event.offsetX : event.offsetY
@@ -1059,7 +914,7 @@ export class App {
         event.preventDefault();
     }
 
-    getGridColumns(xy: number) {
+    private getGridColumns(xy: number) {
         const prev = this.dragBar.previousElementSibling as HTMLElement;
         xy = xy - (this.dragHorizontal ? prev.offsetLeft : prev.offsetTop);
         if (xy < 20) xy = 20;
@@ -1080,7 +935,7 @@ export class App {
         throw `unhandled condition in getGridColumns() id: ${this.dragTemplate?.id}`
     }
 
-    onDrag(event: MouseEvent) {
+    private onDrag(event: MouseEvent) {
         if (!this.dragTemplate)
             return;
         // console.log(`  drag: ${event.clientX}`);
@@ -1096,7 +951,7 @@ export class App {
         event.preventDefault();
     }
 
-    endDrag() {
+    private endDrag() {
         if (!this.dragTemplate)
             return;
         document.body.onmousemove   = undefined;
@@ -1105,14 +960,14 @@ export class App {
         document.body.style.cursor  = "auto";
     }
 
-    toggleTheme() {
+    public toggleTheme() {
         let mode = document.documentElement.getAttribute('data-theme');
         mode = mode == 'dark' ? 'light' : 'dark'
         window.setTheme(mode)
         this.setEditorOptions();
     }
 
-    initApp() {
+    public initApp() {
         // --- methods without network requests
         this.loadConfig();
         this.initUserToken();

@@ -447,13 +447,13 @@
   <div style="grid-area: body-playground; overflow: hidden; padding-top: 10px;" id="playground" class="tabContent">
     <div style="grid-area: pl-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
       <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
-      <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
+      <button type="button" onclick="app.playground.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
 
       &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;
-      <button type="button" onclick="app.sendSyncRequest()"  title="Send websocket request (Ctrl+Alt+Enter)">send</button>
+      <button type="button" onclick="app.playground.sendSyncRequest()"  title="Send websocket request (Ctrl+Alt+Enter)">send</button>
       &nbsp;&nbsp;
-      <button type="button" onclick="app.connectWebsocket()" title="connect WebSocket">connect</button> 
-      <button type="button" onclick="app.closeWebsocket()"   title="close WebSocket">close</button> &nbsp;
+      <button type="button" onclick="app.playground.connectWebsocket()" title="connect WebSocket">connect</button> 
+      <button type="button" onclick="app.playground.closeWebsocket()"   title="close WebSocket">close</button> &nbsp;
       <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
     </div>
 

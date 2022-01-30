@@ -4,23 +4,9 @@ import { el, createEl, defaultConfig } from "./types.js";
 import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
-// --------------------------------------- WebSocket ---------------------------------------
-let connection;
-let websocketCount = 0;
-let req = 1;
-let clt = null;
-let requestStart;
-let subSeq = 0;
-let subCount = 0;
+import { Playground } from "./playground.js";
 const hubInfoEl = el("hubInfo");
-const responseState = el("response-state");
-const subscriptionCount = el("subscriptionCount");
-const subscriptionSeq = el("subscriptionSeq");
 const selectExample = el("example");
-const socketStatus = el("socketStatus");
-const reqIdElement = el("req");
-const ackElement = el("ack");
-const cltElement = el("clt");
 const defaultUser = el("user");
 const defaultToken = el("token");
 const catalogExplorer = el("catalogExplorer");
@@ -42,7 +28,6 @@ const entityContainer = el("entityContainer");
 } */
 export class App {
     constructor() {
-        this.hubInfo = {};
         this.databaseSchemas = {};
         this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
         // =======================================================================================================
@@ -51,68 +36,7 @@ export class App {
         this.config = defaultConfig;
         this.explorer = new Explorer(this.config);
         this.editor = new EntityEditor();
-    }
-    connectWebsocket() {
-        if (connection) {
-            connection.close();
-            connection = null;
-        }
-        const loc = window.location;
-        const nr = ("" + (++websocketCount)).padStart(3, "0");
-        const uri = `ws://${loc.host}/ws-${nr}`;
-        // const uri  = `ws://google.com:8080/`; // test connection timeout
-        socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
-        try {
-            connection = new WebSocket(uri);
-        }
-        catch (err) {
-            socketStatus.innerText = "connect failed: err";
-            return;
-        }
-        connection.onopen = () => {
-            socketStatus.innerHTML = "connected <small>🟢</small>";
-            console.log('WebSocket connected');
-            req = 1;
-            subCount = 0;
-        };
-        connection.onclose = (e) => {
-            socketStatus.innerText = "closed (code: " + e.code + ")";
-            responseState.innerText = "";
-            console.log('WebSocket closed');
-        };
-        // Log errors
-        connection.onerror = (error) => {
-            socketStatus.innerText = "error";
-            console.log('WebSocket Error ' + error);
-        };
-        // Log messages from the server
-        connection.onmessage = (e) => {
-            const duration = new Date().getTime() - requestStart;
-            const data = JSON.parse(e.data);
-            // console.log('server:', e.data);
-            switch (data.msg) {
-                case "resp":
-                case "error":
-                    clt = data.clt;
-                    cltElement.innerText = clt !== null && clt !== void 0 ? clt : " - ";
-                    const content = this.formatJson(this.config.formatResponses, e.data);
-                    this.responseModel.setValue(content);
-                    responseState.innerHTML = `· ${duration} ms`;
-                    break;
-                case "ev":
-                    subscriptionCount.innerText = String(++subCount);
-                    subSeq = data.seq;
-                    // multiple clients can use the same WebSocket. Use the latest
-                    if (clt == data.clt) {
-                        subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
-                        ackElement.innerText = subSeq ? String(subSeq) : " - ";
-                    }
-                    break;
-            }
-        };
-    }
-    closeWebsocket() {
-        connection.close();
+        this.playground = new Playground();
     }
     getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -142,73 +66,6 @@ export class App {
         this.setToken(value);
     }
     ;
-    addUserToken(jsonRequest) {
-        const endBracket = jsonRequest.lastIndexOf("}");
-        if (endBracket == -1)
-            return jsonRequest;
-        const before = jsonRequest.substring(0, endBracket);
-        const after = jsonRequest.substring(endBracket);
-        let userToken = JSON.stringify({ user: defaultUser.value, token: defaultToken.value });
-        userToken = userToken.substring(1, userToken.length - 1);
-        return `${before},${userToken}${after}`;
-    }
-    sendSyncRequest() {
-        if (!connection || connection.readyState != 1) { // 1 == OPEN {
-            this.responseModel.setValue(`Request ${req} failed. WebSocket not connected`);
-            responseState.innerHTML = "";
-        }
-        else {
-            let jsonRequest = this.requestModel.getValue();
-            jsonRequest = this.addUserToken(jsonRequest);
-            try {
-                const request = JSON.parse(jsonRequest);
-                if (request) {
-                    // Enable overrides of WebSocket specific members
-                    if (request.req !== undefined) {
-                        req = request.req;
-                    }
-                    if (request.ack !== undefined) {
-                        subSeq = request.ack;
-                    }
-                    if (request.clt !== undefined) {
-                        clt = request.clt;
-                    }
-                    // Add WebSocket specific members to request
-                    request.req = req;
-                    request.ack = subSeq;
-                    if (clt) {
-                        request.clt = clt;
-                    }
-                }
-                jsonRequest = JSON.stringify(request);
-            }
-            catch (_a) { }
-            responseState.innerHTML = '<span class="spinner"></span>';
-            connection.send(jsonRequest);
-            requestStart = new Date().getTime();
-        }
-        req++;
-        reqIdElement.innerText = String(req);
-    }
-    async postSyncRequest() {
-        let jsonRequest = this.requestModel.getValue();
-        jsonRequest = this.addUserToken(jsonRequest);
-        responseState.innerHTML = '<span class="spinner"></span>';
-        let start = new Date().getTime();
-        let duration;
-        try {
-            const response = await this.postRequest(jsonRequest, "POST");
-            let content = await response.text;
-            content = this.formatJson(this.config.formatResponses, content);
-            duration = new Date().getTime() - start;
-            this.responseModel.setValue(content);
-        }
-        catch (error) {
-            duration = new Date().getTime() - start;
-            this.responseModel.setValue("POST error: " + error.message);
-        }
-        responseState.innerHTML = `· ${duration} ms`;
-    }
     applyCtrlKey(event) {
         if (this.lastCtrlKey == event.ctrlKey)
             return;
@@ -234,11 +91,11 @@ export class App {
         switch (this.config.activeTab) {
             case "playground":
                 if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
-                    this.sendSyncRequest();
+                    this.playground.sendSyncRequest();
                     event.preventDefault();
                 }
                 if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                    this.postSyncRequest();
+                    this.playground.postSyncRequest();
                     event.preventDefault();
                 }
                 if (event.code == 'KeyS' && event.ctrlKey) {
@@ -324,8 +181,8 @@ export class App {
             selectExample.add(option);
         }
     }
-    // --------------------------------------- Explorer ---------------------------------------
-    async postRequest(request, tag) {
+    // --------------------------------------- Fliox HTTP --------------------------------------- 
+    static async postRequest(request, tag) {
         let init = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -350,7 +207,7 @@ export class App {
             };
         }
     }
-    async postRequestTasks(database, tasks, tag) {
+    static async postRequestTasks(database, tasks, tag) {
         const db = database == "main_db" ? undefined : database;
         const sync = {
             "msg": "sync",
@@ -361,7 +218,7 @@ export class App {
         };
         const request = JSON.stringify(sync);
         tag = tag ? tag : "";
-        return await this.postRequest(request, `${database}/${tag}`);
+        return await App.postRequest(request, `${database}/${tag}`);
     }
     static getRestPath(database, container, ids, query) {
         let path = `./rest/${database}`;
@@ -472,7 +329,7 @@ export class App {
             { "task": "command", "name": "DbHubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
-        const response = await this.postRequestTasks("cluster", tasks, null);
+        const response = await App.postRequestTasks("cluster", tasks, null);
         const content = response.json;
         const error = App.getTaskError(content, 0);
         if (error) {
