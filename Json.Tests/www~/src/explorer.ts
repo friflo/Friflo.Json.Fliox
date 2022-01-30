@@ -1,8 +1,8 @@
 
 import { FieldType, JsonType }  from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { Resource, Config, el, createEl, Entity }   from "./types.js";
-import { App, app }                                 from "./index.js";
-import { EntityEditor }                             from "./entity-editor.js";
+import { Resource, Config, el, createEl, Entity, parseAst }     from "./types.js";
+import { App, app }                                             from "./index.js";
+import { EntityEditor }                                         from "./entity-editor.js";
 
 function createMeasureTextWidth(width: number) : HTMLElement {
     const div = document.createElement("div");
@@ -156,7 +156,7 @@ export class Explorer
         const explorer = this.explorer;
         if (json == explorer.cachedJsonValue)
             return explorer.cachedJsonAst;
-        const ast = App.parseAst(json);
+        const ast = parseAst(json);
         explorer.cachedJsonAst      = ast;
         explorer.cachedJsonValue    = json;
         return ast;

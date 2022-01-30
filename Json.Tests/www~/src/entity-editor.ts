@@ -1,4 +1,4 @@
-import { el, createEl, Resource, Entity, Method }   from "./types.js"
+import { el, createEl, Resource, Entity, Method, parseAst }   from "./types.js"
 import { App, app }                                 from "./index.js";
 
 import { CommandType, JsonType }        from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
@@ -13,7 +13,6 @@ type FindRange = {
 }
 
 type ExplorerEditor = "command" | "entity" | "dbInfo"
-
 
 
 const entityExplorer    = el("entityExplorer");
@@ -46,7 +45,7 @@ export class EntityEditor
     commandValueEditor: monaco.editor.IStandaloneCodeEditor;
     selectedCommand = undefined as HTMLElement;
 
-    initEditor(
+    public initEditor(
         entityEditor:       monaco.editor.IStandaloneCodeEditor,
         commandValueEditor: monaco.editor.IStandaloneCodeEditor)
     {
@@ -84,7 +83,7 @@ export class EntityEditor
         }
     }
 
-    async sendCommand(method: Method) {
+    public async sendCommand(method: Method) {
         const value     = this.commandValueEditor.getValue();
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
@@ -109,7 +108,7 @@ export class EntityEditor
         el("databaseType").innerHTML      = dbContainer.databaseType;        
     }
 
-    listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) {
+    public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
@@ -166,14 +165,14 @@ export class EntityEditor
         entityExplorer.appendChild(ulDatabase);
     }
 
-    entityIdentity = { } as {
+    private entityIdentity = { } as {
         database:   string,
         container:  string,
         entityIds:  string[],
         command?:   string
     }
 
-            entityHistoryPos    = -1;
+    public  entityHistoryPos    = -1;
     private entityHistory: {
         selection?: monaco.Selection,
         route:      Resource
@@ -185,7 +184,7 @@ export class EntityEditor
         this.entityHistory[this.entityHistoryPos].selection    = this.entityEditor.getSelection();
     }
 
-    navigateEntity(pos: number) {
+    public navigateEntity(pos: number) {
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
         this.storeCursor();
@@ -194,7 +193,7 @@ export class EntityEditor
         this.loadEntities(entry.route, true, entry.selection);
     }
 
-    async loadEntities (p: Resource, preserveHistory: boolean, selection: monaco.IRange) : Promise<string> {
+    public async loadEntities (p: Resource, preserveHistory: boolean, selection: monaco.IRange) : Promise<string> {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
         entityType.innerHTML    = app.getEntityType  (p.database, p.container);
@@ -295,7 +294,7 @@ export class EntityEditor
         this.loadInputEntityIds(database, container);
     }
 
-    clearEntity (database: string, container: string) {
+    public clearEntity (database: string, container: string) {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
 
@@ -310,13 +309,13 @@ export class EntityEditor
         this.setEntityValue(database, container, "");
     }
 
-    static getEntityKeyName (entityType: JsonType) {
+    public  static getEntityKeyName (entityType: JsonType) {
         if (entityType?.key)
             return entityType.key;
         return "id";
     }
 
-    async saveEntitiesAction () {
+    public async saveEntitiesAction () {
         const ei        = this.entityIdentity;
         const jsonValue = this.entityModel.getValue();
         await this.saveEntities(ei.database, ei.container, jsonValue);
@@ -377,12 +376,12 @@ export class EntityEditor
         return true;
     }
 
-    async deleteEntitiesAction () {
+    public async deleteEntitiesAction () {
         const ei = this.entityIdentity;
         await this.deleteEntities (ei.database, ei.container, ei.entityIds);
     }
 
-    async deleteEntities (database: string, container: string, ids: string[]) {
+    public  async deleteEntities (database: string, container: string, ids: string[]) {
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
         const response = await App.restRequest("DELETE", null, database, container, ids, null);        
         if (!response.ok) {
@@ -416,7 +415,7 @@ export class EntityEditor
         this.entityEditor.setModel (model);
         if (value == "")
             return null;
-        const ast = App.parseAst(value);
+        const ast = parseAst(value);
         if (!ast)
             return null;
         const containerSchema = app.getContainerSchema(database, container);
@@ -444,7 +443,7 @@ export class EntityEditor
         editor.deltaDecorations([], newDecorations);
     }
 
-    static addRelationsFromAst(ast: jsonToAst.ValueNode, schema: JsonType, addRelation: AddRelation) {
+    private static addRelationsFromAst(ast: jsonToAst.ValueNode, schema: JsonType, addRelation: AddRelation) {
         if (ast.type == "Literal")
             return;
         for (const child of ast.children) {
@@ -515,7 +514,7 @@ export class EntityEditor
         return null;
     }
 
-    static findPathRange(ast: jsonToAst.ValueNode, pathString: string, keyName: string, id: string) : FindRange {
+    public static findPathRange(ast: jsonToAst.ValueNode, pathString: string, keyName: string, id: string) : FindRange {
         const astRange  = EntityEditor.RangeFromNode(ast);
         const path      = pathString.split('.');
         let   node      = ast;
@@ -581,10 +580,10 @@ export class EntityEditor
         this.entityEditor.setModel (model);
     }
 
-    commandEditWidth = "60px";
-    activeExplorerEditor: ExplorerEditor = undefined;
+    public commandEditWidth = "60px";
+    public activeExplorerEditor: ExplorerEditor = undefined;
 
-    setExplorerEditor(edit : ExplorerEditor) {
+    public setExplorerEditor(edit : ExplorerEditor) {
         this.activeExplorerEditor   = edit;
         // console.log("editor:", edit);
         const commandActive         = edit == "command";
@@ -613,5 +612,32 @@ export class EntityEditor
         this.entityIdentity.database    = database;
         this.setCommandParam (database, commandName, def);
         this.setCommandResult(database, commandName);
+    }
+
+    public tryFollowLink(value: string, column: number, line: number) {
+        try {
+            JSON.parse(value);  // early out invalid JSON
+            const ast               = parseAst(value);
+            const database          = this.entityIdentity.database;
+            const containerSchema   = app.getContainerSchema(database, this.entityIdentity.container);
+
+            let entity: Resource;
+            EntityEditor.addRelationsFromAst(ast, containerSchema, (value, container) => {
+                if (entity || value.type != "Literal")
+                    return;
+                const start = value.loc.start;
+                const end   = value.loc.end;
+                if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
+                    // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
+                    const literalValue = value.value as string;
+                    entity = { database: database, container: container, ids: [literalValue] };
+                }
+            });
+            if (entity) {
+                this.loadEntities(entity, false, null);
+            }
+        } catch (error) {
+            writeResult.innerHTML = `<span style="color:#FF8C00">Follow link failed: ${error}</code>`;
+        }
     }
 }

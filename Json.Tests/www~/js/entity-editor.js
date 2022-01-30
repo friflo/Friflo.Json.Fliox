@@ -1,4 +1,4 @@
-import { el, createEl } from "./types.js";
+import { el, createEl, parseAst } from "./types.js";
 import { App, app } from "./index.js";
 const entityExplorer = el("entityExplorer");
 const writeResult = el("writeResult");
@@ -352,7 +352,7 @@ export class EntityEditor {
         this.entityEditor.setModel(model);
         if (value == "")
             return null;
-        const ast = App.parseAst(value);
+        const ast = parseAst(value);
         if (!ast)
             return null;
         const containerSchema = app.getContainerSchema(database, container);
@@ -533,6 +533,32 @@ export class EntityEditor {
         this.entityIdentity.database = database;
         this.setCommandParam(database, commandName, def);
         this.setCommandResult(database, commandName);
+    }
+    tryFollowLink(value, column, line) {
+        try {
+            JSON.parse(value); // early out invalid JSON
+            const ast = parseAst(value);
+            const database = this.entityIdentity.database;
+            const containerSchema = app.getContainerSchema(database, this.entityIdentity.container);
+            let entity;
+            EntityEditor.addRelationsFromAst(ast, containerSchema, (value, container) => {
+                if (entity || value.type != "Literal")
+                    return;
+                const start = value.loc.start;
+                const end = value.loc.end;
+                if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
+                    // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
+                    const literalValue = value.value;
+                    entity = { database: database, container: container, ids: [literalValue] };
+                }
+            });
+            if (entity) {
+                this.loadEntities(entity, false, null);
+            }
+        }
+        catch (error) {
+            writeResult.innerHTML = `<span style="color:#FF8C00">Follow link failed: ${error}</code>`;
+        }
     }
 }
 //# sourceMappingURL=entity-editor.js.map

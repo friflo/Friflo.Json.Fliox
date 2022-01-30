@@ -1,5 +1,4 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
-/// <reference types="../../../node_modules/@types/json-to-ast/index" />
 
 import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig } from "./types.js"
 import { Schema, MonacoSchema }     from "./schema.js"
@@ -12,10 +11,6 @@ import { DbSchema, DbContainers, DbCommands, DbHubInfo }        from "../../asse
 import { SyncRequest, SyncResponse, ProtocolResponse_Union }    from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
-
-// declare const parse : any; // https://www.npmjs.com/package/json-to-ast
-declare function parse(json: string, settings?: jsonToAst.Options): jsonToAst.ValueNode;
-
 declare global {
     interface Window {
         appConfig: { monacoTheme: string };
@@ -25,12 +20,10 @@ declare global {
 }
 
 const hubInfoEl             = el("hubInfo");
-const selectExample         = el("example")         as HTMLSelectElement;
 const defaultUser           = el("user")            as HTMLInputElement;
 const defaultToken          = el("token")           as HTMLInputElement;
 const catalogExplorer       = el("catalogExplorer");
 const entityExplorer        = el("entityExplorer");
-const writeResult           = el("writeResult");
 
 const entityFilter          = el("entityFilter")    as HTMLInputElement;
 
@@ -177,50 +170,6 @@ export class App {
         event.preventDefault();
     }
 
-    // --------------------------------------- example requests ---------------------------------------
-    public async onExampleChange () {
-        const exampleName = selectExample.value;
-        if (exampleName == "") {
-            this.requestModel.setValue("")
-            return;
-        }
-        const response = await fetch(exampleName);
-        const example = await response.text();
-        this.requestModel.setValue(example)
-    }
-
-    private async loadExampleRequestList () {
-        // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
-        let option      = createEl("option");
-        option.value    = "";
-        option.disabled = true;
-        option.selected = true;
-        option.hidden   = true;
-        option.text     = "Select request ...";
-        selectExample.add(option);
-
-        const folder    = './example-requests'
-        const response  = await fetch(folder);
-        if (!response.ok)
-            return;
-        const exampleRequests   = await response.json();
-        let   groupPrefix       = "0";
-        let   groupCount        = 0;
-        for (const example of exampleRequests) {
-            if (!example.endsWith(".json"))
-                continue;
-            const name = example.substring(folder.length).replace(".sync.json", "");
-            if (groupPrefix != name[0]) {
-                groupPrefix = name[0];
-                groupCount++;
-            }
-            option = createEl("option");
-            option.value                    = example;
-            option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
-            option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
-            selectExample.add(option);
-        }
-    }
 
     // --------------------------------------- Fliox HTTP --------------------------------------- 
     public static async postRequest (request: string, tag: string) {
@@ -473,6 +422,8 @@ export class App {
         this.editor.listCommands(dbCommands[0].id, dbCommands[0], dbContainers[0]);
     }
 
+
+    // --------------------------------------- schema ---------------------------------------
     public databaseSchemas: { [key: string]: DbSchema} = {};
     
     public getSchemaType(database: string) {
@@ -528,7 +479,7 @@ export class App {
         return null;
     }
 
-    // =======================================================================================================
+    // --------------------------------------- filter --------------------------------------- 
     public filter = {} as {
         database:   string,
         container:  string
@@ -574,24 +525,6 @@ export class App {
         const query     = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url       = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el<HTMLAnchorElement>("filterLink").href = url;
-    }
-
-
-    public static parseAst(value: string) : jsonToAst.ValueNode {
-        try {
-            JSON.parse(value);  // early out on invalid JSON
-            // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
-            // 2.) bundle.js created fom npm module 'json-to-ast' via:
-            //     [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
-            // 3.) browserify main.js | uglifyjs > bundle.js
-            //     [javascript - How to get minified output with browserify? - Stack Overflow] https://stackoverflow.com/questions/15590702/how-to-get-minified-output-with-browserify
-            const ast = parse(value, { loc: true });
-            // console.log ("AST", ast);
-            return ast;
-        } catch (error) {
-            console.error("parseAst", error);
-        }
-        return null;
     }
 
 
@@ -724,7 +657,7 @@ export class App {
                 const value     = this.entityEditor.getValue();
                 const column    = e.target.position.column;
                 const line      = e.target.position.lineNumber;
-                window.setTimeout(() => { this.tryFollowLink(value, column, line) }, 1);
+                window.setTimeout(() => { this.editor.tryFollowLink(value, column, line) }, 1);
             });
         }
         // --- create command value editor
@@ -756,34 +689,8 @@ export class App {
         this.commandValueEditor.updateOptions ({ ...editorSettings });
     }
 
-    private tryFollowLink(value: string, column: number, line: number) {
-        try {
-            JSON.parse(value);  // early out invalid JSON
-            const editor            = this.editor;
-            const ast               = parse(value, { loc: true });
-            const database          = editor.entityIdentity.database;
-            const containerSchema   = this.getContainerSchema(database, editor.entityIdentity.container);
 
-            let entity: Resource;
-            EntityEditor.addRelationsFromAst(ast, containerSchema, (value, container) => {
-                if (entity || value.type != "Literal")
-                    return;
-                const start = value.loc.start;
-                const end   = value.loc.end;
-                if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
-                    // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                    const literalValue = value.value as string;
-                    entity = { database: database, container: container, ids: [literalValue] };
-                }
-            });
-            if (entity) {
-                editor.loadEntities(entity, false, null);
-            }
-        } catch (error) {
-            writeResult.innerHTML = `<span style="color:#FF8C00">Follow link failed: ${error}</code>`;
-        }
-    }
-
+    // -------------------------------------- config --------------------------------------------
     private setConfig<K extends ConfigKey>(key: K, value: Config[K]) {
         this.config[key]    = value;
         const elem          = el(key);
@@ -974,7 +881,7 @@ export class App {
         this.openTab(app.getConfig("activeTab"));
 
         // --- methods performing network requests - note: methods are not awaited
-        this.loadExampleRequestList();
+        this.playground.loadExampleRequestList();
         this.loadCluster();
     }
 }

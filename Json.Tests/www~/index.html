@@ -446,7 +446,7 @@
   <!-- ------------------------------------------- Playground ------------------------------------------- -->
   <div style="grid-area: body-playground; overflow: hidden; padding-top: 10px;" id="playground" class="tabContent">
     <div style="grid-area: pl-header; overflow:hidden; white-space:nowrap; padding-left: 7px; padding-top: 1px;">
-      <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
+      <select required title="example-requests" id="example" onchange="app.playground.onExampleChange()"></select>
       <button type="button" onclick="app.playground.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
 
       &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;

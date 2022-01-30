@@ -1,17 +1,14 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
-/// <reference types="../../../node_modules/@types/json-to-ast/index" />
 import { el, createEl, defaultConfig } from "./types.js";
 import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
 import { Playground } from "./playground.js";
 const hubInfoEl = el("hubInfo");
-const selectExample = el("example");
 const defaultUser = el("user");
 const defaultToken = el("token");
 const catalogExplorer = el("catalogExplorer");
 const entityExplorer = el("entityExplorer");
-const writeResult = el("writeResult");
 const entityFilter = el("entityFilter");
 // request response editor
 const requestContainer = el("requestContainer");
@@ -28,9 +25,10 @@ const entityContainer = el("entityContainer");
 } */
 export class App {
     constructor() {
+        // --------------------------------------- schema ---------------------------------------
         this.databaseSchemas = {};
         this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
-        // =======================================================================================================
+        // --------------------------------------- filter --------------------------------------- 
         this.filter = {};
         this.allMonacoSchemas = [];
         this.config = defaultConfig;
@@ -138,48 +136,6 @@ export class App {
     execute(event, lambda) {
         lambda();
         event.preventDefault();
-    }
-    // --------------------------------------- example requests ---------------------------------------
-    async onExampleChange() {
-        const exampleName = selectExample.value;
-        if (exampleName == "") {
-            this.requestModel.setValue("");
-            return;
-        }
-        const response = await fetch(exampleName);
-        const example = await response.text();
-        this.requestModel.setValue(example);
-    }
-    async loadExampleRequestList() {
-        // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
-        let option = createEl("option");
-        option.value = "";
-        option.disabled = true;
-        option.selected = true;
-        option.hidden = true;
-        option.text = "Select request ...";
-        selectExample.add(option);
-        const folder = './example-requests';
-        const response = await fetch(folder);
-        if (!response.ok)
-            return;
-        const exampleRequests = await response.json();
-        let groupPrefix = "0";
-        let groupCount = 0;
-        for (const example of exampleRequests) {
-            if (!example.endsWith(".json"))
-                continue;
-            const name = example.substring(folder.length).replace(".sync.json", "");
-            if (groupPrefix != name[0]) {
-                groupPrefix = name[0];
-                groupCount++;
-            }
-            option = createEl("option");
-            option.value = example;
-            option.text = (groupCount % 2 ? "\xA0\xA0" : "") + name;
-            option.style.backgroundColor = groupCount % 2 ? "#ffffff" : "#eeeeff";
-            selectExample.add(option);
-        }
     }
     // --------------------------------------- Fliox HTTP --------------------------------------- 
     static async postRequest(request, tag) {
@@ -503,23 +459,6 @@ export class App {
         const url = `./rest/${this.filter.database}/${this.filter.container}${query}`;
         el("filterLink").href = url;
     }
-    static parseAst(value) {
-        try {
-            JSON.parse(value); // early out on invalid JSON
-            // 1.) [json-to-ast - npm] https://www.npmjs.com/package/json-to-ast
-            // 2.) bundle.js created fom npm module 'json-to-ast' via:
-            //     [node.js - How to use npm modules in browser? is possible to use them even in local (PC) ? - javascript - Stack Overflow] https://stackoverflow.com/questions/49562978/how-to-use-npm-modules-in-browser-is-possible-to-use-them-even-in-local-pc
-            // 3.) browserify main.js | uglifyjs > bundle.js
-            //     [javascript - How to get minified output with browserify? - Stack Overflow] https://stackoverflow.com/questions/15590702/how-to-get-minified-output-with-browserify
-            const ast = parse(value, { loc: true });
-            // console.log ("AST", ast);
-            return ast;
-        }
-        catch (error) {
-            console.error("parseAst", error);
-        }
-        return null;
-    }
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
     async createProtocolSchemas() {
@@ -628,7 +567,7 @@ export class App {
                 const value = this.entityEditor.getValue();
                 const column = e.target.position.column;
                 const line = e.target.position.lineNumber;
-                window.setTimeout(() => { this.tryFollowLink(value, column, line); }, 1);
+                window.setTimeout(() => { this.editor.tryFollowLink(value, column, line); }, 1);
             });
         }
         // --- create command value editor
@@ -657,33 +596,7 @@ export class App {
         this.entityEditor.updateOptions(Object.assign({}, editorSettings));
         this.commandValueEditor.updateOptions(Object.assign({}, editorSettings));
     }
-    tryFollowLink(value, column, line) {
-        try {
-            JSON.parse(value); // early out invalid JSON
-            const editor = this.editor;
-            const ast = parse(value, { loc: true });
-            const database = editor.entityIdentity.database;
-            const containerSchema = this.getContainerSchema(database, editor.entityIdentity.container);
-            let entity;
-            EntityEditor.addRelationsFromAst(ast, containerSchema, (value, container) => {
-                if (entity || value.type != "Literal")
-                    return;
-                const start = value.loc.start;
-                const end = value.loc.end;
-                if (start.line <= line && start.column <= column && line <= end.line && column <= end.column) {
-                    // console.log(`${resolvedDef.databaseName}/${resolvedDef.containerName}/${value.value}`);
-                    const literalValue = value.value;
-                    entity = { database: database, container: container, ids: [literalValue] };
-                }
-            });
-            if (entity) {
-                editor.loadEntities(entity, false, null);
-            }
-        }
-        catch (error) {
-            writeResult.innerHTML = `<span style="color:#FF8C00">Follow link failed: ${error}</code>`;
-        }
-    }
+    // -------------------------------------- config --------------------------------------------
     setConfig(key, value) {
         this.config[key] = value;
         const elem = el(key);
@@ -857,7 +770,7 @@ export class App {
         this.initUserToken();
         this.openTab(app.getConfig("activeTab"));
         // --- methods performing network requests - note: methods are not awaited
-        this.loadExampleRequestList();
+        this.playground.loadExampleRequestList();
         this.loadCluster();
     }
 }

@@ -1,4 +1,4 @@
-import { el, createEl } from "./types.js";
+import { el, createEl, parseAst } from "./types.js";
 import { App, app } from "./index.js";
 import { EntityEditor } from "./entity-editor.js";
 function createMeasureTextWidth(width) {
@@ -109,7 +109,7 @@ export class Explorer {
         const explorer = this.explorer;
         if (json == explorer.cachedJsonValue)
             return explorer.cachedJsonAst;
-        const ast = App.parseAst(json);
+        const ast = parseAst(json);
         explorer.cachedJsonAst = ast;
         explorer.cachedJsonValue = json;
         return ast;

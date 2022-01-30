@@ -1,4 +1,4 @@
-import { el } from "./types.js";
+import { el, createEl } from "./types.js";
 import { App, app } from "./index.js";
 const responseState = el("response-state");
 const subscriptionCount = el("subscriptionCount");
@@ -7,6 +7,7 @@ const socketStatus = el("socketStatus");
 const reqIdElement = el("req");
 const ackElement = el("ack");
 const cltElement = el("clt");
+const selectExample = el("example");
 //
 const defaultUser = el("user");
 const defaultToken = el("token");
@@ -148,6 +149,48 @@ export class Playground {
             app.responseModel.setValue("POST error: " + error.message);
         }
         responseState.innerHTML = `· ${duration} ms`;
+    }
+    // --------------------------------------- example requests ---------------------------------------
+    async onExampleChange() {
+        const exampleName = selectExample.value;
+        if (exampleName == "") {
+            app.requestModel.setValue("");
+            return;
+        }
+        const response = await fetch(exampleName);
+        const example = await response.text();
+        app.requestModel.setValue(example);
+    }
+    async loadExampleRequestList() {
+        // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
+        let option = createEl("option");
+        option.value = "";
+        option.disabled = true;
+        option.selected = true;
+        option.hidden = true;
+        option.text = "Select request ...";
+        selectExample.add(option);
+        const folder = './example-requests';
+        const response = await fetch(folder);
+        if (!response.ok)
+            return;
+        const exampleRequests = await response.json();
+        let groupPrefix = "0";
+        let groupCount = 0;
+        for (const example of exampleRequests) {
+            if (!example.endsWith(".json"))
+                continue;
+            const name = example.substring(folder.length).replace(".sync.json", "");
+            if (groupPrefix != name[0]) {
+                groupPrefix = name[0];
+                groupCount++;
+            }
+            option = createEl("option");
+            option.value = example;
+            option.text = (groupCount % 2 ? "\xA0\xA0" : "") + name;
+            option.style.backgroundColor = groupCount % 2 ? "#ffffff" : "#eeeeff";
+            selectExample.add(option);
+        }
     }
 }
 //# sourceMappingURL=playground.js.map
