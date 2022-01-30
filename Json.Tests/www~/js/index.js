@@ -925,14 +925,15 @@ export class App {
         this.selectEntities(database, container, ids);
     }
     selectEntities(database, container, ids) {
-        var _a, _b;
+        var _a;
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
         let liIds = this.explorer.findContainerEntities(ids);
         this.explorer.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
         if (firstRow) {
-            const columnIndex = (_b = (_a = this.explorer.explorer.focusedCell) === null || _a === void 0 ? void 0 : _a.cellIndex) !== null && _b !== void 0 ? _b : 1;
+            const focusedCell = this.explorer.getFocusedCell();
+            const columnIndex = (_a = focusedCell === null || focusedCell === void 0 ? void 0 : focusedCell.cellIndex) !== null && _a !== void 0 ? _a : 1;
             this.explorer.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };

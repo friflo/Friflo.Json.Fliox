@@ -1056,7 +1056,8 @@ export class App {
         this.explorer.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
         if (firstRow) {
-            const columnIndex = this.explorer.explorer.focusedCell?.cellIndex ?? 1;
+            const focusedCell = this.explorer.getFocusedCell();
+            const columnIndex = focusedCell?.cellIndex ?? 1;
             this.explorer.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};

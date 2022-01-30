@@ -49,7 +49,7 @@ const filterRow         = el("filterRow");
 
 
 export class Explorer {
-    explorer: {
+    private explorer: {
         database:           string;
         container:          string;
         entityType:         JsonType             | null;
@@ -57,9 +57,10 @@ export class Explorer {
         cachedJsonValue?:   string;
         cachedJsonAst?:     jsonToAst.ValueNode;
     }
-    explorerTable:  HTMLTableElement;
+    private             explorerTable:  HTMLTableElement;
+    private readonly    config:         Config
 
-    config:         Config
+    getFocusedCell() { return this.explorer.focusedCell };
 
     constructor(config: Config) {
         this.config = config;
