@@ -13,6 +13,8 @@ import { SyncRequest, SyncResponse, ProtocolResponse_Union }
 import { SyncRequestTask_Union, SendCommandResult }
             from "../../assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
+import { Explorer } from "./explorer.js"
+
 // declare const parse : any; // https://www.npmjs.com/package/json-to-ast
 declare function parse(json: string, settings?: jsonToAst.Options): jsonToAst.ValueNode;
 
@@ -2673,6 +2675,8 @@ class App {
         // --- methods performing network requests - note: methods are not awaited
         this.loadExampleRequestList();
         this.loadCluster();
+
+        const explorer = new Explorer();
     }
 }
 

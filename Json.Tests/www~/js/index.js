@@ -1,5 +1,6 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
 /// <reference types="../../../node_modules/@types/json-to-ast/index" />
+import { Explorer } from "./explorer.js";
 const defaultConfig = {
     showLineNumbers: false,
     showMinimap: false,
@@ -2361,6 +2362,7 @@ class App {
         // --- methods performing network requests - note: methods are not awaited
         this.loadExampleRequestList();
         this.loadCluster();
+        const explorer = new Explorer();
     }
 }
 App.bracketValue = /\[(.*?)\]/;
