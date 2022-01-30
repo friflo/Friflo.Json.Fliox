@@ -242,14 +242,7 @@ export class App {
         }
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
-    static setClass(element, enable, className) {
-        const classList = element.classList;
-        if (enable) {
-            classList.add(className);
-            return;
-        }
-        classList.remove(className);
-    }
+    // --------------------------------------- general App UI --------------------------------------- 
     toggleDescription() {
         this.changeConfig("showDescription", !this.config.showDescription);
         this.openTab(this.config.activeTab);
@@ -276,6 +269,14 @@ export class App {
         if (tabName != "settings") {
             this.setConfig("activeTab", tabName);
         }
+    }
+    static setClass(element, enable, className) {
+        const classList = element.classList;
+        if (enable) {
+            classList.add(className);
+            return;
+        }
+        classList.remove(className);
     }
     async loadCluster() {
         const tasks = [

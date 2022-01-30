@@ -279,15 +279,8 @@ export class App {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
-    private static setClass(element: Element, enable: boolean, className: string) {
-        const classList = element.classList;
-        if (enable) {
-            classList.add(className);
-            return;
-        }
-        classList.remove(className);        
-    }
 
+    // --------------------------------------- general App UI --------------------------------------- 
     public toggleDescription() {
         this.changeConfig("showDescription", !this.config.showDescription);   
         this.openTab(this.config.activeTab);
@@ -315,6 +308,15 @@ export class App {
         if (tabName != "settings") {
             this.setConfig("activeTab", tabName);
         }
+    }
+    
+    private static setClass(element: Element, enable: boolean, className: string) {
+        const classList = element.classList;
+        if (enable) {
+            classList.add(className);
+            return;
+        }
+        classList.remove(className);        
     }
 
     private selectedCatalog:    HTMLElement;
@@ -804,6 +806,8 @@ export class App {
         }
     }
 
+
+    // --------------------------------------- grid-area drag bars --------------------------------------- 
     private dragTemplate :  HTMLElement;
     private dragBar:        HTMLElement;
     private dragOffset:     number;
