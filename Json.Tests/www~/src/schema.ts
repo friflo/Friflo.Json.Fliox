@@ -109,7 +109,7 @@ export class Schema {
         return schemaMap;
     }
 
-    static resolveRefs(jsonSchemas: { [key: string] : JsonSchema }) {
+    private static resolveRefs(jsonSchemas: { [key: string] : JsonSchema }) {
         for (const schemaPath in jsonSchemas) {
             // if (schemaPath == "Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json") debugger;
             const schema      = jsonSchemas[schemaPath];
@@ -117,7 +117,7 @@ export class Schema {
         }
     }
 
-    static resolveNodeRefs(jsonSchemas: { [key: string] : JsonSchema }, schema: JsonSchema, node: JsonSchema) {
+    private static resolveNodeRefs(jsonSchemas: { [key: string] : JsonSchema }, schema: JsonSchema, node: JsonSchema) {
         const nodeType = typeof node;
         if (nodeType != "object")
             return;
@@ -155,7 +155,7 @@ export class Schema {
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
-    static addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: { [key: string]: MonacoSchema }) {
+    private static addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: { [key: string]: MonacoSchema }) {
         const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
         const schemaName      = dbSchema.schemaName;
         const schemaPath      = dbSchema.schemaPath;
@@ -211,7 +211,7 @@ export class Schema {
         }
     }
 
-    static getResolvedType (type: FieldType, schemaPath: string) {
+    private static getResolvedType (type: FieldType, schemaPath: string) {
         const $ref = type.$ref;
         if (!$ref)
             return type;

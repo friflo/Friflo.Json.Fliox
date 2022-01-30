@@ -123,7 +123,7 @@ export class Explorer {
         this.setFocusCell(1, 1);
     }
 
-    async explorerOnClick(ev: MouseEvent, p: Resource) {
+    private async explorerOnClick(ev: MouseEvent, p: Resource) {
         const path          = ev.composedPath() as HTMLElement[];
         if (ev.shiftKey) {
             this.getSelectionFromPath(path, "id");
@@ -146,7 +146,7 @@ export class Explorer {
         this.selectEditorValue(ast, this.explorer.focusedCell);
     }
 
-    getAstFromJson(json: string) : jsonToAst.ValueNode | null {
+    private getAstFromJson(json: string) : jsonToAst.ValueNode | null {
         if (json == "")
             return null;
         const explorer = this.explorer;
@@ -158,7 +158,7 @@ export class Explorer {
         return ast;
     }
 
-    selectEditorValue(ast: jsonToAst.ValueNode, focus: HTMLTableCellElement) {
+    private selectEditorValue(ast: jsonToAst.ValueNode, focus: HTMLTableCellElement) {
         if (!ast || !focus)
             return;
         const row       = focus.parentNode as HTMLTableRowElement;
@@ -185,7 +185,7 @@ export class Explorer {
         }        
     }
 
-    getSelectionFromPath(path: HTMLElement[], select: "toggle" | "id") : string[] {
+    private getSelectionFromPath(path: HTMLElement[], select: "toggle" | "id") : string[] {
         // in case of a multiline text selection selectedElement is the parent
         const element = path[0];
         if (element.tagName == "TABLE") {
@@ -214,7 +214,7 @@ export class Explorer {
         return [id];
     }
 
-    static toggleIds(ids: string[], id: string) : "added" | "removed" {
+    private static toggleIds(ids: string[], id: string) : "added" | "removed" {
         const index = ids.indexOf(id);
         if (index == -1) {
             ids.push(id);
@@ -231,13 +231,13 @@ export class Explorer {
         this.selectCellValue(td);
     }
 
-    selectCellValue(td: HTMLTableCellElement) {
+    private selectCellValue(td: HTMLTableCellElement) {
         const json  = app.entityEditor.getValue();
         const ast   = this.getAstFromJson(json);
         this.selectEditorValue(ast, td);
     }
 
-    setFocusCell(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) : HTMLTableCellElement | null {
+    private setFocusCell(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) : HTMLTableCellElement | null {
         const table = this.explorerTable;
         if (rowIndex < 1 || cellIndex < 1)
             return null;
@@ -259,7 +259,7 @@ export class Explorer {
     }
 
     // Chrome ignores { scroll-margin-top: 20px; scroll-margin-left: 16px; } for sticky header / first row 
-    static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number, scroll: "smooth" | null) {
+    private static ensureVisible(containerEl: HTMLElement, el: HTMLElement, offsetLeft: number, offsetTop: number, scroll: "smooth" | null) {
         const parentEl  = containerEl.parentElement;
         // const parent    = parentEl.getBoundingClientRect();
         // const container = containerEl.getBoundingClientRect();
@@ -405,14 +405,14 @@ export class Explorer {
         }        
     }
 
-    async selectExplorerEntities(ids: string[]) {
+    private async selectExplorerEntities(ids: string[]) {
         const explorer  = this.explorer;
         this.setSelectedEntities(ids);
         const params: Resource  = { database: explorer.database, container: explorer.container, ids: ids };
         await app.loadEntities(params, false, null);
     }
 
-    async selectEntityRange(lastIndex: number) {
+    private async selectEntityRange(lastIndex: number) {
         const selection     = Object.values(this.selectedEntities);
         let   firstIndex    = selection.length == 0 ? 1 : selection[selection.length - 1].rowIndex;
         if (lastIndex > firstIndex) {
@@ -427,7 +427,7 @@ export class Explorer {
         this.selectCellValue(this.explorer.focusedCell);
     }
 
-    getRowId(row: HTMLTableRowElement) : string {
+    private getRowId(row: HTMLTableRowElement) : string {
         const keyName       = App.getEntityKeyName(this.explorer.entityType);
         const table         = this.explorerTable;
         const headerCells   = table.rows[0].cells;
@@ -450,11 +450,11 @@ export class Explorer {
         }
     }
 
-    entityFields:       { [key: string] : Column }              = {}
-    selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
-    explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
+    private entityFields:       { [key: string] : Column }              = {}
+    private selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
+    private explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
-    static getDataType(fieldType: FieldType) : DataType {
+    private static getDataType(fieldType: FieldType) : DataType {
         const   ref = fieldType._resolvedDef;
         if (ref)
             return this.getDataType(ref as {} as FieldType);
@@ -488,7 +488,7 @@ export class Explorer {
         throw `missing type in type array`;      
     }
 
-    static getColumnNames(columns: Column[], path: string[], fieldType: FieldType) {
+    private static getColumnNames(columns: Column[], path: string[], fieldType: FieldType) {
         // if (path[0] == "jsonSchemas") debugger;
         const type:     DataType    = Explorer.getDataType(fieldType);
         const typeName: TypeName    = type.typeName;
@@ -520,7 +520,7 @@ export class Explorer {
         }
     }
 
-    createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
+    private createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
         const keyName   = App.getEntityKeyName(entityType);
         if (entityType) {
             const properties    =  entityType.properties;
@@ -572,10 +572,10 @@ export class Explorer {
         return head;
     }
 
-    static defaultColumnWidth   = 50;
-    static maxColumnWidth       = 200;
+    private static defaultColumnWidth   = 50;
+    private static maxColumnWidth       = 200;
 
-    static calcWidth(text: string) : number {
+    private static calcWidth(text: string) : number {
         if (text === undefined)
             return 0;
         if (text.length > 40) {
@@ -587,17 +587,17 @@ export class Explorer {
         return Math.ceil(measureTextWidth.clientWidth);                
     }
 
-    setColumnWidths() {
+    private setColumnWidths() {
         for (const fieldName in this.entityFields) {
             const column = this.entityFields[fieldName];
             column.th.style.width = `${column.width + 10}px`;
         }
     }
 
-    thDrag          : HTMLElement;
-    thDragOffset    : number;    
+    private thDrag          : HTMLElement;
+    private thDragOffset    : number;    
 
-    thStartDrag(event: MouseEvent, th: HTMLElement) {
+    private thStartDrag(event: MouseEvent, th: HTMLElement) {
         this.thDragOffset           = event.offsetX - (event.target as HTMLElement).clientWidth;
         this.thDrag                 = th;
         document.body.style.cursor  = "ew-resize";
@@ -606,7 +606,7 @@ export class Explorer {
         event.preventDefault();
     }
 
-    thOnDrag(event: MouseEvent) {
+    private thOnDrag(event: MouseEvent) {
         const parent            = (this.thDrag.parentNode.parentNode.parentNode.parentNode as HTMLElement);
         const scrollOffset      = parent.scrollLeft;
         let width               = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
@@ -615,7 +615,7 @@ export class Explorer {
         event.preventDefault();
     }
 
-    thEndDrag() {
+    private thEndDrag() {
         document.body.onmousemove   = undefined;
         document.body.onmouseup     = undefined;
         document.body.style.cursor  = "auto";
@@ -666,7 +666,7 @@ export class Explorer {
         }
     }
 
-    static assignRowCells (tds: HTMLTableCellElement[], entity: Entity, entityFields: { [key: string] : Column }, calcWidth: boolean) {
+    private static assignRowCells (tds: HTMLTableCellElement[], entity: Entity, entityFields: { [key: string] : Column }, calcWidth: boolean) {
         let tdIndex = 1;
         for (const fieldName in entityFields) {
             // if (fieldName == "derivedClassNull.derivedVal") debugger;
@@ -715,7 +715,7 @@ export class Explorer {
         }
     }
 
-    static getCellContent(value: any) : CellData {
+    private static getCellContent(value: any) : CellData {
         if (value === undefined)
             return { value: "" };                                       // 
         const type = typeof value;
