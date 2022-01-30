@@ -54,14 +54,13 @@ export class EntityEditor
         this.commandValueEditor = commandValueEditor;
     }
 
-
-    setSelectedCommand(element: HTMLElement) {
+    private setSelectedCommand(element: HTMLElement) {
         this.selectedCommand?.classList.remove("selected");
         this.selectedCommand = element;
         element.classList.add("selected");        
     }
 
-    setEditorHeader(show: "entity" | "command" | "none") {
+    private setEditorHeader(show: "entity" | "command" | "none") {
         const displayEntity  = show == "entity"  ? "contents" : "none";
         const displayCommand = show == "command" ? "contents" : "none";
         el("entityTools")  .style.display = displayEntity;        
@@ -70,7 +69,7 @@ export class EntityEditor
         el("commandHeader").style.display = displayCommand;
     }
 
-    getCommandTags(database: string, command: string, signature: CommandType) {
+    private getCommandTags(database: string, command: string, signature: CommandType) {
         let label = app.schemaLess;
         if (signature) {
             const param   = app.getTypeLabel(database, signature.param);
@@ -103,7 +102,7 @@ export class EntityEditor
         this.entityEditor.setValue(content);
     }
 
-    setDatabaseInfo(database: string, dbContainer: DbContainers) {
+    private setDatabaseInfo(database: string, dbContainer: DbContainers) {
         el("databaseName").innerHTML      = App.getDatabaseLink(database);
         el("databaseSchema").innerHTML    = app.getSchemaType(database);
         el("databaseExports").innerHTML   = app.getSchemaExports(database);
@@ -174,13 +173,13 @@ export class EntityEditor
         command?:   string
     }
 
-    entityHistoryPos    = -1;
-    entityHistory: {
+            entityHistoryPos    = -1;
+    private entityHistory: {
         selection?: monaco.Selection,
         route:      Resource
     }[] = [];
 
-    storeCursor() {
+    private storeCursor() {
         if (this.entityHistoryPos < 0)
             return;
         this.entityHistory[this.entityHistoryPos].selection    = this.entityEditor.getSelection();
@@ -235,7 +234,7 @@ export class EntityEditor
         return content;
     }
 
-    updateGetEntitiesAnchor(database: string, container: string) {
+    private updateGetEntitiesAnchor(database: string, container: string) {
         // console.log("updateGetEntitiesAnchor");
         const idsStr = entityIdsInput.value;
         const ids    = idsStr.split(",");
@@ -254,7 +253,7 @@ export class EntityEditor
         entityIdsGET.href       = getUrl;
     }
 
-    setEntitiesIds (database: string, container: string, ids: string[]) {
+    private setEntitiesIds (database: string, container: string, ids: string[]) {
         entityIdsReload.onclick     = _ => this.loadInputEntityIds      (database, container);
         entityIdsInput.onchange     = _ => this.updateGetEntitiesAnchor (database, container);
         entityIdsInput.onkeydown    = e => this.onEntityIdsKeyDown   (e, database, container);
@@ -262,7 +261,7 @@ export class EntityEditor
         this.updateGetEntitiesAnchor(database, container);
     }
 
-    formatResult (action: string, statusCode: number, status: string, message: string) {
+    private formatResult (action: string, statusCode: number, status: string, message: string) {
         const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
         return `<span>
             <span style="opacity:0.7">${action} status:</span>
@@ -271,7 +270,7 @@ export class EntityEditor
         </span>`;
     }
 
-    async loadInputEntityIds (database: string, container: string) {
+    private async loadInputEntityIds (database: string, container: string) {
         const ids               = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",")
         const unchangedSelection= EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids)
         const p: Resource       = { database, container, ids };
@@ -290,7 +289,7 @@ export class EntityEditor
         this.selectEntities(database, container, ids);
     }
 
-    onEntityIdsKeyDown(event: KeyboardEvent, database: string, container: string) {
+    private onEntityIdsKeyDown(event: KeyboardEvent, database: string, container: string) {
         if (event.code != 'Enter')
             return;
         this.loadInputEntityIds(database, container);
@@ -323,7 +322,7 @@ export class EntityEditor
         await this.saveEntities(ei.database, ei.container, jsonValue);
     }
 
-    async saveEntities (database: string, container: string, jsonValue: string)
+    private async saveEntities (database: string, container: string, jsonValue: string)
     {
         let value:      Entity | Entity[];
         try {
@@ -352,7 +351,7 @@ export class EntityEditor
         this.selectEntities(database, container, ids);        
     }
 
-    selectEntities(database: string, container: string, ids: string[]) {
+    private selectEntities(database: string, container: string, ids: string[]) {
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
         let liIds = app.explorer.findContainerEntities(ids);
@@ -368,7 +367,7 @@ export class EntityEditor
         this.entityHistory.length = this.entityHistoryPos + 1;        
     }
 
-    static arraysEquals(left: string[], right: string []) : boolean {
+    private static arraysEquals(left: string[], right: string []) : boolean {
         if (left.length != right.length)
             return false;
         for (let i = 0; i < left.length; i++) {
@@ -397,10 +396,10 @@ export class EntityEditor
         }
     }
 
-    entityModel:    monaco.editor.ITextModel;
-    entityModels:   {[key: string]: monaco.editor.ITextModel} = { };
+    private entityModel:    monaco.editor.ITextModel;
+    private entityModels:   {[key: string]: monaco.editor.ITextModel} = { };
 
-    getModel (url: string) : monaco.editor.ITextModel {
+    private getModel (url: string) : monaco.editor.ITextModel {
         this.entityModel = this.entityModels[url];
         if (!this.entityModel) {
             const entityUri         = monaco.Uri.parse(url);
@@ -410,7 +409,7 @@ export class EntityEditor
         return this.entityModel;
     }
 
-    setEntityValue (database: string, container: string, value: string) : jsonToAst.ValueNode {
+    private setEntityValue (database: string, container: string, value: string) : jsonToAst.ValueNode {
         const url   = `entity://${database}.${container}.json`;
         const model = this.getModel(url);
         model.setValue(value);
@@ -431,7 +430,7 @@ export class EntityEditor
         return ast;
     }
 
-    decorateJson(editor: monaco.editor.IStandaloneCodeEditor, ast: jsonToAst.ValueNode, containerSchema: JsonType, database: string) {        
+    private decorateJson(editor: monaco.editor.IStandaloneCodeEditor, ast: jsonToAst.ValueNode, containerSchema: JsonType, database: string) {        
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
         const newDecorations: monaco.editor.IModelDeltaDecoration[] = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }
@@ -495,7 +494,7 @@ export class EntityEditor
         }
     }
 
-    static hasProperty(objectNode: jsonToAst.ObjectNode, keyName: string, id: string) : boolean {
+    private static hasProperty(objectNode: jsonToAst.ObjectNode, keyName: string, id: string) : boolean {
         for (const property of objectNode.children) {
             if (property.key.value != keyName)
                 continue;
@@ -506,7 +505,7 @@ export class EntityEditor
         return false;
     }
 
-    static findArrayItem(arrayNode: jsonToAst.ArrayNode, keyName: string, id: string) : jsonToAst.ObjectNode | null {
+    private static findArrayItem(arrayNode: jsonToAst.ArrayNode, keyName: string, id: string) : jsonToAst.ObjectNode | null {
         for(const item of arrayNode.children) {
             if (item.type != "Object")
                 continue;
@@ -555,18 +554,18 @@ export class EntityEditor
         return { entity: entityRange, value: null, lastProperty: lastRange };
     }
 
-    static RangeFromNode(node: jsonToAst.ValueNode) : monaco.Range{
+    private static RangeFromNode(node: jsonToAst.ValueNode) : monaco.Range{
         const trim  = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
         return EntityEditor.RangeFromLoc(node.loc, trim);
     }
 
-    static RangeFromLoc(loc: jsonToAst.Location, trim: number) : monaco.Range{
+    private static RangeFromLoc(loc: jsonToAst.Location, trim: number) : monaco.Range{
         const start = loc.start;
         const end   = loc.end;
         return new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
     }
 
-    setCommandParam (database: string, command: string, value: string) {
+    private setCommandParam (database: string, command: string, value: string) {
         const url           = `command-param://${database}.${command}.json`;
         const isNewModel    = this.entityModels[url] == undefined;
         const model         = this.getModel(url)
@@ -576,7 +575,7 @@ export class EntityEditor
         this.commandValueEditor.setModel (model);
     }
 
-    setCommandResult (database: string, command: string) {
+    private setCommandResult (database: string, command: string) {
         const url   = `command-result://${database}.${command}.json`;
         const model = this.getModel(url)
         this.entityEditor.setModel (model);
@@ -600,7 +599,7 @@ export class EntityEditor
         app.layoutEditors();
     }
 
-    showCommand(database: string, commandName: string) {
+    private showCommand(database: string, commandName: string) {
         this.setExplorerEditor("command");
 
         const schema        = app.databaseSchemas[database]._rootSchema;
