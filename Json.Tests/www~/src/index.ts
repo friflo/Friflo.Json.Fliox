@@ -416,10 +416,22 @@ class App {
                 case 'ArrowRight':
                     if (event.altKey)
                         this.execute(event, () => this.navigateEntity(this.entityHistoryPos + 1));
-                    break;        
+                    break;
+                case 'Digit1':
+                    if (!event.altKey)
+                        break;
+                    this.switchTab();
+                    break;
                 }
         }
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
+    }
+
+    switchTab () {
+        if (document.activeElement == entityExplorer)
+            this.entityEditor.focus();
+        else
+            entityExplorer.focus();
     }
 
     execute(event: KeyboardEvent, lambda: () => void) {
