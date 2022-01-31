@@ -44,7 +44,7 @@ declare module "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.H
 // ----------------------------------------------- Schema -----------------------------------------------
 export class Schema
 {
-    static createEntitySchemas (databaseSchemas: { [key: string]: DbSchema}, dbSchemas: DbSchema[]) : {[key: string]: MonacoSchema } {
+    public static createEntitySchemas (databaseSchemas: { [key: string]: DbSchema}, dbSchemas: DbSchema[]) : {[key: string]: MonacoSchema } {
         const schemaMap: { [key: string]: MonacoSchema } = {};
         for (const dbSchema of dbSchemas) {
             const jsonSchemas       = dbSchema.jsonSchemas as { [key: string] : JsonSchema};

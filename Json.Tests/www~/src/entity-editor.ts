@@ -37,18 +37,16 @@ const commandValueContainer  = el("commandValueContainer");
 const commandParamBar        = el("commandParamBar");
 const entityContainer        = el("entityContainer");
 
+type CodeEditor = monaco.editor.IStandaloneCodeEditor;
 
 // ----------------------------------------------- EntityEditor -----------------------------------------------
 export class EntityEditor
 {
-    entityEditor:       monaco.editor.IStandaloneCodeEditor;
-    commandValueEditor: monaco.editor.IStandaloneCodeEditor;
-    selectedCommand = undefined as HTMLElement;
+    private entityEditor:       CodeEditor  = null;
+    private commandValueEditor: CodeEditor  = null;
+    private selectedCommand:    HTMLElement = null;
 
-    public initEditor(
-        entityEditor:       monaco.editor.IStandaloneCodeEditor,
-        commandValueEditor: monaco.editor.IStandaloneCodeEditor) : void
-    {
+    public initEditor(entityEditor: CodeEditor, commandValueEditor: CodeEditor) : void {
         this.entityEditor       = entityEditor;
         this.commandValueEditor = commandValueEditor;
     }
@@ -429,7 +427,7 @@ export class EntityEditor
         return ast;
     }
 
-    private decorateJson(editor: monaco.editor.IStandaloneCodeEditor, ast: jsonToAst.ValueNode, containerSchema: JsonType, database: string) {        
+    private decorateJson(editor: CodeEditor, ast: jsonToAst.ValueNode, containerSchema: JsonType, database: string) {        
         // --- deltaDecorations() -> [ITextModel | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html
         const newDecorations: monaco.editor.IModelDeltaDecoration[] = [
             // { range: new monaco.Range(7, 13, 7, 22), options: { inlineClassName: 'refLinkDecoration' } }

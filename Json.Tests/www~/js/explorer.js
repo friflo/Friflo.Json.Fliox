@@ -25,6 +25,10 @@ const filterRow = el("filterRow");
 // ----------------------------------------------- Explorer -----------------------------------------------
 export class Explorer {
     constructor(config) {
+        this.focusedCell = null;
+        this.editCell = null;
+        this.cachedJsonValue = null;
+        this.cachedJsonAst = null;
         this.entityFields = {};
         this.selectedEntities = {};
         this.explorerEntities = {};
@@ -98,7 +102,7 @@ export class Explorer {
         this.setSelectedEntities(selectedIds);
         const params = { database: p.database, container: p.container, ids: selectedIds };
         await app.editor.loadEntities(params, false, null);
-        const json = app.editor.entityEditor.getValue();
+        const json = app.entityEditor.getValue();
         const ast = this.getAstFromJson(json);
         this.selectEditorValue(ast, this.focusedCell);
     }
@@ -438,7 +442,7 @@ export class Explorer {
         const fieldName = thDiv.title;
         const column = this.entityFields[fieldName];
         // console.log("saveCell", fieldName, column.type.typeName);
-        const json = app.editor.entityEditor.getValue();
+        const json = app.entityEditor.getValue();
         if (this.selectedEntities[id]) {
             const ast = this.getAstFromJson(json);
             const keyName = EntityEditor.getEntityKeyName(column.type.jsonType);

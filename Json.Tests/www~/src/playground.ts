@@ -20,15 +20,15 @@ const defaultToken      = el("token")           as HTMLInputElement;
 export class Playground
 {
     // --- WebSocket ---
-    connection:         WebSocket;
-    websocketCount      = 0;
-    req                 = 1;
-    clt: string | null  = null;
-    requestStart: number;
-    subSeq              = 0;
-    subCount            = 0;
+    private connection:     WebSocket;
+    private websocketCount  = 0;
+    private req             = 1;
+    private clt:            string | null  = null;
+    private requestStart:   number;
+    private subSeq          = 0;
+    private subCount        = 0;
 
-    connectWebsocket (): void {
+    public connectWebsocket (): void {
         if (this.connection) {
             this.connection.close();
             this.connection = null;
@@ -91,7 +91,7 @@ export class Playground
         }
     }
 
-    closeWebsocket  (): void {
+    public closeWebsocket  () : void {
         this.connection.close();
     }
 
@@ -106,7 +106,7 @@ export class Playground
         return `${before},${userToken}${after}`;
     }
 
-    sendSyncRequest (): void {
+    public sendSyncRequest (): void {
         const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
@@ -139,7 +139,7 @@ export class Playground
         reqIdElement.innerText  =  String(this.req);
     }
 
-    async postSyncRequest (): Promise<void> {
+    public async postSyncRequest (): Promise<void> {
         let jsonRequest         = app.requestModel.getValue();
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';

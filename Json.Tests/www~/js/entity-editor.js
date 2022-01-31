@@ -22,7 +22,9 @@ const entityContainer = el("entityContainer");
 // ----------------------------------------------- EntityEditor -----------------------------------------------
 export class EntityEditor {
     constructor() {
-        this.selectedCommand = undefined;
+        this.entityEditor = null;
+        this.commandValueEditor = null;
+        this.selectedCommand = null;
         this.entityIdentity = {};
         this.entityHistoryPos = -1;
         this.entityHistory = [];

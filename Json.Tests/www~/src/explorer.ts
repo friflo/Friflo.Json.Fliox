@@ -58,14 +58,14 @@ export class Explorer
         readonly container:     string;
         readonly entityType:    JsonType | null;
     }
-    private focusedCell:    HTMLTableCellElement | null;
-    private editCell:       HTMLInputElement;
+    private             focusedCell:        HTMLTableCellElement    = null;
+    private             editCell:           HTMLInputElement        = null;
 
-    private                 explorerTable:  HTMLTableElement;
-    private readonly        config:         Config
+    private             explorerTable:      HTMLTableElement;
+    private readonly    config:             Config
 
-    private                 cachedJsonValue?:   string;
-    private                 cachedJsonAst?:     jsonToAst.ValueNode;
+    private             cachedJsonValue:    string                  = null;
+    private             cachedJsonAst:      jsonToAst.ValueNode     = null;
 
     public getFocusedCell() : HTMLTableCellElement { return this.focusedCell; }
 
@@ -149,7 +149,7 @@ export class Explorer
         const params: Resource  = { database: p.database, container: p.container, ids: selectedIds };
         await app.editor.loadEntities(params, false, null);
 
-        const json  = app.editor.entityEditor.getValue();
+        const json  = app.entityEditor.getValue();
         const ast   = this.getAstFromJson(json);
         this.selectEditorValue(ast, this.focusedCell);
     }
@@ -500,13 +500,13 @@ export class Explorer
         edit.focus();
     }
 
-    saveCell(id: string, value: string, cellIndex: number) : void {
+    private saveCell(id: string, value: string, cellIndex: number) : void {
         const thDiv     = this.explorerTable.rows[0].cells[cellIndex].firstChild as HTMLDivElement;
         const fieldName = thDiv.title;
         const column    = this.entityFields[fieldName];
         // console.log("saveCell", fieldName, column.type.typeName);
 
-        const json      = app.editor.entityEditor.getValue();
+        const json      = app.entityEditor.getValue();
         if (this.selectedEntities[id]) {
             const ast       = this.getAstFromJson(json);
             const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
