@@ -473,16 +473,16 @@ export class Explorer
         const id        = this.getRowId(row);
         const edit      = createEl("input");
         this.editCell   = edit;
-        let discardEdit = false;
+        let saveChange  = true;
         const oldValue  = td.textContent;
         edit.value      = td.textContent;
         edit.onblur     = () => {
             this.editCell   = null;                    
             edit.remove();
-            td.textContent  = discardEdit ? oldValue : edit.value;
+            td.textContent  = saveChange ? edit.value : oldValue;
             td.classList.remove("editCell");
             td.classList.add("focus");
-            if (!discardEdit) {
+            if (saveChange) {
                 this.saveCell(id, edit.value, td.cellIndex);
             }
         };
@@ -490,7 +490,7 @@ export class Explorer
             switch (event.code) {
                 case 'Escape':
                     event.stopPropagation();
-                    discardEdit = true;
+                    saveChange = false;
                     entityExplorer.focus();
                     break;
                 case 'Enter':
