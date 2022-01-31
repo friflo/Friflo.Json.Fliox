@@ -67,7 +67,7 @@ export class Explorer
     private                 cachedJsonValue?:   string;
     private                 cachedJsonAst?:     jsonToAst.ValueNode;
 
-    public getFocusedCell() { return this.focusedCell };
+    public getFocusedCell() { return this.focusedCell; }
 
     public constructor(config: Config) {
         this.config = config;
@@ -100,7 +100,7 @@ export class Explorer
 
         const response           = await App.restRequest("GET", null, p.database, p.container, null, query);
 
-        const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`
+        const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`;
         writeResult.innerHTML   = "";        
         readEntities.innerHTML  = containerLink + reload;
         if (!response.ok) {
@@ -109,7 +109,7 @@ export class Explorer
             return;
         }
 
-        let     entities    = await response.json() as Entity[];
+        const   entities    = await response.json() as Entity[];
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const   table       = this.explorerTable = createEl('table');
 
@@ -118,7 +118,7 @@ export class Explorer
 
 
         table.append(head);
-        table.classList.value   = "entities"
+        table.classList.value   = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);
         
         this.explorerEntities = {};
@@ -141,7 +141,7 @@ export class Explorer
             await this.selectEntityRange(lastRow.rowIndex);            
             return;
         }
-        const select        = ev.ctrlKey ? "toggle" : "id"
+        const select        = ev.ctrlKey ? "toggle" : "id";
         const selectedIds   = this.getSelectionFromPath(path, select);
         if (selectedIds === null)
             return;
@@ -290,7 +290,7 @@ export class Explorer
             const top  = y > maxTop  ? Math.min(y, el.offsetTop  + el.clientHeight - height) : Math.min (y, minTop);
 
             const smooth = scroll == "smooth" || top == parentEl.scrollTop;
-            var opt: ScrollToOptions = { left, top, behavior: smooth ? "smooth" : undefined };
+            const opt: ScrollToOptions = { left, top, behavior: smooth ? "smooth" : undefined };
             parentEl.scrollTo(opt);
         }
     }
@@ -478,7 +478,7 @@ export class Explorer
             if (!discardEdit) {
                 this.saveCell(id, edit.value, td.cellIndex);
             }
-        }
+        };
         edit.onkeydown      = (event) => {
             switch (event.code) {
                 case 'Escape':
@@ -491,11 +491,11 @@ export class Explorer
                     entityExplorer.focus();
                     break;
             }
-        }
+        };
         edit.classList.add("editCell");
-        td.classList.add("editCell")
+        td.classList.add("editCell");
         td.classList.remove("focus");
-        td.textContent      = ""
+        td.textContent      = "";
         td.append(edit);
         edit.focus();
     }
@@ -536,7 +536,7 @@ export class Explorer
         if (oneOf) {
             const jsonType = fieldType as { } as JsonType;
             if (jsonType.discriminator) {
-                return { typeName: "object", jsonType: jsonType }
+                return { typeName: "object", jsonType: jsonType };
             }            
             for (const oneOfType of oneOf) {
                 if (oneOfType.type == "null")
@@ -547,17 +547,17 @@ export class Explorer
         const type = fieldType.type;        
         if (type == "array") {
             const itemType = Explorer.getDataType(fieldType.items);
-            return { typeName: "array", jsonType: itemType.jsonType }
+            return { typeName: "array", jsonType: itemType.jsonType };
         }
         if (type == "object") {
-            return { typeName: "object", jsonType: fieldType as {} as JsonType }
+            return { typeName: "object", jsonType: fieldType as {} as JsonType };
         }
         if (!Array.isArray(type))
-            return { typeName: fieldType.type }
+            return { typeName: fieldType.type };
         for (const item of type) {
             if (item == "null")
                 continue;
-            return { typeName: item }
+            return { typeName: item };
         }
         throw `missing type in type array`;      
     }
@@ -721,7 +721,7 @@ export class Explorer
             const path      = column.path;
             let   value     = entity;
             const pathLen   = path.length;
-            let   i         = 0
+            let   i         = 0;
             for (; i < pathLen; i++) {
                 value = value[path[i]];
                 if (value === null || value === undefined || typeof value != "object")
@@ -740,7 +740,7 @@ export class Explorer
                 td.textContent   = content.value;
             } else {
                 const isObjectArray     = content.isObjectArray;
-                const countStr          = count == 0 ? '0' : `${count}: `
+                const countStr          = count == 0 ? '0' : `${count}: `;
                 const spanCount         = createEl("span");
                 spanCount.textContent   = isObjectArray ? `${countStr} ${fieldName}` : countStr;
                 spanCount.classList.add("cellCount");
@@ -756,7 +756,7 @@ export class Explorer
                 let width           = Explorer.calcWidth(content.value);
                 if (count) width   += Explorer.calcWidth(String(count));                
                 if (column.width < width) {
-                    column.width = width
+                    column.width = width;
                 }
             }
         }
@@ -767,7 +767,7 @@ export class Explorer
             return { value: "" };                                       // 
         const type = typeof value;
         if (type != "object")
-            return { value: value }                                     // abc
+            return { value: value };                                    // abc
         if (Array.isArray(value)) {
             if (value.length > 0) {
                 for (const item of value) {
@@ -778,7 +778,7 @@ export class Explorer
                 const items = value.map(i => i);
                 return { value: items.join(", "), count: value.length}; // 2: abc,xyz
             }
-            return { value: "", count: 0 }                              // 0;
+            return { value: "", count: 0 };                             // 0;
         }
         return { value: JSON.stringify(value) };                        // {"foo": "bar", ... }
     }
@@ -794,7 +794,7 @@ export class Explorer
     }
 
     public findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
-        const result : {[key: string] : HTMLTableRowElement} = {}
+        const result : {[key: string] : HTMLTableRowElement} = {};
         for(const id of ids){
             const li = this.explorerEntities[id];
             if (!li)

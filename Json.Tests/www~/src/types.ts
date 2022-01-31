@@ -18,7 +18,7 @@ export const defaultConfig = {
     activeTab       : "explorer",
     showDescription : true,
     filters         : {} as { [database: string]: { [container: string]: string[]}}
-}
+};
 
 export type Config     = typeof defaultConfig
 export type ConfigKey  = keyof Config;
@@ -50,4 +50,4 @@ export const parseAst = (value: string) : jsonToAst.ValueNode => {
         console.error("parseAst", error);
     }
     return null;
-}
+};

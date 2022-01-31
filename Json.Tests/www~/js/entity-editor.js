@@ -68,7 +68,7 @@ export class EntityEditor {
         const command = this.entityIdentity.command;
         if (!method) {
             const commandAnchor = el("commandAnchor");
-            let commandValue = value == "null" ? "" : `&value=${value}`;
+            const commandValue = value == "null" ? "" : `&value=${value}`;
             const path = App.getRestPath(database, null, null, `command=${command}${commandValue}`);
             commandAnchor.href = path;
             // window.open(path, '_blank');
@@ -298,7 +298,7 @@ export class EntityEditor {
         var _a;
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
-        let liIds = app.explorer.findContainerEntities(ids);
+        const liIds = app.explorer.findContainerEntities(ids);
         app.explorer.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
         if (firstRow) {

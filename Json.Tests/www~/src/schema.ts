@@ -58,7 +58,7 @@ export class Schema
                 containerRefs[container.additionalProperties.$ref] = containerName;
             }
             databaseSchemas[database]  = dbSchema;
-            dbSchema._containerSchemas      = {}
+            dbSchema._containerSchemas = {};
 
             // add all schemas and their definitions to schemaMap and map them to an uri like:
             //   http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.json
@@ -71,7 +71,7 @@ export class Schema
                     schema:         schema,
                     fileMatch:      [], // can have multiple in case schema is used by multiple editor models
                     _resolvedDef:   schema // not part of monaco > DiagnosticsOptions.schemas
-                }
+                };
                 const namespace     = schemaPath.substring(0, schemaPath.length - ".json".length);
                 schemaMap[uri]      = schemaEntry;
                 const definitions   = schema.definitions;
@@ -85,7 +85,7 @@ export class Schema
                     }
                     // console.log("---", definition._namespace, definitionName);
                     const path          = "/" + schemaPath + "#/definitions/" + definitionName;
-                    const schemaId      = "." + path
+                    const schemaId      = "." + path;
                     const uri           = "http://" + database + path;
                     const containerName = containerRefs[schemaId];
                     let schemaRef : any = { $ref: schemaId };
@@ -100,7 +100,7 @@ export class Schema
                         schema:         schemaRef,
                         fileMatch:      [], // can have multiple in case schema is used by multiple editor models
                         _resolvedDef:   definition // not part of monaco > DiagnosticsOptions.schemas
-                    }
+                    };
                     schemaMap[uri] = definitionEntry;
                 }
             }

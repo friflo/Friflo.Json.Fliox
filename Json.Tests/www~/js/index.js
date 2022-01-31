@@ -59,11 +59,10 @@ export class App {
         document.cookie = `fliox-token=${token};`;
     }
     selectUser(element) {
-        let value = element.innerText;
+        const value = element.innerText;
         this.setUser(value);
         this.setToken(value);
     }
-    ;
     applyCtrlKey(event) {
         if (this.lastCtrlKey == event.ctrlKey)
             return;
@@ -139,7 +138,7 @@ export class App {
     }
     // --------------------------------------- Fliox HTTP --------------------------------------- 
     static async postRequest(request, tag) {
-        let init = {
+        const init = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: request

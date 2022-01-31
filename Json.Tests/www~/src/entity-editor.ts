@@ -1,5 +1,5 @@
-import { el, createEl, Resource, Entity, Method, parseAst }   from "./types.js"
-import { App, app }                                 from "./index.js";
+import { el, createEl, Resource, Entity, Method, parseAst }     from "./types.js";
+import { App, app }                                             from "./index.js";
 
 import { CommandType, JsonType }        from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbContainers, DbCommands }     from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
@@ -73,14 +73,14 @@ export class EntityEditor
         if (signature) {
             const param   = app.getTypeLabel(database, signature.param);
             const result  = app.getTypeLabel(database, signature.result);
-            label = `<span title="command parameter type"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result type">${result}</span>`
+            label = `<span title="command parameter type"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result type">${result}</span>`;
         }
         const link    = `command=${command}`;
         const url     = `./rest/${database}?command=${command}`;
         return {
             link:   `<a id="commandAnchor" title="command" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
             label:  label
-        }
+        };
     }
 
     public async sendCommand(method: Method) {
@@ -89,8 +89,8 @@ export class EntityEditor
         const command   = this.entityIdentity.command;
         if (!method) {
             const commandAnchor =  el("commandAnchor") as HTMLAnchorElement;
-            let commandValue    = value == "null" ? "" : `&value=${value}`;
-            const path          = App.getRestPath( database, null, null, `command=${command}${commandValue}`)
+            const commandValue    = value == "null" ? "" : `&value=${value}`;
+            const path          = App.getRestPath( database, null, null, `command=${command}${commandValue}`);
             commandAnchor.href  = path;
             // window.open(path, '_blank');
             return;
@@ -112,7 +112,7 @@ export class EntityEditor
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
-        catalogSchema.innerHTML     = app.getSchemaType(database)
+        catalogSchema.innerHTML     = app.getSchemaType(database);
         this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";
@@ -120,7 +120,7 @@ export class EntityEditor
         readEntities.innerHTML      = "";
 
         const ulDatabase            = createEl('ul');
-        ulDatabase.classList.value  = "database"
+        ulDatabase.classList.value  = "database";
         const commandLabel  = createEl('li');
         const label         = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
         commandLabel.innerHTML = `<a href="./rest/${database}?command=DbCommands" target="_blank" rel="noopener noreferrer">${label}</a>`;
@@ -147,7 +147,7 @@ export class EntityEditor
             if (path[0].classList.contains("command")) {
                 this.sendCommand("POST");
             }
-        }
+        };
         for (const command of dbCommands.commands) {
             const liCommand             = createEl('li');
             const commandLabel          = createEl('div');
@@ -155,12 +155,12 @@ export class EntityEditor
             liCommand.appendChild(commandLabel);
             const runCommand            = createEl('div');
             runCommand.classList.value  = "command";
-            runCommand.title            = "POST command"
+            runCommand.title            = "POST command";
             liCommand.appendChild(runCommand);
 
             ulCommands.append(liCommand);
         }
-        entityExplorer.innerText = ""
+        entityExplorer.innerText = "";
         liCommands.append(ulCommands);
         entityExplorer.appendChild(ulDatabase);
     }
@@ -188,8 +188,8 @@ export class EntityEditor
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
         this.storeCursor();
-        this.entityHistoryPos = pos;
-        const entry = this.entityHistory[pos]
+        this.entityHistoryPos   = pos;
+        const entry             = this.entityHistory[pos];
         this.loadEntities(entry.route, true, entry.selection);
     }
 
@@ -270,8 +270,8 @@ export class EntityEditor
     }
 
     private async loadInputEntityIds (database: string, container: string) {
-        const ids               = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",")
-        const unchangedSelection= EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids)
+        const ids               = entityIdsInput.value == "" ? [] : entityIdsInput.value.split(",");
+        const unchangedSelection= EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids);
         const p: Resource       = { database, container, ids };
         const response          = await this.loadEntities(p, true, null);
         if (unchangedSelection)
@@ -353,7 +353,7 @@ export class EntityEditor
     private selectEntities(database: string, container: string, ids: string[]) {
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
-        let liIds = app.explorer.findContainerEntities(ids);
+        const liIds = app.explorer.findContainerEntities(ids);
 
         app.explorer.setSelectedEntities(ids);
         const firstRow = liIds[ids[0]];
@@ -567,7 +567,7 @@ export class EntityEditor
     private setCommandParam (database: string, command: string, value: string) {
         const url           = `command-param://${database}.${command}.json`;
         const isNewModel    = this.entityModels[url] == undefined;
-        const model         = this.getModel(url)
+        const model         = this.getModel(url);
         if (isNewModel) {
             model.setValue(value);
         }
@@ -576,7 +576,7 @@ export class EntityEditor
 
     private setCommandResult (database: string, command: string) {
         const url   = `command-result://${database}.${command}.json`;
-        const model = this.getModel(url)
+        const model = this.getModel(url);
         this.entityEditor.setModel (model);
     }
 
@@ -602,7 +602,7 @@ export class EntityEditor
         this.setExplorerEditor("command");
 
         const schema        = app.databaseSchemas[database]._rootSchema;
-        const signature     = schema ? schema.commands[commandName] : null
+        const signature     = schema ? schema.commands[commandName] : null;
         const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
         const tags          = this.getCommandTags(database, commandName, signature);
         commandSignature.innerHTML      = tags.label;

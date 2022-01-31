@@ -15,6 +15,9 @@
   },
   "devDependencies": {
     "typescript": "^4.3.5",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
     "fswin": "^3.21.1015"
   },
   "dependencies": {},

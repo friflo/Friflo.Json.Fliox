@@ -31,7 +31,6 @@ export class Explorer {
         this.config = config;
     }
     getFocusedCell() { return this.focusedCell; }
-    ;
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
@@ -64,7 +63,7 @@ export class Explorer {
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        let entities = await response.json();
+        const entities = await response.json();
         // const ids        = entities.map(entity => entity[keyName]) as string[];
         const table = this.explorerTable = createEl('table');
         this.entityFields = {};
@@ -230,7 +229,7 @@ export class Explorer {
             const left = x > maxLeft ? Math.min(x, el.offsetLeft + el.clientWidth - width) : Math.min(x, minLeft);
             const top = y > maxTop ? Math.min(y, el.offsetTop + el.clientHeight - height) : Math.min(y, minTop);
             const smooth = scroll == "smooth" || top == parentEl.scrollTop;
-            var opt = { left, top, behavior: smooth ? "smooth" : undefined };
+            const opt = { left, top, behavior: smooth ? "smooth" : undefined };
             parentEl.scrollTo(opt);
         }
     }

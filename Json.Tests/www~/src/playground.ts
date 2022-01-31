@@ -1,4 +1,4 @@
-import { el, createEl }     from "./types.js"
+import { el, createEl }     from "./types.js";
 import { App, app }         from "./index.js";
 
 
@@ -71,7 +71,7 @@ export class Playground
                     this.clt = data.clt;
                     cltElement.innerText    = this.clt ?? " - ";
                     const content           = app.formatJson(app.config.formatResponses, e.data);
-                    app.responseModel.setValue(content)
+                    app.responseModel.setValue(content);
                     responseState.innerHTML = `· ${duration} ms`;
                     break;
                 case "ev":
@@ -109,7 +109,7 @@ export class Playground
     sendSyncRequest () {
         const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
-            app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`)
+            app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
         } else {
             let jsonRequest = app.requestModel.getValue();
@@ -143,8 +143,8 @@ export class Playground
         let jsonRequest         = app.requestModel.getValue();
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
-        let start = new Date().getTime();
-        let duration: number;
+        const start = new Date().getTime();
+        let  duration: number;
         try {
             const response  = await App.postRequest(jsonRequest, "POST");
             let content     = await response.text;
@@ -162,12 +162,12 @@ export class Playground
     public async onExampleChange () {
         const exampleName = selectExample.value;
         if (exampleName == "") {
-            app.requestModel.setValue("")
+            app.requestModel.setValue("");
             return;
         }
         const response = await fetch(exampleName);
         const example = await response.text();
-        app.requestModel.setValue(example)
+        app.requestModel.setValue(example);
     }
 
     public async loadExampleRequestList () {
@@ -180,7 +180,7 @@ export class Playground
         option.text     = "Select request ...";
         selectExample.add(option);
 
-        const folder    = './example-requests'
+        const folder    = './example-requests';
         const response  = await fetch(folder);
         if (!response.ok)
             return;

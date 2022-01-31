@@ -1,7 +1,7 @@
 /// <reference types="../../../node_modules/monaco-editor/monaco" />
 
-import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig } from "./types.js"
-import { Schema, MonacoSchema }     from "./schema.js"
+import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig } from "./types.js";
+import { Schema, MonacoSchema }     from "./schema.js";
 import { Explorer }                 from "./explorer.js";
 import { EntityEditor }             from "./entity-editor.js";
 import { Playground }               from "./playground.js";
@@ -29,7 +29,7 @@ const entityFilter          = el("entityFilter")    as HTMLInputElement;
 
 // request response editor
 const requestContainer      = el("requestContainer");
-const responseContainer     = el("responseContainer")
+const responseContainer     = el("responseContainer");
 
 // entity/command editor
 const commandValue          = el("commandValue");
@@ -81,10 +81,10 @@ export class App {
     }
 
     public selectUser (element: HTMLElement) {
-        let value = element.innerText;
+        const value = element.innerText;
         this.setUser(value);
         this.setToken(value);
-    };
+    }
 
 
     private lastCtrlKey:        boolean;
@@ -173,11 +173,11 @@ export class App {
 
     // --------------------------------------- Fliox HTTP --------------------------------------- 
     public static async postRequest (request: string, tag: string) {
-        let init = {        
+        const init = {        
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    request
-        }
+        };
         try {
             const path          = `./?${tag}`;
             const rawResponse   = await fetch(path, init);
@@ -205,7 +205,7 @@ export class App {
             "tasks":    tasks,
             "user":     defaultUser.value,
             "token":    defaultToken.value
-        }
+        };
         const request = JSON.stringify(sync);
         tag = tag ? tag : "";
         return await App.postRequest(request, `${database}/${tag}`);
@@ -231,7 +231,7 @@ export class App {
             method:  method,
             headers: { 'Content-Type': 'application/json' },
             body:    body
-        }
+        };
         try {
             // authenticate with cookies: "fliox-user" & "fliox-token"
             return await fetch(path, init);
@@ -241,8 +241,8 @@ export class App {
                 status:     0,
                 statusText: "exception",
                 text:   () : string => error.message,
-                json:   ()          => { throw error.message }
-            }
+                json:   ()          => { throw error.message; }
+            };
         }
     }
 
@@ -289,7 +289,7 @@ export class App {
     public openTab (tabName: string) {
         const config            = this.config;
         config.activeTab        = tabName;
-        App.setClass(document.body, !config.showDescription, "miniHeader")
+        App.setClass(document.body, !config.showDescription, "miniHeader");
         const tabContents       = document.getElementsByClassName("tabContent");
         const tabs              = document.getElementsByClassName("tab");
         const gridTemplateRows  = document.body.style.gridTemplateRows.split(" ");
@@ -335,7 +335,7 @@ export class App {
         const error     = App.getTaskError (content, 0);
         if (error) {
             catalogExplorer.innerHTML = App.errorAsHtml(error, null);
-            return 
+            return;
         }
         const dbContainers  = content.containers[0].entities    as DbContainers[];
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
@@ -343,8 +343,8 @@ export class App {
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
         this.hubInfo        = hubInfoResult.result              as DbHubInfo;
         //
-        let   description   = this.hubInfo.description
-        const website       = this.hubInfo.website
+        let   description   = this.hubInfo.description;
+        const website       = this.hubInfo.website;
         if (description || website) {
             if (!description)
                 description = "Website";
@@ -367,7 +367,7 @@ export class App {
             const commands          = dbCommands.find   (c => c.id == databaseName);
             const containers        = dbContainers.find (c => c.id == databaseName);
             this.editor.listCommands(databaseName, commands, containers);
-        }
+        };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
             const liCatalog       = createEl('li');
@@ -381,9 +381,9 @@ export class App {
             const catalogLabel          = createEl('span');
             catalogLabel.innerText      = dbContainer.id;
             liDatabase.title            = "database";
-            catalogLabel.style.pointerEvents = "none"
-            liDatabase.append(catalogCaret)
-            liDatabase.append(catalogLabel)
+            catalogLabel.style.pointerEvents = "none";
+            liDatabase.append(catalogCaret);
+            liDatabase.append(catalogLabel);
             liCatalog.appendChild(liDatabase);
             ulCatalogs.append(liCatalog);
 
@@ -403,14 +403,14 @@ export class App {
                 const params: Resource  = { database: databaseName, container: containerName, ids: [] };
                 this.editor.clearEntity(databaseName, containerName);
                 this.explorer.loadContainer(params, null);
-            }
+            };
             liCatalog.append(ulContainers);
             for (const containerName of dbContainer.containers) {
                 const liContainer       = createEl('li');
                 liContainer.title       = "container";
                 const containerLabel    = createEl('div');
                 containerLabel.innerHTML= "&nbsp;" + containerName;
-                liContainer.append(containerLabel)
+                liContainer.append(containerLabel);
                 ulContainers.append(liContainer);
             }
         }
@@ -470,7 +470,7 @@ export class App {
     public schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
     public static getDatabaseLink(database: string) {
-        return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`
+        return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
 
     public getContainerSchema (database: string, container: string) : JsonType | null{
@@ -499,7 +499,7 @@ export class App {
         const filter    = entityFilter.value;
         const query     = filter.trim() == "" ? null : `filter=${encodeURIComponent(filter)}`;
         const params: Resource    = { database: database, container: container, ids: [] };
-        this.saveFilter(database, container, filter)
+        this.saveFilter(database, container, filter);
         this.explorer.loadContainer(params, query);
     }
 
@@ -516,7 +516,7 @@ export class App {
                 delete filterDatabase[container];
             }
         } else {
-            if (!filters[database]) filters[database] = {}            
+            if (!filters[database]) filters[database] = {};     
             filters[database][container] = [filter];
         }
         this.setConfig("filters", filters);
@@ -574,7 +574,7 @@ export class App {
                 const schemaEntry: MonacoSchema = {
                     uri:    "http://" + url,
                     schema: schema            
-                }
+                };
                 schemas.push(schemaEntry);
             }
         } catch (e) {
@@ -659,7 +659,7 @@ export class App {
                 const value     = this.entityEditor.getValue();
                 const column    = e.target.position.column;
                 const line      = e.target.position.lineNumber;
-                window.setTimeout(() => { this.editor.tryFollowLink(value, column, line) }, 1);
+                window.setTimeout(() => { this.editor.tryFollowLink(value, column, line); }, 1);
             });
         }
         // --- create command value editor
@@ -684,7 +684,7 @@ export class App {
             minimap:        { enabled: this.config.showMinimap ? true : false },
             theme:          window.appConfig.monacoTheme,
             mouseWheelZoom: true
-        }
+        };
         this.requestEditor.     updateOptions ({ ...editorSettings });
         this.responseEditor.    updateOptions ({ ...editorSettings });
         this.entityEditor.      updateOptions ({ ...editorSettings });
@@ -769,7 +769,7 @@ export class App {
             const editors = [
                 { editor: this.responseEditor,  elem: responseContainer },               
                 { editor: this.requestEditor,   elem: requestContainer },
-            ]
+            ];
             this.layoutMonacoEditors(editors);
             break;
         case "explorer":
@@ -777,7 +777,7 @@ export class App {
             const editors2 = [
                 { editor: this.entityEditor,        elem: entityContainer },               
                 { editor: this.commandValueEditor,  elem: commandValue },
-            ]
+            ];
             this.layoutMonacoEditors(editors2);
             break;
         }
@@ -816,7 +816,7 @@ export class App {
     public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean) {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
         this.dragHorizontal = horizontal;
-        this.dragOffset     = horizontal ? event.offsetX : event.offsetY
+        this.dragOffset     = horizontal ? event.offsetX : event.offsetY;
         this.dragTemplate   = el(template);
         this.dragBar        = el(bar);
         document.body.style.cursor = "ew-resize";
@@ -843,7 +843,7 @@ export class App {
                 this.editor.commandEditWidth = xy + "px";
                 return [this.editor.commandEditWidth, "var(--vbar-width)", "1fr"];
         }
-        throw `unhandled condition in getGridColumns() id: ${this.dragTemplate?.id}`
+        throw `unhandled condition in getGridColumns() id: ${this.dragTemplate?.id}`;
     }
 
     private onDrag(event: MouseEvent) {
@@ -873,8 +873,8 @@ export class App {
 
     public toggleTheme() {
         let mode = document.documentElement.getAttribute('data-theme');
-        mode = mode == 'dark' ? 'light' : 'dark'
-        window.setTheme(mode)
+        mode = mode == 'dark' ? 'light' : 'dark';
+        window.setTheme(mode);
         this.setEditorOptions();
     }
 

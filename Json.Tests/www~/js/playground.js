@@ -136,7 +136,7 @@ export class Playground {
         let jsonRequest = app.requestModel.getValue();
         jsonRequest = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
-        let start = new Date().getTime();
+        const start = new Date().getTime();
         let duration;
         try {
             const response = await App.postRequest(jsonRequest, "POST");
