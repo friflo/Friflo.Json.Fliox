@@ -106,12 +106,11 @@ export class Explorer {
     getAstFromJson(json) {
         if (json == "")
             return null;
-        const explorer = this.explorer;
-        if (json == explorer.cachedJsonValue)
-            return explorer.cachedJsonAst;
+        if (json == this.cachedJsonValue)
+            return this.cachedJsonAst;
         const ast = parseAst(json);
-        explorer.cachedJsonAst = ast;
-        explorer.cachedJsonValue = json;
+        this.cachedJsonAst = ast;
+        this.cachedJsonValue = json;
         return ast;
     }
     selectEditorValue(ast, focus) {

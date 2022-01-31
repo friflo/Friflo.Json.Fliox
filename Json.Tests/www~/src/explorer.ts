@@ -57,19 +57,21 @@ export class Explorer
         container:          string;
         entityType:         JsonType             | null;
         focusedCell:        HTMLTableCellElement | null;
-        cachedJsonValue?:   string;
-        cachedJsonAst?:     jsonToAst.ValueNode;
     }
+
     private             explorerTable:  HTMLTableElement;
     private readonly    config:         Config
 
-    getFocusedCell() { return this.explorer.focusedCell };
+    private             cachedJsonValue?:   string;
+    private             cachedJsonAst?:     jsonToAst.ValueNode;
 
-    constructor(config: Config) {
+    public getFocusedCell() { return this.explorer.focusedCell };
+
+    public constructor(config: Config) {
         this.config = config;
     }
 
-    async loadContainer (p: Resource, query: string) {
+    public async loadContainer (p: Resource, query: string) {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
         const filter        = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
         entityFilter.value  = filter;
@@ -153,12 +155,11 @@ export class Explorer
     private getAstFromJson(json: string) : jsonToAst.ValueNode | null {
         if (json == "")
             return null;
-        const explorer = this.explorer;
-        if (json == explorer.cachedJsonValue)
-            return explorer.cachedJsonAst;
+        if (json == this.cachedJsonValue)
+            return this.cachedJsonAst;
         const ast = parseAst(json);
-        explorer.cachedJsonAst      = ast;
-        explorer.cachedJsonValue    = json;
+        this.cachedJsonAst      = ast;
+        this.cachedJsonValue    = json;
         return ast;
     }
 
@@ -228,7 +229,7 @@ export class Explorer
         return "removed";
     }
 
-    setFocusCellSelectValue(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
+    public setFocusCellSelectValue(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
         const td = this.setFocusCell(rowIndex, cellIndex, scroll);
         if (!td)
             return;
@@ -443,7 +444,7 @@ export class Explorer
         return null;
     }
 
-    setSelectedEntities(ids: string[]) {
+    public setSelectedEntities(ids: string[]) {
         for (const id in this.selectedEntities) {
             const entityEl = this.selectedEntities[id];
             entityEl.classList.remove("selected");
@@ -626,7 +627,7 @@ export class Explorer
     }
 
 
-    updateExplorerEntities(entities: Entity[], entityType: JsonType) {
+    public updateExplorerEntities(entities: Entity[], entityType: JsonType) {
         const table         = this.explorerTable;
         let entityCount     = 0;
         const keyName       = EntityEditor.getEntityKeyName(entityType);
@@ -740,7 +741,7 @@ export class Explorer
         return { value: JSON.stringify(value) };                        // {"foo": "bar", ... }
     }
 
-    removeExplorerIds(ids: string[]) {
+    public removeExplorerIds(ids: string[]) {
         const selected = this.findContainerEntities(ids);
         for (const id in selected)
             selected[id].remove();
@@ -750,7 +751,7 @@ export class Explorer
         }
     }
 
-    findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
+    public findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
         const result : {[key: string] : HTMLTableRowElement} = {}
         for(const id of ids){
             const li = this.explorerEntities[id];
