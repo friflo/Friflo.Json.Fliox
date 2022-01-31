@@ -42,6 +42,7 @@
             --vbar-width:    16px;
             --mono-font: 'Consolas', 'Courier New', Courier, monospace;
             --mono-size:  14px;
+            --sans-serif: 'Arial', 'Helvetica', 'sans-serif';
             /* light */
             --selected-color:   #e1eeff;
             --selected-hover:   #cde3ff;
@@ -258,7 +259,7 @@
                           background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid #88888800;       }
         .input:hover    { background-color: transparent;  margin: 0px 0px 5px 0px; padding: 0px 3px;    border: 0.5px solid var(--tab-border); }
         .input:focus    { background-color: var(--background2);  outline: none !important;              border: 0.5px solid #88888800;       }
-        .input::placeholder { opacity: 0.3; color: var(--color); font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+        .input::placeholder { opacity: 0.3; color: var(--color); font-family: var(--sans-serif); font-size: 12px; }
 
 
         .caret                      { display: inline-block; width: 12px; height: 12px; cursor: default; text-align: center; font-size: 10px;}
@@ -316,10 +317,10 @@
         #entityExplorer:not(:focus) .entities tr.selected td.focus  { background-color: var(--selected-hover);  } */
 
         .entities tr td                     { scroll-margin-top: 20px; scroll-margin-left: 16px; }
-        .entities tr td input.editCell      { pointer-events: all; min-width: 10px; height: 20px; flex: 1;
-                                              font-size: 14px; color: var(--color); background-color: #00000000;
+        .entities tr td input.editCell      { pointer-events: all; min-width: 10px; height: 20px; flex: 1; font-family: var(--sans-serif);
+                                              font-size: 14px; color: var(--color); background-color: #00000000; border-radius: 2px;
                                               border: 2px solid var(--color); outline: none; box-sizing: border-box; padding: 0; margin: 0;  }
-        .entities tr td.editCell            { display: flex; padding: 0; overflow: visible; box-shadow: 0px 1px 10px 2px rgba(0,0,0,0.1) }
+        .entities tr td.editCell            { display: flex; padding: 0; overflow: visible; box-shadow: 0px 1px 10px 2px rgba(0,0,0,0.1); }
         
 
         .database                           { padding-left: 0px; margin-right: 0px; }
@@ -360,7 +361,7 @@
 </head>
 
 <body style="grid-template-rows: var(--header-height) var(--tab-height) 0 1fr 0;
-             font-family: sans-serif; background-color: var(--background2);">
+             font-family: var(--sans-serif); background-color: var(--background2);">
   <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
         https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
   <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"/>
