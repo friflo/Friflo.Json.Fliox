@@ -513,6 +513,13 @@ export class Explorer
             const range     = EntityEditor.findPathRange(ast, fieldName, keyName, id);
             if (range.value) {
                 app.entityEditor.executeEdits("", [{ range: range.value, text: value }]);
+            } else {
+                const newValue      = column.type.typeName == "string" ? `"${value}"` : value;
+                const newProperty   = `,\n    "${fieldName}": ${newValue}`;
+                const line          = range.lastProperty.endLineNumber;
+                const col           = range.lastProperty.endColumn;
+                const pos           = new monaco.Range(line, col, line, col);
+                app.entityEditor.executeEdits("", [{ range: pos, text: newProperty }]);
             }
         }
     }
