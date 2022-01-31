@@ -28,6 +28,7 @@ type CellData = {
 type Column = {
     readonly name:   string,
     readonly path:   string[],
+    readonly type:   DataType,
              th?:    HTMLTableCellElement,
              width:  number
 }
@@ -460,20 +461,33 @@ export class Explorer
         }
     }
 
-    private createEditCell(td: HTMLTableCellElement) {
+    private createEditCell(td: HTMLTableCellElement) {        
+        const row       = td.parentElement as HTMLTableRowElement;
+        const id        = this.getRowId(row);
         const edit      = createEl("input");
         this.editCell   = edit;
+        let discardEdit = false;
+        const oldValue  = td.textContent;
         edit.value      = td.textContent;
         edit.onblur     = () => {
             this.editCell   = null;                    
             edit.remove();
-            td.textContent  = edit.value;
-            td.classList.add("focus");
+            td.textContent  = discardEdit ? oldValue : edit.value;
             td.classList.remove("editCell");
+            td.classList.add("focus");
+            if (!discardEdit) {
+                this.saveCell(id, edit.value, td.cellIndex);
+            }
         }
         edit.onkeydown      = (event) => {
             switch (event.code) {
+                case 'Escape':
+                    event.stopPropagation();
+                    discardEdit = true;
+                    entityExplorer.focus();
+                    break;
                 case 'Enter':
+                    event.stopPropagation();
                     entityExplorer.focus();
                     break;
             }
@@ -484,6 +498,23 @@ export class Explorer
         td.textContent      = ""
         td.append(edit);
         edit.focus();
+    }
+
+    saveCell(id: string, value: string, cellIndex: number) {
+        const thDiv     = this.explorerTable.rows[0].cells[cellIndex].firstChild as HTMLDivElement;
+        const fieldName = thDiv.title;
+        const column    = this.entityFields[fieldName];
+        // console.log("saveCell", fieldName, column.type.typeName);
+
+        const json      = app.editor.entityEditor.getValue();
+        if (this.selectedEntities[id]) {
+            const ast       = this.getAstFromJson(json);
+            const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
+            const range     = EntityEditor.findPathRange(ast, fieldName, keyName, id);
+            if (range.value) {
+                app.entityEditor.executeEdits("", [{ range: range.value, text: value }]);
+            }
+        }
     }
 
     private entityFields:       { [key: string] : Column }              = {}
@@ -535,7 +566,7 @@ export class Explorer
             case "boolean":
             case "array":
                 const name = path.join(".");
-                columns.push({name: name, path: path, width: Explorer.defaultColumnWidth });
+                columns.push({name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
                 break;
             case "object":
                 const addProps = type.jsonType.additionalProperties;
@@ -543,7 +574,7 @@ export class Explorer
                 const isAny =   addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
                 if (isAny) {
                     const name = path.join(".");
-                    columns.push({name: name, path: path, width: Explorer.defaultColumnWidth });
+                    columns.push({name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
                     break;
                 }
                 const properties = type.jsonType.properties;
@@ -569,7 +600,8 @@ export class Explorer
                 }
             }
         } else {
-            entityFields[keyName] = { name: keyName, path: [keyName], width: Explorer.defaultColumnWidth };
+            const type: DataType  = { typeName: "string"};
+            entityFields[keyName] = { name: keyName, path: [keyName], type: type, width: Explorer.defaultColumnWidth };
         }
         const   head            = createEl('tr');
 
