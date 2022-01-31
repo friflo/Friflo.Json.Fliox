@@ -67,13 +67,13 @@ export class Explorer
     private                 cachedJsonValue?:   string;
     private                 cachedJsonAst?:     jsonToAst.ValueNode;
 
-    public getFocusedCell() { return this.focusedCell; }
+    public getFocusedCell() : HTMLTableCellElement { return this.focusedCell; }
 
     public constructor(config: Config) {
         this.config = config;
     }
 
-    public async loadContainer (p: Resource, query: string) {
+    public async loadContainer (p: Resource, query: string)  : Promise<void> {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
         const filter        = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
         entityFilter.value  = filter;
@@ -231,7 +231,7 @@ export class Explorer
         return "removed";
     }
 
-    public setFocusCellSelectValue(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) {
+    public setFocusCellSelectValue(rowIndex: number, cellIndex: number, scroll: "smooth" | null = null) : void {
         const td = this.setFocusCell(rowIndex, cellIndex, scroll);
         if (!td)
             return;
@@ -295,7 +295,7 @@ export class Explorer
         }
     }
 
-    async explorerKeyDown(event: KeyboardEvent) {
+    async explorerKeyDown(event: KeyboardEvent) : Promise<void> {
         const explorer  = this.explorer;
         const td = this.focusedCell;
         if (!td)
@@ -450,7 +450,7 @@ export class Explorer
         return null;
     }
 
-    public setSelectedEntities(ids: string[]) {
+    public setSelectedEntities(ids: string[]) : void {
         for (const id in this.selectedEntities) {
             const entityEl = this.selectedEntities[id];
             entityEl.classList.remove("selected");
@@ -500,7 +500,7 @@ export class Explorer
         edit.focus();
     }
 
-    saveCell(id: string, value: string, cellIndex: number) {
+    saveCell(id: string, value: string, cellIndex: number) : void {
         const thDiv     = this.explorerTable.rows[0].cells[cellIndex].firstChild as HTMLDivElement;
         const fieldName = thDiv.title;
         const column    = this.entityFields[fieldName];
@@ -669,11 +669,12 @@ export class Explorer
         }
     }
 
-    public updateExplorerEntities(entities: Entity[], entityType: JsonType) {
+    public updateExplorerEntities(entities: Entity[], entityType: JsonType) : void {
         const table         = this.explorerTable;
         let entityCount     = 0;
         const keyName       = EntityEditor.getEntityKeyName(entityType);
         const entityFields  = this.entityFields;
+        const fieldCount    = Object.keys(entityFields).length;
         const tds           = [] as HTMLTableCellElement[];
         // console.log("entities", entities);
         for (const entity of entities) {
@@ -695,7 +696,7 @@ export class Explorer
                 tds.push(tdCheckbox);
 
                 // cell: add fields
-                for (const _ in entityFields) {
+                for (let n = 0; n < fieldCount; n++) {
                     const tdField = createEl('td');
                     row.append(tdField);
                     tds.push(tdField);
@@ -783,7 +784,7 @@ export class Explorer
         return { value: JSON.stringify(value) };                        // {"foo": "bar", ... }
     }
 
-    public removeExplorerIds(ids: string[]) {
+    public removeExplorerIds(ids: string[]) : void {
         const selected = this.findContainerEntities(ids);
         for (const id in selected)
             selected[id].remove();

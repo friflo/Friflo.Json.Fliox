@@ -592,6 +592,7 @@ export class Explorer {
         let entityCount = 0;
         const keyName = EntityEditor.getEntityKeyName(entityType);
         const entityFields = this.entityFields;
+        const fieldCount = Object.keys(entityFields).length;
         const tds = [];
         // console.log("entities", entities);
         for (const entity of entities) {
@@ -611,7 +612,7 @@ export class Explorer {
                 row.append(tdCheckbox);
                 tds.push(tdCheckbox);
                 // cell: add fields
-                for (const _ in entityFields) {
+                for (let n = 0; n < fieldCount; n++) {
                     const tdField = createEl('td');
                     row.append(tdField);
                     tds.push(tdField);

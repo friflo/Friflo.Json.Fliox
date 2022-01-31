@@ -47,7 +47,7 @@ export class EntityEditor
 
     public initEditor(
         entityEditor:       monaco.editor.IStandaloneCodeEditor,
-        commandValueEditor: monaco.editor.IStandaloneCodeEditor)
+        commandValueEditor: monaco.editor.IStandaloneCodeEditor) : void
     {
         this.entityEditor       = entityEditor;
         this.commandValueEditor = commandValueEditor;
@@ -83,7 +83,7 @@ export class EntityEditor
         };
     }
 
-    public async sendCommand(method: Method) {
+    public async sendCommand(method: Method) : Promise<void> {
         const value     = this.commandValueEditor.getValue();
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
@@ -108,7 +108,7 @@ export class EntityEditor
         el("databaseType").innerHTML      = dbContainer.databaseType;        
     }
 
-    public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) {
+    public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) : void {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
@@ -184,7 +184,7 @@ export class EntityEditor
         this.entityHistory[this.entityHistoryPos].selection    = this.entityEditor.getSelection();
     }
 
-    public navigateEntity(pos: number) {
+    public navigateEntity(pos: number) : void {
         if (pos < 0 || pos >= this.entityHistory.length)
             return;
         this.storeCursor();
@@ -239,7 +239,7 @@ export class EntityEditor
         const ids    = idsStr.split(",");
         let   len    = ids.length;
         if (len == 1 && ids[0] == "") len = 0;
-        entityIdsContainer.onclick      = _ => app.explorer.loadContainer({ database: database, container: container, ids: null }, null);
+        entityIdsContainer.onclick      = () => app.explorer.loadContainer({ database: database, container: container, ids: null }, null);
         entityIdsContainer.innerText    = `« ${container}`;
         entityIdsCount.innerText        = len > 0 ? `(${len})` : "";
 
@@ -253,8 +253,8 @@ export class EntityEditor
     }
 
     private setEntitiesIds (database: string, container: string, ids: string[]) {
-        entityIdsReload.onclick     = _ => this.loadInputEntityIds      (database, container);
-        entityIdsInput.onchange     = _ => this.updateGetEntitiesAnchor (database, container);
+        entityIdsReload.onclick     = () => this.loadInputEntityIds      (database, container);
+        entityIdsInput.onchange     = () => this.updateGetEntitiesAnchor (database, container);
         entityIdsInput.onkeydown    = e => this.onEntityIdsKeyDown   (e, database, container);
         entityIdsInput.value        = ids.join (",");
         this.updateGetEntitiesAnchor(database, container);
@@ -294,7 +294,7 @@ export class EntityEditor
         this.loadInputEntityIds(database, container);
     }
 
-    public clearEntity (database: string, container: string) {
+    public clearEntity (database: string, container: string) : void {
         this.setExplorerEditor("entity");
         this.setEditorHeader("entity");
 
@@ -309,13 +309,13 @@ export class EntityEditor
         this.setEntityValue(database, container, "");
     }
 
-    public  static getEntityKeyName (entityType: JsonType) {
+    public  static getEntityKeyName (entityType: JsonType) : string {
         if (entityType?.key)
             return entityType.key;
         return "id";
     }
 
-    public async saveEntitiesAction () {
+    public async saveEntitiesAction () : Promise<void> {
         const ei        = this.entityIdentity;
         const jsonValue = this.entityModel.getValue();
         await this.saveEntities(ei.database, ei.container, jsonValue);
@@ -376,12 +376,12 @@ export class EntityEditor
         return true;
     }
 
-    public async deleteEntitiesAction () {
+    public async deleteEntitiesAction () : Promise<void> {
         const ei = this.entityIdentity;
         await this.deleteEntities (ei.database, ei.container, ei.entityIds);
     }
 
-    public  async deleteEntities (database: string, container: string, ids: string[]) {
+    public  async deleteEntities (database: string, container: string, ids: string[]) : Promise<void> {
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
         const response = await App.restRequest("DELETE", null, database, container, ids, null);        
         if (!response.ok) {
@@ -583,7 +583,7 @@ export class EntityEditor
     public commandEditWidth = "60px";
     public activeExplorerEditor: ExplorerEditor = undefined;
 
-    public setExplorerEditor(edit : ExplorerEditor) {
+    public setExplorerEditor(edit : ExplorerEditor) : void {
         this.activeExplorerEditor   = edit;
         // console.log("editor:", edit);
         const commandActive         = edit == "command";
@@ -614,7 +614,7 @@ export class EntityEditor
         this.setCommandResult(database, commandName);
     }
 
-    public tryFollowLink(value: string, column: number, line: number) {
+    public tryFollowLink(value: string, column: number, line: number) : void {
         try {
             JSON.parse(value);  // early out invalid JSON
             const ast               = parseAst(value);

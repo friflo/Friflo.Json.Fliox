@@ -192,7 +192,7 @@ export class EntityEditor {
         let len = ids.length;
         if (len == 1 && ids[0] == "")
             len = 0;
-        entityIdsContainer.onclick = _ => app.explorer.loadContainer({ database: database, container: container, ids: null }, null);
+        entityIdsContainer.onclick = () => app.explorer.loadContainer({ database: database, container: container, ids: null }, null);
         entityIdsContainer.innerText = `« ${container}`;
         entityIdsCount.innerText = len > 0 ? `(${len})` : "";
         let getUrl;
@@ -205,8 +205,8 @@ export class EntityEditor {
         entityIdsGET.href = getUrl;
     }
     setEntitiesIds(database, container, ids) {
-        entityIdsReload.onclick = _ => this.loadInputEntityIds(database, container);
-        entityIdsInput.onchange = _ => this.updateGetEntitiesAnchor(database, container);
+        entityIdsReload.onclick = () => this.loadInputEntityIds(database, container);
+        entityIdsInput.onchange = () => this.updateGetEntitiesAnchor(database, container);
         entityIdsInput.onkeydown = e => this.onEntityIdsKeyDown(e, database, container);
         entityIdsInput.value = ids.join(",");
         this.updateGetEntitiesAnchor(database, container);

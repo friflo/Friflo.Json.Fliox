@@ -28,7 +28,7 @@ export class Playground
     subSeq              = 0;
     subCount            = 0;
 
-    connectWebsocket () {
+    connectWebsocket (): void {
         if (this.connection) {
             this.connection.close();
             this.connection = null;
@@ -91,7 +91,7 @@ export class Playground
         }
     }
 
-    closeWebsocket  () {
+    closeWebsocket  (): void {
         this.connection.close();
     }
 
@@ -106,7 +106,7 @@ export class Playground
         return `${before},${userToken}${after}`;
     }
 
-    sendSyncRequest () {
+    sendSyncRequest (): void {
         const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
             app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
@@ -139,7 +139,7 @@ export class Playground
         reqIdElement.innerText  =  String(this.req);
     }
 
-    async postSyncRequest () {
+    async postSyncRequest (): Promise<void> {
         let jsonRequest         = app.requestModel.getValue();
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
@@ -159,7 +159,7 @@ export class Playground
     }
 
     // --------------------------------------- example requests ---------------------------------------
-    public async onExampleChange () {
+    public async onExampleChange () : Promise<void> {
         const exampleName = selectExample.value;
         if (exampleName == "") {
             app.requestModel.setValue("");
@@ -170,7 +170,7 @@ export class Playground
         app.requestModel.setValue(example);
     }
 
-    public async loadExampleRequestList () {
+    public async loadExampleRequestList () : Promise<void> {
         // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
         let option      = createEl("option");
         option.value    = "";

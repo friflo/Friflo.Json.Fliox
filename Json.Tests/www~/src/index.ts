@@ -70,17 +70,17 @@ export class App {
         this.setToken(token);
     }
 
-    public setUser (user: string) {
+    public setUser (user: string) : void {
         defaultUser.value   = user;
         document.cookie = `fliox-user=${user};`;
     }
 
-    public setToken  (token: string) {
+    public setToken  (token: string) : void {
         defaultToken.value  = token;
         document.cookie = `fliox-token=${token};`;
     }
 
-    public selectUser (element: HTMLElement) {
+    public selectUser (element: HTMLElement) : void {
         const value = element.innerText;
         this.setUser(value);
         this.setToken(value);
@@ -105,12 +105,12 @@ export class App {
         this.refLinkDecoration.style.cursor = this.lastCtrlKey ? "pointer" : "";
     }
 
-    public onKeyUp (event: KeyboardEvent) {
+    public onKeyUp (event: KeyboardEvent) : void {
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
     }
 
-    public onKeyDown (event: KeyboardEvent) {
+    public onKeyDown (event: KeyboardEvent) : void {
         const editor = this.editor;
 
         if (event.code == "ControlLeft")
@@ -172,7 +172,7 @@ export class App {
 
 
     // --------------------------------------- Fliox HTTP --------------------------------------- 
-    public static async postRequest (request: string, tag: string) {
+    public static async postRequest (request: string, tag: string) : Promise<{ text: string; json: any; }> {
         const init = {        
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -211,7 +211,7 @@ export class App {
         return await App.postRequest(request, `${database}/${tag}`);
     }
 
-    public static getRestPath(database: string, container: string, ids: string | string[], query: string) {
+    public static getRestPath(database: string, container: string, ids: string | string[], query: string) : string {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (ids) {
@@ -225,7 +225,7 @@ export class App {
         return path;
     }
 
-    static async restRequest (method: Method, body: string, database: string, container: string, ids: string | string[], query: string) {
+    static async restRequest (method: Method, body: string, database: string, container: string, ids: string | string[], query: string) : Promise<Response> {
         const path = App.getRestPath(database, container, ids, query);        
         const init = {        
             method:  method,
@@ -258,7 +258,7 @@ export class App {
 
     private static bracketValue = /\[(.*?)\]/;
 
-    public static errorAsHtml (message: string, p: Resource | null) {
+    public static errorAsHtml (message: string, p: Resource | null) : string {
         // first line: error type, second line: error message
         const pos = message.indexOf(' > ');
         let error = message;
@@ -281,12 +281,12 @@ export class App {
 
 
     // --------------------------------------- general App UI --------------------------------------- 
-    public toggleDescription() {
+    public toggleDescription() : void {
         this.changeConfig("showDescription", !this.config.showDescription);   
         this.openTab(this.config.activeTab);
     }
 
-    public openTab (tabName: string) {
+    public openTab (tabName: string) : void {
         const config            = this.config;
         config.activeTab        = tabName;
         App.setClass(document.body, !config.showDescription, "miniHeader");
@@ -428,14 +428,14 @@ export class App {
     // --------------------------------------- schema ---------------------------------------
     public databaseSchemas: { [key: string]: DbSchema} = {};
     
-    public getSchemaType(database: string) {
+    public getSchemaType(database: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
     }
 
-    public getSchemaExports(database: string) {
+    public getSchemaExports(database: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
@@ -448,14 +448,14 @@ export class App {
         return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
     }
 
-    public getEntityType(database: string, container: string) {
+    public getEntityType(database: string, container: string) : string {
         const def  = this.getContainerSchema(database, container);
         if (!def)
             return this.schemaLess;
         return App.getType(database, def);
     }
 
-    public getTypeLabel(database: string, type: FieldType) {
+    public getTypeLabel(database: string, type: FieldType) : string {
         if (type.type) {
             return type.type;
         }
@@ -469,7 +469,7 @@ export class App {
 
     public schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
-    public static getDatabaseLink(database: string) {
+    public static getDatabaseLink(database: string) : string {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
 
@@ -487,13 +487,13 @@ export class App {
         container:  string
     }
 
-    public filterOnKeyDown(event: KeyboardEvent) {
+    public filterOnKeyDown(event: KeyboardEvent) : void {
         if (event.code != 'Enter')
             return;
         this.applyFilter();
     }
 
-    public applyFilter() {
+    public applyFilter() : void {
         const database  = this.filter.database;
         const container = this.filter.container;
         const filter    = entityFilter.value;
@@ -503,7 +503,7 @@ export class App {
         this.explorer.loadContainer(params, query);
     }
 
-    public removeFilter() {
+    public removeFilter(): void {
         const params: Resource  = { database: this.filter.database, container: this.filter.container, ids: [] };
         this.explorer.loadContainer(params, null);
     }
@@ -522,7 +522,7 @@ export class App {
         this.setConfig("filters", filters);
     }
 
-    public updateFilterLink() {
+    public updateFilterLink(): void {
         const filter    = entityFilter.value;
         const query     = filter.trim() == "" ? "" : `?filter=${encodeURIComponent(filter)}`;
         const url       = `./rest/${this.filter.database}/${this.filter.container}${query}`;
@@ -593,7 +593,7 @@ export class App {
 
     allMonacoSchemas: MonacoSchema[] = [];
 
-    addSchemas (monacoSchemas: MonacoSchema[]) {
+    addSchemas (monacoSchemas: MonacoSchema[]): void {
         this.allMonacoSchemas.push(...monacoSchemas);
         // [LanguageServiceDefaults | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.LanguageServiceDefaults.html
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -602,7 +602,7 @@ export class App {
         });
     }
 
-    async setupEditors ()
+    async setupEditors () : Promise<void>
     {
         // this.setExplorerEditor("none");
         
@@ -733,7 +733,7 @@ export class App {
         this.initConfigValue("filters");
     }
 
-    public changeConfig (key: ConfigKey, value: boolean) {
+    public changeConfig (key: ConfigKey, value: boolean): void {
         this.setConfig(key, value);
         switch (key) {
             case "showLineNumbers":
@@ -762,7 +762,7 @@ export class App {
         return text;
     }
 
-    public layoutEditors () {
+    public layoutEditors (): void {
         // console.log("layoutEditors - activeTab: " + activeTab)
         switch (this.config.activeTab) {
         case "playground":
@@ -813,7 +813,7 @@ export class App {
     private dragOffset:     number;
     private dragHorizontal: boolean;
 
-    public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean) {
+    public startDrag(event: MouseEvent, template: string, bar: string, horizontal: boolean): void {
         // console.log(`drag start: ${event.offsetX}, ${template}, ${bar}`)
         this.dragHorizontal = horizontal;
         this.dragOffset     = horizontal ? event.offsetX : event.offsetY;
@@ -871,14 +871,14 @@ export class App {
         document.body.style.cursor  = "auto";
     }
 
-    public toggleTheme() {
+    public toggleTheme(): void {
         let mode = document.documentElement.getAttribute('data-theme');
         mode = mode == 'dark' ? 'light' : 'dark';
         window.setTheme(mode);
         this.setEditorOptions();
     }
 
-    public initApp() {
+    public initApp(): void {
         // --- methods without network requests
         this.loadConfig();
         this.initUserToken();

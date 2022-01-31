@@ -14,10 +14,10 @@ module.exports = {
         'no-empty': 'off',
         'semi': [2, "always"],        
         'no-case-declarations': 'off',
-        '@typescript-eslint/no-empty-function': 0,
-        '@typescript-eslint/no-unused-vars': 0,
+        '@typescript-eslint/no-empty-function': 'error',
+        '@typescript-eslint/no-unused-vars': 'error',
         '@typescript-eslint/no-explicit-any': 0,
-        '@typescript-eslint/explicit-module-boundary-types': 0,
+        '@typescript-eslint/explicit-module-boundary-types': 'error',
         '@typescript-eslint/no-non-null-assertion': 0,
     }
 };
