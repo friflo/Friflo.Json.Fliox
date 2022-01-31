@@ -301,7 +301,7 @@ export class Explorer
         }
     }
 
-    async explorerKeyDown(event: KeyboardEvent) : Promise<void> {
+    public async explorerKeyDown(event: KeyboardEvent) : Promise<void> {
         const explorer  = this.explorer;
         const td = this.focusedCell;
         if (!td)
@@ -507,21 +507,22 @@ export class Explorer
         edit.focus();
     }
 
-    private saveCell(id: string, value: string, cellIndex: number) : void {
+    private async saveCell(id: string, value: string, cellIndex: number) : Promise<void> {
         const thDiv     = this.explorerTable.rows[0].cells[cellIndex].firstChild as HTMLDivElement;
         const fieldName = thDiv.title;
         const column    = this.entityFields[fieldName];
+        const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
+        const typeName  = column.type.typeName;
         // console.log("saveCell", fieldName, column.type.typeName);
 
         if (this.selectedRows[id]) {
             const json      = app.entityEditor.getValue();
             const ast       = this.getAstFromJson(json);
-            const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
             const range     = EntityEditor.findPathRange(ast, fieldName, keyName, id);
             if (range.value) {
                 app.entityEditor.executeEdits("", [{ range: range.value, text: value }]);
             } else {
-                const newValue      = column.type.typeName == "string" ? `"${value}"` : value;
+                const newValue      = typeName == "string" ? `"${value}"` : value;
                 const newProperty   = `,\n    "${fieldName}": ${newValue}`;
                 const line          = range.lastProperty.endLineNumber;
                 const col           = range.lastProperty.endColumn;
@@ -529,6 +530,13 @@ export class Explorer
                 app.entityEditor.executeEdits("", [{ range: pos, text: newProperty }]);
             }
         }
+
+        const explorer      = this.explorer;
+        const entity        = explorer.entities.find(entity => entity[keyName] == id);
+        const typedValue    = typeName == "string" ? value : JSON.parse(value);
+        entity[fieldName]   = typedValue;
+        const json          = JSON.stringify(entity, null, 4);
+        await App.restRequest("PUT", json, explorer.database, explorer.container, id, null);
     }
 
     private static getDataType(fieldType: FieldType) : DataType {

@@ -439,21 +439,22 @@ export class Explorer {
         td.append(edit);
         edit.focus();
     }
-    saveCell(id, value, cellIndex) {
+    async saveCell(id, value, cellIndex) {
         const thDiv = this.explorerTable.rows[0].cells[cellIndex].firstChild;
         const fieldName = thDiv.title;
         const column = this.entityFields[fieldName];
+        const keyName = EntityEditor.getEntityKeyName(column.type.jsonType);
+        const typeName = column.type.typeName;
         // console.log("saveCell", fieldName, column.type.typeName);
         if (this.selectedRows[id]) {
             const json = app.entityEditor.getValue();
             const ast = this.getAstFromJson(json);
-            const keyName = EntityEditor.getEntityKeyName(column.type.jsonType);
             const range = EntityEditor.findPathRange(ast, fieldName, keyName, id);
             if (range.value) {
                 app.entityEditor.executeEdits("", [{ range: range.value, text: value }]);
             }
             else {
-                const newValue = column.type.typeName == "string" ? `"${value}"` : value;
+                const newValue = typeName == "string" ? `"${value}"` : value;
                 const newProperty = `,\n    "${fieldName}": ${newValue}`;
                 const line = range.lastProperty.endLineNumber;
                 const col = range.lastProperty.endColumn;
@@ -461,6 +462,12 @@ export class Explorer {
                 app.entityEditor.executeEdits("", [{ range: pos, text: newProperty }]);
             }
         }
+        const explorer = this.explorer;
+        const entity = explorer.entities.find(entity => entity[keyName] == id);
+        const typedValue = typeName == "string" ? value : JSON.parse(value);
+        entity[fieldName] = typedValue;
+        const json = JSON.stringify(entity, null, 4);
+        await App.restRequest("PUT", json, explorer.database, explorer.container, id, null);
     }
     static getDataType(fieldType) {
         const ref = fieldType._resolvedDef;
