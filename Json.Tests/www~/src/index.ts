@@ -236,13 +236,15 @@ export class App {
             // authenticate with cookies: "fliox-user" & "fliox-token"
             return await fetch(path, init);
         } catch (error) {
-            return {
-                ok:     false,
+            const text = () : Promise<string> => error.message;
+            const ret: Partial<Response> = {
+                ok:         false,
                 status:     0,
                 statusText: "exception",
-                text:   () : string => error.message,
-                json:   ()          => { throw error.message; }
+                text:       text,
+                json:       () => { throw error.message; }
             };
+            return ret as Response;
         }
     }
 

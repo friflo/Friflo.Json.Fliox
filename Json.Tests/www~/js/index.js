@@ -203,13 +203,15 @@ export class App {
             return await fetch(path, init);
         }
         catch (error) {
-            return {
+            const text = () => error.message;
+            const ret = {
                 ok: false,
                 status: 0,
                 statusText: "exception",
-                text: () => error.message,
+                text: text,
                 json: () => { throw error.message; }
             };
+            return ret;
         }
     }
     static getTaskError(content, taskIndex) {
