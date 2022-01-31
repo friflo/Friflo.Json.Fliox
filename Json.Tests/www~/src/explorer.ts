@@ -531,10 +531,10 @@ export class Explorer
     private static getDataType(fieldType: FieldType) : DataType {
         const   ref = fieldType._resolvedDef;
         if (ref)
-            return this.getDataType(ref as {} as FieldType);
+            return this.getDataType(ref as unknown as FieldType);
         const oneOf = fieldType.oneOf;
         if (oneOf) {
-            const jsonType = fieldType as { } as JsonType;
+            const jsonType = fieldType as unknown as JsonType;
             if (jsonType.discriminator) {
                 return { typeName: "object", jsonType: jsonType };
             }            
@@ -550,7 +550,7 @@ export class Explorer
             return { typeName: "array", jsonType: itemType.jsonType };
         }
         if (type == "object") {
-            return { typeName: "object", jsonType: fieldType as {} as JsonType };
+            return { typeName: "object", jsonType: fieldType as unknown as JsonType };
         }
         if (!Array.isArray(type))
             return { typeName: fieldType.type };
