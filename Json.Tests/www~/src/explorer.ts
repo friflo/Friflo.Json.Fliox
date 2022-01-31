@@ -57,6 +57,8 @@ export class Explorer
         readonly database:      string;
         readonly container:     string;
         readonly entityType:    JsonType | null;
+        readonly entities:      Entity[];
+
     }
     private             focusedCell:        HTMLTableCellElement    = null;
     private             editCell:           HTMLInputElement        = null;
@@ -90,9 +92,10 @@ export class Explorer
         app.filter.database    = p.database;
         app.filter.container   = p.container;
         this.explorer = {
-            database:       p.database,
-            container:      p.container,
-            entityType:     entityType,
+            database:   p.database,
+            container:  p.container,
+            entityType: entityType,
+            entities:   null    // explorer: entities not loaded
         };        
         this.focusedCell = null;
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
@@ -113,15 +116,13 @@ export class Explorer
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-
         const   entities    = await response.json() as Entity[];
-        // const ids        = entities.map(entity => entity[keyName]) as string[];
-        const   table       = this.explorerTable = createEl('table');
+        this.explorer       = { ...this.explorer, entities };   // explorer: entities loaded successful
 
         this.entityFields   = {};
         const   head        = this.createExplorerHead(entityType, this.entityFields);
 
-
+        const   table       = this.explorerTable = createEl('table');
         table.append(head);
         table.classList.value   = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);

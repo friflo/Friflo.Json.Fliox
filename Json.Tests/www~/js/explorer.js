@@ -49,6 +49,7 @@ export class Explorer {
             database: p.database,
             container: p.container,
             entityType: entityType,
+            entities: null // explorer: entities not loaded
         };
         this.focusedCell = null;
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
@@ -68,10 +69,10 @@ export class Explorer {
             return;
         }
         const entities = await response.json();
-        // const ids        = entities.map(entity => entity[keyName]) as string[];
-        const table = this.explorerTable = createEl('table');
+        this.explorer = Object.assign(Object.assign({}, this.explorer), { entities }); // explorer: entities loaded successful
         this.entityFields = {};
         const head = this.createExplorerHead(entityType, this.entityFields);
+        const table = this.explorerTable = createEl('table');
         table.append(head);
         table.classList.value = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);
