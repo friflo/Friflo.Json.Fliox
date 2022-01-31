@@ -58,6 +58,7 @@ export class Explorer
         readonly entityType:    JsonType | null;
     }
     private focusedCell:    HTMLTableCellElement | null;
+    private editCell:       HTMLInputElement;
 
     private                 explorerTable:  HTMLTableElement;
     private readonly        config:         Config
@@ -298,6 +299,8 @@ export class Explorer
         const td = this.focusedCell;
         if (!td)
             return;
+        if (this.editCell)
+            return;
         const table     = this.explorerTable;
         const row       = td.parentElement as HTMLTableRowElement;
         switch (event.code) {
@@ -367,7 +370,7 @@ export class Explorer
                 return;
             }
             case 'Enter': {
-                event.preventDefault();                
+                event.preventDefault();
                 if (event.shiftKey) {
                     await this.selectEntityRange(row.rowIndex);
                     this.selectCellValue(this.focusedCell);
@@ -458,14 +461,29 @@ export class Explorer
     }
 
     private createEditCell(td: HTMLTableCellElement) {
-        const edit          = createEl("input");
-        edit.value          = td.textContent;
+        const edit      = createEl("input");
+        this.editCell   = edit;
+        edit.value      = td.textContent;
+        edit.onblur     = () => {
+            this.editCell   = null;                    
+            edit.remove();
+            td.textContent  = edit.value;
+            td.classList.add("focus");
+            td.classList.remove("editCell");
+        }
+        edit.onkeydown      = (event) => {
+            switch (event.code) {
+                case 'Enter':
+                    entityExplorer.focus();
+                    break;
+            }
+        }
         edit.classList.add("editCell");
+        td.classList.add("editCell")
         td.classList.remove("focus");
-        td.style.display    = "flex"
-        td.style.padding    = "0"
         td.textContent      = ""
         td.append(edit);
+        edit.focus();
     }
 
     private entityFields:       { [key: string] : Column }              = {}

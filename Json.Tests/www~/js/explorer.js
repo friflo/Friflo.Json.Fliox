@@ -239,6 +239,8 @@ export class Explorer {
         const td = this.focusedCell;
         if (!td)
             return;
+        if (this.editCell)
+            return;
         const table = this.explorerTable;
         const row = td.parentElement;
         switch (event.code) {
@@ -396,13 +398,28 @@ export class Explorer {
     }
     createEditCell(td) {
         const edit = createEl("input");
+        this.editCell = edit;
         edit.value = td.textContent;
+        edit.onblur = () => {
+            this.editCell = null;
+            edit.remove();
+            td.textContent = edit.value;
+            td.classList.add("focus");
+            td.classList.remove("editCell");
+        };
+        edit.onkeydown = (event) => {
+            switch (event.code) {
+                case 'Enter':
+                    entityExplorer.focus();
+                    break;
+            }
+        };
         edit.classList.add("editCell");
+        td.classList.add("editCell");
         td.classList.remove("focus");
-        td.style.display = "flex";
-        td.style.padding = "0";
         td.textContent = "";
         td.append(edit);
+        edit.focus();
     }
     static getDataType(fieldType) {
         const ref = fieldType._resolvedDef;
