@@ -67,6 +67,11 @@ export class Explorer
     private             cachedJsonValue:    string                  = null;
     private             cachedJsonAst:      jsonToAst.ValueNode     = null;
 
+    private             entityFields:   { [key: string] : Column }              = {}
+    private             selectedRows:   { [key: string] : HTMLTableRowElement } = {};
+    private             explorerRows:   { [key: string] : HTMLTableRowElement } = {};
+
+
     public getFocusedCell() : HTMLTableCellElement { return this.focusedCell; }
 
     public constructor(config: Config) {
@@ -121,8 +126,8 @@ export class Explorer
         table.classList.value   = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);
         
-        this.explorerEntities = {};
-        this.selectedEntities = {};
+        this.explorerRows = {};
+        this.selectedRows = {};
         this.updateExplorerEntities(entities, entityType);
         this.setColumnWidths();
         entityExplorer.innerText = "";
@@ -205,7 +210,7 @@ export class Explorer
         const children      = path[1].children; // tr children
         const id            = (children[1] as HTMLElement).innerText;
         const isCheckbox    = cell == children[0];
-        const selectedIds   = Object.keys(this.selectedEntities);
+        const selectedIds   = Object.keys(this.selectedRows);
         if (isCheckbox || select == "toggle") {
             if (Explorer.toggleIds(selectedIds, id) == "added") {
                 const cellIndex = isCheckbox ? this.focusedCell?.cellIndex ?? 1 : cell.cellIndex;
@@ -362,7 +367,7 @@ export class Explorer
             case 'Space': {
                 event.preventDefault();
                 const id        = this.getRowId(row);
-                const ids       = Object.keys(this.selectedEntities);
+                const ids       = Object.keys(this.selectedRows);
                 const toggle    = Explorer.toggleIds(ids, id);
                 await this.selectExplorerEntities(ids);
 
@@ -386,7 +391,7 @@ export class Explorer
                 if (!event.ctrlKey)
                     return;
                 event.preventDefault();
-                const ids               = Object.keys(this.explorerEntities);
+                const ids = Object.keys(this.explorerRows);
                 this.selectExplorerEntities(ids);
                 return;
             }
@@ -404,7 +409,7 @@ export class Explorer
                 return;
             case 'Delete': {
                 event.preventDefault();
-                const ids   = Object.keys(this.selectedEntities);
+                const ids   = Object.keys(this.selectedRows);
                 app.editor.deleteEntities(explorer.database, explorer.container, ids);
                 return;
             }
@@ -424,7 +429,7 @@ export class Explorer
     }
 
     private async selectEntityRange(lastIndex: number) {
-        const selection     = Object.values(this.selectedEntities);
+        const selection     = Object.values(this.selectedRows);
         let   firstIndex    = selection.length == 0 ? 1 : selection[selection.length - 1].rowIndex;
         if (lastIndex > firstIndex) {
             [lastIndex, firstIndex] = [firstIndex, lastIndex];
@@ -451,13 +456,14 @@ export class Explorer
     }
 
     public setSelectedEntities(ids: string[]) : void {
-        for (const id in this.selectedEntities) {
-            const entityEl = this.selectedEntities[id];
+        const oldSelection = this.selectedRows;
+        for (const id in oldSelection) {
+            const entityEl = oldSelection[id];
             entityEl.classList.remove("selected");
         }
-        this.selectedEntities = this.findContainerEntities(ids);
-        for (const id in this.selectedEntities) {
-            this.selectedEntities[id].classList.add("selected");
+        const newSelection = this.selectedRows = this.findContainerEntities(ids);
+        for (const id in newSelection) {
+            newSelection[id].classList.add("selected");
         }
     }
 
@@ -506,8 +512,8 @@ export class Explorer
         const column    = this.entityFields[fieldName];
         // console.log("saveCell", fieldName, column.type.typeName);
 
-        const json      = app.entityEditor.getValue();
-        if (this.selectedEntities[id]) {
+        if (this.selectedRows[id]) {
+            const json      = app.entityEditor.getValue();
             const ast       = this.getAstFromJson(json);
             const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
             const range     = EntityEditor.findPathRange(ast, fieldName, keyName, id);
@@ -523,10 +529,6 @@ export class Explorer
             }
         }
     }
-
-    private entityFields:       { [key: string] : Column }              = {}
-    private selectedEntities:   { [key: string] : HTMLTableRowElement } = {};
-    private explorerEntities:   { [key: string] : HTMLTableRowElement } = {};
 
     private static getDataType(fieldType: FieldType) : DataType {
         const   ref = fieldType._resolvedDef;
@@ -676,14 +678,15 @@ export class Explorer
         const entityFields  = this.entityFields;
         const fieldCount    = Object.keys(entityFields).length;
         const tds           = [] as HTMLTableCellElement[];
+        const rows          = this.explorerRows;
         // console.log("entities", entities);
         for (const entity of entities) {
             tds.length  = 0;
             const id    = entity[keyName];
-            let   row   = this.explorerEntities[id];
+            let   row   = rows[id];
             if (!row) {
                 row = createEl('tr');
-                this.explorerEntities[id] = row;
+                rows[id] = row;
 
                 // cell: add checkbox
                 const tdCheckbox    = createEl('td');
@@ -789,15 +792,15 @@ export class Explorer
         for (const id in selected)
             selected[id].remove();
         for (const id of ids) {
-            delete this.explorerEntities[id];
-            delete this.selectedEntities[id];
+            delete this.explorerRows[id];
+            delete this.selectedRows[id];
         }
     }
 
     public findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
         const result : {[key: string] : HTMLTableRowElement} = {};
         for(const id of ids){
-            const li = this.explorerEntities[id];
+            const li = this.explorerRows[id];
             if (!li)
                 continue;
             result[id] = li;
