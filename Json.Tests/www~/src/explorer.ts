@@ -53,19 +53,19 @@ const filterRow         = el("filterRow");
 export class Explorer
 {
     private explorer: {
-        database:           string;
-        container:          string;
-        entityType:         JsonType             | null;
-        focusedCell:        HTMLTableCellElement | null;
+        readonly database:      string;
+        readonly container:     string;
+        readonly entityType:    JsonType | null;
     }
+    private focusedCell:    HTMLTableCellElement | null;
 
-    private             explorerTable:  HTMLTableElement;
-    private readonly    config:         Config
+    private                 explorerTable:  HTMLTableElement;
+    private readonly        config:         Config
 
-    private             cachedJsonValue?:   string;
-    private             cachedJsonAst?:     jsonToAst.ValueNode;
+    private                 cachedJsonValue?:   string;
+    private                 cachedJsonAst?:     jsonToAst.ValueNode;
 
-    public getFocusedCell() { return this.explorer.focusedCell };
+    public getFocusedCell() { return this.focusedCell };
 
     public constructor(config: Config) {
         this.config = config;
@@ -86,8 +86,8 @@ export class Explorer
             database:       p.database,
             container:      p.container,
             entityType:     entityType,
-            focusedCell:    null
         };        
+        this.focusedCell = null;
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility      = "";
         entityFilter.style.visibility   = "";
@@ -133,7 +133,7 @@ export class Explorer
         const path          = ev.composedPath() as HTMLElement[];
         if (ev.shiftKey) {
             this.getSelectionFromPath(path, "id");
-            const lastRow = this.explorer.focusedCell?.parentElement as HTMLTableRowElement;
+            const lastRow = this.focusedCell?.parentElement as HTMLTableRowElement;
             if (!lastRow)
                 return;            
             await this.selectEntityRange(lastRow.rowIndex);            
@@ -149,7 +149,7 @@ export class Explorer
 
         const json  = app.editor.entityEditor.getValue();
         const ast   = this.getAstFromJson(json);
-        this.selectEditorValue(ast, this.explorer.focusedCell);
+        this.selectEditorValue(ast, this.focusedCell);
     }
 
     private getAstFromJson(json: string) : jsonToAst.ValueNode | null {
@@ -206,7 +206,7 @@ export class Explorer
         const selectedIds   = Object.keys(this.selectedEntities);
         if (isCheckbox || select == "toggle") {
             if (Explorer.toggleIds(selectedIds, id) == "added") {
-                const cellIndex = isCheckbox ? this.explorer.focusedCell?.cellIndex ?? 1 : cell.cellIndex;
+                const cellIndex = isCheckbox ? this.focusedCell?.cellIndex ?? 1 : cell.cellIndex;
                 this.setFocusCell(row.rowIndex, cellIndex);
             }
             return selectedIds;
@@ -253,11 +253,10 @@ export class Explorer
         if (cellIndex >= row.cells.length)
             return null;
 
-        const explorer = this.explorer;
         const td = row.cells[cellIndex];
-        explorer.focusedCell?.classList.remove("focus");
+        this.focusedCell?.classList.remove("focus");
         td.classList.add("focus");
-        explorer.focusedCell = td;
+        this.focusedCell = td;
         // td.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         Explorer.ensureVisible(entityExplorer, td, 16, 22, scroll);
         return td;
@@ -296,7 +295,7 @@ export class Explorer
 
     async explorerKeyDown(event: KeyboardEvent) {
         const explorer  = this.explorer;
-        const td = explorer.focusedCell;
+        const td = this.focusedCell;
         if (!td)
             return;
         const table     = this.explorerTable;
@@ -329,22 +328,22 @@ export class Explorer
             case 'ArrowUp': {
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex - 1, td.cellIndex);
-                const focused = explorer.focusedCell.parentElement as HTMLTableRowElement;
+                const focused = this.focusedCell.parentElement as HTMLTableRowElement;
                 if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
                     const id = this.getRowId(focused);
                     await this.selectExplorerEntities([id]);
-                    this.selectCellValue(explorer.focusedCell);
+                    this.selectCellValue(this.focusedCell);
                 }
                 return;
             }
             case 'ArrowDown': {
                 event.preventDefault();
                 this.setFocusCellSelectValue(row.rowIndex + 1, td.cellIndex);
-                const focused = explorer.focusedCell.parentElement as HTMLTableRowElement;
+                const focused = this.focusedCell.parentElement as HTMLTableRowElement;
                 if (event.ctrlKey && row.rowIndex != focused.rowIndex) {
                     const id = this.getRowId(focused);
                     await this.selectExplorerEntities([id]);
-                    this.selectCellValue(explorer.focusedCell);
+                    this.selectCellValue(this.focusedCell);
                 }
                 return;
             }
@@ -364,19 +363,19 @@ export class Explorer
                 await this.selectExplorerEntities(ids);
 
                 if (toggle == "added")
-                    this.selectCellValue(explorer.focusedCell);
+                    this.selectCellValue(this.focusedCell);
                 return;
             }
             case 'Enter': {
                 event.preventDefault();                
                 if (event.shiftKey) {
                     await this.selectEntityRange(row.rowIndex);
-                    this.selectCellValue(explorer.focusedCell);
+                    this.selectCellValue(this.focusedCell);
                     return;
                 }
                 const ids = [this.getRowId(row)];
                 await this.selectExplorerEntities(ids);
-                this.selectCellValue(explorer.focusedCell);
+                this.selectCellValue(this.focusedCell);
                 return;
             }
             case 'KeyA': {
@@ -429,7 +428,7 @@ export class Explorer
             ids.push(rows[i].cells[1].textContent);
         }
         await this.selectExplorerEntities(ids);
-        this.selectCellValue(this.explorer.focusedCell);
+        this.selectCellValue(this.focusedCell);
     }
 
     private getRowId(row: HTMLTableRowElement) : string {
