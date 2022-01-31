@@ -13,6 +13,7 @@ type FindRange = {
 }
 
 type ExplorerEditor = "command" | "entity" | "dbInfo"
+type CodeEditor     = monaco.editor.IStandaloneCodeEditor;
 
 
 const entityExplorer    = el("entityExplorer");
@@ -37,7 +38,6 @@ const commandValueContainer  = el("commandValueContainer");
 const commandParamBar        = el("commandParamBar");
 const entityContainer        = el("entityContainer");
 
-type CodeEditor = monaco.editor.IStandaloneCodeEditor;
 
 // ----------------------------------------------- EntityEditor -----------------------------------------------
 export class EntityEditor
