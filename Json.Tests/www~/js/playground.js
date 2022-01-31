@@ -11,77 +11,77 @@ const selectExample = el("example");
 //
 const defaultUser = el("user");
 const defaultToken = el("token");
-// --- WebSocket ---
-let connection;
-let websocketCount = 0;
-let req = 1;
-let clt = null;
-let requestStart;
-let subSeq = 0;
-let subCount = 0;
 // ----------------------------------------------- Playground -----------------------------------------------
 export class Playground {
+    constructor() {
+        this.websocketCount = 0;
+        this.req = 1;
+        this.clt = null;
+        this.subSeq = 0;
+        this.subCount = 0;
+    }
     connectWebsocket() {
-        if (connection) {
-            connection.close();
-            connection = null;
+        if (this.connection) {
+            this.connection.close();
+            this.connection = null;
         }
         const loc = window.location;
-        const nr = ("" + (++websocketCount)).padStart(3, "0");
+        const nr = ("" + (++this.websocketCount)).padStart(3, "0");
         const uri = `ws://${loc.host}/ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
         try {
-            connection = new WebSocket(uri);
+            const connection = this.connection = new WebSocket(uri);
+            connection.onopen = () => {
+                socketStatus.innerHTML = "connected <small>🟢</small>";
+                console.log('WebSocket connected');
+                this.req = 1;
+                this.subCount = 0;
+            };
+            connection.onclose = (e) => {
+                socketStatus.innerText = "closed (code: " + e.code + ")";
+                responseState.innerText = "";
+                console.log('WebSocket closed');
+            };
+            // Log errors
+            connection.onerror = (error) => {
+                socketStatus.innerText = "error";
+                console.log('WebSocket Error ' + error);
+            };
+            // Log messages from the server
+            connection.onmessage = (e) => {
+                var _a;
+                const duration = new Date().getTime() - this.requestStart;
+                const data = JSON.parse(e.data);
+                // console.log('server:', e.data);
+                switch (data.msg) {
+                    case "resp":
+                    case "error":
+                        this.clt = data.clt;
+                        cltElement.innerText = (_a = this.clt) !== null && _a !== void 0 ? _a : " - ";
+                        const content = app.formatJson(app.config.formatResponses, e.data);
+                        app.responseModel.setValue(content);
+                        responseState.innerHTML = `· ${duration} ms`;
+                        break;
+                    case "ev":
+                        subscriptionCount.innerText = String(++this.subCount);
+                        const subSeq = this.subSeq = data.seq;
+                        // multiple clients can use the same WebSocket. Use the latest
+                        if (this.clt == data.clt) {
+                            subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
+                            ackElement.innerText = subSeq ? String(subSeq) : " - ";
+                        }
+                        break;
+                }
+            };
         }
         catch (err) {
             socketStatus.innerText = "connect failed: err";
             return;
         }
-        connection.onopen = () => {
-            socketStatus.innerHTML = "connected <small>🟢</small>";
-            console.log('WebSocket connected');
-            req = 1;
-            subCount = 0;
-        };
-        connection.onclose = (e) => {
-            socketStatus.innerText = "closed (code: " + e.code + ")";
-            responseState.innerText = "";
-            console.log('WebSocket closed');
-        };
-        // Log errors
-        connection.onerror = (error) => {
-            socketStatus.innerText = "error";
-            console.log('WebSocket Error ' + error);
-        };
-        // Log messages from the server
-        connection.onmessage = (e) => {
-            const duration = new Date().getTime() - requestStart;
-            const data = JSON.parse(e.data);
-            // console.log('server:', e.data);
-            switch (data.msg) {
-                case "resp":
-                case "error":
-                    clt = data.clt;
-                    cltElement.innerText = clt !== null && clt !== void 0 ? clt : " - ";
-                    const content = app.formatJson(app.config.formatResponses, e.data);
-                    app.responseModel.setValue(content);
-                    responseState.innerHTML = `· ${duration} ms`;
-                    break;
-                case "ev":
-                    subscriptionCount.innerText = String(++subCount);
-                    subSeq = data.seq;
-                    // multiple clients can use the same WebSocket. Use the latest
-                    if (clt == data.clt) {
-                        subscriptionSeq.innerText = subSeq ? String(subSeq) : " - ";
-                        ackElement.innerText = subSeq ? String(subSeq) : " - ";
-                    }
-                    break;
-            }
-        };
     }
     closeWebsocket() {
-        connection.close();
+        this.connection.close();
     }
     addUserToken(jsonRequest) {
         const endBracket = jsonRequest.lastIndexOf("}");
@@ -94,8 +94,9 @@ export class Playground {
         return `${before},${userToken}${after}`;
     }
     sendSyncRequest() {
+        const connection = this.connection;
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
-            app.responseModel.setValue(`Request ${req} failed. WebSocket not connected`);
+            app.responseModel.setValue(`Request ${this.req} failed. WebSocket not connected`);
             responseState.innerHTML = "";
         }
         else {
@@ -106,19 +107,19 @@ export class Playground {
                 if (request) {
                     // Enable overrides of WebSocket specific members
                     if (request.req !== undefined) {
-                        req = request.req;
+                        this.req = request.req;
                     }
                     if (request.ack !== undefined) {
-                        subSeq = request.ack;
+                        this.subSeq = request.ack;
                     }
                     if (request.clt !== undefined) {
-                        clt = request.clt;
+                        this.clt = request.clt;
                     }
                     // Add WebSocket specific members to request
-                    request.req = req;
-                    request.ack = subSeq;
-                    if (clt) {
-                        request.clt = clt;
+                    request.req = this.req;
+                    request.ack = this.subSeq;
+                    if (this.clt) {
+                        request.clt = this.clt;
                     }
                 }
                 jsonRequest = JSON.stringify(request);
@@ -126,10 +127,10 @@ export class Playground {
             catch (_a) { }
             responseState.innerHTML = '<span class="spinner"></span>';
             connection.send(jsonRequest);
-            requestStart = new Date().getTime();
+            this.requestStart = new Date().getTime();
         }
-        req++;
-        reqIdElement.innerText = String(req);
+        this.req++;
+        reqIdElement.innerText = String(this.req);
     }
     async postSyncRequest() {
         let jsonRequest = app.requestModel.getValue();

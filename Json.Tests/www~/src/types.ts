@@ -5,9 +5,9 @@
 declare function parse(json: string, settings?: jsonToAst.Options): jsonToAst.ValueNode;
 
 export type Resource = {
-    database:   string;
-    container:  string;
-    ids:        string[];
+    readonly database:   string;
+    readonly container:  string;
+    readonly ids:        string[];
 };
 
 export const defaultConfig = {

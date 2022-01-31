@@ -20,23 +20,23 @@ function createMeasureTextWidth(width: number) : HTMLElement {
 const measureTextWidth = createMeasureTextWidth (14);
 
 type CellData = {
-    value?:         string,
-    count?:         number,
-    isObjectArray?: boolean
+    readonly value?:         string,
+    readonly count?:         number,
+    readonly isObjectArray?: boolean
 };
 
 type Column = {
-    width:  number,
-    name:   string,
-    path:   string[],
-    th?:    HTMLTableCellElement
+    readonly name:   string,
+    readonly path:   string[],
+             th?:    HTMLTableCellElement,
+             width:  number
 }
 
 type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
 
 type DataType   = {
-    typeName:   TypeName,
-    jsonType?:  JsonType
+    readonly typeName:   TypeName,
+    readonly jsonType?:  JsonType
 }
 
 const entityExplorer    = el("entityExplorer");
