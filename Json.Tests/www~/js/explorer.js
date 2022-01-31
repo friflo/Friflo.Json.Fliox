@@ -521,28 +521,6 @@ export class Explorer {
             column.th.style.width = `${column.width + 10}px`;
         }
     }
-    thStartDrag(event, th) {
-        this.thDragOffset = event.offsetX - event.target.clientWidth;
-        this.thDrag = th;
-        document.body.style.cursor = "ew-resize";
-        document.body.onmousemove = (event) => this.thOnDrag(event);
-        document.body.onmouseup = () => this.thEndDrag();
-        event.preventDefault();
-    }
-    thOnDrag(event) {
-        const parent = this.thDrag.parentNode.parentNode.parentNode.parentNode;
-        const scrollOffset = parent.scrollLeft;
-        let width = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
-        if (width < 25)
-            width = 25;
-        this.thDrag.style.width = `${width}px`;
-        event.preventDefault();
-    }
-    thEndDrag() {
-        document.body.onmousemove = undefined;
-        document.body.onmouseup = undefined;
-        document.body.style.cursor = "auto";
-    }
     updateExplorerEntities(entities, entityType) {
         const table = this.explorerTable;
         let entityCount = 0;
@@ -673,6 +651,28 @@ export class Explorer {
             result[id] = li;
         }
         return result;
+    }
+    thStartDrag(event, th) {
+        this.thDragOffset = event.offsetX - event.target.clientWidth;
+        this.thDrag = th;
+        document.body.style.cursor = "ew-resize";
+        document.body.onmousemove = (event) => this.thOnDrag(event);
+        document.body.onmouseup = () => this.thEndDrag();
+        event.preventDefault();
+    }
+    thOnDrag(event) {
+        const parent = this.thDrag.parentNode.parentNode.parentNode.parentNode;
+        const scrollOffset = parent.scrollLeft;
+        let width = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
+        if (width < 25)
+            width = 25;
+        this.thDrag.style.width = `${width}px`;
+        event.preventDefault();
+    }
+    thEndDrag() {
+        document.body.onmousemove = undefined;
+        document.body.onmouseup = undefined;
+        document.body.style.cursor = "auto";
     }
 }
 Explorer.defaultColumnWidth = 50;

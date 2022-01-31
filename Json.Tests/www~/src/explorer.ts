@@ -598,34 +598,6 @@ export class Explorer
         }
     }
 
-    private thDrag          : HTMLElement;
-    private thDragOffset    : number;    
-
-    private thStartDrag(event: MouseEvent, th: HTMLElement) {
-        this.thDragOffset           = event.offsetX - (event.target as HTMLElement).clientWidth;
-        this.thDrag                 = th;
-        document.body.style.cursor  = "ew-resize";
-        document.body.onmousemove   = (event)  => this.thOnDrag(event);
-        document.body.onmouseup     = ()       => this.thEndDrag();
-        event.preventDefault();
-    }
-
-    private thOnDrag(event: MouseEvent) {
-        const parent            = (this.thDrag.parentNode.parentNode.parentNode.parentNode as HTMLElement);
-        const scrollOffset      = parent.scrollLeft;
-        let width               = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
-        if (width < 25) width   = 25;
-        this.thDrag.style.width = `${width}px`;
-        event.preventDefault();
-    }
-
-    private thEndDrag() {
-        document.body.onmousemove   = undefined;
-        document.body.onmouseup     = undefined;
-        document.body.style.cursor  = "auto";
-    }
-
-
     public updateExplorerEntities(entities: Entity[], entityType: JsonType) {
         const table         = this.explorerTable;
         let entityCount     = 0;
@@ -759,5 +731,33 @@ export class Explorer
             result[id] = li;
         }
         return result;
+    }
+
+    // ------------------------------ column drag bars ------------------------------
+    private thDrag          : HTMLElement;
+    private thDragOffset    : number;    
+
+    private thStartDrag(event: MouseEvent, th: HTMLElement) {
+        this.thDragOffset           = event.offsetX - (event.target as HTMLElement).clientWidth;
+        this.thDrag                 = th;
+        document.body.style.cursor  = "ew-resize";
+        document.body.onmousemove   = (event)  => this.thOnDrag(event);
+        document.body.onmouseup     = ()       => this.thEndDrag();
+        event.preventDefault();
+    }
+
+    private thOnDrag(event: MouseEvent) {
+        const parent            = (this.thDrag.parentNode.parentNode.parentNode.parentNode as HTMLElement);
+        const scrollOffset      = parent.scrollLeft;
+        let width               = scrollOffset + event.clientX - this.thDragOffset - this.thDrag.offsetLeft;
+        if (width < 25) width   = 25;
+        this.thDrag.style.width = `${width}px`;
+        event.preventDefault();
+    }
+
+    private thEndDrag() {
+        document.body.onmousemove   = undefined;
+        document.body.onmouseup     = undefined;
+        document.body.style.cursor  = "auto";
     }
 }
