@@ -404,6 +404,9 @@ export class Explorer
                 app.editor.deleteEntities(explorer.database, explorer.container, ids);
                 return;
             }
+            case 'F2':
+                this.createEditCell(td);
+                break;
             default:
                 return;
         }        
@@ -452,6 +455,17 @@ export class Explorer
         for (const id in this.selectedEntities) {
             this.selectedEntities[id].classList.add("selected");
         }
+    }
+
+    private createEditCell(td: HTMLTableCellElement) {
+        const edit          = createEl("input");
+        edit.value          = td.textContent;
+        edit.classList.add("editCell");
+        td.classList.remove("focus");
+        td.style.display    = "flex"
+        td.style.padding    = "0"
+        td.textContent      = ""
+        td.append(edit);
     }
 
     private entityFields:       { [key: string] : Column }              = {}
