@@ -476,11 +476,11 @@ export class Explorer {
         }
         const fieldType = type.jsonType;
         if (type.typeName == "string") {
-            if (fieldType.format == "date-time") {
+            if ((fieldType === null || fieldType === void 0 ? void 0 : fieldType.format) == "date-time") {
                 if (isNaN(Date.parse(valueStr)))
                     return { error: `invalid Date: ${valueStr}` };
             }
-            if (fieldType.pattern !== undefined) {
+            if ((fieldType === null || fieldType === void 0 ? void 0 : fieldType.pattern) !== undefined) {
                 const regEx = new RegExp(fieldType.pattern);
                 if (valueStr.match(regEx) == null)
                     return { error: "invalid value" };
@@ -497,11 +497,11 @@ export class Explorer {
                 if (typeof value != "number")
                     return { error: `invalid number: ${value}` };
             }
-            if (fieldType.minimum !== undefined) {
+            if ((fieldType === null || fieldType === void 0 ? void 0 : fieldType.minimum) !== undefined) {
                 if (value < fieldType.minimum)
                     return { error: `value ${value} less than ${fieldType.minimum}` };
             }
-            if (fieldType.maximum !== undefined) {
+            if ((fieldType === null || fieldType === void 0 ? void 0 : fieldType.maximum) !== undefined) {
                 if (value > fieldType.maximum)
                     return { error: `value ${value} greater than ${fieldType.maximum}` };
             }
