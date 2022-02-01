@@ -37,7 +37,7 @@ type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer
 
 type DataType   = {
     readonly typeName:      TypeName,
-    readonly jsonType:      JsonType | null;
+    readonly jsonType:      JsonType | FieldType | null;
     readonly isNullable:    boolean;
 }
 
@@ -491,7 +491,7 @@ export class Explorer
             const column    = this.getColumnFromCell(td);
             const result = Explorer.getJsonValue(column, edit.value);
             if (result.error) {
-                console.error("invalid field value:", result.error);
+                console.error("invalid value -", result.error);
                 saveChange = false;
             }
             td.textContent  = saveChange ? edit.value : oldValue;
@@ -534,28 +534,53 @@ export class Explorer
         return this.entityFields[fieldName];
     }
 
-    private static getJsonValue(column: Column, valueStr: string) : { value: any, error?: string} {
+    private static getJsonValue(column: Column, valueStr: string) : { value?: any, error?: string} {
         const type = column.type;
         if (valueStr == "null") {
-            if (!type.isNullable) {
-                return { value: null, error: "field not nullable" };
-            }
+            if (!type.isNullable)
+                return { error: "field not nullable" };
             return { value: "null" };
         }
+        const fieldType = type.jsonType as FieldType;
         if (type.typeName == "string") {
+            if (fieldType.format == "date-time") {
+                if (isNaN(Date.parse(valueStr)))
+                    return { error: `invalid Date: ${valueStr}` };
+            }
+            if (fieldType.pattern !== undefined) {
+                const regEx = new RegExp(fieldType.pattern);
+                if (valueStr.match(regEx) == null)
+                    return { error: "invalid input" };
+            }
             return { value:  JSON.stringify(valueStr) };    
         }
         try {
-            JSON.parse(valueStr);
+            const value = JSON.parse(valueStr);
+            if (type.typeName == "integer") {
+                if (!Number.isInteger(value))
+                    return { error: `invalid integer: ${value}` };
+            }
+            if (type.typeName == "number") {
+                if (typeof value != "number")
+                    return { error: `invalid number: ${value}` };
+            }
+            if (fieldType.minimum !== undefined) {
+                if (value < fieldType.minimum)
+                    return { error: `value ${value} less than ${fieldType.minimum}` };
+            }
+            if (fieldType.maximum !== undefined) {
+                if (value > fieldType.maximum)
+                    return { error: `value ${value} greater than ${fieldType.maximum}` };
+            }
             return { value: valueStr };
         } catch  {
-            return { value: null, error: "invalid input" };
+            return { error: "invalid input" };
         }
     }
 
     private async saveCell(id: string, jsonValue: string, column: Column) : Promise<void> {
         const fieldName = column.name;
-        const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
+        const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType as JsonType);
         // console.log("saveCell", fieldName, column.type.typeName);
 
         if (this.selectedRows[id]) {
@@ -587,7 +612,7 @@ export class Explorer
         if (oneOf) {
             const jsonType = fieldType as unknown as JsonType;
             if (jsonType.discriminator) {
-                return { typeName: "object", jsonType: jsonType, isNullable: false };
+                return { typeName: "object", jsonType: fieldType, isNullable: false };
             }
             let isNullable              = false;
             let oneOfType: FieldType    = null;
@@ -607,10 +632,10 @@ export class Explorer
             return { typeName: "array", jsonType: itemType.jsonType, isNullable: false };
         }
         if (type == "object") {
-            return { typeName: "object", jsonType: fieldType as unknown as JsonType, isNullable: false };
+            return { typeName: "object", jsonType: fieldType, isNullable: false };
         }
         if (!Array.isArray(type))
-            return { typeName: fieldType.type, jsonType: fieldType as unknown as JsonType, isNullable: false };
+            return { typeName: fieldType.type, jsonType: fieldType, isNullable: false };
 
         // e.g. ["string", "null"]
         let isNullable          = false;
@@ -649,7 +674,7 @@ export class Explorer
                     columns.push({name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
                     break;
                 }
-                const properties = type.jsonType.properties;
+                const properties = (type.jsonType as JsonType).properties;
                 for (const name in properties) {
                     const property  = properties[name];
                     const fieldPath = [...path, name];

@@ -424,7 +424,7 @@ export class Explorer {
             const column = this.getColumnFromCell(td);
             const result = Explorer.getJsonValue(column, edit.value);
             if (result.error) {
-                console.error("invalid field value:", result.error);
+                console.error("invalid value -", result.error);
                 saveChange = false;
             }
             td.textContent = saveChange ? edit.value : oldValue;
@@ -468,20 +468,45 @@ export class Explorer {
     static getJsonValue(column, valueStr) {
         const type = column.type;
         if (valueStr == "null") {
-            if (!type.isNullable) {
-                return { value: null, error: "field not nullable" };
-            }
+            if (!type.isNullable)
+                return { error: "field not nullable" };
             return { value: "null" };
         }
+        const fieldType = type.jsonType;
         if (type.typeName == "string") {
+            if (fieldType.format == "date-time") {
+                if (isNaN(Date.parse(valueStr)))
+                    return { error: `invalid Date: ${valueStr}` };
+            }
+            if (fieldType.pattern !== undefined) {
+                const regEx = new RegExp(fieldType.pattern);
+                if (valueStr.match(regEx) == null)
+                    return { error: "invalid input" };
+            }
             return { value: JSON.stringify(valueStr) };
         }
         try {
-            JSON.parse(valueStr);
+            const value = JSON.parse(valueStr);
+            if (type.typeName == "integer") {
+                if (!Number.isInteger(value))
+                    return { error: `invalid integer: ${value}` };
+            }
+            if (type.typeName == "number") {
+                if (typeof value != "number")
+                    return { error: `invalid number: ${value}` };
+            }
+            if (fieldType.minimum !== undefined) {
+                if (value < fieldType.minimum)
+                    return { error: `value ${value} less than ${fieldType.minimum}` };
+            }
+            if (fieldType.maximum !== undefined) {
+                if (value > fieldType.maximum)
+                    return { error: `value ${value} greater than ${fieldType.maximum}` };
+            }
             return { value: valueStr };
         }
         catch (_a) {
-            return { value: null, error: "invalid input" };
+            return { error: "invalid input" };
         }
     }
     async saveCell(id, jsonValue, column) {
@@ -517,7 +542,7 @@ export class Explorer {
         if (oneOf) {
             const jsonType = fieldType;
             if (jsonType.discriminator) {
-                return { typeName: "object", jsonType: jsonType, isNullable: false };
+                return { typeName: "object", jsonType: fieldType, isNullable: false };
             }
             let isNullable = false;
             let oneOfType = null;

@@ -330,7 +330,7 @@ export class EntityEditor
         }
         const entities          = Array.isArray(value) ? value : [value];
         const type              = app.getContainerSchema(database, container);
-        const keyName           = EntityEditor.getEntityKeyName(type);
+        const keyName           = EntityEditor.getEntityKeyName(type as JsonType);
         const ids               = entities.map(entity => entity[keyName]) as string[];
         writeResult.innerHTML   = 'save <span class="spinner"></span>';
         const requestIds        = Array.isArray(value) ? ids : ids[0];
