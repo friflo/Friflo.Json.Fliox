@@ -422,12 +422,16 @@ export class Explorer {
             this.editCell = null;
             edit.remove();
             const column = this.getColumnFromCell(td);
-            const jsonValue = Explorer.getJsonValue(column.type, edit.value);
+            const result = Explorer.getJsonValue(column, edit.value);
+            if (result.error) {
+                console.error("invalid field value", result.error);
+                saveChange = false;
+            }
             td.textContent = saveChange ? edit.value : oldValue;
             td.classList.remove("editCell");
             td.classList.add("focus");
             if (saveChange) {
-                this.saveCell(id, jsonValue, column);
+                this.saveCell(id, result.value, column);
             }
         };
         edit.onkeydown = (event) => {
@@ -461,10 +465,24 @@ export class Explorer {
         const fieldName = thDiv.title;
         return this.entityFields[fieldName];
     }
-    static getJsonValue(dataType, value) {
-        if (value == "null")
-            return "null";
-        return dataType.typeName == "string" ? JSON.stringify(value) : value;
+    static getJsonValue(column, valueStr) {
+        const type = column.type;
+        if (valueStr == "null") {
+            if (!type.isNullable) {
+                return { value: null, error: "field not nullable" };
+            }
+            return { value: "null" };
+        }
+        if (type.typeName == "string") {
+            return { value: JSON.stringify(valueStr) };
+        }
+        try {
+            JSON.parse(valueStr);
+            return { value: valueStr };
+        }
+        catch (_a) {
+            return { value: null, error: "invalid input" };
+        }
     }
     async saveCell(id, jsonValue, column) {
         const fieldName = column.name;
