@@ -463,13 +463,12 @@ export class Explorer {
         const column = this.getColumnFromCell(td);
         const fieldName = column.name;
         const keyName = EntityEditor.getEntityKeyName(column.type.jsonType);
-        const typeName = column.type.typeName;
         // console.log("saveCell", fieldName, column.type.typeName);
+        const jsonValue = Explorer.getJsonValue(column.type, value);
         if (this.selectedRows[id]) {
             const json = app.entityEditor.getValue();
             const ast = this.getAstFromJson(json);
             const range = EntityEditor.findPathRange(ast, fieldName, keyName, id);
-            const jsonValue = typeName == "string" ? JSON.stringify(value) : value;
             if (range.value) {
                 app.entityEditor.executeEdits("", [{ range: range.value, text: jsonValue }]);
             }
@@ -483,10 +482,14 @@ export class Explorer {
         }
         const explorer = this.explorer;
         const entity = explorer.entities.find(entity => entity[keyName] == id);
-        const typedValue = typeName == "string" ? value : JSON.parse(value);
-        entity[fieldName] = typedValue;
+        entity[fieldName] = jsonValue;
         const json = JSON.stringify(entity, null, 4);
         await App.restRequest("PUT", json, explorer.database, explorer.container, id, null);
+    }
+    static getJsonValue(dataType, value) {
+        if (value == "null")
+            return "null";
+        return dataType.typeName == "string" ? JSON.stringify(value) : value;
     }
     static getDataType(fieldType) {
         const ref = fieldType._resolvedDef;
