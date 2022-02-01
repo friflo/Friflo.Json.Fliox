@@ -585,7 +585,8 @@ export class Explorer
             }
             return { value: valueStr };
         } catch  {
-            return { error: "invalid input" };
+            const nullableType = type.isNullable ? " | null" : "";
+            return { error: `invalid ${type.typeName}${nullableType} value: ${valueStr}` };
         }
     }
 

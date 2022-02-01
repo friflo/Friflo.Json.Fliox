@@ -512,7 +512,8 @@ export class Explorer {
             return { value: valueStr };
         }
         catch (_a) {
-            return { error: "invalid input" };
+            const nullableType = type.isNullable ? " | null" : "";
+            return { error: `invalid ${type.typeName}${nullableType} value: ${valueStr}` };
         }
     }
     async saveCell(id, jsonValue, column) {
