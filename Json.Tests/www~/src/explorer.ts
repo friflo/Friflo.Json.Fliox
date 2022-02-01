@@ -487,11 +487,13 @@ export class Explorer
         edit.onblur         = () => {
             this.editCell   = null;                    
             edit.remove();
+            const column    = this.getColumnFromCell(td);
+            const jsonValue = Explorer.getJsonValue(column.type, edit.value);
             td.textContent  = saveChange ? edit.value : oldValue;
             td.classList.remove("editCell");
             td.classList.add("focus");
             if (saveChange) {
-                this.saveCell(id, edit.value, td);
+                this.saveCell(id, jsonValue, column);
             }
         };
         edit.onkeydown      = (event) => {
@@ -527,13 +529,17 @@ export class Explorer
         return this.entityFields[fieldName];
     }
 
-    private async saveCell(id: string, value: string, td: HTMLTableCellElement) : Promise<void> {
-        const column    = this.getColumnFromCell(td);
+    private static getJsonValue(dataType: DataType, value: string) : any {
+        if (value == "null")
+            return "null";
+        return dataType.typeName == "string" ? JSON.stringify(value) : value;
+    }
+
+    private async saveCell(id: string, jsonValue: string, column: Column) : Promise<void> {
         const fieldName = column.name;
         const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
         // console.log("saveCell", fieldName, column.type.typeName);
 
-        const jsonValue = Explorer.getJsonValue(column.type, value);
         if (this.selectedRows[id]) {
             const json      = app.entityEditor.getValue();
             const ast       = this.getAstFromJson(json);
@@ -548,18 +554,11 @@ export class Explorer
                 app.entityEditor.executeEdits("", [{ range: pos, text: newProperty }]);
             }
         }
-
         const explorer      = this.explorer;
         const entity        = explorer.entities.find(entity => entity[keyName] == id);
-        entity[fieldName]   = jsonValue;
+        entity[fieldName]   = JSON.parse(jsonValue);
         const json          = JSON.stringify(entity, null, 4);
         await App.restRequest("PUT", json, explorer.database, explorer.container, id, null);
-    }
-
-    private static getJsonValue(dataType: DataType, value: string) : any {
-        if (value == "null")
-            return "null";
-        return dataType.typeName == "string" ? JSON.stringify(value) : value;
     }
 
     private static getDataType(fieldType: FieldType) : DataType {
