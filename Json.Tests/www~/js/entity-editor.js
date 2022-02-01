@@ -466,7 +466,7 @@ export class EntityEditor {
             default:
                 return { entity: null, value: null, lastProperty: null };
         }
-        const entityRange = EntityEditor.RangeFromNode(node);
+        const entityRange = EntityEditor.RangeFromLoc(node.loc, 0);
         const lastProperty = node.children[node.children.length - 1];
         const lastRange = EntityEditor.RangeFromLoc(lastProperty.loc, 0);
         for (let i = 0; i < path.length; i++) {
@@ -482,7 +482,7 @@ export class EntityEditor {
             }
             if (!foundChild)
                 return { entity: entityRange, value: null, lastProperty: lastRange };
-            const valueRange = EntityEditor.RangeFromNode(foundChild.value);
+            const valueRange = EntityEditor.RangeFromLoc(foundChild.value.loc, 0);
             return { entity: entityRange, value: valueRange, lastProperty: lastRange };
         }
         return { entity: entityRange, value: null, lastProperty: lastRange };

@@ -538,16 +538,11 @@ export class Explorer
             const json      = app.entityEditor.getValue();
             const ast       = this.getAstFromJson(json);
             const range     = EntityEditor.findPathRange(ast, fieldName, keyName, id);
+            const jsonValue = typeName == "string" ? JSON.stringify(value) : value;
             if (range.value) {
-                let newValue      = value;
-                if (typeName == "string") {
-                    newValue = JSON.stringify(value);
-                    newValue = newValue.substring(1, newValue.length - 1);
-                }
-                app.entityEditor.executeEdits("", [{ range: range.value, text: newValue }]);
+                app.entityEditor.executeEdits("", [{ range: range.value, text: jsonValue }]);
             } else {
-                const newValue      = typeName == "string" ? JSON.stringify(value) : value;
-                const newProperty   = `,\n    "${fieldName}": ${newValue}`;
+                const newProperty   = `,\n    "${fieldName}": ${jsonValue}`;
                 const line          = range.lastProperty.endLineNumber;
                 const col           = range.lastProperty.endColumn;
                 const pos           = new monaco.Range(line, col, line, col);
