@@ -147,7 +147,7 @@
                 "ex-link-db     .           ex-link-container   .                   ex-link-entity"
                 "ex-result      ex-result   ex-result           ex-result           ex-result"
                 "ex-database    ex-bar1     ex-container        ex-bar2             ex-entity";
-            grid-template-columns:  150px var(--bar-width) 200px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
+            grid-template-columns:  150px var(--bar-width) 400px var(--bar-width) 1fr;    /* dynamically overwritten by #explorer.style */
             grid-template-rows:     22px 28px 19px 14px 1fr;
             grid-gap:   0px;
         }
@@ -317,10 +317,19 @@
         #entityExplorer:not(:focus) .entities tr.selected td.focus  { background-color: var(--selected-hover);  } */
 
         .entities tr td                     { scroll-margin-top: 20px; scroll-margin-left: 16px; }
-        .entities tr td input.editCell      { pointer-events: all; min-width: 10px; height: 20px; flex: 1; font-family: var(--sans-serif);
-                                              font-size: 14px; color: var(--color); background-color: #00000000; border-radius: 2px;
-                                              border: 2px solid var(--color); outline: none; box-sizing: border-box; padding: 0; margin: 0;  }
-        .entities tr td.editCell            { display: flex; padding: 0; overflow: visible; box-shadow: 0px 1px 3px 2px rgba(0,0,0,0.1); }
+
+        .entities tr td.editCell div textarea { pointer-events: all; font-family: var(--sans-serif);
+                                                font-size: 14px; color: var(--color); background-color: var(--background2); border-radius: 2px;
+                                                outline: none; box-sizing: border-box; padding: 0; margin: 0; box-shadow: 0px 1px 3px 2px rgba(0,0,0,0.1); }
+
+        /* [The Cleanest Trick for Auto growing Textarea | CSS-Tricks - CSS-Tricks] https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
+        .entities tr td.editCell              { position: relative; width: max-content; overflow: visible; padding: 0; }
+        .entities tr td.editCell div          { position: absolute; width: inherit; display: grid; grid-area: 1 / 1 / 2 / 2; z-index: 1; }
+        .entities tr td.editCell div textarea { resize: none; overflow:hidden; }
+        .entities tr td.editCell div::after   { content: attr(data-replicated-value); white-space: pre-wrap; visibility: hidden; }
+        .entities tr td.editCell div textarea,
+        .entities tr td.editCell div::after   { grid-area: 1 / 1 / 2 / 2; font: inherit; border: 2px solid var(--color); }
+
         
 
         .database                           { padding-left: 0px; margin-right: 0px; }
@@ -498,7 +507,7 @@
   </div>
 
   <!-- ------------------------------------------- Explorer ------------------------------------------- -->
-  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px var(--bar-width) 200px var(--bar-width) 1fr; padding-top: 3px;"
+  <div style="grid-area: body-explorer; overflow: hidden; grid-template-columns: 150px var(--bar-width) 400px var(--bar-width) 1fr; padding-top: 3px;"
        id="explorer" class="tabContent">
     <!-- ------- filter ------- -->
     <div id="filterRow" style="grid-area: ex-filter; visibility: hidden; margin-top: -2px;">

@@ -61,7 +61,7 @@ export class Explorer
 
     }
     private             focusedCell:        HTMLTableCellElement    = null;
-    private             editCell:           HTMLInputElement        = null;
+    private             editCell:           HTMLTextAreaElement     = null;
 
     private             explorerTable:      HTMLTableElement;
     private readonly    config:             Config
@@ -469,21 +469,29 @@ export class Explorer
     }
 
     private createEditCell(td: HTMLTableCellElement) {        
-        const row       = td.parentElement as HTMLTableRowElement;
-        const id        = this.getRowId(row);
-        const edit      = createEl("input");
-        this.editCell   = edit;
-        let saveChange  = true;
-        const oldValue  = td.textContent;
-        edit.value      = td.textContent;
-        edit.onblur     = () => {
+        const row           = td.parentElement as HTMLTableRowElement;
+        const id            = this.getRowId(row);
+        const edit          = createEl("textarea");
+        edit.rows = 1;
+        edit.cols = 3;
+        edit.style.minWidth = td.clientWidth + "px";
+        const div          = createEl("div");
+        div.append (edit);
+        this.editCell       = edit;
+        let saveChange      = true;
+        const oldValue      = td.textContent;
+        edit.value          = td.textContent;
+        div.dataset["replicatedValue"] = td.textContent;
+        edit.oninput        = () => { div.dataset["replicatedValue"] = edit.value; };
+        // remove onblur for debugging DOM
+        edit.onblur         = () => {
             this.editCell   = null;                    
             edit.remove();
             td.textContent  = saveChange ? edit.value : oldValue;
             td.classList.remove("editCell");
             td.classList.add("focus");
             if (saveChange) {
-                this.saveCell(id, edit.value, td.cellIndex);
+                this.saveCell(id, edit.value, td);
             }
         };
         edit.onkeydown      = (event) => {
@@ -494,23 +502,34 @@ export class Explorer
                     entityExplorer.focus();
                     break;
                 case 'Enter':
+                    if (event.ctrlKey) {
+                        const pos =  edit.selectionStart;
+                        edit.value = edit.value.substring(0,pos) + "\n" + edit.value.substring(pos);
+                        edit.selectionStart = edit.selectionEnd = pos + 1;
+                        div.dataset["replicatedValue"] = edit.value;
+                        break;
+                    }
                     event.stopPropagation();
                     entityExplorer.focus();
                     break;
             }
         };
-        edit.classList.add("editCell");
         td.classList.add("editCell");
         td.classList.remove("focus");
         td.textContent      = "";
-        td.append(edit);
+        td.append(div);
         edit.focus();
     }
 
-    private async saveCell(id: string, value: string, cellIndex: number) : Promise<void> {
-        const thDiv     = this.explorerTable.rows[0].cells[cellIndex].firstChild as HTMLDivElement;
+    private getColumnFromCell(td: HTMLTableCellElement) {
+        const thDiv     = this.explorerTable.rows[0].cells[td.cellIndex].firstChild as HTMLDivElement;
         const fieldName = thDiv.title;
-        const column    = this.entityFields[fieldName];
+        return this.entityFields[fieldName];
+    }
+
+    private async saveCell(id: string, value: string, td: HTMLTableCellElement) : Promise<void> {
+        const column    = this.getColumnFromCell(td);
+        const fieldName = column.name;
         const keyName   = EntityEditor.getEntityKeyName(column.type.jsonType);
         const typeName  = column.type.typeName;
         // console.log("saveCell", fieldName, column.type.typeName);
@@ -520,9 +539,14 @@ export class Explorer
             const ast       = this.getAstFromJson(json);
             const range     = EntityEditor.findPathRange(ast, fieldName, keyName, id);
             if (range.value) {
-                app.entityEditor.executeEdits("", [{ range: range.value, text: value }]);
+                let newValue      = value;
+                if (typeName == "string") {
+                    newValue = JSON.stringify(value);
+                    newValue = newValue.substring(1, newValue.length - 1);
+                }
+                app.entityEditor.executeEdits("", [{ range: range.value, text: newValue }]);
             } else {
-                const newValue      = typeName == "string" ? `"${value}"` : value;
+                const newValue      = typeName == "string" ? JSON.stringify(value) : value;
                 const newProperty   = `,\n    "${fieldName}": ${newValue}`;
                 const line          = range.lastProperty.endLineNumber;
                 const col           = range.lastProperty.endColumn;
