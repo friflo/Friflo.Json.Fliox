@@ -472,15 +472,15 @@ export class Explorer
         const row           = td.parentElement as HTMLTableRowElement;
         const id            = this.getRowId(row);
         const edit          = createEl("textarea");
-        edit.rows = 1;
-        edit.cols = 3;
-        edit.style.minWidth = td.clientWidth + "px";
-        const div          = createEl("div");
+        edit.rows = 1; edit.cols = 1;   // enable textarea to shrink
+        edit.style.minWidth     = td.clientWidth  + "px";
+        edit.spellcheck         = false;
+        const div               = createEl("div");
         div.append (edit);
-        this.editCell       = edit;
-        let saveChange      = true;
-        const oldValue      = td.textContent;
-        edit.value          = td.textContent;
+        this.editCell           = edit;
+        let saveChange          = true;
+        const oldValue          = td.textContent;
+        edit.value              = td.textContent;
         div.dataset["replicatedValue"] = td.textContent;
         edit.oninput        = () => { div.dataset["replicatedValue"] = edit.value; };
         // remove onblur for debugging DOM

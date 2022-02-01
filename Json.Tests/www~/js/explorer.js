@@ -406,8 +406,9 @@ export class Explorer {
         const id = this.getRowId(row);
         const edit = createEl("textarea");
         edit.rows = 1;
-        edit.cols = 3;
+        edit.cols = 1; // enable textarea to shrink
         edit.style.minWidth = td.clientWidth + "px";
+        edit.spellcheck = false;
         const div = createEl("div");
         div.append(edit);
         this.editCell = edit;
