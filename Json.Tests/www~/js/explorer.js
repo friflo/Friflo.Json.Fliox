@@ -464,7 +464,7 @@ export class Explorer {
     }
     getColumnFromCell(td) {
         const thDiv = this.explorerTable.rows[0].cells[td.cellIndex].firstChild;
-        const fieldName = thDiv.title;
+        const fieldName = thDiv.getAttribute("fieldName");
         return this.entityFields[fieldName];
     }
     static getJsonValue(column, valueStr) {
@@ -587,7 +587,7 @@ export class Explorer {
             throw `missing type in type array`;
         return { typeName: arrayTypeName, jsonType: null, isNullable };
     }
-    static getColumnNames(columns, path, fieldType) {
+    static setColumns(columns, path, fieldType) {
         // if (path[0] == "uint8Null") debugger;
         const type = Explorer.getDataType(fieldType);
         const typeName = type.typeName;
@@ -613,19 +613,20 @@ export class Explorer {
                 for (const name in properties) {
                     const property = properties[name];
                     const fieldPath = [...path, name];
-                    this.getColumnNames(columns, fieldPath, property);
+                    this.setColumns(columns, fieldPath, property);
                 }
                 break;
         }
     }
     createExplorerHead(entityType, entityFields) {
+        var _a;
         const keyName = EntityEditor.getEntityKeyName(entityType);
         if (entityType) {
             const properties = entityType.properties;
             for (const fieldName in properties) {
                 const fieldType = properties[fieldName];
                 const columns = [];
-                Explorer.getColumnNames(columns, [fieldName], fieldType);
+                Explorer.setColumns(columns, [fieldName], fieldType);
                 for (const column of columns) {
                     entityFields[column.name] = column;
                 }
@@ -650,7 +651,11 @@ export class Explorer {
             const thIdDiv = createEl('div');
             const path = column.path;
             thIdDiv.innerText = path.length == 1 ? path[0] : `.${path[path.length - 1]}`;
-            thIdDiv.title = fieldName;
+            const type = column.type;
+            const jsonType = type.jsonType;
+            const fieldType = `\ntype:   ${(_a = jsonType === null || jsonType === void 0 ? void 0 : jsonType._typeName) !== null && _a !== void 0 ? _a : type.typeName}${type.isNullable ? "?" : ""}`;
+            thIdDiv.title = `name: ${fieldName}${fieldType}`;
+            thIdDiv.setAttribute("fieldName", fieldName);
             th.append(thIdDiv);
             const grip = createEl('div');
             grip.classList.add("thGrip");
