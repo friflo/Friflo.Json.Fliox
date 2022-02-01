@@ -326,7 +326,7 @@
         .entities tr td.editCell              { position: relative; width: max-content; overflow: visible; padding: 0; }
         .entities tr td.editCell div          { position: absolute; width: inherit; display: grid; grid-area: 1 / 1 / 2 / 2; z-index: 1; }
         .entities tr td.editCell div textarea { resize: none; overflow:hidden; }
-        .entities tr td.editCell div::after   { content: attr(data-replicated-value); white-space: pre-wrap; visibility: hidden; }
+        .entities tr td.editCell div::after   { content: attr(data-replicated-value) " "; white-space: pre-wrap; visibility: hidden; }
         .entities tr td.editCell div textarea,
         .entities tr td.editCell div::after   { grid-area: 1 / 1 / 2 / 2; font: inherit; border: 2px solid var(--color); }
 

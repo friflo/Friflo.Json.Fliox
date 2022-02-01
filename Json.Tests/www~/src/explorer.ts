@@ -502,7 +502,7 @@ export class Explorer
                     entityExplorer.focus();
                     break;
                 case 'Enter':
-                    if (event.ctrlKey) {
+                    if (event.ctrlKey || event.altKey) {
                         const pos =  edit.selectionStart;
                         edit.value = edit.value.substring(0,pos) + "\n" + edit.value.substring(pos);
                         edit.selectionStart = edit.selectionEnd = pos + 1;
