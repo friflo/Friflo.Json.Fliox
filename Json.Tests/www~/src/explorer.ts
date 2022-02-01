@@ -176,9 +176,8 @@ export class Explorer
         if (!ast || !focus)
             return;
         const row       = focus.parentNode as HTMLTableRowElement;
-        const th        = this.explorerTable.rows[0].cells[focus.cellIndex];
-        const thDiv     = th.children[0] as HTMLDivElement;
-        const path      = thDiv.innerText;
+        const column    = this.getColumnFromCell(focus);
+        const path      = column.name;
         const keyName   = EntityEditor.getEntityKeyName(this.explorer.entityType);
         const id        = row.cells[1].innerText;
         const range     = EntityEditor.findPathRange(ast, path, keyName, id);

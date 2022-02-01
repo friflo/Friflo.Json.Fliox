@@ -457,35 +457,48 @@ export class EntityEditor {
             case "Array":
                 node = EntityEditor.findArrayItem(node, keyName, id);
                 if (!node)
-                    return { entity: null, value: null, lastProperty: null };
+                    return { entity: null, value: null, lastProperty: null, lastPath: null };
                 break;
             case "Object":
                 if (!EntityEditor.hasProperty(node, keyName, id))
-                    return { entity: null, value: null, lastProperty: null };
+                    return { entity: null, value: null, lastProperty: null, lastPath: null };
                 break;
             default:
-                return { entity: null, value: null, lastProperty: null };
+                return { entity: null, value: null, lastProperty: null, lastPath: null };
         }
         const entityRange = EntityEditor.RangeFromLoc(node.loc, 0);
-        const lastProperty = node.children[node.children.length - 1];
-        const lastRange = EntityEditor.RangeFromLoc(lastProperty.loc, 0);
-        for (let i = 0; i < path.length; i++) {
+        let lastRange = null;
+        const lastPath = [];
+        // walk path in object
+        let objectNode = node;
+        let foundChild;
+        let i = 0;
+        for (; i < path.length; i++) {
+            foundChild = null;
             const name = path[i];
-            if (node.type != "Object")
-                return { entity: astRange, value: null, lastProperty: lastRange };
-            let foundChild = null;
-            for (const child of node.children) {
+            if (objectNode.type != "Object")
+                return { entity: astRange, value: null, lastProperty: null, lastPath: null };
+            const children = objectNode.children;
+            for (const child of children) {
                 if (child.key.value == name) {
                     foundChild = child;
+                    lastPath.push(name);
+                    if (child.value.type == "Object") {
+                        objectNode = child.value;
+                    }
                     break;
                 }
             }
+            const lastChild = children[children.length - 1];
+            lastRange = EntityEditor.RangeFromLoc(lastChild.loc, 0);
             if (!foundChild)
-                return { entity: entityRange, value: null, lastProperty: lastRange };
-            const valueRange = EntityEditor.RangeFromLoc(foundChild.value.loc, 0);
-            return { entity: entityRange, value: valueRange, lastProperty: lastRange };
+                break;
         }
-        return { entity: entityRange, value: null, lastProperty: lastRange };
+        if (foundChild) {
+            const valueRange = EntityEditor.RangeFromLoc(foundChild.value.loc, 0);
+            return { entity: entityRange, value: valueRange, lastProperty: lastRange, lastPath };
+        }
+        return { entity: entityRange, value: null, lastProperty: lastRange, lastPath };
     }
     static RangeFromNode(node) {
         const trim = node.type == "Literal" && typeof node.value == "string" ? 1 : 0;
