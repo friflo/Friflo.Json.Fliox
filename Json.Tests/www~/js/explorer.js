@@ -424,7 +424,7 @@ export class Explorer {
             const column = this.getColumnFromCell(td);
             const result = Explorer.getJsonValue(column, edit.value);
             if (result.error) {
-                console.error("invalid field value", result.error);
+                console.error("invalid field value:", result.error);
                 saveChange = false;
             }
             td.textContent = saveChange ? edit.value : oldValue;
@@ -519,11 +519,17 @@ export class Explorer {
             if (jsonType.discriminator) {
                 return { typeName: "object", jsonType: jsonType, isNullable: false };
             }
-            for (const oneOfType of oneOf) {
-                if (oneOfType.type == "null")
+            let isNullable = false;
+            let oneOfType = null;
+            for (const item of oneOf) {
+                if (item.type == "null") {
+                    isNullable = true;
                     continue;
-                return Explorer.getDataType(oneOfType);
+                }
+                oneOfType = item;
             }
+            const dataType = Explorer.getDataType(oneOfType);
+            return { typeName: dataType.typeName, jsonType: dataType.jsonType, isNullable };
         }
         const type = fieldType.type;
         if (type == "array") {
@@ -550,7 +556,7 @@ export class Explorer {
         return { typeName: arrayTypeName, jsonType: null, isNullable };
     }
     static getColumnNames(columns, path, fieldType) {
-        // if (path[0] == "jsonSchemas") debugger;
+        // if (path[0] == "uint8Null") debugger;
         const type = Explorer.getDataType(fieldType);
         const typeName = type.typeName;
         switch (typeName) {
