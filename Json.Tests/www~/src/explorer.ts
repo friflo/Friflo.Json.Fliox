@@ -41,6 +41,11 @@ type DataType   = {
     readonly isNullable:    boolean;
 }
 
+type ParseResult = {
+    value?: any,
+    error?: string
+}
+
 const entityExplorer    = el("entityExplorer");
 const writeResult       = el("writeResult");
 const readEntitiesDB    = el("readEntitiesDB");
@@ -488,10 +493,13 @@ export class Explorer
             this.editCell   = null;                    
             edit.remove();
             const column    = this.getColumnFromCell(td);
-            const result = Explorer.getJsonValue(column, edit.value);
-            if (result.error) {
-                console.error("invalid value -", result.error);
-                saveChange = false;
+            let   result: ParseResult = null;
+            if (saveChange) {
+                result = Explorer.getJsonValue(column, edit.value);
+                if (result.error) {
+                    console.error("invalid value -", result.error);
+                    saveChange = false;
+                }
             }
             td.textContent  = saveChange ? edit.value : oldValue;
             td.classList.remove("editCell");
@@ -533,7 +541,7 @@ export class Explorer
         return this.entityFields[fieldName];
     }
 
-    private static getJsonValue(column: Column, valueStr: string) : { value?: any, error?: string} {
+    private static getJsonValue(column: Column, valueStr: string) : ParseResult {
         const type = column.type;
         if (valueStr == "null") {
             if (!type.isNullable)
@@ -549,7 +557,7 @@ export class Explorer
             if (fieldType.pattern !== undefined) {
                 const regEx = new RegExp(fieldType.pattern);
                 if (valueStr.match(regEx) == null)
-                    return { error: "invalid input" };
+                    return { error: "invalid value" };
             }
             return { value:  JSON.stringify(valueStr) };    
         }
@@ -570,6 +578,10 @@ export class Explorer
             if (fieldType.maximum !== undefined) {
                 if (value > fieldType.maximum)
                     return { error: `value ${value} greater than ${fieldType.maximum}` };
+            }
+            if (type.typeName == "boolean") {
+                if (typeof value != "boolean")
+                    return { error: `invalid boolean value: ${value}` };
             }
             return { value: valueStr };
         } catch  {
