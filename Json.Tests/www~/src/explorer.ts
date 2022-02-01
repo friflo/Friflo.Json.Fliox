@@ -26,18 +26,19 @@ type CellData = {
 };
 
 type Column = {
-    readonly name:   string,
-    readonly path:   string[],
-    readonly type:   DataType,
-             th?:    HTMLTableCellElement,
-             width:  number
+    readonly name:      string,
+    readonly path:      string[],
+    readonly type:      DataType,
+             th?:       HTMLTableCellElement,
+             width:     number
 }
 
 type TypeName   = "null" | "object" | "string" | "boolean" | "number" | "integer" | "array";
 
 type DataType   = {
-    readonly typeName:   TypeName,
-    readonly jsonType?:  JsonType
+    readonly typeName:      TypeName,
+    readonly jsonType:      JsonType | null;
+    readonly isNullable:    boolean;
 }
 
 const entityExplorer    = el("entityExplorer");
@@ -569,7 +570,7 @@ export class Explorer
         if (oneOf) {
             const jsonType = fieldType as unknown as JsonType;
             if (jsonType.discriminator) {
-                return { typeName: "object", jsonType: jsonType };
+                return { typeName: "object", jsonType: jsonType, isNullable: false };
             }            
             for (const oneOfType of oneOf) {
                 if (oneOfType.type == "null")
@@ -580,19 +581,27 @@ export class Explorer
         const type = fieldType.type;        
         if (type == "array") {
             const itemType = Explorer.getDataType(fieldType.items);
-            return { typeName: "array", jsonType: itemType.jsonType };
+            return { typeName: "array", jsonType: itemType.jsonType, isNullable: false };
         }
         if (type == "object") {
-            return { typeName: "object", jsonType: fieldType as unknown as JsonType };
+            return { typeName: "object", jsonType: fieldType as unknown as JsonType, isNullable: false };
         }
         if (!Array.isArray(type))
-            return { typeName: fieldType.type };
+            return { typeName: fieldType.type, jsonType: fieldType as unknown as JsonType, isNullable: false };
+
+        // e.g. ["string", "null"]
+        let isNullable          = false;
+        let arrayTypeName: TypeName = null;
         for (const item of type) {
-            if (item == "null")
+            if (item == "null") {
+                isNullable = true;
                 continue;
-            return { typeName: item };
+            }
+            arrayTypeName = item;
         }
-        throw `missing type in type array`;      
+        if (!arrayTypeName)
+            throw `missing type in type array`;      
+        return { typeName: arrayTypeName, jsonType: null, isNullable };
     }
 
     private static getColumnNames(columns: Column[], path: string[], fieldType: FieldType) {
@@ -640,8 +649,8 @@ export class Explorer
                 }
             }
         } else {
-            const type: DataType  = { typeName: "string"};
-            entityFields[keyName] = { name: keyName, path: [keyName], type: type, width: Explorer.defaultColumnWidth };
+            const type: DataType    = { typeName: "string", jsonType: null, isNullable: false };
+            entityFields[keyName]   = { name: keyName, path: [keyName], type, width: Explorer.defaultColumnWidth };
         }
         const   head            = createEl('tr');
 
