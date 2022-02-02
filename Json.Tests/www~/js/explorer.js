@@ -69,7 +69,7 @@ export class Explorer {
         filterRow.style.visibility = "";
         entityFilter.style.visibility = "";
         catalogSchema.innerHTML = app.getSchemaType(p.database) + ' · ' + app.getEntityType(p.database, p.container);
-        explorerTools.innerHTML = `<div title="Select All / None" style="margin-right:8px;" class="navigate" onclick="app.explorer.selectAllNone()">...</div>`;
+        explorerTools.innerHTML = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML = `${containerLink}<span class="spinner"></span>`;
@@ -887,6 +887,11 @@ export class Explorer {
         document.body.style.cursor = "auto";
     }
 }
+Explorer.selectAllHtml = `<div title="Select All / None" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
+       <span>● ---</span><br>
+       <span>● -----</span><br>
+       <span>● ----</span>
+    </div>`;
 Explorer.defaultColumnWidth = 50;
 Explorer.maxColumnWidth = 200;
 //# sourceMappingURL=explorer.js.map

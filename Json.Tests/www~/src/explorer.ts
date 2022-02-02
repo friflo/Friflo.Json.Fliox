@@ -100,6 +100,13 @@ export class Explorer
         this.config = config;
     }
 
+    private static selectAllHtml=
+    `<div title="Select All / None" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
+       <span>● ---</span><br>
+       <span>● -----</span><br>
+       <span>● ----</span>
+    </div>`;
+
     public async loadContainer (p: Resource, query: string)  : Promise<void> {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
         const filter        = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
@@ -122,7 +129,7 @@ export class Explorer
         filterRow.style.visibility      = "";
         entityFilter.style.visibility   = "";
         catalogSchema.innerHTML  = app.getSchemaType(p.database) + ' · ' + app.getEntityType(p.database, p.container);
-        explorerTools.innerHTML  = `<div title="Select All / None" style="margin-right:8px;" class="navigate" onclick="app.explorer.selectAllNone()">...</div>`;
+        explorerTools.innerHTML  = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
