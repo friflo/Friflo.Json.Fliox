@@ -22,6 +22,7 @@ const writeResult       = el("writeResult");
 const readEntitiesDB    = el("readEntitiesDB");
 const readEntities      = el("readEntities");
 const catalogSchema     = el("catalogSchema");
+const explorerTools     = el("explorerTools");
 const entityType        = el("entityType");
 const entityIdsContainer= el("entityIdsContainer");
 const entityIdsCount    = el("entityIdsCount");
@@ -112,6 +113,7 @@ export class EntityEditor
         this.setExplorerEditor("dbInfo");
 
         catalogSchema.innerHTML     = app.getSchemaType(database);
+        explorerTools.innerHTML     = "";
         this.setEditorHeader("none");
         filterRow.style.visibility  = "hidden";
         entityFilter.style.visibility  = "hidden";

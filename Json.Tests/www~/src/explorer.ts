@@ -51,6 +51,8 @@ const writeResult       = el("writeResult");
 const readEntitiesDB    = el("readEntitiesDB");
 const readEntities      = el("readEntities");
 const catalogSchema     = el("catalogSchema");
+const explorerTools     = el("explorerTools");
+
 
 const entityFilter      = el("entityFilter")    as HTMLInputElement;
 const filterRow         = el("filterRow");
@@ -120,6 +122,7 @@ export class Explorer
         filterRow.style.visibility      = "";
         entityFilter.style.visibility   = "";
         catalogSchema.innerHTML  = app.getSchemaType(p.database) + ' · ' + app.getEntityType(p.database, p.container);
+        explorerTools.innerHTML  = `<div title="Select All / None" style="margin-right:8px;" class="navigate" onclick="app.explorer.selectAllNone()">...</div>`;
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
@@ -438,6 +441,21 @@ export class Explorer
             default:
                 return;
         }        
+    }
+
+    public selectAllNone() : void {
+        const selectedCount     = Object.keys(this.selectedRows).length;
+        if (selectedCount == 0) {
+            const ids = Object.keys(this.explorerRows);
+            this.selectExplorerEntities(ids);
+            return;
+        }
+        const entitiesCount    = Object.keys(this.explorerRows).length;
+        if (selectedCount == entitiesCount) {
+            this.selectExplorerEntities([]);
+            return;
+        }
+        this.selectExplorerEntities([]);
     }
 
     private async selectExplorerEntities(ids: string[]) {
