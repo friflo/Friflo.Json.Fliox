@@ -887,7 +887,7 @@ export class Explorer {
         document.body.style.cursor = "auto";
     }
 }
-Explorer.selectAllHtml = `<div title="Select All / None" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
+Explorer.selectAllHtml = `<div title="Select\n- All     (Ctrl + A)\n- None (Esc)" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
        <div style="padding-left: 2px; padding-top: 3px;">
          <span>● ---</span><br>
          <span>● -----</span><br>
