@@ -80,7 +80,13 @@ export class Explorer
     private             explorerRows:   { [key: string] : HTMLTableRowElement } = {};
 
 
-    public getFocusedCell() : HTMLTableCellElement { return this.focusedCell; }
+    public getFocusedCell() : { row: number, column: number } | null {
+        const focus = this.focusedCell;
+        if (!focus)
+            return null;
+        const row = focus.parentElement as HTMLTableRowElement;
+        return { column: focus.cellIndex, row: row.rowIndex };
+    }
 
     public constructor(config: Config) {
         this.config = config;
@@ -901,7 +907,18 @@ export class Explorer
         }
     }
 
-    public findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
+    public findRowIndices (ids: string[]) : {[key: string] : number } {
+        const result : {[key: string] : number } = {};
+        for(const id of ids){
+            const li = this.explorerRows[id];
+            if (!li)
+                continue;
+            result[id] = li.rowIndex;
+        }
+        return result;
+    }
+
+    private findContainerEntities (ids: string[]) : {[key: string] : HTMLTableRowElement} {
         const result : {[key: string] : HTMLTableRowElement} = {};
         for(const id of ids){
             const li = this.explorerRows[id];

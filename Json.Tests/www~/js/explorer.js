@@ -34,7 +34,13 @@ export class Explorer {
         this.explorerRows = {};
         this.config = config;
     }
-    getFocusedCell() { return this.focusedCell; }
+    getFocusedCell() {
+        const focus = this.focusedCell;
+        if (!focus)
+            return null;
+        const row = focus.parentElement;
+        return { column: focus.cellIndex, row: row.rowIndex };
+    }
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
@@ -812,6 +818,16 @@ export class Explorer {
             delete this.explorerRows[id];
             delete this.selectedRows[id];
         }
+    }
+    findRowIndices(ids) {
+        const result = {};
+        for (const id of ids) {
+            const li = this.explorerRows[id];
+            if (!li)
+                continue;
+            result[id] = li.rowIndex;
+        }
+        return result;
     }
     findContainerEntities(ids) {
         const result = {};

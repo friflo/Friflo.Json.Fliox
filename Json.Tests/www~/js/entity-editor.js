@@ -251,7 +251,8 @@ export class EntityEditor {
         this.entityIdentity = {
             database: database,
             container: container,
-            entityIds: []
+            entityIds: [],
+            command: null
         };
         entityType.innerHTML = app.getEntityType(database, container);
         writeResult.innerHTML = "";
@@ -300,13 +301,13 @@ export class EntityEditor {
         var _a;
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
-        const liIds = app.explorer.findContainerEntities(ids);
+        const rowIndices = app.explorer.findRowIndices(ids);
         app.explorer.setSelectedEntities(ids);
-        const firstRow = liIds[ids[0]];
+        const firstRow = rowIndices[ids[0]];
         if (firstRow) {
             const focusedCell = app.explorer.getFocusedCell();
-            const columnIndex = (_a = focusedCell === null || focusedCell === void 0 ? void 0 : focusedCell.cellIndex) !== null && _a !== void 0 ? _a : 1;
-            app.explorer.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
+            const column = (_a = focusedCell === null || focusedCell === void 0 ? void 0 : focusedCell.column) !== null && _a !== void 0 ? _a : 1;
+            app.explorer.setFocusCellSelectValue(firstRow, column, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids: ids } };
         this.entityHistory.length = this.entityHistoryPos + 1;
@@ -544,8 +545,12 @@ export class EntityEditor {
         const tags = this.getCommandTags(database, commandName, signature);
         commandSignature.innerHTML = tags.label;
         commandLink.innerHTML = tags.link;
-        this.entityIdentity.command = commandName;
-        this.entityIdentity.database = database;
+        this.entityIdentity = {
+            database: database,
+            container: null,
+            entityIds: null,
+            command: commandName,
+        };
         this.setCommandParam(database, commandName, def);
         this.setCommandResult(database, commandName);
     }

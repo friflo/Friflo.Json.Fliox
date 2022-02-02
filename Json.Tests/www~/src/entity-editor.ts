@@ -353,14 +353,14 @@ export class EntityEditor
     private selectEntities(database: string, container: string, ids: string[]) {
         this.entityIdentity.entityIds = ids;
         this.setEntitiesIds(database, container, ids);
-        const liIds = app.explorer.findContainerEntities(ids);
+        const rowIndices = app.explorer.findRowIndices(ids);
 
         app.explorer.setSelectedEntities(ids);
-        const firstRow = liIds[ids[0]];
+        const firstRow = rowIndices[ids[0]];
         if (firstRow) {
-            const focusedCell = app.explorer.getFocusedCell();
-            const columnIndex = focusedCell?.cellIndex ?? 1;
-            app.explorer.setFocusCellSelectValue(firstRow.rowIndex, columnIndex, "smooth");
+            const focusedCell   = app.explorer.getFocusedCell();
+            const column        = focusedCell?.column ?? 1;
+            app.explorer.setFocusCellSelectValue(firstRow, column, "smooth");
         }
         this.entityHistory[++this.entityHistoryPos] = { route: { database: database, container: container, ids:ids }};
         this.entityHistory.length = this.entityHistoryPos + 1;        
