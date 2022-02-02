@@ -165,10 +165,10 @@ export class EntityEditor
     }
 
     private entityIdentity = { } as {
-        database:   string,
-        container:  string,
-        entityIds:  string[],
-        command?:   string
+        readonly    database:   string,
+        readonly    container:  string,
+                    entityIds:  string[],
+        readonly    command?:   string
     }
 
     public  entityHistoryPos    = -1;
@@ -300,7 +300,8 @@ export class EntityEditor
         this.entityIdentity = {
             database:   database,
             container:  container,
-            entityIds:  []
+            entityIds:  [],
+            command:    null
         };
         entityType.innerHTML    = app.getEntityType (database, container);
         writeResult.innerHTML   = "";
@@ -622,8 +623,12 @@ export class EntityEditor
         commandSignature.innerHTML      = tags.label;
         commandLink.innerHTML           = tags.link;
 
-        this.entityIdentity.command     = commandName;
-        this.entityIdentity.database    = database;
+        this.entityIdentity = {
+            database:   database,
+            container:  null,
+            entityIds:  null,
+            command:    commandName,
+        };
         this.setCommandParam (database, commandName, def);
         this.setCommandResult(database, commandName);
     }
