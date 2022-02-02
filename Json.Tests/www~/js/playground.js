@@ -56,14 +56,15 @@ export class Playground {
                 // console.log('server:', e.data);
                 switch (data.msg) {
                     case "resp":
-                    case "error":
+                    case "error": {
                         this.clt = data.clt;
                         cltElement.innerText = (_a = this.clt) !== null && _a !== void 0 ? _a : " - ";
                         const content = app.formatJson(app.config.formatResponses, e.data);
                         app.responseModel.setValue(content);
                         responseState.innerHTML = `· ${duration} ms`;
                         break;
-                    case "ev":
+                    }
+                    case "ev": {
                         subscriptionCount.innerText = String(++this.subCount);
                         const subSeq = this.subSeq = data.seq;
                         // multiple clients can use the same WebSocket. Use the latest
@@ -72,6 +73,7 @@ export class Playground {
                             ackElement.innerText = subSeq ? String(subSeq) : " - ";
                         }
                         break;
+                    }
                 }
             };
         }

@@ -393,26 +393,28 @@ export class EntityEditor {
                     break;
                 case "Array":
                     break;
-                case "Property":
+                case "Property": {
                     // if (child.key.value == "employees") debugger;
                     const property = schema.properties[child.key.value];
                     if (!property)
                         continue;
                     const value = child.value;
                     switch (value.type) {
-                        case "Literal":
+                        case "Literal": {
                             const relation = property.relation;
                             if (relation && value.value !== null) {
                                 addRelation(value, relation);
                             }
                             break;
-                        case "Object":
+                        }
+                        case "Object": {
                             const resolvedDef = property._resolvedDef;
                             if (resolvedDef) {
                                 EntityEditor.addRelationsFromAst(value, resolvedDef, addRelation);
                             }
                             break;
-                        case "Array":
+                        }
+                        case "Array": {
                             const resolvedDef2 = (_a = property.items) === null || _a === void 0 ? void 0 : _a._resolvedDef;
                             if (resolvedDef2) {
                                 EntityEditor.addRelationsFromAst(value, resolvedDef2, addRelation);
@@ -426,8 +428,10 @@ export class EntityEditor {
                                 }
                             }
                             break;
+                        }
                     }
                     break;
+                }
             }
         }
     }

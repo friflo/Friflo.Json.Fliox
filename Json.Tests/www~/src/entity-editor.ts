@@ -448,47 +448,51 @@ export class EntityEditor
             return;
         for (const child of ast.children) {
             switch (child.type) {
-            case "Object":
-                EntityEditor.addRelationsFromAst(child, schema, addRelation);
-                break;
-            case "Array":
-                break;
-            case "Property":
-                // if (child.key.value == "employees") debugger;
-                const property = schema.properties[child.key.value];
-                if (!property)
-                    continue;
-                const value = child.value;
-
-                switch (value.type) {
-                case "Literal":
-                    const relation = property.relation;
-                    if (relation && value.value !== null) {
-                        addRelation (value, relation);
-                    }
-                    break;
                 case "Object":
-                    const resolvedDef = property._resolvedDef;
-                    if (resolvedDef) {
-                        EntityEditor.addRelationsFromAst(value, resolvedDef, addRelation);
-                    }
+                    EntityEditor.addRelationsFromAst(child, schema, addRelation);
                     break;
                 case "Array":
-                    const resolvedDef2 = property.items?._resolvedDef;
-                    if (resolvedDef2) {
-                        EntityEditor.addRelationsFromAst(value, resolvedDef2, addRelation);
-                    }
-                    const relation2 = property.relation;
-                    if (relation2) {
-                        for (const item of value.children) {
-                            if (item.type == "Literal") {
-                                addRelation(item, relation2);
+                    break;
+                case "Property": {
+                    // if (child.key.value == "employees") debugger;
+                    const property = schema.properties[child.key.value];
+                    if (!property)
+                        continue;
+                    const value = child.value;
+
+                    switch (value.type) {
+                        case "Literal": {
+                            const relation = property.relation;
+                            if (relation && value.value !== null) {
+                                addRelation (value, relation);
                             }
+                            break;
+                        }
+                        case "Object": {
+                            const resolvedDef = property._resolvedDef;
+                            if (resolvedDef) {
+                                EntityEditor.addRelationsFromAst(value, resolvedDef, addRelation);
+                            }
+                            break;
+                        }
+                        case "Array": {
+                            const resolvedDef2 = property.items?._resolvedDef;
+                            if (resolvedDef2) {
+                                EntityEditor.addRelationsFromAst(value, resolvedDef2, addRelation);
+                            }
+                            const relation2 = property.relation;
+                            if (relation2) {
+                                for (const item of value.children) {
+                                    if (item.type == "Literal") {
+                                        addRelation(item, relation2);
+                                    }
+                                }
+                            }
+                            break;
                         }
                     }
                     break;
                 }
-                break;
             }
         }
     }

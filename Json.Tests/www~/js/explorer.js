@@ -350,13 +350,14 @@ export class Explorer {
                 this.selectExplorerEntities([]);
                 return;
             }
-            case 'KeyC':
+            case 'KeyC': {
                 if (!event.ctrlKey)
                     return;
                 event.preventDefault();
                 const editorValue = app.entityEditor.getValue();
                 navigator.clipboard.writeText(editorValue);
                 return;
+            }
             case 'Delete': {
                 event.preventDefault();
                 const ids = Object.keys(this.selectedRows);
@@ -608,11 +609,12 @@ export class Explorer {
             case "integer":
             case "number":
             case "boolean":
-            case "array":
+            case "array": {
                 const name = path.join(".");
                 columns.push({ name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
                 break;
-            case "object":
+            }
+            case "object": {
                 const addProps = type.jsonType.additionalProperties;
                 //    isAny == true   <=>   additionalProperties == {}
                 const isAny = addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
@@ -628,6 +630,7 @@ export class Explorer {
                     this.setColumns(columns, fieldPath, property);
                 }
                 break;
+            }
         }
     }
     createExplorerHead(entityType, entityFields) {

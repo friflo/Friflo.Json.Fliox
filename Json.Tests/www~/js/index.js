@@ -664,14 +664,15 @@ export class App {
     layoutEditors() {
         // console.log("layoutEditors - activeTab: " + activeTab)
         switch (this.config.activeTab) {
-            case "playground":
+            case "playground": {
                 const editors = [
                     { editor: this.responseEditor, elem: responseContainer },
                     { editor: this.requestEditor, elem: requestContainer },
                 ];
                 this.layoutMonacoEditors(editors);
                 break;
-            case "explorer":
+            }
+            case "explorer": {
                 // layout from right to left. Otherwise commandValueEditor.clientWidth is 0px;
                 const editors2 = [
                     { editor: this.entityEditor, elem: entityContainer },
@@ -679,6 +680,7 @@ export class App {
                 ];
                 this.layoutMonacoEditors(editors2);
                 break;
+            }
         }
     }
     layoutMonacoEditors(pairs) {
@@ -723,13 +725,14 @@ export class App {
         // console.log (`drag x: ${x}`);
         switch (this.dragTemplate.id) {
             case "playground": return [xy + "px", "var(--bar-width)", "1fr"];
-            case "explorer":
+            case "explorer": {
                 const cols = this.dragTemplate.style.gridTemplateColumns.split(" ");
                 switch (this.dragBar.id) { //  [150px var(--bar-width) 200px var(--bar-width) 1fr];
                     case "exBar1": return [xy + "px", cols[1], cols[2], cols[3]];
                     case "exBar2": return [cols[0], cols[1], xy + "px", cols[3]];
                 }
                 break;
+            }
             case "explorerEdit":
                 this.editor.commandEditWidth = xy + "px";
                 return [this.editor.commandEditWidth, "var(--vbar-width)", "1fr"];

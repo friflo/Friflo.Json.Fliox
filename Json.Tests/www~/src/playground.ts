@@ -66,23 +66,25 @@ export class Playground
                 const data = JSON.parse(e.data);
                 // console.log('server:', e.data);
                 switch (data.msg) {
-                case "resp":
-                case "error":
-                    this.clt = data.clt;
-                    cltElement.innerText    = this.clt ?? " - ";
-                    const content           = app.formatJson(app.config.formatResponses, e.data);
-                    app.responseModel.setValue(content);
-                    responseState.innerHTML = `· ${duration} ms`;
-                    break;
-                case "ev":
-                    subscriptionCount.innerText = String(++this.subCount);
-                    const subSeq = this.subSeq = data.seq;
-                    // multiple clients can use the same WebSocket. Use the latest
-                    if (this.clt == data.clt) {
-                        subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
-                        ackElement.innerText        = subSeq ? String(subSeq) : " - ";
+                    case "resp":
+                    case "error": {
+                        this.clt = data.clt;
+                        cltElement.innerText    = this.clt ?? " - ";
+                        const content           = app.formatJson(app.config.formatResponses, e.data);
+                        app.responseModel.setValue(content);
+                        responseState.innerHTML = `· ${duration} ms`;
+                        break;
                     }
-                    break;
+                    case "ev": {
+                        subscriptionCount.innerText = String(++this.subCount);
+                        const subSeq = this.subSeq = data.seq;
+                        // multiple clients can use the same WebSocket. Use the latest
+                        if (this.clt == data.clt) {
+                            subscriptionSeq.innerText   = subSeq ? String(subSeq) : " - ";
+                            ackElement.innerText        = subSeq ? String(subSeq) : " - ";
+                        }
+                        break;
+                    }
                 }
             };
         } catch (err) {

@@ -13,7 +13,7 @@ module.exports = {
     rules: {
         'no-empty': 'off',
         'semi': [2, "always"],        
-        'no-case-declarations': 'off',
+        'no-case-declarations': 'error',
         '@typescript-eslint/no-empty-function': 'error',
         '@typescript-eslint/no-unused-vars': 'error',
         '@typescript-eslint/no-explicit-any': 0,
