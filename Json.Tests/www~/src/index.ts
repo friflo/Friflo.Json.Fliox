@@ -53,6 +53,9 @@ export class App {
         this.explorer   = new Explorer(this.config);
         this.editor     = new EntityEditor();
         this.playground = new Playground();
+
+        window.addEventListener("keydown", event => this.onKeyDown(event), true);
+        window.addEventListener("keyup",   event => this.onKeyUp(event),   true);
     }
 
     private getCookie  (name: string) {
@@ -428,7 +431,7 @@ export class App {
 
 
     // --------------------------------------- schema ---------------------------------------
-    public databaseSchemas: { [key: string]: DbSchema} = {};
+    public readonly databaseSchemas: { [key: string]: DbSchema} = {};
     
     public getSchemaType(database: string) : string {
         const schema        = this.databaseSchemas[database];
@@ -469,7 +472,7 @@ export class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    public schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
+    public readonly schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
 
     public static getDatabaseLink(database: string) : string {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
@@ -585,15 +588,15 @@ export class App {
         return schemas;
     }
 
-    public requestModel:       monaco.editor.ITextModel;
-    public responseModel:      monaco.editor.ITextModel;
+    public              requestModel:       monaco.editor.ITextModel;
+    public              responseModel:      monaco.editor.ITextModel;
 
-    public requestEditor:      monaco.editor.IStandaloneCodeEditor;
-    public responseEditor:     monaco.editor.IStandaloneCodeEditor;
-    public entityEditor:       monaco.editor.IStandaloneCodeEditor;
-    public commandValueEditor: monaco.editor.IStandaloneCodeEditor;
+    public              requestEditor:      monaco.editor.IStandaloneCodeEditor;
+    public              responseEditor:     monaco.editor.IStandaloneCodeEditor;
+    public              entityEditor:       monaco.editor.IStandaloneCodeEditor;
+    public              commandValueEditor: monaco.editor.IStandaloneCodeEditor;
 
-    allMonacoSchemas: MonacoSchema[] = [];
+    private readonly    allMonacoSchemas:   MonacoSchema[] = [];
 
     addSchemas (monacoSchemas: MonacoSchema[]): void {
         this.allMonacoSchemas.push(...monacoSchemas);
@@ -896,5 +899,4 @@ export class App {
 }
 
 export const app = new App();
-window.addEventListener("keydown", event => app.onKeyDown(event), true);
-window.addEventListener("keyup",   event => app.onKeyUp(event), true);
+

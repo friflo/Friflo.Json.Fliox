@@ -35,6 +35,8 @@ export class App {
         this.explorer = new Explorer(this.config);
         this.editor = new EntityEditor();
         this.playground = new Playground();
+        window.addEventListener("keydown", event => this.onKeyDown(event), true);
+        window.addEventListener("keyup", event => this.onKeyUp(event), true);
     }
     getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -781,6 +783,4 @@ export class App {
 }
 App.bracketValue = /\[(.*?)\]/;
 export const app = new App();
-window.addEventListener("keydown", event => app.onKeyDown(event), true);
-window.addEventListener("keyup", event => app.onKeyUp(event), true);
 //# sourceMappingURL=index.js.map
