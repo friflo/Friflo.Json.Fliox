@@ -23,6 +23,12 @@ const catalogSchema = el("catalogSchema");
 const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
 // ----------------------------------------------- Explorer -----------------------------------------------
+/** The public methods of this class must not use DOM elements as parameters or return values.
+ * Instead it have to use:
+ * - strings or {@link Resource} for database, container & ids.
+ * - numbers for rows & columns
+ * - {@link Entity} and {@link JsonType} for entities
+ */
 export class Explorer {
     constructor(config) {
         this.focusedCell = null;
