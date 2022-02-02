@@ -888,9 +888,11 @@ export class Explorer {
     }
 }
 Explorer.selectAllHtml = `<div title="Select All / None" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
-       <span>● ---</span><br>
-       <span>● -----</span><br>
-       <span>● ----</span>
+       <div style="padding-left: 2px; padding-top: 3px;">
+         <span>● ---</span><br>
+         <span>● -----</span><br>
+         <span>● ----</span>
+       </div>
     </div>`;
 Explorer.defaultColumnWidth = 50;
 Explorer.maxColumnWidth = 200;

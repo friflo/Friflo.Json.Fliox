@@ -102,9 +102,11 @@ export class Explorer
 
     private static selectAllHtml=
     `<div title="Select All / None" class="navigate selectAll" onclick="app.explorer.selectAllNone()">
-       <span>● ---</span><br>
-       <span>● -----</span><br>
-       <span>● ----</span>
+       <div style="padding-left: 2px; padding-top: 3px;">
+         <span>● ---</span><br>
+         <span>● -----</span><br>
+         <span>● ----</span>
+       </div>
     </div>`;
 
     public async loadContainer (p: Resource, query: string)  : Promise<void> {
