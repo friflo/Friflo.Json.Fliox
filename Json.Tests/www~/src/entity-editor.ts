@@ -7,10 +7,10 @@ import { DbContainers, DbCommands }     from "../../assets~/Schema/Typescript/Cl
 type AddRelation = (value: jsonToAst.ValueNode, container: string) => void;
 
 type FindRange = {
-    entity:         monaco.Range | null;
-    value:          monaco.Range | null;
-    lastProperty:   monaco.Range | null;
-    lastPath:       string[];
+    readonly entity:        monaco.Range | null;
+    readonly value:         monaco.Range | null;
+    readonly lastProperty:  monaco.Range | null;
+    readonly lastPath:      string[];
 }
 
 type ExplorerEditor = "command" | "entity" | "dbInfo"

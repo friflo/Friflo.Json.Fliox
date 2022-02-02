@@ -42,8 +42,8 @@ type DataType   = {
 }
 
 type ParseResult = {
-    value?: any,
-    error?: string
+    readonly value?: any,
+    readonly error?: string
 }
 
 const entityExplorer    = el("entityExplorer");

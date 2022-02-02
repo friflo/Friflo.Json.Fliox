@@ -9,7 +9,7 @@ export type MonacoSchema = {
      * For example '*.schema.json', 'package.json', '!foo*.schema.json', 'foo/**\/BADRESP.json'.
      * A match succeeds when there is at least one pattern matching and last matching pattern does not start with '!'.
      */
-    fileMatch?: string[];
+             fileMatch?: string[];
     /**
      * The schema for the given URI.
      */
