@@ -1,8 +1,8 @@
 import { el, createEl, Resource, Entity, Method, parseAst }     from "./types.js";
 import { App, app }                                             from "./index.js";
 
-import { CommandType, JsonType }        from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbContainers, DbCommands }     from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { CommandType, JsonType }        from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbContainers, DbCommands }     from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 type AddRelation = (value: jsonToAst.ValueNode, container: string) => void;
 

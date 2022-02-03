@@ -1,5 +1,5 @@
-import { FieldType, JsonType, JsonSchema }  from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema }                         from "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { FieldType, JsonType, JsonSchema }  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbSchema }                         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 export type MonacoSchema = {
     readonly uri: string;
@@ -18,7 +18,7 @@ export type MonacoSchema = {
     _resolvedDef?: any
 }
 
-declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
+declare module "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
     interface JsonType {
         _typeName:      string;
         _namespace:     string;
@@ -34,7 +34,7 @@ declare module "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Sch
     }
 }
 
-declare module "../../assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
+declare module "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
     interface DbSchema {
         _rootSchema:        JsonType;
         _containerSchemas : { [key: string] : JsonType };        

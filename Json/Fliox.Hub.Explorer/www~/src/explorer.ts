@@ -1,5 +1,5 @@
 
-import { FieldType, JsonType }  from "../../assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { FieldType, JsonType }  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { Resource, Config, el, createEl, Entity, parseAst }     from "./types.js";
 import { App, app }                                             from "./index.js";
 import { EntityEditor }                                         from "./entity-editor.js";
