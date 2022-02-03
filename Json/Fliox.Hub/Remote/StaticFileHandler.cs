@@ -5,13 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class StaticFileHandler : IRequestHandler
     {
-        private readonly string         rootFolder;
+        private readonly IFileHandler   fileHandler;
+        
         private readonly List<FileExt>  fileExtensions = new List<FileExt> {
             new FileExt(".html",  "text/html; charset=UTF-8"),
             new FileExt(".js",    "application/javascript"),
@@ -22,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         };
         
         public StaticFileHandler (string rootFolder) {
-            this.rootFolder = rootFolder;    
+            fileHandler = new FileHandler(rootFolder);
         }
         
         public void AddFileExtension(string  extension, string  mediaType) {
@@ -53,22 +55,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 ListDirectory(context);
                 return;
             }
-            var filePath = rootFolder + path;
-            var content = await ReadFile(filePath).ConfigureAwait(false);
+            var content = await fileHandler.ReadFile(path).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
             context.Write(new JsonValue(content), 0, contentType, 200);
         }
         
         private void ListDirectory (RequestContext context) {
-            var path = rootFolder + context.path;
-            if (!Directory.Exists(path)) {
-                var msg = $"directory doesnt exist: {path}";
+            var folder = context.path;
+            string[] fileNames = fileHandler.GetFiles(folder);
+            if (fileNames == null) {
+                var msg = $"folder not found: {folder}";
                 context.WriteError("list directory", msg, 404);
                 return;
-            }
-            string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
-            for (int n = 0; n < fileNames.Length; n++) {
-                fileNames[n] = fileNames[n].Substring(rootFolder.Length).Replace('\\', '/');
             }
             var options = new SerializerOptions{ Pretty = true };
             var jsonList = JsonSerializer.Serialize(fileNames, options);
@@ -81,18 +79,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return fileExt.mediaType;
             }
             return "text/plain";
-        }
-        
-        private static async Task<byte[]> ReadFile(string filePath) {
-            using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                var memoryStream = new MemoryStream();
-                byte[] buffer = new byte[0x1000];
-                int numRead;
-                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0) {
-                    memoryStream.Write(buffer, 0, numRead);
-                }
-                return memoryStream.ToArray();
-            }
         }
     }
     
