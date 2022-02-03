@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.Utils
 {
     public static class ZipUtils
     {
