@@ -25,15 +25,16 @@
       <OutputPath>.bin\Release\</OutputPath>
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
-	
+		
     <ItemGroup>
       <None Remove="**/*.meta" />
-      <!-- exclude folders: www~ from build; keep them in IDEs -->
-      <Content Remove="www~\**" />
     </ItemGroup>
-	
+    
     <ItemGroup>
-      <ProjectReference Include="..\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
+      <Content Include="www~\**\*.*" Exclude="www~\**\*.js.map;www~\page\**\*.*;www~\src\**\*.*;www~\manifest.json;www~\sw.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <DeploymentContent>true</DeploymentContent>
+      </Content>
     </ItemGroup>
 
 </Project>
