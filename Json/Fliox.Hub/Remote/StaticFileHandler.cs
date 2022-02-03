@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         }
         
-        public StaticFileHandler (string zipPath, string rootFolder) {
-            fileHandler = new ZipFileHandler(zipPath, rootFolder);
+        public StaticFileHandler (string zipPath, string baseFolder) {
+            fileHandler = ZipFileHandler.Create(zipPath, baseFolder);
         }
 
         public void AddFileExtension(string  extension, string  mediaType) {

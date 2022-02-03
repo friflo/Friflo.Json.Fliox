@@ -13,19 +13,22 @@ namespace Friflo.Json.Fliox.Hub.Utils
         private readonly    Dictionary<string, byte[]>          files   = new Dictionary<string, byte[]>();
         private readonly    Dictionary<string, List<string>>    folders = new Dictionary<string, List<string>>();
         
-        internal ZipFileHandler (string zipPath, string rootFolder)
-            : this (new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read, 0x1000, false), rootFolder)
-        { }
         
-        private ZipFileHandler (Stream zipStream, string rootFolder)
+        public static ZipFileHandler Create (string zipPath, string baseFolder) {
+            var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read, 0x1000, false);
+            return new ZipFileHandler(fs, baseFolder);
+        }
+        
+        // ReSharper disable once MemberCanBePrivate.Global
+        public ZipFileHandler (Stream zipStream, string baseFolder)
         {
             using (ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Read, false)) {
                 using (var ms = new MemoryStream()) {
                     foreach (ZipArchiveEntry entry in archive.Entries) {
                         var path    = entry.FullName;
-                        if (!path.StartsWith(rootFolder))
+                        if (!path.StartsWith(baseFolder))
                             continue;
-                        path = path.Substring(rootFolder.Length);
+                        path = path.Substring(baseFolder.Length);
                         if (path.EndsWith("/")) {
                             continue;
                         }
