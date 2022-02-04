@@ -56,7 +56,9 @@ namespace Friflo.Json.Tests.Main
         ///   <item> Expose server Monitoring as an extension database to get statistics about requests and tasks executed by users and clients </item>
         ///   <item> Adding a database schema to:
         ///     1. validate records written to the database by its schema definition.
-        ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema & Html.      
+        ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema & Html.
+        ///     3. display entities as table in Hub Explorer
+        ///     4. enables JSON auto completion, validation and reference links in Hub Explorer editor   
         ///   </item>
         ///   <item> Adding a web App to with database Explorer and Playground to send and validate arbitrary requests to the Fliox.Hub server </item>
         /// </list>
