@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private readonly    IFileHandler                    fileHandler;
         private readonly    Dictionary<string, CacheEntry>  cache = new Dictionary<string, CacheEntry>();
         private readonly    bool                            cacheResponses;
+        private readonly    string                          cacheControl;
         
         private readonly List<FileExt>  fileExtensions = new List<FileExt> {
             new FileExt(".html",  "text/html; charset=UTF-8"),
@@ -25,9 +26,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             new FileExt(".ico",   "image/x-icon"),
         };
         
-        public StaticFileHandler (string rootFolder, bool cacheResponses = true) {
+        public StaticFileHandler (string rootFolder, bool cacheResponses = true, string cacheControl = "max-age=600") {
             fileHandler         = new FileHandler(rootFolder);
             this.cacheResponses = cacheResponses;
+            this.cacheControl   = cacheControl;
         }
         
         // e.g. new StaticFileHandler(wwwPath + ".zip", "www~"));
@@ -61,7 +63,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 await GetHandler(context);
-                context.AddHeader("Cache-Control", "max-age=600"); // seconds
+                if (cacheControl != null) {
+                    context.AddHeader("Cache-Control", cacheControl); // seconds
+                }
                 if (context.StatusCode != 200)
                     return;
                 entry = new CacheEntry(context);
