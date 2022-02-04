@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Main
             var database            = new FileDatabase(DbPath);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional. Used to serve static web content
+            hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
         }
         
