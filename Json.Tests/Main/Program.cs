@@ -54,17 +54,17 @@ namespace Friflo.Json.Tests.Main
         ///   <item> Enable user authentication and authorization of tasks requested by a user </item>
         ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db</item>
         ///   <item> Expose server Monitoring as an extension database to get statistics about requests and tasks executed by users and clients </item>
-        ///   <item> Adding a database schema to:
-        ///     1. validate records written to the database by its schema definition.
-        ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema & Html.
-        ///     3. display entities as table in Hub Explorer
-        ///     4. enable JSON auto completion, validation and reference links in Hub Explorer editor
+        ///   <item> Adding a database schema to: <br/>
+        ///     1. validate records written to the database by its schema definition <br/>
+        ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema and Html <br/>
+        ///     3. display entities as table in Hub Explorer <br/>
+        ///     4. enable JSON auto completion, validation and reference links in Hub Explorer editor <br/>
         ///   </item>
-        ///   <item> Adding a web App to with database Explorer and Playground to send and validate arbitrary requests to the Fliox.Hub server </item>
+        ///   <item> Add the Hub Explorer to browse databases and send batch requests to the Fliox.Hub server using the Playground </item>
         /// </list>
         ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
-        /// </summary>         
+        /// </summary>
         public static HttpHostHub CreateHttpHost() {
             var database            = new FileDatabase(DbPath, new PocHandler(), null, false);
             var hub                 = new FlioxHub(database).SetInfo("Demo Hub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
