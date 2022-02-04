@@ -74,8 +74,8 @@ namespace Friflo.Json.Tests.Main
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - used by DatabaseSchema & SchemaHandler
-        //  var typeSchema          = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
+            var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
+        //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new StaticFileHandler(Www, false));  // optional - serve static web files of Hub Explorer
