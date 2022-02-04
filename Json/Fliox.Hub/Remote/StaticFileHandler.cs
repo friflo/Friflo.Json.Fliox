@@ -57,9 +57,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (cache.TryGetValue(context.path, out CacheEntry entry)) {
                     var body = new JsonValue(entry.body);
                     context.Write(body, 0, entry.mediaType, entry.status);
+                    context.SetHeaders(entry.headers);
                     return;
                 }
                 await GetHandler(context);
+                context.AddHeader("Cache-Control", "max-age=600"); // seconds
                 if (context.StatusCode != 200)
                     return;
                 entry = new CacheEntry(context);
@@ -118,14 +120,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     public readonly struct CacheEntry {
-        public readonly     int     status;
-        public readonly     string  mediaType;
-        public readonly     byte[]  body;
+        public readonly     int                         status;
+        public readonly     string                      mediaType;
+        public readonly     byte[]                      body;
+        public readonly     Dictionary<string, string>  headers;
         
         public CacheEntry (RequestContext context) {
             status      = context.StatusCode;
             mediaType   = context.ResponseContentType;
             body        = context.Response.AsByteArray();
+            headers     = context.ResponseHeaders;
         }
     }
 }

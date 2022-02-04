@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
@@ -56,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             if (!resp.OutputStream.CanWrite)
                                 return;
                             byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
-                            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length);
+                            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length, null);
                             await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
                             resp.Close();
                         }
@@ -85,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static async Task HandleServerWebSocket (HttpListenerResponse resp) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
             byte[]  resultBytes = Encoding.UTF8.GetBytes(error);
-            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length);
+            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length, null);
             await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
             resp.Close();
         }
@@ -125,17 +126,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             if (handled) {
                 var responseBody = reqCtx.Response;
-                SetResponseHeader(resp, reqCtx.ResponseContentType, reqCtx.StatusCode, responseBody.Length);
+                SetResponseHeader(resp, reqCtx.ResponseContentType, reqCtx.StatusCode, responseBody.Length, reqCtx.ResponseHeaders);
                 await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);
                 resp.Close();
             }
         }
         
-        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, int statusCode, int len) {
+        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
             resp.ContentType        = contentType;
             resp.ContentEncoding    = Encoding.UTF8;
             resp.ContentLength64    = len;
             resp.StatusCode         = statusCode;
+        //  resp.Headers["link"]    = "rel=\"icon\" href=\"#\""; // not working as expected - expect no additional request of favicon.ico
+            if (headers != null) {
+                foreach (var header in headers) {
+                    resp.Headers[header.Key] = header.Value; 
+                }
+            }
         }
         
         // Http server requires setting permission to run an http server.

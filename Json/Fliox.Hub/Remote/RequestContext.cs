@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -15,17 +16,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public sealed class RequestContext
     {
-        public readonly string          method;
-        public readonly string          path;
-        public readonly string          query;
-        public readonly Stream          body;
-        public readonly IHttpHeaders    headers;
-        public readonly IHttpCookies    cookies;
+        public readonly string                      method;
+        public readonly string                      path;
+        public readonly string                      query;
+        public readonly Stream                      body;
+        public readonly IHttpHeaders                headers;
+        public readonly IHttpCookies                cookies;
+                        Dictionary<string, string>  responseHeaders;
         
-        public          string          ResponseContentType { get; private set; }
-        public          int             StatusCode          { get; private set; }
-        public          JsonValue       Response            { get; private set; }
-        public          int             Offset              { get; private set; }
+        public          string                      ResponseContentType { get; private set; }
+        public          int                         StatusCode          { get; private set; }
+        public          JsonValue                   Response            { get; private set; }
+        public          int                         Offset              { get; private set; }
+        public          Dictionary<string, string>  ResponseHeaders     => responseHeaders;
 
         public override string          ToString() => $"{method} {path}{query}";
 
@@ -58,6 +61,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             StatusCode          = statusCode;
             Response            = new JsonValue(error);
             Offset              = 0;
+        }
+        
+        public void AddHeader(string key, string value) {
+            if (responseHeaders == null) {
+                responseHeaders = new Dictionary<string, string>();
+            }
+            responseHeaders.Add(key, value);
+        }
+        
+        public void SetHeaders(Dictionary<string, string> headers) {
+            responseHeaders = headers;
         }
         
         public static bool IsBasePath(string basePath, string path) {
