@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserName
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
-            var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json/Fliox.Hub.Explorer/www~");
+            var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore");
         //  var hostHub = CreateMiniHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www~");
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Main
         ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>         
-        public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
+        public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath) {
             var database            = new FileDatabase(dbPath, new PocHandler(), null, false);
             var hub                 = new FlioxHub(database).SetInfo("Demo Hub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
@@ -78,8 +78,8 @@ namespace Friflo.Json.Tests.Main
         //  var typeSchema          = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new StaticFileHandler(wwwPath, false));   // optional - used to serve static web content
-        //  hostHub.AddHandler       (new StaticFileHandler(HubExplorer.Path)); // optional - used to serve static web content
+            const string www        = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            hostHub.AddHandler       (new StaticFileHandler(www, false));  // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }

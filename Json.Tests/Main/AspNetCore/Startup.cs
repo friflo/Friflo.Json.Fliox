@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Main
             {
                 app.UseDeveloperExceptionPage();
             }
-            var hostHub = Program.CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json/Fliox.Hub.Explorer/www~");
+            var hostHub = Program.CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore");
 
             app.UseRouting();
             app.UseWebSockets();
