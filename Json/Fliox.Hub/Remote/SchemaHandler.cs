@@ -23,12 +23,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal readonly   CreateZip                           zip;
         private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
         private  readonly   List<CustomGenerator>               generators = new List<CustomGenerator>();
-        private  readonly   string                              cacheControl;
+        private             string                              cacheControl = HttpHostHub.DefaultCacheControl;
 
-        internal SchemaHandler(FlioxHub hub, string cacheControl, CreateZip zip = null) {
+        internal SchemaHandler(FlioxHub hub, CreateZip zip = null) {
             this.hub            = hub;
             this.zip            = zip;
+        }
+        
+        public SchemaHandler CacheControl(string cacheControl) {
             this.cacheControl   = cacheControl;
+            return this;
         }
         
         public bool IsMatch(RequestContext context) {

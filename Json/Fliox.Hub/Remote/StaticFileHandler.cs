@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         private readonly    IFileHandler                    fileHandler;
         private readonly    Dictionary<string, CacheEntry>  cache = new Dictionary<string, CacheEntry>();
-        private             string                          cacheControl    = "max-age=600";
+        private             string                          cacheControl    = HttpHostHub.DefaultCacheControl;
         
         private readonly List<FileExt>  fileExtensions = new List<FileExt> {
             new FileExt(".html",  "text/html; charset=UTF-8"),
