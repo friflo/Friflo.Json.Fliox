@@ -20,13 +20,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   RestHandler             restHandler;
         private  readonly   List<IRequestHandler>   customHandlers;
 
-        public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
+        public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null, string cacheControl = "max-age=600")
             : base(hub, env, hostName)
         {
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
+            schemaHandler           = new SchemaHandler(hub, cacheControl, ZipUtils.Zip);
             schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
             restHandler             = new RestHandler(hub);
             customHandlers          = new List<IRequestHandler>();

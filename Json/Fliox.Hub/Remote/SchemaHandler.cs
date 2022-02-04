@@ -23,10 +23,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal readonly   CreateZip                           zip;
         private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
         private  readonly   List<CustomGenerator>               generators = new List<CustomGenerator>();
+        private  readonly   string                              cacheControl;
 
-        internal SchemaHandler(FlioxHub hub, CreateZip zip = null) {
-            this.hub    = hub;
-            this.zip    = zip;
+        internal SchemaHandler(FlioxHub hub, string cacheControl, CreateZip zip = null) {
+            this.hub            = hub;
+            this.zip            = zip;
+            this.cacheControl   = cacheControl;
         }
         
         public bool IsMatch(RequestContext context) {
@@ -61,6 +63,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!success) {
                 context.WriteError("schema error", result.content, 404);
                 return Task.CompletedTask;
+            }
+            if (cacheControl != null) {
+                context.AddHeader("Cache-Control", cacheControl); // seconds
             }
             if (result.isText) {
                 context.WriteString(result.content, result.contentType);
