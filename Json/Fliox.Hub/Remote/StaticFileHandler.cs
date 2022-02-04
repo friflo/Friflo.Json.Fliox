@@ -14,8 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         private readonly    IFileHandler                    fileHandler;
         private readonly    Dictionary<string, CacheEntry>  cache = new Dictionary<string, CacheEntry>();
-        private readonly    bool                            cacheResponses;
-        private readonly    string                          cacheControl;
+        private             string                          cacheControl    = "max-age=600";
         
         private readonly List<FileExt>  fileExtensions = new List<FileExt> {
             new FileExt(".html",  "text/html; charset=UTF-8"),
@@ -26,12 +25,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             new FileExt(".ico",   "image/x-icon"),
         };
         
-        public StaticFileHandler (string rootFolder, bool cacheResponses = true, string cacheControl = "max-age=600") {
+        public StaticFileHandler (string rootFolder) {
             fileHandler         = new FileHandler(rootFolder);
-            this.cacheResponses = cacheResponses;
-            this.cacheControl   = cacheControl;
         }
-        
+
         // e.g. new StaticFileHandler(wwwPath + ".zip", "www~"));
         public StaticFileHandler (string zipPath, string baseFolder) {
             fileHandler = ZipFileHandler.Create(zipPath, baseFolder);
@@ -39,6 +36,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public StaticFileHandler (Stream zipStream, string baseFolder) {
             fileHandler = new ZipFileHandler(zipStream, baseFolder);
+        }
+        
+        public StaticFileHandler CacheControl(string cacheControl) {
+            this.cacheControl   = cacheControl;
+            return this;
         }
 
         public void AddFileExtension(string  extension, string  mediaType) {
@@ -52,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
         public async Task HandleRequest(RequestContext context) {
             try {
-                if (!cacheResponses) {
+                if (cacheControl == null) {
                     await GetHandler(context);
                     return;                    
                 }

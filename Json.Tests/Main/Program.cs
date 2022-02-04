@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
             var hostHub = CreateHttpHost();
-        //  var hostHub = CreateMiniHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www~");
+        //  var hostHub = CreateMiniHost();
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
             server.Run();
@@ -84,8 +84,8 @@ namespace Friflo.Json.Tests.Main
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
-            var hostHub             = new HttpHostHub(hub, null, null, null);  // no Cache-Control
-            hostHub.AddHandler       (new StaticFileHandler(Www, false, null));// optional - serve static web files of Hub Explorer
+            var hostHub             = new HttpHostHub(hub, null, null, Cache);
+            hostHub.AddHandler       (new StaticFileHandler(Www).CacheControl(Cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }
@@ -93,13 +93,14 @@ namespace Friflo.Json.Tests.Main
         private const string DbPath     = "./Json.Tests/assets~/DB/PocStore";
         private const string UserDbPath = "./Json.Tests/assets~/DB/UserStore";
         private const string Www        = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+        private const string Cache      = null; // "max-age=600"; // HTTP Cache-Control
         
-        private static HttpHostHub CreateMiniHost(string dbPath, string wwwPath) {
+        private static HttpHostHub CreateMiniHost() {
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = new FileDatabase(dbPath);
+            var database            = new FileDatabase(DbPath);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new StaticFileHandler(wwwPath, false));   // optional. Used to serve static web content
+            hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional. Used to serve static web content
             return hostHub;
         }
         
