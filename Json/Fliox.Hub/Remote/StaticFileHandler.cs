@@ -12,7 +12,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class StaticFileHandler : IRequestHandler
     {
-        private readonly IFileHandler   fileHandler;
+        private readonly    IFileHandler                    fileHandler;
+        private readonly    Dictionary<string, CacheEntry>  cache = new Dictionary<string, CacheEntry>();
+        private readonly    bool                            cacheResponses;
         
         private readonly List<FileExt>  fileExtensions = new List<FileExt> {
             new FileExt(".html",  "text/html; charset=UTF-8"),
@@ -23,9 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             new FileExt(".ico",   "image/x-icon"),
         };
         
-        public StaticFileHandler (string rootFolder) {
-            fileHandler = new FileHandler(rootFolder);
-
+        public StaticFileHandler (string rootFolder, bool cacheResponses = true) {
+            fileHandler         = new FileHandler(rootFolder);
+            this.cacheResponses = cacheResponses;
         }
         
         // e.g. new StaticFileHandler(wwwPath + ".zip", "www~"));
@@ -48,7 +50,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
         public async Task HandleRequest(RequestContext context) {
             try {
+                if (!cacheResponses) {
+                    await GetHandler(context);
+                    return;                    
+                }
+                if (cache.TryGetValue(context.path, out CacheEntry entry)) {
+                    var body = new JsonValue(entry.body);
+                    context.Write(body, 0, entry.mediaType, entry.status);
+                    return;
+                }
                 await GetHandler(context);
+                if (context.StatusCode != 200)
+                    return;
+                entry = new CacheEntry(context);
+                cache.Add(context.path, entry);
             }
             catch (Exception ) {
                 var response = $"method: {context.method}, url: {context.path}";
@@ -92,13 +107,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    public struct FileExt {
+    public readonly struct FileExt {
         public readonly     string  extension;
         public readonly     string  mediaType;
         
         public FileExt (string  extension, string  mediaType) {
             this.extension  = extension;
             this.mediaType  = mediaType;
+        }
+    }
+    
+    public readonly struct CacheEntry {
+        public readonly     int     status;
+        public readonly     string  mediaType;
+        public readonly     byte[]  body;
+        
+        public CacheEntry (RequestContext context) {
+            status      = context.StatusCode;
+            mediaType   = context.ResponseContentType;
+            body        = context.Response.AsByteArray();
         }
     }
 }
