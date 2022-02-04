@@ -58,10 +58,13 @@ namespace Friflo.Json.Tests.Main
         ///     1. validate records written to the database by its schema definition <br/>
         ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema and Html <br/>
         ///     3. display entities as table in Hub Explorer <br/>
-        ///     4. execute container queries using a LINQ filter expression in Hub Explorer <br/>
-        ///     5. enable JSON auto completion, validation and reference links in Hub Explorer editor <br/>
+        ///     4. enable JSON auto completion, validation and reference links in Hub Explorer editor <br/>
         ///   </item>
-        ///   <item> Add the Hub Explorer to browse databases and send batch requests to the Fliox.Hub server using the Playground </item>
+        ///   <item> Add the Hub Explorer to: <br/>
+        ///     1. browse databases, containers and entities <br/>
+        ///     2. execute container queries using a LINQ filter expression <br/>
+        ///     3. send batch requests to the Fliox.Hub server using the Playground <br/>
+        ///   </item>
         /// </list>
         ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
