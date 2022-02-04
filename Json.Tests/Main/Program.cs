@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserName
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
-            var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore");
+            var hostHub = CreateHttpHost();
         //  var hostHub = CreateMiniHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www~");
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
@@ -63,14 +63,14 @@ namespace Friflo.Json.Tests.Main
         ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>         
-        public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath) {
-            var database            = new FileDatabase(dbPath, new PocHandler(), null, false);
+        public static HttpHostHub CreateHttpHost() {
+            var database            = new FileDatabase(DbPath, new PocHandler(), null, false);
             var hub                 = new FlioxHub(database).SetInfo("Demo Hub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             
-            var userDB              = new FileDatabase(userDbPath, new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase(UserDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
@@ -78,11 +78,14 @@ namespace Friflo.Json.Tests.Main
         //  var typeSchema          = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
-            const string www        = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
-            hostHub.AddHandler       (new StaticFileHandler(www, false));  // optional - serve static web files of Hub Explorer
+            hostHub.AddHandler       (new StaticFileHandler(Www, false));  // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }
+        
+        private const string DbPath     = "./Json.Tests/assets~/DB/PocStore";
+        private const string UserDbPath = "./Json.Tests/assets~/DB/UserStore";
+        private const string Www        = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
         
         private static HttpHostHub CreateMiniHost(string dbPath, string wwwPath) {
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
