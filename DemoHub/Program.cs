@@ -1,4 +1,5 @@
-﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
+﻿using System.Net;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Explorer;
@@ -6,14 +7,29 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Friflo.Json.Fliox.DemoHub
 {
     internal  static class  Program
     {
         public static void Main(string[] args) {
-            FlioxServer("http://+:8010/");
+            if (args.Length > 0 && args[0] == "HttpListener") {
+                RunHttpListener("http://+:8010/");
+                return;
+            }
+            CreateHostBuilder(args).Build().Run();
         }
+        
+        private static IHostBuilder CreateHostBuilder(string[] args) {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => 
+                        webBuilder.UseStartup<Startup>()
+                            .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
+                );
+        }
+        
         // Example requests for server at: /Json.Tests/www~/example-requests/
         //
         //   Note:
@@ -26,7 +42,7 @@ namespace Friflo.Json.Fliox.DemoHub
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void FlioxServer(string endpoint) {
+        private static void RunHttpListener(string endpoint) {
             var hostHub = CreateHttpHost();
         //  var hostHub = CreateMiniHost();
             var server = new HttpListenerHost(endpoint, hostHub);
@@ -38,7 +54,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// This method is a blueprint showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
-        ///   <item> By <b>HttpListener</b> see <see cref="FlioxServer"/> </item>
+        ///   <item> By <b>HttpListener</b> see <see cref="RunHttpListener"/> </item>
         ///   <item> By <b>ASP.NET Core / Kestrel</b> see <see cref="Startup.Configure"/></item>
         /// </list>
         /// <br/>
@@ -70,7 +86,7 @@ namespace Friflo.Json.Fliox.DemoHub
         ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>
-        private static HttpHostHub CreateHttpHost() {
+        internal static HttpHostHub CreateHttpHost() {
             var database            = new FileDatabase(DbPath, new DemoHandler(), null, false);
             var hub                 = new FlioxHub(database).SetInfo("Demo Hub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database

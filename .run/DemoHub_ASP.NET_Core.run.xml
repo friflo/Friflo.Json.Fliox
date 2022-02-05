@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="DemoHub" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="DemoHub - ASP.NET Core" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/DemoHub/.bin/Debug/netcoreapp3.1/Friflo.Json.Fliox.DemoHub.exe" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DemoHub" />
