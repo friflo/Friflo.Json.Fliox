@@ -1,5 +1,6 @@
 #if !UNITY_2020_1_OR_NEWER
 
+using System.Net;
 using Friflo.Json.Fliox.Hub.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,18 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     public class Startup
     {
+        internal static void RunAspNetCore(string[] args) {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        private static IHostBuilder CreateHostBuilder(string[] args) {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => 
+                        webBuilder.UseStartup<Startup>()
+                            .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
+                );
+        }
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -38,6 +51,18 @@ namespace Friflo.Json.Fliox.DemoHub
                     await context.HandleFlioxHostRequest(hostHub);
                 });
             });
+        }
+    }
+}
+
+#else
+
+namespace Friflo.Json.Fliox.DemoHub
+{
+    public class Startup
+    {
+        internal static void RunAspNetCore(string[] args) {
+            System.Console.WriteLine("ASP.NET Core / Unity setup not configured");
         }
     }
 }

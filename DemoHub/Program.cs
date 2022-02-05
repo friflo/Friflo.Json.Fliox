@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Net;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
@@ -8,8 +7,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Schema.Native;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
 namespace Friflo.Json.Fliox.DemoHub
 {
@@ -20,17 +17,9 @@ namespace Friflo.Json.Fliox.DemoHub
                 RunHttpListener("http://+:8010/");
                 return;
             }
-            CreateHostBuilder(args).Build().Run();
+            Startup.RunAspNetCore(args);
         }
-        
-        private static IHostBuilder CreateHostBuilder(string[] args) {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => 
-                        webBuilder.UseStartup<Startup>()
-                            .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
-                );
-        }
-        
+
         // Example requests for server at: /Json.Tests/www~/example-requests/
         //
         //   Note:
