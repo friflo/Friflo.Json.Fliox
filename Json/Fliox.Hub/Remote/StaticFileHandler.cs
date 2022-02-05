@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public async Task HandleRequest(RequestContext context) {
             try {
                 if (cacheControl == null) {
-                    await GetHandler(context);
+                    await GetHandler(context).ConfigureAwait(false);
                     return;                    
                 }
                 if (cache.TryGetValue(context.path, out CacheEntry entry)) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.SetHeaders(entry.headers);
                     return;
                 }
-                await GetHandler(context);
+                await GetHandler(context).ConfigureAwait(false);
                 if (cacheControl != null) {
                     context.AddHeader("Cache-Control", cacheControl); // seconds
                 }
