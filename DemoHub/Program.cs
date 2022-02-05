@@ -5,8 +5,6 @@ using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Schema.Definition;
-using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DemoHub
@@ -84,7 +82,6 @@ namespace Friflo.Json.Fliox.DemoHub
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
             var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type 
-        //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub).CacheControl(Cache);
             hostHub.AddHandler       (new StaticFileHandler(Www).CacheControl(Cache)); // optional - serve static web files of Hub Explorer
@@ -103,11 +100,6 @@ namespace Friflo.Json.Fliox.DemoHub
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
-        }
-        
-        private static TypeSchema CreateTypeSchema() {
-            var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
-            return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
         }
     }
 }
