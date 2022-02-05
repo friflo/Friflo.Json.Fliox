@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Main
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
         ///   <item> By <b>HttpListener</b> see <see cref="FlioxServer"/> </item>
-        ///   <item> By <b>Kestrel</b> see <see cref="Startup.Configure"/></item>
+        ///   <item> By <b>ASP.NET Core / Kestrel</b> see <see cref="Startup.Configure"/></item>
         /// </list>
         /// <br/>
         /// The features of a <see cref="HttpHostHub"/> instance are:
