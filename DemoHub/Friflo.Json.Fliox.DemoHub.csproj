@@ -20,8 +20,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
-      <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.AspNetCore\Friflo.Json.Fliox.Hub.AspNetCore.csproj" />
