@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
@@ -15,7 +16,7 @@ namespace Friflo.Json.Fliox.DemoHub
     internal  static class  Program
     {
         public static void Main(string[] args) {
-            if (args.Length > 0 && args[0] == "HttpListener") {
+            if (args.Contains("HttpListener")) {
                 RunHttpListener("http://+:8010/");
                 return;
             }
