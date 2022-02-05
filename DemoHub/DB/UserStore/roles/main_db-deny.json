@@ -1,0 +1,5 @@
+{
+    "id": "main_db-deny",
+    "description": "Empty 'rights' - deny all access to a specific database",
+    "rights": [ ]
+}

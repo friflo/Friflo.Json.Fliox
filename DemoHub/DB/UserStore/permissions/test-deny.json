@@ -1,0 +1,4 @@
+{
+    "id": "test-deny",
+    "roles": ["main_db-deny"]
+}

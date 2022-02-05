@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+
+        <LangVersion>7.3</LangVersion>
+		<GenerateProgramFile>false</GenerateProgramFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>.bin\Debug\</OutputPath>
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>.bin\Release\</OutputPath>
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
+      <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Hub.AspNetCore\Friflo.Json.Fliox.Hub.AspNetCore.csproj" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <None Remove="**/*.meta" />
+    </ItemGroup>
+
+</Project>

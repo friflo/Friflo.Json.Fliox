@@ -1,0 +1,19 @@
+{
+    "id": "user_db-allow",
+    "description": "Allow unrestricted access to user_db: permissions & roles. Allow execution of the given commands",
+    "rights": [
+        {
+            "type": "operation",
+            "database": "user_db",
+            "containers": {
+                "permissions": { "operations": ["full"] },
+                "roles":       { "operations": ["full"] }
+            }
+        },
+        {
+            "type":     "message",
+            "database": "user_db",
+            "names":    ["Db*", "Hub*"]
+        }
+    ]
+}

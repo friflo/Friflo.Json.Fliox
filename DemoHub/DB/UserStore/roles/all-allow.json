@@ -1,0 +1,7 @@
+{
+    "id": "all-allow",
+    "description": "Allow unrestricted access to all databases",
+    "rights": [
+        { "type": "allow", "database": "*" }
+    ]
+}

@@ -1,0 +1,4 @@
+{
+    "id": "admin",
+    "roles": ["all-allow"]
+}
