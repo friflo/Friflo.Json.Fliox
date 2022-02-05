@@ -15,12 +15,12 @@ export interface UserStore {
 
     // --- commands
     AuthenticateUser (param: AuthenticateUser) : AuthenticateUserResult;
+    DbEcho           (param: any) : any;
     DbContainers     (param: any) : DbContainers;
     DbCommands       (param: any) : DbCommands;
     DbSchema         (param: any) : DbSchema;
     HubInfo          (param: any) : HubInfo;
     HubCluster       (param: any) : HubCluster;
-    DbEcho           (param: any) : any;
 }
 
 export class AuthenticateUser {

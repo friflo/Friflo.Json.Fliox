@@ -17,12 +17,12 @@ export interface MonitorStore {
 
     // --- commands
     ClearStats   (param: ClearStats) : ClearStatsResult;
+    DbEcho       (param: any) : any;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;
     DbSchema     (param: any) : DbSchema;
     HubInfo      (param: any) : HubInfo;
     HubCluster   (param: any) : HubCluster;
-    DbEcho       (param: any) : any;
 }
 
 export class HostInfo {
