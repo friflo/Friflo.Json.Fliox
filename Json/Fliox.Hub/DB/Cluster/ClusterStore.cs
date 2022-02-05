@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class HubInfo {
         [Fri.Required]  public  string                          version;
                         public  string                          hostName;
-                        public  string                          description;
+                        public  string                          label;
                         public  string                          website;
     }
     

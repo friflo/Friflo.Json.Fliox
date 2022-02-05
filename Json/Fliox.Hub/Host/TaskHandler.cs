@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var info    = new HubInfo {
                 version     = hub.Version,
                 hostName    = hub.hostName,
-                description = hub.description,
+                label = hub.description,
                 website     = hub.website
             };
             return info;

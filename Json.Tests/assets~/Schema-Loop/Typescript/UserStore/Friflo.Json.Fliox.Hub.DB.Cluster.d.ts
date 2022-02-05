@@ -19,10 +19,10 @@ export class DbSchema {
 }
 
 export class HubInfo {
-    version      : string;
-    hostName?    : string | null;
-    description? : string | null;
-    website?     : string | null;
+    version   : string;
+    hostName? : string | null;
+    label?    : string | null;
+    website?  : string | null;
 }
 
 export class HubCluster {

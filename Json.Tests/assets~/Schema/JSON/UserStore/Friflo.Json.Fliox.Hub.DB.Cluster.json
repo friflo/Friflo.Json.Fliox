@@ -47,10 +47,10 @@
         "HubInfo": {
             "type": "object",
             "properties": {
-                "version":     { "type": "string" },
-                "hostName":    { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] },
-                "website":     { "type": ["string", "null"] }
+                "version":  { "type": "string" },
+                "hostName": { "type": ["string", "null"] },
+                "label":    { "type": ["string", "null"] },
+                "website":  { "type": ["string", "null"] }
             },
             "required": [
                 "version"

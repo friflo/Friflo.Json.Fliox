@@ -348,12 +348,12 @@ export class App {
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
         this.hubInfo        = hubInfoResult.result              as HubInfo;
         //
-        let   description   = this.hubInfo.description;
-        const website       = this.hubInfo.website;
-        if (description || website) {
-            if (!description)
-                description = "Website";
-            hubInfoEl.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${description}</a>` : description;
+        let   label     = this.hubInfo.label;
+        const website   = this.hubInfo.website;
+        if (label || website) {
+            if (!label)
+                label = "Website";
+            hubInfoEl.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${label}</a>` : label;
         }
 
         const ulCatalogs = createEl('ul');
