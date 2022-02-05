@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
+// Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public interface IRequestHandler
