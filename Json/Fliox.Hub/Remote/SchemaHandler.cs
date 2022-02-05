@@ -251,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             sb.AppendLine($"<meta name='description' content='{description}'>");
             sb.AppendLine("<meta name='color-scheme' content='dark light'>");
-            sb.AppendLine($"<link rel='icon' href='{handler.image}' type='image/x-icon'>");
+            sb.AppendLine($"<link rel='icon' href='{handler.image}' width='53' height='43' type='image/x-icon'>");
             sb.AppendLine($"<title>{title}</title>");
             sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
