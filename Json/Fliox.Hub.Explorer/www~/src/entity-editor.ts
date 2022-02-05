@@ -59,13 +59,14 @@ export class EntityEditor
         element.classList.add("selected");        
     }
 
-    private setEditorHeader(show: "entity" | "command" | "none") {
-        const displayEntity  = show == "entity"  ? "contents" : "none";
-        const displayCommand = show == "command" ? "contents" : "none";
+    private setEditorHeader(show: "entity" | "command" | "database" | "none") {
+        const displayEntity  = show == "entity"     ? "contents" : "none";
+        const displayCommand = show == "command"    ? "contents" : "none";
+        const displayDB      = show == "database"   ? "contents" : "none";
         el("entityTools")  .style.display = displayEntity;        
         el("entityHeader") .style.display = displayEntity;        
         el("commandTools") .style.display = displayCommand;
-        el("commandHeader").style.display = displayCommand;
+        el("databaseTools").style.display = displayDB;
     }
 
     private getCommandTags(database: string, command: string, signature: CommandType) {
@@ -112,13 +113,15 @@ export class EntityEditor
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 
-        catalogSchema.innerHTML     = app.getSchemaType(database);
-        explorerTools.innerHTML     = "";
-        this.setEditorHeader("none");
-        filterRow.style.visibility  = "hidden";
-        entityFilter.style.visibility  = "hidden";
-        readEntitiesDB.innerHTML    = App.getDatabaseLink(database);
-        readEntities.innerHTML      = "";
+        const schemaType                = app.getSchemaType(database);
+        catalogSchema.innerHTML         = schemaType;
+        explorerTools.innerHTML         = "";
+        this.setEditorHeader("database");
+        el("databaseLabel").innerHTML   = `${schemaType}&nbsp;<span style="opacity:0.5;">schema</span>`;
+        filterRow.style.visibility      = "hidden";
+        entityFilter.style.visibility   = "hidden";
+        readEntitiesDB.innerHTML        = App.getDatabaseLink(database);
+        readEntities.innerHTML          = "";
 
         const ulDatabase            = createEl('ul');
         ulDatabase.classList.value  = "database";

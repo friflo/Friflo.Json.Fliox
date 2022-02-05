@@ -46,10 +46,11 @@ export class EntityEditor {
     setEditorHeader(show) {
         const displayEntity = show == "entity" ? "contents" : "none";
         const displayCommand = show == "command" ? "contents" : "none";
+        const displayDB = show == "database" ? "contents" : "none";
         el("entityTools").style.display = displayEntity;
         el("entityHeader").style.display = displayEntity;
         el("commandTools").style.display = displayCommand;
-        el("commandHeader").style.display = displayCommand;
+        el("databaseTools").style.display = displayDB;
     }
     getCommandTags(database, command, signature) {
         let label = app.schemaLess;
@@ -91,9 +92,11 @@ export class EntityEditor {
     listCommands(database, dbCommands, dbContainer) {
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
-        catalogSchema.innerHTML = app.getSchemaType(database);
+        const schemaType = app.getSchemaType(database);
+        catalogSchema.innerHTML = schemaType;
         explorerTools.innerHTML = "";
-        this.setEditorHeader("none");
+        this.setEditorHeader("database");
+        el("databaseLabel").innerHTML = `${schemaType}&nbsp;<span style="opacity:0.5;">schema</span>`;
         filterRow.style.visibility = "hidden";
         entityFilter.style.visibility = "hidden";
         readEntitiesDB.innerHTML = App.getDatabaseLink(database);
