@@ -18,11 +18,11 @@
             "additionalProperties": false,
             "commands": {
                 "AuthenticateUser": { "param": { "$ref": "#/definitions/AuthenticateUser" }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
-                "DbHubInfo":        { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbHubInfo" } },
-                "DbHubCluster":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbHubCluster" } },
                 "DbContainers":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
                 "DbCommands":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
                 "DbSchema":         { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
+                "HubInfo":          { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubInfo" } },
+                "HubCluster":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubCluster" } },
                 "DbEcho":           { "param": {  }, "result": {  } }
             }
         },

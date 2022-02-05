@@ -41,21 +41,23 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public TaskHandler () {
             // todo add handler via scanning TaskHandler
+            // --- Db*
             AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>         (DbEcho));
-            AddCommandHandler       (StdCommand.DbHubInfo,     new CommandHandler<Empty,     DbHubInfo>         (DbHubInfo));
-            AddCommandHandlerAsync  (StdCommand.DbHubCluster,  new CommandHandler<Empty,     Task<DbHubCluster>>(DbHubCluster));
             AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
             AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
             AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
+            // --- Hub*
+            AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
+            AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
         }
         
         private static JsonValue DbEcho (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private static DbHubInfo DbHubInfo (Command<Empty> command) {
+        private static HubInfo HubInfo (Command<Empty> command) {
             var hub     = command.Hub;
-            var info    = new DbHubInfo {
+            var info    = new HubInfo {
                 version     = hub.Version,
                 hostName    = hub.hostName,
                 description = hub.description,
@@ -84,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static async Task<DbHubCluster> DbHubCluster (Command<Empty> command) {
+        private static async Task<HubCluster> HubCluster (Command<Empty> command) {
             var hub = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }

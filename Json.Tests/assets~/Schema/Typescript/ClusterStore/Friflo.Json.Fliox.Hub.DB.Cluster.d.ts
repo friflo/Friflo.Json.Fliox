@@ -7,11 +7,11 @@ export interface ClusterStore {
     commands    : { [key: string]: DbCommands };
 
     // --- commands
-    DbHubInfo    (param: any) : DbHubInfo;
-    DbHubCluster (param: any) : DbHubCluster;
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;
     DbSchema     (param: any) : DbSchema;
+    HubInfo      (param: any) : HubInfo;
+    HubCluster   (param: any) : HubCluster;
     DbEcho       (param: any) : any;
 }
 
@@ -33,14 +33,14 @@ export class DbCommands {
     commands  : string[];
 }
 
-export class DbHubInfo {
+export class HubInfo {
     version      : string;
     hostName?    : string | null;
     description? : string | null;
     website?     : string | null;
 }
 
-export class DbHubCluster {
+export class HubCluster {
     databases  : DbContainers[];
 }
 

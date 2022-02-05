@@ -117,9 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Echoes the value specified in <see cref="FlioxClient.SendCommand{TCommand,TResult}(string,TCommand)"/> in <see cref="CommandTask.ResultJson"/>
         /// </summary>
-        public const string DbEcho          = "DbEcho";
-        
-        public const string DbHubInfo       = "DbHubInfo";
+        public const string DbEcho          = "DbEcho";        
         
         public const string DbContainers    = "DbContainers";
 
@@ -127,7 +125,10 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public const string DbSchema        = "DbSchema";
         
-        public const string DbHubCluster    = "DbHubCluster";
+        // --- Hub*
+        public const string HubInfo         = "HubInfo";
+
+        public const string HubCluster      = "HubCluster";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);

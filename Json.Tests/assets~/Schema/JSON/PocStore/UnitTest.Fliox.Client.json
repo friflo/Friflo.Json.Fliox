@@ -24,11 +24,11 @@
             "additionalProperties": false,
             "commands": {
                 "TestCommand":  { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
-                "DbHubInfo":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbHubInfo" } },
-                "DbHubCluster": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbHubCluster" } },
                 "DbContainers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
                 "DbCommands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
                 "DbSchema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
+                "HubInfo":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubInfo" } },
+                "HubCluster":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubCluster" } },
                 "DbEcho":       { "param": {  }, "result": {  } }
             }
         },
