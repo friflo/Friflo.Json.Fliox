@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Main
         /// </summary>
         public static HttpHostHub CreateHttpHost() {
             var database            = new FileDatabase(DbPath, new PocHandler(), null, false);
-            var hub                 = new FlioxHub(database).SetInfo("Demo Hub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
+            var hub                 = new FlioxHub(database).SetInfo("Test PocStore", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
