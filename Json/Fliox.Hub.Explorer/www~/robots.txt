@@ -1,4 +1,5 @@
 user-agent: *
 Allow: /$
 Allow: */schema.html
+Allow: */index.html
 Disallow: /
