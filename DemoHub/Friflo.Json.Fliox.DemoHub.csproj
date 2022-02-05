@@ -28,7 +28,7 @@
     <ItemGroup>
       <None Remove="**/*.meta" />
       <!-- exclude folders: DB from build; keep them in IDEs -->
-      <Content Remove="DB\**" />
+      <Content Remove="DB~/**/*.*" />
     </ItemGroup>
 
 </Project>

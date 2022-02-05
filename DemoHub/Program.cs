@@ -94,8 +94,8 @@ namespace Friflo.Json.Fliox.DemoHub
             return hostHub;
         }
         
-        private static readonly string  DbPath      = "./DB/DemoStore";
-        private static readonly string  UserDbPath  = "./DB/UserStore";
+        private static readonly string  DbPath      = "./DB~/DemoStore";
+        private static readonly string  UserDbPath  = "./DB~/UserStore";
         private static readonly string  Www         = HubExplorer.Path;
         private static readonly string  Cache       = null; // "max-age=600"; // HTTP Cache-Control
         
