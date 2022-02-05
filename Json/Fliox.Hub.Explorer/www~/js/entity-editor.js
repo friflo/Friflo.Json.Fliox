@@ -50,6 +50,7 @@ export class EntityEditor {
         el("entityTools").style.display = displayEntity;
         el("entityHeader").style.display = displayEntity;
         el("commandTools").style.display = displayCommand;
+        el("commandHeader").style.display = displayCommand;
         el("databaseTools").style.display = displayDB;
     }
     getCommandTags(database, command, signature) {
