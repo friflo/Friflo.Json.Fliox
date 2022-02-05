@@ -90,10 +90,10 @@ namespace Friflo.Json.Tests.Main
             return hostHub;
         }
         
-        private const string DbPath     = "./Json.Tests/assets~/DB/PocStore";
-        private const string UserDbPath = "./Json.Tests/assets~/DB/UserStore";
-        private const string Www        = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
-        private const string Cache      = null; // "max-age=600"; // HTTP Cache-Control
+        private static readonly string  DbPath      = "./Json.Tests/assets~/DB/PocStore";
+        private static readonly string  UserDbPath  = "./Json.Tests/assets~/DB/UserStore";
+        private static readonly string  Www         = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+        private static readonly string  Cache       = null; // "max-age=600"; // HTTP Cache-Control
         
         private static HttpHostHub CreateMiniHost() {
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
