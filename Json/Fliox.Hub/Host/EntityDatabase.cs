@@ -146,23 +146,28 @@ namespace Friflo.Json.Fliox.Hub.Host
             var localPool       = new Pool(sharedEnv);
             var messageContext  = new MessageContext(localPool, null);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
-            foreach (var containerName in containerNames) {
-                var srcContainer    = src.GetOrCreateContainer(containerName);
-                var dstContainer    = GetOrCreateContainer(containerName);
-                var keyName         = "id"; // todo set custom key name
-                var filterContext   = new OperationContext();
-                filterContext.Init(Operation.FilterTrue, out _);
-                var query           = new QueryEntities { container = containerName, filterContext = filterContext, keyName = keyName };
-                var queryResult     = await srcContainer.QueryEntities(query, messageContext).ConfigureAwait(false);
-                
-                var entities        = new List<JsonValue>(queryResult.entities.Count);
-                foreach (var entity in queryResult.entities) {
-                    entities.Add(entity.Value.Json);
-                }
-                var entityKeys      = EntityUtils.GetKeysFromEntities (keyName, entities, messageContext, out _);
-                var upsert          = new UpsertEntities { container = containerName, entities = entities, entityKeys = entityKeys };
-                await dstContainer.UpsertEntities(upsert, messageContext).ConfigureAwait(false);
+            foreach (var container in containerNames) {
+                await SeedContainer(src, container, messageContext).ConfigureAwait(false);
             }
+        }
+        
+        private async Task SeedContainer(EntityDatabase src, string container, MessageContext messageContext)
+        {
+            var srcContainer    = src.GetOrCreateContainer(container);
+            var dstContainer    = GetOrCreateContainer(container);
+            var keyName         = "id"; // todo set custom key name
+            var filterContext   = new OperationContext();
+            filterContext.Init(Operation.FilterTrue, out _);
+            var query           = new QueryEntities { container = container, filterContext = filterContext, keyName = keyName };
+            var queryResult     = await srcContainer.QueryEntities(query, messageContext).ConfigureAwait(false);
+            
+            var entities        = new List<JsonValue>(queryResult.entities.Count);
+            foreach (var entity in queryResult.entities) {
+                entities.Add(entity.Value.Json);
+            }
+            var entityKeys      = EntityUtils.GetKeysFromEntities (keyName, entities, messageContext, out _);
+            var upsert          = new UpsertEntities { container = container, entities = entities, entityKeys = entityKeys };
+            await dstContainer.UpsertEntities(upsert, messageContext).ConfigureAwait(false);
         }
     }
 }
