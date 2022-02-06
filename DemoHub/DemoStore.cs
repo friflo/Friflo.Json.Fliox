@@ -21,6 +21,8 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub): base (hub) { }
         
         public CommandTask<double>    TestAdd (TestAdd add)  => SendCommand<TestAdd, double>(nameof(TestAdd), add);
+        /// command TestSub intentionally not implemented by <see cref="DemoHandler"/>
+        public CommandTask<double>    TestSub (TestSub add)  => SendCommand<TestSub, double>(nameof(TestSub), add);
     }
 
     // ------------------------------ models ------------------------------
@@ -77,6 +79,11 @@ namespace Friflo.Json.Fliox.DemoHub
     
     // ------------------------------ command values / results ------------------------------
     public class TestAdd {
+        public          double  left;
+        public          double  right;
+    }
+    
+    public class TestSub {
         public          double  left;
         public          double  right;
     }
