@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     public class DemoStore : FlioxClient
     {
+        // --- containers
         public readonly EntitySet <string, Order>       orders;
         public readonly EntitySet <string, Customer>    customers;
         public readonly EntitySet <string, Article>     articles;
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.DemoHub
         
         public DemoStore(FlioxHub hub): base (hub) { }
         
+        // --- commands
         public CommandTask<double>    TestAdd (TestAdd add)  => SendCommand<TestAdd, double>(nameof(TestAdd), add);
         /// command TestSub intentionally not implemented by <see cref="DemoHandler"/>
         public CommandTask<double>    TestSub (TestSub add)  => SendCommand<TestSub, double>(nameof(TestSub), add);

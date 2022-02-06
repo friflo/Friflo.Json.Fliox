@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     public partial class ClusterStore : FlioxClient
     {
+        // --- containers
         public  readonly    EntitySet <string, DbContainers>    containers;
         public  readonly    EntitySet <string, DbCommands>      commands;
         public  readonly    EntitySet <string, DbSchema>        schemas;

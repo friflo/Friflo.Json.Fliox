@@ -16,6 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public class PocStore : FlioxClient
     {
+        // --- containers
         public readonly EntitySet <string, Order>       orders;
         public readonly EntitySet <string, Customer>    customers;
         public readonly EntitySet <string, Article>     articles;
@@ -25,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public PocStore(FlioxHub hub): base (hub) { }
         
+        // --- commands
         [Fri.Command(Name =        "TestCommand")]
         public CommandTask<bool>    Test (TestCommand command)                 => SendCommand<TestCommand, bool>("TestCommand", command);
     }

@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public class EntityIdStore : FlioxClient {
+        // --- containers
         public  EntitySet <Guid,    GuidEntity>      guidEntities       { get; private set; }
         public  EntitySet <int,     IntEntity>       intEntities        { get; private set; }
         public  EntitySet <int,     AutoIntEntity>   intEntitiesAuto    { get; private set; }

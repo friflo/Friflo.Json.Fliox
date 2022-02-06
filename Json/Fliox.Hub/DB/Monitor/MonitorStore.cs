@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     {
         internal            string                              hostName;
         
+        // --- containers
         public  readonly    EntitySet <JsonKey, HostInfo>       hosts;
         public  readonly    EntitySet <JsonKey, ClientInfo>     clients;
         public  readonly    EntitySet <JsonKey, UserInfo>       users;

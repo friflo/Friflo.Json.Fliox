@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     public class UserStore : FlioxClient, IUserAuth
     {
+        // --- containers
         public  readonly    EntitySet <JsonKey, UserCredential>  credentials;
         public  readonly    EntitySet <JsonKey, UserPermission>  permissions;
         public  readonly    EntitySet <string,  Role>            roles;
@@ -32,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         public UserStore(FlioxHub hub) : base(hub) { }
         
+        // --- commands
         public CommandTask<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             return SendCommand<AuthenticateUser, AuthenticateUserResult>(nameof(AuthenticateUser), command);
         }

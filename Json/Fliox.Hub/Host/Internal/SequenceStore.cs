@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 
     public sealed class SequenceStore : FlioxClient
     {
+        // --- containers
         [Fri.Property(Name =                             "_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;
         [Fri.Property(Name =                             "_sequenceKeys")]  
