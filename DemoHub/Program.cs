@@ -77,41 +77,45 @@ namespace Friflo.Json.Fliox.DemoHub
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>
         internal static HttpHostHub CreateHttpHost() {
-            var database            = CreateDatabase();
+            var c                   = new Config();
+            var database            = CreateDatabase(c);
             var hub                 = new FlioxHub(database).SetInfo("DemoHub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/DemoHub/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             
-            var userDB              = new FileDatabase(UserDbPath, new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase(c.userDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
             var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
-            var hostHub             = new HttpHostHub(hub).CacheControl(Cache);
-            hostHub.AddHandler       (new StaticFileHandler(Www).CacheControl(Cache)); // optional - serve static web files of Hub Explorer
+            var hostHub             = new HttpHostHub(hub).CacheControl(c.cache);
+            hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             return hostHub;
         }
         
-        private static readonly string  DbPath      = "./DB~/DemoStore";
-        private static readonly string  UserDbPath  = "./DB~/UserStore";
-        private static readonly string  Www         = HubExplorer.Path;
-        private static readonly string  Cache       = null; // "max-age=600"; // HTTP Cache-Control
-        private static readonly bool    UseFileDb   = false;
+        private class Config {
+            internal readonly string  dbPath              = "./DB~/DemoStore";
+            internal readonly string  userDbPath          = "./DB~/UserStore";
+            internal readonly string  www                 = HubExplorer.Path;
+            internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
+            internal readonly bool    useMemoryDbClone    = false;
+        }
         
         private static HttpHostHub CreateMiniHost() {
+            var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = new FileDatabase(DbPath);
+            var database            = new FileDatabase(c.dbPath);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional - serve static web files of Hub Explorer
+            hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
         }
         
-        private static EntityDatabase CreateDatabase() {
-            var fileDb = new FileDatabase(DbPath, new DemoHandler(), null, false); 
-            if (UseFileDb)
+        private static EntityDatabase CreateDatabase(Config c) {
+            var fileDb = new FileDatabase(c.dbPath, new DemoHandler(), null, false); 
+            if (!c.useMemoryDbClone)
                 return fileDb;
             var memoryDB = new MemoryDatabase(new DemoHandler());
             memoryDB.SeedDatabase(fileDb);
