@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.DemoHub
 {
+    /// <summary>
+    /// Bootstrapping of ASP.NET Core
+    /// </summary> 
     public class Startup
     {
         internal static void RunAspNetCore(string[] args) {

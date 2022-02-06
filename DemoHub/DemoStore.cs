@@ -10,6 +10,10 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.DemoHub
 {
+    /// <summary>
+    /// Define database schema by adding container fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
+    /// Declare database commands by adding methods returning a <see cref="CommandTask{TResult}"/>.
+    /// </summary>
     public class DemoStore : FlioxClient
     {
         // --- containers

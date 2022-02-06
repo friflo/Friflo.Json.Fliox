@@ -2,7 +2,11 @@ using Friflo.Json.Fliox.Hub.Host;
 
 namespace Friflo.Json.Fliox.DemoHub
 {
-    public class DemoHandler : TaskHandler {
+    /// <summary>
+    /// Implementation of database commands declared by <see cref="DemoStore"/>.
+    /// </summary> 
+    public class DemoHandler : TaskHandler
+    {
         public DemoHandler() {
             AddCommandHandler<TestAdd, double>(nameof(TestAdd), TestAdd);
             // AddCommandHandler<TestSub, double>(nameof(TestSub), TestSub);

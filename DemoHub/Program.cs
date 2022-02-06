@@ -10,6 +10,9 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DemoHub
 {
+    /// <summary>
+    /// Bootstrapping of databases hosted by <see cref="HttpHostHub"/>
+    /// </summary> 
     internal  static class  Program
     {
         public static void Main(string[] args) {
