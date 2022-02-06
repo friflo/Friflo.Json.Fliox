@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.DemoHub
             internal readonly string  userDbPath          = "./DB~/UserStore";
             internal readonly string  www                 = HubExplorer.Path;
             internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
-            internal readonly bool    useMemoryDbClone    = false;
+            internal readonly bool    useMemoryDbClone    = true;
         }
         
         private static HttpHostHub CreateMiniHost() {
