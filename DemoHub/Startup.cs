@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// Bootstrapping of ASP.NET Core
+    /// Bootstrapping of ASP.NET Core and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.
     /// </summary> 
     public class Startup
     {
