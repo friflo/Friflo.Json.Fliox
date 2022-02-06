@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var jsonResult  = await callback.InvokeCallback(name, value, messageContext).ConfigureAwait(false);
                 return new SendCommandResult { result = jsonResult };
             }
-            var msg = $"command handler not found: '{name}'";
+            var msg = $"no command handler for: '{name}'";
             return new TaskErrorResult (TaskErrorResultType.NotImplemented, msg);
         }
     }

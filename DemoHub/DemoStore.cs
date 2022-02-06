@@ -23,7 +23,9 @@ namespace Friflo.Json.Fliox.DemoHub
         
         // --- commands
         public CommandTask<double>    TestAdd (TestAdd add)  => SendCommand<TestAdd, double>(nameof(TestAdd), add);
-        /// command TestSub intentionally not implemented by <see cref="DemoHandler"/>
+        /// <summary> command handler for <see cref="TestSub"/> intentionally not implemented by <see cref="DemoHandler"/>. 
+        /// Execution results in:<br/>
+        /// <code>NotImplemented > no command handler for: 'TestSub' </code></summary>
         public CommandTask<double>    TestSub (TestSub add)  => SendCommand<TestSub, double>(nameof(TestSub), add);
     }
 

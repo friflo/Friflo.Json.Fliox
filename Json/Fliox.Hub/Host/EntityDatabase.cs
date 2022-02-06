@@ -125,9 +125,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return new DbContainers { containers = containerList, databaseType = GetType().Name };
         }
-        
-        private static readonly bool ExposeSchemaCommands = false;  // for now get commands always from handler
-        
+
+        private const bool ExposeSchemaCommands = true; // false for debugging
+
         public DbCommands GetDbCommands() {
             string[] commands;
             var schema = Schema;
