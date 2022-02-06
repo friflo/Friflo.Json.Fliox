@@ -98,6 +98,7 @@ namespace Friflo.Json.Tests.Main
             internal readonly string  userDbPath  = "./Json.Tests/assets~/DB/UserStore";
             internal readonly string  www         = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly string  cache       = null; // "max-age=600"; // HTTP Cache-Control
+            internal readonly bool    useMemoryDbClone    = true;
         }
         
         private static HttpHostHub CreateMiniHost() {
@@ -113,7 +114,12 @@ namespace Friflo.Json.Tests.Main
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema) {
             var fileDb = new FileDatabase(c.dbPath, new PocHandler(), null, false);
             fileDb.Schema = schema;
-            return fileDb;
+            if (!c.useMemoryDbClone)
+                return fileDb;
+            var memoryDB = new MemoryDatabase(new PocHandler());
+            memoryDB.Schema = schema;
+            memoryDB.SeedDatabase(fileDb).Wait();
+            return memoryDB;
         }
         
         private static TypeSchema CreateTypeSchema() {

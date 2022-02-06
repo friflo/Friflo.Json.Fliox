@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.DemoHub
                 return fileDb;
             var memoryDB = new MemoryDatabase(new DemoHandler());
             memoryDB.Schema = schema;
-            memoryDB.SeedDatabase(fileDb);
+            memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;
         }
     }
