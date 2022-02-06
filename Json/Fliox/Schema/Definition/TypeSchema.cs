@@ -61,12 +61,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
             return typeDefMap[key2];
         }
 
-        public ICollection<TypeDef> GetEntityTypes() {
-            var list = new List<TypeDef>(RootType.Fields.Count);
+        public Dictionary<string, TypeDef> GetEntityTypes() {
+            var map = new Dictionary<string, TypeDef>(RootType.Fields.Count);
             foreach (var field in RootType.Fields) {
-                list.Add(field.type);
+                map.Add(field.name, field.type);
             }
-            return list;
+            return map;
         }
         
         /// <summary>

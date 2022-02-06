@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Explorer;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DemoHub
@@ -78,7 +79,10 @@ namespace Friflo.Json.Fliox.DemoHub
         /// </summary>
         internal static HttpHostHub CreateHttpHost() {
             var c                   = new Config();
-            var database            = CreateDatabase(c);
+            var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type 
+            var database            = CreateDatabase(c, typeSchema);
+            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
+
             var hub                 = new FlioxHub(database).SetInfo("DemoHub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/DemoHub/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
@@ -88,8 +92,6 @@ namespace Friflo.Json.Fliox.DemoHub
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type 
-            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub).CacheControl(c.cache);
             hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             return hostHub;
@@ -106,19 +108,19 @@ namespace Friflo.Json.Fliox.DemoHub
         private static HttpHostHub CreateMiniHost() {
             var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = CreateDatabase(c);
+            var database            = CreateDatabase(c, null);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
         }
         
-        private static EntityDatabase CreateDatabase(Config c) {
+        private static EntityDatabase CreateDatabase(Config c, TypeSchema typeSchema) {
             var fileDb = new FileDatabase(c.dbPath, new DemoHandler(), null, false); 
             if (!c.useMemoryDbClone)
                 return fileDb;
             var memoryDB = new MemoryDatabase(new DemoHandler());
-            memoryDB.SeedDatabase(fileDb);
+            memoryDB.SeedDatabase(fileDb, typeSchema);
             return memoryDB;
         }
     }

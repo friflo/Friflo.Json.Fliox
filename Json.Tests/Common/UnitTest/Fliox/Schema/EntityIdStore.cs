@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/EntityIdStore");
-            var entityTypes = schema.GetEntityTypes();
+            var entityTypes = schema.GetEntityTypes().Values;
             var options     = new JsonTypeOptions(schema) { separateTypes = entityTypes };
             var generator   = JsonSchemaGenerator.Generate(options);
             

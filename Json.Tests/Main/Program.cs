@@ -72,7 +72,11 @@ namespace Friflo.Json.Tests.Main
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>
         public static HttpHostHub CreateHttpHost() {
+            var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
+        //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema 
             var database            = new FileDatabase(DbPath, new PocHandler(), null, false);
+            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
+            
             var hub                 = new FlioxHub(database).SetInfo("Test PocStore", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
@@ -82,9 +86,6 @@ namespace Friflo.Json.Tests.Main
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
-        //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema 
-            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub).CacheControl(Cache);
             hostHub.AddHandler       (new StaticFileHandler(Www).CacheControl(Cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator

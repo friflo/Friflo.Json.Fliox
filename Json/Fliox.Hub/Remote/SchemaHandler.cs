@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         internal SchemaResource AddSchema(string name, TypeSchema typeSchema, ICollection<TypeDef> sepTypes = null) {
-            sepTypes    = sepTypes ?? typeSchema.GetEntityTypes();
+            sepTypes    = sepTypes ?? typeSchema.GetEntityTypes().Values;
             var schema  = new SchemaResource(typeSchema, sepTypes);
             schemas.Add(name, schema);
             return schema;

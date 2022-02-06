@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -141,21 +142,22 @@ namespace Friflo.Json.Fliox.Hub.Host
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
         
         // may move to a utils class
-        public async Task SeedDatabase(EntityDatabase src) {
+        public async Task SeedDatabase(EntityDatabase src, TypeSchema typeSchema) {
             var sharedEnv       = new SharedEnv();
             var localPool       = new Pool(sharedEnv);
             var messageContext  = new MessageContext(localPool, null);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
+            var entityTypes     = typeSchema.GetEntityTypes();
             foreach (var container in containerNames) {
-                await SeedContainer(src, container, messageContext).ConfigureAwait(false);
+                var keyName = entityTypes[container].KeyField;
+                await SeedContainer(src, container, keyName, messageContext).ConfigureAwait(false);
             }
         }
         
-        private async Task SeedContainer(EntityDatabase src, string container, MessageContext messageContext)
+        private async Task SeedContainer(EntityDatabase src, string container, string keyName, MessageContext messageContext)
         {
             var srcContainer    = src.GetOrCreateContainer(container);
             var dstContainer    = GetOrCreateContainer(container);
-            var keyName         = "id"; // todo set custom key name
             var filterContext   = new OperationContext();
             filterContext.Init(Operation.FilterTrue, out _);
             var query           = new QueryEntities { container = container, filterContext = filterContext, keyName = keyName };

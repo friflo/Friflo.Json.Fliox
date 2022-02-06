@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var schemas = jsonSchemas;
             if (schemas != null)
                 return schemas;
-            var entityTypes = typeSchema.GetEntityTypes();
+            var entityTypes = typeSchema.GetEntityTypes().Values;
             var generator   = new Generator(typeSchema, ".json", null, entityTypes);
             JsonSchemaGenerator.Generate(generator);
             schemas = new Dictionary<string, JsonValue>();
