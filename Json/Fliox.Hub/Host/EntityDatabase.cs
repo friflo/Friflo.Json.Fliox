@@ -151,7 +151,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
             var entityTypes     = typeSchema?.GetEntityTypes();
             foreach (var container in containerNames) {
-                string keyName = entityTypes?[container].KeyField;
+                string keyName = null;
+                if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
+                    keyName = entityType.KeyField;
+                }
                 await SeedContainer(src, container, keyName, messageContext).ConfigureAwait(false);
             }
         }
