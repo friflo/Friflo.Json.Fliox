@@ -82,7 +82,6 @@ namespace Friflo.Json.Fliox.DemoHub
             var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema);
-            database.Schema         = databaseSchema;                   // optional - enables type validation for create, upsert & patch operations
 
             var hub                 = new FlioxHub(database).SetInfo("DemoHub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/DemoHub/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
@@ -122,6 +121,7 @@ namespace Friflo.Json.Fliox.DemoHub
             if (!c.useMemoryDbClone)
                 return fileDb;
             var memoryDB = new MemoryDatabase(new DemoHandler());
+            memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb);
             return memoryDB;
         }

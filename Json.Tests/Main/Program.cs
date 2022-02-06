@@ -72,38 +72,48 @@ namespace Friflo.Json.Tests.Main
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>
         public static HttpHostHub CreateHttpHost() {
+            var c                   = new Config();
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
-        //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema 
-            var database            = new FileDatabase(DbPath, new PocHandler(), null, false);
-            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
+        //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
+            var databaseSchema      = new DatabaseSchema(typeSchema);
+            var database            = CreateDatabase(c, databaseSchema);
             
             var hub                 = new FlioxHub(database).SetInfo("Test PocStore", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             
-            var userDB              = new FileDatabase(UserDbPath, new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase(c.userDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var hostHub             = new HttpHostHub(hub).CacheControl(Cache);
-            hostHub.AddHandler       (new StaticFileHandler(Www).CacheControl(Cache)); // optional - serve static web files of Hub Explorer
+            var hostHub             = new HttpHostHub(hub).CacheControl(c.cache);
+            hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }
         
-        private static readonly string  DbPath      = "./Json.Tests/assets~/DB/PocStore";
-        private static readonly string  UserDbPath  = "./Json.Tests/assets~/DB/UserStore";
-        private static readonly string  Www         = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
-        private static readonly string  Cache       = null; // "max-age=600"; // HTTP Cache-Control
+        class Config {
+            internal readonly string  dbPath      = "./Json.Tests/assets~/DB/PocStore";
+            internal readonly string  userDbPath  = "./Json.Tests/assets~/DB/UserStore";
+            internal readonly string  www         = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            internal readonly string  cache       = null; // "max-age=600"; // HTTP Cache-Control
+        }
         
         private static HttpHostHub CreateMiniHost() {
+            var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = new FileDatabase(DbPath);
+            var database            = CreateDatabase(c, null);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional - serve static web files of Hub Explorer
+            hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
+        }
+        
+        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema) {
+            var fileDb = new FileDatabase(c.dbPath, new PocHandler(), null, false);
+            fileDb.Schema = schema;
+            return fileDb;
         }
         
         private static TypeSchema CreateTypeSchema() {
