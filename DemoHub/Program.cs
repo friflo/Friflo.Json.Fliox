@@ -79,9 +79,10 @@ namespace Friflo.Json.Fliox.DemoHub
         /// </summary>
         internal static HttpHostHub CreateHttpHost() {
             var c                   = new Config();
-            var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type 
-            var database            = CreateDatabase(c, typeSchema);
-            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
+            var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type
+            var databaseSchema      = new DatabaseSchema(typeSchema);
+            var database            = CreateDatabase(c, databaseSchema);
+            database.Schema         = databaseSchema;                   // optional - enables type validation for create, upsert & patch operations
 
             var hub                 = new FlioxHub(database).SetInfo("DemoHub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/DemoHub/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
@@ -115,12 +116,13 @@ namespace Friflo.Json.Fliox.DemoHub
             return hostHub;
         }
         
-        private static EntityDatabase CreateDatabase(Config c, TypeSchema typeSchema) {
-            var fileDb = new FileDatabase(c.dbPath, new DemoHandler(), null, false); 
+        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema) {
+            var fileDb = new FileDatabase(c.dbPath, new DemoHandler(), null, false);
+            fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
             var memoryDB = new MemoryDatabase(new DemoHandler());
-            memoryDB.SeedDatabase(fileDb, typeSchema);
+            memoryDB.SeedDatabase(fileDb);
             return memoryDB;
         }
     }

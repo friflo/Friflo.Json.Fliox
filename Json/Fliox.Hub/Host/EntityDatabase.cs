@@ -141,15 +141,13 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
         
-        /** If <see cref="typeSchema"/> is null the key name of all entities in all containers must be "id".
-         * If not null the key name of entities is retrieved from the schema.
-         */
-        public async Task SeedDatabase(EntityDatabase src, TypeSchema typeSchema) {
+        /// If given database has no schema the key name of all entities in all containers need to be "id"
+        public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
             var localPool       = new Pool(sharedEnv);
             var messageContext  = new MessageContext(localPool, null);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
-            var entityTypes     = typeSchema?.GetEntityTypes();
+            var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
             foreach (var container in containerNames) {
                 string keyName = null;
                 if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
