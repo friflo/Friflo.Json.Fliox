@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DemoHub
         private static HttpHostHub CreateMiniHost() {
             var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = new FileDatabase(c.dbPath);
+            var database            = CreateDatabase(c);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
