@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DemoHub
     }
    
     
-    // ------------------------------ command values / results ------------------------------
+    // ------------------------------ command params / results ------------------------------
     public class TestAdd {
         public          double  left;
         public          double  right;

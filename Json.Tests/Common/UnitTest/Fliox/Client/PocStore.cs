@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public int derivedVal;
     }
     
-    // ------------------------------ command values / results ------------------------------
+    // ------------------------------ command params / results ------------------------------
     public class TestCommand {
         public          string  text;
 
