@@ -4,11 +4,12 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     public class DemoHandler : TaskHandler {
         public DemoHandler() {
-            AddCommandHandler<TestCommand, bool>(nameof(TestCommand), TestCommand);
+            AddCommandHandler<TestAdd, double>(nameof(TestAdd), TestAdd);
         }
         
-        private static bool TestCommand(Command<TestCommand> command) {
-            return true;
+        private static double TestAdd(Command<TestAdd> command) {
+            var param = command.Value;
+            return param.left * param.right;
         }
     }
 }

@@ -20,8 +20,7 @@ namespace Friflo.Json.Fliox.DemoHub
         
         public DemoStore(FlioxHub hub): base (hub) { }
         
-        [Fri.Command(Name =        "TestCommand")]
-        public CommandTask<bool>    Test (TestCommand command)                 => SendCommand<TestCommand, bool>("TestCommand", command);
+        public CommandTask<double>    TestAdd (TestAdd add)  => SendCommand<TestAdd, double>(nameof(TestAdd), add);
     }
 
     // ------------------------------ models ------------------------------
@@ -77,9 +76,8 @@ namespace Friflo.Json.Fliox.DemoHub
    
     
     // ------------------------------ command values / results ------------------------------
-    public class TestCommand {
-        public          string  text;
-
-        public override string  ToString() => text;
+    public class TestAdd {
+        public          double  left;
+        public          double  right;
     }
 }
