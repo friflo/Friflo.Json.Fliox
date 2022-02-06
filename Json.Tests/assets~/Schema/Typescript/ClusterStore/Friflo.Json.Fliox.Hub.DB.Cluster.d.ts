@@ -3,8 +3,8 @@
 export interface ClusterStore {
     // --- containers
     containers  : { [key: string]: DbContainers };
-    schemas     : { [key: string]: DbSchema };
     commands    : { [key: string]: DbCommands };
+    schemas     : { [key: string]: DbSchema };
 
     // --- commands
     DbEcho       (param: any) : any;
@@ -21,16 +21,16 @@ export class DbContainers {
     containers    : string[];
 }
 
+export class DbCommands {
+    id        : string;
+    commands  : string[];
+}
+
 export class DbSchema {
     id           : string;
     schemaName   : string;
     schemaPath   : string;
     jsonSchemas  : { [key: string]: any };
-}
-
-export class DbCommands {
-    id        : string;
-    commands  : string[];
 }
 
 export class HubInfo {
