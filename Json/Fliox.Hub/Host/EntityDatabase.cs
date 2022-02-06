@@ -5,7 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -134,5 +139,30 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
+        
+        // may move to a utils class
+        public async Task SeedDatabase(EntityDatabase src) {
+            var sharedEnv       = new SharedEnv();
+            var localPool       = new Pool(sharedEnv);
+            var messageContext  = new MessageContext(localPool, null);
+            var containerNames  = await src.GetContainers();
+            foreach (var containerName in containerNames) {
+                var srcContainer    = src.GetOrCreateContainer(containerName);
+                var dstContainer    = GetOrCreateContainer(containerName);
+                var keyName         = "id"; // todo set custom key name
+                var filterContext   = new OperationContext();
+                filterContext.Init(Operation.FilterTrue, out _);
+                var query           = new QueryEntities { container = containerName, filterContext = filterContext, keyName = keyName };
+                var queryResult     = await srcContainer.QueryEntities(query, messageContext);
+                
+                var entities        = new List<JsonValue>(queryResult.entities.Count);
+                foreach (var entity in queryResult.entities) {
+                    entities.Add(entity.Value.Json);
+                }
+                var entityKeys      = EntityUtils.GetKeysFromEntities (keyName, entities, messageContext, out _);
+                var upsert          = new UpsertEntities { container = containerName, entities = entities, entityKeys = entityKeys };
+                await dstContainer.UpsertEntities(upsert, messageContext);
+            }
+        }
     }
 }

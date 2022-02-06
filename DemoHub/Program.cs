@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>
         internal static HttpHostHub CreateHttpHost() {
-            var database            = new FileDatabase(DbPath, new DemoHandler(), null, false);
+            var database            = CreateDatabase();
             var hub                 = new FlioxHub(database).SetInfo("DemoHub", "https://github.com/friflo/Friflo.Json.Fliox/blob/main/DemoHub/Program.cs");
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
@@ -98,6 +98,7 @@ namespace Friflo.Json.Fliox.DemoHub
         private static readonly string  UserDbPath  = "./DB~/UserStore";
         private static readonly string  Www         = HubExplorer.Path;
         private static readonly string  Cache       = null; // "max-age=600"; // HTTP Cache-Control
+        private static readonly bool    UseFileDb   = false;
         
         private static HttpHostHub CreateMiniHost() {
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
@@ -106,6 +107,15 @@ namespace Friflo.Json.Fliox.DemoHub
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new StaticFileHandler(Www, Cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
+        }
+        
+        private static EntityDatabase CreateDatabase() {
+            var fileDb = new FileDatabase(DbPath, new DemoHandler(), null, false); 
+            if (UseFileDb)
+                return fileDb;
+            var memoryDB = new MemoryDatabase(new DemoHandler());
+            memoryDB.SeedDatabase(fileDb);
+            return memoryDB;
         }
     }
 }
