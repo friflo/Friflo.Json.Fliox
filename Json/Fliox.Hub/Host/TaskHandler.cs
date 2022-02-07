@@ -20,7 +20,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
+    public delegate TResult CommandHandler<TParam, out TResult>(Command<TParam> command);
 
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -68,12 +68,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    HubCluster);
         }
         
-        protected void AddCommand<TValue, TResult> (string name, Func<Command<TValue>, TResult> method) {
-            AddCommandHandler (name, new CommandHandler<TValue, TResult> (method));
+        protected void AddCommand<TParam, TResult> (string name, Func<Command<TParam>, TResult> method) {
+            AddCommandHandler (name, new CommandHandler<TParam, TResult> (method));
         }
         
-        protected void AddCommandAsync<TValue, TResult> (string name, Func<Command<TValue>, Task<TResult>> method) {
-            AddCommandHandlerAsync (name, new CommandHandler<TValue, Task<TResult>> (method));
+        protected void AddCommandAsync<TParam, TResult> (string name, Func<Command<TParam>, Task<TResult>> method) {
+            AddCommandHandlerAsync (name, new CommandHandler<TParam, Task<TResult>> (method));
         }
        
         protected void AddCommandHandlers()

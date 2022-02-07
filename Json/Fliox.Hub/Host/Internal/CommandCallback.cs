@@ -34,20 +34,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
-    internal sealed class CommandAsyncCallback<TValue, TResult> : CommandCallback
+    internal sealed class CommandAsyncCallback<TParam, TResult> : CommandCallback
     {
         private  readonly   string                                  name;
-        private  readonly   CommandHandler<TValue, Task<TResult>>   handler;
+        private  readonly   CommandHandler<TParam, Task<TResult>>   handler;
 
         public   override   string                                  ToString() => name;
 
-        internal CommandAsyncCallback (string name, CommandHandler<TValue, Task<TResult>> handler) {
+        internal CommandAsyncCallback (string name, CommandHandler<TParam, Task<TResult>> handler) {
             this.name       = name;
             this.handler    = handler;
         }
         
         internal override async Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var     cmd     = new Command<TValue>(messageName, messageValue, messageContext);
+            var     cmd     = new Command<TParam>(messageName, messageValue, messageContext);
             TResult result  = await handler(cmd).ConfigureAwait(false);
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var jsonResult  = pooled.instance.WriteAsArray(result);
