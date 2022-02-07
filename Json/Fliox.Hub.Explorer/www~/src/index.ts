@@ -443,7 +443,7 @@ export class App {
     public getSchemaCommand(database: string, command: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
-            return "";
+            return command;
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${command}</a>`;
     }
 
