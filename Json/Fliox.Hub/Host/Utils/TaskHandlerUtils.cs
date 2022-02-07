@@ -56,24 +56,27 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             if (name == null)
                 name = methodInfo.Name;
 
-            handlerInfo = new HandlerInfo(name, paramType, resultType);
+            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType);
             return true;
         }
     }
     
     internal readonly struct HandlerInfo {
-        public  readonly    string  name;
-        public  readonly    Type    valueType;
-        public  readonly    Type    resultType;
+        public  readonly    string      name;
+        public  readonly    MethodInfo  method;
+        public  readonly    Type        valueType;
+        public  readonly    Type        resultType;
 
         public  override    string  ToString() => name;
 
         internal HandlerInfo (
-            string         name,
-            Type           valueType,
-            Type           resultType)
+            string      name,
+            MethodInfo  method,
+            Type        valueType,
+            Type        resultType)
         {
             this.name       = name;
+            this.method     = method;
             this.valueType  = valueType;
             this.resultType = resultType;
         }

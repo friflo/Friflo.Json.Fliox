@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -51,7 +53,24 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
             AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
             
-            // TaskHandlerUtils.GetHandlers(GetType());
+            var handlers            = TaskHandlerUtils.GetHandlers(GetType());
+            var genericArgs         = new Type[2];
+            var constructorParams   = new object[2];
+            foreach (var handler in handlers) {
+                // if (handler.name == "ClearStats") { int i = 1; }
+                genericArgs[0]      = handler.valueType;
+                genericArgs[1]      = handler.resultType;
+                var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
+                var firstArgument   = handler.method.IsStatic ? null : this;
+                var handlerDelegate = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
+
+                constructorParams[0]    = handler.name;
+                constructorParams[1]    = handlerDelegate;
+                
+                var instance        = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>), genericArgs, constructorParams);
+                var commandCallback = (CommandCallback)instance;
+                // commands.Add(handler.name, commandCallback);
+            }
         }
         
         internal static JsonValue DbEcho (Command<JsonValue> command) {
