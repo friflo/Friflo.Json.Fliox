@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DemoHub
         }
 
         /* private static double TestSub(Command<Operands> command) {
-            var param = command.Value;
+            var param = command.Param;
             return param.left - param.right;
         } */
     }
