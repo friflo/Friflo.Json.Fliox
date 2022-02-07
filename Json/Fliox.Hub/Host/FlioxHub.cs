@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
     /// A <see cref="FlioxHub"/> instance is the single entry point used to handle <b>all</b> requests send by a client -
-    /// e.g. a <see cref="Client.FlioxClient"/>. When instantiating a <see cref="FlioxHub"/> a default
+    /// e.g. a <see cref="Client.FlioxClient"/> or a web browser. When instantiating a <see cref="FlioxHub"/> a default
     /// <see cref="EntityDatabase"/> is assigned to the instance and all operations / tasks requested by a client
     /// are applied to this <see cref="database"/>.
     /// <br/>
@@ -236,6 +236,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --- extension databases
         private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
         
+        /// <summary>
+        /// Add an <see cref="extensionDB"/> to the Hub.
+        /// This database can then be accessed via the <see cref="FlioxHub"/> by the given <see cref="name"/>.
+        /// </summary>
         public void AddExtensionDB(string name, EntityDatabase extensionDB) {
             extensionDbs.Add(name, extensionDB);
         }

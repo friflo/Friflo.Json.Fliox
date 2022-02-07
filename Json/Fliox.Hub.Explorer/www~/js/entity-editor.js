@@ -58,7 +58,15 @@ export class EntityEditor {
         if (signature) {
             const param = app.getTypeLabel(database, signature.param);
             const result = app.getTypeLabel(database, signature.result);
-            label = `<span title="command parameter type"><span style="opacity: 0.5;">(param:</span> <span>${param}</span></span><span style="opacity: 0.5;">) : </span><span title="command result type">${result}</span>`;
+            const commandDocs = app.getSchemaCommand(database, command);
+            label =
+                `<span title="command parameter type">
+              ${commandDocs}
+              <span style="opacity: 0.5;">(param:</span>
+              <span>${param}</span>
+            </span>
+            <span style="opacity: 0.5;">) :&nbsp;</span>
+            <span title="command result type">${result}</span>`;
         }
         const link = `command=${command}`;
         const url = `./rest/${database}?command=${command}`;

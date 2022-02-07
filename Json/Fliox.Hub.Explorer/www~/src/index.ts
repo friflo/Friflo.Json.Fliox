@@ -440,6 +440,13 @@ export class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
     }
 
+    public getSchemaCommand(database: string, command: string) : string {
+        const schema        = this.databaseSchemas[database];
+        if (!schema)
+            return "";
+        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${command}</a>`;
+    }
+
     public getSchemaExports(database: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
