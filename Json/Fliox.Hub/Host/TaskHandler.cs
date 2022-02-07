@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static JsonValue DbEcho (Command<JsonValue> command) {
-            return command.JsonValue;
+            return command.JsonParam;
         }
         
         /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it

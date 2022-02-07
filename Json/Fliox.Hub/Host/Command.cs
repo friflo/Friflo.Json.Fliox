@@ -9,24 +9,24 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              string          Name            { get; }
         public              IPool           Pool            => messageContext.pool;
         public              FlioxHub        Hub             => messageContext.hub;
-        public              JsonValue       JsonValue       => json;
+        public              JsonValue       JsonParam       => param;
         public              string          DatabaseName    => messageContext.DatabaseName;
         public              EntityDatabase  Database        => messageContext.Database;
         
-        private  readonly   JsonValue       json;
+        private  readonly   JsonValue       param;
         private  readonly   MessageContext  messageContext;
 
         public   override   string          ToString()      => Name;
         
-        public              TValue          Value { get {
+        public              TValue          Param { get {
             using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
-                return pooledMapper.instance.Read<TValue>(json);
+                return pooledMapper.instance.Read<TValue>(param);
             }
         }}
 
-        internal Command(string name, JsonValue json, MessageContext messageContext) {
+        internal Command(string name, JsonValue param, MessageContext messageContext) {
             Name                = name;
-            this.json           = json;  
+            this.param          = param;  
             this.messageContext = messageContext;
         }
     }

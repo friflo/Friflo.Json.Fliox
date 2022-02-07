@@ -17,13 +17,13 @@ namespace Friflo.Json.Fliox.DemoHub
         
         /// synchronous command handler
         private static double TestAdd(Command<Operands> command) {
-            var param = command.Value;
+            var param = command.Param;
             return param.left + param.right;
         }
         
         /// asynchronous command handler
         private static Task<double> TestMul(Command<Operands> command) {
-            var param = command.Value;
+            var param = command.Param;
             var result = param.left * param.right;
             return Task.FromResult(result);
         }
