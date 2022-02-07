@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public static class StdCommand  {
         // --- Db*
         /// <summary>
-        /// Echoes the value specified in <see cref="FlioxClient.SendCommand{TCommand,TResult}(string,TCommand)"/> in <see cref="CommandTask.ResultJson"/>
+        /// Echoes the value specified in <see cref="FlioxClient.SendCommand{TParam,TResult}(string,TParam)"/> in <see cref="CommandTask.ResultJson"/>
         /// </summary>
         public const string DbEcho          = "DbEcho";        
         

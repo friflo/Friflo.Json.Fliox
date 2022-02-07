@@ -227,14 +227,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Send a command with the given <see cref="name"/> and <see cref="command"/> value to the attached <see cref="FlioxHub"/>.
+        /// Send a command with the given <see cref="name"/> and <see cref="param"/> value to the attached <see cref="FlioxHub"/>.
         /// The method can be used directly for rapid prototyping. For production grade encapsulate call by a command method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
-        public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
+        public CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
             using (var pooled = ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
-                var json    = mapper.WriteAsArray(command);
+                var json    = mapper.WriteAsArray(param);
                 var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.pool);
                 _intern.syncStore.MessageTasks().Add(task);
                 AddTask(task);
@@ -243,18 +243,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // Declared only to generate command in Schema 
-        internal CommandTask<JsonValue> DbEcho(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
+        internal CommandTask<JsonValue>     DbEcho(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
         // --- Db*
-        public CommandTask<TCommand>        DbEcho<TCommand>(TCommand command) =>
-                                                                SendCommand<TCommand,TCommand>  (StdCommand.DbEcho, command);
-        public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<DbContainers>       (StdCommand.DbContainers);
-        public CommandTask<DbCommands>      DbCommands()    =>  SendCommand<DbCommands>         (StdCommand.DbCommands);
-        public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<DbSchema>           (StdCommand.DbSchema);
+        public CommandTask<TParam>          DbEcho<TParam> (TParam param) =>
+                                                                SendCommand<TParam,TParam>  (StdCommand.DbEcho, param);
+        public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<DbContainers>   (StdCommand.DbContainers);
+        public CommandTask<DbCommands>      DbCommands()    =>  SendCommand<DbCommands>     (StdCommand.DbCommands);
+        public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<DbSchema>       (StdCommand.DbSchema);
         
         // --- Hub*
-        public CommandTask<HubInfo>         HubInfo()       =>  SendCommand<HubInfo>            (StdCommand.HubInfo);
-        public CommandTask<HubCluster>      HubCluster()    =>  SendCommand<HubCluster>         (StdCommand.HubCluster);
+        public CommandTask<HubInfo>         HubInfo()       =>  SendCommand<HubInfo>        (StdCommand.HubInfo);
+        public CommandTask<HubCluster>      HubCluster()    =>  SendCommand<HubCluster>     (StdCommand.HubCluster);
 
 
         // --- SubscribeMessage

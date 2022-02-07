@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// message by its <see cref="name"/>.
     /// If the message was sent successful <see cref="SyncTask.Success"/> is true.
     /// <br/>
-    /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TCommand,TResult}"/> 
+    /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TParam,TResult}"/> 
     /// </summary>
     public class MessageTask : SyncTask
     {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// after the task is synced successful.
     /// <br/>
     /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/> returned by
-    /// <see cref="FlioxClient.SendCommand{TCommand,TResult}"/>
+    /// <see cref="FlioxClient.SendCommand{TParam,TResult}"/>
     /// </summary>
     public class CommandTask : MessageTask
     {
