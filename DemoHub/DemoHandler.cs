@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DemoHub
             AddCommandHandlers();
         }
         
-        /// synchronous command handler
+        /// synchronous command handler - preferred if possible
         private static double TestAdd(Command<Operands> command) {
             var param = command.Param;
             return param.left + param.right;
