@@ -8,6 +8,8 @@ namespace Friflo.Json.Fliox.Hub.Explorer
     public static class HubExplorer
     {
         public static string FolderName => "www~";
+        /// Return the path of static web files for the Hub Explorer.
+        /// The Hub Explorer is a SPA used for development and administration of a Fliox Hub.
         public static string Path       => GetPath();
         
         private static string GetPath() {
