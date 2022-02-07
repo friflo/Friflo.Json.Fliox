@@ -464,7 +464,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case TaskErrorResultType.SyncError:             status = 500;   break;
                     default:                                        status = 500;   break;
                 }
-                context.WriteError(errorResult.type.ToString(), errorResult.message, status);
+                var errorMessage    = errorResult.message;
+                var stacktrace      = errorResult.stacktrace;
+                var message         = stacktrace == null ? errorMessage : $"{errorMessage}\n{stacktrace}";
+                context.WriteError(errorResult.type.ToString(), message, status);
                 return default;
             }
             return new RestResult { taskResult = taskResult, syncResponse = syncResponse };
