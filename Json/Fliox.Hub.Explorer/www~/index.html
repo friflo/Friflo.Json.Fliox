@@ -543,18 +543,18 @@
         <span id="entityTools" style="display: contents;">
             <button type="button" style="margin-right: 2px" onclick="app.editor.deleteEntitiesAction()" title="Delete entity via a DELETE request">Delete</button>
             <button type="button" style="margin-right: 4px" onclick="app.editor.saveEntitiesAction()" title="Save entity via a PUT request (Ctrl+S)">Save</button>
-            <div title="format JSON" class="navigate verticalAlign" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">
+            <!-- <div title="format JSON" class="navigate verticalAlign" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">
                 <small style="opacity: 0.7;">{ }</small>
-            </div>
+            </div> -->
             &nbsp;
             <small id="entityType" title="entity type" style="display: flex; justify-content: center; align-items: center;"><span style="opacity: 0.4;">entity type</span></small>
         </span>
         <span id="commandTools" style="display: none;">
             <button type="button" onclick="app.editor.sendCommand('POST')" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
             &nbsp;
-            <div title="format JSON" class="navigate verticalAlign" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">
+            <!-- <div title="format JSON" class="navigate verticalAlign" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos + 1)">
                 <small style="opacity: 0.7;">{ }</small>
-            </div>
+            </div> -->
             &nbsp;
             <small id="commandSignature" class="verticalAlign">command</small>
         </span>

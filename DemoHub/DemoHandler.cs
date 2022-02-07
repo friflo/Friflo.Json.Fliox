@@ -8,17 +8,16 @@ namespace Friflo.Json.Fliox.DemoHub
     public class DemoHandler : TaskHandler
     {
         public DemoHandler() {
-            AddCommandHandler<TestAdd, double>(nameof(TestAdd), TestAdd);
-            // AddCommandHandler<TestSub, double>(nameof(TestSub), TestSub);
+            AddCommandHandler<Add, double>(nameof(TestAdd), TestAdd);
+        //  AddCommandHandler<Sub, double>(nameof(TestSub), TestSub);
         }
         
-        private static double TestAdd(Command<TestAdd> command) {
+        private static double TestAdd(Command<Add> command) {
             var param = command.Value;
             return param.left + param.right;
         }
-        
-        /*
-        private static double TestSub(Command<TestSub> command) {
+
+    /*  private static double TestSub(Command<Sub> command) {
             var param = command.Value;
             return param.left - param.right;
         } */
