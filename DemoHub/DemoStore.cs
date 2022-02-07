@@ -5,7 +5,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.DemoHub
