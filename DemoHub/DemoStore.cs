@@ -4,6 +4,8 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
+
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnassignedReadonlyField
@@ -34,64 +36,64 @@ namespace Friflo.Json.Fliox.DemoHub
 
     // ------------------------------ models ------------------------------
     public class Order {
-        [Fri.Required]  public  string                  id { get; set; }
-                        public  Ref<string, Customer>   customer;
-                        public  DateTime                created;
-                        public  List<OrderItem>         items = new List<OrderItem>();
+        [Req]   public  string                  id { get; set; }
+                public  Ref<string, Customer>   customer;
+                public  DateTime                created;
+                public  List<OrderItem>         items = new List<OrderItem>();
                         
-        public override         string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class OrderItem {
-        [Fri.Required]  public  Ref<string, Article>    article;
-                        public  int                     amount;
-                        public  string                  name;
+        [Req]  public   Ref<string, Article>    article;
+               public   int                     amount;
+               public   string                  name;
                         
-        public override         string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Article
     {
-        [Fri.Required]  public  string                  id { get; set; }
-        [Fri.Required]  public  string                  name;
-                        public  Ref<string, Producer>   producer;
+        [Req]   public   string                 id { get; set; }
+        [Req]   public   string                 name;
+                public   Ref<string, Producer>  producer;
                         
-        public override         string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Customer {
-        [Fri.Required]  public  string                  id { get; set; }
-        [Fri.Required]  public  string                  name;
+        [Req]   public   string                 id { get; set; }
+        [Req]   public   string                 name;
         
-        public override         string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Producer {
-        [Fri.Required]  public  string                      id { get; set; }
-        [Fri.Required]  public  string                      name;
-        [Fri.Property (Name =                              "employees")]
-                        public  List<Ref<string, Employee>> employeeList;
+        [Req]   public  string                  id { get; set; }
+        [Req]   public  string                  name;
+        [Fri.Property (Name =                      "employees")]
+                public  List<Ref<string, Employee>> employeeList;
                         
-        public override         string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Employee {
-        [Fri.Required]  public  string                  id { get; set; }
-        [Fri.Required]  public  string                  firstName;
-                        public  string                  lastName;
+        [Req]   public  string                  id { get; set; }
+        [Req]   public  string                  firstName;
+                public  string                  lastName;
                         
-        public override         string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
    
     
     // ------------------------------ command params / results ------------------------------
     public class Add {
-        public          double  left;
-        public          double  right;
+        public  double  left;
+        public  double  right;
     }
     
     public class Sub {
-        public          double  left;
-        public          double  right;
+        public  double  left;
+        public  double  right;
     }
 }
