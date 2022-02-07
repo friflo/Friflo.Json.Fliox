@@ -3,7 +3,7 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// Implementation of database commands declared by <see cref="DemoStore"/>.
+    /// Implementation of custom database commands declared by <see cref="DemoStore"/>.
     /// </summary> 
     public class DemoHandler : TaskHandler
     {
