@@ -27,11 +27,13 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub): base (hub) { }
         
         // --- commands
-        public CommandTask<double>    TestAdd (Add add)     => SendCommand<Add, double>(nameof(TestAdd), add);
+        public CommandTask<double>    TestAdd (Operands operands)   => SendCommand<Operands, double>(nameof(TestAdd), operands);
+        public CommandTask<double>    TestMul (Operands operands)   => SendCommand<Operands, double>(nameof(TestMul), operands);
+        
         /// <summary> command handler for <see cref="TestSub_NI"/> intentionally not implemented by <see cref="DemoHandler"/>. 
         /// Execution results in:<br/>
         /// <code>NotImplemented > no command handler for: 'TestSub_NI' </code></summary>
-        public CommandTask<double>    TestSub_NI (Sub sub)  => SendCommand<Sub, double>(nameof(TestSub_NI), sub);
+        public CommandTask<double>    TestSub_NI (Operands sub)     => SendCommand<Operands, double>(nameof(TestSub_NI), sub);
     }
 
     // ------------------------------ models ------------------------------
@@ -87,12 +89,7 @@ namespace Friflo.Json.Fliox.DemoHub
    
     
     // ------------------------------ command params / results ------------------------------
-    public class Add {
-        public  double  left;
-        public  double  right;
-    }
-    
-    public class Sub {
+    public class Operands {
         public  double  left;
         public  double  right;
     }

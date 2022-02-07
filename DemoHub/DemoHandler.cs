@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 
 namespace Friflo.Json.Fliox.DemoHub
@@ -13,12 +14,20 @@ namespace Friflo.Json.Fliox.DemoHub
             AddCommandHandlers();
         }
         
-        private static double TestAdd(Command<Add> command) {
+        /// synchronous command handler
+        private static double TestAdd(Command<Operands> command) {
             var param = command.Value;
             return param.left + param.right;
         }
+        
+        /// asynchronous command handler
+        private static Task<double> TestMul(Command<Operands> command) {
+            var param = command.Value;
+            var result = param.left * param.right;
+            return Task.FromResult(result);
+        }
 
-    /*  private static double TestSub(Command<Sub> command) {
+        /* private static double TestSub(Command<Operands> command) {
             var param = command.Value;
             return param.left - param.right;
         } */
