@@ -106,14 +106,14 @@ $@"    <div class='type'>
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var baseType        = type.BaseType;
 
-            var qualifiedName = type.Namespace + "." + type.Name;
-            var unionType = type.UnionType;
-            var abstractStr = type.IsAbstract ? "abstract " : "";
+            var qualifiedName   = type.Namespace + "." + type.Name;
+            var unionType       = type.UnionType;
+            var typeName        = type.Commands != null ? "schema": type.IsAbstract ? "abstract class" : "class";
             sb.AppendLine(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
-        <keyword>{abstractStr}class</keyword>");
+        <keyword>{typeName}</keyword>");
             if (baseType != null) {
                 var baseName = GetTypeName(baseType, context);
                 sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseName}</extends>");
