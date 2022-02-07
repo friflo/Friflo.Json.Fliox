@@ -122,6 +122,8 @@ namespace Friflo.Json.Fliox.DemoHub
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
+            // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
+            // to minimize operation cost and prevent abuse as a free persistent database.   
             var memoryDB = new MemoryDatabase(new DemoHandler());
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
