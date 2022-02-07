@@ -28,7 +28,8 @@ namespace Friflo.Json.Fliox.DemoHub
             return Task.FromResult(result);
         }
 
-        /* private static double TestSub(Command<Operands> command) {
+        /* intentionally not implemented to demonstrate response behavior
+        private static double TestSub_NotImpl(Command<Operands> command) {
             var param = command.Param;
             return param.left - param.right;
         } */
