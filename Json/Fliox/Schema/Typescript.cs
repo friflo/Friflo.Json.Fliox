@@ -208,11 +208,11 @@ namespace Friflo.Json.Fliox.Schema
                         continue;
                     var typeName    = import.Name;
                     var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
+                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\";");
                     if (import.UnionType != null) {
                         var unionName = $"{typeName}{Union}";
                         indent      = Indent(max, unionName);
-                        sb.AppendLine($"import {{ {unionName} }}{indent} from \"./{import.Path}\"");
+                        sb.AppendLine($"import {{ {unionName} }}{indent} from \"./{import.Path}\";");
                     }
                 }
                 emitFile.header = sb.ToString();
