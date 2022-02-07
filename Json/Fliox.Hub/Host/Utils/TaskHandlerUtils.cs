@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 return result;
             }
             var handlers = new List<HandlerInfo>();
-            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static; // | BindingFlags.FlattenHierarchy;
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];

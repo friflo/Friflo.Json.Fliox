@@ -15,6 +15,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable ConvertToConstant.Local
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -43,25 +45,40 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
+        private static bool _oldStyleUsage = false;
+        
         public TaskHandler () {
-            if (!AddHandlersExplicit) {
-                AddReflectedHandlers(this);
-                return;
+            if (_oldStyleUsage) {
+                // --- Db*
+                AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>         (DbEcho));
+                AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
+                AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
+                AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
+                // --- Hub*
+                AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
+                AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
             }
             // --- Db*
-            AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>         (DbEcho));
-            AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
-            AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
-            AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
+            AddCommand      <JsonValue,   JsonValue>    (nameof(DbEcho),        DbEcho);
+            AddCommandAsync <Empty,       DbContainers> (nameof(DbContainers),  DbContainers);
+            AddCommand      <Empty,       DbCommands>   (nameof(DbCommands),    DbCommands);
+            AddCommand      <Empty,       DbSchema>     (nameof(DbSchema),      DbSchema);
             // --- Hub*
-            AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
-            AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
+            AddCommand      <Empty,       HubInfo>      (nameof(HubInfo),       HubInfo);
+            AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    HubCluster);
         }
         
-        protected bool AddHandlersExplicit = false;
+        protected void AddCommand<TValue, TResult> (string name, Func<Command<TValue>, TResult> method) {
+            AddCommandHandler (name, new CommandHandler<TValue, TResult> (method));
+        }
         
-        private static void AddReflectedHandlers(TaskHandler taskHandler) {
-            var type                = taskHandler.GetType();
+        protected void AddCommandAsync<TValue, TResult> (string name, Func<Command<TValue>, Task<TResult>> method) {
+            AddCommandHandlerAsync (name, new CommandHandler<TValue, Task<TResult>> (method));
+        }
+       
+        protected void AddCommandHandlers()
+        {
+            var type                = GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
@@ -70,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 genericArgs[0]      = handler.valueType;
                 genericArgs[1]      = handler.resultType;
                 var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
-                var firstArgument   = handler.method.IsStatic ? null : taskHandler;
+                var firstArgument   = handler.method.IsStatic ? null : this;
                 var handlerDelegate = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
                 constructorParams[0]    = handler.name;
@@ -84,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
                 }
                 var commandCallback = (CommandCallback)instance;
-                taskHandler.commands.Add(handler.name, commandCallback);
+                commands.Add(handler.name, commandCallback);
             }
         }
         
@@ -138,12 +155,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return commands.TryGetValue(name, out command); 
         }
         
-        protected void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
+        private void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        protected void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+        private void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
