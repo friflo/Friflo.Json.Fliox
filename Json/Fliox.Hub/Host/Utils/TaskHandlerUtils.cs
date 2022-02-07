@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
@@ -36,6 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         
         private static bool IsHandler(MethodInfo methodInfo, out HandlerInfo handlerInfo) {
             handlerInfo = new HandlerInfo();
+            // if (methodInfo.Name == "DbContainers") { var i = 1; }
             
             var parameters = methodInfo.GetParameters();
             if (parameters.Length != 1)
@@ -49,14 +51,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var genericArgs = genericParamType.GenericTypeArguments;
             if (genericArgs.Length != 1)
                 return false;
-            var paramType = genericArgs[0];
-            var resultType = methodInfo.ReturnType;
-
+            var paramType       = genericArgs[0];
+            var resultType      = methodInfo.ReturnType;
+            Type resultTaskType = null;
+            // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
+            if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(Task<>)) {
+                var genericResultArgs   = resultType.GenericTypeArguments; // Length == 1
+                resultTaskType          = genericResultArgs[0];
+            }
             var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
             if (name == null)
                 name = methodInfo.Name;
 
-            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType);
+            handlerInfo = new HandlerInfo(name, methodInfo, paramType, resultType, resultTaskType);
             return true;
         }
     }
@@ -66,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         public  readonly    MethodInfo  method;
         public  readonly    Type        valueType;
         public  readonly    Type        resultType;
+        public  readonly    Type        resultTaskType;
 
         public  override    string  ToString() => name;
 
@@ -73,12 +81,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             string      name,
             MethodInfo  method,
             Type        valueType,
-            Type        resultType)
+            Type        resultType,
+            Type        resultTaskType)
         {
-            this.name       = name;
-            this.method     = method;
-            this.valueType  = valueType;
-            this.resultType = resultType;
+            this.name           = name;
+            this.method         = method;
+            this.valueType      = valueType;
+            this.resultType     = resultType;
+            this.resultTaskType = resultTaskType;
         }
     }
 }

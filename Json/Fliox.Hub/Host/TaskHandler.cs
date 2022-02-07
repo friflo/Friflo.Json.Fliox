@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
             foreach (var handler in handlers) {
-                // if (handler.name == "ClearStats") { int i = 1; }
+                if (handler.name == "DbContainers") { int i = 1; }
                 genericArgs[0]      = handler.valueType;
                 genericArgs[1]      = handler.resultType;
                 var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
@@ -71,10 +71,16 @@ namespace Friflo.Json.Fliox.Hub.Host
 
                 constructorParams[0]    = handler.name;
                 constructorParams[1]    = handlerDelegate;
-                
-                var instance        = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>), genericArgs, constructorParams);
+                object instance;
+                // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
+                if (handler.resultTaskType != null) {
+                    genericArgs[1] = handler.resultTaskType;
+                    instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandAsyncCallback<,>), genericArgs, constructorParams);
+                } else {
+                    instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
+                }
                 var commandCallback = (CommandCallback)instance;
-                // commands.Add(handler.name, commandCallback);
+                // taskHandler.commands.Add(handler.name, commandCallback);
             }
         }
         
