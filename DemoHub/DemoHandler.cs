@@ -9,11 +9,6 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary> 
     public class DemoHandler : TaskHandler
     {
-        public DemoHandler() {
-            AddCommandHandler<Add, double>(nameof(TestAdd), TestAdd);
-        //  AddCommandHandler<Sub, double>(nameof(TestSub), TestSub);
-        }
-        
         private static double TestAdd(Command<Add> command) {
             var param = command.Value;
             return param.left + param.right;

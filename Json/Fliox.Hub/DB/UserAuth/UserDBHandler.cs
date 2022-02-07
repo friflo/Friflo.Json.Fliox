@@ -9,6 +9,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class UserDBHandler : TaskHandler
     {
         public UserDBHandler() {
+            if (!AddHandlersExplicit)
+                return;
             AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(nameof(AuthenticateUser), AuthenticateUser); // todo add handler via scanning TaskHandler
         }
         

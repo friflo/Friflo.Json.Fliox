@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
@@ -43,7 +44,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            // todo add handler via scanning TaskHandler
+            if (!AddHandlersExplicit) {
+                AddReflectedHandlers(this);
+                return;
+            }
             // --- Db*
             AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>         (DbEcho));
             AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
@@ -52,9 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- Hub*
             AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
             AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
-            
-            AddReflectedHandlers(this);
         }
+        
+        protected bool AddHandlersExplicit = false;
         
         private static void AddReflectedHandlers(TaskHandler taskHandler) {
             var type                = taskHandler.GetType();
@@ -62,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
             foreach (var handler in handlers) {
-                if (handler.name == "DbContainers") { int i = 1; }
+                // if (handler.name == "DbContainers") { int i = 1; }
                 genericArgs[0]      = handler.valueType;
                 genericArgs[1]      = handler.resultType;
                 var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
@@ -80,14 +84,16 @@ namespace Friflo.Json.Fliox.Hub.Host
                     instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
                 }
                 var commandCallback = (CommandCallback)instance;
-                // taskHandler.commands.Add(handler.name, commandCallback);
+                taskHandler.commands.Add(handler.name, commandCallback);
             }
         }
         
+        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static JsonValue DbEcho (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
+        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static HubInfo HubInfo (Command<Empty> command) {
             var hub     = command.Hub;
             var info    = new HubInfo {
@@ -99,6 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return info;
         }
 
+        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static async Task<DbContainers> DbContainers (Command<Empty> command) {
             var database        = command.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
@@ -106,6 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return dbContainers;
         }
         
+        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static DbCommands DbCommands (Command<Empty> command) {
             var database        = command.Database;  
             var dbCommands      = database.GetDbCommands();
@@ -113,12 +121,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             return dbCommands;
         }
         
+        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static DbSchema DbSchema (Command<Empty> command) {
             var database        = command.Database;  
             var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
+        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
         internal static async Task<HubCluster> HubCluster (Command<Empty> command) {
             var hub = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
