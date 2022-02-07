@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Internal;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -49,13 +50,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- Hub*
             AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
             AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
+            
+            // TaskHandlerUtils.GetHandlers(GetType());
         }
         
-        private static JsonValue DbEcho (Command<JsonValue> command) {
+        internal static JsonValue DbEcho (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private static HubInfo HubInfo (Command<Empty> command) {
+        internal static HubInfo HubInfo (Command<Empty> command) {
             var hub     = command.Hub;
             var info    = new HubInfo {
                 version     = hub.Version,
@@ -66,27 +69,27 @@ namespace Friflo.Json.Fliox.Hub.Host
             return info;
         }
 
-        private static async Task<DbContainers> DbContainers (Command<Empty> command) {
+        internal static async Task<DbContainers> DbContainers (Command<Empty> command) {
             var database        = command.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
             dbContainers.id     = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbContainers;
         }
         
-        private static DbCommands DbCommands (Command<Empty> command) {
+        internal static DbCommands DbCommands (Command<Empty> command) {
             var database        = command.Database;  
             var dbCommands      = database.GetDbCommands();
             dbCommands.id       = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbCommands;
         }
         
-        private static DbSchema DbSchema (Command<Empty> command) {
+        internal static DbSchema DbSchema (Command<Empty> command) {
             var database        = command.Database;  
             var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static async Task<HubCluster> HubCluster (Command<Empty> command) {
+        internal static async Task<HubCluster> HubCluster (Command<Empty> command) {
             var hub = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }
