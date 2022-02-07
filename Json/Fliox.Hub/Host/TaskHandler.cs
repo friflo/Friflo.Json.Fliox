@@ -53,7 +53,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
             AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
             
-            var handlers            = TaskHandlerUtils.GetHandlers(GetType());
+            AddReflectedHandlers(this);
+        }
+        
+        private static void AddReflectedHandlers(TaskHandler taskHandler) {
+            var type                = taskHandler.GetType();
+            var handlers            = TaskHandlerUtils.GetHandlers(type);
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
             foreach (var handler in handlers) {
@@ -61,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 genericArgs[0]      = handler.valueType;
                 genericArgs[1]      = handler.resultType;
                 var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
-                var firstArgument   = handler.method.IsStatic ? null : this;
+                var firstArgument   = handler.method.IsStatic ? null : taskHandler;
                 var handlerDelegate = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
                 constructorParams[0]    = handler.name;
