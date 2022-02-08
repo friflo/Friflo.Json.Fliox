@@ -466,7 +466,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 var errorMessage    = errorResult.message;
                 var stacktrace      = errorResult.stacktrace;
-                var message         = stacktrace == null ? errorMessage : $"{errorMessage}\n{stacktrace}";
+                // append new line to stacktrace to avoid annoying scrolling in monaco editor when clicking below stacktrace
+                var message         = stacktrace == null ? errorMessage : $"{errorMessage}\n{stacktrace}\n";
                 context.WriteError(errorResult.type.ToString(), message, status);
                 return default;
             }
