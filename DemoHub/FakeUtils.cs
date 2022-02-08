@@ -12,7 +12,8 @@ namespace Friflo.Json.Fliox.DemoHub
         private int     employeeCounter = 10;
         private int     producerCounter = 10;
         private int     articleCounter  = 10;
-        private int     orderCounter  = 10;
+        private int     customerCounter = 10;
+        private int     orderCounter    = 10;
         
         internal FakeUtils() {
             Randomizer.Seed = new Random(1337);
@@ -20,41 +21,64 @@ namespace Friflo.Json.Fliox.DemoHub
         
         internal FakeResult CreateFakes(Fake fake) {
             var result = new FakeResult();
+            var orders      = fake.orders       ?? 0; 
+            var articles    = fake.articles     ?? 0;
+            var producers   = fake.producers    ?? 0;
+            var customers   = fake.customers    ?? 0;
+            var employees   = fake.employees    ?? 0;
             
-            if (fake.employees.HasValue) {
+            if (employees > 0) {
                 var faker = new Faker<Employee>()
-                    .RuleFor(a => a.id,         f => $"employee-{employeeCounter++}")
-                    .RuleFor(a => a.firstName,  f => f.Name.FirstName())
-                    .RuleFor(a => a.lastName,   f => f.Name.LastName());
+                    .RuleFor(e => e.id,         f => $"employee-{employeeCounter++}")
+                    .RuleFor(e => e.firstName,  f => f.Name.FirstName())
+                    .RuleFor(e => e.lastName,   f => f.Name.LastName());
                 
-                result.employees = new Employee[fake.employees.Value];
-                for (int n = 0; n < fake.employees; n++) {
+                result.employees = new Employee[employees];
+                for (int n = 0; n < employees; n++) {
                     result.employees[n] = faker.Generate();
                 }
             }
-            if (fake.producers.HasValue) {
+            if (producers > 0) {
                 var faker = new Faker<Producer>()
-                    .RuleFor(a => a.id,             f => $"producer-{producerCounter++}")
-                    .RuleFor(a => a.name,           f => f.Company.CompanyName())
-                    .RuleFor(a => a.employeeList,   f => new List<Ref<string, Employee>> { f.PickRandom(result.employees)} );
+                    .RuleFor(p => p.id,             f => $"producer-{producerCounter++}")
+                    .RuleFor(p => p.name,           f => f.Company.CompanyName())
+                    .RuleFor(p => p.employeeList,   f => {
+                        if (employees == 0)
+                            return null;
+                        return new List<Ref<string, Employee>> { f.PickRandom(result.employees) };
+                    });
                 
-                result.producers = new Producer[fake.producers.Value];
-                for (int n = 0; n < fake.producers; n++) {
+                result.producers = new Producer[producers];
+                for (int n = 0; n < producers; n++) {
                     result.producers[n] = faker.Generate();
                 }
             }
-            if (fake.articles.HasValue) {
+            if (articles > 0) {
                 var faker = new Faker<Article>()
                     .RuleFor(a => a.id,         f => $"article-{articleCounter++}")
                     .RuleFor(a => a.name,       f => f.Commerce.Product())
-                    .RuleFor(a => a.producer,   f => f.PickRandom(result.producers));
+                    .RuleFor(a => a.producer,   f => {
+                        if (producers == 0)
+                            return default;
+                        return f.PickRandom(result.producers);
+                    });
 
-                result.articles = new Article[fake.articles.Value];
-                for (int n = 0; n < fake.articles; n++) {
+                result.articles = new Article[articles];
+                for (int n = 0; n < articles; n++) {
                     result.articles[n] = faker.Generate();
                 }
             }
-            if (fake.orders.HasValue) {
+            if (customers > 0) {
+                var faker = new Faker<Customer>()
+                    .RuleFor(c => c.id,         f => $"customer-{customerCounter++}")
+                    .RuleFor(c => c.name,       f => f.Company.CompanyName());
+
+                result.customers = new Customer[customers];
+                for (int n = 0; n < customers; n++) {
+                    result.customers[n] = faker.Generate();
+                }
+            }
+            if (orders > 0) {
                 var itemFaker = new Faker<OrderItem>();
                 itemFaker.Rules((f, item) => {
                     var article     = f.PickRandom(result.articles);
@@ -63,12 +87,17 @@ namespace Friflo.Json.Fliox.DemoHub
                     item.amount     = f.Random.Number(1, 10);
                 });
                 var faker = new Faker<Order>()
-                    .RuleFor(a => a.id,         f => $"order-{orderCounter++}")
-                    .RuleFor(a => a.created,    f => f.Date.Past())
-                    .RuleFor(a => a.items,      itemFaker.Generate(2).ToList());
+                    .RuleFor(o => o.id,         f => $"order-{orderCounter++}")
+                    .RuleFor(o => o.created,    f => f.Date.Past())
+                    .RuleFor(o => o.customer,   f => {
+                        if (customers == 0)
+                            return default;
+                        return f.PickRandom(result.customers);
+                    })
+                    .RuleFor(o => o.items,      articles == 0 ? null : itemFaker.Generate(2).ToList());
                 
-                result.orders = new Order[fake.orders.Value];
-                for (int n = 0; n < fake.orders; n++) {
+                result.orders = new Order[orders];
+                for (int n = 0; n < orders; n++) {
                     result.orders[n] = faker.Generate();
                 }
             }
