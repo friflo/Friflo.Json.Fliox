@@ -33,7 +33,7 @@ const entityIdsReload   = el("entityIdsReload");
 const entityFilter      = el("entityFilter")    as HTMLInputElement;
 const filterRow         = el("filterRow");
 const commandSignature  = el("commandSignature");
-const commandLink       = el("commandLink");
+const commandAnchor     = el("commandAnchor")   as HTMLAnchorElement;
 
 // entity/command editor
 const commandValueContainer  = el("commandValueContainer");
@@ -70,27 +70,26 @@ export class EntityEditor
         el("databaseTools").style.display = displayDB;
     }
 
-    private getCommandTags(database: string, command: string, signature: CommandType) {
-        let label = app.schemaLess;
-        if (signature) {
-            const param   = app.getTypeLabel(database, signature.param);
-            const result  = app.getTypeLabel(database, signature.result);
-            const commandDocs = app.getSchemaCommand(database, command);
-            label =
-           `<span title="command parameter type">
-              ${commandDocs}
-              <span style="opacity: 0.5;">(param:</span>
-              <span>${param}</span>
-            </span>
-            <span style="opacity: 0.5;">) :&nbsp;</span>
-            <span title="command result type">${result}</span>`;
-        }
-        const link    = `command=${command}`;
-        const url     = `./rest/${database}?command=${command}`;
-        return {
-            link:   `<a id="commandAnchor" title="command" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
-            label:  label
-        };
+    private getCommandDocsEl(database: string, command: string, signature: CommandType) {
+        if (!signature)
+            return app.schemaLess;
+        const param         = app.getTypeLabel(database, signature.param);
+        const result        = app.getTypeLabel(database, signature.result);
+        const commandDocs   = app.getSchemaCommand(database, command);        
+        const el =
+        `<span title="command parameter type">
+            ${commandDocs}
+            <span style="opacity: 0.5;">(param:</span>
+            <span>${param}</span>
+        </span>
+        <span style="opacity: 0.5;">) :&nbsp;</span>
+        <span title="command result type">${result}</span>`;
+        return el;
+    }
+
+    private getCommandUrl(database: string, command: string) {
+        // const value     = this.commandValueEditor.getValue();
+        return `./rest/${database}?command=${command}`;
     }
 
     public async sendCommand(method: Method) : Promise<void> {
@@ -637,9 +636,10 @@ export class EntityEditor
         const schema        = app.databaseSchemas[database]._rootSchema;
         const signature     = schema ? schema.commands[commandName] : null;
         const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
-        const tags          = this.getCommandTags(database, commandName, signature);
-        commandSignature.innerHTML      = tags.label;
-        commandLink.innerHTML           = tags.link;
+        const docsEl        = this.getCommandDocsEl(database, commandName, signature);
+        commandSignature.innerHTML  = docsEl;
+        commandAnchor.innerText     = `command=${commandName}`;
+        commandAnchor.href          = this.getCommandUrl(database, commandName);
 
         this.entityIdentity = {
             database:   database,
