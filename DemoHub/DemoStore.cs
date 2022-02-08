@@ -15,7 +15,7 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// Declare database containers by adding container fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
+    /// Declare database containers by adding fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Declare custom database commands by adding methods returning a <see cref="CommandTask{TResult}"/>.
     /// </summary>
     public class DemoStore : FlioxClient
