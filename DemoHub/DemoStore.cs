@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub): base (hub) { }
         
         // --- commands
+        public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake,        FakeResult> (nameof(DemoFake), param);
         public CommandTask<double>    DemoAdd  (Operands    param)      => SendCommand<Operands,    double>     (nameof(DemoAdd),  param);
         public CommandTask<double>    DemoMul  (Operands    param)      => SendCommand<Operands,    double>     (nameof(DemoMul),  param);
         
@@ -34,7 +35,6 @@ namespace Friflo.Json.Fliox.DemoHub
         /// Execution results in:<br/>
         /// <code>NotImplemented > no command handler for: 'DemoSub_NotImpl' </code></summary>
         public CommandTask<double>    DemoSub_NotImpl (Operands param)  => SendCommand<Operands, double>        (nameof(DemoSub_NotImpl), param);
-        public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake,        FakeResult> (nameof(DemoFake), param);
     }
 
     // ------------------------------ models ------------------------------

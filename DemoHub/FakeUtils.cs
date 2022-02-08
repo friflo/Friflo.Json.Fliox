@@ -27,6 +27,15 @@ namespace Friflo.Json.Fliox.DemoHub
             var customers   = fake.customers    ?? 0;
             var employees   = fake.employees    ?? 0;
             
+            // set default counts if all counts == 0
+            if (orders == 0 && articles == 0 && producers == 0 && customers == 0 && employees == 0) {
+                orders      = 1;
+                articles    = 2;
+                producers   = 1;
+                customers   = 1;
+                employees   = 1;
+            }
+            
             if (employees > 0) {
                 var faker = new Faker<Employee>()
                     .RuleFor(e => e.id,         f => $"employee-{employeeCounter++}")
