@@ -30,7 +30,7 @@ export class EntityEditor {
         this.entityHistoryPos = -1;
         this.entityHistory = [];
         this.entityModels = {};
-        this.commandEditWidth = "60px";
+        this.commandEditWidth = "100px";
         this.activeExplorerEditor = undefined;
     }
     initEditor(entityEditor, commandValueEditor) {

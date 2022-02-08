@@ -584,7 +584,7 @@ export class EntityEditor
         this.entityEditor.setModel (model);
     }
 
-    public commandEditWidth = "60px";
+    public commandEditWidth = "100px";
     public activeExplorerEditor: ExplorerEditor = undefined;
 
     public setExplorerEditor(edit : ExplorerEditor) : void {
