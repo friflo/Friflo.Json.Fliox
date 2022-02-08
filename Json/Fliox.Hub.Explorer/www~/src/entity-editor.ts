@@ -630,25 +630,25 @@ export class EntityEditor
         app.layoutEditors();
     }
 
-    private showCommand(database: string, commandName: string) {
+    private showCommand(database: string, command: string) {
         this.setExplorerEditor("command");
 
         const schema        = app.databaseSchemas[database]._rootSchema;
-        const signature     = schema ? schema.commands[commandName] : null;
+        const signature     = schema ? schema.commands[command] : null;
         const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
-        const docsEl        = this.getCommandDocsEl(database, commandName, signature);
-        commandSignature.innerHTML  = docsEl;
-        commandAnchor.innerText     = `command=${commandName}`;
-        commandAnchor.href          = this.getCommandUrl(database, commandName);
+        
+        commandSignature.innerHTML  = this.getCommandDocsEl(database, command, signature);
+        commandAnchor.innerText     = `command=${command}`;
+        commandAnchor.href          = this.getCommandUrl(database, command);
 
         this.entityIdentity = {
             database:   database,
             container:  null,
             entityIds:  null,
-            command:    commandName,
+            command:    command,
         };
-        this.setCommandParam (database, commandName, def);
-        this.setCommandResult(database, commandName);
+        this.setCommandParam (database, command, def);
+        this.setCommandResult(database, command);
     }
 
     public tryFollowLink(value: string, column: number, line: number) : void {

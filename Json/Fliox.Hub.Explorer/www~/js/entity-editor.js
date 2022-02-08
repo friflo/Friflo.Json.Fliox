@@ -15,7 +15,7 @@ const entityIdsReload = el("entityIdsReload");
 const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
 const commandSignature = el("commandSignature");
-const commandLink = el("commandLink");
+const commandAnchor = el("commandAnchor");
 // entity/command editor
 const commandValueContainer = el("commandValueContainer");
 const commandParamBar = el("commandParamBar");
@@ -53,27 +53,24 @@ export class EntityEditor {
         el("commandHeader").style.display = displayCommand;
         el("databaseTools").style.display = displayDB;
     }
-    getCommandTags(database, command, signature) {
-        let label = app.schemaLess;
-        if (signature) {
-            const param = app.getTypeLabel(database, signature.param);
-            const result = app.getTypeLabel(database, signature.result);
-            const commandDocs = app.getSchemaCommand(database, command);
-            label =
-                `<span title="command parameter type">
-              ${commandDocs}
-              <span style="opacity: 0.5;">(param:</span>
-              <span>${param}</span>
-            </span>
-            <span style="opacity: 0.5;">) :&nbsp;</span>
-            <span title="command result type">${result}</span>`;
-        }
-        const link = `command=${command}`;
-        const url = `./rest/${database}?command=${command}`;
-        return {
-            link: `<a id="commandAnchor" title="command" href="${url}" target="_blank" rel="noopener noreferrer">${link}</a>`,
-            label: label
-        };
+    getCommandDocsEl(database, command, signature) {
+        if (!signature)
+            return app.schemaLess;
+        const param = app.getTypeLabel(database, signature.param);
+        const result = app.getTypeLabel(database, signature.result);
+        const commandDocs = app.getSchemaCommand(database, command);
+        const el = `<span title="command parameter type">
+            ${commandDocs}
+            <span style="opacity: 0.5;">(param:</span>
+            <span>${param}</span>
+        </span>
+        <span style="opacity: 0.5;">) :&nbsp;</span>
+        <span title="command result type">${result}</span>`;
+        return el;
+    }
+    getCommandUrl(database, command) {
+        // const value     = this.commandValueEditor.getValue();
+        return `./rest/${database}?command=${command}`;
     }
     async sendCommand(method) {
         const value = this.commandValueEditor.getValue();
@@ -555,22 +552,22 @@ export class EntityEditor {
         //
         app.layoutEditors();
     }
-    showCommand(database, commandName) {
+    showCommand(database, command) {
         this.setExplorerEditor("command");
         const schema = app.databaseSchemas[database]._rootSchema;
-        const signature = schema ? schema.commands[commandName] : null;
+        const signature = schema ? schema.commands[command] : null;
         const def = signature ? Object.keys(signature.param).length == 0 ? "null" : "{}" : "null";
-        const tags = this.getCommandTags(database, commandName, signature);
-        commandSignature.innerHTML = tags.label;
-        commandLink.innerHTML = tags.link;
+        commandSignature.innerHTML = this.getCommandDocsEl(database, command, signature);
+        commandAnchor.innerText = `command=${command}`;
+        commandAnchor.href = this.getCommandUrl(database, command);
         this.entityIdentity = {
             database: database,
             container: null,
             entityIds: null,
-            command: commandName,
+            command: command,
         };
-        this.setCommandParam(database, commandName, def);
-        this.setCommandResult(database, commandName);
+        this.setCommandParam(database, command, def);
+        this.setCommandResult(database, command);
     }
     tryFollowLink(value, column, line) {
         try {
