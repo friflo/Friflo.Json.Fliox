@@ -27,13 +27,14 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub): base (hub) { }
         
         // --- commands
-        public CommandTask<double>    TestAdd (Operands param)          => SendCommand<Operands, double>(nameof(TestAdd), param);
-        public CommandTask<double>    TestMul (Operands param)          => SendCommand<Operands, double>(nameof(TestMul), param);
+        public CommandTask<double>    TestAdd  (Operands    param)      => SendCommand<Operands,    double>     (nameof(TestAdd),  param);
+        public CommandTask<double>    TestMul  (Operands    param)      => SendCommand<Operands,    double>     (nameof(TestMul),  param);
         
         /// <summary> command handler for <see cref="TestSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
         /// Execution results in:<br/>
         /// <code>NotImplemented > no command handler for: 'TestSub_NotImpl' </code></summary>
         public CommandTask<double>    TestSub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(TestSub_NotImpl), param);
+        public CommandTask<FakeResult>TestFake (Fake        param)      => SendCommand<Fake,        FakeResult> (nameof(TestFake), param);
     }
 
     // ------------------------------ models ------------------------------
@@ -90,7 +91,23 @@ namespace Friflo.Json.Fliox.DemoHub
     
     // ------------------------------ command params / results ------------------------------
     public class Operands {
-        public  double  left;
-        public  double  right;
+        public  double      left;
+        public  double      right;
+    }
+    
+    public class Fake {
+        public  int?        articles;
+        public  int?        employees;
+        public  EntityNames[] names;
+    }
+    
+    public class FakeResult {
+        public  Article[]   articles;
+        public  Employee[]  employees;
+        public  EntityNames[] names;
+    }
+    
+    public enum EntityNames {
+        articles
     }
 }

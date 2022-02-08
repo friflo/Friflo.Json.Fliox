@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
@@ -23,6 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              JsonValue       JsonParam       => param;
         public              string          DatabaseName    => messageContext.DatabaseName;
         public              EntityDatabase  Database        => messageContext.Database;
+        public              User            User            => messageContext.User;
+        public              JsonKey         ClientId        => messageContext.clientId;
         
         private  readonly   JsonValue       param;
         private  readonly   MessageContext  messageContext;

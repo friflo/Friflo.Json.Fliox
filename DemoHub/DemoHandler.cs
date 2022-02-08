@@ -33,5 +33,20 @@ namespace Friflo.Json.Fliox.DemoHub
             var param = command.Param;
             return param.left - param.right;
         } */
+        
+        private static async Task<FakeResult> TestFake(Command<Fake> command) {
+            var demoStore       = new DemoStore(command.Hub);
+            var user            = command.User;
+            demoStore.UserId    = user.userId.ToString(); // todo simplify setting user/token
+            demoStore.Token     = user.token;
+            // demoStore.ClientId  = command.ClientId.ToString();
+            var article         = new Article { id = "test", name = "foo" };
+            demoStore.articles.Create(article);
+            await demoStore.SyncTasks();
+            
+            var result          = new FakeResult();
+            result.articles = new [] { article };
+            return result;
+        }
     }
 }
