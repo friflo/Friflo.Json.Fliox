@@ -5,6 +5,17 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// <summary>
+    /// <see cref="Command{TParam}"/> contains all data relevant for command execution as properties. <br/>
+    /// - the command <see cref="Name"/> <br/>
+    /// - the input parameter <see cref="Param"/> of type <see cref="TParam"/> <br/>
+    /// - the input parameter <see cref="JsonParam"/> as raw JSON <br/>
+    /// - the <see cref="DatabaseName"/> <br/>
+    /// - the <see cref="Database"/> instance <br/>
+    /// - the <see cref="Hub"/> exposing general Hub information <br/>
+    /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/> 
+    /// </summary>
+    /// <typeparam name="TParam">Type of the command input parameter</typeparam>
     public readonly struct Command<TParam>{
         public              string          Name            { get; }
         public              IPool           Pool            => messageContext.pool;
