@@ -11,6 +11,9 @@
     "Subscribe to database changes from other clients",
 
     "Websocket only. Requires client id: 'clt'",
-    "No events are send for changes the client made by itself"
+    "No events are send for changes the client made by itself",
+      
+    "Get subscription events by mutating an entity",
+    "mutations are: create, upsert, delete or patch"
   ]
 }

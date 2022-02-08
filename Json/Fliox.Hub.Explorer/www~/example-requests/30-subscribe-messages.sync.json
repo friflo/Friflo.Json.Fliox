@@ -8,11 +8,14 @@
     }
   ],  
   "info": [
-    "Subscribe to all messages",
+    "Add subscription for all messages / commands",
 
-    "Websocket only. Requires client id: 'clt'",
+    "Note: Websocket only. Requires client id: 'clt'",
+      
     "Subscribe all messages by         'name' == '*'",
     "Subscribe a specific message by   'name' == 'MyMessage'",
-    "Subscribe messages by prefix with 'name' == 'MyMessage*'"
+    "Subscribe messages by prefix with 'name' == 'MyMessage*'",
+      
+    "Get subscription events by sending a message or command"
   ]
 }
