@@ -3,6 +3,7 @@ using Bogus;
 
 namespace Friflo.Json.Fliox.DemoHub
 {
+    /// [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
     internal class FakeUtils
     {
         private             int             articleCounter;

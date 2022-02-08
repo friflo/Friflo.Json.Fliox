@@ -43,7 +43,6 @@ namespace Friflo.Json.Fliox.DemoHub
             demoStore.UserId    = user.userId.ToString(); // todo simplify setting user/token
             demoStore.Token     = user.token;
             demoStore.ClientId  = "DemoFake";
-            // [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
             
             var result = FakeUtils.CreateFakes(command.Param);
             
