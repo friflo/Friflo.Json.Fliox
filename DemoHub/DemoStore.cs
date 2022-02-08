@@ -96,22 +96,19 @@ namespace Friflo.Json.Fliox.DemoHub
     }
     
     public class Fake {
+        public  int?        orders;
+        public  int?        customers;
         public  int?        articles;
+        public  int?        producers;
         public  int?        employees;
-        public  EntityNames[] names;
     }
     
     public class FakeResult {
-        public  Order[]         orders;
-        public  Customer[]      customers;
-        public  Article[]       articles;
-        public  Producer[]      producers;
-        public  Employee[]      employees;
-        
-        public  EntityNames[]   names;
+        public  Order[]     orders;
+        public  Customer[]  customers;
+        public  Article[]   articles;
+        public  Producer[]  producers;
+        public  Employee[]  employees;
     }
-    
-    public enum EntityNames {
-        articles
-    }
+   
 }
