@@ -71,11 +71,11 @@ export class EntityEditor
     }
 
     public async sendCommand() : Promise<void> {
-        const value     = this.commandValueEditor.getValue();
+        const param     = this.commandValueEditor.getValue();
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
 
-        const response  = await App.restRequest("POST", value, database, null, null, `command=${command}`);
+        const response  = await App.restRequest("POST", param, database, null, null, `command=${command}`);
         let content     = await response.text();
 
         content         = app.formatJson(app.config.formatResponses, content);
@@ -627,15 +627,15 @@ export class EntityEditor
     }
 
     private getCommandUrl(database: string, command: string) {
-        let value = this.commandValueEditor.getValue();
+        let param = this.commandValueEditor.getValue();
         try {
-            const valueStr  = JSON.parse(value);
-            value           = JSON.stringify(valueStr); // format to one line / remove white spaces
+            const valueStr  = JSON.parse(param);
+            param           = JSON.stringify(valueStr); // format to one line / remove white spaces
         } catch {
             // use unformatted invalid value instead
         }
-        const commandValue  = value == "null" ? "" : `&value=${value}`;
-        return `./rest/${database}?command=${command}${commandValue}`;
+        const commandParam  = param == "null" ? "" : `&param=${param}`;
+        return `./rest/${database}?command=${command}${commandParam}`;
     }
 
     private getCommandDocsEl(database: string, command: string, signature: CommandType) {

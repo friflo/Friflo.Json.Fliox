@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (isPost) {
                     value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 } else {
-                    var queryValue = queryParams["value"];
+                    var queryValue = queryParams["param"];
                     value = new JsonValue(queryValue);
                 }
                 if (!IsValidJson(pool, value, out string error)) {
