@@ -37,10 +37,12 @@ namespace Friflo.Json.Fliox.DemoHub
             return param.left - param.right;
         } */
         
-        /// Recommendation: Used an async method to enable concurrent execution of <see cref="DemoStore.SyncTasks"/>.
+        /// <summary>
+        /// <b> Recommendation </b>: Used an async method to enable concurrent execution of <see cref="DemoStore.SyncTasks"/>.
         /// <br/>
-        /// Caution: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
-        /// resulting in worse performance as a worker thread is exclusively blocked by the method.  
+        /// <b> Caution </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
+        /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
+        /// </summary> 
         private static async Task<FakeResult> DemoFake(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
             var user            = command.User;
