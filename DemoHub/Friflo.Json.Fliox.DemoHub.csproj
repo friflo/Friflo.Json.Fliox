@@ -31,4 +31,8 @@
     <ItemGroup>
       <None Remove="**/*.meta" />
     </ItemGroup>
+	
+    <ItemGroup>
+      <PackageReference Include="Bogus" Version="34.0.1" />
+    </ItemGroup>
 </Project>

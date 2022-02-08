@@ -1,6 +1,9 @@
+using System;
 using System.Threading.Tasks;
+using Bogus;
 using Friflo.Json.Fliox.Hub.Host;
 
+// ReSharper disable UnusedMember.Local
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
@@ -11,6 +14,8 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary> 
     public class DemoHandler : TaskHandler
     {
+        private static readonly FakeUtils FakeUtils = new FakeUtils();
+        
         internal DemoHandler() {
             AddCommandHandlers();
         }
@@ -39,13 +44,46 @@ namespace Friflo.Json.Fliox.DemoHub
             var user            = command.User;
             demoStore.UserId    = user.userId.ToString(); // todo simplify setting user/token
             demoStore.Token     = user.token;
-            // demoStore.ClientId  = command.ClientId.ToString();
-            var article         = new Article { id = "test", name = "foo" };
-            demoStore.articles.Upsert(article);
+            demoStore.ClientId  = "DemoFake";
+            // [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
+            
+            var result = FakeUtils.CreateFakes(command.Param);
+            
+            if (result.orders       != null)    demoStore.orders    .UpsertRange(result.orders);
+            if (result.customers    != null)    demoStore.customers .UpsertRange(result.customers);
+            if (result.articles     != null)    demoStore.articles  .UpsertRange(result.articles);
+            if (result.producers    != null)    demoStore.producers .UpsertRange(result.producers);
+            if (result.employees    != null)    demoStore.employees .UpsertRange(result.employees);
+            
             await demoStore.SyncTasks();
             
-            var result          = new FakeResult();
-            result.articles = new [] { article };
+            return result;
+        }
+    }
+
+    internal class FakeUtils
+    {
+        private             int             articleCounter;
+        private readonly    Faker<Article>  articleFaker;
+        
+        internal FakeUtils()
+        {
+            Randomizer.Seed = new Random(1337);
+            
+            articleFaker = new Faker<Article>()
+                .RuleFor(a => a.id,     f => $"article-{articleCounter++}")
+                .RuleFor(a => a.name,   f => f.Commerce.Product());
+        }
+        
+        internal FakeResult CreateFakes(Fake fake) {
+            var result = new FakeResult();
+            
+            if (fake.articles.HasValue) {
+                result.articles = new Article[fake.articles.Value];
+                for (int n = 0; n < fake.articles; n++) {
+                    result.articles[n] = articleFaker.Generate();
+                }
+            }
             return result;
         }
     }
