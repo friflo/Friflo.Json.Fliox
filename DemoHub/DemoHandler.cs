@@ -16,32 +16,32 @@ namespace Friflo.Json.Fliox.DemoHub
         }
         
         /// synchronous command handler - preferred if possible
-        private static double TestAdd(Command<Operands> command) {
+        private static double DemoAdd(Command<Operands> command) {
             var param = command.Param;
             return param.left + param.right;
         }
         
         /// asynchronous command handler
-        private static Task<double> TestMul(Command<Operands> command) {
+        private static Task<double> DemoMul(Command<Operands> command) {
             var param = command.Param;
             var result = param.left * param.right;
             return Task.FromResult(result);
         }
 
         /* intentionally not implemented to demonstrate response behavior
-        private static double TestSub_NotImpl(Command<Operands> command) {
+        private static double DemoSub_NotImpl(Command<Operands> command) {
             var param = command.Param;
             return param.left - param.right;
         } */
         
-        private static async Task<FakeResult> TestFake(Command<Fake> command) {
+        private static async Task<FakeResult> DemoFake(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
             var user            = command.User;
             demoStore.UserId    = user.userId.ToString(); // todo simplify setting user/token
             demoStore.Token     = user.token;
             // demoStore.ClientId  = command.ClientId.ToString();
             var article         = new Article { id = "test", name = "foo" };
-            demoStore.articles.Create(article);
+            demoStore.articles.Upsert(article);
             await demoStore.SyncTasks();
             
             var result          = new FakeResult();

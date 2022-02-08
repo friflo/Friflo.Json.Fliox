@@ -27,14 +27,14 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub): base (hub) { }
         
         // --- commands
-        public CommandTask<double>    TestAdd  (Operands    param)      => SendCommand<Operands,    double>     (nameof(TestAdd),  param);
-        public CommandTask<double>    TestMul  (Operands    param)      => SendCommand<Operands,    double>     (nameof(TestMul),  param);
+        public CommandTask<double>    DemoAdd  (Operands    param)      => SendCommand<Operands,    double>     (nameof(DemoAdd),  param);
+        public CommandTask<double>    DemoMul  (Operands    param)      => SendCommand<Operands,    double>     (nameof(DemoMul),  param);
         
-        /// <summary> command handler for <see cref="TestSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
+        /// <summary> command handler for <see cref="DemoSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
         /// Execution results in:<br/>
-        /// <code>NotImplemented > no command handler for: 'TestSub_NotImpl' </code></summary>
-        public CommandTask<double>    TestSub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(TestSub_NotImpl), param);
-        public CommandTask<FakeResult>TestFake (Fake        param)      => SendCommand<Fake,        FakeResult> (nameof(TestFake), param);
+        /// <code>NotImplemented > no command handler for: 'DemoSub_NotImpl' </code></summary>
+        public CommandTask<double>    DemoSub_NotImpl (Operands param)  => SendCommand<Operands, double>        (nameof(DemoSub_NotImpl), param);
+        public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake,        FakeResult> (nameof(DemoFake), param);
     }
 
     // ------------------------------ models ------------------------------
