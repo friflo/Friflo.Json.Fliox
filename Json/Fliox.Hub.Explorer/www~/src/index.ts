@@ -141,7 +141,7 @@ export class App {
                     break;
                 case 'KeyP':
                     if (event.ctrlKey && event.altKey)
-                        this.execute(event, () => editor.sendCommand("POST"));
+                        this.execute(event, () => editor.sendCommand());
                     break;
                 case 'ArrowLeft':
                     if (event.altKey)

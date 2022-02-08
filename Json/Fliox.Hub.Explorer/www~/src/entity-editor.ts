@@ -1,5 +1,5 @@
-import { el, createEl, Resource, Entity, Method, parseAst }     from "./types.js";
-import { App, app }                                             from "./index.js";
+import { el, createEl, Resource, Entity, parseAst }     from "./types.js";
+import { App, app }                                     from "./index.js";
 
 import { CommandType, JsonType }        from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbContainers, DbCommands }     from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
@@ -70,42 +70,14 @@ export class EntityEditor
         el("databaseTools").style.display = displayDB;
     }
 
-    private getCommandDocsEl(database: string, command: string, signature: CommandType) {
-        if (!signature)
-            return app.schemaLess;
-        const param         = app.getTypeLabel(database, signature.param);
-        const result        = app.getTypeLabel(database, signature.result);
-        const commandDocs   = app.getSchemaCommand(database, command);        
-        const el =
-        `<span title="command parameter type">
-            ${commandDocs}
-            <span style="opacity: 0.5;">(param:</span>
-            <span>${param}</span>
-        </span>
-        <span style="opacity: 0.5;">) :&nbsp;</span>
-        <span title="command result type">${result}</span>`;
-        return el;
-    }
-
-    private getCommandUrl(database: string, command: string) {
-        // const value     = this.commandValueEditor.getValue();
-        return `./rest/${database}?command=${command}`;
-    }
-
-    public async sendCommand(method: Method) : Promise<void> {
+    public async sendCommand() : Promise<void> {
         const value     = this.commandValueEditor.getValue();
         const database  = this.entityIdentity.database;
         const command   = this.entityIdentity.command;
-        if (!method) {
-            const commandAnchor =  el("commandAnchor") as HTMLAnchorElement;
-            const commandValue    = value == "null" ? "" : `&value=${value}`;
-            const path          = App.getRestPath( database, null, null, `command=${command}${commandValue}`);
-            commandAnchor.href  = path;
-            // window.open(path, '_blank');
-            return;
-        }
-        const response  = await App.restRequest(method, value, database, null, null, `command=${command}`);
+
+        const response  = await App.restRequest("POST", value, database, null, null, `command=${command}`);
         let content     = await response.text();
+
         content         = app.formatJson(app.config.formatResponses, content);
         this.entityEditor.setValue(content);
     }
@@ -157,7 +129,7 @@ export class EntityEditor
             this.showCommand(database, commandName);
 
             if (path[0].classList.contains("command")) {
-                this.sendCommand("POST");
+                this.sendCommand();
             }
         };
         for (const command of dbCommands.commands) {
@@ -636,10 +608,6 @@ export class EntityEditor
         const schema        = app.databaseSchemas[database]._rootSchema;
         const signature     = schema ? schema.commands[command] : null;
         const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
-        
-        commandSignature.innerHTML  = this.getCommandDocsEl(database, command, signature);
-        commandAnchor.innerText     = `command=${command}`;
-        commandAnchor.href          = this.getCommandUrl(database, command);
 
         this.entityIdentity = {
             database:   database,
@@ -647,8 +615,38 @@ export class EntityEditor
             entityIds:  null,
             command:    command,
         };
-        this.setCommandParam (database, command, def);
+        this.setCommandParam (database, command, def); // sets command param => must be called before getCommandUrl()
         this.setCommandResult(database, command);
+
+        commandSignature.innerHTML  = this.getCommandDocsEl(database, command, signature);
+        commandAnchor.innerText     = `command=${command}`;
+        commandAnchor.href          = this.getCommandUrl(database, command);
+        commandAnchor.onfocus       = () => {            
+            commandAnchor.href = this.getCommandUrl(database, command);
+        };
+    }
+
+    private getCommandUrl(database: string, command: string) {
+        const value         = this.commandValueEditor.getValue();
+        const commandValue  = value == "null" ? "" : `&value=${value}`;
+        return `./rest/${database}?command=${command}${commandValue}`;
+    }
+
+    private getCommandDocsEl(database: string, command: string, signature: CommandType) {
+        if (!signature)
+            return app.schemaLess;
+        const param         = app.getTypeLabel(database, signature.param);
+        const result        = app.getTypeLabel(database, signature.result);
+        const commandDocs   = app.getSchemaCommand(database, command);        
+        const el =
+        `<span title="command parameter type">
+            ${commandDocs}
+            <span style="opacity: 0.5;">(param:</span>
+            <span>${param}</span>
+        </span>
+        <span style="opacity: 0.5;">) :&nbsp;</span>
+        <span title="command result type">${result}</span>`;
+        return el;
     }
 
     public tryFollowLink(value: string, column: number, line: number) : void {
