@@ -30,8 +30,13 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub): base (hub) { }
         
         // --- commands
+        /// <summary> Generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary> 
         public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake,        FakeResult> (nameof(DemoFake), param);
+        
+        /// <summary> simple command adding two numbers - no database access. </summary>
         public CommandTask<double>    DemoAdd  (Operands    param)      => SendCommand<Operands,    double>     (nameof(DemoAdd),  param);
+        
+        /// <summary> simple command multiplying two numbers - no database access. </summary>
         public CommandTask<double>    DemoMul  (Operands    param)      => SendCommand<Operands,    double>     (nameof(DemoMul),  param);
         
         /// <summary> command handler for <see cref="DemoSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
