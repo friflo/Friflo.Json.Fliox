@@ -451,7 +451,7 @@ export class App {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
+        return `<a title="open database schema exports in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
 
     private static getType(database: string, def: JsonType) {
