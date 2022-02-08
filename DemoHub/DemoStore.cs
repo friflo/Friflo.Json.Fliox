@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable ClassNeverInstantiated.Global
