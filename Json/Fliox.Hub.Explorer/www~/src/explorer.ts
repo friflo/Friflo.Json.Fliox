@@ -770,7 +770,11 @@ export class Explorer
             th.style.width      = `${Explorer.defaultColumnWidth}px`;
             const thIdDiv       = createEl('div');
             const path          = column.path;
-            thIdDiv.innerText   = path.length == 1 ? path[0] : `.${path[path.length-1]}`;
+            const columnName    = path.length == 1 ? path[0] : `.${path[path.length-1]}`;
+            thIdDiv.innerText   = columnName;
+            if (columnName == keyName) {
+                thIdDiv.style.color = "var(--color)";
+            }
             const type          = column.type;
             const jsonType      = type.jsonType as JsonType;
             const fieldType     = `\ntype:   ${jsonType?._typeName ?? type.typeName}${type.isNullable ? "?": ""}`;
