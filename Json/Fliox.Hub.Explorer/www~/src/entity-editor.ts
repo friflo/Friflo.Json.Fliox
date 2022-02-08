@@ -627,7 +627,13 @@ export class EntityEditor
     }
 
     private getCommandUrl(database: string, command: string) {
-        const value         = this.commandValueEditor.getValue();
+        let value = this.commandValueEditor.getValue();
+        try {
+            const valueStr  = JSON.parse(value);
+            value           = JSON.stringify(valueStr); // format to one line / remove white spaces
+        } catch {
+            // use unformatted invalid value instead
+        }
         const commandValue  = value == "null" ? "" : `&value=${value}`;
         return `./rest/${database}?command=${command}${commandValue}`;
     }
