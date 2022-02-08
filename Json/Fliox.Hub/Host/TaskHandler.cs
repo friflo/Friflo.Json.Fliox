@@ -68,14 +68,38 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    HubCluster);
         }
         
+        /// <summary>
+        /// Add a synchronous command handler method with a method signature like:
+        /// <code>
+        /// private static string TestCommand(Command&lt;int&gt; command) { ... }
+        /// </code>
+        /// command handler methods can be static or instance methods.
+        /// </summary>
         protected void AddCommand<TParam, TResult> (string name, Func<Command<TParam>, TResult> method) {
             AddCommandHandler (name, new CommandHandler<TParam, TResult> (method));
         }
         
+        /// <summary>
+        /// Add an asynchronous command handler method with a method signature like:
+        /// <code>
+        /// private static Task&lt;string&gt; TestCommand(Command&lt;int&gt; command) { ... }
+        /// </code>
+        /// command handler methods can be static or instance methods.
+        /// </summary>
         protected void AddCommandAsync<TParam, TResult> (string name, Func<Command<TParam>, Task<TResult>> method) {
             AddCommandHandlerAsync (name, new CommandHandler<TParam, Task<TResult>> (method));
         }
        
+        /// <summary>
+        /// Add all methods using <see cref="Command{TParam}"/> as a single parameter as a command handler.
+        /// E.g.
+        /// <code>
+        /// private static string TestCommand(Command&lt;int&gt; command) { ... }
+        /// </code>
+        /// Command handler methods can be: <br/>
+        /// - static or instance methods <br/>
+        /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
+        /// </summary>
         protected void AddCommandHandlers()
         {
             var type                = GetType();
