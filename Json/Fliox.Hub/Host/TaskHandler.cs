@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             string[] containerNames;
             var containerName   = command.Param;
             if (containerName == null) {
-                var dbContainers    = await database.GetDbContainers();
+                var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
                 containerNames      = dbContainers.containers;
             } else {
                 containerNames = new [] { containerName };
@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var name in containerNames) {
                 var container   = database.GetOrCreateContainer(name);
                 var aggregate   = new AggregateEntities { container = name };
-                var aggResult   = await container.AggregateEntities(aggregate, command.MessageContext);
+                var aggResult   = await container.AggregateEntities(aggregate, command.MessageContext).ConfigureAwait(false);
                 
                 var count       = aggResult.counts["*"];
                 var stats       = new ContainerStats { name = name, count = count };
