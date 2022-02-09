@@ -47,6 +47,14 @@
         "DbStats": {
             "type": "object",
             "properties": {
+                "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerStats" } }
+            },
+            "additionalProperties": false
+        },
+        "ContainerStats": {
+            "type": "object",
+            "properties": {
+                "name":  { "type": ["string", "null"] },
                 "count": { "$ref": "./Standard.json#/definitions/int64" }
             },
             "required": [

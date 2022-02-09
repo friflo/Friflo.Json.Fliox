@@ -20,6 +20,11 @@ export class DbSchema {
 }
 
 export class DbStats {
+    containers? : ContainerStats[] | null;
+}
+
+export class ContainerStats {
+    name?  : string | null;
     count  : int64;
 }
 
