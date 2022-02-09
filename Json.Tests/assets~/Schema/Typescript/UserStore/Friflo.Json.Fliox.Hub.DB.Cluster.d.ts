@@ -24,7 +24,7 @@ export class DbStats {
 }
 
 export class ContainerStats {
-    name?  : string | null;
+    name   : string;
     count  : int64;
 }
 

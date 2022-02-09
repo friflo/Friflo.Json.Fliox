@@ -8,6 +8,8 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Mapper;
 
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
+
 // ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
@@ -47,39 +49,39 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
     // -------------------------------------- models ---------------------------------------
     public class UserPermission {
-        [Fri.Required]  public  JsonKey         id;
+        [Req]   public  JsonKey         id;
         [Fri.Relation(nameof(UserStore.roles))]
-                        public  List<string>    roles;
+                public  List<string>    roles;
 
-        public override         string ToString() => JsonSerializer.Serialize(this);
+        public override string          ToString() => JsonSerializer.Serialize(this);
     }
     
     public class UserCredential {
-        [Fri.Required]  public  JsonKey         id;
-                        public  string          token;
+        [Req]   public  JsonKey         id;
+                public  string          token;
                         
-        public override         string ToString() => JsonSerializer.Serialize(this);
+        public override string          ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Role {
-        [Fri.Required]  public  string          id;
-        [Fri.Required]  public  List<Right>     rights;
-                        public  string          description;
+        [Req]   public  string          id;
+        [Req]   public  List<Right>     rights;
+                public  string          description;
                         
-        public override         string ToString() => JsonSerializer.Serialize(this);
+        public override string          ToString() => JsonSerializer.Serialize(this);
     }
     
     // -------------------------------------- commands -------------------------------------
     public class AuthenticateUser {
-        [Fri.Required]  public  JsonKey userId;
-        [Fri.Required]  public  string  token;
+        [Req]   public  JsonKey         userId;
+        [Req]   public  string          token;
 
-        public override string  ToString() => $"userId: {userId}";
+        public override string          ToString() => $"userId: {userId}";
     }
     
     public class AuthenticateUserResult {
-        public          bool            isValid;
+                public bool             isValid;
 
-        public override string ToString() => $"isValid: {isValid}";
+        public override string          ToString() => $"isValid: {isValid}";
     }
 }

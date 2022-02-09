@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public class ContainerStats {
-                public  string                          name;
+        [Req]   public  string                          name;
                 public  long                            count;
             
         public override string                          ToString() => $"{name} - count: {count}";

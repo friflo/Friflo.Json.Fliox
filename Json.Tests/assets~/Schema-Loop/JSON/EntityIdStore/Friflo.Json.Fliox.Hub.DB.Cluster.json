@@ -54,10 +54,11 @@
         "ContainerStats": {
             "type": "object",
             "properties": {
-                "name":  { "type": ["string", "null"] },
+                "name":  { "type": "string" },
                 "count": { "$ref": "./Standard.json#/definitions/int64" }
             },
             "required": [
+                "name",
                 "count"
             ],
             "additionalProperties": false

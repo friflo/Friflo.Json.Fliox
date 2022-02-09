@@ -7,7 +7,8 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Transform;
+
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -30,50 +31,50 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     }
     
     public class HostInfo {
-        [Fri.Required]  public  JsonKey                         id;
-                        public  RequestCount                    counts;
+        [Req]   public  JsonKey                         id;
+                public  RequestCount                    counts;
                         
-        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class ClientInfo {
-        [Fri.Required]  public  JsonKey                         id;
-        [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
-                        public  List<RequestCount>              counts = new List<RequestCount>();
+        [Req]   public  JsonKey                         id;
+        [Req]   public  Ref<JsonKey, UserInfo>          user;
+                public  List<RequestCount>              counts = new List<RequestCount>();
         [Fri.Property (Name =                                  "event")]  
-                        public  EventInfo?                      ev;
+                public  EventInfo?                      ev;
                         
-        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public struct EventInfo {
-                        public  int                             seq;
-                        public  int                             queued;
-                        public  List<string>                    messageSubs;
-                        public  List<ChangeSubscriptions>       changeSubs;
+                public  int                             seq;
+                public  int                             queued;
+                public  List<string>                    messageSubs;
+                public  List<ChangeSubscriptions>       changeSubs;
     }
     
     public sealed class ChangeSubscriptions
     {
-        [Fri.Required]  public  string                          container;
-        [Fri.Required]  public  List<Change>                    changes;
-                        public  string                          filter;
+        [Req]   public  string                          container;
+        [Req]   public  List<Change>                    changes;
+                public  string                          filter;
     }
     
     public class UserInfo {
-        [Fri.Required]  public  JsonKey                         id;
-        [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
-                        public  List<RequestCount>              counts = new List<RequestCount>();
+        [Req]   public  JsonKey                         id;
+        [Req]   public  List<Ref<JsonKey, ClientInfo>>  clients;
+                public  List<RequestCount>              counts = new List<RequestCount>();
                         
-        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class HistoryInfo {
-        [Fri.Required]  public  int                             id;
-        [Fri.Required]  public  int[]                           counters;
-                        public  int                             lastUpdate;
+        [Req]   public  int                             id;
+        [Req]   public  int[]                           counters;
+                public  int                             lastUpdate;
                         
-        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     
