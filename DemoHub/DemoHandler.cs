@@ -60,14 +60,6 @@ namespace Friflo.Json.Fliox.DemoHub
             
             await demoStore.SyncTasks();
             
-            var counts = new Fake {
-                orders      = result.orders?    .Length,
-                customers   = result.customers? .Length,
-                articles    = result.articles?  .Length,
-                producers   = result.producers? .Length,
-                employees   = result.employees? .Length,
-            };
-            result.counts = counts;
             return result;
         }
     }

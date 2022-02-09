@@ -114,6 +114,15 @@ namespace Friflo.Json.Fliox.DemoHub
                     result.orders[n] = faker.Generate();
                 }
             }
+            
+            var counts = new Fake {
+                orders      = result.orders?    .Length,
+                customers   = result.customers? .Length,
+                articles    = result.articles?  .Length,
+                producers   = result.producers? .Length,
+                employees   = result.employees? .Length,
+            };
+            result.counts = counts;
             return result;
         }
     }
