@@ -116,6 +116,7 @@ namespace Friflo.Json.Fliox.DemoHub
     }
     
     public class FakeResult {
+        public  string      filter;
         public  Fake        added;
         public  Order[]     orders;
         public  Customer[]  customers;
@@ -123,5 +124,4 @@ namespace Friflo.Json.Fliox.DemoHub
         public  Producer[]  producers;
         public  Employee[]  employees;
     }
-   
 }
