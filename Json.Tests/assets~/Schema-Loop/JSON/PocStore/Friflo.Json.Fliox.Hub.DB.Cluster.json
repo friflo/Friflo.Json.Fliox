@@ -44,6 +44,16 @@
             ],
             "additionalProperties": false
         },
+        "DbStats": {
+            "type": "object",
+            "properties": {
+                "count": { "$ref": "./Standard.json#/definitions/int64" }
+            },
+            "required": [
+                "count"
+            ],
+            "additionalProperties": false
+        },
         "HubInfo": {
             "type": "object",
             "properties": {

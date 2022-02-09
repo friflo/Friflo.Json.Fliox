@@ -43,6 +43,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     // --- commands
+    public class DbStats {
+                        public  long                            count;
+    }
+    
     public class HubInfo {
         [Fri.Required]  public  string                          version;
                         public  string                          hostName;

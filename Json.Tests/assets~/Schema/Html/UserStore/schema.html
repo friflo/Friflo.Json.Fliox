@@ -255,6 +255,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'><div>DbCommands<key style='float:right'>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'><div>DbStats</div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HubInfo'><div>HubInfo</div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HubCluster'><div>HubCluster</div></a></li>
         </ul>
@@ -276,6 +277,11 @@
         <ul>
             <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'><div>TaskType<keyword style='float:right'>enum</keyword></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'><div>Change<keyword style='float:right'>enum</keyword></div></a></li>
+        </ul>
+    </li>
+    <li><a href='#Standard'>Standard</a>
+        <ul>
+            <li><a href='#Standard.int64'><div>int64</div></a></li>
         </ul>
     </li>
 </ul>
@@ -326,6 +332,9 @@
         </tr>
         <tr>
             <td><cmd>DbSchema</cmd></td>        <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></td>
+        </tr>
+        <tr>
+            <td><cmd>DbStats</cmd></td>         <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></td>
         </tr>
         <tr>
             <td><cmd>HubInfo</cmd></td>         <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HubInfo'>HubInfo</a></td>
@@ -459,6 +468,17 @@
         </tr>
         <tr>
             <td><field>jsonSchemas</field></td> <td>key ➞ <type>any</type></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a>
+        <keyword>class</keyword>
+    </h3>
+    <table>
+        <tr>
+            <td><field>count</field></td> <td><a href='#Standard.int64'>int64</a></td>
         </tr>
     </table>
     </div>
@@ -712,6 +732,18 @@
         <li>patch</li>
         <li>delete</li>
     </ul>
+    </div>
+</div>
+
+<div class='namespace'>
+    <h2 id='Standard'>
+        <a href='#Standard'>Standard</a>
+    </h2>
+    <div class='type'>
+    <h3 id='Standard.int64'>
+        <a href='#Standard.int64'>int64</a>
+    </h3>
+    <desc>signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807]</desc>
     </div>
 </div>
 

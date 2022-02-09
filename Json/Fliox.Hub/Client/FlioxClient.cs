@@ -251,6 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<DbContainers>   (StdCommand.DbContainers);
         public CommandTask<DbCommands>      DbCommands()    =>  SendCommand<DbCommands>     (StdCommand.DbCommands);
         public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<DbSchema>       (StdCommand.DbSchema);
+        public CommandTask<DbStats>         DbStats()       =>  SendCommand<DbStats>        (StdCommand.DbStats);
         
         // --- Hub*
         public CommandTask<HubInfo>         HubInfo()       =>  SendCommand<HubInfo>        (StdCommand.HubInfo);

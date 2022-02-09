@@ -54,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
                 AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
                 AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
+                AddCommandHandlerAsync  (StdCommand.DbStats,       new CommandHandler<string,    Task<DbStats>>     (DbStats));
                 // --- Hub*
                 AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
                 AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
@@ -167,6 +168,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             var database        = command.Database;  
             var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
+        }
+        
+        internal static async Task<DbStats> DbStats (Command<string> command) {
+            var database        = command.Database;
+            var containerName   = command.Param;
+            var container       = database.GetOrCreateContainer(containerName);
+            var aggregate       = new AggregateEntities { container = containerName };
+            var aggResult       = await container.AggregateEntities(aggregate, command.MessageContext);
+            
+            var count           = aggResult.counts["*"];
+            var result          = new DbStats { count = count };
+            return result;
         }
         
         /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it

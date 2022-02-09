@@ -2,6 +2,7 @@
 import { DbContainers } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbCommands }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HubInfo }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HubCluster }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { RequestCount } from "./Friflo.Json.Fliox.Hub.Host.Stats";
@@ -21,6 +22,7 @@ export interface MonitorStore {
     DbContainers (param: any) : DbContainers;
     DbCommands   (param: any) : DbCommands;
     DbSchema     (param: any) : DbSchema;
+    DbStats      (param: any) : DbStats;
     HubInfo      (param: any) : HubInfo;
     HubCluster   (param: any) : HubCluster;
 }

@@ -125,6 +125,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public const string DbSchema        = "DbSchema";
         
+        public const string DbStats         = "DbStats";
+
+
         // --- Hub*
         public const string HubInfo         = "HubInfo";
 

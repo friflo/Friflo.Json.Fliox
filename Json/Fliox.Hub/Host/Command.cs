@@ -27,6 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              User            User            => messageContext.User;
         public              JsonKey         ClientId        => messageContext.clientId;
         
+        internal            MessageContext  MessageContext  => messageContext;
+        
         private  readonly   JsonValue       param;
         private  readonly   MessageContext  messageContext;
 
