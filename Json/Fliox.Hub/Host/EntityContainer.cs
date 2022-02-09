@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store their entities / records 
+    /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store its entities / records 
     /// as key value pairs. It uses a string as key and a JSON object as value. Each container is intended to store the
     /// entities / records of a specific type. E.g. one container for storing JSON objects representing 'articles'
     /// another one for storing 'orders'.

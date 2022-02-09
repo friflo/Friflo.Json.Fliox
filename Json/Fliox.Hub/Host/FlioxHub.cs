@@ -124,6 +124,8 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
+        /// All requests to a <see cref="FlioxHub"/> are handled by this method.
+        /// By design this is the 'front door' all requests have to pass to get processed.
         /// <para>
         ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="SyncRequestTask"/> but 
         ///   this is only a fail safe mechanism.
