@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.DemoHub
     }
     
     public class FakeResult {
-        public  Fake        counts;
+        public  Fake        added;
         public  Order[]     orders;
         public  Customer[]  customers;
         public  Article[]   articles;

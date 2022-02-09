@@ -115,14 +115,14 @@ namespace Friflo.Json.Fliox.DemoHub
                 }
             }
             
-            var counts = new Fake {
+            var added = new Fake {
                 orders      = result.orders?    .Length,
                 customers   = result.customers? .Length,
                 articles    = result.articles?  .Length,
                 producers   = result.producers? .Length,
                 employees   = result.employees? .Length,
             };
-            result.counts = counts;
+            result.added = added;
             return result;
         }
     }
