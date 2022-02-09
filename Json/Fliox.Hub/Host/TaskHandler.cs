@@ -64,6 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandAsync <Empty,       DbContainers> (nameof(DbContainers),  DbContainers);
             AddCommand      <Empty,       DbCommands>   (nameof(DbCommands),    DbCommands);
             AddCommand      <Empty,       DbSchema>     (nameof(DbSchema),      DbSchema);
+            AddCommandAsync <string,      DbStats>      (nameof(DbStats),       DbStats);
             // --- Hub*
             AddCommand      <Empty,       HubInfo>      (nameof(HubInfo),       HubInfo);
             AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    HubCluster);
@@ -172,13 +173,25 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         internal static async Task<DbStats> DbStats (Command<string> command) {
             var database        = command.Database;
+            string[] containerNames;
             var containerName   = command.Param;
-            var container       = database.GetOrCreateContainer(containerName);
-            var aggregate       = new AggregateEntities { container = containerName };
-            var aggResult       = await container.AggregateEntities(aggregate, command.MessageContext);
-            
-            var count           = aggResult.counts["*"];
-            var result          = new DbStats { count = count };
+            if (containerName == null) {
+                var dbContainers    = await database.GetDbContainers();
+                containerNames      = dbContainers.containers;
+            } else {
+                containerNames = new [] { containerName };
+            }
+            var containerStats = new List<ContainerStats>();
+            foreach (var name in containerNames) {
+                var container   = database.GetOrCreateContainer(name);
+                var aggregate   = new AggregateEntities { container = name };
+                var aggResult   = await container.AggregateEntities(aggregate, command.MessageContext);
+                
+                var count       = aggResult.counts["*"];
+                var stats       = new ContainerStats { name = name, count = count };
+                containerStats.Add(stats);
+            }
+            var result = new DbStats { containers = containerStats.ToArray() };
             return result;
         }
         

@@ -6,6 +6,8 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
+
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
@@ -20,41 +22,49 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     public class DbContainers {
-        [Fri.Required]  public  string                          id;
-        [Fri.Required]  public  string                          databaseType;
-        [Fri.Required]  public  string[]                        containers;
+        [Req]   public  string                          id;
+        [Req]   public  string                          databaseType;
+        [Req]   public  string[]                        containers;
                         
-        public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     public class DbCommands {
-        [Fri.Required]  public  string                          id;
-        [Fri.Required]  public  string[]                        commands;
+        [Req]   public  string                          id;
+        [Req]   public  string[]                        commands;
                         
-        public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class DbSchema {
-        [Fri.Required]  public  string                          id;
-        [Fri.Required]  public  string                          schemaName;
-        [Fri.Required]  public  string                          schemaPath;
-        [Fri.Required]  public  Dictionary<string,JsonValue>    jsonSchemas;
+        [Req]   public  string                          id;
+        [Req]   public  string                          schemaName;
+        [Req]   public  string                          schemaPath;
+        [Req]   public  Dictionary<string,JsonValue>    jsonSchemas;
                         
         public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     // --- commands
     public class DbStats {
-                        public  long                            count;
+                public  ContainerStats[]                containers;
     }
     
+    public class ContainerStats {
+                public  string                          name;
+                public  long                            count;
+            
+        public override string                          ToString() => $"{name} - count: {count}";
+    }
+    
+    
     public class HubInfo {
-        [Fri.Required]  public  string                          version;
-                        public  string                          hostName;
-                        public  string                          label;
-                        public  string                          website;
+        [Req]   public  string                          version;
+                public  string                          hostName;
+                public  string                          label;
+                public  string                          website;
     }
     
     public class HubCluster {
-        [Fri.Required]  public  List<DbContainers>              databases;
+        [Req]   public  List<DbContainers>              databases;
     }
 }
