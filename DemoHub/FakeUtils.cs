@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DemoHub
             if (articles > 0) {
                 var faker = new Faker<Article>()
                     .RuleFor(a => a.id,         f => $"article-{fakeCounter}.{articleCounter++}")
-                    .RuleFor(a => a.name,       f => f.Commerce.Product())
+                    .RuleFor(a => a.name,       f => f.Commerce.ProductName())
                     .RuleFor(a => a.producer,   f => {
                         if (producers == 0)
                             return default;
