@@ -16,6 +16,14 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
+    /// <summary>
+    /// <see cref="PocStore"/> extends <see cref="FlioxClient"/> to provide two functionalities: <br/>
+    /// 1. Defines a database schema be declaring its containers and commands <br/>
+    /// 2. Is a database client with type safe access to its containers and commands <br/>  
+    /// <br/> 
+    /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.
+    /// </summary>
     public class PocStore : FlioxClient
     {
         // --- containers
