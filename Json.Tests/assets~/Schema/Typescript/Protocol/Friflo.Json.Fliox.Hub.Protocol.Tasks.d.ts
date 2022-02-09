@@ -16,6 +16,7 @@ export type SyncRequestTask_Union =
     | UpsertEntities
     | ReadEntities
     | QueryEntities
+    | AggregateEntities
     | PatchEntities
     | DeleteEntities
     | SendMessage
@@ -31,6 +32,7 @@ export abstract class SyncRequestTask {
         | "upsert"
         | "read"
         | "query"
+        | "aggregate"
         | "patch"
         | "delete"
         | "message"
@@ -73,6 +75,13 @@ export class QueryEntities extends SyncRequestTask {
     filterTree? : FilterOperation_Union | null;
     filter?     : string | null;
     references? : References[] | null;
+}
+
+export class AggregateEntities extends SyncRequestTask {
+    task        : "aggregate";
+    container   : string;
+    filterTree? : FilterOperation_Union | null;
+    filter?     : string | null;
 }
 
 export class PatchEntities extends SyncRequestTask {
@@ -137,6 +146,7 @@ export type SyncTaskResult_Union =
     | UpsertEntitiesResult
     | ReadEntitiesResult
     | QueryEntitiesResult
+    | AggregateEntitiesResult
     | PatchEntitiesResult
     | DeleteEntitiesResult
     | SendMessageResult
@@ -153,6 +163,7 @@ export abstract class SyncTaskResult {
         | "upsert"
         | "read"
         | "query"
+        | "aggregate"
         | "patch"
         | "delete"
         | "message"
@@ -182,6 +193,12 @@ export class QueryEntitiesResult extends SyncTaskResult {
     container?  : string | null;
     ids         : string[];
     references? : ReferencesResult[] | null;
+}
+
+export class AggregateEntitiesResult extends SyncTaskResult {
+    task       : "aggregate";
+    container? : string | null;
+    counts?    : { [key: string]: int64 } | null;
 }
 
 export class PatchEntitiesResult extends SyncTaskResult {

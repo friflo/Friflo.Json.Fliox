@@ -9,6 +9,7 @@
                 { "$ref": "#/definitions/UpsertEntities" },
                 { "$ref": "#/definitions/ReadEntities" },
                 { "$ref": "#/definitions/QueryEntities" },
+                { "$ref": "#/definitions/AggregateEntities" },
                 { "$ref": "#/definitions/PatchEntities" },
                 { "$ref": "#/definitions/DeleteEntities" },
                 { "$ref": "#/definitions/SendMessage" },
@@ -18,7 +19,7 @@
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
                 "info": {  }
             },
             "required": [
@@ -90,6 +91,22 @@
                 "filterTree": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
                 "filter":     { "type": ["string", "null"] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" } },
+                "info":       {  }
+            },
+            "required": [
+                "task",
+                "container"
+            ],
+            "additionalProperties": false
+        },
+        "AggregateEntities": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "properties": {
+                "task":       { "enum": ["aggregate"] },
+                "container":  { "type": "string" },
+                "filterTree": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
+                "filter":     { "type": ["string", "null"] },
                 "info":       {  }
             },
             "required": [
@@ -248,6 +265,7 @@
                 { "$ref": "#/definitions/UpsertEntitiesResult" },
                 { "$ref": "#/definitions/ReadEntitiesResult" },
                 { "$ref": "#/definitions/QueryEntitiesResult" },
+                { "$ref": "#/definitions/AggregateEntitiesResult" },
                 { "$ref": "#/definitions/PatchEntitiesResult" },
                 { "$ref": "#/definitions/DeleteEntitiesResult" },
                 { "$ref": "#/definitions/SendMessageResult" },
@@ -258,7 +276,7 @@
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
             },
             "required": [
                 "task"
@@ -312,6 +330,19 @@
             "required": [
                 "task",
                 "ids"
+            ],
+            "additionalProperties": false
+        },
+        "AggregateEntitiesResult": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "properties": {
+                "task":      { "enum": ["aggregate"] },
+                "container": { "type": ["string", "null"] },
+                "counts":    { "additionalProperties": { "$ref": "./Standard.json#/definitions/int64" }, "type": "object" }
+            },
+            "required": [
+                "task"
             ],
             "additionalProperties": false
         },

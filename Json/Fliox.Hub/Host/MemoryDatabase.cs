@@ -85,7 +85,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
-            throw new NotImplementedException();
+            var count   = keyValues.Count;
+            var counts  = new Dictionary<string, long> { { "*", count} };
+            var result  = new AggregateEntitiesResult {
+                container   = command.container,
+                counts      = counts
+            };
+            return Task.FromResult(result);
         }
 
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {

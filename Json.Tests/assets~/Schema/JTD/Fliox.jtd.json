@@ -42,6 +42,7 @@
                 "upsert":           { "ref":  "UpsertEntities" },
                 "read":             { "ref":  "ReadEntities" },
                 "query":            { "ref":  "QueryEntities" },
+                "aggregate":        { "ref":  "AggregateEntities" },
                 "patch":            { "ref":  "PatchEntities" },
                 "delete":           { "ref":  "DeleteEntities" },
                 "message":          { "ref":  "SendMessage" },
@@ -484,6 +485,14 @@
                 "right": { "ref":  "Operation" }
             }
         },
+        "AggregateEntities": {
+            "properties": {
+                "container":  { "type": "string" },
+                "filterTree": { "ref":  "FilterOperation", "nullable": true },
+                "filter":     { "type": "string", "nullable": true },
+                "info":       { "nullable": true }
+            }
+        },
         "PatchEntities": {
             "properties": {
                 "container": { "type": "string" },
@@ -637,6 +646,7 @@
                 "upsert":           { "ref":  "UpsertEntitiesResult" },
                 "read":             { "ref":  "ReadEntitiesResult" },
                 "query":            { "ref":  "QueryEntitiesResult" },
+                "aggregate":        { "ref":  "AggregateEntitiesResult" },
                 "patch":            { "ref":  "PatchEntitiesResult" },
                 "delete":           { "ref":  "DeleteEntitiesResult" },
                 "message":          { "ref":  "SendMessageResult" },
@@ -683,6 +693,12 @@
                 "container":  { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
+            }
+        },
+        "AggregateEntitiesResult": {
+            "properties": {
+                "container": { "type": "string", "nullable": true },
+                "counts":    { "values": { "type": "int64" }, "nullable": true }
             }
         },
         "PatchEntitiesResult": {

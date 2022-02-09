@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [Fri.Polymorph(typeof(UpsertEntitiesResult),    Discriminant = "upsert")]
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
+    [Fri.Polymorph(typeof(AggregateEntitiesResult), Discriminant = "aggregate")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     [Fri.Polymorph(typeof(SendMessageResult),       Discriminant = "message")]

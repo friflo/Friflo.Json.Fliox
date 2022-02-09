@@ -65,6 +65,7 @@ export type OperationType =
     | "patch"
     | "read"
     | "query"
+    | "aggregate"
     | "mutate"
     | "full"
 ;

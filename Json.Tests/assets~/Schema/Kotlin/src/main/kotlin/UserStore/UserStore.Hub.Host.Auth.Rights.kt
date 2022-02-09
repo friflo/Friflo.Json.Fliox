@@ -64,6 +64,7 @@ enum class OperationType {
     patch,
     read,
     query,
+    aggregate,
     mutate,
     full,
 }

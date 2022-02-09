@@ -189,6 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         //
         private  readonly   bool    read;
         private  readonly   bool    query;
+        private  readonly   bool    aggregate;
 
         public   override   string  ToString() => $"database: {dbLabel}, container: {container}";
         
@@ -196,12 +197,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             : base (database)
         {
             this.container  = container;
-            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query);
+            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query, ref aggregate);
         }
         
         private static void SetRoles (ICollection<OperationType> types,
                 ref bool create, ref bool upsert, ref bool delete, ref bool deleteAll, ref bool patch,
-                ref bool read,   ref bool query)
+                ref bool read,   ref bool query, ref bool aggregate)
         {
             foreach (var type in types) {
                 switch (type) {
@@ -213,6 +214,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     //
                     case OperationType.read:        read        = true;   break;
                     case OperationType.query:       query       = true;   break;
+                    case OperationType.aggregate:   aggregate   = true;   break;
                     case OperationType.mutate:
                         create  = true; upsert  = true; delete  = true; patch   = true;
                         break;
@@ -230,15 +232,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             if (!AuthorizeDatabase(messageContext))
                 return false;
             switch (task.TaskType) {
-                case TaskType.create:       return create       && ((CreateEntities)  task).container == container;
-                case TaskType.upsert:       return upsert       && ((UpsertEntities)  task).container == container;
+                case TaskType.create:       return create       && ((CreateEntities)    task).container == container;
+                case TaskType.upsert:       return upsert       && ((UpsertEntities)    task).container == container;
                 case TaskType.delete:
                     var deleteEntities = (DeleteEntities)  task;
                     return deleteEntities.Authorize(container, delete, deleteAll);
-                case TaskType.patch:        return patch        && ((PatchEntities) task).container == container;
+                case TaskType.patch:        return patch        && ((PatchEntities)     task).container == container;
                 //
-                case TaskType.read:         return read         && ((ReadEntities)  task).container == container;
-                case TaskType.query:        return query        && ((QueryEntities) task).container == container;
+                case TaskType.read:         return read         && ((ReadEntities)      task).container == container;
+                case TaskType.query:        return query        && ((QueryEntities)     task).container == container;
+                case TaskType.aggregate:    return aggregate    && ((AggregateEntities) task).container == container;
             }
             return false;
         }

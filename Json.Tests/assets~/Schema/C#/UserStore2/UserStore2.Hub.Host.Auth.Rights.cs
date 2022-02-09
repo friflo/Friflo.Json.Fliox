@@ -59,6 +59,7 @@ public enum OperationType {
     patch,
     read,
     query,
+    aggregate,
     mutate,
     full,
 }

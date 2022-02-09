@@ -111,6 +111,7 @@
                 "patch",
                 "read",
                 "query",
+                "aggregate",
                 "mutate",
                 "full"
             ]

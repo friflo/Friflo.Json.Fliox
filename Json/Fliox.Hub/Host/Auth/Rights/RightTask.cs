@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
             switch (taskType) {
                 case TaskType.read:                return new AuthorizeTaskType(TaskType.read,              database);
                 case TaskType.query:               return new AuthorizeTaskType(TaskType.query,             database);
+                case TaskType.aggregate:           return new AuthorizeTaskType(TaskType.aggregate,         database);
                 case TaskType.create:              return new AuthorizeTaskType(TaskType.create,            database);
                 case TaskType.upsert:              return new AuthorizeTaskType(TaskType.upsert,            database);
                 case TaskType.patch:               return new AuthorizeTaskType(TaskType.patch,             database);

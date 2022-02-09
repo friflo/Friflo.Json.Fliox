@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         patch, 
         read,  
         query, 
+        aggregate,
         mutate,
         full
     }

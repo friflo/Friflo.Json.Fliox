@@ -57,6 +57,15 @@ data class QueryEntities (
 ) : SyncRequestTask()
 
 @Serializable
+@SerialName("aggregate")
+data class AggregateEntities (
+              val container  : String,
+              val filterTree : FilterOperation? = null,
+              val filter     : String? = null,
+    override  val info       : JsonElement? = null,
+) : SyncRequestTask()
+
+@Serializable
 @SerialName("patch")
 data class PatchEntities (
               val container : String,
@@ -161,6 +170,13 @@ data class QueryEntitiesResult (
               val container  : String? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
+) : SyncTaskResult()
+
+@Serializable
+@SerialName("aggregate")
+data class AggregateEntitiesResult (
+              val container : String? = null,
+              val counts    : HashMap<String, Long>? = null,
 ) : SyncTaskResult()
 
 @Serializable
