@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Main
             internal readonly string  userDbPath  = "./Json.Tests/assets~/DB/UserStore";
             internal readonly string  www         = "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly string  cache       = null; // "max-age=600"; // HTTP Cache-Control
-            internal readonly bool    useMemoryDbClone    = true;
+            internal readonly bool    useMemoryDbClone    = false;
         }
         
         private static HttpHostHub CreateMiniHost() {
