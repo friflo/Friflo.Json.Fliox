@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.DemoHub
                 producers   = result.producers? .Length,
                 employees   = result.employees? .Length,
             };
-            result.filter = $"o.id.Contains('-{fakeCounter}.')";
+            result.filter = $"use lambda as container filter: o.id.Contains('-{fakeCounter}.')";
             result.added = added;
             return result;
         }
