@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Client;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="FakeUtils"/> is used to create records in the <see cref="DemoStore"/> containers. <br/>
+    /// <see cref="FakeUtils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>
     /// The records are generated with random data by using: <br/>
     /// [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
     /// </summary>
