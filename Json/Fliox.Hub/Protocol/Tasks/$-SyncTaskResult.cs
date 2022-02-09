@@ -34,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         upsert,
         patch,
         delete,
+        aggregate,
         message,
         command,
         subscribeChanges,

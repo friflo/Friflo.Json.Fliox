@@ -7,6 +7,7 @@ export type TaskType =
     | "upsert"
     | "patch"
     | "delete"
+    | "aggregate"
     | "message"
     | "command"
     | "subscribeChanges"

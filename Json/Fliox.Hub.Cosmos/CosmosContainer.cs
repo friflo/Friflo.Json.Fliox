@@ -185,6 +185,10 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             return new QueryEntitiesResult{entities = entities};
         }
         
+        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
+        
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;

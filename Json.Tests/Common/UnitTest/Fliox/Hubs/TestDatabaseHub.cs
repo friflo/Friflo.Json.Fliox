@@ -176,6 +176,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return result;
         }
         
+        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
+        
         
         // --- simulate read/write error methods
         private CommandError SimulateReadErrors(Dictionary<JsonKey,EntityValue> entities) {

@@ -10,6 +10,7 @@
                 "upsert",
                 "patch",
                 "delete",
+                "aggregate",
                 "message",
                 "command",
                 "subscribeChanges",

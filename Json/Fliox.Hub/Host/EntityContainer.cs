@@ -66,11 +66,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         public    virtual   bool            Pretty      => false;
         public    override  string          ToString()  => $"{GetType().Name} - {instanceName}";
 
-        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities  command, MessageContext messageContext);
-        public abstract Task<UpsertEntitiesResult>  UpsertEntities  (UpsertEntities  command, MessageContext messageContext);
-        public abstract Task<ReadEntitiesSetResult> ReadEntitiesSet (ReadEntitiesSet command, MessageContext messageContext);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities   command, MessageContext messageContext);
-        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities  command, MessageContext messageContext);
+        public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, MessageContext messageContext);
+        public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, MessageContext messageContext);
+        public abstract Task<ReadEntitiesSetResult>   ReadEntitiesSet  (ReadEntitiesSet   command, MessageContext messageContext);
+        public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, MessageContext messageContext);
+        public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, MessageContext messageContext);
+        public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, MessageContext messageContext);
 
 
         protected EntityContainer(string name, EntityDatabase database) {

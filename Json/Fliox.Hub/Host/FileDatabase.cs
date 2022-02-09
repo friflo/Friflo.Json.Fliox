@@ -150,6 +150,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             var result  = await FilterEntityIds(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }
+        
+        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
 
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
