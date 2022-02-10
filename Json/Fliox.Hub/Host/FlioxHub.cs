@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         /// <summary>
         /// A host name that is assigned to a default database.
-        /// Its only purpose is to use it as id in <see cref="DB.Monitor.HostInfo.id"/>.
+        /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
         /// </summary>
         /// 
         public   readonly   string              hostName;

@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
         private  static async Task AssertMonitorErrors(MonitorStore monitor) {
             var deleteUser      = monitor.users.Delete(new JsonKey("123"));
-            var createUser      = monitor.users.Create(new UserInfo{id = new JsonKey("abc")});
+            var createUser      = monitor.users.Create(new UserHits{id = new JsonKey("abc")});
             await monitor.TrySyncTasks();
             AreEqual("InvalidTask ~ MonitorDB does not support task: 'create'",   createUser.Error.Message);
             AreEqual("InvalidTask ~ MonitorDB does not support task: 'delete'",   deleteUser.Error.Message);
@@ -204,11 +204,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         internal class MonitorResult {
             internal    SyncResult                      sync;
-            internal    QueryTask<JsonKey,  UserInfo>   users;
-            internal    QueryTask<JsonKey,  ClientInfo> clients;
-            internal    Find<JsonKey,       UserInfo>   user;
-            internal    Find<JsonKey,       ClientInfo> client;
-            internal    QueryTask<JsonKey,  HostInfo>   hosts;
+            internal    QueryTask<JsonKey,  UserHits>   users;
+            internal    QueryTask<JsonKey,  ClientHits> clients;
+            internal    Find<JsonKey,       UserHits>   user;
+            internal    Find<JsonKey,       ClientHits> client;
+            internal    QueryTask<JsonKey,  HostHits>   hosts;
         }
     }
 }

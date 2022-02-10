@@ -20,26 +20,26 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         internal            string                              hostName;
         
         // --- containers
-        public  readonly    EntitySet <JsonKey, HostInfo>       hosts;
-        public  readonly    EntitySet <JsonKey, ClientInfo>     clients;
-        public  readonly    EntitySet <JsonKey, UserInfo>       users;
-        public  readonly    EntitySet <int,     HistoryInfo>    histories;
+        public  readonly    EntitySet <JsonKey, HostHits>       hosts;
+        public  readonly    EntitySet <JsonKey, ClientHits>     clients;
+        public  readonly    EntitySet <JsonKey, UserHits>       users;
+        public  readonly    EntitySet <int,     HistoryHits>    histories;
 
         public MonitorStore(FlioxHub hub, string database = null) : base(hub, database) { }
         
         public CommandTask<ClearStatsResult> ClearStats(ClearStats value = null) => SendCommand<ClearStats, ClearStatsResult>(nameof(ClearStats), value);
     }
     
-    public class HostInfo {
+    public class HostHits {
         [Req]   public  JsonKey                         id;
                 public  RequestCount                    counts;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
-    public class ClientInfo {
+    public class ClientHits {
         [Req]   public  JsonKey                         id;
-        [Req]   public  Ref<JsonKey, UserInfo>          user;
+        [Req]   public  Ref<JsonKey, UserHits>          user;
                 public  List<RequestCount>              counts = new List<RequestCount>();
         [Fri.Property (Name =                                  "event")]  
                 public  EventInfo?                      ev;
@@ -61,15 +61,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 public  string                          filter;
     }
     
-    public class UserInfo {
+    public class UserHits {
         [Req]   public  JsonKey                         id;
-        [Req]   public  List<Ref<JsonKey, ClientInfo>>  clients;
+        [Req]   public  List<Ref<JsonKey, ClientHits>>  clients;
                 public  List<RequestCount>              counts = new List<RequestCount>();
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
-    public class HistoryInfo {
+    public class HistoryHits {
         [Req]   public  int                             id;
         [Req]   public  int[]                           counters;
                 public  int                             lastUpdate;

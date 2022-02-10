@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 var clientId        = pair.Key;
                 clients.TryGet(clientId, out var clientInfo);
                 if (clientInfo == null) {
-                    clientInfo = new ClientInfo { id = clientId };
+                    clientInfo = new ClientHits { id = clientId };
                 }
                 clientInfo.user     = client.userId;
                 RequestCount.CountsToList(clientInfo.counts, client.requestCounts, monitorName);
@@ -95,13 +95,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             }
         }
         
-        private static EventInfo? GetEventInfo (FlioxHub hub, ClientInfo clientInfo) {
+        private static EventInfo? GetEventInfo (FlioxHub hub, ClientHits clientHits) {
             if (hub.EventBroker == null)
                 return null;
-            if (!hub.EventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
+            if (!hub.EventBroker.TryGetSubscriber(clientHits.id, out var subscriber)) {
                 return null;
             }
-            var msgSubs     = clientInfo.ev?.messageSubs;
+            var msgSubs     = clientHits.ev?.messageSubs;
             msgSubs?.Clear();
             foreach (var messageSub in subscriber.messageSubscriptions) {
                 if (msgSubs == null) msgSubs = new List<string>();
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 if (msgSubs == null) msgSubs = new List<string>();
                 msgSubs.Add(messageSub + "*");
             }
-            var changeSubs  = subscriber.GetChangeSubscriptions (clientInfo.ev?.changeSubs);
+            var changeSubs  = subscriber.GetChangeSubscriptions (clientHits.ev?.changeSubs);
             return new EventInfo {
                 seq         = subscriber.Seq,
                 queued      = subscriber.EventQueueCount,
@@ -122,46 +122,46 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         
         internal void UpdateUsers(Authenticator authenticator, string monitorName) {
             foreach (var pair in authenticator.users) {
-                if (!users.TryGet(pair.Key, out var userInfo)) {
-                    userInfo = new UserInfo { id = pair.Key };
+                if (!users.TryGet(pair.Key, out var userHits)) {
+                    userHits = new UserHits { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestCount.CountsToList(userInfo.counts, user.requestCounts, monitorName);
+                RequestCount.CountsToList(userHits.counts, user.requestCounts, monitorName);
 
                 var userClients = user.clients;
-                if (userInfo.clients == null) {
-                    userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(userClients.Count);
+                if (userHits.clients == null) {
+                    userHits.clients = new List<Ref<JsonKey, ClientHits>>(userClients.Count);
                 } else {
-                    userInfo.clients.Clear();
+                    userHits.clients.Clear();
                 }
                 foreach (var clientPair in userClients) {
-                    userInfo.clients.Add(clientPair.Key);
+                    userHits.clients.Add(clientPair.Key);
                 }
-                users.Upsert(userInfo);
+                users.Upsert(userHits);
             }
         }
         
         internal void UpdateHistories(RequestHistories requestHistories) {
             foreach (var history in requestHistories.histories) {
-                if (!histories.TryGet(history.resolution, out var historyInfo)) {
-                    historyInfo = new HistoryInfo {
+                if (!histories.TryGet(history.resolution, out var historyHits)) {
+                    historyHits = new HistoryHits {
                         id          = history.resolution,
                         counters    = new int[history.Length]
                     };
                 }
-                history.CopyCounters(historyInfo.counters);
-                historyInfo.lastUpdate  = history.LastUpdate;
-                histories.Upsert(historyInfo);
+                history.CopyCounters(historyHits.counters);
+                historyHits.lastUpdate  = history.LastUpdate;
+                histories.Upsert(historyHits);
             }
         }
         
         internal void UpdateHost(HostStats hostStats) {
             var hostNameKey = new JsonKey(hostName);
-            if (!hosts.TryGet(hostNameKey, out var hostInfo)) {
-                hostInfo = new HostInfo { id = hostNameKey };
+            if (!hosts.TryGet(hostNameKey, out var hostHits)) {
+                hostHits = new HostHits { id = hostNameKey };
             }
-            hostInfo.counts = hostStats.requestCount;
-            hosts.Upsert(hostInfo);
+            hostHits.counts = hostStats.requestCount;
+            hosts.Upsert(hostHits);
         }
     }
 }

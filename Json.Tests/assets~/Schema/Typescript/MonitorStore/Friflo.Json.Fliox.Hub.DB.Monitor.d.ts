@@ -11,10 +11,10 @@ import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 export interface MonitorStore {
     // --- containers
-    hosts      : { [key: string]: HostInfo };
-    clients    : { [key: string]: ClientInfo };
-    users      : { [key: string]: UserInfo };
-    histories  : { [key: string]: HistoryInfo };
+    hosts      : { [key: string]: HostHits };
+    clients    : { [key: string]: ClientHits };
+    users      : { [key: string]: UserHits };
+    histories  : { [key: string]: HistoryHits };
 
     // --- commands
     ["ClearStats"]        (param: ClearStats) : ClearStatsResult;
@@ -27,25 +27,25 @@ export interface MonitorStore {
     ["host.Cluster"]      (param: any) : HostCluster;
 }
 
-export class HostInfo {
+export class HostHits {
     id      : string;
     counts  : RequestCount;
 }
 
-export class ClientInfo {
+export class ClientHits {
     id      : string;
     user    : string;
     counts? : RequestCount[] | null;
     event?  : EventInfo | null;
 }
 
-export class UserInfo {
+export class UserHits {
     id       : string;
     clients  : string[];
     counts?  : RequestCount[] | null;
 }
 
-export class HistoryInfo {
+export class HistoryHits {
     id          : int32;
     counters    : int32[];
     lastUpdate  : int32;
