@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DemoHub
         
         /// <summary> command handler for <see cref="Sub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
         /// Execution results in:
-        /// <code>NotImplemented > no command handler for: 'Sub_NotImpl' </code></summary>
+        /// <code>NotImplemented > no command handler for: 'demo.Sub_NotImpl' </code></summary>
         public CommandTask<double>    Sub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(Sub_NotImpl), param);
     }
     
