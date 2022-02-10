@@ -118,17 +118,16 @@ namespace Friflo.Json.Fliox.Schema.Native
                         typeDef.fields.Add(fieldDef);
                     }
                 }
-                var commands = CommandUtils.GetCommandTypes(typeDef.native);
-                if (commands != null) {
-                    var commandDefs = new List<CommandDef>(commands.Length);
-                    typeDef.commands = commandDefs;
-                    foreach (var command in commands) {
-                        var valueType   = nativeTypes[command.valueType];
-                        var resultType  = nativeTypes[command.resultType];
-                        var commandDef  = new CommandDef(command.name, valueType, resultType);
-                        commandDefs.Add(commandDef);
+                var hubCommands = HubCommandsUtils.GetHubCommandsTypes(typeDef.native);
+                if (hubCommands != null) {
+                    foreach (var hubCommand in hubCommands) {
+                        var fieldCommands = CommandUtils.GetCommandTypes(hubCommand.commandsType);
+                        AddCommands(typeDef, fieldCommands);
                     }
                 }
+                var commands = CommandUtils.GetCommandTypes(typeDef.native);
+                AddCommands(typeDef, commands);
+
                 if (typeDef.Discriminant != null) {
                     var baseType = typeDef.baseType;
                     while (baseType != null) {
@@ -175,6 +174,22 @@ namespace Friflo.Json.Fliox.Schema.Native
         }
         
         public void Dispose() { }
+        
+        private void AddCommands(NativeTypeDef typeDef, CommandInfo[] commands) {
+            if (commands == null)
+                return;
+            var commandDefs = typeDef.commands;
+            if (commandDefs == null) {
+                commandDefs = typeDef.commands = new List<CommandDef>(commands.Length);
+            }
+            typeDef.commands = commandDefs;
+            foreach (var command in commands) {
+                var valueType   = nativeTypes[command.valueType];
+                var resultType  = nativeTypes[command.resultType];
+                var commandDef  = new CommandDef(command.name, valueType, resultType);
+                commandDefs.Add(commandDef);
+            }
+        }
         
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
             var mapper  = typeMapper.GetUnderlyingMapper();

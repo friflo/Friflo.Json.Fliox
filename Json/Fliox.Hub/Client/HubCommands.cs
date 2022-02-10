@@ -4,11 +4,11 @@
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // currently concept validation only
-    public class FlioxCommands
+    public class HubCommands
     {
         private readonly FlioxClient client;
         
-        protected FlioxCommands (FlioxClient client) {
+        protected HubCommands (FlioxClient client) {
             this.client = client;
         }
         

@@ -36,7 +36,20 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(this, fields);
             }
+            
+            var hubCommands = HubCommandsUtils.GetHubCommandsTypes(type);
+            if (hubCommands != null) {
+                foreach (var hubCommand in hubCommands) {
+                    var commandsType    = hubCommand.commandsType;
+                    var clientCommands  = CommandUtils.GetCommandTypes(commandsType);
+                    AddCommands(typeStore, clientCommands);
+                }
+            }
             var commands = CommandUtils.GetCommandTypes(type);
+            AddCommands(typeStore, commands);
+        }
+        
+        private static void AddCommands(TypeStore typeStore, CommandInfo[] commands) {
             if (commands == null)
                 return;
             foreach (var command in commands) {

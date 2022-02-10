@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public DemoStore(FlioxHub hub) : base (hub) {
             test = new TestCommands(this);
         }
-        
+        /*
         // --- commands
         /// <summary> Generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary> 
         public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake, FakeResult>(nameof(DemoFake), param);
@@ -50,10 +50,10 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <summary> command handler for <see cref="DemoSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
         /// Execution results in:
         /// <code>NotImplemented > no command handler for: 'DemoSub_NotImpl' </code></summary>
-        public CommandTask<double>    DemoSub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(DemoSub_NotImpl), param);
+        public CommandTask<double>    DemoSub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(DemoSub_NotImpl), param); */
     }
     
-    public class TestCommands : FlioxCommands
+    public class TestCommands : HubCommands
     {
         internal TestCommands (FlioxClient client) : base(client) { }
         
