@@ -38,6 +38,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         private     Dictionary<string, QueryTask<TKey, T>>  _queries;
         
+        private     List<AggregateTask<TKey, T>>            _aggregates;
+        
         private     HashSet<T>                              _autos;
         
         private     ReserveKeysTask<TKey,T>                 _reserveKeys;
@@ -59,6 +61,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/>
         private     Dictionary<string, QueryTask<TKey, T>>  Queries()    => _queries     ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
+        
+        private     List<AggregateTask<TKey, T>>            Aggregates() => _aggregates  ?? (_aggregates  = new List<AggregateTask<TKey, T>>());
         
         private     SubscribeChangesTask<T>                 subscribeChanges;
 
@@ -126,6 +130,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             query = new QueryTask<TKey, T>(filter, set.intern.store);
             queries.Add(filterLinq, query);
             return query;
+        }
+        
+        // --- Aggregate
+        internal AggregateTask<TKey, T> AggregateFilter(AggregateType type, FilterOperation filter) {
+            var aggregates = Aggregates();
+            var aggregate = new AggregateTask<TKey, T>(type, filter);
+            aggregates.Add(aggregate);
+            return  aggregate;
         }
         
         // --- SubscribeChanges
@@ -282,6 +294,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             UpsertEntities      (tasks, mapper);
             ReadEntities        (tasks);
             QueryEntities       (tasks);
+            AggregateEntities   (tasks);
             PatchEntities       (tasks, mapper);
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
@@ -419,6 +432,26 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     filterTree  = filterTree,
                     filter      = query.filterLinq,
                     references  = references
+                };
+                tasks.Add(req);
+            }
+        }
+        
+        private void AggregateEntities(List<SyncRequestTask> tasks) {
+            if (_aggregates == null || _aggregates.Count == 0)
+                return;
+            foreach (var aggregate in _aggregates) {
+                var filterTree = aggregate.filter;
+                if (aggregate.filter is Filter filter) {
+                    filterTree = filter.body;
+                }
+                var req = new AggregateEntities {
+                    container   = set.name,
+                    type        = aggregate.type,  
+                //  keyName     = SyncKeyName(set.GetKeyName()),
+                //  isIntKey    = IsIntKey(set.IsIntKey()),  
+                    filterTree  = filterTree,
+                    filter      = aggregate.filterLinq
                 };
                 tasks.Add(req);
             }

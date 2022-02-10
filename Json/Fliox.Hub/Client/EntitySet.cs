@@ -210,6 +210,32 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        // --- Aggregate
+        public AggregateTask<TKey, T> Aggregate(AggregateType type, Expression<Func<T, bool>> filter) {
+            if (filter == null)
+                throw new ArgumentException($"EntitySet.Aggregate() filter must not be null. EntitySet: {name}");
+            var op = Operation.FromFilter(filter, RefQueryPath);
+            var task = GetSyncSet().AggregateFilter(type, op);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        public AggregateTask<TKey, T> AggregateByFilter(AggregateType type, EntityFilter<T> filter) {
+            if (filter == null)
+                throw new ArgumentException($"EntitySet.AggregateByFilter() filter must not be null. EntitySet: {name}");
+            var task = GetSyncSet().AggregateFilter(type, filter.op);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        public AggregateTask<TKey, T> AggregateAll(AggregateType type) {
+            var all = Operation.FilterTrue;
+            var task = GetSyncSet().AggregateFilter(type, all);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        
         // --- SubscribeChanges
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
