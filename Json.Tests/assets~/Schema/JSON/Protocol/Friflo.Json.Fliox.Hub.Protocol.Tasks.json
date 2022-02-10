@@ -105,15 +105,22 @@
             "properties": {
                 "task":       { "enum": ["aggregate"] },
                 "container":  { "type": "string" },
+                "type":       { "$ref": "#/definitions/AggregateType" },
                 "filterTree": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
                 "filter":     { "type": ["string", "null"] },
                 "info":       {  }
             },
             "required": [
                 "task",
-                "container"
+                "container",
+                "type"
             ],
             "additionalProperties": false
+        },
+        "AggregateType": {
+            "enum": [
+                "count"
+            ]
         },
         "PatchEntities": {
             "type": "object",

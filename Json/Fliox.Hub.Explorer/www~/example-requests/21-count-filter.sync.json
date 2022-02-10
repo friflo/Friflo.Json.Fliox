@@ -3,6 +3,7 @@
   "tasks": [
     {
       "task":       "aggregate",
+      "type":       "count",
       "container":  "articles",
       "filter":     "o.name == 'Smartphone'"
     }

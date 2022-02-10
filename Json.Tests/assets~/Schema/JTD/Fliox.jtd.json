@@ -488,10 +488,16 @@
         "AggregateEntities": {
             "properties": {
                 "container":  { "type": "string" },
+                "type":       { "ref":  "AggregateType" },
                 "filterTree": { "ref":  "FilterOperation", "nullable": true },
                 "filter":     { "type": "string", "nullable": true },
                 "info":       { "nullable": true }
             }
+        },
+        "AggregateType": {
+            "enum": [
+                "count"
+            ]
         },
         "PatchEntities": {
             "properties": {

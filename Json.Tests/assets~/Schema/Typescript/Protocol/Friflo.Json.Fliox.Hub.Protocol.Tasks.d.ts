@@ -80,9 +80,14 @@ export class QueryEntities extends SyncRequestTask {
 export class AggregateEntities extends SyncRequestTask {
     task        : "aggregate";
     container   : string;
+    type        : AggregateType;
     filterTree? : FilterOperation_Union | null;
     filter?     : string | null;
 }
+
+export type AggregateType =
+    | "count"
+;
 
 export class PatchEntities extends SyncRequestTask {
     task       : "patch";

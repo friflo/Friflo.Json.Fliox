@@ -9,12 +9,14 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     public sealed class AggregateEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
+                        public  AggregateType       type;
                         public  FilterOperation     filterTree;
                         public  string              filter;
                     //  public  List<References>    references;
@@ -34,8 +36,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
-            //  if (!ValidReferences(references, out var error))
-            //      return error;
             if (!QueryEntities.ValidateFilter (filterTree, filter, ref filterLambda, out var error))
                 return error;
             filterContext = new OperationContext();
@@ -44,24 +44,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.AggregateEntities(this, messageContext).ConfigureAwait(false);
+            
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            /*
-            var containerResult = response.GetContainerResult(container);
-            var entities = result.entities;
-            result.entities = null;  // clear -> its not part of protocol
-            containerResult.AddEntities(entities);
-            var queryRefsResults = new ReadReferencesResult();
-            if (references != null && references.Count > 0) {
-                queryRefsResults =
-                    await entityContainer.ReadReferences(references, entities, container, "", response, messageContext).ConfigureAwait(false);
-                // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
-            }
-            result.container    = container;
-            result.ids          = entities.Keys.ToHashSet(JsonKey.Equality); // TAG_PERF
-            result.references   = queryRefsResults.references;
-            */
             return result;
         }
     }
@@ -76,5 +62,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         internal override   TaskType            TaskType => TaskType.aggregate;
         public   override   string              ToString() => $"(container: {container})";
+    }
+    
+    public enum AggregateType {
+        count
     }
 }

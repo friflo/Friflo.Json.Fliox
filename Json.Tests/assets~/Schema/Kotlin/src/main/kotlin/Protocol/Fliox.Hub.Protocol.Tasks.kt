@@ -60,10 +60,15 @@ data class QueryEntities (
 @SerialName("aggregate")
 data class AggregateEntities (
               val container  : String,
+              val type       : AggregateType,
               val filterTree : FilterOperation? = null,
               val filter     : String? = null,
     override  val info       : JsonElement? = null,
 ) : SyncRequestTask()
+
+enum class AggregateType {
+    count,
+}
 
 @Serializable
 @SerialName("patch")
