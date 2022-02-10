@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         protected internal HostCommands(FlioxClient client, string domain) : base(client, domain) { }
         
-        // --- hub.*
+        // --- host.*
         public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (StdCommand.HostDetails,  new JsonValue());
         public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (StdCommand.HostCluster,  new JsonValue());
     }
