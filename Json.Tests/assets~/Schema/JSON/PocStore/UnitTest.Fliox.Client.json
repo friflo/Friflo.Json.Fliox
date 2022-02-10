@@ -23,14 +23,14 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "TestCommand":  { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
-                "DbEcho":       { "param": {  }, "result": {  } },
-                "DbContainers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
-                "DbCommands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
-                "DbSchema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
-                "DbStats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
-                "HubInfo":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubInfo" } },
-                "HubCluster":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubCluster" } }
+                "TestCommand":      { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
+                "std.DbEcho":       { "param": {  }, "result": {  } },
+                "std.DbContainers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
+                "std.DbCommands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
+                "std.DbSchema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
+                "std.DbStats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
+                "std.HubInfo":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubInfo" } },
+                "std.HubCluster":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HubCluster" } }
             }
         },
         "OrderItem": {

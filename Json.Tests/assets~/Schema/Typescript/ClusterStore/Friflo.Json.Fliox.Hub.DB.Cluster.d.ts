@@ -8,13 +8,13 @@ export interface ClusterStore {
     schemas     : { [key: string]: DbSchema };
 
     // --- commands
-    DbEcho       (param: any) : any;
-    DbContainers (param: any) : DbContainers;
-    DbCommands   (param: any) : DbCommands;
-    DbSchema     (param: any) : DbSchema;
-    DbStats      (param: any) : DbStats;
-    HubInfo      (param: any) : HubInfo;
-    HubCluster   (param: any) : HubCluster;
+    ["std.DbEcho"]           (param: any) : any;
+    ["std.DbContainers"]     (param: any) : DbContainers;
+    ["std.DbCommands"]       (param: any) : DbCommands;
+    ["std.DbSchema"]         (param: any) : DbSchema;
+    ["std.DbStats"]          (param: any) : DbStats;
+    ["std.HubInfo"]          (param: any) : HubInfo;
+    ["std.HubCluster"]       (param: any) : HubCluster;
 }
 
 export class DbContainers {

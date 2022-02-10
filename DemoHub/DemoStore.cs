@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public readonly TestCommands                    test;
         
         public DemoStore(FlioxHub hub) : base (hub) {
-            test = new TestCommands(this);
+            test = new TestCommands(this, nameof(test));
         }
         /*
         // --- commands
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DemoHub
     
     public class TestCommands : HubCommands
     {
-        internal TestCommands (FlioxClient client) : base(client) { }
+        internal TestCommands (FlioxClient client, string domain) : base(client, domain) { }
         
         // --- commands
         /// <summary> Generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary> 

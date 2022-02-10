@@ -42,10 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertCommandsSchema(PocStore store) {
-            var containers      = store.DbContainers();
-            var commands        = store.DbCommands();
-            var catalogSchema   = store.DbSchema();
-            var dbList          = store.HubCluster();
+            var containers      = store.std.DbContainers();
+            var commands        = store.std.DbCommands();
+            var catalogSchema   = store.std.DbSchema();
+            var dbList          = store.std.HubCluster();
             await store.SyncTasks();
             
             var containersResult = containers.Result;
@@ -71,10 +71,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
             
-            var containers       = store.DbContainers();
-            var commands        = store.DbCommands();
-            var catalogSchema   = store.DbSchema();
-            var dbList          = store.HubCluster();
+            var containers      = store.std.DbContainers();
+            var commands        = store.std.DbCommands();
+            var catalogSchema   = store.std.DbSchema();
+            var dbList          = store.std.HubCluster();
             await store.SyncTasks();
             
             var containersResult = containers.Result;

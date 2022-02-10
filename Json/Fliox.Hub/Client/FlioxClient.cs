@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
-using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -41,6 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                         GetSyncCount()  => _intern.syncCount;
         
+        public readonly     StdCommands                 std;
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
 
@@ -52,6 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, this, eventTarget);
+            std     = new StdCommands(this, nameof(std));
         }
         
         public virtual void Dispose() {
@@ -241,22 +243,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return task;
             }
         }
-
-        // Declared only to generate command in Schema 
-        internal CommandTask<JsonValue>     DbEcho(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
-
-        // --- Db*
-        public CommandTask<TParam>          DbEcho<TParam> (TParam param) =>
-                                                                SendCommand<TParam,TParam>  (StdCommand.DbEcho, param);
-        public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<DbContainers>   (StdCommand.DbContainers);
-        public CommandTask<DbCommands>      DbCommands()    =>  SendCommand<DbCommands>     (StdCommand.DbCommands);
-        public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<DbSchema>       (StdCommand.DbSchema);
-        public CommandTask<DbStats>         DbStats()       =>  SendCommand<DbStats>        (StdCommand.DbStats);
-        
-        // --- Hub*
-        public CommandTask<HubInfo>         HubInfo()       =>  SendCommand<HubInfo>        (StdCommand.HubInfo);
-        public CommandTask<HubCluster>      HubCluster()    =>  SendCommand<HubCluster>     (StdCommand.HubCluster);
-
 
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageHandler<TMessage> handler) {

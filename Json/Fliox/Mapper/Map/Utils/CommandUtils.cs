@@ -16,6 +16,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         
         public static CommandInfo[] GetCommandInfos (Type type) {
             var commandInfos    = new List<CommandInfo>();
+            var commands        = GetCommandTypes(type, "");
+            if (commands != null) {
+                commandInfos.AddRange(commands);
+            }
             var hubCommands     = HubCommandsUtils.GetHubCommandsTypes(type);
             if (hubCommands != null) {
                 foreach (var hubCommand in hubCommands) {
@@ -25,10 +29,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                         continue;
                     commandInfos.AddRange(clientCommands);
                 }
-            }
-            var commands        = GetCommandTypes(type, "");
-            if (commands != null) {
-                commandInfos.AddRange(commands);
             }
             return commandInfos.ToArray();
         }

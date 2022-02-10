@@ -286,7 +286,7 @@ export class App {
             { "task": "query", "container": "containers" },
             { "task": "query", "container": "schemas" },
             { "task": "query", "container": "commands" },
-            { "task": "command", "name": "HubInfo" }
+            { "task": "command", "name": "std.HubInfo" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await App.postRequestTasks("cluster", tasks, null);
@@ -552,7 +552,7 @@ export class App {
     "tasks": [
         {
         "task":  "command",
-        "name":  "DbEcho",
+        "name":  "std.DbEcho",
         "value": "Hello World"
         }
     ]

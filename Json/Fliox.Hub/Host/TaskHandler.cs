@@ -48,26 +48,27 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static bool _oldStyleUsage = false;
         
         public TaskHandler () {
+            string domain = "std";
             if (_oldStyleUsage) {
                 // --- Db*
-                AddCommandHandler       (StdCommand.DbEcho,        new CommandHandler<JsonValue, JsonValue>         (DbEcho));
-                AddCommandHandlerAsync  (StdCommand.DbContainers,  new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
-                AddCommandHandler       (StdCommand.DbCommands,    new CommandHandler<Empty,     DbCommands>        (DbCommands));
-                AddCommandHandler       (StdCommand.DbSchema,      new CommandHandler<Empty,     DbSchema>          (DbSchema));
-                AddCommandHandlerAsync  (StdCommand.DbStats,       new CommandHandler<string,    Task<DbStats>>     (DbStats));
+                AddCommandHandler       (StdCommand.DbEcho,        domain, new CommandHandler<JsonValue, JsonValue>         (DbEcho));
+                AddCommandHandlerAsync  (StdCommand.DbContainers,  domain, new CommandHandler<Empty,     Task<DbContainers>>(DbContainers));
+                AddCommandHandler       (StdCommand.DbCommands,    domain, new CommandHandler<Empty,     DbCommands>        (DbCommands));
+                AddCommandHandler       (StdCommand.DbSchema,      domain, new CommandHandler<Empty,     DbSchema>          (DbSchema));
+                AddCommandHandlerAsync  (StdCommand.DbStats,       domain, new CommandHandler<string,    Task<DbStats>>     (DbStats));
                 // --- Hub*
-                AddCommandHandler       (StdCommand.HubInfo,       new CommandHandler<Empty,     HubInfo>           (HubInfo));
-                AddCommandHandlerAsync  (StdCommand.HubCluster,    new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
+                AddCommandHandler       (StdCommand.HubInfo,       domain, new CommandHandler<Empty,     HubInfo>           (HubInfo));
+                AddCommandHandlerAsync  (StdCommand.HubCluster,    domain, new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
             }
             // --- Db*
-            AddCommand      <JsonValue,   JsonValue>    (nameof(DbEcho),        DbEcho);
-            AddCommandAsync <Empty,       DbContainers> (nameof(DbContainers),  DbContainers);
-            AddCommand      <Empty,       DbCommands>   (nameof(DbCommands),    DbCommands);
-            AddCommand      <Empty,       DbSchema>     (nameof(DbSchema),      DbSchema);
-            AddCommandAsync <string,      DbStats>      (nameof(DbStats),       DbStats);
+            AddCommand      <JsonValue,   JsonValue>    (nameof(DbEcho),        domain, DbEcho);
+            AddCommandAsync <Empty,       DbContainers> (nameof(DbContainers),  domain, DbContainers);
+            AddCommand      <Empty,       DbCommands>   (nameof(DbCommands),    domain, DbCommands);
+            AddCommand      <Empty,       DbSchema>     (nameof(DbSchema),      domain, DbSchema);
+            AddCommandAsync <string,      DbStats>      (nameof(DbStats),       domain, DbStats);
             // --- Hub*
-            AddCommand      <Empty,       HubInfo>      (nameof(HubInfo),       HubInfo);
-            AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    HubCluster);
+            AddCommand      <Empty,       HubInfo>      (nameof(HubInfo),       domain, HubInfo);
+            AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    domain, HubCluster);
         }
         
         /// <summary>
@@ -77,8 +78,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommand<TParam, TResult> (string name, Func<Command<TParam>, TResult> method) {
-            AddCommandHandler (name, new CommandHandler<TParam, TResult> (method));
+        protected void AddCommand<TParam, TResult> (string name, string domain, Func<Command<TParam>, TResult> method) {
+            AddCommandHandler (name, domain, new CommandHandler<TParam, TResult> (method));
         }
         
         /// <summary>
@@ -88,8 +89,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandAsync<TParam, TResult> (string name, Func<Command<TParam>, Task<TResult>> method) {
-            AddCommandHandlerAsync (name, new CommandHandler<TParam, Task<TResult>> (method));
+        protected void AddCommandAsync<TParam, TResult> (string name, string domain, Func<Command<TParam>, Task<TResult>> method) {
+            AddCommandHandlerAsync (name, domain, new CommandHandler<TParam, Task<TResult>> (method));
         }
        
         /// <summary>
@@ -203,15 +204,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal bool TryGetCommand(string name, out CommandCallback command) {
-            return commands.TryGetValue(name, out command); 
+            return commands.TryGetValue(name, out command);
         }
         
-        private void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
+        private void AddCommandHandler<TValue, TResult>(string name, string domain, CommandHandler<TValue, TResult> handler) {
+            name = string.IsNullOrEmpty(domain) ? name : $"{domain}.{name}";
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        private void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+        private void AddCommandHandlerAsync<TValue, TResult>(string name, string domain, CommandHandler<TValue, Task<TResult>> handler) {
+            name = string.IsNullOrEmpty(domain) ? name : $"{domain}.{name}";
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }

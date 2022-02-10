@@ -41,14 +41,14 @@ export interface PocStore {
     types      : { [key: string]: TestType };
 
     // --- commands
-    TestCommand  (param: TestCommand) : boolean;
-    DbEcho       (param: any) : any;
-    DbContainers (param: any) : DbContainers;
-    DbCommands   (param: any) : DbCommands;
-    DbSchema     (param: any) : DbSchema;
-    DbStats      (param: any) : DbStats;
-    HubInfo      (param: any) : HubInfo;
-    HubCluster   (param: any) : HubCluster;
+    ["TestCommand"]          (param: TestCommand) : boolean;
+    ["std.DbEcho"]           (param: any) : any;
+    ["std.DbContainers"]     (param: any) : DbContainers;
+    ["std.DbCommands"]       (param: any) : DbCommands;
+    ["std.DbSchema"]         (param: any) : DbSchema;
+    ["std.DbStats"]          (param: any) : DbStats;
+    ["std.HubInfo"]          (param: any) : HubInfo;
+    ["std.HubCluster"]       (param: any) : HubCluster;
 }
 
 export class OrderItem {
