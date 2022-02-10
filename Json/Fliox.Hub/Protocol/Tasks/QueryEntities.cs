@@ -34,7 +34,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return Operation.FilterTrue;
         }
         
-        private bool ValidateFilter(out TaskErrorResult error) {
+        internal static bool ValidateFilter(
+                FilterOperation     filterTree,
+                string              filter,
+            ref FilterOperation     filterLambda,
+            out TaskErrorResult     error)
+        {
             error = null;
             if (filterTree != null) {
                 filterLambda = new Filter("o", filterTree);
@@ -60,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingContainer();
             if (!ValidReferences(references, out var error))
                 return error;
-            if (!ValidateFilter (out error))
+            if (!ValidateFilter (filterTree, filter, ref filterLambda, out error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {

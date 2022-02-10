@@ -32,34 +32,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return filterLambda;
             return Operation.FilterTrue;
         }
-        
-        private bool ValidateFilter(out TaskErrorResult error) {
-            error = null;
-            if (filterTree != null) {
-                filterLambda = new Filter("o", filterTree);
-                return true;
-            }
-            if (filter == null)
-                return true;
-            var operation = Operation.Parse("o=>" + filter, out var parseError);
-            if (operation == null) {
-                error = InvalidTaskError(parseError);
-                return false;
-            }
-            if (operation is FilterOperation filterOperation) {
-                filterLambda = filterOperation;
-                return true;
-            }
-            error = InvalidTaskError("filter must be boolean operation");
-            return false;
-        }
-        
+
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             //  if (!ValidReferences(references, out var error))
             //      return error;
-            if (!ValidateFilter (out var error))
+            if (!QueryEntities.ValidateFilter (filterTree, filter, ref filterLambda, out var error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {
