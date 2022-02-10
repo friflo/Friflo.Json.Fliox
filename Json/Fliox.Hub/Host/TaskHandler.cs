@@ -57,8 +57,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 AddCommandHandler       (StdCommand.DbSchema,      domain, new CommandHandler<Empty,     DbSchema>          (DbSchema));
                 AddCommandHandlerAsync  (StdCommand.DbStats,       domain, new CommandHandler<string,    Task<DbStats>>     (DbStats));
                 // --- Hub*
-                AddCommandHandler       (StdCommand.HubInfo,       domain, new CommandHandler<Empty,     HubInfo>           (HubInfo));
-                AddCommandHandlerAsync  (StdCommand.HubCluster,    domain, new CommandHandler<Empty,     Task<HubCluster>>  (HubCluster));
+                AddCommandHandler       (StdCommand.HostDetails,    domain, new CommandHandler<Empty,    HostDetails>       (HostDetails));
+                AddCommandHandlerAsync  (StdCommand.HostCluster,    domain, new CommandHandler<Empty,    Task<HostCluster>> (HostCluster));
             }
             // --- Db*
             AddCommand      <JsonValue,   JsonValue>    (nameof(DbEcho),        domain, DbEcho);
@@ -67,8 +67,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommand      <Empty,       DbSchema>     (nameof(DbSchema),      domain, DbSchema);
             AddCommandAsync <string,      DbStats>      (nameof(DbStats),       domain, DbStats);
             // --- Hub*
-            AddCommand      <Empty,       HubInfo>      (nameof(HubInfo),       domain, HubInfo);
-            AddCommandAsync <Empty,       HubCluster>   (nameof(HubCluster),    domain, HubCluster);
+            AddCommand      <Empty,       HostDetails>   (nameof(HostDetails),  domain, HostDetails);
+            AddCommandAsync <Empty,       HostCluster>   (nameof(HostCluster),  domain, HostCluster);
         }
         
         /// <summary>
@@ -139,15 +139,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static HubInfo HubInfo (Command<Empty> command) {
+        internal static HostDetails HostDetails (Command<Empty> command) {
             var hub     = command.Hub;
-            var info    = new HubInfo {
+            var details = new HostDetails {
                 version     = hub.Version,
                 hostName    = hub.hostName,
                 label       = hub.description,
                 website     = hub.website
             };
-            return info;
+            return details;
         }
 
         /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static async Task<HubCluster> HubCluster (Command<Empty> command) {
+        internal static async Task<HostCluster> HostCluster (Command<Empty> command) {
             var hub = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }

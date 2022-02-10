@@ -63,7 +63,7 @@
             ],
             "additionalProperties": false
         },
-        "HubInfo": {
+        "HostDetails": {
             "type": "object",
             "properties": {
                 "version":  { "type": "string" },
@@ -76,7 +76,7 @@
             ],
             "additionalProperties": false
         },
-        "HubCluster": {
+        "HostCluster": {
             "type": "object",
             "properties": {
                 "databases": { "type": "array", "items": { "$ref": "#/definitions/DbContainers" } }

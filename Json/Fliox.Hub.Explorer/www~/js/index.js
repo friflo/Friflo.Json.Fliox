@@ -286,7 +286,7 @@ export class App {
             { "task": "query", "container": "containers" },
             { "task": "query", "container": "schemas" },
             { "task": "query", "container": "commands" },
-            { "task": "command", "name": "std.HubInfo" }
+            { "task": "command", "name": "std.HostDetails" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await App.postRequestTasks("cluster", tasks, null);

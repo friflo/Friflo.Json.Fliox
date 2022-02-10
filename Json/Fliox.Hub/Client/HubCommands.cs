@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<DbStats>         DbStats()       =>  SendCommand<JsonValue, DbStats>        (StdCommand.DbStats,     new JsonValue());
         
         // --- Hub*
-        public CommandTask<HubInfo>         HubInfo()       =>  SendCommand<JsonValue, HubInfo>        (StdCommand.HubInfo,     new JsonValue());
-        public CommandTask<HubCluster>      HubCluster()    =>  SendCommand<JsonValue, HubCluster>     (StdCommand.HubCluster,  new JsonValue());
+        public CommandTask<HostDetails>     HostDetails()    =>  SendCommand<JsonValue, HostDetails>   (StdCommand.HostDetails,  new JsonValue());
+        public CommandTask<HostCluster>     HostCluster()    =>  SendCommand<JsonValue, HostCluster>   (StdCommand.HostCluster,  new JsonValue());
     }
 }

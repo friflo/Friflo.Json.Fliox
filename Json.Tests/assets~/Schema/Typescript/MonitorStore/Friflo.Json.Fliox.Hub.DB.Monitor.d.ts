@@ -3,8 +3,8 @@ import { DbContainers } from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbCommands }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
-import { HubInfo }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
-import { HubCluster }   from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { HostDetails }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
+import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { RequestCount } from "./Friflo.Json.Fliox.Hub.Host.Stats";
 import { int32 }        from "./Standard";
 import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
@@ -23,8 +23,8 @@ export interface MonitorStore {
     ["std.DbCommands"]       (param: any) : DbCommands;
     ["std.DbSchema"]         (param: any) : DbSchema;
     ["std.DbStats"]          (param: any) : DbStats;
-    ["std.HubInfo"]          (param: any) : HubInfo;
-    ["std.HubCluster"]       (param: any) : HubCluster;
+    ["std.HostDetails"]      (param: any) : HostDetails;
+    ["std.HostCluster"]      (param: any) : HostCluster;
 }
 
 export class HostInfo {

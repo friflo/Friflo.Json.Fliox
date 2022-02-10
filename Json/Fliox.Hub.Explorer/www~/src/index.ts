@@ -7,7 +7,7 @@ import { EntityEditor }                                         from "./entity-e
 import { Playground }                                           from "./playground.js";
 
 import { FieldType, JsonType }                                  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbCommands, HubInfo }          from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbSchema, DbContainers, DbCommands, HostDetails }          from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union }    from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
@@ -325,14 +325,14 @@ export class App {
     }
 
     private selectedCatalog:    HTMLElement;
-    private hubInfo:            HubInfo;
+    private hubInfo:            HostDetails;
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
             { "task": "query",  "container": "containers"},
             { "task": "query",  "container": "schemas"},
             { "task": "query",  "container": "commands"},
-            { "task": "command","name": "std.HubInfo" }
+            { "task": "command","name": "std.HostDetails" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response  = await App.postRequestTasks("cluster", tasks, null);
@@ -346,7 +346,7 @@ export class App {
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
         const dbCommands    = content.containers[2].entities    as DbCommands[];
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
-        this.hubInfo        = hubInfoResult.result              as HubInfo;
+        this.hubInfo        = hubInfoResult.result              as HostDetails;
         //
         let   label     = this.hubInfo.label;
         const website   = this.hubInfo.website;

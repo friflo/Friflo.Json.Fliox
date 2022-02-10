@@ -57,14 +57,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     
-    public class HubInfo {
+    public class HostDetails {
         [Req]   public  string                          version;
                 public  string                          hostName;
                 public  string                          label;
                 public  string                          website;
     }
     
-    public class HubCluster {
+    public class HostCluster {
         [Req]   public  List<DbContainers>              databases;
     }
 }

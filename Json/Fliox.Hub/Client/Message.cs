@@ -129,9 +129,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
 
         // --- Hub*
-        public const string HubInfo         = "HubInfo";
+        public const string HostDetails     = "HostDetails";
 
-        public const string HubCluster      = "HubCluster";
+        public const string HostCluster     = "HostCluster";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);

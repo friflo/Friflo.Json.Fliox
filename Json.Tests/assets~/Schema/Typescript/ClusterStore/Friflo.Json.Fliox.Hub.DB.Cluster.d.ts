@@ -13,8 +13,8 @@ export interface ClusterStore {
     ["std.DbCommands"]       (param: any) : DbCommands;
     ["std.DbSchema"]         (param: any) : DbSchema;
     ["std.DbStats"]          (param: any) : DbStats;
-    ["std.HubInfo"]          (param: any) : HubInfo;
-    ["std.HubCluster"]       (param: any) : HubCluster;
+    ["std.HostDetails"]      (param: any) : HostDetails;
+    ["std.HostCluster"]      (param: any) : HostCluster;
 }
 
 export class DbContainers {
@@ -44,14 +44,14 @@ export class ContainerStats {
     count  : int64;
 }
 
-export class HubInfo {
+export class HostDetails {
     version   : string;
     hostName? : string | null;
     label?    : string | null;
     website?  : string | null;
 }
 
-export class HubCluster {
+export class HostCluster {
     databases  : DbContainers[];
 }
 
