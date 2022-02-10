@@ -118,14 +118,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                         typeDef.fields.Add(fieldDef);
                     }
                 }
-                var hubCommands = HubCommandsUtils.GetHubCommandsTypes(typeDef.native);
-                if (hubCommands != null) {
-                    foreach (var hubCommand in hubCommands) {
-                        var fieldCommands = CommandUtils.GetCommandTypes(hubCommand.commandsType);
-                        AddCommands(typeDef, fieldCommands);
-                    }
-                }
-                var commands = CommandUtils.GetCommandTypes(typeDef.native);
+                var commands = CommandUtils.GetCommandInfos(typeDef.native);
                 AddCommands(typeDef, commands);
 
                 if (typeDef.Discriminant != null) {
@@ -176,7 +169,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public void Dispose() { }
         
         private void AddCommands(NativeTypeDef typeDef, CommandInfo[] commands) {
-            if (commands == null)
+            if (commands == null || commands.Length == 0)
                 return;
             var commandDefs = typeDef.commands;
             if (commandDefs == null) {

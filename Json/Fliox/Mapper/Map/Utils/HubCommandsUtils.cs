@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         
         private const string HubCommandsType = "Friflo.Json.Fliox.Hub.Client.HubCommands";
 
-        public static HubCommandsInfo[] GetHubCommandsTypes(Type type) {
+        internal static HubCommandsInfo[] GetHubCommandsTypes(Type type) {
             if (HubCommandsInfoCache.TryGetValue(type, out  HubCommandsInfo[] result)) {
                 return result;
             }
@@ -53,11 +53,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         }
     }
     
-    public readonly struct HubCommandsInfo {
-        public  readonly  string  name;
-        public  readonly  Type    commandsType;
+    internal readonly struct HubCommandsInfo {
+        internal    readonly    string  name;
+        internal    readonly    Type    commandsType;
 
-        public    override  string  ToString() => name;
+        public      override    string  ToString() => name;
 
         internal HubCommandsInfo (string name, Type commandsType) {
             this.name           = name;
