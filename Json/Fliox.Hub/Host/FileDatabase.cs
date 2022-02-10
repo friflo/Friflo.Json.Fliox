@@ -158,8 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var files = Directory.EnumerateFiles(folder, "*.json");
                 var count = 0;
                 foreach (var _ in files) { count++; }
-                var counts  = new Dictionary<string, long> { { "*", count} };
-                return new AggregateEntitiesResult { container = command.container, counts = counts };
+                return new AggregateEntitiesResult { container = command.container, value = count };
             }
             var result = await CountEntities(command, messageContext).ConfigureAwait(false);
             return result;

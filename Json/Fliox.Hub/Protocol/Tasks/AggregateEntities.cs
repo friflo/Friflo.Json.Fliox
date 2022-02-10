@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -19,7 +18,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  AggregateType       type;
                         public  FilterOperation     filterTree;
                         public  string              filter;
-                    //  public  List<References>    references;
                         
         [Fri.Ignore]    private FilterOperation     filterLambda;
         [Fri.Ignore]    public  OperationContext    filterContext;
@@ -55,9 +53,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task result -----------------------------------
     public sealed class AggregateEntitiesResult : SyncTaskResult, ICommandResult
     {
-                        public  string                      container;  // only for debugging ergonomics
-                        public  Dictionary<string, long>    counts = new Dictionary<string, long>();
-        [Fri.Ignore]    public  CommandError                Error { get; set; }
+                        public  string          container;  // only for debugging ergonomics
+                        public  double?         value;      // set if not using groupBy
+        [Fri.Ignore]    public  CommandError    Error { get; set; }
 
         
         internal override   TaskType            TaskType => TaskType.aggregate;

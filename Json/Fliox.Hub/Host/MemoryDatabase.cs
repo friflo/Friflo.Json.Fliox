@@ -88,9 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
             // count all?
             if (command.GetFilter() is TrueLiteral) {
-                var count   = keyValues.Count;
-                var counts  = new Dictionary<string, long> { { "*", count} };
-                return new AggregateEntitiesResult { container   = command.container, counts = counts };
+                var count = keyValues.Count;
+                return new AggregateEntitiesResult { container   = command.container, value = count };
             }
             var result = await CountEntities(command, messageContext).ConfigureAwait(false);
             return result;

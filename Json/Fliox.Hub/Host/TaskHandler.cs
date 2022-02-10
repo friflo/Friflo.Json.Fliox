@@ -187,8 +187,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var aggregate   = new AggregateEntities { container = name, type = AggregateType.count };
                 var aggResult   = await container.AggregateEntities(aggregate, command.MessageContext).ConfigureAwait(false);
                 
-                var count       = aggResult.counts["*"];
-                var stats       = new ContainerStats { name = name, count = count };
+                var stats       = new ContainerStats { name = name, count = (long)aggResult.value };
                 containerStats.Add(stats);
             }
             var result = new DbStats { containers = containerStats.ToArray() };

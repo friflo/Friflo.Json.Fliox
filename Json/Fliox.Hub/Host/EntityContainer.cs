@@ -173,8 +173,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (queryError != null) {
                 return new AggregateEntitiesResult { Error = queryError };
             }
-            var counts = new Dictionary<string, long> { { "*", queryResult.entities.Count } };
-            var result = new AggregateEntitiesResult { container = command.container, counts = counts };
+            var value   = queryResult.entities.Count;
+            var result  = new AggregateEntitiesResult { container = command.container, value = value };
             return result;
         }
         

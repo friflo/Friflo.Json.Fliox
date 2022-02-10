@@ -346,7 +346,7 @@
             "properties": {
                 "task":      { "enum": ["aggregate"] },
                 "container": { "type": ["string", "null"] },
-                "counts":    { "additionalProperties": { "$ref": "./Standard.json#/definitions/int64" }, "type": "object" }
+                "value":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/double" }] }
             },
             "required": [
                 "task"

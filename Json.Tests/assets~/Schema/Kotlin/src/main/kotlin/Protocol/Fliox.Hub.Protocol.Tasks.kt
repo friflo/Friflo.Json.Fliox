@@ -181,7 +181,7 @@ data class QueryEntitiesResult (
 @SerialName("aggregate")
 data class AggregateEntitiesResult (
               val container : String? = null,
-              val counts    : HashMap<String, Long>? = null,
+              val value     : Double? = null,
 ) : SyncTaskResult()
 
 @Serializable

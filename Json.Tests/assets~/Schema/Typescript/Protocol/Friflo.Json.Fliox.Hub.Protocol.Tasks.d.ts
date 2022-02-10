@@ -9,6 +9,7 @@ import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform";
 import { int32 }                 from "./Standard";
 import { ReadEntitiesSetResult } from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { ReferencesResult }      from "./Friflo.Json.Fliox.Hub.Protocol.Models";
+import { double }                from "./Standard";
 import { int64 }                 from "./Standard";
 
 export type SyncRequestTask_Union =
@@ -203,7 +204,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
 export class AggregateEntitiesResult extends SyncTaskResult {
     task       : "aggregate";
     container? : string | null;
-    counts?    : { [key: string]: int64 } | null;
+    value?     : double | null;
 }
 
 export class PatchEntitiesResult extends SyncTaskResult {

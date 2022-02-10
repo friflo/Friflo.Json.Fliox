@@ -704,7 +704,7 @@
         "AggregateEntitiesResult": {
             "properties": {
                 "container": { "type": "string", "nullable": true },
-                "counts":    { "values": { "type": "int64" }, "nullable": true }
+                "value":     { "type": "double", "nullable": true }
             }
         },
         "PatchEntitiesResult": {
