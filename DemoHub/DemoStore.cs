@@ -31,49 +31,14 @@ namespace Friflo.Json.Fliox.DemoHub
         public readonly EntitySet <string, Producer>    producers;
         public readonly EntitySet <string, Employee>    employees;
         
-        public readonly TestCommands                    test;
+        public readonly DemoCommands                    demo;
         
         public DemoStore(FlioxHub hub) : base (hub) {
-            test = new TestCommands(this, nameof(test));
+            demo = new DemoCommands(this, nameof(demo));
         }
-        /*
-        // --- commands
-        /// <summary> Generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary> 
-        public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake, FakeResult>(nameof(DemoFake), param);
-        
-        /// <summary> simple command adding two numbers - no database access. </summary>
-        public CommandTask<double>    DemoAdd  (Operands    param)      => SendCommand<Operands, double>(nameof(DemoAdd),  param);
-        
-        /// <summary> simple command multiplying two numbers - no database access. </summary>
-        public CommandTask<double>    DemoMul  (Operands    param)      => SendCommand<Operands, double>(nameof(DemoMul),  param);
-        
-        /// <summary> command handler for <see cref="DemoSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
-        /// Execution results in:
-        /// <code>NotImplemented > no command handler for: 'DemoSub_NotImpl' </code></summary>
-        public CommandTask<double>    DemoSub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(DemoSub_NotImpl), param); */
     }
     
-    public class TestCommands : HubCommands
-    {
-        internal TestCommands (FlioxClient client, string domain) : base(client, domain) { }
-        
-        // --- commands
-        /// <summary> Generate random entities (records) in the containers listed in the <see cref="Fake"/> param </summary> 
-        public CommandTask<FakeResult>DemoFake (Fake        param)      => SendCommand<Fake, FakeResult>(nameof(DemoFake), param);
-        
-        /// <summary> simple command adding two numbers - no database access. </summary>
-        public CommandTask<double>    DemoAdd  (Operands    param)      => SendCommand<Operands, double>(nameof(DemoAdd),  param);
-        
-        /// <summary> simple command multiplying two numbers - no database access. </summary>
-        public CommandTask<double>    DemoMul  (Operands    param)      => SendCommand<Operands, double>(nameof(DemoMul),  param);
-        
-        /// <summary> command handler for <see cref="DemoSub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
-        /// Execution results in:
-        /// <code>NotImplemented > no command handler for: 'DemoSub_NotImpl' </code></summary>
-        public CommandTask<double>    DemoSub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(DemoSub_NotImpl), param);
-    }
-
-    // ------------------------------ models ------------------------------
+    // ------------------------------ entity models ------------------------------
     public class Order {
         [Req]   public  string                  id { get; set; }
                 public  Ref<string, Customer>   customer;
@@ -122,30 +87,5 @@ namespace Friflo.Json.Fliox.DemoHub
                 public  string                  lastName;
                         
         public override string                  ToString() => JsonSerializer.Serialize(this);
-    }
-   
-    
-    // ------------------------------ command params / results ------------------------------
-    public class Operands {
-        public  double      left;
-        public  double      right;
-    }
-    
-    public class Fake {
-        public  int?        orders;
-        public  int?        customers;
-        public  int?        articles;
-        public  int?        producers;
-        public  int?        employees;
-    }
-    
-    public class FakeResult {
-        public  string      info;
-        public  Fake        added;
-        public  Order[]     orders;
-        public  Customer[]  customers;
-        public  Article[]   articles;
-        public  Producer[]  producers;
-        public  Employee[]  employees;
     }
 }

@@ -18,24 +18,24 @@ namespace Friflo.Json.Fliox.DemoHub
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         
         internal DemoHandler() {
-            AddCommandHandlers(nameof(DemoStore.test));
+            AddCommandHandlers(nameof(DemoStore.demo));
         }
         
         /// synchronous command handler - preferred if possible
-        private static double DemoAdd(Command<Operands> command) {
+        private static double Add(Command<Operands> command) {
             var param = command.Param;
             return param.left + param.right;
         }
         
         /// asynchronous command handler
-        private static Task<double> DemoMul(Command<Operands> command) {
+        private static Task<double> Mul(Command<Operands> command) {
             var param = command.Param;
             var result = param.left * param.right;
             return Task.FromResult(result);
         }
 
         /* intentionally not implemented to demonstrate response behavior
-        private static double DemoSub_NotImpl(Command<Operands> command) {
+        private static double Sub_NotImpl(Command<Operands> command) {
             var param = command.Param;
             return param.left - param.right;
         } */
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <b> Caution </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<FakeResult> DemoFake(Command<Fake> command) {
+        private static async Task<FakeResult> Fake(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
             var user            = command.User;
             demoStore.UserId    = user.userId.ToString(); // todo simplify setting user/token
