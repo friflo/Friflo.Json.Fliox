@@ -159,6 +159,25 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
         
+        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
+        protected async Task<AggregateEntitiesResult> CountEntities (AggregateEntities command, MessageContext messageContext) {
+            var query = new QueryEntities {
+                container       = command.container,
+                filter          = command.filter,
+                filterTree      = command.filterTree,
+                filterContext   = command.filterContext
+            };
+            var queryResult = await QueryEntities(query, messageContext).ConfigureAwait(false);
+            
+            var queryError = queryResult.Error; 
+            if (queryError != null) {
+                return new AggregateEntitiesResult { Error = queryError };
+            }
+            var counts = new Dictionary<string, long> { { "*", queryResult.entities.Count } };
+            var result = new AggregateEntitiesResult { container = command.container, counts = counts };
+            return result;
+        }
+        
         protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
             var readIds         = new ReadEntitiesSet { ids = ids, keyName = command.keyName };
             var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
@@ -171,6 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
+        /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
         protected QueryEntitiesResult FilterEntities(QueryEntities command, Dictionary <JsonKey, EntityValue> entities, MessageContext messageContext) {
             var jsonFilter      = new JsonFilter(command.filterContext); // filter can be reused
             var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);

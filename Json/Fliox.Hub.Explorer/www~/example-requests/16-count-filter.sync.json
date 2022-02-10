@@ -1,0 +1,13 @@
+{
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":       "aggregate",
+      "container":  "articles",
+      "filter":     "o.name == 'Smartphone'"
+    }
+  ],
+  "info": [
+    "count all articles"
+  ]
+}

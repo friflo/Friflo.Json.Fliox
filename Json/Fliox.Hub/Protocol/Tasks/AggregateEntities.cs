@@ -15,8 +15,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class AggregateEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
-                    //  public  string              keyName;
-                    //  public  bool?               isIntKey;
                         public  FilterOperation     filterTree;
                         public  string              filter;
                     //  public  List<References>    references;

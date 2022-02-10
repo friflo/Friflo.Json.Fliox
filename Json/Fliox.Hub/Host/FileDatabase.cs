@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -151,18 +152,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
-            var files = Directory.EnumerateFiles(folder, "*.json");
-            var count = 0;
-            foreach (var _ in files) {
-                count++;
+        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+            // count all?
+            if (command.GetFilter() is TrueLiteral) {
+                var files = Directory.EnumerateFiles(folder, "*.json");
+                var count = 0;
+                foreach (var _ in files) { count++; }
+                var counts  = new Dictionary<string, long> { { "*", count} };
+                return new AggregateEntitiesResult { container = command.container, counts = counts };
             }
-            var counts  = new Dictionary<string, long> { { "*", count} };
-            var result  = new AggregateEntitiesResult {
-                container   = command.container,
-                counts      = counts
-            };
-            return Task.FromResult(result);
+            var result = await CountEntities(command, messageContext).ConfigureAwait(false);
+            return result;
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
