@@ -83,15 +83,15 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             foreach (var pair in hub.ClientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
-                clients.TryGet(clientId, out var clientInfo);
-                if (clientInfo == null) {
-                    clientInfo = new ClientHits { id = clientId };
+                clients.TryGet(clientId, out var clientHits);
+                if (clientHits == null) {
+                    clientHits = new ClientHits { id = clientId };
                 }
-                clientInfo.user     = client.userId;
-                RequestCount.CountsToList(clientInfo.counts, client.requestCounts, monitorName);
-                clientInfo.ev       = GetEventInfo(hub, clientInfo);
+                clientHits.user     = client.userId;
+                RequestCount.CountsToList(clientHits.counts, client.requestCounts, monitorName);
+                clientHits.ev       = GetEventInfo(hub, clientHits);
 
-                clients.Upsert(clientInfo);
+                clients.Upsert(clientHits);
             }
         }
         

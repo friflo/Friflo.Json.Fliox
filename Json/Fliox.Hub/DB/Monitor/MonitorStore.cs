@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         [Req]   public  JsonKey                         id;
         [Req]   public  Ref<JsonKey, UserHits>          user;
                 public  List<RequestCount>              counts = new List<RequestCount>();
-        [Fri.Property (Name =                                  "event")]  
+        [Fri.Property (Name =                          "event")]
                 public  EventInfo?                      ev;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
