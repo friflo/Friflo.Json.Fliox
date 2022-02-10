@@ -285,6 +285,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await AssertWriteRead       (createStore);
             await AssertEntityIdentity  (createStore);
             await AssertQuery           (createStore);
+            await AssertAggregate       (createStore);
             await AssertRead            (createStore);
         }
         

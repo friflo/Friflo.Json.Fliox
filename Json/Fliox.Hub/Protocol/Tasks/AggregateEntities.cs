@@ -14,16 +14,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task -----------------------------------
     public sealed class AggregateEntities : SyncRequestTask
     {
-        [Fri.Required]  public  string              container;
-                        public  AggregateType       type;
-                        public  FilterOperation     filterTree;
-                        public  string              filter;
+        [Fri.Required]  public      string              container;
+                        public      AggregateType       type;
+                        public      FilterOperation     filterTree;
+                        public      string              filter;
                         
-        [Fri.Ignore]    private FilterOperation     filterLambda;
-        [Fri.Ignore]    public  OperationContext    filterContext;
+        [Fri.Ignore]    private     FilterOperation     filterLambda;
+        [Fri.Ignore]    public      OperationContext    filterContext;
                         
-        internal override       TaskType            TaskType => TaskType.aggregate;
-        public   override       string              TaskName => $"container: '{container}', filter: {filter}";
+        internal override           TaskType            TaskType => TaskType.aggregate;
+        public   override           string              TaskName => $"container: '{container}',type: {type}, filter: {filter}";
         
         public FilterOperation GetFilter() {
             if (filterLambda != null)

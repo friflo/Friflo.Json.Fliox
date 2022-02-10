@@ -39,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     Dictionary<string, QueryTask<TKey, T>>  _queries;
         
         private     List<AggregateTask<TKey, T>>            _aggregates;
+        private     int                                     aggregatesTasksIndex;
         
         private     HashSet<T>                              _autos;
         
@@ -570,17 +571,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
                 (_reserveKeys   != null ? 1 : 0) +
-                SetInfo.Any  (_reads)   +
-                SetInfo.Count(_queries) +
-                SetInfo.Any  (_creates) +  SetInfo.Any  (_autos) +
-                SetInfo.Any  (_upserts) +
-                SetInfo.Any  (_patches) + SetInfo.Any(_patchTasks) +
-                SetInfo.Any  (_deletes) +
+                SetInfo.Any  (_reads)       +
+                SetInfo.Count(_queries)     +
+                SetInfo.Count(_aggregates)  +
+                SetInfo.Any  (_creates)     +  SetInfo.Any  (_autos) +
+                SetInfo.Any  (_upserts)     +
+                SetInfo.Any  (_patches)     + SetInfo.Any(_patchTasks) +
+                SetInfo.Any  (_deletes)     +
                 (_deleteTaskAll   != null ? 1 : 0) +
                 (subscribeChanges != null ? 1 : 0);
             //
             info.reads      = SetInfo.Count(_reads);
             info.queries    = SetInfo.Count(_queries);
+            info.aggregates = SetInfo.Count(_aggregates);
             info.create     = SetInfo.Count(_creates) + SetInfo.Count(_autos);
             info.upsert     = SetInfo.Count(_upserts);
             info.patch      = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);

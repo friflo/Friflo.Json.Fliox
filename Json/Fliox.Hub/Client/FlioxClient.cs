@@ -623,13 +623,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                     containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
                     syncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
-            /*  case TaskType.aggregate:
+                case TaskType.aggregate:
                     var aggregate =         (AggregateEntities)     task;
                     syncSet = syncSets[aggregate.container];
-                    containerResults.TryGetValue(aggregate.container, out ContainerEntities queryEntities);
-                    syncSet.QueryEntitiesResult(query, result, queryEntities);
-                    break;*/
-                    
+                    syncSet.AggregateEntitiesResult(aggregate, result);
+                    break;
                 case TaskType.patch:
                     var patch =             (PatchEntities)     task;
                     syncSet = syncSets[patch.container];
