@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            Dictionary<TKey, T>     results;
         private  readonly   FlioxClient             store;
 
-        public              Dictionary<TKey, T>     Results         => IsOk("QueryTask.Result",  out Exception e) ? results      : throw e;
+        public              Dictionary<TKey, T>     Results         => IsOk("QueryTask.Results", out Exception e) ? results      : throw e;
         public              T                       this[TKey key]  => IsOk("QueryTask[]",       out Exception e) ? results[key] : throw e;
             
         internal override   TaskState               State           => state;

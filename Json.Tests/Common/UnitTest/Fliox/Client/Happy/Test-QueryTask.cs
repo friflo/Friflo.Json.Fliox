@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
+            AreEqual("QueryTask.Results requires SyncTasks(). hasOrderCamera", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
