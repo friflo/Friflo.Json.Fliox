@@ -5,7 +5,10 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// Implementation of custom database commands declared by <see cref="DemoStore"/>. <br/>
+    /// A <see cref="TaskHandler"/> is required to implement custom database commands declared by <see cref="DemoStore"/>.
+    /// <br/>
+    /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/> implementation.
+    /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// By calling <see cref="TaskHandler.AddCommandHandlers"/> every method with a <see cref="Command{TParam}"/>
     /// parameter is added as a command handler. <br/>
     /// Their method names need to match the commands declared in <see cref="DemoStore"/>.
