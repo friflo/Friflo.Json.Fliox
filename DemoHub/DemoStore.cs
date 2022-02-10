@@ -16,9 +16,9 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
     /// <see cref="DemoStore"/> extends <see cref="FlioxClient"/> to provide two functionalities: <br/>
-    /// 1. Defines a database schema be declaring its containers and commands <br/>
-    /// 2. Is a database client with type safe access to its containers and commands <br/>  
-    /// <br/> 
+    /// 1. Defines a database schema by declaring its containers and commands <br/>
+    /// 2. Is a database client providing type safe access to its containers and commands <br/>
+    /// <br/>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.
     /// </summary>
