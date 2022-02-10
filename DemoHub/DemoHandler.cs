@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DemoHub
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         
         internal DemoHandler() {
-            AddCommandHandlers();
+            AddCommandHandlers("test.");
         }
         
         /// synchronous command handler - preferred if possible

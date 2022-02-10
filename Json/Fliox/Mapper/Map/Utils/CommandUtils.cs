@@ -19,21 +19,21 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var hubCommands     = HubCommandsUtils.GetHubCommandsTypes(type);
             if (hubCommands != null) {
                 foreach (var hubCommand in hubCommands) {
-                    var commandsType    = hubCommand.commandsType;
-                    var clientCommands  = GetCommandTypes(commandsType);
+                    var prefix          = hubCommand.name + ".";
+                    var clientCommands  = GetCommandTypes(hubCommand.commandsType, prefix);
                     if (clientCommands == null)
                         continue;
                     commandInfos.AddRange(clientCommands);
                 }
             }
-            var commands        = GetCommandTypes(type);
+            var commands        = GetCommandTypes(type, "");
             if (commands != null) {
                 commandInfos.AddRange(commands);
             }
             return commandInfos.ToArray();
         }
 
-        private static CommandInfo[] GetCommandTypes(Type type) {
+        private static CommandInfo[] GetCommandTypes(Type type, string prefix) {
             if (CommandInfoCache.TryGetValue(type, out  CommandInfo[] result)) {
                 return result;
             }
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
-                if (!IsCommand(method, out CommandInfo commandInfo))
+                if (!IsCommand(method, prefix, out CommandInfo commandInfo))
                     continue;
                 commands.Add(commandInfo);
             }
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             return array;
         }
         
-        private static bool IsCommand(MethodInfo methodInfo, out CommandInfo commandInfo) {
+        private static bool IsCommand(MethodInfo methodInfo, string prefix, out CommandInfo commandInfo) {
             commandInfo = new CommandInfo();
             var returnType = methodInfo.ReturnType;
             if (!returnType.IsGenericType)
@@ -78,7 +78,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (parameters.Length == 1) {
                 valueType = parameters[0].ParameterType;
             }
-            commandInfo = new CommandInfo(name, valueType, resultType);
+            var qualifiedName = prefix == "" ? name : prefix + name;
+            commandInfo = new CommandInfo(qualifiedName, valueType, resultType);
             return true;
         }
     }
