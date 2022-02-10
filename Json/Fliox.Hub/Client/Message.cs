@@ -112,22 +112,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public static class StdCommand  {
-        // --- db.*
-        /// <summary>
-        /// Echoes the value specified in <see cref="FlioxClient.SendCommand{TParam,TResult}(string,TParam)"/> in <see cref="CommandTask.ResultJson"/>
-        /// </summary>
-        public const string DbEcho          = "Echo";
-        public const string DbContainers    = "Containers";
-        public const string DbCommands      = "Commands";
-        public const string DbSchema        = "Schema";
-        public const string DbStats         = "Stats";
-
-        // --- host.*
-        public const string HostDetails     = "Details";
-        public const string HostCluster     = "Cluster";
-    }
-
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);
     public delegate void MessageHandler             (Message            message);
 }

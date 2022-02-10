@@ -11,22 +11,33 @@ namespace Friflo.Json.Fliox.Hub.Client
     public class HubCommands
     {
         private readonly    FlioxClient client;
-        private readonly    string      domain;
         
-        protected HubCommands (FlioxClient client, string domain) {
-            this.domain = domain + ".";
+        protected HubCommands (FlioxClient client) {
             this.client = client;
         }
         
         protected CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
-            name = domain + name; // todo avoid concatenation?
             return client.SendCommand<TParam, TResult>(name, param);
         }
     }
     
+    // ---------------------------------- standard commands ----------------------------------
+    public static class StdCommand  {
+        // --- db.*
+        public const string DbEcho          = "db.Echo";
+        public const string DbContainers    = "db.Containers";
+        public const string DbCommands      = "db.Commands";
+        public const string DbSchema        = "db.Schema";
+        public const string DbStats         = "db.Stats";
+
+        // --- host.*
+        public const string HostDetails     = "host.Details";
+        public const string HostCluster     = "host.Cluster";
+    }
+    
     public class DatabaseCommands : HubCommands
     {
-        protected internal DatabaseCommands(FlioxClient client, string domain) : base(client, domain) { }
+        protected internal DatabaseCommands(FlioxClient client) : base(client) { }
         
         // Declared only to generate command in Schema 
         internal CommandTask<JsonValue>     Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
@@ -41,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public class HostCommands : HubCommands
     {
-        protected internal HostCommands(FlioxClient client, string domain) : base(client, domain) { }
+        protected internal HostCommands(FlioxClient client) : base(client) { }
         
         // --- host.*
         public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (StdCommand.HostDetails,  new JsonValue());

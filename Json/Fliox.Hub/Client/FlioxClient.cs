@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, this, eventTarget);
-            db      = new DatabaseCommands  (this, nameof(db));
-            host    = new HostCommands      (this, nameof(host));
+            db      = new DatabaseCommands  (this);
+            host    = new HostCommands      (this);
         }
         
         public virtual void Dispose() {

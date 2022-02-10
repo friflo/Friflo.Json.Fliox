@@ -6,22 +6,22 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     public class DemoCommands : HubCommands
     {
-        internal DemoCommands (FlioxClient client, string domain) : base(client, domain) { }
+        internal DemoCommands (FlioxClient client) : base(client) { }
         
         // --- commands
         /// <summary> Generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary> 
-        public CommandTask<FakeResult>Fake (Fake        param)      => SendCommand<Fake, FakeResult>(nameof(Fake), param);
+        public CommandTask<FakeResult>Fake (Fake        param)      => SendCommand<Fake, FakeResult>("demo.Fake", param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
-        public CommandTask<double>    Add  (Operands    param)      => SendCommand<Operands, double>(nameof(Add),  param);
+        public CommandTask<double>    Add  (Operands    param)      => SendCommand<Operands, double>("demo.Add",  param);
         
         /// <summary> simple command multiplying two numbers - no database access. </summary>
-        public CommandTask<double>    Mul  (Operands    param)      => SendCommand<Operands, double>(nameof(Mul),  param);
+        public CommandTask<double>    Mul  (Operands    param)      => SendCommand<Operands, double>("demo.Mul",  param);
         
         /// <summary> command handler for <see cref="Sub_NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
         /// Execution results in:
         /// <code>NotImplemented > no command handler for: 'demo.Sub_NotImpl' </code></summary>
-        public CommandTask<double>    Sub_NotImpl (Operands param)  => SendCommand<Operands, double>(nameof(Sub_NotImpl), param);
+        public CommandTask<double>    Sub_NotImpl (Operands param)  => SendCommand<Operands, double>("demo.Sub_NotImpl", param);
     }
     
     public class Operands {

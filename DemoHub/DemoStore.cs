@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public readonly DemoCommands                    demo;
         
         public DemoStore(FlioxHub hub) : base (hub) {
-            demo = new DemoCommands(this, nameof(demo));
+            demo = new DemoCommands(this);
         }
     }
     
