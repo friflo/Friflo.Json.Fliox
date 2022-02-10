@@ -24,14 +24,14 @@ export interface PocStore {
     types      : { [key: string]: TestType };
 
     // --- commands
-    ["TestCommand"]          (param: TestCommand) : boolean;
-    ["std.DbEcho"]           (param: any) : any;
-    ["std.DbContainers"]     (param: any) : DbContainers;
-    ["std.DbCommands"]       (param: any) : DbCommands;
-    ["std.DbSchema"]         (param: any) : DbSchema;
-    ["std.DbStats"]          (param: any) : DbStats;
-    ["std.HostDetails"]      (param: any) : HostDetails;
-    ["std.HostCluster"]      (param: any) : HostCluster;
+    ["TestCommand"]       (param: TestCommand) : boolean;
+    ["db.Echo"]           (param: any) : any;
+    ["db.Containers"]     (param: any) : DbContainers;
+    ["db.Commands"]       (param: any) : DbCommands;
+    ["db.Schema"]         (param: any) : DbSchema;
+    ["db.Stats"]          (param: any) : DbStats;
+    ["host.Details"]      (param: any) : HostDetails;
+    ["host.Cluster"]      (param: any) : HostCluster;
 }
 
 export class Order {

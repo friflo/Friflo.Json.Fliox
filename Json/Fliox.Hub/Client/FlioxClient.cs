@@ -40,7 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                         GetSyncCount()  => _intern.syncCount;
         
-        public readonly     StdCommands                 std;
+        public readonly     DatabaseCommands            db;
+        public readonly     HostCommands                host;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
@@ -53,7 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, this, eventTarget);
-            std     = new StdCommands(this, nameof(std));
+            db      = new DatabaseCommands  (this, nameof(db));
+            host    = new HostCommands      (this, nameof(host));
         }
         
         public virtual void Dispose() {

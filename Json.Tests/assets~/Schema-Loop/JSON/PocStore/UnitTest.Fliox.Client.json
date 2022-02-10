@@ -23,14 +23,14 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "TestCommand":      { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
-                "std.DbEcho":       { "param": {  }, "result": {  } },
-                "std.DbContainers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
-                "std.DbCommands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
-                "std.DbSchema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
-                "std.DbStats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
-                "std.HostDetails":  { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" } },
-                "std.HostCluster":  { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" } }
+                "TestCommand":   { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
+                "db.Echo":       { "param": {  }, "result": {  } },
+                "db.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
+                "db.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
+                "db.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
+                "db.Stats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
+                "host.Details":  { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" } },
+                "host.Cluster":  { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" } }
             }
         },
         "OrderItem": {

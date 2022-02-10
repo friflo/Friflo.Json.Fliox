@@ -30,11 +30,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testHub.syncErrors.Add(msgSyncError,       () => new ExecuteSyncResult("simulated SyncError", ErrorResponseType.BadRequest));
             testHub.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
-            var helloTask1 = store.std.DbEcho("Hello World 1");
-            var helloTask2 = store.std.DbEcho("Hello World 2");
-            var helloTask3 = store.std.DbEcho((string)null);
+            var helloTask1 = store.db.Echo("Hello World 1");
+            var helloTask2 = store.db.Echo("Hello World 2");
+            var helloTask3 = store.db.Echo((string)null);
             
-            AreEqual("CommandTask (name: std.DbEcho)", helloTask1.ToString());
+            AreEqual("CommandTask (name: db.Echo)", helloTask1.ToString());
 
             await store.SyncTasks(); // ----------------
             

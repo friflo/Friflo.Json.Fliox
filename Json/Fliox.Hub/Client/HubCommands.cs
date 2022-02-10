@@ -24,23 +24,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public class StdCommands : HubCommands
+    public class DatabaseCommands : HubCommands
     {
-        protected internal StdCommands(FlioxClient client, string domain) : base(client, domain) { }
+        protected internal DatabaseCommands(FlioxClient client, string domain) : base(client, domain) { }
         
         // Declared only to generate command in Schema 
-        internal CommandTask<JsonValue>     DbEcho(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
+        internal CommandTask<JsonValue>     Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
-        // --- Db*
-        public CommandTask<TParam>          DbEcho<TParam> (TParam param) =>
-            SendCommand<TParam,TParam>  (StdCommand.DbEcho, param);
-        public CommandTask<DbContainers>    DbContainers()  =>  SendCommand<JsonValue, DbContainers>   (StdCommand.DbContainers,new JsonValue());
-        public CommandTask<DbCommands>      DbCommands()    =>  SendCommand<JsonValue, DbCommands>     (StdCommand.DbCommands,  new JsonValue());
-        public CommandTask<DbSchema>        DbSchema()      =>  SendCommand<JsonValue, DbSchema>       (StdCommand.DbSchema,    new JsonValue());
-        public CommandTask<DbStats>         DbStats()       =>  SendCommand<JsonValue, DbStats>        (StdCommand.DbStats,     new JsonValue());
+        // --- db.*
+        public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (StdCommand.DbEcho, param);
+        public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(StdCommand.DbContainers,new JsonValue());
+        public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (StdCommand.DbCommands,  new JsonValue());
+        public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (StdCommand.DbSchema,    new JsonValue());
+        public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (StdCommand.DbStats,     new JsonValue());
+    }
+    
+    public class HostCommands : HubCommands
+    {
+        protected internal HostCommands(FlioxClient client, string domain) : base(client, domain) { }
         
-        // --- Hub*
-        public CommandTask<HostDetails>     HostDetails()    =>  SendCommand<JsonValue, HostDetails>   (StdCommand.HostDetails,  new JsonValue());
-        public CommandTask<HostCluster>     HostCluster()    =>  SendCommand<JsonValue, HostCluster>   (StdCommand.HostCluster,  new JsonValue());
+        // --- hub.*
+        public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (StdCommand.HostDetails,  new JsonValue());
+        public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (StdCommand.HostCluster,  new JsonValue());
     }
 }
