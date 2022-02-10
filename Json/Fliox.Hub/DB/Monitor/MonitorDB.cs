@@ -89,13 +89,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 }
                 clientHits.user     = client.userId;
                 RequestCount.CountsToList(clientHits.counts, client.requestCounts, monitorName);
-                clientHits.ev       = GetEventInfo(hub, clientHits);
+                clientHits.ev       = GetEventDelivery(hub, clientHits);
 
                 clients.Upsert(clientHits);
             }
         }
         
-        private static EventInfo? GetEventInfo (FlioxHub hub, ClientHits clientHits) {
+        private static EventDelivery? GetEventDelivery (FlioxHub hub, ClientHits clientHits) {
             if (hub.EventBroker == null)
                 return null;
             if (!hub.EventBroker.TryGetSubscriber(clientHits.id, out var subscriber)) {
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
                 msgSubs.Add(messageSub + "*");
             }
             var changeSubs  = subscriber.GetChangeSubscriptions (clientHits.ev?.changeSubs);
-            return new EventInfo {
+            return new EventDelivery {
                 seq         = subscriber.Seq,
                 queued      = subscriber.EventQueueCount,
                 messageSubs = msgSubs,

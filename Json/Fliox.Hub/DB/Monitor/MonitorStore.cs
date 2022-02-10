@@ -42,12 +42,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         [Req]   public  Ref<JsonKey, UserHits>          user;
                 public  List<RequestCount>              counts = new List<RequestCount>();
         [Fri.Property (Name =                          "event")]
-                public  EventInfo?                      ev;
+                public  EventDelivery?                  ev;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
-    public struct EventInfo {
+    public struct EventDelivery {
                 public  int                             seq;
                 public  int                             queued;
                 public  List<string>                    messageSubs;

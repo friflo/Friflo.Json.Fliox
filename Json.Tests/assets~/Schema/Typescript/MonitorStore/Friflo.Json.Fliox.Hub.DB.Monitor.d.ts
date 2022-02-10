@@ -36,7 +36,7 @@ export class ClientHits {
     id      : string;
     user    : string;
     counts? : RequestCount[] | null;
-    event?  : EventInfo | null;
+    event?  : EventDelivery | null;
 }
 
 export class UserHits {
@@ -51,7 +51,7 @@ export class HistoryHits {
     lastUpdate  : int32;
 }
 
-export class EventInfo {
+export class EventDelivery {
     seq          : int32;
     queued       : int32;
     messageSubs? : string[] | null;
