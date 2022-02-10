@@ -8,6 +8,6 @@
     }
   ],
   "info": [
-    "count all articles"
+    "count articles with filter: o.name == 'Smartphone'"
   ]
 }

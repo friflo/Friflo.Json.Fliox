@@ -7,5 +7,5 @@
       "filter":     "o.name == 'Smartphone'"
     }
   ],
-  "info": "query articles with a filter => o.name == 'Smartphone'"
+  "info": "query articles with filter: o.name == 'Smartphone'"
 }
