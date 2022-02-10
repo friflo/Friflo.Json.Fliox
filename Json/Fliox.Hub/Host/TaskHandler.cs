@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        protected void AddCommandHandlers(string prefix)
+        protected void AddCommandHandlers(string domain)
         {
             var type                = GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
                 }
                 var commandCallback = (CommandCallback)instance;
-                var name = prefix != null ? prefix + handler.name : handler.name;
+                var name = string.IsNullOrEmpty(domain) ? handler.name : $"{domain}.{handler.name}";
                 commands.Add(name, commandCallback);
             }
         }
