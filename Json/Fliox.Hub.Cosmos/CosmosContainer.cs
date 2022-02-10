@@ -186,7 +186,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         }
         
         public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
-            throw new NotImplementedException();
+            var result = new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
+            return Task.FromResult(result);
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {

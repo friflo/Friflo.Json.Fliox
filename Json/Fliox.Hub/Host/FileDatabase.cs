@@ -153,15 +153,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
             var filter = command.GetFilter();
-            // count all?
-            if (filter.IsTrue) {
-                var files = Directory.EnumerateFiles(folder, "*.json");
-                var count = 0;
-                foreach (var _ in files) { count++; }
-                return new AggregateEntitiesResult { container = command.container, value = count };
+            switch (command.type) {
+                case AggregateType.count:
+                    // count all?
+                    if (filter.IsTrue) {
+                        var files = Directory.EnumerateFiles(folder, "*.json");
+                        var count = 0;
+                        foreach (var _ in files) { count++; }
+                        return new AggregateEntitiesResult { container = command.container, value = count };
+                    }
+                    var result = await CountEntities(command, messageContext).ConfigureAwait(false);
+                    return result;
             }
-            var result = await CountEntities(command, messageContext).ConfigureAwait(false);
-            return result;
+            return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
         }
 
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
