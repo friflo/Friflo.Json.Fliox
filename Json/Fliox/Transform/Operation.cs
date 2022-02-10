@@ -259,8 +259,9 @@ namespace Friflo.Json.Fliox.Transform
     // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation
     {
-        [Fri.Ignore] public   readonly  QueryFormat     query;
-        [Fri.Ignore] internal readonly  EvalResult      evalResult = new EvalResult(new List<Scalar>());
+        [Fri.Ignore] public   readonly  QueryFormat query;
+        [Fri.Ignore] internal readonly  EvalResult  evalResult = new EvalResult(new List<Scalar>());
+                     public             bool        IsTrue => this is TrueLiteral || (this as Filter)?.body is TrueLiteral;
                      
         protected FilterOperation() {
             query    = new QueryFormat(this);
@@ -268,7 +269,7 @@ namespace Friflo.Json.Fliox.Transform
 
         public JsonFilter Filter() {
             return new JsonFilter(this);
-        }        
+        }
     }
     
     public readonly struct QueryFormat {

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -86,10 +85,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+            var filter = command.GetFilter();
             // count all?
-            if (command.GetFilter() is TrueLiteral) {
+            if (filter.IsTrue) {
                 var count = keyValues.Count;
-                return new AggregateEntitiesResult { container   = command.container, value = count };
+                return new AggregateEntitiesResult { container = command.container, value = count };
             }
             var result = await CountEntities(command, messageContext).ConfigureAwait(false);
             return result;

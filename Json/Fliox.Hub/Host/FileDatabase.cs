@@ -12,7 +12,6 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -153,8 +152,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+            var filter = command.GetFilter();
             // count all?
-            if (command.GetFilter() is TrueLiteral) {
+            if (filter.IsTrue) {
                 var files = Directory.EnumerateFiles(folder, "*.json");
                 var count = 0;
                 foreach (var _ in files) { count++; }
