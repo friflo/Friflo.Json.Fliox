@@ -23,18 +23,18 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "TestCommand":   { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
-                "SyncCommand":   { "param": { "type": "string" }, "result": { "type": "string" } },
-                "AsyncCommand":  { "param": { "type": "string" }, "result": { "type": "string" } },
-                "test.Command1": { "param": { "type": "string" }, "result": { "type": "string" } },
-                "test.Command2": { "param": { "type": "string" }, "result": { "type": "string" } },
-                "db.Echo":       { "param": {  }, "result": {  } },
-                "db.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
-                "db.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
-                "db.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
-                "db.Stats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
-                "host.Details":  { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" } },
-                "host.Cluster":  { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" } }
+                "TestCommand":    { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
+                "SyncCommand":    { "param": { "type": "string" }, "result": { "type": "string" } },
+                "AsyncCommand":   { "param": { "type": "string" }, "result": { "type": "string" } },
+                "test.Command1":  { "param": { "type": "string" }, "result": { "type": "string" } },
+                "test.Command2":  { "param": { "type": "string" }, "result": { "type": "string" } },
+                "std.Echo":       { "param": {  }, "result": {  } },
+                "std.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
+                "std.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
+                "std.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
+                "std.Stats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
+                "std.Details":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" } },
+                "std.Cluster":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" } }
             }
         },
         "OrderItem": {

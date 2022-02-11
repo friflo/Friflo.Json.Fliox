@@ -49,23 +49,23 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public TaskHandler () {
             if (_oldStyleUsage) {
-                // --- db.*
+                // --- database
                 AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue, JsonValue>         (Echo));
                 AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,     Task<DbContainers>>(Containers));
                 AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,     DbCommands>        (Commands));
                 AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,     DbSchema>          (Schema));
                 AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,    Task<DbStats>>     (Stats));
-                // --- host.*
+                // --- host
                 AddCommandHandler       (Std.HostDetails,    new CommandHandler<Empty,   HostDetails>       (Details));
                 AddCommandHandlerAsync  (Std.HostCluster,    new CommandHandler<Empty,   Task<HostCluster>> (Cluster));
             }
-            // --- db.*
+            // --- database
             AddCommand      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
             AddCommandAsync <Empty,       DbContainers> (Std.Containers,   Containers);
             AddCommand      <Empty,       DbCommands>   (Std.Commands,     Commands);
             AddCommand      <Empty,       DbSchema>     (Std.Schema,       Schema);
             AddCommandAsync <string,      DbStats>      (Std.Stats,        Stats);
-            // --- host.*
+            // --- host
             AddCommand      <Empty,       HostDetails>  (Std.HostDetails,    Details);
             AddCommandAsync <Empty,       HostCluster>  (Std.HostCluster,   Cluster);
         }

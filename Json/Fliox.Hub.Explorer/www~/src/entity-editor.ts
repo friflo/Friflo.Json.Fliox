@@ -107,7 +107,7 @@ export class EntityEditor
         ulDatabase.classList.value  = "database";
         const commandLabel  = createEl('li');
         const label         = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
-        commandLabel.innerHTML = `<a href="./rest/${database}?command=db.Commands" target="_blank" rel="noopener noreferrer">${label}</a>`;
+        commandLabel.innerHTML = `<a href="./rest/${database}?command=std.Commands" target="_blank" rel="noopener noreferrer">${label}</a>`;
         ulDatabase.append(commandLabel);
 
         const liCommands  = createEl('li');

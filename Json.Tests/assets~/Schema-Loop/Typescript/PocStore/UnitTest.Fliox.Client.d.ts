@@ -41,18 +41,18 @@ export interface PocStore {
     types      : { [key: string]: TestType };
 
     // --- commands
-    ["TestCommand"]       (param: TestCommand) : boolean;
-    ["SyncCommand"]       (param: string) : string;
-    ["AsyncCommand"]      (param: string) : string;
-    ["test.Command1"]     (param: string) : string;
-    ["test.Command2"]     (param: string) : string;
-    ["db.Echo"]           (param: any) : any;
-    ["db.Containers"]     (param: any) : DbContainers;
-    ["db.Commands"]       (param: any) : DbCommands;
-    ["db.Schema"]         (param: any) : DbSchema;
-    ["db.Stats"]          (param: any) : DbStats;
-    ["host.Details"]      (param: any) : HostDetails;
-    ["host.Cluster"]      (param: any) : HostCluster;
+    ["TestCommand"]        (param: TestCommand) : boolean;
+    ["SyncCommand"]        (param: string) : string;
+    ["AsyncCommand"]       (param: string) : string;
+    ["test.Command1"]      (param: string) : string;
+    ["test.Command2"]      (param: string) : string;
+    ["std.Echo"]           (param: any) : any;
+    ["std.Containers"]     (param: any) : DbContainers;
+    ["std.Commands"]       (param: any) : DbCommands;
+    ["std.Schema"]         (param: any) : DbSchema;
+    ["std.Stats"]          (param: any) : DbStats;
+    ["std.Details"]        (param: any) : HostDetails;
+    ["std.Cluster"]        (param: any) : HostCluster;
 }
 
 export class OrderItem {

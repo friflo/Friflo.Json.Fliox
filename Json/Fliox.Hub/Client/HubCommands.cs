@@ -47,51 +47,43 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    // ---------------------------------- standard database & host commands ----------------------------------
-    
+    // ---------------------------------- standard commands ----------------------------------
     /// <summary>
     /// Contains commands addressed to the database. Its commands are prefixed with
-    /// <b>db.*</b>
+    /// <b>std.*</b>
     /// </summary>
-    public class DatabaseCommands : HubCommands
+    public class StdCommands : HubCommands
     {
-        protected internal DatabaseCommands(FlioxClient client) : base(client) { }
+        protected internal StdCommands(FlioxClient client) : base(client) { }
         
         // Declared only to generate command in Schema 
         internal CommandTask<JsonValue>     Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
-        // --- commands
+        // --- commands: database
         public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (Std.Echo, param);
         public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(Std.Containers,new JsonValue());
         public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (Std.Commands,  new JsonValue());
         public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (Std.Schema,    new JsonValue());
         public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,     new JsonValue());
-    }
-    
-    /// <summary>
-    /// Contains commands addressed to the host. Its commands are prefixed with
-    /// <b>host.*</b>
-    /// </summary>
-    public class HostCommands : HubCommands
-    {
-        protected internal HostCommands(FlioxClient client) : base(client) { }
         
-        // --- commands
+        // --- commands: host
         public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,  new JsonValue());
         public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,  new JsonValue());
     }
     
-    /// Should not be public 
+    
+    /// Should not be public. commands are prefix with
+    /// <b>std.*</b>
     internal static class Std  {
-        // --- db.*
-        public const string Echo        = "db.Echo";
-        public const string Containers  = "db.Containers";
-        public const string Commands    = "db.Commands";
-        public const string Schema      = "db.Schema";
-        public const string Stats       = "db.Stats";
+        // --- database
+        public const string Echo        = "std.Echo";
+        public const string Containers  = "std.Containers";
+        public const string Commands    = "std.Commands";
+        public const string Schema      = "std.Schema";
+        public const string Stats       = "std.Stats";
 
-        // --- host.*
-        public const string HostDetails = "host.Details";
-        public const string HostCluster = "host.Cluster";
+        // --- host
+        public const string HostDetails = "std.Details";
+        public const string HostCluster = "std.Cluster";
     }
 }

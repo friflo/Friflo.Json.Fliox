@@ -44,10 +44,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
 
         // --- commands
-        /// contains commands related to the database
-        public readonly     DatabaseCommands            db;
-        /// contains commands related to the host
-        public readonly     HostCommands                host;
+        /// standard commands
+        public readonly     StdCommands                 std;
 
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/>.
@@ -56,8 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, this, eventTarget);
-            db      = new DatabaseCommands  (this);
-            host    = new HostCommands      (this);
+            std     = new StdCommands  (this);
         }
         
         public virtual void Dispose() {
