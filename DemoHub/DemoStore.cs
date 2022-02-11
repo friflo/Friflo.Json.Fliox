@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// 2. Is a database client providing type safe access to its containers and commands <br/>
     /// <br/>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
-    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs
     /// </summary>
     public partial class DemoStore : FlioxClient
     {
