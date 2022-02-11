@@ -106,7 +106,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        /// <param name="handlerClass">the instance of class containing command handler methods</param>
+        /// <param name="handlerClass">the instance of class containing command handler methods.
+        ///     Commonly the instance of a <see cref="TaskHandler"/></param>
         /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" to add commands without prefix</param>
         public void AddCommandHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
         {
