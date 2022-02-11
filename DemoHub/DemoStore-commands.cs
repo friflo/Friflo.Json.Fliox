@@ -16,10 +16,10 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <summary> simple command multiplying two numbers - no database access. </summary>
         public CommandTask<double>    Mul  (Operands    param)      => SendCommand<Operands, double>(nameof(Mul),  param);
         
-        /// <summary> command handler for <see cref="NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
-        /// Execution results in:
-        /// <code>NotImplemented > no command handler for: 'NotImpl' </code></summary>
-        public CommandTask<double>    NotImpl (Operands param)      => SendCommand<Operands, double>(nameof(NotImpl), param);
+        // <summary> command handler for <see cref="NotImpl"/> intentionally not implemented by <see cref="DemoHandler"/>. 
+        // Execution results in:
+        // <code>NotImplemented > no command handler for: 'NotImpl' </code></summary>
+    //  public CommandTask<double>    NotImpl (Operands param)      => SendCommand<Operands, double>(nameof(NotImpl), param);
     }
     
     public class Operands {
