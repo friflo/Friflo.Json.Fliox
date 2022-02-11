@@ -24,6 +24,10 @@
             "additionalProperties": false,
             "commands": {
                 "TestCommand":   { "param": { "$ref": "#/definitions/TestCommand" }, "result": { "type": "boolean" } },
+                "SyncCommand":   { "param": { "type": "string" }, "result": { "type": "string" } },
+                "AsyncCommand":  { "param": { "type": "string" }, "result": { "type": "string" } },
+                "test.Command1": { "param": { "type": "string" }, "result": { "type": "string" } },
+                "test.Command2": { "param": { "type": "string" }, "result": { "type": "string" } },
                 "db.Echo":       { "param": {  }, "result": {  } },
                 "db.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
                 "db.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },

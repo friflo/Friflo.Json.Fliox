@@ -48,28 +48,26 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static bool _oldStyleUsage = false;
         
         public TaskHandler () {
-            string db   = "db";
-            string host = "host";
             if (_oldStyleUsage) {
                 // --- db.*
-                AddCommandHandler       (StdCommand.DbEcho,         db, new CommandHandler<JsonValue, JsonValue>         (Echo));
-                AddCommandHandlerAsync  (StdCommand.DbContainers,   db, new CommandHandler<Empty,     Task<DbContainers>>(Containers));
-                AddCommandHandler       (StdCommand.DbCommands,     db, new CommandHandler<Empty,     DbCommands>        (Commands));
-                AddCommandHandler       (StdCommand.DbSchema,       db, new CommandHandler<Empty,     DbSchema>          (Schema));
-                AddCommandHandlerAsync  (StdCommand.DbStats,        db, new CommandHandler<string,    Task<DbStats>>     (Stats));
+                AddCommandHandler       (StdCommand.DbEcho,         new CommandHandler<JsonValue, JsonValue>         (Echo));
+                AddCommandHandlerAsync  (StdCommand.DbContainers,   new CommandHandler<Empty,     Task<DbContainers>>(Containers));
+                AddCommandHandler       (StdCommand.DbCommands,     new CommandHandler<Empty,     DbCommands>        (Commands));
+                AddCommandHandler       (StdCommand.DbSchema,       new CommandHandler<Empty,     DbSchema>          (Schema));
+                AddCommandHandlerAsync  (StdCommand.DbStats,        new CommandHandler<string,    Task<DbStats>>     (Stats));
                 // --- host.*
-                AddCommandHandler       (StdCommand.HostDetails,    host, new CommandHandler<Empty,   HostDetails>       (Details));
-                AddCommandHandlerAsync  (StdCommand.HostCluster,    host, new CommandHandler<Empty,   Task<HostCluster>> (Cluster));
+                AddCommandHandler       (StdCommand.HostDetails,    new CommandHandler<Empty,   HostDetails>       (Details));
+                AddCommandHandlerAsync  (StdCommand.HostCluster,    new CommandHandler<Empty,   Task<HostCluster>> (Cluster));
             }
             // --- db.*
-            AddCommand      <JsonValue,   JsonValue>    (nameof(Echo),      db,     Echo);
-            AddCommandAsync <Empty,       DbContainers> (nameof(Containers),db,     Containers);
-            AddCommand      <Empty,       DbCommands>   (nameof(Commands),  db,     Commands);
-            AddCommand      <Empty,       DbSchema>     (nameof(Schema),    db,     Schema);
-            AddCommandAsync <string,      DbStats>      (nameof(Stats),     db,     Stats);
+            AddCommand      <JsonValue,   JsonValue>    (StdCommand.DbEcho,         Echo);
+            AddCommandAsync <Empty,       DbContainers> (StdCommand.DbContainers,   Containers);
+            AddCommand      <Empty,       DbCommands>   (StdCommand.DbCommands,     Commands);
+            AddCommand      <Empty,       DbSchema>     (StdCommand.DbSchema,       Schema);
+            AddCommandAsync <string,      DbStats>      (StdCommand.DbStats,        Stats);
             // --- host.*
-            AddCommand      <Empty,       HostDetails>  (nameof(Details),   host,   Details);
-            AddCommandAsync <Empty,       HostCluster>  (nameof(Cluster),   host,   Cluster);
+            AddCommand      <Empty,       HostDetails>  (StdCommand.HostDetails,    Details);
+            AddCommandAsync <Empty,       HostCluster>  (StdCommand.HostCluster,   Cluster);
         }
         
         /// <summary>
@@ -79,8 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommand<TParam, TResult> (string name, string domain, Func<Command<TParam>, TResult> method) {
-            AddCommandHandler (name, domain, new CommandHandler<TParam, TResult> (method));
+        protected void AddCommand<TParam, TResult> (string name, Func<Command<TParam>, TResult> method) {
+            AddCommandHandler (name, new CommandHandler<TParam, TResult> (method));
         }
         
         /// <summary>
@@ -90,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandAsync<TParam, TResult> (string name, string domain, Func<Command<TParam>, Task<TResult>> method) {
-            AddCommandHandlerAsync (name, domain, new CommandHandler<TParam, Task<TResult>> (method));
+        protected void AddCommandAsync<TParam, TResult> (string name, Func<Command<TParam>, Task<TResult>> method) {
+            AddCommandHandlerAsync (name, new CommandHandler<TParam, Task<TResult>> (method));
         }
        
         /// <summary>
@@ -214,14 +212,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return commands.TryGetValue(name, out command);
         }
         
-        private void AddCommandHandler<TValue, TResult>(string name, string domain, CommandHandler<TValue, TResult> handler) {
-            name = string.IsNullOrEmpty(domain) ? name : $"{domain}.{name}";
+        private void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        private void AddCommandHandlerAsync<TValue, TResult>(string name, string domain, CommandHandler<TValue, Task<TResult>> handler) {
-            name = string.IsNullOrEmpty(domain) ? name : $"{domain}.{name}";
+        private void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }

@@ -25,6 +25,10 @@ export interface PocStore {
 
     // --- commands
     ["TestCommand"]       (param: TestCommand) : boolean;
+    ["SyncCommand"]       (param: string) : string;
+    ["AsyncCommand"]      (param: string) : string;
+    ["test.Command1"]     (param: string) : string;
+    ["test.Command2"]     (param: string) : string;
     ["db.Echo"]           (param: any) : any;
     ["db.Containers"]     (param: any) : DbContainers;
     ["db.Commands"]       (param: any) : DbCommands;
