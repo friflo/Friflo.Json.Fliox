@@ -36,6 +36,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public const string HostCluster = "host.Cluster";
     }
     
+    /// <summary>
+    /// Contains commands addressed to the database. Its commands are prefixed with
+    /// <b>db.*</b>
+    /// </summary>
     public class DatabaseCommands : HubCommands
     {
         protected internal DatabaseCommands(FlioxClient client) : base(client) { }
@@ -43,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // Declared only to generate command in Schema 
         internal CommandTask<JsonValue>     Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
-        // --- db.*
+        // --- commands
         public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (Std.Echo, param);
         public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(Std.Containers,new JsonValue());
         public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (Std.Commands,  new JsonValue());
@@ -51,11 +55,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,     new JsonValue());
     }
     
+    /// <summary>
+    /// Contains commands addressed to the host. Its commands are prefixed with
+    /// <b>host.*</b>
+    /// </summary>
     public class HostCommands : HubCommands
     {
         protected internal HostCommands(FlioxClient client) : base(client) { }
         
-        // --- host.*
+        // --- commands
         public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,  new JsonValue());
         public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,  new JsonValue());
     }
