@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
+// ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable ConvertToConstant.Local
 // ReSharper disable MemberCanBePrivate.Global
@@ -79,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommand<TParam, TResult> (string name, string domain, Func<Command<TParam>, TResult> method) {
+        public void AddCommand<TParam, TResult> (string name, string domain, Func<Command<TParam>, TResult> method) {
             AddCommandHandler (name, domain, new CommandHandler<TParam, TResult> (method));
         }
         
@@ -90,22 +91,23 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandAsync<TParam, TResult> (string name, string domain, Func<Command<TParam>, Task<TResult>> method) {
+        public void AddCommandAsync<TParam, TResult> (string name, string domain, Func<Command<TParam>, Task<TResult>> method) {
             AddCommandHandlerAsync (name, domain, new CommandHandler<TParam, Task<TResult>> (method));
         }
        
         /// <summary>
-        /// Add all methods using <see cref="Command{TParam}"/> as a single parameter as a command handler.
+        /// Add all methods of the given <see cref="handlerClass"/> using <see cref="Command{TParam}"/> as a
+        /// single parameter as a command handler.
         /// E.g.
         /// <code>
-        /// private static string TestCommand(Command&lt;int&gt; command) { ... }
+        /// private string TestCommand(Command&lt;int&gt; command) { ... }
         /// </code>
         /// Command handler methods can be: <br/>
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        /// <param name="handlerClass">the class containing command handler methods</param>
-        /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" when using no prefix</param>
+        /// <param name="handlerClass">the instance of class containing command handler methods</param>
+        /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" to add commands without prefix</param>
         public void AddCommandHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
         {
             var type                = handlerClass.GetType();
