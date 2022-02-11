@@ -35,12 +35,6 @@ namespace Friflo.Json.Fliox.DemoHub
             var result = param.left * param.right;
             return Task.FromResult(result);
         }
-
-        /* intentionally not implemented to demonstrate response behavior
-        private static double NotImpl(Command<Operands> command) {
-            var param = command.Param;
-            return param.left - param.right;
-        } */
         
         /// <summary>
         /// <b> Recommendation </b>: Used an async method to enable concurrent execution of <see cref="DemoStore.SyncTasks"/>.
