@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DemoHub
         }
 
         /* intentionally not implemented to demonstrate response behavior
-        private static double Sub_NotImpl(Command<Operands> command) {
+        private static double NotImpl(Command<Operands> command) {
             var param = command.Param;
             return param.left - param.right;
         } */
