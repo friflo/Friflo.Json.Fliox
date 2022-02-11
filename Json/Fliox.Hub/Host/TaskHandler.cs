@@ -15,7 +15,6 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
-// ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable ConvertToConstant.Local
 // ReSharper disable MemberCanBePrivate.Global
@@ -80,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        public void AddCommand<TParam, TResult> (string name, string domain, Func<Command<TParam>, TResult> method) {
+        protected void AddCommand<TParam, TResult> (string name, string domain, Func<Command<TParam>, TResult> method) {
             AddCommandHandler (name, domain, new CommandHandler<TParam, TResult> (method));
         }
         
@@ -91,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        public void AddCommandAsync<TParam, TResult> (string name, string domain, Func<Command<TParam>, Task<TResult>> method) {
+        protected void AddCommandAsync<TParam, TResult> (string name, string domain, Func<Command<TParam>, Task<TResult>> method) {
             AddCommandHandlerAsync (name, domain, new CommandHandler<TParam, Task<TResult>> (method));
         }
        
@@ -109,10 +108,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="handlerClass">the instance of class containing command handler methods.
         ///     Commonly the instance of a <see cref="TaskHandler"/></param>
         /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" to add commands without prefix</param>
-        public void AddCommandHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
+        protected void AddCommandHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
         {
             var type                = handlerClass.GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
+            if (handlers == null)
+                return;
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
             foreach (var handler in handlers) {

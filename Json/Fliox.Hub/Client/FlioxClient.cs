@@ -40,12 +40,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                         GetSyncCount()  => _intern.syncCount;
         
-        public readonly     DatabaseCommands            db;
-        public readonly     HostCommands                host;
-        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
 
+        // --- commands
+        /// contains commands related to the database
+        public readonly     DatabaseCommands            db;
+        /// contains commands related to the host
+        public readonly     HostCommands                host;
 
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/>.

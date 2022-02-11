@@ -34,11 +34,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly EntitySet <string, Employee>    employees;
         public readonly EntitySet <string, TestType>    types;
         
-        public PocStore(FlioxHub hub): base (hub) { }
+        
+        public PocStore(FlioxHub hub): base (hub) {
+            test = new TestCommands(this);
+        }
         
         // --- commands
-        [Fri.Command(Name =        "TestCommand")]
-        public CommandTask<bool>    Test (TestCommand command)  => SendCommand<TestCommand, bool>("TestCommand", command);
+        public readonly TestCommands    test;
+        [Fri.Command(Name =            "TestCommand")]
+        public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand", param);
+        public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>("SyncCommand",   param);
+        public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>("AsyncCommand",  param);
     }
 
     // ------------------------------ models ------------------------------
@@ -149,6 +155,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     // ------------------------------ command params / results ------------------------------
+    public class TestCommands : HubCommands
+    {
+        public TestCommands(FlioxClient client) : base(client) { }
+        
+        // --- commands
+        public CommandTask<string>    Command1 (string param)  => SendCommand<string, string>("test.Command1", param);
+        public CommandTask<string>    Command2 (string param)  => SendCommand<string, string>("test.Command2", param);
+    }
+    
     public class TestCommand {
         public          string  text;
 
