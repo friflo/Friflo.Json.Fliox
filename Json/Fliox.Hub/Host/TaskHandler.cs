@@ -50,24 +50,24 @@ namespace Friflo.Json.Fliox.Hub.Host
         public TaskHandler () {
             if (_oldStyleUsage) {
                 // --- db.*
-                AddCommandHandler       (StdCommand.DbEcho,         new CommandHandler<JsonValue, JsonValue>         (Echo));
-                AddCommandHandlerAsync  (StdCommand.DbContainers,   new CommandHandler<Empty,     Task<DbContainers>>(Containers));
-                AddCommandHandler       (StdCommand.DbCommands,     new CommandHandler<Empty,     DbCommands>        (Commands));
-                AddCommandHandler       (StdCommand.DbSchema,       new CommandHandler<Empty,     DbSchema>          (Schema));
-                AddCommandHandlerAsync  (StdCommand.DbStats,        new CommandHandler<string,    Task<DbStats>>     (Stats));
+                AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue, JsonValue>         (Echo));
+                AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,     Task<DbContainers>>(Containers));
+                AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,     DbCommands>        (Commands));
+                AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,     DbSchema>          (Schema));
+                AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,    Task<DbStats>>     (Stats));
                 // --- host.*
-                AddCommandHandler       (StdCommand.HostDetails,    new CommandHandler<Empty,   HostDetails>       (Details));
-                AddCommandHandlerAsync  (StdCommand.HostCluster,    new CommandHandler<Empty,   Task<HostCluster>> (Cluster));
+                AddCommandHandler       (Std.HostDetails,    new CommandHandler<Empty,   HostDetails>       (Details));
+                AddCommandHandlerAsync  (Std.HostCluster,    new CommandHandler<Empty,   Task<HostCluster>> (Cluster));
             }
             // --- db.*
-            AddCommand      <JsonValue,   JsonValue>    (StdCommand.DbEcho,         Echo);
-            AddCommandAsync <Empty,       DbContainers> (StdCommand.DbContainers,   Containers);
-            AddCommand      <Empty,       DbCommands>   (StdCommand.DbCommands,     Commands);
-            AddCommand      <Empty,       DbSchema>     (StdCommand.DbSchema,       Schema);
-            AddCommandAsync <string,      DbStats>      (StdCommand.DbStats,        Stats);
+            AddCommand      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
+            AddCommandAsync <Empty,       DbContainers> (Std.Containers,   Containers);
+            AddCommand      <Empty,       DbCommands>   (Std.Commands,     Commands);
+            AddCommand      <Empty,       DbSchema>     (Std.Schema,       Schema);
+            AddCommandAsync <string,      DbStats>      (Std.Stats,        Stats);
             // --- host.*
-            AddCommand      <Empty,       HostDetails>  (StdCommand.HostDetails,    Details);
-            AddCommandAsync <Empty,       HostCluster>  (StdCommand.HostCluster,   Cluster);
+            AddCommand      <Empty,       HostDetails>  (Std.HostDetails,    Details);
+            AddCommandAsync <Empty,       HostCluster>  (Std.HostCluster,   Cluster);
         }
         
         /// <summary>

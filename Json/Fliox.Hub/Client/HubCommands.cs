@@ -22,17 +22,18 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     // ---------------------------------- standard commands ----------------------------------
-    public static class StdCommand  {
+    /// Should not be public 
+    internal static class Std  {
         // --- db.*
-        public const string DbEcho          = "db.Echo";
-        public const string DbContainers    = "db.Containers";
-        public const string DbCommands      = "db.Commands";
-        public const string DbSchema        = "db.Schema";
-        public const string DbStats         = "db.Stats";
+        public const string Echo        = "db.Echo";
+        public const string Containers  = "db.Containers";
+        public const string Commands    = "db.Commands";
+        public const string Schema      = "db.Schema";
+        public const string Stats       = "db.Stats";
 
         // --- host.*
-        public const string HostDetails     = "host.Details";
-        public const string HostCluster     = "host.Cluster";
+        public const string HostDetails = "host.Details";
+        public const string HostCluster = "host.Cluster";
     }
     
     public class DatabaseCommands : HubCommands
@@ -43,11 +44,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal CommandTask<JsonValue>     Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
         // --- db.*
-        public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (StdCommand.DbEcho, param);
-        public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(StdCommand.DbContainers,new JsonValue());
-        public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (StdCommand.DbCommands,  new JsonValue());
-        public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (StdCommand.DbSchema,    new JsonValue());
-        public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (StdCommand.DbStats,     new JsonValue());
+        public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (Std.Echo, param);
+        public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(Std.Containers,new JsonValue());
+        public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (Std.Commands,  new JsonValue());
+        public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (Std.Schema,    new JsonValue());
+        public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,     new JsonValue());
     }
     
     public class HostCommands : HubCommands
@@ -55,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         protected internal HostCommands(FlioxClient client) : base(client) { }
         
         // --- host.*
-        public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (StdCommand.HostDetails,  new JsonValue());
-        public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (StdCommand.HostCluster,  new JsonValue());
+        public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,  new JsonValue());
+        public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,  new JsonValue());
     }
 }
