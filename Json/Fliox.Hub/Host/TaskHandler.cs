@@ -49,15 +49,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public TaskHandler () {
             if (_oldStyleUsage) {
+                // keep implementation to show how to add command handler using a CommandHandler<,>
                 // --- database
-                AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue, JsonValue>         (Echo));
-                AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,     Task<DbContainers>>(Containers));
-                AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,     DbCommands>        (Commands));
-                AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,     DbSchema>          (Schema));
-                AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,    Task<DbStats>>     (Stats));
+                AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue,JsonValue>          (Echo));
+                AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,    Task<DbContainers>> (Containers));
+                AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,    DbCommands>         (Commands));
+                AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,    DbSchema>           (Schema));
+                AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,   Task<DbStats>>      (Stats));
                 // --- host
-                AddCommandHandler       (Std.HostDetails,    new CommandHandler<Empty,   HostDetails>       (Details));
-                AddCommandHandlerAsync  (Std.HostCluster,    new CommandHandler<Empty,   Task<HostCluster>> (Cluster));
+                AddCommandHandler       (Std.HostDetails,  new CommandHandler<Empty,    HostDetails>        (Details));
+                AddCommandHandlerAsync  (Std.HostCluster,  new CommandHandler<Empty,    Task<HostCluster>>  (Cluster));
+                return;
             }
             // --- database
             AddCommand      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
@@ -66,8 +68,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommand      <Empty,       DbSchema>     (Std.Schema,       Schema);
             AddCommandAsync <string,      DbStats>      (Std.Stats,        Stats);
             // --- host
-            AddCommand      <Empty,       HostDetails>  (Std.HostDetails,    Details);
-            AddCommandAsync <Empty,       HostCluster>  (Std.HostCluster,   Cluster);
+            AddCommand      <Empty,       HostDetails>  (Std.HostDetails,  Details);
+            AddCommandAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
         }
         
         /// <summary>
