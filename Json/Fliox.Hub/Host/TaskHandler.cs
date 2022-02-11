@@ -104,9 +104,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        protected void AddCommandHandlers(string domain)
+        /// <param name="handlerClass">the class containing command handler methods</param>
+        /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" when using no prefix</param>
+        public void AddCommandHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
         {
-            var type                = GetType();
+            var type                = handlerClass.GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
@@ -115,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 genericArgs[0]      = handler.valueType;
                 genericArgs[1]      = handler.resultType;
                 var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
-                var firstArgument   = handler.method.IsStatic ? null : this;
+                var firstArgument   = handler.method.IsStatic ? null : handlerClass;
                 var handlerDelegate = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
                 constructorParams[0]    = handler.name;
@@ -129,7 +131,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
                 }
                 var commandCallback = (CommandCallback)instance;
-                var name = string.IsNullOrEmpty(domain) ? handler.name : $"{domain}.{handler.name}";
+                var name = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
                 commands.Add(name, commandCallback);
             }
         }
