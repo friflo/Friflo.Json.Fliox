@@ -9,8 +9,11 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
     /// Used to group commands by a single class. <br/>
+    /// <br/>
+    /// Command methods can be added directly to a <see cref="FlioxClient"/> sub class.
+    /// When adding many commands it can cause confusion between <see cref="FlioxClient"/> own methods and the command methods.
+    /// <br/>
     /// The intention is to use a sub class of <see cref="HubCommands"/> as a field in a class extending <see cref="FlioxClient"/>.
-    /// <br/> 
     /// This establish differentiation between <see cref="FlioxClient"/> own methods and commands added
     /// to a <see cref="FlioxClient"/> sub class.
     /// <code>
