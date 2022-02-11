@@ -45,22 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
-        private static bool _oldStyleUsage = false;
-        
         public TaskHandler () {
-            if (_oldStyleUsage) {
-                // keep implementation to show how to add command handler using a CommandHandler<,>
-                // --- database
-                AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue,JsonValue>          (Echo));
-                AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,    Task<DbContainers>> (Containers));
-                AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,    DbCommands>         (Commands));
-                AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,    DbSchema>           (Schema));
-                AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,   Task<DbStats>>      (Stats));
-                // --- host
-                AddCommandHandler       (Std.HostDetails,  new CommandHandler<Empty,    HostDetails>        (Details));
-                AddCommandHandlerAsync  (Std.HostCluster,  new CommandHandler<Empty,    Task<HostCluster>>  (Cluster));
-                return;
-            }
+            // AddUsingCommandHandler();
             // add each command handler individually
             // --- database
             AddCommand      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
@@ -71,6 +57,20 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- host
             AddCommand      <Empty,       HostDetails>  (Std.HostDetails,  Details);
             AddCommandAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
+        }
+        
+        //  ReSharper disable once UnusedMember.Local
+        /// keep implementation to show how to add command handler using new CommandHandler()
+        private void AddUsingCommandHandler() {
+            // --- database
+            AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue,JsonValue>          (Echo));
+            AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,    Task<DbContainers>> (Containers));
+            AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,    DbCommands>         (Commands));
+            AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,    DbSchema>           (Schema));
+            AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,   Task<DbStats>>      (Stats));
+            // --- host
+            AddCommandHandler       (Std.HostDetails,  new CommandHandler<Empty,    HostDetails>        (Details));
+            AddCommandHandlerAsync  (Std.HostCluster,  new CommandHandler<Empty,    Task<HostCluster>>  (Cluster));
         }
         
         /// <summary>
