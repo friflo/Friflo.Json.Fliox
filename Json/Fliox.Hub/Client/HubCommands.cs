@@ -7,7 +7,30 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    // currently concept validation only
+    /// <summary>
+    /// Used to group commands by a single class. <br/>
+    /// The intention is to use a sub class of <see cref="HubCommands"/> as a field in a class extending <see cref="FlioxClient"/>.
+    /// <br/> 
+    /// This establish differentiation between <see cref="FlioxClient"/> own methods and commands added
+    /// to a <see cref="FlioxClient"/> sub class.
+    /// <code>
+    ///     public class MyStore : FlioxClient
+    ///     {
+    ///         public MyCommands test;
+    ///    
+    ///         public MyStore(FlioxHub hub) : base(hub) {
+    ///             test = new MyCommands(this);
+    ///         }
+    ///     }
+    ///
+    ///     public class MyCommands : HubCommands
+    ///     {
+    ///         public MyCommands(FlioxClient client) : base(client) { }
+    ///    
+    ///         public CommandTask &lt;string&gt; Cmd (string param) => SendCommand &lt;string, string&gt;("test.Cmd", param);
+    ///     } 
+    /// </code>
+    /// </summary>
     public class HubCommands
     {
         private readonly    FlioxClient client;
@@ -21,20 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    // ---------------------------------- standard commands ----------------------------------
-    /// Should not be public 
-    internal static class Std  {
-        // --- db.*
-        public const string Echo        = "db.Echo";
-        public const string Containers  = "db.Containers";
-        public const string Commands    = "db.Commands";
-        public const string Schema      = "db.Schema";
-        public const string Stats       = "db.Stats";
-
-        // --- host.*
-        public const string HostDetails = "host.Details";
-        public const string HostCluster = "host.Cluster";
-    }
+    // ---------------------------------- standard database & host commands ----------------------------------
     
     /// <summary>
     /// Contains commands addressed to the database. Its commands are prefixed with
@@ -66,5 +76,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- commands
         public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,  new JsonValue());
         public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,  new JsonValue());
+    }
+    
+    /// Should not be public 
+    internal static class Std  {
+        // --- db.*
+        public const string Echo        = "db.Echo";
+        public const string Containers  = "db.Containers";
+        public const string Commands    = "db.Commands";
+        public const string Schema      = "db.Schema";
+        public const string Stats       = "db.Stats";
+
+        // --- host.*
+        public const string HostDetails = "host.Details";
+        public const string HostCluster = "host.Cluster";
     }
 }
