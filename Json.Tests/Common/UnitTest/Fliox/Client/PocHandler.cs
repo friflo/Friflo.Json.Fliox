@@ -14,10 +14,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private readonly EmptyCommandsHandler   empty   = new EmptyCommandsHandler();
         
         public PocHandler() {
-            AddCommandHandlers(this, "");
-            AddCommandHandlers(test, "test.");
-            AddCommandHandlers(test, "empty.");
+            // add all command handlers of the passed handler classes
+            AddCommandHandlers(this,    "");
+            AddCommandHandlers(test,    "test.");
+            AddCommandHandlers(empty,   "empty.");
             
+            // add command handlers individually
             AddCommand      <string,string>("SyncCommand",  TestCommandsHandler2.SyncCommand);
             AddCommandAsync <string,string>("AsyncCommand", TestCommandsHandler2.AsyncCommand);
         }

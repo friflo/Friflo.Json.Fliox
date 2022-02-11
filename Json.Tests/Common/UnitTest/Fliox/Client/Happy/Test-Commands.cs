@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("MemoryDatabase",  catalog0.databaseType);
             
             var commandsResult = commands.Result;
-            AreEqual(14,                commandsResult.commands.Length);
+            AreEqual(12,                commandsResult.commands.Length);
         }
     }
 }
