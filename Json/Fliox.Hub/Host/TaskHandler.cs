@@ -61,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 AddCommandHandlerAsync  (Std.HostCluster,  new CommandHandler<Empty,    Task<HostCluster>>  (Cluster));
                 return;
             }
+            // add each command handler individually
             // --- database
             AddCommand      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
             AddCommandAsync <Empty,       DbContainers> (Std.Containers,   Containers);
@@ -140,13 +141,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static JsonValue Echo (Command<JsonValue> command) {
+        // ------------------------------ command handler methods ------------------------------
+        private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonParam;
         }
         
-        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static HostDetails Details (Command<Empty> command) {
+        private static HostDetails Details (Command<Empty> command) {
             var hub     = command.Hub;
             var details = new HostDetails {
                 version     = hub.Version,
@@ -157,30 +157,27 @@ namespace Friflo.Json.Fliox.Hub.Host
             return details;
         }
 
-        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static async Task<DbContainers> Containers (Command<Empty> command) {
+        private static async Task<DbContainers> Containers (Command<Empty> command) {
             var database        = command.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
             dbContainers.id     = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbContainers;
         }
         
-        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static DbCommands Commands (Command<Empty> command) {
+        private static DbCommands Commands (Command<Empty> command) {
             var database        = command.Database;  
             var dbCommands      = database.GetDbCommands();
             dbCommands.id       = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbCommands;
         }
         
-        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static DbSchema Schema (Command<Empty> command) {
+        private static DbSchema Schema (Command<Empty> command) {
             var database        = command.Database;  
             var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        internal static async Task<DbStats> Stats (Command<string> command) {
+        private static async Task<DbStats> Stats (Command<string> command) {
             var database        = command.Database;
             string[] containerNames;
             var containerName   = command.Param;
@@ -204,12 +201,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        /// must not be private so <see cref="TaskHandlerUtils.GetHandlers"/> finds it
-        internal static async Task<HostCluster> Cluster (Command<Empty> command) {
+        private static async Task<HostCluster> Cluster (Command<Empty> command) {
             var hub = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }
         
+        // --- internal API ---
         internal bool TryGetCommand(string name, out CommandCallback command) {
             return commands.TryGetValue(name, out command);
         }
