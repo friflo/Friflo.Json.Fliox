@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"Hub", schemaName, schemaSet.label}, $"{schemaSet.label} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
-                sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.type} files</a>");
+                sb.AppendLine($"<a href='directory' target='_blank'>files list</a>");
                 sb.AppendLine("<ul>");
                 var target = schemaSet.contentType == "text/html" ? "" : " target='_blank'";
                 foreach (var file in schemaSet.files.Keys) {
