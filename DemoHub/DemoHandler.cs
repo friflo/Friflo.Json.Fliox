@@ -6,7 +6,7 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
     /// <see cref="DemoHandler"/> is a <see cref="TaskHandler"/> sub class used to implement custom database commands
-    /// declared by the <see cref="DemoStore"/>.
+    /// executed at the host and declared by the <see cref="DemoStore"/>.
     /// <br/>
     /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/>.
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
