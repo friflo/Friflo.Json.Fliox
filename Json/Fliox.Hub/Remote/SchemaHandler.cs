@@ -98,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var options             = new JsonTypeOptions(typeSchema);
 
             var htmlGenerator       = HtmlGenerator.Generate(options);
-            var htmlSchema          = new SchemaSet (writer, "HTML",        "text/html",        htmlGenerator.files);
-            result.Add("html",       htmlSchema);
+            var htmlSchema          = new SchemaSet (writer, "html", "HTML",        "text/html",        htmlGenerator.files);
+            result.Add(htmlSchema.type,       htmlSchema);
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
@@ -108,20 +108,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
             }
             var fullSchema          = writer.Write(jsonSchemaMap);
-            var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
-            result.Add("json-schema",  jsonSchema);
+            var jsonSchema          = new SchemaSet (writer, "json-schema", "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
+            result.Add(jsonSchema.type,  jsonSchema);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet (writer, "Typescript",  "text/plain",       typescriptGenerator.files);
-            result.Add("typescript",   typescriptSchema);
+            var typescriptSchema    = new SchemaSet (writer, "typescript", "Typescript",  "text/plain",       typescriptGenerator.files);
+            result.Add(typescriptSchema.type,   typescriptSchema);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet (writer, "C#",          "text/plain",       csharpGenerator.files);
-            result.Add("csharp",       csharpSchema);
+            var csharpSchema        = new SchemaSet (writer, "csharp", "C#",          "text/plain",       csharpGenerator.files);
+            result.Add(csharpSchema.type,       csharpSchema);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
-            result.Add("kotlin",       kotlinSchema);
+            var kotlinSchema        = new SchemaSet (writer, "kotlin", "Kotlin",      "text/plain",       kotlinGenerator.files);
+            result.Add(kotlinSchema.type,       kotlinSchema);
 
             foreach (var generator in generators) {
                 var generatorOpt = new GeneratorOptions(generator.type, generator.name, options.schema, options.replacements, options.separateTypes, writer);
@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 HtmlHeader(sb, new []{"Hub", schemaName}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
-                    sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
+                    sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.label}</a></li>");
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
@@ -201,9 +201,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (fileName == "index.html") {
                 var zipFile = $"{storeName}{schemaSet.zipName}";
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"Hub", schemaName, schemaSet.name}, $"{schemaSet.name} files schema: <b>{storeName}</b>", handler);
+                HtmlHeader(sb, new[]{"Hub", schemaName, schemaSet.label}, $"{schemaSet.label} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
-                sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
+                sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.type} files</a>");
                 sb.AppendLine("<ul>");
                 var target = schemaSet.contentType == "text/html" ? "" : " target='_blank'";
                 foreach (var file in schemaSet.files.Keys) {
@@ -290,7 +290,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
 
     public sealed class SchemaSet {
-        public   readonly   string                      name;
+        public   readonly   string                      type;           // csharp, json-schema, ...
+        public   readonly   string                      label;          // C#,     JSON Schema, ...
         public   readonly   string                      contentType;
         public   readonly   Dictionary<string, string>  files;
         public   readonly   string                      fullSchema;
@@ -305,12 +306,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return zipArchive;
         }
 
-        public SchemaSet (ObjectWriter writer, string name, string contentType, Dictionary<string, string> files, string fullSchema = null) {
-            this.name           = name;
+        public SchemaSet (ObjectWriter writer, string type, string label, string contentType, Dictionary<string, string> files, string fullSchema = null) {
+            this.type           = type;
+            this.label          = label;
             this.contentType    = contentType;
             this.files          = files;
             this.fullSchema     = fullSchema;
-            zipName             = $".{name}.zip";
+            zipName             = $".{type}.zip";
             directory           = writer.Write(files.Keys.ToList());
         }
     }
