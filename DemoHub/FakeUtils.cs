@@ -130,18 +130,10 @@ namespace Friflo.Json.Fliox.DemoHub
             var last        = FakeShift * (fakeCounter + 1);
             result.info     = $"use container filter: o.id >= {first} && o.id < {last}";
             result.added    = added;
-            var addResults  = fake.addResults;
-            if (addResults.HasValue && addResults.Value == false) {
-                result.orders       = null;
-                result.customers    = null;
-                result.articles     = null;
-                result.producers    = null;
-                result.employees    = null;
-            }
             return result;
         }
-        
-        const long FakeShift = 100_000_000L;
+
+        private const long FakeShift = 100_000_000L;
         
         static long NewId(int fakeCounter, int localCounter, short type) {
             var id = FakeShift * fakeCounter + 10 * localCounter + type;

@@ -59,6 +59,14 @@ namespace Friflo.Json.Fliox.DemoHub
             
             await demoStore.SyncTasks();
             
+            var addResults  = command.Param.addResults;
+            if (addResults.HasValue && addResults.Value == false) {
+                result.orders       = null;
+                result.customers    = null;
+                result.articles     = null;
+                result.producers    = null;
+                result.employees    = null;
+            }
             return result;
         }
     }
