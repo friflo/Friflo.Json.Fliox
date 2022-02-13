@@ -320,7 +320,7 @@ export class EntityEditor
         const keyName           = EntityEditor.getEntityKeyName(type as JsonType);
         const ids               = entities.map(entity => entity[keyName]) as string[];
         writeResult.innerHTML   = 'save <span class="spinner"></span>';
-        const requestIds        = Array.isArray(value) ? ids : ids[0];
+        const requestIds        = Array.isArray(value) ? null : ids[0];
         const response          = await App.restRequest("PUT", jsonValue, database, container, requestIds, null);
         if (!response.ok) {
             const error = await response.text();
