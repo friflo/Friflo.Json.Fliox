@@ -114,4 +114,28 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(result);
         }
     }
+    
+    internal class MemoryContainerEnumerator : ContainerEnumerator
+    {
+        private readonly Dictionary<JsonKey,JsonValue>.Enumerator enumerator;
+        
+        internal MemoryContainerEnumerator(Dictionary<JsonKey, JsonValue> map) {
+            enumerator = map.GetEnumerator();
+        }
+
+        public override bool MoveNext() {
+            return enumerator.MoveNext();
+        }
+
+        public override JsonKey Current => enumerator.Current.Key;
+
+        public override void Dispose() {
+            enumerator.Dispose();
+        }
+        
+        // --- ContainerEnumerator
+        public override JsonValue CurrentValue => enumerator.Current.Value;
+        
+        public override Task<JsonValue> CurrentValueAsync() => throw new NotImplementedException();
+    }
 }

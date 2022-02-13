@@ -157,14 +157,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case AggregateType.count:
                     // count all?
                     if (filter.IsTrue) {
-                        var options = new EnumerationOptions {
-                            MatchCasing             = MatchCasing.CaseSensitive,
-                            MatchType               = MatchType.Simple,
-                            RecurseSubdirectories   = false
-                        };
-                        var files = Directory.EnumerateFiles(folder, "*.json", options);
+                        var files = new FileContainerEnumerator (folder);
                         var count = 0;
-                        foreach (var _ in files) { count++; }
+                        while (files.MoveNext()) { count++; }
                         return new AggregateEntitiesResult { container = command.container, value = count };
                     }
                     var result = await CountEntities(command, messageContext).ConfigureAwait(false);
@@ -253,7 +248,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        private static async Task<JsonValue> ReadText(string filePath) {
+        internal static async Task<JsonValue> ReadText(string filePath) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 return await EntityUtils.ReadToEnd(sourceStream).ConfigureAwait(false);
             }
@@ -261,6 +256,47 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static void DeleteFile(string filePath) {
             File.Delete(filePath);
+        }
+    }
+    
+    internal class FileContainerEnumerator : ContainerEnumerator
+    {
+        private readonly string                 folder;
+        private readonly int                    folderLen;
+        private readonly IEnumerator<string>    enumerator;
+            
+        internal FileContainerEnumerator (string folder) {
+            this.folder = folder;
+            folderLen   = folder.Length;
+            var options = new EnumerationOptions {
+                MatchCasing             = MatchCasing.CaseSensitive,
+                MatchType               = MatchType.Simple,
+                RecurseSubdirectories   = false
+            };
+            enumerator = Directory.EnumerateFiles(folder, "*.json", options).GetEnumerator();
+        }
+            
+        public override bool MoveNext() {
+            return enumerator.MoveNext();
+        }
+
+        public override JsonKey Current { get {
+            var fileName = enumerator.Current;
+            var len = fileName.Length;
+            var id = fileName.Substring(folderLen, len - folderLen - ".json".Length);
+            return new JsonKey(id);
+        } }
+        
+        public override void Dispose() {
+            enumerator.Dispose();
+        }
+        
+        // --- ContainerEnumerator
+        public override JsonValue CurrentValue => throw new NotImplementedException();
+        
+        public override async Task<JsonValue> CurrentValueAsync() { 
+            var path    = enumerator.Current;
+            return await FileContainer.ReadText(path).ConfigureAwait(false);
         }
     }
 }
