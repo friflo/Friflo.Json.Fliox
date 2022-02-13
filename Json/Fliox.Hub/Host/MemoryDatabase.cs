@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     public sealed class MemoryContainer : EntityContainer
     {
-        private  readonly   Dictionary<JsonKey, JsonValue>  keyValues = new Dictionary<JsonKey, JsonValue>(JsonKey.Equality);
+        private  readonly   ConcurrentDictionary<JsonKey, JsonValue>  keyValues = new ConcurrentDictionary<JsonKey, JsonValue>(JsonKey.Equality);
         
         public   override   bool                            Pretty      { get; }
         
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys = command.ids;
             if (keys != null && keys.Count > 0) {
                 foreach (var key in keys) {
-                    keyValues.Remove(key);
+                    keyValues.TryRemove(key, out _);
                 }
             }
             var all = command.all;
@@ -117,9 +117,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     internal class MemoryContainerEnumerator : ContainerEnumerator
     {
-        private Dictionary<JsonKey,JsonValue>.Enumerator    enumerator;
+        private readonly IEnumerator<KeyValuePair<JsonKey, JsonValue>>    enumerator;
         
-        internal MemoryContainerEnumerator(Dictionary<JsonKey, JsonValue> map) {
+        internal MemoryContainerEnumerator(ConcurrentDictionary<JsonKey, JsonValue> map) {
             enumerator = map.GetEnumerator();
         }
 
