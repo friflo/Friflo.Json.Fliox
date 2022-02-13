@@ -79,9 +79,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var ids     = new MemoryContainerEnumerator(keyValues);   // TAG_PERF
-            var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
-            return result;
+            var keyValueEnum = new MemoryContainerEnumerator(keyValues);   // TAG_PERF
+            try {
+                var result  = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
+                return result;
+            }
+            finally {
+                keyValueEnum.Dispose();
+            }
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {

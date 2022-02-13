@@ -146,9 +146,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var ids     = new FileContainerEnumerator(folder);
-            var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
-            return result;
+            var keyValueEnum = new FileContainerEnumerator(folder);
+            try {
+                var result = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
+                return result;
+            }
+            finally {
+                keyValueEnum.Dispose();
+            }
         }
         
         public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
@@ -157,10 +162,15 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case AggregateType.count:
                     // count all?
                     if (filter.IsTrue) {
-                        var files = new FileContainerEnumerator (folder);
-                        var count = 0;
-                        while (files.MoveNext()) { count++; }
-                        return new AggregateEntitiesResult { container = command.container, value = count };
+                        var keyValueEnum = new FileContainerEnumerator (folder);
+                        try {
+                            var count = 0;
+                            while (keyValueEnum.MoveNext()) { count++; }
+                            return new AggregateEntitiesResult { container = command.container, value = count };
+                        }
+                        finally {
+                            keyValueEnum.Dispose();
+                        }
                     }
                     var result = await CountEntities(command, messageContext).ConfigureAwait(false);
                     return result;
@@ -225,6 +235,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             return error;
         }
         
+        [ObsoleteAttribute("since using FileContainerEnumerator", true)]
+        // ReSharper disable once UnusedMember.Local
         private static HashSet<JsonKey> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var ids = Helper.CreateHashSet(fileNames.Length, JsonKey.Equality);
@@ -261,7 +273,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     internal class FileContainerEnumerator : ContainerEnumerator
     {
-        private readonly string                 folder;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly string                 folder; // keep there for debugging
         private readonly int                    folderLen;
         private readonly IEnumerator<string>    enumerator;
             
