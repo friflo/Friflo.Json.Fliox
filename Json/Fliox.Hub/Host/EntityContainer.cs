@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
+        /* protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
             var readIds         = new ReadEntitiesSet { ids = ids, keyName = command.keyName };
             var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
@@ -188,18 +188,22 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             var result = FilterEntities(command, readEntities.entities, messageContext);
             return result;
-        }
+        } */
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected QueryEntitiesResult FilterEntities(QueryEntities command, Dictionary <JsonKey, EntityValue> entities, MessageContext messageContext) {
+        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, ContainerEnumerator entities, MessageContext messageContext) {
             var jsonFilter      = new JsonFilter(command.filterContext); // filter can be reused
             var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             using (var pooled = messageContext.pool.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooled.instance;
-                foreach (var entityPair in entities) {
-                    var key     = entityPair.Key;
-                    var value   = entityPair.Value;
-                    var json    = value.Json;   // JSON was invalid. Error != null
+                while (entities.MoveNext()) {
+                    var         key = entities.Current;
+                    JsonValue   json;
+                    if (entities.IsAsync) {
+                        json = await entities.CurrentValueAsync().ConfigureAwait(false);
+                    } else {
+                        json = entities.CurrentValue; // JSON was invalid. Error != null    
+                    }
                     if (json.IsNull())
                         continue;
                     var match = evaluator.Filter(json, jsonFilter, out string filterError);

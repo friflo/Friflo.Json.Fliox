@@ -180,7 +180,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             }
             EntityUtils.AddEntitiesToMap(documents, "id", command.isIntKey, command.keyName, entities, messageContext);
             if (filterByClient) {
-                return FilterEntities(command, entities, messageContext);
+                throw new NotImplementedException();
+                // return FilterEntities(command, entities, messageContext);
             }
             return new QueryEntitiesResult{entities = entities};
         }

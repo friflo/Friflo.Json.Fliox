@@ -23,7 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public abstract void Dispose();
         
         // ---
-        public abstract JsonValue       CurrentValue { get; }
+        public abstract bool            IsAsync             { get; }
+        public abstract JsonValue       CurrentValue        { get; }
         public abstract Task<JsonValue> CurrentValueAsync();
     }
 }

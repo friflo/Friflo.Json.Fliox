@@ -146,8 +146,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var ids     = GetIds(folder);
-            var result  = await FilterEntityIds(command, ids, messageContext).ConfigureAwait(false);
+            var ids     = new FileContainerEnumerator(folder);
+            var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }
         
@@ -292,9 +292,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // --- ContainerEnumerator
-        public override JsonValue CurrentValue => throw new NotImplementedException();
+        public override bool        IsAsync         => true;
+        public override JsonValue   CurrentValue    => throw new NotImplementedException();
         
-        public override async Task<JsonValue> CurrentValueAsync() { 
+        public override async       Task<JsonValue> CurrentValueAsync() { 
             var path    = enumerator.Current;
             return await FileContainer.ReadText(path).ConfigureAwait(false);
         }
