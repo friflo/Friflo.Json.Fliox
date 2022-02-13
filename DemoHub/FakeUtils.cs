@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary>
     internal class FakeUtils
     {
-        private int fakeCounter = 0;
+        private int fakeCounter = 1;
 
         
         internal FakeUtils() {
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DemoHub
             
             if (employees > 0) {
                 var faker = new Faker<Employee>()
-                    .RuleFor(e => e.id,         f => $"employee-{fakeCounter}.{employeeCounter++}")
+                    .RuleFor(e => e.id,         f => NewId(fakeCounter, employeeCounter++, 3))
                     .RuleFor(e => e.firstName,  f => f.Name.FirstName())
                     .RuleFor(e => e.lastName,   f => f.Name.LastName());
                 
@@ -57,12 +57,12 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (producers > 0) {
                 var faker = new Faker<Producer>()
-                    .RuleFor(p => p.id,             f => $"producer-{fakeCounter}.{producerCounter++}")
+                    .RuleFor(p => p.id,             f => NewId(fakeCounter, producerCounter++, 5))
                     .RuleFor(p => p.name,           f => f.Company.CompanyName())
                     .RuleFor(p => p.employeeList,   f => {
                         if (employees == 0)
                             return null;
-                        return new List<Ref<string, Employee>> { f.PickRandom(result.employees) };
+                        return new List<Ref<Guid, Employee>> { f.PickRandom(result.employees) };
                     });
                 
                 result.producers = new Producer[producers];
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (articles > 0) {
                 var faker = new Faker<Article>()
-                    .RuleFor(a => a.id,         f => $"article-{fakeCounter}.{articleCounter++}")
+                    .RuleFor(a => a.id,         f => NewId(fakeCounter, articleCounter++, 1))
                     .RuleFor(a => a.name,       f => f.Commerce.ProductName())
                     .RuleFor(a => a.producer,   f => {
                         if (producers == 0)
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (customers > 0) {
                 var faker = new Faker<Customer>()
-                    .RuleFor(c => c.id,         f => $"customer-{fakeCounter}.{customerCounter++}")
+                    .RuleFor(c => c.id,         f => NewId(fakeCounter, customerCounter++, 2))
                     .RuleFor(c => c.name,       f => f.Company.CompanyName());
 
                 result.customers = new Customer[customers];
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.DemoHub
                     item.amount     = f.Random.Number(1, 10);
                 });
                 var faker = new Faker<Order>()
-                    .RuleFor(o => o.id,         f => $"order-{fakeCounter}.{orderCounter++}")
+                    .RuleFor(o => o.id,         f => NewId(fakeCounter, orderCounter++, 4))
                     .RuleFor(o => o.created,    f => f.Date.Past())
                     .RuleFor(o => o.customer,   f => {
                         if (customers == 0)
@@ -126,9 +126,18 @@ namespace Friflo.Json.Fliox.DemoHub
                 producers   = result.producers? .Length,
                 employees   = result.employees? .Length,
             };
-            result.info     = $"use container filter: o.id.Contains('-{fakeCounter}.')";
+            var fakePrefix  = fakeCounter.ToString("D8");
+            result.info     = $"use container filter: o.id.StartsWith('{fakePrefix}-')";
             result.added    = added;
             return result;
+        }
+        
+        static Guid NewId(int fakeCounter, int localCounter, short type) {
+            var guid        = Guid.NewGuid();
+            var guidBytes   = guid.ToByteArray();
+            var last8Bytes  = new byte[8];
+            Buffer.BlockCopy(guidBytes, 8, last8Bytes, 0, 8);
+            return new Guid(fakeCounter, (short)localCounter, type, last8Bytes);
         }
     }
 }
