@@ -268,12 +268,16 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal FileContainerEnumerator (string folder) {
             this.folder = folder;
             folderLen   = folder.Length;
+#if !UNITY_2020_1_OR_NEWER
             var options = new EnumerationOptions {
                 MatchCasing             = MatchCasing.CaseSensitive,
                 MatchType               = MatchType.Simple,
                 RecurseSubdirectories   = false
             };
             enumerator = Directory.EnumerateFiles(folder, "*.json", options).GetEnumerator();
+#else
+            enumerator = Directory.EnumerateFiles(folder, "*.json", SearchOption.TopDirectoryOnly).GetEnumerator();
+#endif
         }
             
         public override bool MoveNext() {
