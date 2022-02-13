@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public  int?        articles;
         public  int?        producers;
         public  int?        employees;
+        public  bool?       addResults;
     }
     
     public class FakeResult {

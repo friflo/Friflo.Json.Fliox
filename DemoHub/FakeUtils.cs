@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary>
     internal class FakeUtils
     {
-        private int fakeCounter = 1;
+        private int fakeCounter = 0;
 
         
         internal FakeUtils() {
@@ -126,14 +126,25 @@ namespace Friflo.Json.Fliox.DemoHub
                 producers   = result.producers? .Length,
                 employees   = result.employees? .Length,
             };
-            var fakePrefix  = fakeCounter.ToString("D8");
-            result.info     = $"use container filter: o.id.StartsWith('{fakePrefix}-')";
+            var first       = FakeShift * fakeCounter;
+            var last        = FakeShift * (fakeCounter + 1);
+            result.info     = $"use container filter: o.id >= {first} && o.id < {last}";
             result.added    = added;
+            var addResults  = fake.addResults;
+            if (addResults.HasValue && addResults.Value == false) {
+                result.orders       = null;
+                result.customers    = null;
+                result.articles     = null;
+                result.producers    = null;
+                result.employees    = null;
+            }
             return result;
         }
         
+        const long FakeShift = 100_000_000L;
+        
         static long NewId(int fakeCounter, int localCounter, short type) {
-            var id        = 100 * fakeCounter + 10 * type + localCounter;
+            var id = FakeShift * fakeCounter + 10 * localCounter + type;
             return id;
         }
     }
