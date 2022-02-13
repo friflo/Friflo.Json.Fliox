@@ -157,7 +157,12 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case AggregateType.count:
                     // count all?
                     if (filter.IsTrue) {
-                        var files = Directory.EnumerateFiles(folder, "*.json");
+                        var options = new EnumerationOptions {
+                            MatchCasing             = MatchCasing.CaseSensitive,
+                            MatchType               = MatchType.Simple,
+                            RecurseSubdirectories   = false
+                        };
+                        var files = Directory.EnumerateFiles(folder, "*.json", options);
                         var count = 0;
                         foreach (var _ in files) { count++; }
                         return new AggregateEntitiesResult { container = command.container, value = count };
