@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DemoHub
                     .RuleFor(p => p.employeeList,   f => {
                         if (employees == 0)
                             return null;
-                        return new List<Ref<Guid, Employee>> { f.PickRandom(result.employees) };
+                        return new List<Ref<long, Employee>> { f.PickRandom(result.employees) };
                     });
                 
                 result.producers = new Producer[producers];
@@ -132,12 +132,9 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
         
-        static Guid NewId(int fakeCounter, int localCounter, short type) {
-            var guid        = Guid.NewGuid();
-            var guidBytes   = guid.ToByteArray();
-            var last8Bytes  = new byte[8];
-            Buffer.BlockCopy(guidBytes, 8, last8Bytes, 0, 8);
-            return new Guid(fakeCounter, (short)localCounter, type, last8Bytes);
+        static long NewId(int fakeCounter, int localCounter, short type) {
+            var id        = 100 * fakeCounter + 10 * type + localCounter;
+            return id;
         }
     }
 }
