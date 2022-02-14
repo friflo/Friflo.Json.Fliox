@@ -11,11 +11,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     public abstract class QueryEnumerator : IEnumerator<JsonKey>
     {
         private     bool            detached;
-        private     string          cursor;
         private     EntityContainer container;
-        
-        public      string          Cursor => cursor;
-        
+        public      string          Cursor  { get; private set; }
+
         public abstract bool MoveNext();
 
         public void Reset() {
@@ -30,6 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (detached)
                 return;
             DisposeEnumerator();
+            var cursor = Cursor;
             if (cursor != null) {
                 container.cursors.Remove(cursor);   
             }
@@ -46,12 +45,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public void Detach() {
-            detached        = true;
+            detached = true;
         }
         
         public void Detach(string cursor, EntityContainer container) {
             detached        = true;
-            this.cursor     = cursor;
+            Cursor          = cursor;
             this.container  = container;
         }
     }
