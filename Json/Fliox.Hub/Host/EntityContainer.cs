@@ -207,35 +207,37 @@ namespace Friflo.Json.Fliox.Hub.Host
                     result.Add(key, entry);
                     if (result.Count < maxCount)
                         continue;
-                    var cursor = StoreCursor(entities);
+                    var cursor = StoreCursor(entities, messageContext.User.userId);
                     return new QueryEntitiesResult{ entities = result, cursor = cursor };
                 }
             }
             return new QueryEntitiesResult{ entities = result };
         }
         
-        private string StoreCursor(QueryEnumerator enumerator) {
+        private string StoreCursor(QueryEnumerator enumerator, in JsonKey userId) {
             var cursor = enumerator.Cursor;
             if (cursor != null) {
                 enumerator.Detach();
                 return cursor;
             }
             cursor = Guid.NewGuid().ToString();
-            enumerator.Detach(cursor, this);
+            enumerator.Detach(cursor, this, userId);
             cursors.Add(cursor, enumerator);
             return cursor;
         }
         
-        protected bool FindCursor(string cursor, out QueryEnumerator enumerator, out CommandError error) {
+        protected bool FindCursor(string cursor, in JsonKey userId, out QueryEnumerator enumerator, out CommandError error) {
             if (cursor == null) {
                 enumerator  = null;
                 error       = null;
                 return true;
             }
             if (cursors.TryGetValue(cursor, out enumerator)) {
-                enumerator.Attach();
-                error = null;
-                return true;
+                if (enumerator.UserId.IsEqual(userId)) {
+                    enumerator.Attach();
+                    error = null;
+                    return true;
+                }
             }
             enumerator  = null;
             error       = new CommandError(TaskErrorResultType.InvalidTask, $"cursor '{cursor}' not found");

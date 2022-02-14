@@ -10,8 +10,11 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public abstract class QueryEnumerator : IEnumerator<JsonKey>
     {
+        /// A non detached enumerator free resources of its internal enumerator when calling <see cref="Dispose"/> 
         private     bool            detached;
         private     EntityContainer container;
+        /// Ensure a stored cursor can be accessed only by the user created this cursor
+        public      JsonKey         UserId  { get; private set; }
         public      string          Cursor  { get; private set; }
 
         public abstract bool MoveNext();
@@ -48,9 +51,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             detached = true;
         }
         
-        public void Detach(string cursor, EntityContainer container) {
+        public void Detach(string cursor, EntityContainer container, in JsonKey userId) {
             detached        = true;
             Cursor          = cursor;
+            UserId          = userId;
             this.container  = container;
         }
     }
