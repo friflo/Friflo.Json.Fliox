@@ -175,9 +175,9 @@ data class ReadEntitiesResult (
 @SerialName("query")
 data class QueryEntitiesResult (
               val container  : String? = null,
+              val cursor     : String? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
-              val cursor     : String? = null,
 ) : SyncTaskResult()
 
 @Serializable

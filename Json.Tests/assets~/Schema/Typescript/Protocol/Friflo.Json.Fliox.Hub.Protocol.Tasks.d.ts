@@ -199,9 +199,9 @@ export class ReadEntitiesResult extends SyncTaskResult {
 export class QueryEntitiesResult extends SyncTaskResult {
     task        : "query";
     container?  : string | null;
+    cursor?     : string | null;
     ids         : string[];
     references? : ReferencesResult[] | null;
-    cursor?     : string | null;
 }
 
 export class AggregateEntitiesResult extends SyncTaskResult {

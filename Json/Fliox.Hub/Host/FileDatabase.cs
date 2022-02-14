@@ -147,9 +147,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             if (!FindCursor(command.cursor, out var keyValueEnum)) {
-                return new QueryEntitiesResult { Error = new CommandError($"cursor {command.cursor} not found") };
+                return new QueryEntitiesResult { Error = new CommandError($"cursor '{command.cursor}' not found") };
             }
-            keyValueEnum = keyValueEnum ?? new FileQueryEnumerator(folder); 
+            keyValueEnum = keyValueEnum ?? new FileQueryEnumerator(folder);
             try {
                 var result = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
                 return result;
@@ -267,7 +267,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    int                 folderLen;
         private readonly    IEnumerator<string> enumerator;
             
-        internal FileQueryEnumerator (string folder) {
+        internal FileQueryEnumerator (string folder)
+        {
             this.folder = folder;
             folderLen   = folder.Length;
 #if !UNITY_2020_1_OR_NEWER
@@ -293,9 +294,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new JsonKey(id);
         } }
         
-        public override void Dispose() {
-            if (detached)
-                return;
+        protected override void DisposeEnumerator() {
             enumerator.Dispose();
         }
         

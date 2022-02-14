@@ -99,9 +99,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
                         public  string                          container;  // only for debugging ergonomics
+                        public  string                          cursor;
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
-                        public  string                          cursor;
                         
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         [Fri.Ignore]    public  CommandError                    Error { get; set; }

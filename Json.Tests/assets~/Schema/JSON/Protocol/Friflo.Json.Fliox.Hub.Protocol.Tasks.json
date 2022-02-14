@@ -333,9 +333,9 @@
             "properties": {
                 "task":       { "enum": ["query"] },
                 "container":  { "type": ["string", "null"] },
+                "cursor":     { "type": ["string", "null"] },
                 "ids":        { "type": "array", "items": { "type": "string" } },
-                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } },
-                "cursor":     { "type": ["string", "null"] }
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },
             "required": [
                 "task",

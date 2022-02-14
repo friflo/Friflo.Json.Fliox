@@ -699,9 +699,9 @@
         "QueryEntitiesResult": {
             "properties": {
                 "container":  { "type": "string", "nullable": true },
+                "cursor":     { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true },
-                "cursor":     { "type": "string", "nullable": true }
+                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
         },
         "AggregateEntitiesResult": {

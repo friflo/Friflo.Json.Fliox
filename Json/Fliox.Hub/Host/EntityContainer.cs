@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected readonly  string                              instanceName;
         private   readonly  EntityDatabase                      database;
-        private   readonly  Dictionary<string, QueryEnumerator> cursors = new Dictionary<string, QueryEnumerator>();
+        internal  readonly  Dictionary<string, QueryEnumerator> cursors = new Dictionary<string, QueryEnumerator>();
 
         public    virtual   bool                                Pretty      => false;
         public    override  string                              ToString()  => $"{GetType().Name} - {instanceName}";
@@ -215,8 +215,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private string StoreCursor(QueryEnumerator enumerator) {
-            var cursor = Guid.NewGuid().ToString();
-            enumerator.Detach();
+            var cursor = enumerator.Cursor;
+            if (cursor != null) {
+                enumerator.Detach();
+                return cursor;
+            }
+            cursor = Guid.NewGuid().ToString();
+            enumerator.Detach(cursor, this);
             cursors.Add(cursor, enumerator);
             return cursor;
         }
@@ -227,7 +232,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return true;
             }
             if (cursors.TryGetValue(cursor, out enumerator)) {
-                enumerator.detached = false;
+                enumerator.Attach();
                 return true;
             }
             enumerator = null;

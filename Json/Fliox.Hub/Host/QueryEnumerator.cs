@@ -10,7 +10,11 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public abstract class QueryEnumerator : IEnumerator<JsonKey>
     {
-        internal   bool    detached;
+        private     bool            detached;
+        private     string          cursor;
+        private     EntityContainer container;
+        
+        public      string          Cursor => cursor;
         
         public abstract bool MoveNext();
 
@@ -22,15 +26,33 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         object IEnumerator.Current => throw new System.NotImplementedException();
 
-        public abstract void Dispose();
+        public void Dispose() {
+            if (detached)
+                return;
+            DisposeEnumerator();
+            if (cursor != null) {
+                container.cursors.Remove(cursor);   
+            }
+        }
         
         // ---
-        public abstract bool            IsAsync             { get; }
-        public abstract JsonValue       CurrentValue        { get; }
-        public abstract Task<JsonValue> CurrentValueAsync();
+        public      abstract bool               IsAsync             { get; }
+        public      abstract JsonValue          CurrentValue        { get; }
+        public      abstract Task<JsonValue>    CurrentValueAsync();
+        protected   abstract void               DisposeEnumerator();
+
+        public void Attach() {
+            detached = false;
+        }
         
         public void Detach() {
-            detached = true;
+            detached        = true;
+        }
+        
+        public void Detach(string cursor, EntityContainer container) {
+            detached        = true;
+            this.cursor     = cursor;
+            this.container  = container;
         }
     }
 }

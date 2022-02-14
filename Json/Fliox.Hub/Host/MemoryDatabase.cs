@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             if (!FindCursor(command.cursor, out var keyValueEnum)) {
-                return new QueryEntitiesResult { Error = new CommandError($"cursor {command.cursor} not found") };
+                return new QueryEntitiesResult { Error = new CommandError($"cursor '{command.cursor}' not found") };
             }
             keyValueEnum        = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
             try {
@@ -156,16 +156,13 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override JsonKey Current => enumerator.Current.Key;
 
-        public override void Dispose() {
-            if (detached)
-                return;
+        protected override void DisposeEnumerator() {
             enumerator.Dispose();
         }
         
         // --- ContainerEnumerator
         public override bool            IsAsync             => false;
         public override JsonValue       CurrentValue        => enumerator.Current.Value;
-        
         public override Task<JsonValue> CurrentValueAsync() => throw new NotImplementedException();
     }
 }
