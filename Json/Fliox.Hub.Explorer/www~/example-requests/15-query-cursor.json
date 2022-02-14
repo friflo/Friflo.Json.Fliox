@@ -9,6 +9,7 @@
       }
     ],
     "info": [
-      "query articles using maxCount forcing to return a cursor"
+      "query articles using maxCount forcing to return a cursor",
+      "assign returned cursor to cursor of subsequent tasks"
     ]
   }

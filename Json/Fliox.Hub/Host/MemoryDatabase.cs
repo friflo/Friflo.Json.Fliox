@@ -94,10 +94,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            if (!FindCursor(command.cursor, out var keyValueEnum)) {
-                return new QueryEntitiesResult { Error = new CommandError($"cursor '{command.cursor}' not found") };
+            if (!FindCursor(command.cursor, out var keyValueEnum, out var error)) {
+                return new QueryEntitiesResult { Error = error };
             }
-            keyValueEnum        = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
+            keyValueEnum = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
             try {
                 var result  = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
                 return result;

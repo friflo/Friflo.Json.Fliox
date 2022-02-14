@@ -226,16 +226,19 @@ namespace Friflo.Json.Fliox.Hub.Host
             return cursor;
         }
         
-        protected bool FindCursor(string cursor, out QueryEnumerator enumerator) {
+        protected bool FindCursor(string cursor, out QueryEnumerator enumerator, out CommandError error) {
             if (cursor == null) {
-                enumerator = null;
+                enumerator  = null;
+                error       = null;
                 return true;
             }
             if (cursors.TryGetValue(cursor, out enumerator)) {
                 enumerator.Attach();
+                error = null;
                 return true;
             }
-            enumerator = null;
+            enumerator  = null;
+            error       = new CommandError(TaskErrorResultType.InvalidTask, $"cursor '{cursor}' not found");
             return false;
         }
 
