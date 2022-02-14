@@ -39,7 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         // ---
         public      abstract bool               IsAsync             { get; }
+        /// <summary> Preferred in favor of <see cref="CurrentValueAsync"/> to avoid a task allocation per entity </summary>
         public      abstract JsonValue          CurrentValue        { get; }
+        /// <summary> If possible use <see cref="CurrentValue"/> instead </summary>
         public      abstract Task<JsonValue>    CurrentValueAsync();
         protected   abstract void               DisposeEnumerator();
 
