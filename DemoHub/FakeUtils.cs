@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary>
     internal class FakeUtils
     {
-        private int fakeCounter;
+        private int fakeCounter = 1;
 
         
         internal FakeUtils() {
