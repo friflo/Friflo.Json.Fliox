@@ -31,6 +31,8 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         }
         
         public static async Task HandleFlioxHostResponse(this HttpContext context, RequestContext requestContext) {
+            if (requestContext.isWebSocket)
+                return;
             var httpResponse            = context.Response;
             JsonValue response          = requestContext.Response;
             httpResponse.StatusCode     = requestContext.StatusCode;

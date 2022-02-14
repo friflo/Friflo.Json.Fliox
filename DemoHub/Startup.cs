@@ -51,8 +51,7 @@ namespace Friflo.Json.Fliox.DemoHub
                 
                 endpoints.Map("/{*path}", async context => {
                     var response = await context.HandleFlioxHostRequest(hostHub).ConfigureAwait(false);
-                    if (response.isWebSocket)
-                        return;
+                    // response can be logged and additional http headers can be added here
                     await context.HandleFlioxHostResponse(response).ConfigureAwait(false);
                 });
             });
