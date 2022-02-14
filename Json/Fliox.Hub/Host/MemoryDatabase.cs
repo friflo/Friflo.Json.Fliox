@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var keyValueEnum = new MemoryContainerEnumerator(keyValues);   // TAG_PERF
+            var keyValueEnum = new MemoryQueryEnumerator(keyValues);   // TAG_PERF
             try {
                 var result  = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
                 return result;
@@ -120,11 +120,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    internal class MemoryContainerEnumerator : ContainerEnumerator
+    internal class MemoryQueryEnumerator : QueryEnumerator
     {
         private readonly IEnumerator<KeyValuePair<JsonKey, JsonValue>>    enumerator;
         
-        internal MemoryContainerEnumerator(ConcurrentDictionary<JsonKey, JsonValue> map) {
+        internal MemoryQueryEnumerator(ConcurrentDictionary<JsonKey, JsonValue> map) {
             enumerator = map.GetEnumerator();
         }
 

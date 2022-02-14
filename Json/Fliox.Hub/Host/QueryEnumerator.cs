@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public abstract class ContainerEnumerator : IEnumerator<JsonKey>
+    public abstract class QueryEnumerator : IEnumerator<JsonKey>
     {
         public abstract bool MoveNext();
 

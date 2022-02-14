@@ -191,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         } */
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, ContainerEnumerator entities, MessageContext messageContext) {
+        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, MessageContext messageContext) {
             var jsonFilter      = new JsonFilter(command.filterContext); // filter can be reused
             var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             using (var pooled = messageContext.pool.JsonEvaluator.Get()) {

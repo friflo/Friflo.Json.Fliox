@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var keyValueEnum = new FileContainerEnumerator(folder);
+            var keyValueEnum = new FileQueryEnumerator(folder);
             try {
                 var result = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
                 return result;
@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 case AggregateType.count:
                     // count all?
                     if (filter.IsTrue) {
-                        var keyValueEnum = new FileContainerEnumerator (folder);
+                        var keyValueEnum = new FileQueryEnumerator (folder);
                         try {
                             var count = 0;
                             while (keyValueEnum.MoveNext()) { count++; }
@@ -271,14 +271,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    internal class FileContainerEnumerator : ContainerEnumerator
+    internal class FileQueryEnumerator : QueryEnumerator
     {
         // ReSharper disable once NotAccessedField.Local
         private readonly string                 folder; // keep there for debugging
         private readonly int                    folderLen;
         private readonly IEnumerator<string>    enumerator;
             
-        internal FileContainerEnumerator (string folder) {
+        internal FileQueryEnumerator (string folder) {
             this.folder = folder;
             folderLen   = folder.Length;
 #if !UNITY_2020_1_OR_NEWER
