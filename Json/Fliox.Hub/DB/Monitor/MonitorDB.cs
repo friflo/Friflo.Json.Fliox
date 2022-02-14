@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             this.name       = name ?? Name;
             typeSchema      = new NativeTypeSchema(typeof(MonitorStore));
             databaseSchema  = new DatabaseSchema(typeSchema);
-            stateDB         = new MemoryDatabase();
+            stateDB         = new MemoryDatabase(null, MemoryContainerType.NonConcurrent);
             Schema          = databaseSchema;
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }

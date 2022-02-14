@@ -13,30 +13,45 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public sealed class MemoryDatabase : EntityDatabase
     {
-        private  readonly   bool    pretty;
+        private  readonly   bool                pretty;
+        private  readonly   MemoryContainerType containerType;
 
-        public MemoryDatabase(TaskHandler handler = null, DbOpt opt = null, bool pretty = false)
+        public MemoryDatabase(TaskHandler handler = null, MemoryContainerType? type = null, DbOpt opt = null, bool pretty = false)
             : base(handler, opt)
         {
-            this.pretty = pretty;
+            this.pretty     = pretty;
+            containerType   = type ?? MemoryContainerType.Concurrent;
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new MemoryContainer(name, database, pretty);
+            return new MemoryContainer(name, database, containerType, pretty);
         }
+    }
+    
+    public enum MemoryContainerType {
+        Concurrent,
+        /// used to preserve insertion order of entities in ClusterDB and MonitorDB
+        NonConcurrent
     }
     
     public sealed class MemoryContainer : EntityContainer
     {
-        private  readonly   ConcurrentDictionary<JsonKey, JsonValue>  keyValues = new ConcurrentDictionary<JsonKey, JsonValue>(JsonKey.Equality);
+        private  readonly   IDictionary<JsonKey, JsonValue>             keyValues;
+        private  readonly   ConcurrentDictionary<JsonKey, JsonValue>    keyValuesConcurrent;
         
-        public   override   bool                            Pretty      { get; }
+        public   override   bool                                        Pretty      { get; }
         
-        public    override  string                          ToString()  => $"{base.ToString()}, Count: {keyValues.Count}";
+        public    override  string  ToString()  => $"{base.ToString()}, Count: {keyValues.Count}";
 
-        public MemoryContainer(string name, EntityDatabase database, bool pretty)
+        public MemoryContainer(string name, EntityDatabase database, MemoryContainerType type, bool pretty)
             : base(name, database)
         {
+            if (type == MemoryContainerType.Concurrent) {
+                keyValuesConcurrent = new ConcurrentDictionary<JsonKey, JsonValue>(JsonKey.Equality);
+                keyValues           = keyValuesConcurrent;
+            } else {
+                keyValues = new Dictionary<JsonKey, JsonValue>(JsonKey.Equality);
+            }
             Pretty = pretty;
         }
         
@@ -108,7 +123,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             var keys = command.ids;
             if (keys != null && keys.Count > 0) {
                 foreach (var key in keys) {
-                    keyValues.TryRemove(key, out _);
+                    if (keyValuesConcurrent != null) {
+                        keyValuesConcurrent.TryRemove(key, out _);
+                        continue;
+                    }
+                    keyValues.Remove(key);
                 }
             }
             var all = command.all;
