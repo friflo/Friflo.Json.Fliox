@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var databaseName    = pair.Key;
                 var dbKey           = new JsonKey(databaseName);
                 if (ClusterDB.FindTask(nameof(containers), dbKey, tasks)) {
-                    var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);;
+                    var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
                     dbContainers.id     = databaseName;
                     containers.Upsert(dbContainers);
                 }
