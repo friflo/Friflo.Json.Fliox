@@ -235,20 +235,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             return error;
         }
         
-        [ObsoleteAttribute("since using FileContainerEnumerator", true)]
-        // ReSharper disable once UnusedMember.Local
-        private static HashSet<JsonKey> GetIds(string folder) {
-            string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var ids = Helper.CreateHashSet(fileNames.Length, JsonKey.Equality);
-            for (int n = 0; n < fileNames.Length; n++) {
-                var fileName = fileNames[n];
-                var len = fileName.Length;
-                var id = fileName.Substring(folder.Length, len - folder.Length - ".json".Length);
-                ids.Add(new JsonKey(id));
-            }
-            return ids;
-        }
-        
         /// <summary>
         /// Write with <see cref="FileShare.Read"/> as on a developer machine other processes like virus scanner or file watcher
         /// may access the file concurrently resulting in:

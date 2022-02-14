@@ -178,18 +178,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        /* protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
-            var readIds         = new ReadEntitiesSet { ids = ids, keyName = command.keyName };
-            var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
-            if (readEntities.Error != null) {
-                // todo add error test 
-                var message = $"filter failed. container: '{name}' filter: {command.filter} - {readEntities.Error.message}";
-                return new QueryEntitiesResult { Error = new CommandError (message) };
-            }
-            var result = FilterEntities(command, readEntities.entities, messageContext);
-            return result;
-        } */
-        
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
         protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, MessageContext messageContext) {
             var jsonFilter      = new JsonFilter(command.filterContext); // filter can be reused
