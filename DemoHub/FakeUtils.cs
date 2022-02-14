@@ -21,11 +21,11 @@ namespace Friflo.Json.Fliox.DemoHub
         }
         
         internal FakeResult CreateFakes(Fake fake) {
-            short employeeCounter = 1;
-            short producerCounter = 1;
-            short articleCounter  = 1;
-            short customerCounter = 1;
-            short orderCounter    = 1;
+            int employeeCounter = 1;
+            int producerCounter = 1;
+            int articleCounter  = 1;
+            int customerCounter = 1;
+            int orderCounter    = 1;
             fakeCounter++;
         
             var result = new FakeResult();
@@ -132,14 +132,17 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
 
-        static Guid NewId(int fakeCounter, short localCounter, short type) {
-            var guid    = Guid.NewGuid();
-            var bytes   = guid.ToByteArray();
-            var last8Bytes  = new byte[8];
-            Buffer.BlockCopy(bytes, 8, last8Bytes, 0, 8);
-            short b = (short)(localCounter + (type << 12));
-            short c = (short)((bytes[6] << 8) + bytes[7]);
-            return new Guid(fakeCounter, b, c, last8Bytes);
+        private static bool UseRealGuids = false;
+
+        private static Guid NewId(int fakeCounter, long localCounter, short type) {
+            if (UseRealGuids)
+                return Guid.NewGuid();
+                
+            byte[] bytes = BitConverter.GetBytes(localCounter);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+            short b = (short)(type << 12);
+            return new Guid(fakeCounter, b, 0, bytes);
         }
     }
 }
