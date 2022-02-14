@@ -25,19 +25,19 @@ namespace Friflo.Json.Fliox.DemoHub
     public partial class DemoStore : FlioxClient
     {
         // --- containers
-        public readonly EntitySet <long, Order>       orders;
-        public readonly EntitySet <long, Customer>    customers;
-        public readonly EntitySet <long, Article>     articles;
-        public readonly EntitySet <long, Producer>    producers;
-        public readonly EntitySet <long, Employee>    employees;
+        public readonly EntitySet <Guid, Order>       orders;
+        public readonly EntitySet <Guid, Customer>    customers;
+        public readonly EntitySet <Guid, Article>     articles;
+        public readonly EntitySet <Guid, Producer>    producers;
+        public readonly EntitySet <Guid, Employee>    employees;
 
         public DemoStore(FlioxHub hub) : base (hub) { }
     }
     
     // ------------------------------ entity models ------------------------------
     public class Order {
-        [Req]   public  long                    id { get; set; }
-                public  Ref<long, Customer>     customer;
+        [Req]   public  Guid                    id { get; set; }
+                public  Ref<Guid, Customer>     customer;
                 public  DateTime                created;
                 public  List<OrderItem>         items = new List<OrderItem>();
                         
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DemoHub
     }
 
     public class OrderItem {
-        [Req]  public   Ref<long, Article>      article;
+        [Req]  public   Ref<Guid, Article>      article;
                public   int                     amount;
                public   string                  name;
                         
@@ -54,31 +54,31 @@ namespace Friflo.Json.Fliox.DemoHub
 
     public class Article
     {
-        [Req]   public   long                   id { get; set; }
+        [Req]   public   Guid                   id { get; set; }
         [Req]   public   string                 name;
-                public   Ref<long, Producer>    producer;
+                public   Ref<Guid, Producer>    producer;
                         
         public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Customer {
-        [Req]   public   long                   id { get; set; }
+        [Req]   public   Guid                   id { get; set; }
         [Req]   public   string                 name;
         
         public override string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Producer {
-        [Req]   public  long                    id { get; set; }
+        [Req]   public  Guid                    id { get; set; }
         [Req]   public  string                  name;
         [Fri.Property (Name =                      "employees")]
-                public  List<Ref<long, Employee>> employeeList;
+                public  List<Ref<Guid, Employee>> employeeList;
                         
         public override string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Employee {
-        [Req]   public  long                    id { get; set; }
+        [Req]   public  Guid                    id { get; set; }
         [Req]   public  string                  firstName;
                 public  string                  lastName;
                         

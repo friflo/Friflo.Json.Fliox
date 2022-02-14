@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary>
     internal class FakeUtils
     {
-        private int fakeCounter = 0;
+        private int fakeCounter;
 
         
         internal FakeUtils() {
@@ -21,11 +21,11 @@ namespace Friflo.Json.Fliox.DemoHub
         }
         
         internal FakeResult CreateFakes(Fake fake) {
-            int employeeCounter = 1;
-            int producerCounter = 1;
-            int articleCounter  = 1;
-            int customerCounter = 1;
-            int orderCounter    = 1;
+            short employeeCounter = 1;
+            short producerCounter = 1;
+            short articleCounter  = 1;
+            short customerCounter = 1;
+            short orderCounter    = 1;
             fakeCounter++;
         
             var result = new FakeResult();
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DemoHub
                     .RuleFor(p => p.employeeList,   f => {
                         if (employees == 0)
                             return null;
-                        return new List<Ref<long, Employee>> { f.PickRandom(result.employees) };
+                        return new List<Ref<Guid, Employee>> { f.PickRandom(result.employees) };
                     });
                 
                 result.producers = new Producer[producers];
@@ -126,18 +126,20 @@ namespace Friflo.Json.Fliox.DemoHub
                 producers   = result.producers? .Length,
                 employees   = result.employees? .Length,
             };
-            var first       = FakeShift * fakeCounter;
-            var last        = FakeShift * (fakeCounter + 1);
-            result.info     = $"use container filter: o.id >= {first} && o.id < {last}";
+            var fakePrefix  = fakeCounter.ToString("x8");
+            result.info     = $"use container filter: o.id.StartsWith('{fakePrefix}-')";
             result.added    = added;
             return result;
         }
 
-        private const long FakeShift = 100_000_000L;
-        
-        static long NewId(int fakeCounter, int localCounter, short type) {
-            var id = FakeShift * fakeCounter + 10 * localCounter + type;
-            return id;
+        static Guid NewId(int fakeCounter, short localCounter, short type) {
+            var guid    = Guid.NewGuid();
+            var bytes   = guid.ToByteArray();
+            var last8Bytes  = new byte[8];
+            Buffer.BlockCopy(bytes, 8, last8Bytes, 0, 8);
+            short b = (short)(localCounter + (type << 12));
+            short c = (short)((bytes[6] << 8) + bytes[7]);
+            return new Guid(fakeCounter, b, c, last8Bytes);
         }
     }
 }
