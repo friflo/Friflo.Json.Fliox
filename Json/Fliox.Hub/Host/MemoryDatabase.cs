@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private readonly IEnumerator<KeyValuePair<JsonKey, JsonValue>>    enumerator;
         
-        internal MemoryQueryEnumerator(ConcurrentDictionary<JsonKey, JsonValue> map) {
+        internal MemoryQueryEnumerator(IDictionary<JsonKey, JsonValue> map) {
             enumerator = map.GetEnumerator();
         }
 
