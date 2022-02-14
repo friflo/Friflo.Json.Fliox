@@ -21,6 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  FilterOperation     filterTree;
                         public  string              filter;
                         public  List<References>    references;
+                        public  int?                maxCount;
+                        public  string              cursor;
                         
         [Fri.Ignore]    private FilterOperation     filterLambda;
         [Fri.Ignore]    public  OperationContext    filterContext;
@@ -99,6 +101,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  string                          container;  // only for debugging ergonomics
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
+                        public  string                          cursor;
+                        
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         [Fri.Ignore]    public  CommandError                    Error { get; set; }
 

@@ -4,9 +4,9 @@ import { ReadEntitiesSet }       from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { FilterOperation }       from "./Friflo.Json.Fliox.Transform";
 import { FilterOperation_Union } from "./Friflo.Json.Fliox.Transform";
 import { References }            from "./Friflo.Json.Fliox.Hub.Protocol.Models";
+import { int32 }                 from "./Standard";
 import { JsonPatch }             from "./Friflo.Json.Fliox.Transform";
 import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform";
-import { int32 }                 from "./Standard";
 import { ReadEntitiesSetResult } from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { ReferencesResult }      from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { double }                from "./Standard";
@@ -76,6 +76,8 @@ export class QueryEntities extends SyncRequestTask {
     filterTree? : FilterOperation_Union | null;
     filter?     : string | null;
     references? : References[] | null;
+    maxCount?   : int32 | null;
+    cursor?     : string | null;
 }
 
 export class AggregateEntities extends SyncRequestTask {
@@ -199,6 +201,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     container?  : string | null;
     ids         : string[];
     references? : ReferencesResult[] | null;
+    cursor?     : string | null;
 }
 
 export class AggregateEntitiesResult extends SyncTaskResult {
