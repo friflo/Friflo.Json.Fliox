@@ -53,18 +53,19 @@ namespace Friflo.Json.Fliox.Hub.Host
     public abstract class EntityContainer : IDisposable
     {
         /// <summary> container name </summary>
-        public    readonly  string          name;
+        public    readonly  string                              name;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
         /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
         /// This field need to be used for <see cref="EntityContainer"/> implementations when accessing a specific
         /// databases (e.g. Mongo, Dynamo, Cosmos, Postgres, ...).
         /// </summary>
-        protected readonly  string          instanceName;
-        private   readonly  EntityDatabase  database;
+        protected readonly  string                              instanceName;
+        private   readonly  EntityDatabase                      database;
+        private   readonly  Dictionary<string, QueryEnumerator> cursors = new Dictionary<string, QueryEnumerator>();
 
-        public    virtual   bool            Pretty      => false;
-        public    override  string          ToString()  => $"{GetType().Name} - {instanceName}";
+        public    virtual   bool                                Pretty      => false;
+        public    override  string                              ToString()  => $"{GetType().Name} - {instanceName}";
 
         public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, MessageContext messageContext);
         public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, MessageContext messageContext);
@@ -180,8 +181,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
         protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, MessageContext messageContext) {
-            var jsonFilter      = new JsonFilter(command.filterContext); // filter can be reused
-            var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            var  jsonFilter = new JsonFilter(command.filterContext); // filter can be reused
+            var  result     = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            long maxCount   = command.maxCount ?? long.MaxValue;
             using (var pooled = messageContext.pool.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooled.instance;
                 while (entities.MoveNext()) {
@@ -203,11 +205,35 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     var entry = new EntityValue(json);
                     result.Add(key, entry);
+                    if (result.Count < maxCount)
+                        continue;
+                    var cursor = StoreCursor(entities);
+                    return new QueryEntitiesResult{ entities = result, cursor = cursor };
                 }
             }
             return new QueryEntitiesResult{ entities = result };
         }
         
+        private string StoreCursor(QueryEnumerator enumerator) {
+            var cursor = Guid.NewGuid().ToString();
+            enumerator.Detach();
+            cursors.Add(cursor, enumerator);
+            return cursor;
+        }
+        
+        protected bool FindCursor(string cursor, out QueryEnumerator enumerator) {
+            if (cursor == null) {
+                enumerator = null;
+                return true;
+            }
+            if (cursors.TryGetValue(cursor, out enumerator)) {
+                enumerator.detached = false;
+                return true;
+            }
+            enumerator = null;
+            return false;
+        }
+
         private static List<ReferencesResult> GetReferences(
             List<References>                    references,
             Dictionary<JsonKey, EntityValue>    entities,

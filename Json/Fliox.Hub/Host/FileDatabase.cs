@@ -146,7 +146,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var keyValueEnum = new FileQueryEnumerator(folder);
+            if (!FindCursor(command.cursor, out var keyValueEnum)) {
+                return new QueryEntitiesResult { Error = new CommandError($"cursor {command.cursor} not found") };
+            }
+            keyValueEnum = keyValueEnum ?? new FileQueryEnumerator(folder); 
             try {
                 var result = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
                 return result;
@@ -260,9 +263,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     internal class FileQueryEnumerator : QueryEnumerator
     {
         // ReSharper disable once NotAccessedField.Local
-        private readonly string                 folder; // keep there for debugging
-        private readonly int                    folderLen;
-        private readonly IEnumerator<string>    enumerator;
+        private readonly    string              folder; // keep there for debugging
+        private readonly    int                 folderLen;
+        private readonly    IEnumerator<string> enumerator;
             
         internal FileQueryEnumerator (string folder) {
             this.folder = folder;
@@ -291,6 +294,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         } }
         
         public override void Dispose() {
+            if (detached)
+                return;
             enumerator.Dispose();
         }
         

@@ -10,6 +10,8 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public abstract class QueryEnumerator : IEnumerator<JsonKey>
     {
+        internal   bool    detached;
+        
         public abstract bool MoveNext();
 
         public void Reset() {
@@ -26,5 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         public abstract bool            IsAsync             { get; }
         public abstract JsonValue       CurrentValue        { get; }
         public abstract Task<JsonValue> CurrentValueAsync();
+        
+        public void Detach() {
+            detached = true;
+        }
     }
 }
