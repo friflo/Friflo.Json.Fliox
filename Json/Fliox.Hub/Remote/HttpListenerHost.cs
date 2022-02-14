@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         //  resp.Headers["link"]    = "rel=\"icon\" href=\"#\""; // not working as expected - expect no additional request of favicon.ico
             if (headers != null) {
                 foreach (var header in headers) {
-                    resp.Headers[header.Key] = header.Value; 
+                    resp.Headers[header.Key] = header.Value;
                 }
             }
         }

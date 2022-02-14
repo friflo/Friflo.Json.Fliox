@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public readonly IHttpHeaders                headers;
         public readonly IHttpCookies                cookies;
         public readonly bool                        isWebSocket;
-                        Dictionary<string, string>  responseHeaders;
+        private         Dictionary<string, string>  responseHeaders;
         
         public          string                      ResponseContentType { get; private set; }
         public          int                         StatusCode          { get; private set; }

@@ -38,6 +38,12 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             httpResponse.StatusCode     = requestContext.StatusCode;
             httpResponse.ContentType    = requestContext.ResponseContentType;
             httpResponse.ContentLength  = response.Length;
+            var responseHeaders         = requestContext.ResponseHeaders;
+            if (responseHeaders != null) {
+                foreach (var header in responseHeaders) {
+                    httpResponse.Headers[header.Key] = header.Value;
+                }
+            }
             await httpResponse.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
         }
     }
