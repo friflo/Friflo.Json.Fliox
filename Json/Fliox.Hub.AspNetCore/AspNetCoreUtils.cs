@@ -15,22 +15,26 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
     public static class AspNetCoreUtils
     {
-        public static async Task HandleFlioxHostRequest(this HttpContext context, HttpHostHub hostHub) {
-            if (context.WebSockets.IsWebSocketRequest) {
-                WebSocket ws = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
-                await WebSocketHost.SendReceiveMessages(ws, hostHub).ConfigureAwait(false);
-                return;
-            }
+        public static async Task<RequestContext> HandleFlioxHostRequest(this HttpContext context, HttpHostHub hostHub) {
             var httpRequest = context.Request;
             var headers     = new HttpContextHeaders(httpRequest.Headers);
             var cookies     = new HttpContextCookies(httpRequest.Cookies);
-            var reqCtx = new RequestContext(httpRequest.Method, httpRequest.Path.Value, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
+            var reqCtx      = new RequestContext(httpRequest.Method, httpRequest.Path.Value, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies, context.WebSockets.IsWebSocketRequest);
+            if (reqCtx.isWebSocket) {
+                WebSocket ws = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages(ws, hostHub).ConfigureAwait(false);
+                return reqCtx;
+            }
             await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
+            return reqCtx;
+        }
+        
+        public static async Task HandleFlioxHostResponse(this HttpContext context, RequestContext requestContext) {
             var httpResponse            = context.Response;
-            JsonValue response          = reqCtx.Response;
-            httpResponse.StatusCode     = reqCtx.StatusCode;
-            httpResponse.ContentType    = reqCtx.ResponseContentType;
+            JsonValue response          = requestContext.Response;
+            httpResponse.StatusCode     = requestContext.StatusCode;
+            httpResponse.ContentType    = requestContext.ResponseContentType;
             httpResponse.ContentLength  = response.Length;
             await httpResponse.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
         }

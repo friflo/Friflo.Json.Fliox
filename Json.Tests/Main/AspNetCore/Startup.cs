@@ -38,7 +38,10 @@ namespace Friflo.Json.Tests.Main
                 });
                 
                 endpoints.Map("/{*path}", async context => {
-                    await context.HandleFlioxHostRequest(hostHub);
+                    var response = await context.HandleFlioxHostRequest(hostHub).ConfigureAwait(false);
+                    if (response.isWebSocket)
+                        return;
+                    await context.HandleFlioxHostResponse(response).ConfigureAwait(false);
                 });
             });
         }

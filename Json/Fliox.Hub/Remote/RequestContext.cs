@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public readonly Stream                      body;
         public readonly IHttpHeaders                headers;
         public readonly IHttpCookies                cookies;
+        public readonly bool                        isWebSocket;
                         Dictionary<string, string>  responseHeaders;
         
         public          string                      ResponseContentType { get; private set; }
@@ -33,13 +34,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public override string          ToString() => $"{method} {path}{query}";
 
-        public RequestContext (string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
+        public RequestContext (string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies, bool isWebSocket) {
             this.method     = method;
             this.path       = path;
             this.query      = query;
             this.body       = body;
             this.headers    = headers;
             this.cookies    = cookies;
+            this.isWebSocket= isWebSocket;
         }
         
         public void Write (JsonValue value, int offset, string contentType, int statusCode) {
