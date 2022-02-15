@@ -763,48 +763,50 @@ export class Explorer {
         }
     }
     updateExplorerEntities(entities, entityType) {
-        const table = this.explorerTable;
-        let entityCount = 0;
+        // console.log("entities", entities);
         const keyName = EntityEditor.getEntityKeyName(entityType);
         const entityFields = this.entityFields;
         const fieldCount = Object.keys(entityFields).length;
-        const tds = [];
-        const rows = this.explorerRows;
-        // console.log("entities", entities);
+        const explorerRows = this.explorerRows;
+        const rows = [];
+        const newRows = [];
+        // create or find existing rows
         for (const entity of entities) {
-            tds.length = 0;
             const id = entity[keyName];
-            let row = rows[id];
-            if (!row) {
-                row = createEl('tr');
-                rows[id] = row;
-                // cell: add checkbox
-                const tdCheckbox = createEl('td');
-                const checked = createEl('input');
-                checked.type = "checkbox";
-                checked.tabIndex = -1;
-                checked.checked = true;
-                tdCheckbox.append(checked);
-                row.append(tdCheckbox);
-                tds.push(tdCheckbox);
-                // cell: add fields
-                for (let n = 0; n < fieldCount; n++) {
-                    const tdField = createEl('td');
-                    row.append(tdField);
-                    tds.push(tdField);
-                }
-                table.append(row);
+            let row = explorerRows[id];
+            if (row) {
+                rows.push(row);
+                continue;
             }
-            else {
-                for (const td of row.childNodes) {
-                    tds.push(td);
-                }
+            row = createEl('tr');
+            explorerRows[id] = row;
+            // cell: add checkbox
+            const tdCheckbox = createEl('td');
+            const checked = createEl('input');
+            checked.type = "checkbox";
+            checked.tabIndex = -1;
+            checked.checked = true;
+            tdCheckbox.append(checked);
+            row.append(tdCheckbox);
+            // cell: add fields
+            for (let n = 0; n < fieldCount; n++) {
+                const tdField = createEl('td');
+                row.append(tdField);
             }
+            rows.push(row);
+            newRows.push(row);
+        }
+        // fill row cells with property values of the entities
+        let entityCount = 0;
+        for (const entity of entities) {
             // cell: set fields
             const calcWidth = entityCount < 20;
+            const tds = rows[entityCount].children;
             Explorer.assignRowCells(tds, entity, entityFields, calcWidth);
             entityCount++;
         }
+        // add new rows at once
+        this.explorerTable.append(...newRows);
     }
     static assignRowCells(tds, entity, entityFields, calcWidth) {
         let tdIndex = 1;
