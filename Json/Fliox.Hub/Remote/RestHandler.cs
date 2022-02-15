@@ -90,24 +90,34 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             
             // --------------    POST               /database/container?get-entities
+            //                                      /database/container?delete-entities
             if (isPost && resource.Length == 2) {
                 var  allKeys        = queryParams.AllKeys;
                 bool getEntities    = false;
+                bool deleteEntities = false;
                 for (int n = 0; n < allKeys.Length; n++) {
-                    var key = queryParams.Get(n); // how made this crazy interface ?!? :)
-                    getEntities |= key == "get-entities";
+                    var key = queryParams.Get(n); // who made this crazy interface ?!? :)
+                    getEntities     |= key == "get-entities";
+                    deleteEntities  |= key == "delete-entities";
                 }
-                if (getEntities) {
+                JsonKey[] keys = null;
+                if (getEntities || deleteEntities) {
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
-                        var keys    = reader.Read<JsonKey[]>(context.body);
+                        keys    = reader.Read<JsonKey[]>(context.body);
                         if (reader.Error.ErrSet) {
-                            context.WriteError("get-entities error", reader.Error.ToString(), 400);
+                            context.WriteError("invalid id list", reader.Error.ToString(), 400);
                             return;
                         }
-                        await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
-                        return;
                     }
+                }
+                if (getEntities) {
+                    await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
+                    return;
+                }
+                if (deleteEntities) {
+                    await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
+                    return;
                 }
             }
             
@@ -121,11 +131,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (resource.Length == 2) {
                     var idsParam = queryParams["ids"];
                     if (idsParam != null) {
-                        var ids = idsParam == "" ? Array.Empty<string>() : idsParam.Split(',');
-                        var keys = new JsonKey[ids.Length];
-                        for (int n = 0; n < ids.Length; n++) {
-                            keys[n] = new JsonKey(ids[n]);
-                        }
+                        var ids     = idsParam == "" ? Array.Empty<string>() : idsParam.Split(',');
+                        var keys    = GetKeysFromIds(ids);
                         await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
                         return;
                     }
@@ -145,14 +152,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (isDelete) {
                 // --------------    DELETE         /database/container/id
                 if (resource.Length == 3) {
-                    await DeleteEntity(context, resource[0], resource[1], new []{resource[2]}).ConfigureAwait(false);
+                    var keys = new [] { new JsonKey(resource[2]) };
+                    await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
                     return;
                 }
                 // --------------    DELETE         /database/container?ids=id1,id2,...
                 if (resource.Length == 2) {
-                    var idsParam = queryParams["ids"];
-                    var ids = idsParam.Split(',');
-                    await DeleteEntity(context, resource[0], resource[1], ids).ConfigureAwait(false);
+                    var idsParam    = queryParams["ids"];
+                    var ids         = idsParam.Split(',');
+                    var keys        = GetKeysFromIds(ids);
+                    await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
@@ -176,6 +185,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             context.WriteError("invalid path/method", path, 400);
+        }
+        
+        private static JsonKey[] GetKeysFromIds(string[] ids) {
+            var keys = new JsonKey[ids.Length];
+            for (int n = 0; n < ids.Length; n++) {
+                keys[n] = new JsonKey(ids[n]);
+            }
+            return keys;
         }
         
         private static string GetResourceError(string[] resource) {
@@ -358,14 +375,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, 0, "application/json", entityStatus);
         }
         
-        private async Task DeleteEntity(RequestContext context, string database, string container, string[] ids) {
+        private async Task DeleteEntities(RequestContext context, string database, string container, JsonKey[] keys) {
             if (database == EntityDatabase.MainDB)
                 database = null;
             var deleteEntities  = new DeleteEntities { container = container };
-            deleteEntities.ids.EnsureCapacity(ids.Length);
-            foreach (var id in ids) {
-                var entityId = new JsonKey(id);
-                deleteEntities.ids.Add(entityId);
+            deleteEntities.ids.EnsureCapacity(keys.Length);
+            foreach (var key in keys) {
+                deleteEntities.ids.Add(key);
             }
             var restResult  = await ExecuteTask(context, database, deleteEntities).ConfigureAwait(false);
             
