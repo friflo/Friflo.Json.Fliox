@@ -200,11 +200,11 @@ export class EntityEditor
             entityIds:  [...p.ids]
         };
         // execute GET request
-        const requestIds    = p.ids.length == 1 ? p.ids[0] : p.ids; // load as object if exact one id
-        const response      = await App.restRequest("GET", null, p.database, p.container, requestIds, null);        
-        let content         = await response.text();
+        const ids       = p.ids.length == 1 ? p.ids[0] : p.ids; // load as object if exact one id
+        const response  = await EntityEditor.requestIds(p.database, p.container, ids);
+        let content     = await response.text();
 
-        content             = app.formatJson(app.config.formatEntities, content);
+        content         = app.formatJson(app.config.formatEntities, content);
         this.setEntitiesIds(p.database, p.container, p.ids);
         if (!response.ok) {
             this.setEntityValue(p.database, p.container, content);
@@ -215,6 +215,15 @@ export class EntityEditor
         if (selection)  this.entityEditor.setSelection(selection);        
         // this.entityEditor.focus(); // not useful - annoying: open soft keyboard on phone
         return content;
+    }
+
+    private static async requestIds(database: string, container: string, requestIds: string | string[]) : Promise<Response> {
+        const idsStr = JSON.stringify(requestIds);
+        // Typical limit for urls in Chrome, ASP.NET: 2048
+        if (idsStr.length > 2000) {
+            return await App.restRequest("POST", idsStr, database, container, null, "get-entities");
+        }
+        return await App.restRequest("GET", null, database, container, requestIds, null);
     }
 
     private updateGetEntitiesAnchor(database: string, container: string) {

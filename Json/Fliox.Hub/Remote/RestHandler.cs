@@ -88,7 +88,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid path /database/container/id", resourceError, 400);
                 return;
             }
-
+            
+            // --------------    POST               /database/container?get-entities
+            if (isPost && resource.Length == 2) {
+                var  allKeys        = queryParams.AllKeys;
+                bool getEntities    = false;
+                for (int n = 0; n < allKeys.Length; n++) {
+                    var key = queryParams.Get(n); // how made this crazy interface ?!? :)
+                    getEntities |= key == "get-entities";
+                }
+                if (getEntities) {
+                    using (var pooled = pool.ObjectMapper.Get()) {
+                        var reader  = pooled.instance.reader;
+                        var keys    = reader.Read<JsonKey[]>(context.body);
+                        if (reader.Error.ErrSet) {
+                            context.WriteError("get-entities error", reader.Error.ToString(), 400);
+                            return;
+                        }
+                        await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
+                        return;
+                    }
+                }
+            }
+            
             if (isGet) {
                 // --------------    GET            /database
                 if (resource.Length == 1) {
@@ -100,7 +122,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var idsParam = queryParams["ids"];
                     if (idsParam != null) {
                         var ids = idsParam == "" ? Array.Empty<string>() : idsParam.Split(',');
-                        await GetEntitiesById (context, resource[0], resource[1], ids).ConfigureAwait(false);
+                        var keys = new JsonKey[ids.Length];
+                        for (int n = 0; n < ids.Length; n++) {
+                            keys[n] = new JsonKey(ids[n]);
+                        }
+                        await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
                         return;
                     }
                     await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
@@ -180,13 +206,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
-        private async Task GetEntitiesById(RequestContext context, string database, string container, string[] ids) {
+        private async Task GetEntitiesById(RequestContext context, string database, string container, JsonKey[] keys) {
             if (database == EntityDatabase.MainDB)
                 database = null;
             var readEntitiesSet = new ReadEntitiesSet ();
-            readEntitiesSet.ids.EnsureCapacity(ids.Length);
-            foreach (var id in ids) {
-                readEntitiesSet.ids.Add(new JsonKey(id));    
+            readEntitiesSet.ids.EnsureCapacity(keys.Length);
+            foreach (var id in keys) {
+                readEntitiesSet.ids.Add(id);    
             }
             var readEntities = new ReadEntities {
                 container   = container,
