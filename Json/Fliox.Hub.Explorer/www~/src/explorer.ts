@@ -72,7 +72,9 @@ export class Explorer
         readonly container:     string;
         readonly entityType:    JsonType | null;
         readonly entities:      Entity[];
+        readonly query:         string;
                  cursor:        string | null;
+                 loadingMore:   boolean;
     }
     private             focusedCell:        HTMLTableCellElement    = null;
     private             editCell:           HTMLTextAreaElement     = null;
@@ -98,6 +100,36 @@ export class Explorer
 
     public constructor(config: Config) {
         this.config = config;
+        const parent = entityExplorer.parentElement;
+        parent.addEventListener('scroll', () => {
+            if (!this.explorer.cursor || this.explorer.loadingMore)
+                return;
+
+            // var rect = element.getBoundingClientRect().
+            // console.log("onscroll", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
+            if (parent.clientHeight + parent.scrollTop > parent.scrollHeight) {
+                // console.log("scroll end");
+                this.loadMore();
+            }
+        });
+    }
+
+    private async loadMore() {
+        const e = this.explorer;
+        if (e.loadingMore)
+            return;
+
+        console.log("loadMore");
+        e.loadingMore       = true;
+        const maxCount      = `cursor=${e.cursor}&maxCount=100`;
+        const queryParams   = e.query == null ? maxCount : `${e.query}&${maxCount}`; 
+        const response      = await App.restRequest("GET", null, e.database, e.container, null, queryParams);
+
+        e.loadingMore       = false;
+        e.cursor            = response.headers.get("cursor");
+
+        if (!response.ok)
+            return;
     }
 
     private static selectAllHtml=
@@ -121,11 +153,13 @@ export class Explorer
         app.filter.database    = p.database;
         app.filter.container   = p.container;
         this.explorer = {
-            database:   p.database,
-            container:  p.container,
-            entityType: entityType,
-            entities:   null,    // explorer: entities not loaded
-            cursor:     null
+            database:       p.database,
+            container:      p.container,
+            entityType:     entityType,
+            entities:       null,    // explorer: entities not loaded
+            query:          query,
+            cursor:         null,
+            loadingMore:    false
         };        
         this.focusedCell = null;
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
@@ -149,9 +183,9 @@ export class Explorer
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        this.explorer.cursor    = response.headers.get("cursor");
-        const   entities        = await response.json() as Entity[];
+        const entities          = await response.json() as Entity[];
         this.explorer           = { ...this.explorer, entities };   // explorer: entities loaded successful
+        this.explorer.cursor    = response.headers.get("cursor");
 
         this.entityFields   = {};
         const   head        = this.createExplorerHead(entityType, this.entityFields);
