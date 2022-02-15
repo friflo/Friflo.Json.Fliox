@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 maxCount = value;
             }
-            var  cursor         = queryParams["cursor"];
+            var cursor          = queryParams["cursor"];
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor};
             var restResult      = await ExecuteTask(context, database, queryEntities).ConfigureAwait(false);
             
