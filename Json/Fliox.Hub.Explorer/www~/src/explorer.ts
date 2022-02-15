@@ -69,13 +69,13 @@ const filterRow         = el("filterRow");
 export class Explorer
 {
     private explorer: {
-        readonly database:      string;
-        readonly container:     string;
-        readonly entityType:    JsonType | null;
-        readonly entities:      Entity[];
-        readonly query:         string;
-                 cursor:        string | null;
-                 loadingMore:   boolean;
+        readonly database:          string;
+        readonly container:         string;
+        readonly entityType:        JsonType | null;
+        readonly entities:          Entity[];
+        readonly query:             string;
+                 cursor:            string | null;
+                 loadMorePending:   boolean;
     }
     private             focusedCell:        HTMLTableCellElement    = null;
     private             editCell:           HTMLTextAreaElement     = null;
@@ -121,7 +121,7 @@ export class Explorer
 
         parent.addEventListener('scroll', () => {
             //console.log("onscroll", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
-            if (!this.explorer.cursor || this.explorer.loadingMore)
+            if (!this.explorer.cursor || this.explorer.loadMorePending)
                 return;
 
             // var rect = element.getBoundingClientRect().
@@ -135,15 +135,15 @@ export class Explorer
 
     private async loadMore() {
         const e = this.explorer;
-        if (e.loadingMore)
+        if (!e.cursor || e.loadMorePending)
             return;
         // console.log("loadMore");
-        e.loadingMore       = true;
+        e.loadMorePending   = true;
         const maxCount      = `maxCount=100&cursor=${e.cursor}`;
         const queryParams   = e.query == null ? maxCount : `${e.query}&${maxCount}`; 
         const response      = await App.restRequest("GET", null, e.database, e.container, null, queryParams);
 
-        e.loadingMore       = false;
+        e.loadMorePending   = false;
         e.cursor            = response.headers.get("cursor");
 
         if (!response.ok)
@@ -172,7 +172,7 @@ export class Explorer
             entities:       null,    // explorer: entities not loaded
             query:          query,
             cursor:         null,
-            loadingMore:    false
+            loadMorePending:false
         };
         this.focusedCell    = null;
         this.entityFields   = {};
