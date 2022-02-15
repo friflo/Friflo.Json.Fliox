@@ -327,8 +327,10 @@ export class Explorer
         if (rowIndex < 1 || cellIndex < 1)
             return null;
         const rows = table.rows;
-        if (rowIndex >= rows.length)
+        if (rowIndex >= rows.length) {
+            this.loadMore(); // on overscroll
             return null;
+        }
         const row = rows[rowIndex];
         if (cellIndex >= row.cells.length)
             return null;
