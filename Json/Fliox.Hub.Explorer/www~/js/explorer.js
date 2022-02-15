@@ -39,9 +39,24 @@ export class Explorer {
         this.entityFields = {};
         this.selectedRows = {};
         this.explorerRows = {};
+        this.touchMoveLoadMore = 0;
         this.config = config;
         const parent = entityExplorer.parentElement;
+        parent.addEventListener('touchmove', () => {
+            //console.log("touchmove", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
+            if (parent.clientHeight + parent.scrollTop + 1 >= parent.scrollHeight) {
+                if (this.touchMovePending)
+                    return;
+                console.log("touchmove - loadMore", this.touchMoveLoadMore++);
+                this.touchMovePending = true;
+                this.loadMore();
+            }
+        });
+        parent.addEventListener('touchend', () => {
+            this.touchMovePending = false;
+        });
         parent.addEventListener('scroll', () => {
+            //console.log("onscroll", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
             if (!this.explorer.cursor || this.explorer.loadingMore)
                 return;
             // var rect = element.getBoundingClientRect().

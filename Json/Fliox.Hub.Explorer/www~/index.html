@@ -432,7 +432,7 @@
         <div class="toggleDescription" ></div>
     </div>
     <a class="tab" href="#" onclick="app.openTab('explorer')"   value="explorer" style="border-top-left-radius:  3px;">Explorer</a>
-    <a class="tab" href="#" onclick="app.openTab('playground')" value="playground"                                    >Playground</a>
+    <a class="tab" href="#" onclick="app.openTab('playground')" value="playground"                                    >Playground d</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   value="settings" style="border-top-right-radius: 3px;"><b>⋮</b></a>
     <span style="border-bottom: 1px solid var(--tab-border); width:100%;"></span>
     <span style="border-bottom: 1px solid var(--tab-border); font-size: 13px;">
@@ -603,7 +603,7 @@
 
     <div id="exBar1" style="grid-area: ex-bar1; cursor: ew-resize;" class="vbar" onmousedown="app.startDrag(event, 'explorer', id, true)"></div>
 
-    <div style="grid-area: ex-container; background-color: var(--background2); overflow: auto; ">
+    <div style="grid-area: ex-container; background-color: var(--background2); overflow: auto; overscroll-behavior: auto contain;">
       <div id="entityExplorer"  style="display: block; white-space:nowrap; outline: 0px solid transparent;"
            onkeydown="app.explorer.explorerKeyDown(event)" tabindex="0"></div>
     </div>
