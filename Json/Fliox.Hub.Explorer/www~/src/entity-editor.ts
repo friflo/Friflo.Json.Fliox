@@ -380,7 +380,7 @@ export class EntityEditor
 
     public  async deleteEntities (database: string, container: string, ids: string[]) : Promise<void> {
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
-        const response = await App.restRequest("DELETE", null, database, container, ids, null);        
+        const response = await EntityEditor.deleteIds(database, container, ids);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = this.formatResult("Delete", response.status, response.statusText, error);
@@ -390,6 +390,15 @@ export class EntityEditor
             this.setEntityValue(database, container, "");
             app.explorer.removeExplorerIds(ids);
         }
+    }
+
+    private static async deleteIds(database: string, container: string, ids: string[]) : Promise<Response> {
+        const idsStr = JSON.stringify(ids);
+        // Typical limit for urls in Chrome, ASP.NET: 2048
+        if (idsStr.length > 2000) {
+            return await App.restRequest("POST", idsStr, database, container, null, "delete-entities");
+        }
+        return await App.restRequest("DELETE", null, database, container, ids, null);
     }
 
     private entityModel:    monaco.editor.ITextModel;
