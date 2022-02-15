@@ -62,7 +62,8 @@ export class Explorer {
             database: p.database,
             container: p.container,
             entityType: entityType,
-            entities: null // explorer: entities not loaded
+            entities: null,
+            cursor: null
         };
         this.focusedCell = null;
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
@@ -73,7 +74,9 @@ export class Explorer {
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML = `${containerLink}<span class="spinner"></span>`;
-        const response = await App.restRequest("GET", null, p.database, p.container, null, query);
+        const maxCount = "maxCount=100";
+        const queryParams = query == null ? maxCount : `${query}&${maxCount}`;
+        const response = await App.restRequest("GET", null, p.database, p.container, null, queryParams);
         const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`;
         writeResult.innerHTML = "";
         readEntities.innerHTML = containerLink + reload;
@@ -82,6 +85,7 @@ export class Explorer {
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
+        this.explorer.cursor = response.headers.get("cursor");
         const entities = await response.json();
         this.explorer = Object.assign(Object.assign({}, this.explorer), { entities }); // explorer: entities loaded successful
         this.entityFields = {};
