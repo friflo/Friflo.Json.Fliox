@@ -10,6 +10,6 @@
     ],
     "info": [
       "query articles using maxCount forcing to return a cursor",
-      "assign returned cursor to cursor of subsequent tasks"
+      "assign returned cursor to cursor of the subsequent task"
     ]
   }

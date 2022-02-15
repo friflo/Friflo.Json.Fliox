@@ -79,9 +79,9 @@ export class Explorer {
         const e = this.explorer;
         if (e.loadingMore)
             return;
-        console.log("loadMore");
+        // console.log("loadMore");
         e.loadingMore = true;
-        const maxCount = `cursor=${e.cursor}&maxCount=100`;
+        const maxCount = `maxCount=100&cursor=${e.cursor}`;
         const queryParams = e.query == null ? maxCount : `${e.query}&${maxCount}`;
         const response = await App.restRequest("GET", null, e.database, e.container, null, queryParams);
         e.loadingMore = false;

@@ -215,15 +215,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private string StoreCursor(QueryEnumerator enumerator, in JsonKey userId) {
-            var cursor = enumerator.Cursor;
+            var cursor      = enumerator.Cursor;
             if (cursor != null) {
-                enumerator.Detach();
-                return cursor;
+                cursors.Remove(cursor);
             }
-            cursor = Guid.NewGuid().ToString();
-            enumerator.Detach(cursor, this, userId);
-            cursors.Add(cursor, enumerator);
-            return cursor;
+            var nextCursor  = Guid.NewGuid().ToString();
+            enumerator.Detach(nextCursor, this, userId);
+            cursors.Add(nextCursor, enumerator);
+            return nextCursor;
         }
         
         protected bool FindCursor(string cursor, MessageContext messageContext, out QueryEnumerator enumerator, out CommandError error) {
