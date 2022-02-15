@@ -4,6 +4,7 @@ const entityExplorer = el("entityExplorer");
 const writeResult = el("writeResult");
 const readEntitiesDB = el("readEntitiesDB");
 const readEntities = el("readEntities");
+const readEntitiesCount = el("readEntitiesCount");
 const catalogSchema = el("catalogSchema");
 const explorerTools = el("explorerTools");
 const entityType = el("entityType");
@@ -80,6 +81,7 @@ export class EntityEditor {
         entityFilter.style.visibility = "hidden";
         readEntitiesDB.innerHTML = App.getDatabaseLink(database);
         readEntities.innerHTML = "";
+        readEntitiesCount.innerHTML = "";
         const ulDatabase = createEl('ul');
         ulDatabase.classList.value = "database";
         const commandLabel = createEl('li');

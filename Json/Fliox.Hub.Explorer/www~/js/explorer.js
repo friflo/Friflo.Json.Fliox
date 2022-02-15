@@ -19,6 +19,7 @@ const entityExplorer = el("entityExplorer");
 const writeResult = el("writeResult");
 const readEntitiesDB = el("readEntitiesDB");
 const readEntities = el("readEntities");
+const readEntitiesCount = el("readEntitiesCount");
 const catalogSchema = el("catalogSchema");
 const explorerTools = el("explorerTools");
 const entityFilter = el("entityFilter");
@@ -822,6 +823,9 @@ export class Explorer {
         }
         // add new rows at once
         this.explorerTable.append(...newRows);
+        const count = this.explorerTable.rows.length - 1;
+        const countStr = `${count}${this.explorer.cursor ? " +" : ""}`;
+        readEntitiesCount.innerText = countStr;
     }
     static assignRowCells(tds, entity, entityFields, calcWidth) {
         let tdIndex = 1;

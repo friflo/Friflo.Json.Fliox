@@ -50,6 +50,7 @@ const entityExplorer    = el("entityExplorer");
 const writeResult       = el("writeResult");
 const readEntitiesDB    = el("readEntitiesDB");
 const readEntities      = el("readEntities");
+const readEntitiesCount = el("readEntitiesCount");
 const catalogSchema     = el("catalogSchema");
 const explorerTools     = el("explorerTools");
 
@@ -222,7 +223,7 @@ export class Explorer
         this.selectedRows = {};
         this.updateExplorerEntities(entities, entityType);
         this.setColumnWidths();
-        entityExplorer.innerText = "";
+        entityExplorer.innerText    = "";
         entityExplorer.appendChild(table);
         // set initial focus cell
         this.setFocusCell(1, 1);
@@ -934,6 +935,9 @@ export class Explorer
 
         // add new rows at once
         this.explorerTable.append(...newRows);
+        const count                 = this.explorerTable.rows.length - 1;
+        const countStr              = `${count}${this.explorer.cursor ? " +" : ""}`;
+        readEntitiesCount.innerText = countStr;
     }
 
     private static assignRowCells (tds: HTMLTableCellElement[], entity: Entity, entityFields: { [key: string] : Column }, calcWidth: boolean) {
