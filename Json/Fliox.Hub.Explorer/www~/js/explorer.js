@@ -829,6 +829,9 @@ export class Explorer {
         }
         // add new rows at once
         this.explorerTable.append(...newRows);
+        this.updateCount();
+    }
+    updateCount() {
         const count = this.explorerTable.rows.length - 1;
         const countStr = `${count}${this.explorer.cursor ? " +" : ""}`;
         readEntitiesCount.innerText = countStr;
@@ -911,6 +914,7 @@ export class Explorer {
             delete this.explorerRows[id];
             delete this.selectedRows[id];
         }
+        this.updateCount();
     }
     findRowIndices(ids) {
         const result = {};
