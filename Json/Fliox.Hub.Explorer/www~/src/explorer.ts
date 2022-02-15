@@ -232,7 +232,9 @@ export class Explorer
         entityExplorer.innerText    = "";
         entityExplorer.appendChild(table);
         // set initial focus cell
-        this.setFocusCell(1, 1);
+        if (this.explorerTable.rows.length > 1) {
+            this.setFocusCell(1, 1);
+        }
     }
 
     private async explorerOnClick(ev: MouseEvent, p: Resource) {
