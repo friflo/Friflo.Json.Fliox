@@ -226,14 +226,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             return cursor;
         }
         
-        protected bool FindCursor(string cursor, in JsonKey userId, out QueryEnumerator enumerator, out CommandError error) {
+        protected bool FindCursor(string cursor, MessageContext messageContext, out QueryEnumerator enumerator, out CommandError error) {
             if (cursor == null) {
                 enumerator  = null;
                 error       = null;
                 return true;
             }
-            if (cursors.TryGetValue(cursor, out enumerator)) {
-                if (enumerator.UserId.IsEqual(userId)) {
+            var user = messageContext.User;
+            if (user != null && cursors.TryGetValue(cursor, out enumerator)) {
+                if (enumerator.UserId.IsEqual(user.userId)) {
                     enumerator.Attach();
                     error = null;
                     return true;

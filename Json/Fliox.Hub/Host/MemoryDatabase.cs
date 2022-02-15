@@ -94,8 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var userId = messageContext.User.userId;
-            if (!FindCursor(command.cursor, userId, out var keyValueEnum, out var error)) {
+            if (!FindCursor(command.cursor, messageContext, out var keyValueEnum, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
             keyValueEnum = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
