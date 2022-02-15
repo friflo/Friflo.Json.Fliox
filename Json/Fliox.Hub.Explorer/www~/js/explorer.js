@@ -72,6 +72,10 @@ export class Explorer {
         e.cursor = response.headers.get("cursor");
         if (!response.ok)
             return;
+        const json = await response.json();
+        const entities = json;
+        const type = app.getContainerSchema(e.database, e.container);
+        this.updateExplorerEntities(entities, type);
     }
     async loadContainer(p, query) {
         var _a;

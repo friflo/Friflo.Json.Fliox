@@ -130,6 +130,11 @@ export class Explorer
 
         if (!response.ok)
             return;
+        const json      = await response.json();
+        const entities  = json as Entity[];
+        const type      = app.getContainerSchema(e.database, e.container);
+
+        this.updateExplorerEntities(entities, type);
     }
 
     private static selectAllHtml=
