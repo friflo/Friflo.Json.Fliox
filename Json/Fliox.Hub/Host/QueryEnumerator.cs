@@ -49,10 +49,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             detached = false;
         }
         
-        public void Detach() {
-            detached = true;
-        }
-        
         public void Detach(string cursor, EntityContainer container, in JsonKey userId) {
             detached        = true;
             Cursor          = cursor;

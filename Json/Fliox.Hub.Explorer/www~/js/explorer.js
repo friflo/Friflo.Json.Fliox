@@ -35,6 +35,7 @@ export class Explorer {
     constructor(config) {
         this.focusedCell = null;
         this.editCell = null;
+        this.explorerTable = null;
         this.cachedJsonValue = null;
         this.cachedJsonAst = null;
         this.entityFields = {};
@@ -93,6 +94,23 @@ export class Explorer {
         const type = app.getContainerSchema(e.database, e.container);
         this.updateExplorerEntities(entities, type);
     }
+    initExplorer(database, container, query, entityType) {
+        this.explorer = {
+            database: database,
+            container: container,
+            entityType: entityType,
+            entities: null,
+            query: query,
+            cursor: null,
+            loadingMore: false
+        };
+        this.focusedCell = null;
+        this.entityFields = {};
+        this.explorerRows = {};
+        this.selectedRows = {};
+        this.explorerTable = null;
+        entityExplorer.innerHTML = "";
+    }
     async loadContainer(p, query) {
         var _a;
         const storedFilter = (_a = this.config.filters[p.database]) === null || _a === void 0 ? void 0 : _a[p.container];
@@ -103,16 +121,7 @@ export class Explorer {
         const entityType = app.getContainerSchema(p.database, p.container);
         app.filter.database = p.database;
         app.filter.container = p.container;
-        this.explorer = {
-            database: p.database,
-            container: p.container,
-            entityType: entityType,
-            entities: null,
-            query: query,
-            cursor: null,
-            loadingMore: false
-        };
-        this.focusedCell = null;
+        this.initExplorer(p.database, p.container, query, entityType);
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility = "";
         entityFilter.style.visibility = "";
@@ -135,14 +144,11 @@ export class Explorer {
         const entities = await response.json();
         this.explorer = Object.assign(Object.assign({}, this.explorer), { entities }); // explorer: entities loaded successful
         this.explorer.cursor = response.headers.get("cursor");
-        this.entityFields = {};
         const head = this.createExplorerHead(entityType, this.entityFields);
         const table = this.explorerTable = createEl('table');
         table.append(head);
         table.classList.value = "entities";
         table.onclick = async (ev) => this.explorerOnClick(ev, p);
-        this.explorerRows = {};
-        this.selectedRows = {};
         this.updateExplorerEntities(entities, entityType);
         this.setColumnWidths();
         entityExplorer.innerText = "";

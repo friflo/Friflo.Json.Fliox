@@ -91,6 +91,7 @@ export class EntityEditor
     }
 
     public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) : void {
+        app.explorer.initExplorer(null, null, null, null);
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
 

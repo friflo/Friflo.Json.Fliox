@@ -80,7 +80,7 @@ export class Explorer
     private             focusedCell:        HTMLTableCellElement    = null;
     private             editCell:           HTMLTextAreaElement     = null;
 
-    private             explorerTable:      HTMLTableElement;
+    private             explorerTable:      HTMLTableElement        = null;
     private readonly    config:             Config
 
     private             cachedJsonValue:    string                  = null;
@@ -164,6 +164,24 @@ export class Explorer
        </div>
     </div>`;
 
+    public initExplorer(database: string, container: string, query: string, entityType: JsonType) : void {
+        this.explorer = {
+            database:       database,
+            container:      container,
+            entityType:     entityType,
+            entities:       null,    // explorer: entities not loaded
+            query:          query,
+            cursor:         null,
+            loadingMore:    false
+        };
+        this.focusedCell    = null;
+        this.entityFields   = {};
+        this.explorerRows   = {};
+        this.selectedRows   = {};
+        this.explorerTable  = null;
+        entityExplorer.innerHTML = "";
+    }
+
     public async loadContainer (p: Resource, query: string)  : Promise<void> {
         const storedFilter  = this.config.filters[p.database]?.[p.container];
         const filter        = storedFilter && storedFilter[0] ? storedFilter[0] : "";        
@@ -175,16 +193,8 @@ export class Explorer
         const entityType        = app.getContainerSchema(p.database, p.container);
         app.filter.database    = p.database;
         app.filter.container   = p.container;
-        this.explorer = {
-            database:       p.database,
-            container:      p.container,
-            entityType:     entityType,
-            entities:       null,    // explorer: entities not loaded
-            query:          query,
-            cursor:         null,
-            loadingMore:    false
-        };        
-        this.focusedCell = null;
+        this.initExplorer(p.database, p.container, query, entityType);
+
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility      = "";
         entityFilter.style.visibility   = "";
@@ -210,16 +220,13 @@ export class Explorer
         this.explorer           = { ...this.explorer, entities };   // explorer: entities loaded successful
         this.explorer.cursor    = response.headers.get("cursor");
 
-        this.entityFields   = {};
         const   head        = this.createExplorerHead(entityType, this.entityFields);
 
         const   table       = this.explorerTable = createEl('table');
         table.append(head);
         table.classList.value   = "entities";
-        table.onclick = async (ev) => this.explorerOnClick(ev, p);
-        
-        this.explorerRows = {};
-        this.selectedRows = {};
+        table.onclick = async (ev) => this.explorerOnClick(ev, p);        
+
         this.updateExplorerEntities(entities, entityType);
         this.setColumnWidths();
         entityExplorer.innerText    = "";

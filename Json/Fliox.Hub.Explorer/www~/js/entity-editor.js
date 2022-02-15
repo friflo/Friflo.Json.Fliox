@@ -70,6 +70,7 @@ export class EntityEditor {
         el("databaseType").innerHTML = dbContainer.databaseType;
     }
     listCommands(database, dbCommands, dbContainer) {
+        app.explorer.initExplorer(null, null, null, null);
         this.setDatabaseInfo(database, dbContainer);
         this.setExplorerEditor("dbInfo");
         const schemaType = app.getSchemaType(database);
