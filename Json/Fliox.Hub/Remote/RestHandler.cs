@@ -221,7 +221,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filter = CreateFilter(context, queryParams);
             if (filter == null)
                 return;
-            var queryEntities   = new QueryEntities{ container = container, filterTree = filter };
+            int? maxCount   = null;
+            var maxCountStr = queryParams["maxCount"];
+            if (maxCountStr != null) {
+                if (!int.TryParse(maxCountStr, out int value)) {
+                    context.WriteError("query error", $"expect maxCount as integer. was: {maxCountStr}", 400);
+                    return;
+                }
+                maxCount = value;
+            }
+            var  cursor         = queryParams["cursor"];
+            var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor};
             var restResult      = await ExecuteTask(context, database, queryEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
@@ -232,8 +242,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("query error", resultError.message, 500);
                 return;
             }
-            var entityMap     = restResult.syncResponse.resultMap[container].entityMap;
-            var entities = new List<JsonValue>(entityMap.Count);
+            var taskResult  = (QueryEntitiesResult)restResult.syncResponse.tasks[0];
+            if (taskResult.cursor != null) {
+                context.AddHeader("cursor", taskResult.cursor);
+            }
+            var entityMap   = restResult.syncResponse.resultMap[container].entityMap;
+            var entities    = new List<JsonValue>(entityMap.Count);
             foreach (var pair in entityMap) {
                 entities.Add(pair.Value.Json);
             }
