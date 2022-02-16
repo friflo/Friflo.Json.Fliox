@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -22,18 +23,21 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             
             var entityContainer     = database.GetOrCreateContainer(container);
-            RemoveCursors(entityContainer, cursors);
+            RemoveCursors(entityContainer, cursors, messageContext.User);
             
             var count               = entityContainer.cursors.Count;
             SyncTaskResult result   = new CloseCursorsResult { count = count };
             return Task.FromResult(result);
         }
         
-        private static void RemoveCursors(EntityContainer entityContainer, List<string> cursors) {
+        ///<summary> Note: A <see cref="user"/> can remove only its own cursors </summary>
+        private static void RemoveCursors(EntityContainer entityContainer, List<string> cursors, User user) {
             var containerCursors = entityContainer.cursors;
             if (cursors == null) {
                 foreach (var pair in containerCursors) {
                     var containerCursor = pair.Value;
+                    if (!containerCursor.UserId.IsEqual(user.userId))
+                        continue;
                     containerCursor.Attach();
                     containerCursor.Dispose();
                 }
@@ -41,6 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             foreach (var cursor in cursors) {
                 if (!containerCursors.TryGetValue(cursor, out var containerCursor))
+                    continue;
+                if (!containerCursor.UserId.IsEqual(user.userId))
                     continue;
                 containerCursor.Attach();
                 containerCursor.Dispose();
