@@ -241,8 +241,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                 //
                 case TaskType.read:         return read         && ((ReadEntities)      task).container == container;
                 case TaskType.query:        return query        && ((QueryEntities)     task).container == container;
-                case TaskType.aggregate:    return aggregate    && ((AggregateEntities) task).container == container;
                 case TaskType.closeCursors: return query        && ((CloseCursors)      task).container == container;
+                case TaskType.aggregate:    return aggregate    && ((AggregateEntities) task).container == container;
             }
             return false;
         }
