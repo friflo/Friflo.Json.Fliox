@@ -17,6 +17,7 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 
+// ReSharper disable SuggestBaseTypeForParameter
 // ReSharper disable ConvertIfStatementToSwitchStatement
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -167,7 +168,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
                 return;
             }
-            // ------------------    PUT            /database/container  or  /database/container/id
+            // ------------------    PUT            /database/container  
+            //                                      /database/container/id
             if (method == "PUT") {
                 int len = resource.Length; 
                 if (len != 2 && len != 3) {
@@ -187,6 +189,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteError("invalid path/method", path, 400);
         }
         
+        
+        // -------------------------------------- helper methods --------------------------------------
         private static JsonKey[] GetKeysFromIds(string[] ids) {
             var keys = new JsonKey[ids.Length];
             for (int n = 0; n < ids.Length; n++) {
