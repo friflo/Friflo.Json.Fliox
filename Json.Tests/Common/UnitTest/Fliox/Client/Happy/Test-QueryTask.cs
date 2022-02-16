@@ -109,13 +109,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articles    = store.articles;
             var queryAll    = articles.QueryAll();
             var count       = 0;
+            var iterations  = 0;
             while (true) {
-                queryAll.maxCount   = 1;
+                queryAll.maxCount   = 4;
+                iterations++;
             
                 await store.SyncTasks();
                 
-                count       += queryAll.Results.Count;
-                var cursor  =  queryAll.ResultCursor;
+                count          += queryAll.Results.Count;
+                var cursor      = queryAll.ResultCursor;
                 if (cursor == null)
                     break;
                 queryAll        = articles.QueryAll();
@@ -123,6 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
             
             AreEqual(6, count);
+            AreEqual(2, iterations);
         }
     }
 }
