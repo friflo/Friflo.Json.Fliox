@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public async Task HandleRequest(RequestContext context) {
             var path    = context.path;
             if (path.Length == RestBase.Length) {
-                // ------------------    GET            (no path)
+                // --------------    GET            /rest
                 if (context.method == "GET") { 
                     await Command(context, ClusterDB.Name, Std.HostCluster, new JsonValue()).ConfigureAwait(false); 
                     return;
@@ -56,7 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var isPost          = method == "POST";
             var resourcePath    = path.Substring(RestBase.Length + 1);
             
-            // ------------------    GET / POST     /database?command=...   /database?message=...
+            // ------------------    GET            /rest/database?command=...   /database?message=...
+            //                       POST           /rest/database?command=...   /database?message=...
             if ((command != null || message != null) && (isGet || isPost)) {
                 var database = resourcePath;
                 if (database.IndexOf('/') != -1) {
@@ -90,8 +91,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             
-            // --------------    POST               /database/container?get-entities
-            //                                      /database/container?delete-entities
+            // ------------------    POST           /rest/database/container?get-entities
+            //                       POST           /rest/database/container?delete-entities
             if (isPost && resource.Length == 2) {
                 var  allKeys        = queryParams.AllKeys;
                 bool getEntities    = false;
@@ -123,12 +124,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             
             if (isGet) {
-                // --------------    GET            /database
+                // --------------    GET            /rest/database
                 if (resource.Length == 1) {
                     await Command(context, resource[0], Std.Containers, new JsonValue()).ConfigureAwait(false); 
                     return;
                 }
-                // --------------    GET            /database/container
+                // --------------    GET            /rest/database/container
                 if (resource.Length == 2) {
                     var idsParam = queryParams["ids"];
                     if (idsParam != null) {
@@ -140,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
                     return;
                 }
-                // --------------    GET            /database/container/id
+                // --------------    GET            /rest/database/container/id
                 if (resource.Length == 3) {
                     await GetEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);    
                     return;
@@ -151,13 +152,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             var isDelete = method == "DELETE";
             if (isDelete) {
-                // --------------    DELETE         /database/container/id
+                // --------------    DELETE         /rest/database/container/id
                 if (resource.Length == 3) {
                     var keys = new [] { new JsonKey(resource[2]) };
                     await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
                     return;
                 }
-                // --------------    DELETE         /database/container?ids=id1,id2,...
+                // --------------    DELETE         /rest/database/container?ids=id1,id2,...
                 if (resource.Length == 2) {
                     var idsParam    = queryParams["ids"];
                     var ids         = idsParam.Split(',');
@@ -168,8 +169,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
                 return;
             }
-            // ------------------    PUT            /database/container  
-            //                                      /database/container/id
+            // ------------------    PUT            /rest/database/container  
+            //                       PUT            /rest/database/container/id
             if (method == "PUT") {
                 int len = resource.Length; 
                 if (len != 2 && len != 3) {
