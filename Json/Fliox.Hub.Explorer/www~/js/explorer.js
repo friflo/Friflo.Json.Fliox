@@ -59,7 +59,7 @@ export class Explorer {
         });
         parent.addEventListener('scroll', () => {
             //console.log("onscroll", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
-            if (!this.explorer.cursor || this.explorer.loadMorePending)
+            if (!this.loadMoreAvailable())
                 return;
             // var rect = element.getBoundingClientRect().
             // console.log("onscroll", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
@@ -76,9 +76,13 @@ export class Explorer {
         const row = focus.parentElement;
         return { column: focus.cellIndex, row: row.rowIndex };
     }
+    loadMoreAvailable() {
+        const e = this.explorer;
+        return e.cursor && e.loadMorePending == false;
+    }
     async loadMore() {
         const e = this.explorer;
-        if (!e.cursor || e.loadMorePending)
+        if (!this.loadMoreAvailable())
             return;
         // console.log("loadMore");
         e.loadMorePending = true;
@@ -86,9 +90,13 @@ export class Explorer {
         const queryParams = e.query == null ? maxCount : `${e.query}&${maxCount}`;
         const response = await App.restRequest("GET", null, e.database, e.container, null, queryParams);
         e.loadMorePending = false;
-        e.cursor = response.headers.get("cursor");
-        if (!response.ok)
+        if (!response.ok) {
+            const message = await response.text();
+            writeResult.innerHTML = EntityEditor.formatResult("loading more failed", response.status, response.statusText, message);
             return;
+        }
+        writeResult.innerHTML = "";
+        e.cursor = response.headers.get("cursor");
         const json = await response.json();
         const entities = json;
         const type = app.getContainerSchema(e.database, e.container);

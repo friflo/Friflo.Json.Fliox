@@ -256,7 +256,7 @@ export class EntityEditor
         this.updateGetEntitiesAnchor(database, container);
     }
 
-    private formatResult (action: string, statusCode: number, status: string, message: string) {
+    public static formatResult (action: string, statusCode: number, status: string, message: string) : string {
         const color = 200 <= statusCode && statusCode < 300 ? "green" : "red";
         return `<span>
             <span style="opacity:0.7">${action} status:</span>
@@ -336,10 +336,10 @@ export class EntityEditor
         const response          = await App.restRequest("PUT", jsonValue, database, container, requestIds, null);
         if (!response.ok) {
             const error = await response.text();
-            writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, error);
+            writeResult.innerHTML = EntityEditor.formatResult("Save", response.status, response.statusText, error);
             return;
         }
-        writeResult.innerHTML = this.formatResult("Save", response.status, response.statusText, "");
+        writeResult.innerHTML = EntityEditor.formatResult("Save", response.status, response.statusText, "");
         // add or update explorer entities
         app.explorer.updateExplorerEntities(entities, type);
         if (EntityEditor.arraysEquals(this.entityIdentity.entityIds, ids))
@@ -383,10 +383,10 @@ export class EntityEditor
         const response = await EntityEditor.deleteIds(database, container, ids);
         if (!response.ok) {
             const error = await response.text();
-            writeResult.innerHTML = this.formatResult("Delete", response.status, response.statusText, error);
+            writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, error);
         } else {
             this.entityIdentity.entityIds = [];
-            writeResult.innerHTML = this.formatResult("Delete", response.status, response.statusText, "");
+            writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, "");
             this.setEntityValue(database, container, "");
             app.explorer.removeExplorerIds(ids);
         }

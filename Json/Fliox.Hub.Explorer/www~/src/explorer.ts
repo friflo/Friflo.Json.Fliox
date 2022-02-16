@@ -121,7 +121,7 @@ export class Explorer
 
         parent.addEventListener('scroll', () => {
             //console.log("onscroll", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
-            if (!this.explorer.cursor || this.explorer.loadMorePending)
+            if (!this.loadMoreAvailable())
                 return;
 
             // var rect = element.getBoundingClientRect().
@@ -133,9 +133,14 @@ export class Explorer
         });
     }
 
+    private loadMoreAvailable() {
+        const e = this.explorer;
+        return e.cursor && e.loadMorePending == false;
+    }
+
     private async loadMore() {
         const e = this.explorer;
-        if (!e.cursor || e.loadMorePending)
+        if (!this.loadMoreAvailable())
             return;
         // console.log("loadMore");
         e.loadMorePending   = true;
@@ -144,10 +149,13 @@ export class Explorer
         const response      = await App.restRequest("GET", null, e.database, e.container, null, queryParams);
 
         e.loadMorePending   = false;
-        e.cursor            = response.headers.get("cursor");
-
-        if (!response.ok)
+        if (!response.ok) {
+            const message           = await response.text();
+            writeResult.innerHTML   = EntityEditor.formatResult("loading more failed", response.status, response.statusText, message);
             return;
+        }
+        writeResult.innerHTML = "";
+        e.cursor        = response.headers.get("cursor");
         const json      = await response.json();
         const entities  = json as Entity[];
         const type      = app.getContainerSchema(e.database, e.container);
