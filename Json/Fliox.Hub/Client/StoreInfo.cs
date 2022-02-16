@@ -24,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  int     readRefs;
         public  int     queries;
         public  int     aggregates;
+        public  int     closeCursors;
         public  int     patch;
         public  int     delete;
 
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             readRefs    = 0;
             queries     = 0;
             aggregates  = 0;
+            closeCursors= 0;
             patch       = 0;
             delete      = 0;
         }
@@ -81,21 +83,22 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             if (tasks > 0) {
                 bool first = false;
-                AppendTasks(sb, "tasks",        tasks,      ref first);
+                AppendTasks(sb, "tasks",        tasks,          ref first);
                 first = true;
                 sb.Append(" >> ");
-                Append(sb,  "create",           create,     ref first);
-                Append(sb,  "upsert",           upsert,     ref first);
-                AppendTasks(sb,  "reads",       reads,      ref first);
+                Append(sb,  "create",           create,         ref first);
+                Append(sb,  "upsert",           upsert,         ref first);
+                AppendTasks(sb,  "reads",       reads,          ref first);
                 if (readRefs > 0) {
                     sb.Append('(');
-                    Append(sb, "refs",          readRefs,    ref first);
+                    Append(sb, "refs",          readRefs,       ref first);
                     sb.Append(')');
                 }
-                AppendTasks(sb, "queries",      queries,    ref first);
-                AppendTasks(sb, "aggregates",   aggregates, ref first);
-                Append(sb,  "patch",            patch,      ref first);
-                Append(sb,  "delete",           delete,     ref first);
+                AppendTasks(sb, "queries",      queries,        ref first);
+                AppendTasks(sb, "aggregates",   aggregates,     ref first);
+                AppendTasks(sb, "closeCursors", closeCursors,   ref first);
+                Append(sb,  "patch",            patch,          ref first);
+                Append(sb,  "delete",           delete,         ref first);
             }
             return sb.ToString();
         }

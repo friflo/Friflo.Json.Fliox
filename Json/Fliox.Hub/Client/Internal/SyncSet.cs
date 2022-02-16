@@ -601,6 +601,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 SetInfo.Any  (_reads)       +
                 SetInfo.Count(_queries)     +
                 SetInfo.Count(_aggregates)  +
+                SetInfo.Count(_closeCursors)+
                 SetInfo.Any  (_creates)     +  SetInfo.Any  (_autos) +
                 SetInfo.Any  (_upserts)     +
                 SetInfo.Any  (_patches)     + SetInfo.Any(_patchTasks) +
@@ -608,14 +609,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 (_deleteTaskAll   != null ? 1 : 0) +
                 (subscribeChanges != null ? 1 : 0);
             //
-            info.reads      = SetInfo.Count(_reads);
-            info.queries    = SetInfo.Count(_queries);
-            info.aggregates = SetInfo.Count(_aggregates);
-            info.create     = SetInfo.Count(_creates) + SetInfo.Count(_autos);
-            info.upsert     = SetInfo.Count(_upserts);
-            info.patch      = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);
-            info.delete     = SetInfo.Count(_deletes);
-            // info.readRefs   = readRefsMap.Count;
+            info.reads          = SetInfo.Count(_reads);
+            info.queries        = SetInfo.Count(_queries);
+            info.aggregates     = SetInfo.Count(_aggregates);
+            info.closeCursors   = SetInfo.Count(_closeCursors);
+            info.create         = SetInfo.Count(_creates) + SetInfo.Count(_autos);
+            info.upsert         = SetInfo.Count(_upserts);
+            info.patch          = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);
+            info.delete         = SetInfo.Count(_deletes);
+            // info.readRefs    = readRefsMap.Count;
         }
     }
 }
