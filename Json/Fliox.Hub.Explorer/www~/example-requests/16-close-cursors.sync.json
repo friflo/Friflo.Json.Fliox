@@ -8,6 +8,6 @@
     ],
     "info": [
       "close all cursors to free database resources",
-      "specific cursors can be close by 'cursors'"
+      "specific cursors can be closed using 'cursors'"
     ]
   }
