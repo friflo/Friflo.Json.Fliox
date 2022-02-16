@@ -339,7 +339,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var closeResult             = (CloseCursorsResult) result;
             var closeCursor             = closeCursors[closeCursorsIndex++];
-            closeResult.count           = closeCursor.count;
+            closeCursor.count           = closeResult.count; 
             closeCursor.state.Executed  = true;
         }
 
