@@ -23,11 +23,17 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public struct UserInfo {
-        public  JsonKey userId; 
+    public readonly struct UserInfo {
+        public  readonly    JsonKey userId; 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public  string  token;
-        public  JsonKey clientId;
+        public  readonly    string  token;
+        public  readonly    JsonKey clientId;
+        
+        public UserInfo (in JsonKey userId, string token, in JsonKey clientId) {
+            this.userId     = userId;
+            this.token      = token;
+            this.clientId   = clientId;
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -134,11 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public UserInfo UserInfo {
-            get => new UserInfo {
-                userId     = _intern.userId,
-                token      = _intern.token,
-                clientId   = _intern.clientId
-            };
+            get => new UserInfo (_intern.userId, _intern.token, _intern.clientId);
             set {
                 _intern.userId  = value.userId;
                 _intern.token   = value.token;

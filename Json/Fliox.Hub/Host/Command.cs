@@ -43,11 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public              UserInfo        UserInfo { get {
             var user = messageContext.User;
-            return new UserInfo {
-                userId      = user.userId,
-                token       = user.token,
-                clientId    = messageContext.clientId
-            };
+            return new UserInfo (user.userId, user.token, messageContext.clientId);
         } }
 
 
