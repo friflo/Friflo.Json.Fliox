@@ -151,7 +151,7 @@ export class Explorer
         e.loadMorePending   = false;
         if (!response.ok) {
             const message           = await response.text();
-            writeResult.innerHTML   = EntityEditor.formatResult("loading more failed", response.status, response.statusText, message);
+            writeResult.innerHTML   = EntityEditor.formatResult(`${e.container}: load more entities failed.`, response.status, response.statusText, message);
             return;
         }
         writeResult.innerHTML = "";
