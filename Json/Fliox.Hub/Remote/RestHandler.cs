@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
                         return;
                     }
-                    await GetEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
+                    await QueryEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
                     return;
                 }
                 // --------------    GET            /rest/database/container/id
@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 var keyName = queryParams["keyName"];
                 var resource2 = len == 3 ? resource[2] : null;
-                await UpsertEntity(context, resource[0], resource[1], resource2, keyName, value).ConfigureAwait(false);
+                await UpsertEntities(context, resource[0], resource[1], resource2, keyName, value).ConfigureAwait(false);
                 return;
             }
             context.WriteError("invalid path/method", path, 400);
@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private async Task GetEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
+        private async Task QueryEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
             if (database == EntityDatabase.MainDB)
                 database = null;
             var filter = CreateFilter(context, queryParams);
@@ -401,7 +401,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain");
         }
         
-        private async Task UpsertEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
+        private async Task UpsertEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
             if (database == EntityDatabase.MainDB)
                 database = null;
             List<JsonValue> entities;
