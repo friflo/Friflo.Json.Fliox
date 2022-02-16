@@ -23,6 +23,13 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public struct UserInfo {
+        public  JsonKey userId; 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public  string  token;
+        public  JsonKey clientId;
+    }
+    
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -101,27 +108,42 @@ namespace Friflo.Json.Fliox.Hub.Client
             get => _intern.userId.AsString();
             set => _intern.userId = new JsonKey(value);
         }
-
-        public string ClientId {
-            get => _intern.clientId.AsString();
-            set {
-                var newClientId     = new JsonKey(value);
-                if (newClientId.IsEqual(_intern.clientId))
-                    return;
-                if (!_intern.clientId.IsNull()) {
-                    _intern.hub.RemoveEventTarget(_intern.clientId);
-                }
-                _intern.clientId    = newClientId;
-                if (!_intern.clientId.IsNull()) {
-                    _intern.hub.AddEventTarget(newClientId, _intern.eventTarget);
-                }
-            }
-        }
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Token {
             get => _intern.token;
             set => _intern.token   = value;
+        }
+
+        public string ClientId {
+            get => _intern.clientId.AsString();
+            set => SetClientId(new JsonKey(value));
+        }
+        
+        private void SetClientId(in JsonKey newClientId) {
+            if (newClientId.IsEqual(_intern.clientId))
+                return;
+            if (!_intern.clientId.IsNull()) {
+                _intern.hub.RemoveEventTarget(_intern.clientId);
+            }
+            _intern.clientId    = newClientId;
+            if (!_intern.clientId.IsNull()) {
+                _intern.hub.AddEventTarget(newClientId, _intern.eventTarget);
+            }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public UserInfo UserInfo {
+            get => new UserInfo {
+                userId     = _intern.userId,
+                token      = _intern.token,
+                clientId   = _intern.clientId
+            };
+            set {
+                _intern.userId  = value.userId;
+                _intern.token   = value.token;
+                SetClientId      (value.clientId);
+            }
         }
 
         // --- LogChanges

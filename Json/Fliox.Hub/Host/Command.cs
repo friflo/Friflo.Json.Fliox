@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Mapper;
 
@@ -39,6 +40,16 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return pooledMapper.instance.Read<TParam>(param);
             }
         }}
+        
+        public              UserInfo        UserInfo { get {
+            var user = messageContext.User;
+            return new UserInfo {
+                userId      = user.userId,
+                token       = user.token,
+                clientId    = messageContext.clientId
+            };
+        } }
+
 
         internal Command(string name, JsonValue param, MessageContext messageContext) {
             Name                = name;

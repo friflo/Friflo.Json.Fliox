@@ -44,10 +44,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// </summary> 
         private static async Task<FakeResult> Fake(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
-            var user            = command.User;
-            demoStore.UserId    = user.userId.ToString(); // todo simplify setting user/token
-            demoStore.Token     = user.token;
-            demoStore.ClientId  = "DemoFake";
+            demoStore.UserInfo  = command.UserInfo;
             
             var result = FakeUtils.CreateFakes(command.Param);
             
