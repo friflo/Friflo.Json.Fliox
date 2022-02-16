@@ -119,6 +119,14 @@ data class SendCommand (
 ) : SyncMessageTask()
 
 @Serializable
+@SerialName("closeCursor")
+data class CloseCursor (
+              val container : String,
+              val cursor    : String,
+    override  val info      : JsonElement? = null,
+) : SyncRequestTask()
+
+@Serializable
 @SerialName("subscribeChanges")
 data class SubscribeChanges (
               val container : String,
@@ -211,6 +219,11 @@ abstract class SyncMessageResult {
 data class SendCommandResult (
               val result : JsonElement? = null,
 ) : SyncMessageResult()
+
+@Serializable
+@SerialName("closeCursor")
+class CloseCursorResult (
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("subscribeChanges")

@@ -14,12 +14,13 @@
                 { "$ref": "#/definitions/DeleteEntities" },
                 { "$ref": "#/definitions/SendMessage" },
                 { "$ref": "#/definitions/SendCommand" },
+                { "$ref": "#/definitions/CloseCursor" },
                 { "$ref": "#/definitions/SubscribeChanges" },
                 { "$ref": "#/definitions/SubscribeMessage" },
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursor", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
                 "info": {  }
             },
             "required": [
@@ -211,6 +212,22 @@
             ],
             "additionalProperties": false
         },
+        "CloseCursor": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "properties": {
+                "task":      { "enum": ["closeCursor"] },
+                "container": { "type": "string" },
+                "cursor":    { "type": "string" },
+                "info":      {  }
+            },
+            "required": [
+                "task",
+                "container",
+                "cursor"
+            ],
+            "additionalProperties": false
+        },
         "SubscribeChanges": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
@@ -279,13 +296,14 @@
                 { "$ref": "#/definitions/DeleteEntitiesResult" },
                 { "$ref": "#/definitions/SendMessageResult" },
                 { "$ref": "#/definitions/SendCommandResult" },
+                { "$ref": "#/definitions/CloseCursorResult" },
                 { "$ref": "#/definitions/SubscribeChangesResult" },
                 { "$ref": "#/definitions/SubscribeMessageResult" },
                 { "$ref": "#/definitions/ReserveKeysResult" },
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursor", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
             },
             "required": [
                 "task"
@@ -404,6 +422,17 @@
             "properties": {
                 "task":   { "enum": ["command"] },
                 "result": {  }
+            },
+            "required": [
+                "task"
+            ],
+            "additionalProperties": false
+        },
+        "CloseCursorResult": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "properties": {
+                "task": { "enum": ["closeCursor"] }
             },
             "required": [
                 "task"

@@ -22,6 +22,7 @@ export type SyncRequestTask_Union =
     | DeleteEntities
     | SendMessage
     | SendCommand
+    | CloseCursor
     | SubscribeChanges
     | SubscribeMessage
     | ReserveKeys
@@ -38,6 +39,7 @@ export abstract class SyncRequestTask {
         | "delete"
         | "message"
         | "command"
+        | "closeCursor"
         | "subscribeChanges"
         | "subscribeMessage"
         | "reserveKeys"
@@ -123,6 +125,12 @@ export class SendCommand extends SyncMessageTask {
     task   : "command";
 }
 
+export class CloseCursor extends SyncRequestTask {
+    task       : "closeCursor";
+    container  : string;
+    cursor     : string;
+}
+
 export class SubscribeChanges extends SyncRequestTask {
     task       : "subscribeChanges";
     container  : string;
@@ -159,6 +167,7 @@ export type SyncTaskResult_Union =
     | DeleteEntitiesResult
     | SendMessageResult
     | SendCommandResult
+    | CloseCursorResult
     | SubscribeChangesResult
     | SubscribeMessageResult
     | ReserveKeysResult
@@ -176,6 +185,7 @@ export abstract class SyncTaskResult {
         | "delete"
         | "message"
         | "command"
+        | "closeCursor"
         | "subscribeChanges"
         | "subscribeMessage"
         | "reserveKeys"
@@ -228,6 +238,10 @@ export class SendMessageResult extends SyncMessageResult {
 export class SendCommandResult extends SyncMessageResult {
     task    : "command";
     result? : any | null;
+}
+
+export class CloseCursorResult extends SyncTaskResult {
+    task  : "closeCursor";
 }
 
 export class SubscribeChangesResult extends SyncTaskResult {

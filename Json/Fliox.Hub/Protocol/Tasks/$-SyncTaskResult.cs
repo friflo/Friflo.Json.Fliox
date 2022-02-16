@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     [Fri.Polymorph(typeof(SendMessageResult),       Discriminant = "message")]
     [Fri.Polymorph(typeof(SendCommandResult),       Discriminant = "command")]
+    [Fri.Polymorph(typeof(CloseCursorResult),       Discriminant = "closeCursor")]
     [Fri.Polymorph(typeof(SubscribeChangesResult),  Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessageResult),  Discriminant = "subscribeMessage")]
     [Fri.Polymorph(typeof(ReserveKeysResult),       Discriminant = "reserveKeys")]
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         aggregate,
         message,
         command,
+        closeCursor,
         subscribeChanges,
         subscribeMessage,
         reserveKeys,
