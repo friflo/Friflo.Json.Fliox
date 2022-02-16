@@ -52,6 +52,7 @@ namespace Friflo.Json.Tests.Main
         ///     2. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id <br/>
         ///   </item>
         ///   <item> Enable Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
+        ///   <item> Support query cursors to fetch container records iteratively </item>
         ///   <item> Enable user authentication and authorization of tasks requested by a user </item>
         ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db </item>
         ///   <item> Expose server Monitoring as an extension database to get statistics about requests and tasks executed by users and clients </item>
