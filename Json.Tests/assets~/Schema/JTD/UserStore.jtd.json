@@ -58,7 +58,7 @@
                 "aggregate",
                 "message",
                 "command",
-                "closeCursor",
+                "closeCursors",
                 "subscribeChanges",
                 "subscribeMessage",
                 "reserveKeys",

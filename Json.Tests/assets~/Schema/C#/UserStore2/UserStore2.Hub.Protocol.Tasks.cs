@@ -16,7 +16,7 @@ public enum TaskType {
     aggregate,
     message,
     command,
-    closeCursor,
+    closeCursors,
     subscribeChanges,
     subscribeMessage,
     reserveKeys,

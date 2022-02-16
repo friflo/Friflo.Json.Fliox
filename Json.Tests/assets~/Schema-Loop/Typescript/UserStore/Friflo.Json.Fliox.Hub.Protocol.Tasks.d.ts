@@ -10,7 +10,7 @@ export type TaskType =
     | "aggregate"
     | "message"
     | "command"
-    | "closeCursor"
+    | "closeCursors"
     | "subscribeChanges"
     | "subscribeMessage"
     | "reserveKeys"

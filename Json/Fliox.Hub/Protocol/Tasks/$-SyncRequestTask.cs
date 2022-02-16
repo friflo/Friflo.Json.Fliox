@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     [Fri.Polymorph(typeof(SendMessage),             Discriminant = "message")]
     [Fri.Polymorph(typeof(SendCommand),             Discriminant = "command")]
-    [Fri.Polymorph(typeof(CloseCursor),             Discriminant = "closeCursor")]
+    [Fri.Polymorph(typeof(CloseCursors),            Discriminant = "closeCursors")]
     [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
     [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]

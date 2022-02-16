@@ -119,10 +119,10 @@ data class SendCommand (
 ) : SyncMessageTask()
 
 @Serializable
-@SerialName("closeCursor")
-data class CloseCursor (
+@SerialName("closeCursors")
+data class CloseCursors (
               val container : String,
-              val cursor    : String,
+              val cursors   : List<String>? = null,
     override  val info      : JsonElement? = null,
 ) : SyncRequestTask()
 
@@ -221,8 +221,9 @@ data class SendCommandResult (
 ) : SyncMessageResult()
 
 @Serializable
-@SerialName("closeCursor")
-class CloseCursorResult (
+@SerialName("closeCursors")
+data class CloseCursorsResult (
+              val count : Int,
 ) : SyncTaskResult()
 
 @Serializable

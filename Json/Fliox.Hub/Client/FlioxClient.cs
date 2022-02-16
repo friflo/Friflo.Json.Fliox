@@ -610,7 +610,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
                     syncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
-                case TaskType.closeCursor:
+                case TaskType.closeCursors:
                     break;
                 case TaskType.aggregate:
                     var aggregate =         (AggregateEntities)     task;

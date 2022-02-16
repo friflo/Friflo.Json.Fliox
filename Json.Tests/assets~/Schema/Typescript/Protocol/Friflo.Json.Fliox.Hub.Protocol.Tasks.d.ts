@@ -22,7 +22,7 @@ export type SyncRequestTask_Union =
     | DeleteEntities
     | SendMessage
     | SendCommand
-    | CloseCursor
+    | CloseCursors
     | SubscribeChanges
     | SubscribeMessage
     | ReserveKeys
@@ -39,7 +39,7 @@ export abstract class SyncRequestTask {
         | "delete"
         | "message"
         | "command"
-        | "closeCursor"
+        | "closeCursors"
         | "subscribeChanges"
         | "subscribeMessage"
         | "reserveKeys"
@@ -125,10 +125,10 @@ export class SendCommand extends SyncMessageTask {
     task   : "command";
 }
 
-export class CloseCursor extends SyncRequestTask {
-    task       : "closeCursor";
+export class CloseCursors extends SyncRequestTask {
+    task       : "closeCursors";
     container  : string;
-    cursor     : string;
+    cursors?   : string[] | null;
 }
 
 export class SubscribeChanges extends SyncRequestTask {
@@ -167,7 +167,7 @@ export type SyncTaskResult_Union =
     | DeleteEntitiesResult
     | SendMessageResult
     | SendCommandResult
-    | CloseCursorResult
+    | CloseCursorsResult
     | SubscribeChangesResult
     | SubscribeMessageResult
     | ReserveKeysResult
@@ -185,7 +185,7 @@ export abstract class SyncTaskResult {
         | "delete"
         | "message"
         | "command"
-        | "closeCursor"
+        | "closeCursors"
         | "subscribeChanges"
         | "subscribeMessage"
         | "reserveKeys"
@@ -240,8 +240,9 @@ export class SendCommandResult extends SyncMessageResult {
     result? : any | null;
 }
 
-export class CloseCursorResult extends SyncTaskResult {
-    task  : "closeCursor";
+export class CloseCursorsResult extends SyncTaskResult {
+    task   : "closeCursors";
+    count  : int32;
 }
 
 export class SubscribeChangesResult extends SyncTaskResult {

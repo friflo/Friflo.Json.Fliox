@@ -47,7 +47,7 @@
                 "delete":           { "ref":  "DeleteEntities" },
                 "message":          { "ref":  "SendMessage" },
                 "command":          { "ref":  "SendCommand" },
-                "closeCursor":      { "ref":  "CloseCursor" },
+                "closeCursors":     { "ref":  "CloseCursors" },
                 "subscribeChanges": { "ref":  "SubscribeChanges" },
                 "subscribeMessage": { "ref":  "SubscribeMessage" },
                 "reserveKeys":      { "ref":  "ReserveKeys" }
@@ -593,10 +593,10 @@
                 "info":  { "nullable": true }
             }
         },
-        "CloseCursor": {
+        "CloseCursors": {
             "properties": {
                 "container": { "type": "string" },
-                "cursor":    { "type": "string" },
+                "cursors":   { "elements": { "type": "string" }, "nullable": true },
                 "info":      { "nullable": true }
             }
         },
@@ -667,7 +667,7 @@
                 "delete":           { "ref":  "DeleteEntitiesResult" },
                 "message":          { "ref":  "SendMessageResult" },
                 "command":          { "ref":  "SendCommandResult" },
-                "closeCursor":      { "ref":  "CloseCursorResult" },
+                "closeCursors":     { "ref":  "CloseCursorsResult" },
                 "subscribeChanges": { "ref":  "SubscribeChangesResult" },
                 "subscribeMessage": { "ref":  "SubscribeMessageResult" },
                 "reserveKeys":      { "ref":  "ReserveKeysResult" },
@@ -744,9 +744,9 @@
                 "result": { "nullable": true }
             }
         },
-        "CloseCursorResult": {
+        "CloseCursorsResult": {
             "properties": {
-
+                "count": { "type": "int32" }
             }
         },
         "SubscribeChangesResult": {
