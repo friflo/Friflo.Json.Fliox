@@ -41,6 +41,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<AggregateTask<TKey, T>>            _aggregates;
         private     int                                     aggregatesTasksIndex;
         
+        private     List<CloseCursorsTask>                  _closeCursors;
+        private     int                                     closeCursorsIndex;
+
         private     HashSet<T>                              _autos;
         
         private     ReserveKeysTask<TKey,T>                 _reserveKeys;
@@ -64,6 +67,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     Dictionary<string, QueryTask<TKey, T>>  Queries()    => _queries     ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
         
         private     List<AggregateTask<TKey, T>>            Aggregates() => _aggregates  ?? (_aggregates  = new List<AggregateTask<TKey, T>>());
+        
+        private     List<CloseCursorsTask>                  CloseCursors()=> _closeCursors ?? (_closeCursors  = new List<CloseCursorsTask>());
         
         private     SubscribeChangesTask<T>                 subscribeChanges;
 
@@ -131,6 +136,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             query = new QueryTask<TKey, T>(filter, set.intern.store);
             queries.Add(filterLinq, query);
             return query;
+        }
+        
+        internal CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {
+            var closeCursors = CloseCursors(); 
+            var closeCursor = new CloseCursorsTask(cursors);
+            closeCursors.Add(closeCursor);
+            return closeCursor;
         }
         
         // --- Aggregate
@@ -296,6 +308,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ReadEntities        (tasks);
             QueryEntities       (tasks);
             AggregateEntities   (tasks);
+            CloseCursors        (tasks);
             PatchEntities       (tasks, mapper);
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
@@ -439,7 +452,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 tasks.Add(req);
             }
         }
-        
+
         private void AggregateEntities(List<SyncRequestTask> tasks) {
             if (_aggregates == null || _aggregates.Count == 0)
                 return;
@@ -455,6 +468,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 //  isIntKey    = IsIntKey(set.IsIntKey()),  
                     filterTree  = filterTree,
                     filter      = aggregate.filterLinq
+                };
+                tasks.Add(req);
+            }
+        }
+        
+        private void CloseCursors(List<SyncRequestTask> tasks) {
+            if (_closeCursors == null || _closeCursors.Count == 0)
+                return;
+            foreach (var closeCursor in _closeCursors) {
+                var req = new CloseCursors {
+                    container   = set.name,
+                    cursors     = closeCursor.cursors 
                 };
                 tasks.Add(req);
             }

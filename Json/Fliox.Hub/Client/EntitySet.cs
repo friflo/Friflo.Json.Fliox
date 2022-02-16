@@ -210,6 +210,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        public CloseCursorsTask CloseCursors(IEnumerable<string> cursors) {
+            var task = GetSyncSet().CloseCursors(cursors);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
         // --- Aggregate
         public AggregateTask<TKey, T> Aggregate(AggregateType type, Expression<Func<T, bool>> filter) {
             if (filter == null)

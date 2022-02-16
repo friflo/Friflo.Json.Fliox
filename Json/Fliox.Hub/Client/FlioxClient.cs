@@ -611,6 +611,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                     syncSet.QueryEntitiesResult(query, result, queryEntities);
                     break;
                 case TaskType.closeCursors:
+                    var closeCursors =      (CloseCursors)     task;
+                    syncSet = syncSets[closeCursors.container];
+                    syncSet.CloseCursorsResult(closeCursors, result);
                     break;
                 case TaskType.aggregate:
                     var aggregate =         (AggregateEntities)     task;

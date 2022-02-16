@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    AggregateEntitiesResult (AggregateEntities  task, SyncTaskResult result);
+        internal  abstract  void    CloseCursorsResult      (CloseCursors       task, SyncTaskResult result);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, SyncTaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, SyncTaskResult result);
@@ -328,6 +329,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var aggregate               = aggregates[aggregatesTasksIndex++];
             aggregate.result            = aggregateResult.value;
             aggregate.state.Executed    = true;
+        }
+        
+        internal override void CloseCursorsResult (CloseCursors task, SyncTaskResult result) {
+            var closeCursors = CloseCursors();
+            if (result is TaskErrorResult taskError) {
+                // todo set error
+                return;
+            }
+            var closeResult             = (CloseCursorsResult) result;
+            var closeCursor             = closeCursors[closeCursorsIndex++];
+            closeResult.count           = closeCursor.count;
+            closeCursor.state.Executed  = true;
         }
 
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all

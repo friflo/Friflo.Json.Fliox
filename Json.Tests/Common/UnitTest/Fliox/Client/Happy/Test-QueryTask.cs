@@ -123,9 +123,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 queryAll        = articles.QueryAll();
                 queryAll.cursor = cursor;
             }
-            
             AreEqual(6, count);
             AreEqual(2, iterations);
+            
+            var closeCursors = articles.CloseCursors(null);
+            await store.SyncTasks();
+            
+            var openCursors = closeCursors.Count; 
+            AreEqual(0, openCursors);
         }
     }
 }
