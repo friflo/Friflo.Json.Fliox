@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 if (command != null) {
-                    await Command(context, database, command, value).ConfigureAwait(false);
+                    await Command(context, database, command, value).ConfigureAwait(false); 
                     return;
                 }
                 await Message(context, database, message, value).ConfigureAwait(false);
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 bool getEntities    = false;
                 bool deleteEntities = false;
                 for (int n = 0; n < allKeys.Length; n++) {
-                    var key = queryParams.Get(n); // who made this crazy interface ?!? :)
+                    var key         = queryParams.Get(n); // what a crazy interface! :)
                     getEntities     |= key == "get-entities";
                     deleteEntities  |= key == "delete-entities";
                 }
