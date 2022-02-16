@@ -432,7 +432,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     isIntKey    = IsIntKey(set.IsIntKey()),  
                     filterTree  = filterTree,
                     filter      = query.filterLinq,
-                    references  = references
+                    references  = references,
+                    maxCount    = query.maxCount,
+                    cursor      = query.cursor
                 };
                 tasks.Add(req);
             }

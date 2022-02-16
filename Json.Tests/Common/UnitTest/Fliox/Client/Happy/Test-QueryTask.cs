@@ -102,6 +102,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(1,                 producerEmployees.Results.Count);
             AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
         }
+        
+        [Test] public async Task TestQueryCursor      () { await TestCreate(async (store) => await AssertQueryCursor            (store)); }
 
+        private static async Task AssertQueryCursor(PocStore store) {
+            var articles    = store.articles;
+            var queryAll    = articles.QueryAll();
+            var count       = 0;
+            while (true) {
+                queryAll.maxCount   = 1;
+            
+                await store.SyncTasks();
+                
+                count       += queryAll.Results.Count;
+                var cursor  =  queryAll.ResultCursor;
+                if (cursor == null)
+                    break;
+                queryAll        = articles.QueryAll();
+                queryAll.cursor = cursor;
+            }
+            
+            AreEqual(6, count);
+        }
     }
 }
