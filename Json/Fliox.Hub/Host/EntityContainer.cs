@@ -285,9 +285,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                     }
                     for (int n = 0; n < references.Count; n++) {
                         // selectorResults[n] contains Select() result of selectors[n] 
-                        var entityRefs = selectorResults[n].AsJsonKeys();
+                        var entityRefs      = selectorResults[n].AsJsonKeys();
                         var referenceResult = referenceResults[n];
-                        referenceResult.ids.UnionWith(entityRefs);  // TAG_PERF (count & combine)
+                        var ids             = referenceResult.ids;
+                        ids.UnionWith(entityRefs);  // TAG_PERF (count & combine)
+                        if (ids.Count > 0) {
+                            referenceResult.count = ids.Count;     
+                        }
                     }
                 }
             }

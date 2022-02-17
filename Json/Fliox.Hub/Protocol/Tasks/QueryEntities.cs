@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary> Is used only to show the number of <see cref="ids"/> in a serialized protocol message
         /// to avoid counting them by hand when debugging.
         /// It is not used by the library as it is redundant information. </summary>
-                        public  int?                            count;
+        [DebugInfo]     public  int?                            count;
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
                         

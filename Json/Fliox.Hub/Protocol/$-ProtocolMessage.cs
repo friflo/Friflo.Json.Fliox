@@ -127,4 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         resp,
         error
     }
+    
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class DebugInfoAttribute : Attribute { }
 }
