@@ -6,8 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DemoHub
 {
     [Fri.CommandPrefix("demo.")]
-    public partial class DemoStore
-    {
+    public partial class DemoStore {
         // --- commands
         /// <summary> Generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
         public CommandTask<FakeResult>Fake (Fake        param)  => SendCommand<Fake, FakeResult>("demo.Fake", param);

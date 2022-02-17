@@ -16,8 +16,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs
     /// </summary>
-    public partial class DemoStore : FlioxClient
-    {
+    public partial class DemoStore : FlioxClient {
         // --- containers
         public readonly EntitySet <Guid, Order>       orders;
         public readonly EntitySet <Guid, Customer>    customers;
@@ -42,8 +41,7 @@ namespace Friflo.Json.Fliox.DemoHub
                public   string                  name;
     }
 
-    public class Article
-    {
+    public class Article {
         [Req]   public   Guid                   id { get; set; }
         [Req]   public   string                 name;
                 public   Ref<Guid, Producer>    producer;
