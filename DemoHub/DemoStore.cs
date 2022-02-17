@@ -35,16 +35,12 @@ namespace Friflo.Json.Fliox.DemoHub
                 public  Ref<Guid, Customer>     customer;
                 public  DateTime                created;
                 public  List<OrderItem>         items = new List<OrderItem>();
-                        
-        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class OrderItem {
         [Req]  public   Ref<Guid, Article>      article;
                public   int                     amount;
                public   string                  name;
-                        
-        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Article
@@ -52,31 +48,23 @@ namespace Friflo.Json.Fliox.DemoHub
         [Req]   public   Guid                   id { get; set; }
         [Req]   public   string                 name;
                 public   Ref<Guid, Producer>    producer;
-                        
-        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Customer {
         [Req]   public   Guid                   id { get; set; }
         [Req]   public   string                 name;
-        
-        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Producer {
-        [Req]   public  Guid                    id { get; set; }
-        [Req]   public  string                  name;
+        [Req]   public  Guid                        id { get; set; }
+        [Req]   public  string                      name;
         [Fri.Property (Name =                      "employees")]
-                public  List<Ref<Guid, Employee>> employeeList;
-                        
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+                public  List<Ref<Guid, Employee>>   employeeList;
     }
     
     public class Employee {
         [Req]   public  Guid                    id { get; set; }
         [Req]   public  string                  firstName;
                 public  string                  lastName;
-                        
-        public override string                  ToString() => JsonSerializer.Serialize(this);
     }
 }
