@@ -701,6 +701,7 @@
             "properties": {
                 "error":      { "type": "string", "nullable": true },
                 "container":  { "type": "string", "nullable": true },
+                "count":      { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
@@ -709,6 +710,7 @@
             "properties": {
                 "container":  { "type": "string", "nullable": true },
                 "cursor":     { "type": "string", "nullable": true },
+                "count":      { "type": "int32", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }

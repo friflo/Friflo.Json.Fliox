@@ -40,6 +40,7 @@
             "properties": {
                 "error":      { "type": ["string", "null"] },
                 "container":  { "type": ["string", "null"] },
+                "count":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
             },

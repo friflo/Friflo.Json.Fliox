@@ -210,6 +210,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     task        : "query";
     container?  : string | null;
     cursor?     : string | null;
+    count?      : int32 | null;
     ids         : string[];
     references? : ReferencesResult[] | null;
 }

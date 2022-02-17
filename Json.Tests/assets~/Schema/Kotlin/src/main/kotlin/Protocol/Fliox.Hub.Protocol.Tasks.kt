@@ -184,6 +184,7 @@ data class ReadEntitiesResult (
 data class QueryEntitiesResult (
               val container  : String? = null,
               val cursor     : String? = null,
+              val count      : Int? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
 ) : SyncTaskResult()

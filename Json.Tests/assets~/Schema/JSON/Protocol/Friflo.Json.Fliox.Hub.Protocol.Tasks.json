@@ -351,6 +351,7 @@
                 "task":       { "enum": ["query"] },
                 "container":  { "type": ["string", "null"] },
                 "cursor":     { "type": ["string", "null"] },
+                "count":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },

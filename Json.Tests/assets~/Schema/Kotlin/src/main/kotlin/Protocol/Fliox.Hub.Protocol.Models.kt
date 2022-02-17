@@ -28,6 +28,7 @@ data class ReadEntitiesSetResult (
 data class ReferencesResult (
               val error      : String? = null,
               val container  : String? = null,
+              val count      : Int? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
 )
