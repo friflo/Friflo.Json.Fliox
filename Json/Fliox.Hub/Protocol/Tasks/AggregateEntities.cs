@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task result -----------------------------------
     public sealed class AggregateEntitiesResult : SyncTaskResult, ICommandResult
     {
-                        public  string          container;  // only for debugging ergonomics
+        [DebugInfo]     public  string          container;
                         public  double?         value;      // set if not using groupBy
         [Fri.Ignore]    public  CommandError    Error { get; set; }
 

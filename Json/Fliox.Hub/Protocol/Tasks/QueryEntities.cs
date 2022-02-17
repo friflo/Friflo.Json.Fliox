@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task result -----------------------------------
     public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
-                        public  string                          container;  // only for debugging ergonomics
+        [DebugInfo]     public  string                          container;
                         public  string                          cursor;
         /// <summary> Is used only to show the number of <see cref="ids"/> in a serialized protocol message
         /// to avoid counting them by hand when debugging.

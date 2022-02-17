@@ -128,6 +128,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         error
     }
     
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    /// <summary>
+    /// Annotated fields are only available for debugging ergonomics.
+    /// They are not not used by the library in any way as they represent redundant information.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field)]
     public sealed class DebugInfoAttribute : Attribute { }
 }

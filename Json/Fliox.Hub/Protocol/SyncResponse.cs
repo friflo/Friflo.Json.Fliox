@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     public sealed class EntityErrors
     {
-                        public  string                              container; // only for debugging
+        [DebugInfo]     public  string                              container;
         [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         
         public EntityErrors() {} // required for TypeMapper
