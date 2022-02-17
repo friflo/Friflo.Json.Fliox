@@ -14,13 +14,13 @@ namespace Friflo.Json.Fliox.DemoHub
     /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with a <see cref="Command{TParam}"/>
     /// parameter is added as a command handler. <br/>
     /// Their method names need to match the commands methods declared in the <see cref="DemoStore"/>.
-    /// </summary> 
+    /// </summary>
     public class DemoHandler : TaskHandler
     {
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         
         internal DemoHandler() {
-            AddCommandHandlers(this, null);
+            AddCommandHandlers(this, "demo.");
         }
         
         /// synchronous command handler - preferred if possible

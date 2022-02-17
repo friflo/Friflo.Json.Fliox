@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         
         public static CommandInfo[] GetCommandInfos (Type type) {
             var commandInfos    = new List<CommandInfo>();
-            var commands        = GetCommandTypes(type, "");
+            var commandPrefix   = GetCommandPrefix(type.CustomAttributes);
+            var commands        = GetCommandTypes(type, commandPrefix);
             if (commands != null) {
                 commandInfos.AddRange(commands);
             }
@@ -81,6 +82,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var qualifiedName = prefix == "" ? name : prefix + name;
             commandInfo = new CommandInfo(qualifiedName, valueType, resultType);
             return true;
+        }
+        
+        private static string GetCommandPrefix(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.CommandPrefixAttribute)) {
+                    var arg     = attr.ConstructorArguments;
+                    var value   = (string)arg[0].Value;
+                    return value ?? "";
+                }
+            }
+            return "";
         }
     }
     

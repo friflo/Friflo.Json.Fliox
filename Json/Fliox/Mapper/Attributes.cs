@@ -65,6 +65,11 @@ namespace Friflo.Json.Fliox.Mapper
         public sealed class RelationAttribute : Attribute {
             public RelationAttribute (string instance) {}
         }
+        
+        [AttributeUsage(AttributeTargets.Class)]
+        public sealed class CommandPrefixAttribute : Attribute {
+            public CommandPrefixAttribute (string prefix) { }
+        }
     }
     
 

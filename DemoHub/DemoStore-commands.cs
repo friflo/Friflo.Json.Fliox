@@ -1,20 +1,22 @@
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.DemoHub
 {
+    [Fri.CommandPrefix("demo.")]
     public partial class DemoStore
     {
         // --- commands
-        /// <summary> Generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary> 
-        public CommandTask<FakeResult>Fake (Fake        param)      => SendCommand<Fake, FakeResult>(nameof(Fake), param);
+        /// <summary> Generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
+        public CommandTask<FakeResult>Fake (Fake        param)      => SendCommand<Fake, FakeResult>("demo.Fake", param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
-        public CommandTask<double>    Add  (Operands    param)      => SendCommand<Operands, double>(nameof(Add),  param);
+        public CommandTask<double>    Add  (Operands    param)      => SendCommand<Operands, double>("demo.Add",  param);
         
         /// <summary> simple command multiplying two numbers - no database access. </summary>
-        public CommandTask<double>    Mul  (Operands    param)      => SendCommand<Operands, double>(nameof(Mul),  param);
+        public CommandTask<double>    Mul  (Operands    param)      => SendCommand<Operands, double>("demo.Mul",  param);
     }
     
     public class Operands {
