@@ -89,7 +89,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
             result.container    = container;
-            result.ids          = entities.Keys.ToHashSet(JsonKey.Equality); // TAG_PERF
+            var ids             = entities.Keys.ToHashSet(JsonKey.Equality); // TAG_PERF
+            result.ids          = ids;
+            if (ids.Count > 0) {
+                result.count        = ids.Count;
+            }
             result.references   = queryRefsResults.references;
             return result;
         }
@@ -100,6 +104,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
                         public  string                          container;  // only for debugging ergonomics
                         public  string                          cursor;
+        /// <summary> Is used only to show the number of <see cref="ids"/> in a serialized protocol message
+        /// to avoid counting them by hand when debugging.
+        /// It is not used by the library as it is redundant information. </summary>
+                        public  int?                            count;
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
                         
