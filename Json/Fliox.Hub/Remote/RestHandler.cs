@@ -227,6 +227,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return command != null ? "command error" : "message error";
         }
         
+        private static bool TryParseParamAsInt(RequestContext context, string name, NameValueCollection queryParams, out int? result) {
+            var valueStr = queryParams[name];
+            if (valueStr != null) {
+                if (!int.TryParse(valueStr, out int value)) {
+                    context.WriteError("url parameter error", $"expect {name} as integer. was: {valueStr}", 400);
+                    result = null;
+                    return false;
+                }
+                result = value;
+                return true;
+            }
+            result = null;
+            return true;
+        }
+        
         // -------------------------------------- resource access  --------------------------------------
         private async Task GetEntitiesById(RequestContext context, string database, string container, JsonKey[] keys) {
             if (database == EntityDatabase.MainDB)
@@ -270,15 +285,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filter = CreateFilter(context, queryParams);
             if (filter == null)
                 return;
-            int? maxCount   = null;
-            var maxCountStr = queryParams["maxCount"];
-            if (maxCountStr != null) {
-                if (!int.TryParse(maxCountStr, out int value)) {
-                    context.WriteError("query error", $"expect maxCount as integer. was: {maxCountStr}", 400);
-                    return;
-                }
-                maxCount = value;
-            }
+            if (!TryParseParamAsInt(context, "maxCount", queryParams, out int? maxCount))
+                return;
             var cursor          = queryParams["cursor"];
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor};
             var restResult      = await ExecuteTask(context, database, queryEntities).ConfigureAwait(false);
