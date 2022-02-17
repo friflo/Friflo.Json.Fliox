@@ -177,7 +177,7 @@
             height:     22px;
         }
         .dropbtn::before { opacity: 0.4; content: "▼"; }
-        .authInput { width: 100px; }
+        .authInput { width: 70px; }
         .dropdown {
             position: relative;
             display: inline-block;
@@ -253,6 +253,11 @@
         .tab:hover      { background-color: var(--tab-hover);   border-bottom: 1px solid #ffffff00; }
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; background-color: var(--background); }
+
+        .project        { margin: 0 5px; overflow: hidden; display: flex; box-shadow: 0px 0.5px 4px 0px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.1);  }
+
+        .project-name   { height: 18px; padding: 0px 4px; margin: 0; background-color: var(--background2); color: var(--color);  border-top-left-radius:  3px;  border-bottom-left-radius: 3px; }
+        .project-env    { height: 18px; padding: 0px 4px; margin: 0; background-color: gray;             color: white;       border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
 
         .applyFilter        { cursor: pointer; border-radius: 2px; width: 28px; height: 14px; display:inline-block; text-align: center;
                               margin-right: 1px; font-size: 11px; padding-top: 5px; padding-bottom: 5px; margin-top: 2px; }
@@ -434,11 +439,18 @@
     <a class="tab" href="#" onclick="app.openTab('explorer')"   value="explorer" style="border-top-left-radius:  3px;">Explorer</a>
     <a class="tab" href="#" onclick="app.openTab('playground')" value="playground"                                    >Playground</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   value="settings" style="border-top-right-radius: 3px;"><b>⋮</b></a>
-    <span style="border-bottom: 1px solid var(--tab-border); width:100%;"></span>
+    <span style="border-bottom: 1px solid var(--tab-border); display: grid; flex-grow: 1; min-width: 20px; justify-content: center; align-items: baseline;">
+      <a href="" style="margin: 0 5px; display: contents;">
+        <div class="project">
+            <span class="project-name">DemoHub</span><!--
+         --><span class="project-env" >dev</span>
+        </div>
+      </a>
+    </span>
     <span style="border-bottom: 1px solid var(--tab-border); font-size: 13px;">
       <div style="background: var(--background); padding: 1px 1px 1px 10px; border-radius: 2px; border: 1px solid var(--tab-border)">
-        <label for="user"><code>user</code></label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
-        <label for="token"><code>token</code></label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
+        <label for="user">user</label>   <input onchange="app.setUser(value)"  spellcheck="false" type="text" id="user"  class="authInput" value="admin">&nbsp;
+        <label for="token">token</label> <input onchange="app.setToken(value)" spellcheck="false" type="text" id="token" class="authInput" value="admin">    
         <div class="dropdown">
           <button class="dropbtn" aria-label="selectUser"></button>
           <div class="dropdown-content">
