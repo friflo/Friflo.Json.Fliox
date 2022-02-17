@@ -183,7 +183,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, MessageContext messageContext) {
             var  jsonFilter = new JsonFilter(command.filterContext); // filter can be reused
             var  result     = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
-            long maxCount   = command.maxCount ?? long.MaxValue;
+            long limit      = command.limit     ?? long.MaxValue;
+            long maxCount   = command.maxCount  ?? long.MaxValue;
             using (var pooled = messageContext.pool.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooled.instance;
                 while (entities.MoveNext()) {
@@ -205,6 +206,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                         continue;
                     var entry = new EntityValue(json);
                     result.Add(key, entry);
+                    if (result.Count >= limit)
+                        break;
                     if (result.Count < maxCount)
                         continue;
                     var cursor = StoreCursor(entities, messageContext.User.userId);

@@ -229,17 +229,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private static bool TryParseParamAsInt(RequestContext context, string name, NameValueCollection queryParams, out int? result) {
             var valueStr = queryParams[name];
-            if (valueStr != null) {
-                if (!int.TryParse(valueStr, out int value)) {
-                    context.WriteError("url parameter error", $"expect {name} as integer. was: {valueStr}", 400);
-                    result = null;
-                    return false;
-                }
+            if (valueStr == null) {
+                result = null;
+                return true;
+            }
+            if (int.TryParse(valueStr, out int value)) {
                 result = value;
                 return true;
             }
+            context.WriteError("url parameter error", $"expect {name} as integer. was: {valueStr}", 400);
             result = null;
-            return true;
+            return false;
         }
         
         // -------------------------------------- resource access  --------------------------------------
@@ -287,8 +287,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             if (!TryParseParamAsInt(context, "maxCount", queryParams, out int? maxCount))
                 return;
+            if (!TryParseParamAsInt(context, "limit",    queryParams, out int? limit))
+                return;
             var cursor          = queryParams["cursor"];
-            var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor};
+            var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor, limit = limit };
             var restResult      = await ExecuteTask(context, database, queryEntities).ConfigureAwait(false);
             
             if (restResult.taskResult == null)

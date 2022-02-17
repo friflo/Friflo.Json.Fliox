@@ -53,6 +53,7 @@ data class QueryEntities (
               val filterTree : FilterOperation? = null,
               val filter     : String? = null,
               val references : List<References>? = null,
+              val limit      : Int? = null,
               val maxCount   : Int? = null,
               val cursor     : String? = null,
     override  val info       : JsonElement? = null,

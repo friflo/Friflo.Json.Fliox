@@ -446,6 +446,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     filterTree  = filterTree,
                     filter      = query.filterLinq,
                     references  = references,
+                    limit       = query.limit,
                     maxCount    = query.maxCount,
                     cursor      = query.cursor
                 };

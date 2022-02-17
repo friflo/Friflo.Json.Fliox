@@ -105,6 +105,7 @@
                 "filterTree": { "ref":  "FilterOperation", "nullable": true },
                 "filter":     { "type": "string", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true },
+                "limit":      { "type": "int32", "nullable": true },
                 "maxCount":   { "type": "int32", "nullable": true },
                 "cursor":     { "type": "string", "nullable": true },
                 "info":       { "nullable": true }

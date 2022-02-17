@@ -78,6 +78,7 @@ export class QueryEntities extends SyncRequestTask {
     filterTree? : FilterOperation_Union | null;
     filter?     : string | null;
     references? : References[] | null;
+    limit?      : int32 | null;
     maxCount?   : int32 | null;
     cursor?     : string | null;
 }

@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  FilterOperation     filterTree;
                         public  string              filter;
                         public  List<References>    references;
+                        public  int?                limit;
                         public  int?                maxCount;
                         public  string              cursor;
                         
