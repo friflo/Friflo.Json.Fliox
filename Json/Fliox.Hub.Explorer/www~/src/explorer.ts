@@ -209,7 +209,7 @@ export class Explorer
         catalogSchema.innerHTML  = app.getSchemaType(p.database) + "&nbsp;·&nbsp;" + app.getEntityType(p.database, p.container);
         explorerTools.innerHTML  = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
-        const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
+        const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
         readEntities.innerHTML   = `${containerLink}<span class="spinner"></span>`;
 
         const maxCount           = "maxCount=100";
