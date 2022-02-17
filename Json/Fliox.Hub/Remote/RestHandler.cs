@@ -256,6 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             foreach (var pair in entityMap) {
                 entities.Add(pair.Value.Json);
             }
+            context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 var entitiesJson = writer.Write(entities);
@@ -299,6 +300,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             foreach (var pair in entityMap) {
                 entities.Add(pair.Value.Json);
             }
+            context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 var entityArray = writer.WriteAsArray(entities);
