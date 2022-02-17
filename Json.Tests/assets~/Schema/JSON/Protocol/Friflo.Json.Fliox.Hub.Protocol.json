@@ -47,6 +47,7 @@
             "type": "object",
             "properties": {
                 "container": { "type": "string" },
+                "count":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "entities":  { "type": "array", "items": {  } },
                 "notFound":  { "type": ["array", "null"], "items": { "type": "string" } },
                 "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object" }

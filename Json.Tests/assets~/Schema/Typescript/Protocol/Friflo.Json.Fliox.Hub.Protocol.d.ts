@@ -72,6 +72,7 @@ export class SyncResponse extends ProtocolResponse {
 
 export class ContainerEntities {
     container  : string;
+    count?     : int32 | null;
     entities   : any[];
     notFound?  : string[] | null;
     errors?    : { [key: string]: EntityError } | null;

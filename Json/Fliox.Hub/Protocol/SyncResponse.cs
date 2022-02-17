@@ -66,6 +66,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// Required only by <see cref="RemoteHostHub"/> for serialization
         [Fri.Required]  public  string                              container;
+        /// <summary> Is only set when using a <see cref="RemoteHostHub"/> to show the number of <see cref="entities"/>
+        /// in a serialized protocol message to avoid counting them by hand when debugging.
+        /// It is not used by the library as it is redundant information. </summary>
+                        public  int?                                count;
         /// Required only by <see cref="RemoteHostHub"/> for serialization
         [Fri.Required]  public  List<JsonValue>                     entities;
         /// Required only by <see cref="RemoteHostHub"/> for serialization

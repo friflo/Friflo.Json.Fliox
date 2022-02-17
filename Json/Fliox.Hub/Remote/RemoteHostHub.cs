@@ -98,6 +98,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (errors != null && errors.Count > 0) {
                     container.errors = errors;
                 }
+                if (entities.Count > 0) {
+                    container.count = entities.Count;
+                }
             }
             resultMap.Clear();
         }

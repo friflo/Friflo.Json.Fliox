@@ -794,6 +794,7 @@
         "ContainerEntities": {
             "properties": {
                 "container": { "type": "string" },
+                "count":     { "type": "int32", "nullable": true },
                 "entities":  { "elements": {  } },
                 "notFound":  { "elements": { "type": "string" }, "nullable": true },
                 "errors":    { "values": { "ref":  "EntityError" }, "nullable": true }
