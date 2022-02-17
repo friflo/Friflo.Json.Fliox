@@ -59,9 +59,9 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (producers > 0) {
                 var faker = new Faker<Producer>()
-                    .RuleFor(p => p.id,             f => NewId(fakeCounter, producerCounter++, 5))
-                    .RuleFor(p => p.name,           f => f.Company.CompanyName())
-                    .RuleFor(p => p.employeeList,   f => {
+                    .RuleFor(p => p.id,         f => NewId(fakeCounter, producerCounter++, 5))
+                    .RuleFor(p => p.name,       f => f.Company.CompanyName())
+                    .RuleFor(p => p.employees,  f => {
                         if (employees == 0)
                             return null;
                         return new List<Ref<Guid, Employee>> { f.PickRandom(result.employees) };

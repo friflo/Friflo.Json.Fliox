@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Mapper;
 
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
@@ -58,8 +57,7 @@ namespace Friflo.Json.Fliox.DemoHub
     public class Producer {
         [Req]   public  Guid                        id { get; set; }
         [Req]   public  string                      name;
-        [Fri.Property (Name =                      "employees")]
-                public  List<Ref<Guid, Employee>>   employeeList;
+                public  List<Ref<Guid, Employee>>   employees;
     }
     
     public class Employee {
