@@ -350,13 +350,16 @@ export class App {
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
         this.hostDetails    = hubInfoResult.result              as HostDetails;
         //
-        const name  = this.hostDetails.projectName;
-        const url   = this.hostDetails.projectUrl;
-        const env   = this.hostDetails.projectEnv;
+        const name      = this.hostDetails.projectName;
+        const url       = this.hostDetails.projectUrl;
+        const env       = this.hostDetails.projectEnv;
+        const envColor  = this.hostDetails.projectEnvColor;
         if (name)   projectName.innerText   = name;
         if (url)    projectUrl.href         = url;
         if (env)    projectEnv.innerText    = env;
-        
+        if (envColor && CSS.supports('color', envColor)) {
+            projectEnv.style.backgroundColor = envColor;
+        }        
 
         const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {
