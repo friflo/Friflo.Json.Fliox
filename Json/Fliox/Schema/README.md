@@ -47,7 +47,7 @@ From these input schemas the following output schemas can be generate:
   E.g. by [Ajv JSON schema validator](https://ajv.js.org/) running in Node.js or in the browser.
 
 - The generated schemas for various languages are directly available via a **Fliox Hub** in the Browser.  
-  To retrieve a zip or a single file click on any type link in the [JSON Fliox Explorer](../../Fliox.Hub.Explorer/)
+  To retrieve a zip or a single file click on a schema or type link in the [JSON Fliox Explorer](../../Fliox.Hub.Explorer/)
   and follow the link **Typescript, C#, Kotlin, JSON Schema** on the top of the schema page.
 
 
