@@ -49,7 +49,7 @@ const rgbToObject = (rgb) => {
 export const getColorBasedOnBackground = (color) => {
     const c = rgbToObject(color);
     if (!c)
-        return "#000000";
+        return "#ffffff";
     if (c[0] * 0.299 + c[1] * 0.587 + c[2] * 0.114 > 186)
         return "#000000";
     return "#ffffff";
