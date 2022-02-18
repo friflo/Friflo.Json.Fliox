@@ -51,3 +51,28 @@ export const parseAst = (value: string) : jsonToAst.ValueNode => {
     }
     return null;
 };
+
+const rgbToObject = (rgb: string) : number [] | null => {
+    const colors    = rgb.slice(rgb.indexOf("(") + 1, rgb.indexOf(")"));
+    const colorArr  = colors.split(", ");
+    if (colorArr.length == 3) {
+        const rgbArray = [
+            parseInt(colorArr[0]),
+            parseInt(colorArr[1]),
+            parseInt(colorArr[2]),
+        ];
+        if (!isNaN(rgbArray[0]) && !isNaN(rgbArray[1]) && !isNaN(rgbArray[2]))
+            return rgbArray;
+    }
+    console.log(`Invalid rgb value: ${rgb}. Expect format: rgb(r, g, b)`);
+    return null;
+};
+
+export const getColorBasedOnBackground = (color: string) : any => {
+    const c = rgbToObject(color);
+    if (!c)
+        return "#000000";
+    if (c[0] * 0.299 + c[1] * 0.587 + c[2] * 0.114 > 186)
+        return "#000000";
+    return "#ffffff";
+};

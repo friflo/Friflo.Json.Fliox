@@ -1,5 +1,5 @@
 /// <reference types="../../../../node_modules/monaco-editor/monaco" />
-import { el, createEl, defaultConfig } from "./types.js";
+import { el, createEl, defaultConfig, getColorBasedOnBackground } from "./types.js";
 import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
@@ -318,6 +318,7 @@ export class App {
             projectEnv.innerText = env;
         if (envColor && CSS.supports('color', envColor)) {
             projectEnv.style.backgroundColor = envColor;
+            projectEnv.style.color = getColorBasedOnBackground(projectEnv.style.backgroundColor);
         }
         const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {
