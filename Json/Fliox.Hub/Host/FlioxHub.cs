@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// 
         public   readonly   string              hostName;
         public              string              projectName;
-        public              string              projectUrl;
+        public              string              projectWebsite;
         public              string              projectEnv;
         public              string              projectEnvColor;
         
@@ -115,10 +115,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.hostName   = hostName ?? "host";
         }
         
-        public FlioxHub SetInfo(string projectName, string projectUrl = null, string projectEnv = null, string envColor = null) {
-            this.projectName        = projectName;
-            this.projectUrl         = projectUrl;
-            this.projectEnv         = projectEnv;
+        public FlioxHub SetProjectInfo(string name, string website = null, string envName = null, string envColor = null) {
+            this.projectName        = name;
+            this.projectWebsite     = website;
+            this.projectEnv         = envName;
             this.projectEnvColor    = envColor;
             return this;
         }        

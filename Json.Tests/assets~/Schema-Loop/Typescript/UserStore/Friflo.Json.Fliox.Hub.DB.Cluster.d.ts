@@ -32,7 +32,7 @@ export class HostDetails {
     version          : string;
     hostName?        : string | null;
     projectName?     : string | null;
-    projectUrl?      : string | null;
+    projectWebsite?  : string | null;
     projectEnv?      : string | null;
     projectEnvColor? : string | null;
 }

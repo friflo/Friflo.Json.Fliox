@@ -305,15 +305,15 @@ export class App {
         this.hostDetails = hubInfoResult.result;
         //
         const name = this.hostDetails.projectName;
-        const url = this.hostDetails.projectUrl;
+        const website = this.hostDetails.projectWebsite;
         const env = this.hostDetails.projectEnv;
         const envColor = this.hostDetails.projectEnvColor;
         if (name) {
             projectName.innerText = name;
             document.title = env ? `${name} · ${env}` : name;
         }
-        if (url)
-            projectUrl.href = url;
+        if (website)
+            projectUrl.href = website;
         if (env)
             projectEnv.innerText = env;
         if (envColor && CSS.supports('color', envColor)) {

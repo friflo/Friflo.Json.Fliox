@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 version         = hub.Version,
                 hostName        = hub.hostName,
                 projectName     = hub.projectName,
-                projectUrl      = hub.projectUrl,
+                projectWebsite  = hub.projectWebsite,
                 projectEnv      = hub.projectEnv,
                 projectEnvColor = hub.projectEnvColor
             };

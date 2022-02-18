@@ -69,7 +69,7 @@
                 "version":         { "type": "string" },
                 "hostName":        { "type": ["string", "null"] },
                 "projectName":     { "type": ["string", "null"] },
-                "projectUrl":      { "type": ["string", "null"] },
+                "projectWebsite":  { "type": ["string", "null"] },
                 "projectEnv":      { "type": ["string", "null"] },
                 "projectEnvColor": { "type": ["string", "null"] }
             },
