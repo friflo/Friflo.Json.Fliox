@@ -41,6 +41,12 @@ From these input schemas the following output schemas can be generate:
 - Code generators are designed to be small and easy to maintain ~ 200 LOC / generator.  
   Also their performance reaches 10.000 schema transformations / second for smaller schemas.
 
+- The generated JSON Schema files are compatible to the specification
+  [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes.html).  
+  This enables using external **JSON Schema validators** to validate JSON files against the generated schemas.  
+  E.g. by [Ajv JSON schema validator](https://ajv.js.org/) running in Node.js or in the browser.
+
+
 ## Usage
 - Examples for code generation and JSON type validation at:  
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)
