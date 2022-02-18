@@ -354,7 +354,10 @@ export class App {
         const url       = this.hostDetails.projectUrl;
         const env       = this.hostDetails.projectEnv;
         const envColor  = this.hostDetails.projectEnvColor;
-        if (name)   projectName.innerText   = name;
+        if (name) {
+            projectName.innerText   = name;
+            document.title          = env ? `${name} · ${env}` : name;
+        }
         if (url)    projectUrl.href         = url;
         if (env)    projectEnv.innerText    = env;
         if (envColor && CSS.supports('color', envColor)) {
