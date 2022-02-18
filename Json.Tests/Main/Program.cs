@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Main
         ///   <item> Add the Hub Explorer to: <br/>
         ///     1. browse databases, containers and entities <br/>
         ///     2. execute container queries using a LINQ filter expression <br/>
-        ///     3. execute standard or custom database commands. E.g. DbEcho <br/>
+        ///     3. execute standard or custom database commands. E.g. std.Echo <br/>
         ///     4. send batch requests via HTTP or WebSocket to the Fliox.Hub server using the Playground <br/>
         ///   </item>
         /// </list>

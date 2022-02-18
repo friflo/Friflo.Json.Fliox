@@ -6,6 +6,40 @@
 
 ## **`Friflo.Json.Fliox.Hub.Explorer`**
 
-This namespace bla ... .  
+This package contains an SPA - single page web application - intended for development
+and administration of databases hosted by a **JSON Fliox Hub**.
 
-![Fliox Hub Explorer - screenshot](../../docs/images/Fliox-Hub-Explorer.png) 
+The **Hub Explorer** enables:
+
+1. browse databases, containers and entities.
+2. view and edit JSON records with auto completion and instant validation using the database schema
+3. mark properties defined as relations in the schema as links
+4. execute container queries using a LINQ filter expression
+5. execute standard or custom database commands. E.g. `std.DbEcho`
+6. send batch requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
+
+As the **Hub Explorer** is optional it is distributed as a separate
+**NuGet** package: **Friflo.Json.Fliox.Hub.Explorer**.
+
+The static web files are added to the **HTTP Fliox Hub** by adding the root folder
+available via the `HubExplorer.Path`
+
+For integration to a **HTTP Fliox Hub** server call:
+
+```csharp
+     HttpHostHub hostHub;
+     ...
+     hostHub.AddHandler(new StaticFileHandler(HubExplorer.Path);
+```
+
+![Fliox Hub Explorer - screenshot](../../docs/images/Fliox-Hub-Explorer.png)
+*screenshot: Fliox Hub Explorer*
+
+## Explorer implementation
+
+The Explorer is written in Typescript without using a third party UI library to avoid external dependencies.
+
+It utilizes the [Monaco Editor](https://microsoft.github.io/monaco-editor/) on various places to view & edit JSON.
+All integrated editors are using the **JSON Schemas** exposed by the databases.
+This enables auto completion and instant validation of JSON values.
+Validation error are marked as warnings by yellow wavy underlines directly in the editors.
