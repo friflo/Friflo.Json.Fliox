@@ -60,8 +60,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class HostDetails {
         [Req]   public  string                          version;
                 public  string                          hostName;
-                public  string                          label;
-                public  string                          website;
+                public  string                          projectName;
+                public  string                          projectUrl;
+                public  string                          projectEnv;
     }
     
     public class HostCluster {

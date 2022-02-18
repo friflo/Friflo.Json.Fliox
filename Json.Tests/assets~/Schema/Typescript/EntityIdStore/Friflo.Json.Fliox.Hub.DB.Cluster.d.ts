@@ -29,10 +29,11 @@ export class ContainerStats {
 }
 
 export class HostDetails {
-    version   : string;
-    hostName? : string | null;
-    label?    : string | null;
-    website?  : string | null;
+    version      : string;
+    hostName?    : string | null;
+    projectName? : string | null;
+    projectUrl?  : string | null;
+    projectEnv?  : string | null;
 }
 
 export class HostCluster {

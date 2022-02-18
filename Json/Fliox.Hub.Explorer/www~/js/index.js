@@ -4,7 +4,9 @@ import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
 import { EntityEditor } from "./entity-editor.js";
 import { Playground } from "./playground.js";
-const hubInfoEl = el("hubInfo");
+const projectName = el("projectName");
+const projectUrl = el("projectUrl");
+const projectEnv = el("projectEnv");
 const defaultUser = el("user");
 const defaultToken = el("token");
 const catalogExplorer = el("catalogExplorer");
@@ -300,15 +302,17 @@ export class App {
         const dbSchemas = content.containers[1].entities;
         const dbCommands = content.containers[2].entities;
         const hubInfoResult = content.tasks[3];
-        this.hubInfo = hubInfoResult.result;
+        this.hostDetails = hubInfoResult.result;
         //
-        let label = this.hubInfo.label;
-        const website = this.hubInfo.website;
-        if (label || website) {
-            if (!label)
-                label = "Website";
-            hubInfoEl.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${label}</a>` : label;
-        }
+        const name = this.hostDetails.projectName;
+        const url = this.hostDetails.projectUrl;
+        const env = this.hostDetails.projectEnv;
+        if (name)
+            projectName.innerText = name;
+        if (url)
+            projectUrl.href = url;
+        if (env)
+            projectEnv.innerText = env;
         const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {
             const path = ev.composedPath();

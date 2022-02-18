@@ -66,10 +66,11 @@
         "HostDetails": {
             "type": "object",
             "properties": {
-                "version":  { "type": "string" },
-                "hostName": { "type": ["string", "null"] },
-                "label":    { "type": ["string", "null"] },
-                "website":  { "type": ["string", "null"] }
+                "version":     { "type": "string" },
+                "hostName":    { "type": ["string", "null"] },
+                "projectName": { "type": ["string", "null"] },
+                "projectUrl":  { "type": ["string", "null"] },
+                "projectEnv":  { "type": ["string", "null"] }
             },
             "required": [
                 "version"

@@ -151,8 +151,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var details = new HostDetails {
                 version     = hub.Version,
                 hostName    = hub.hostName,
-                label       = hub.description,
-                website     = hub.website
+                projectName = hub.projectName,
+                projectUrl  = hub.projectUrl
             };
             return details;
         }

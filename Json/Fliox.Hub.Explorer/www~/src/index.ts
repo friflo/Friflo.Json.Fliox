@@ -19,7 +19,9 @@ declare global {
     }
 }
 
-const hubInfoEl             = el("hubInfo");
+const projectName           = el("projectName");
+const projectUrl            = el("projectUrl")      as HTMLAnchorElement;
+const projectEnv            = el("projectEnv");
 const defaultUser           = el("user")            as HTMLInputElement;
 const defaultToken          = el("token")           as HTMLInputElement;
 const catalogExplorer       = el("catalogExplorer");
@@ -325,7 +327,7 @@ export class App {
     }
 
     private selectedCatalog:    HTMLElement;
-    private hubInfo:            HostDetails;
+    private hostDetails:        HostDetails;
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
@@ -346,15 +348,15 @@ export class App {
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
         const dbCommands    = content.containers[2].entities    as DbCommands[];
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
-        this.hubInfo        = hubInfoResult.result              as HostDetails;
+        this.hostDetails    = hubInfoResult.result              as HostDetails;
         //
-        let   label     = this.hubInfo.label;
-        const website   = this.hubInfo.website;
-        if (label || website) {
-            if (!label)
-                label = "Website";
-            hubInfoEl.innerHTML = website ? `<a href="${website}" target="_blank" rel="noopener noreferrer">${label}</a>` : label;
-        }
+        const name  = this.hostDetails.projectName;
+        const url   = this.hostDetails.projectUrl;
+        const env   = this.hostDetails.projectEnv;
+        if (name)   projectName.innerText   = name;
+        if (url)    projectUrl.href         = url;
+        if (env)    projectEnv.innerText    = env;
+        
 
         const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {
