@@ -18,7 +18,7 @@ using NUnit.Framework;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         /// <summary>
         /// Assert that the used <see cref="FileDatabase"/> support multi threaded access when reading and writing

@@ -9,10 +9,10 @@ Friflo.Json.Fliox.Hub.Client.SyncTasksException : Internal InvalidOperationExcep
    at Friflo.Json.Fliox.Hub.Host.FlioxHub.ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) in G:\_dev\Unity\HoverLab\Assets\Friflo\Json\Fliox.Hub\Host\FlioxHub.cs:line 176
    at Friflo.Json.Fliox.Hub.Client.FlioxClient.ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) in G:\_dev\Unity\HoverLab\Assets\Friflo\Json\Fliox.Hub\Client\FlioxClient.cs:line 334 --- Internal End
    at Friflo.Json.Fliox.Hub.Client.FlioxClient.SyncTasks() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json\Fliox.Hub\Client\FlioxClient.cs:line 90
-   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestStore.<>c__DisplayClass13_0.<<ReadLoop>b__0>d.MoveNext() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 115
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestHappy.<>c__DisplayClass13_0.<<ReadLoop>b__0>d.MoveNext() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 115
 --- End of stack trace from previous location where exception was thrown ---
-   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestStore.ConcurrentAccess(FlioxHub hub, Int32 readerCount, Int32 writerCount, Int32 requestCount, Boolean singleEntity) in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 93
-   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestStore.<>c.<<TestConcurrentFileAccessSync>b__11_0>d.MoveNext() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 36
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestHappy.ConcurrentAccess(FlioxHub hub, Int32 readerCount, Int32 writerCount, Int32 requestCount, Boolean singleEntity) in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 93
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestHappy.<>c.<<TestConcurrentFileAccessSync>b__11_0>d.MoveNext() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 36
 --- End of stack trace from previous location where exception was thrown ---
    at Friflo.Json.Fliox.Hub.Threading.SingleThreadSynchronizationContext.Run(Func`1 func) in G:\_dev\Unity\HoverLab\Assets\Friflo\Json\Fliox.Hub\Threading\SingleThreadSynchronizationContext.cs:line 45
-   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestStore.TestConcurrentFileAccessSync() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 32
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy.TestHappy.TestConcurrentFileAccessSync() in G:\_dev\Unity\HoverLab\Assets\Friflo\Json.Tests\Common\UnitTest\Fliox\Client\Happy\Test-Concurrency.cs:line 32

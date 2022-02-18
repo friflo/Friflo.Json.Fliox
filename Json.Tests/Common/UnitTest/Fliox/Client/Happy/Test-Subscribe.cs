@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         Changes
     }
     
-    public partial class TestStore
+    public partial class TestHappy
     {
         [UnityTest] public IEnumerator  SubscribeCoroutine() { yield return RunAsync.Await(AssertSubscribe()); }
         [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
@@ -291,7 +291,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
     }
     
-    public partial class TestStore {
+    public partial class TestHappy {
         [Test]      public void         AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
             
         private static async Task AssertAcknowledgeMessages() {

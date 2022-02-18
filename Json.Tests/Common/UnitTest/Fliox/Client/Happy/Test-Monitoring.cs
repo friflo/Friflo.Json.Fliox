@@ -22,7 +22,7 @@ using static NUnit.Framework.Assert;
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         private static readonly string HostName  = "Test";
         

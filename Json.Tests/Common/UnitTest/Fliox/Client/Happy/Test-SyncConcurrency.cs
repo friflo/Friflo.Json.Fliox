@@ -12,7 +12,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         /// <summary>
         /// Test multiple calls of <see cref="FlioxClient.SyncTasks"/> without await-ing each call individually.

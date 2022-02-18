@@ -48,7 +48,7 @@ namespace Friflo.Playground.CosmosDB
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
                 await TestRelationPoC.CreateStore(createStore);
-                await TestStore.TestStores(createStore, useStore);
+                await TestHappy.TestStores(createStore, useStore);
             }
         }
         

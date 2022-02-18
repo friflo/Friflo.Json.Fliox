@@ -14,7 +14,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         [Test] public async Task TestAggregate      () { await TestCreate(async (store) => await AssertAggregate (store)); }
         

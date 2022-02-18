@@ -24,7 +24,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore : LeakTestsFixture
+    public partial class TestHappy : LeakTestsFixture
     {
         /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
         [NUnit.Framework.OneTimeSetUp]    public static void  Init()       { TestGlobals.Init(); }

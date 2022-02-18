@@ -16,7 +16,7 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         // ----------------------------- Test authorization rights to a database -----------------------------
         [Test] public static void TestAuthRights () {

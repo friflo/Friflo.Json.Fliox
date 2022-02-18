@@ -17,7 +17,7 @@ using UnityEngine.TestTools;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         [UnityTest] public IEnumerator ValidationByTypesCoroutine() { yield return RunAsync.Await(ValidationByTypes(), i => Logger.Info("--- " + i)); }
         [Test]      public async Task  ValidationByTypesAsync() { await ValidationByTypes(); }

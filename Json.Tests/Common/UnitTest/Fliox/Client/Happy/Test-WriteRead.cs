@@ -12,7 +12,7 @@ using Friflo.Json.Tests.Common.Utils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         [Test] public async Task TestWriteRead      () { await TestCreate(async (store) => await AssertWriteRead        (store)); }
         

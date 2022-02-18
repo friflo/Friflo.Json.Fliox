@@ -15,7 +15,7 @@ using static NUnit.Framework.Assert;
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
-    public partial class TestStore
+    public partial class TestHappy
     {
         [Test] public async Task TestQuery      () { await TestCreate(async (store) => await AssertQuery            (store)); }
         
