@@ -462,14 +462,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var upsertErrors = restResult.syncResponse.upsertErrors;
             if (upsertErrors != null) {
-                FormatEntityErrors (context, upsertErrors);
+                var sb = new StringBuilder();
+                FormatEntityErrors (upsertErrors, sb);
+                context.WriteError("PUT errors", sb.ToString(), 400);
                 return;
             }
             context.WriteString("PUT successful", "text/plain");
         }
         
-        private static void FormatEntityErrors(RequestContext context, Dictionary<string, EntityErrors> entityErrors) {
-            var sb = new StringBuilder();
+        private static void FormatEntityErrors(Dictionary<string, EntityErrors> entityErrors, StringBuilder sb) {
             foreach (var pair in entityErrors) {
                 var errors = pair.Value.errors;
                 foreach (var errorPair in errors) {
@@ -482,8 +483,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     sb.Append(error.message);
                 }
             }
-            var message = sb.ToString();
-            context.WriteError("PUT errors", message, 400);
         }
         
         // ----------------------------------------- command / message -----------------------------------------
