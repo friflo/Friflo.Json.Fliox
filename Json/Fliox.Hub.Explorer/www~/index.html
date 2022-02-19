@@ -254,7 +254,7 @@
         .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; background-color: var(--background); }
 
-        .project        { margin: 0 5px; overflow: hidden; display: flex; box-shadow: 0px 0.5px 4px 0px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.1);  }
+        .project        { margin: 0; overflow: hidden; display: flex; box-shadow: 0px 0.5px 4px 0px rgba(0,0,0,0.2); background-color: rgba(0,0,0,0.1);  }
 
         .project-name   { height: 18px; padding: 0px 4px; margin: 0; background-color: var(--background2);   color: var(--color);
                           border-top-left-radius:  3px;  border-bottom-left-radius: 3px; border: 1px solid  var(--background2); border-right: 0; }
@@ -441,7 +441,8 @@
     <a class="tab" href="#" onclick="app.openTab('playground')" value="playground"                                    >Playground</a>
     <a class="tab" href="#" onclick="app.openTab('settings')"   value="settings" style="border-top-right-radius: 3px;"><b>⋮</b></a>
     <span style="border-bottom: 1px solid var(--tab-border); display: grid; flex-grow: 1; min-width: 10px; justify-content: center; align-items: baseline;">
-      <a id="projectUrl" title="Open project website in new tab" style="margin: 0 5px; display: contents;" href="https://github.com/friflo/Friflo.Json.Fliox" target="_blank">
+      <a id="projectUrl" style="margin: 0 5px; display: grid;" target="_blank"
+         href="https://github.com/friflo/Friflo.Json.Fliox" title="Open project website in new tab" >
         <div class="project">
             <span id="projectName" class="project-name">Fliox Hub</span><!--
          --><span id="envEl"       class="project-env"  ></span>
