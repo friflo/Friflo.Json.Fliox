@@ -766,7 +766,8 @@ export class Explorer {
             grip.style.cursor = "ew-resize";
             // grip.style.background   = 'red';
             // grip.style.userSelect = "none"; // disable text selection while dragging */
-            grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th));
+            // add { passive: true } for Lighthouse
+            grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th), { passive: true });
             th.appendChild(grip);
             head.append(th);
             column.th = th;
