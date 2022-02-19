@@ -45,12 +45,12 @@ export class ContainerStats {
 }
 
 export class HostDetails {
-    version          : string;
-    hostName?        : string | null;
-    projectName?     : string | null;
-    projectWebsite?  : string | null;
-    projectEnv?      : string | null;
-    projectEnvColor? : string | null;
+    version         : string;
+    hostName?       : string | null;
+    projectName?    : string | null;
+    projectWebsite? : string | null;
+    envName?        : string | null;
+    envColor?       : string | null;
 }
 
 export class HostCluster {

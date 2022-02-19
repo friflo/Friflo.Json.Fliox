@@ -90,8 +90,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   string              hostName;
         public              string              projectName;
         public              string              projectWebsite;
-        public              string              projectEnv;
-        public              string              projectEnvColor;
+        public              string              envName;
+        public              string              envColor;
         
         public   readonly   string              Version = "0.0.1";
         public   readonly   SharedEnv           sharedEnv;
@@ -116,10 +116,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public FlioxHub SetProjectInfo(string name, string website = null, string envName = null, string envColor = null) {
-            this.projectName        = name;
-            this.projectWebsite     = website;
-            this.projectEnv         = envName;
-            this.projectEnvColor    = envColor;
+            this.projectName    = name;
+            this.projectWebsite = website;
+            this.envName        = envName;
+            this.envColor       = envColor;
             return this;
         }        
        

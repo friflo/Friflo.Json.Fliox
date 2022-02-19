@@ -6,7 +6,7 @@ import { EntityEditor } from "./entity-editor.js";
 import { Playground } from "./playground.js";
 const projectName = el("projectName");
 const projectUrl = el("projectUrl");
-const projectEnv = el("projectEnv");
+const envEl = el("envEl");
 const defaultUser = el("user");
 const defaultToken = el("token");
 const catalogExplorer = el("catalogExplorer");
@@ -306,19 +306,19 @@ export class App {
         //
         const name = this.hostDetails.projectName;
         const website = this.hostDetails.projectWebsite;
-        const env = this.hostDetails.projectEnv;
-        const envColor = this.hostDetails.projectEnvColor;
+        const envName = this.hostDetails.envName;
+        const envColor = this.hostDetails.envColor;
         if (name) {
             projectName.innerText = name;
-            document.title = env ? `${name} · ${env}` : name;
+            document.title = envName ? `${name} · ${envName}` : name;
         }
         if (website)
             projectUrl.href = website;
-        if (env)
-            projectEnv.innerText = env;
+        if (envName)
+            envEl.innerText = envName;
         if (envColor && CSS.supports('color', envColor)) {
-            projectEnv.style.backgroundColor = envColor;
-            projectEnv.style.color = getColorBasedOnBackground(projectEnv.style.backgroundColor);
+            envEl.style.backgroundColor = envColor;
+            envEl.style.color = getColorBasedOnBackground(envEl.style.backgroundColor);
         }
         const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {

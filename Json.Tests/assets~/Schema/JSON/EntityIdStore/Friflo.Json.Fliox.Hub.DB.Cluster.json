@@ -66,12 +66,12 @@
         "HostDetails": {
             "type": "object",
             "properties": {
-                "version":         { "type": "string" },
-                "hostName":        { "type": ["string", "null"] },
-                "projectName":     { "type": ["string", "null"] },
-                "projectWebsite":  { "type": ["string", "null"] },
-                "projectEnv":      { "type": ["string", "null"] },
-                "projectEnvColor": { "type": ["string", "null"] }
+                "version":        { "type": "string" },
+                "hostName":       { "type": ["string", "null"] },
+                "projectName":    { "type": ["string", "null"] },
+                "projectWebsite": { "type": ["string", "null"] },
+                "envName":        { "type": ["string", "null"] },
+                "envColor":       { "type": ["string", "null"] }
             },
             "required": [
                 "version"
