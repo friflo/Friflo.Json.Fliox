@@ -474,9 +474,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var errors = pair.Value.errors;
                 foreach (var errorPair in errors) {
                     var error = errorPair.Value;
-                    if (errors.Count > 1) {
-                        sb.Append("\n| ");
-                    }
+                    sb.Append("\n| ");
                     sb.Append(error.type);
                     sb.Append(": [");
                     sb.Append(error.id);
