@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public CommandTask<double>      Mul  (Operands  param)  => SendCommand<Operands, double>("demo.Mul",  param);
     }
     
+    // ------------------------------ command models ------------------------------
     public class Operands {
         public  double      left;
         public  double      right;
