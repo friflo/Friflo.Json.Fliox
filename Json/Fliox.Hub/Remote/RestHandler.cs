@@ -95,15 +95,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // ------------------    POST           /rest/database/container?get-entities
             //                       POST           /rest/database/container?delete-entities
             if (isPost && resource.Length == 2) {
-                var  allKeys        = queryParams.AllKeys;
-                bool getEntities    = false;
-                bool deleteEntities = false;
-                for (int n = 0; n < allKeys.Length; n++) {
-                    var key         = queryParams.Get(n); // what a crazy interface! :)
-                    getEntities     |= key == "get-entities";
-                    deleteEntities  |= key == "delete-entities";
-                }
-                JsonKey[] keys = null;
+                bool getEntities    = HasQueryKey(queryParams, "get-entities");
+                bool deleteEntities = HasQueryKey(queryParams, "delete-entities");
+                JsonKey[] keys      = null;
                 if (getEntities || deleteEntities) {
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
@@ -170,8 +164,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
                 return;
             }
-            // ------------------    PUT            /rest/database/container  
-            //                       PUT            /rest/database/container/id
+            // ------------------    PUT            /rest/database/container        ?create
+            //                       PUT            /rest/database/container/id     ?create
             if (method == "PUT") {
                 int len = resource.Length; 
                 if (len != 2 && len != 3) {
@@ -183,9 +177,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.WriteError("PUT error", error, 400);
                     return;
                 }
-                var keyName = queryParams["keyName"];
-                var resource2 = len == 3 ? resource[2] : null;
-                await UpsertEntities(context, resource[0], resource[1], resource2, keyName, value).ConfigureAwait(false);
+                var keyName     = queryParams["keyName"];
+                var resource2   = len == 3 ? resource[2] : null;
+                var type        = HasQueryKey(queryParams, "create") ? TaskType.create : TaskType.upsert;
+                await PutEntities(context, resource[0], resource[1], resource2, keyName, value, type).ConfigureAwait(false);
                 return;
             }
             context.WriteError("invalid path/method", path, 400);
@@ -240,6 +235,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             context.WriteError("url parameter error", $"expect {name} as integer. was: {valueStr}", 400);
             result = null;
+            return false;
+        }
+        
+        private static bool HasQueryKey(NameValueCollection queryParams, string searchKey) {
+            var  allKeys  = queryParams.AllKeys;
+            for (int n = 0; n < allKeys.Length; n++) {
+                var key = queryParams.Get(n); // what a crazy interface! :)
+                if (searchKey == key)
+                    return true;
+            }
             return false;
         }
         
@@ -414,7 +419,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain");
         }
         
-        private async Task UpsertEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
+        private async Task PutEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value, TaskType type) {
             if (database == EntityDatabase.MainDB)
                 database = null;
             List<JsonValue> entities;
@@ -445,25 +450,33 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                 }
             }
-            var upsertEntities  = new UpsertEntities {
-                container   = container,
-                keyName     = keyName,
-                entities    = entities
-            };
-            var restResult  = await ExecuteTask(context, database, upsertEntities).ConfigureAwait(false);
+            SyncRequestTask task;
+            switch (type) {
+                case TaskType.upsert: task  = new UpsertEntities { container = container, keyName = keyName, entities = entities }; break;
+                case TaskType.create: task  = new CreateEntities { container = container, keyName = keyName, entities = entities }; break;
+                default:
+                    throw new InvalidOperationException($"Invalid PUT type: {type}");
+            }
+            var result = await ExecuteTask(context, database, task).ConfigureAwait(false);
             
-            if (restResult.taskResult == null)
+            if (result.taskResult == null)
                 return;
-            var upsertResult  = (UpsertEntitiesResult)restResult.taskResult;
-            var resultError = upsertResult.Error;
+            var upsertResult    = (ICommandResult)result.taskResult;
+            var resultError     = upsertResult.Error;
             if (resultError != null) {
                 context.WriteError("PUT error", resultError.message, 500);
                 return;
             }
-            var upsertErrors = restResult.syncResponse.upsertErrors;
-            if (upsertErrors != null) {
+            Dictionary<string, EntityErrors> entityErrors;
+            switch (type) {
+                case TaskType.upsert: entityErrors = result.syncResponse.upsertErrors; break;
+                case TaskType.create: entityErrors = result.syncResponse.createErrors; break;
+                default:
+                    throw new InvalidOperationException($"Invalid PUT type: {type}");
+            }
+            if (entityErrors != null) {
                 var sb = new StringBuilder();
-                FormatEntityErrors (upsertErrors, sb);
+                FormatEntityErrors (entityErrors, sb);
                 context.WriteError("PUT errors", sb.ToString(), 400);
                 return;
             }
