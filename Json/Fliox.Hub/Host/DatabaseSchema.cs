@@ -128,8 +128,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 entityKeys[pos] = entityKeys[n];
                 pos++;
             }
-            int count = entities.Count;
-            entities.RemoveRange(pos,   count);
+            int count = entities.Count - pos;
+            entities.RemoveRange  (pos, count);
             entityKeys.RemoveRange(pos, count);
             return null;
         }

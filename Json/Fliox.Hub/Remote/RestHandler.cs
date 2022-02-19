@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Friflo.Json.Fliox.Hub.Client;
@@ -461,11 +462,30 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var upsertErrors = restResult.syncResponse.upsertErrors;
             if (upsertErrors != null) {
-                var error = upsertErrors[container].errors[entityId];
-                context.WriteError("PUT error", error.message, 400);
+                FormatEntityErrors (context, upsertErrors);
                 return;
             }
             context.WriteString("PUT successful", "text/plain");
+        }
+        
+        private static void FormatEntityErrors(RequestContext context, Dictionary<string, EntityErrors> entityErrors) {
+            var sb = new StringBuilder();
+            foreach (var pair in entityErrors) {
+                var errors = pair.Value.errors;
+                foreach (var errorPair in errors) {
+                    var error = errorPair.Value;
+                    if (errors.Count > 1) {
+                        sb.Append("\n| ");
+                    }
+                    sb.Append(error.type);
+                    sb.Append(": [");
+                    sb.Append(error.id);
+                    sb.Append("], ");
+                    sb.Append(error.message);
+                }
+            }
+            var message = sb.ToString();
+            context.WriteError("PUT errors", message, 400);
         }
         
         // ----------------------------------------- command / message -----------------------------------------
