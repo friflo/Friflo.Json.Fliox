@@ -105,6 +105,7 @@ export class Explorer
     public constructor(config: Config) {
         this.config = config;
         const parent = entityExplorer.parentElement;
+        // add { passive: true } for Lighthouse
         parent.addEventListener('touchmove', () => {
             //console.log("touchmove", parent.scrollHeight, parent.clientHeight, parent.scrollTop);
             if (parent.clientHeight + parent.scrollTop + 1>= parent.scrollHeight) {
@@ -114,7 +115,7 @@ export class Explorer
                 this.touchMovePending = true;
                 this.loadMore();
             }
-        });
+        }, { passive: true });
         parent.addEventListener('touchend', () => {
             this.touchMovePending = false;
         });
@@ -866,8 +867,7 @@ export class Explorer
             grip.style.cursor   = "ew-resize";
             // grip.style.background   = 'red';
             // grip.style.userSelect = "none"; // disable text selection while dragging */
-            // add { passive: true } for Lighthouse
-            grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th), { passive: true } );
+            grip.addEventListener('mousedown', (e) => this.thStartDrag(e, th));
             th.appendChild(grip);
             head.append(th);
             column.th = th;
