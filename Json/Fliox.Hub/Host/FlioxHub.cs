@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public  string  projectWebsite;
         /// environment name. E.g. dev, tst, stg, prd
         public  string  envName;
-        /// the color used to display the environment name using CSS color format.
+        /// the color used to display the environment name in GUI's using CSS color format.<br/>
         /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
         public  string  envColor;
 
