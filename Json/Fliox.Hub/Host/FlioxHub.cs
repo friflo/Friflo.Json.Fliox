@@ -16,6 +16,25 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// <summary>Contains general information about a Hub describing the development environment. <br/>
+    /// Clients can request this information with the command <b>std.HostDetails</b></summary>
+    public class HubInfo {
+        /// project name
+        public  string  projectName;
+        /// project website url
+        public  string  projectWebsite;
+        /// environment name. E.g. dev, tst, stg, prd
+        public  string  envName;
+        /// the color used to display the environment name using CSS color format.
+        /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
+        public  string  envColor;
+
+        public override string ToString() {
+            var env = envName != null ? $" · {envName}" : "";
+            return $"{projectName ?? ""}{env}";
+        }
+    }
+        
     /// <summary>
     /// A <see cref="FlioxHub"/> instance is the single entry point used to handle <b>all</b> requests send by a client -
     /// e.g. a <see cref="Client.FlioxClient"/> or a web browser. When instantiating a <see cref="FlioxHub"/> a default
@@ -88,15 +107,18 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         /// 
         public   readonly   string              hostName;
-        public              string              projectName;
-        public              string              projectWebsite;
-        public              string              envName;
-        public              string              envColor;
         
         public   readonly   string              Version = "0.0.1";
+        
+        /// <summary>General Hub information. Clients can request this information with the command <b>std.HostDetails</b></summary>
+        public              HubInfo             Info { get => info; set => info = NotNull(value, nameof(Info)); }
+        
         public   readonly   SharedEnv           sharedEnv;
         
         internal readonly   HostStats           hostStats = new HostStats();
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private             HubInfo             info                = new HubInfo();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private             Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
@@ -115,14 +137,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.hostName   = hostName ?? "host";
         }
         
-        public FlioxHub SetProjectInfo(string name, string website = null, string envName = null, string envColor = null) {
-            this.projectName    = name;
-            this.projectWebsite = website;
-            this.envName        = envName;
-            this.envColor       = envColor;
-            return this;
-        }        
-       
         public   virtual    void    AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
         public   virtual    void    RemoveEventTarget   (in JsonKey clientId) {}
 

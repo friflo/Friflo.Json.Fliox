@@ -148,13 +148,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static HostDetails Details (Command<Empty> command) {
             var hub     = command.Hub;
+            var info    = hub.Info;
             var details = new HostDetails {
                 version         = hub.Version,
                 hostName        = hub.hostName,
-                projectName     = hub.projectName,
-                projectWebsite  = hub.projectWebsite,
-                envName         = hub.envName,
-                envColor        = hub.envColor
+                projectName     = info?.projectName,
+                projectWebsite  = info?.projectWebsite,
+                envName         = info?.envName,
+                envColor        = info?.envColor
             };
             return details;
         }

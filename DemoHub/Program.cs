@@ -86,7 +86,8 @@ namespace Friflo.Json.Fliox.DemoHub
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema);
 
-            var hub                 = new FlioxHub(database).SetProjectInfo("DemoHub", "https://github.com/friflo/Friflo.Json.Fliox/tree/main/DemoHub");
+            var hub                 = new FlioxHub(database);
+            hub.Info                = new HubInfo { projectName = "DemoHub", projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs" };
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
