@@ -80,9 +80,9 @@ namespace Friflo.Json.Tests.Main
             var database            = CreateDatabase(c, databaseSchema);
             
             var hub                 = new FlioxHub(database);
-            hub.Info                = new HubInfo {                     // optional - add project / environment information
-                                          projectName = "Test Hub", envName = "dev", envColor = "rgb(34 140 0)",
-                                          projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main" };
+            hub.Info.projectName    = "Test Hub";                                                               // optional
+            hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main";  // optional
+            hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(34 140 0)";                               // optional
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
