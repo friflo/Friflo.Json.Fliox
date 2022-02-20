@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private     readonly    Dictionary <string, AssemblyDoc>   assemblyDocs =  new Dictionary <string, AssemblyDoc >();
     
         private AssemblyDoc GetAssemblyDoc(Assembly assembly) {
-            var name = assembly.FullName;
+            var name = assembly.GetName().Name;
             if (name == null)
                 return null;
             if (!assemblyDocs.TryGetValue(name, out var docs)) {
@@ -29,6 +29,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         internal string GetDocs(Assembly assembly, string signature) {
+            if (assembly == null)
+                return null;
             var docs = GetAssemblyDoc(assembly);
             if (docs == null)
                 return null;
@@ -44,7 +46,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private   readonly  Dictionary<string, string>  signatures; // is null if no documentation available
         
         internal            bool                        Available => signatures != null;
-        
+
+        public override     string                      ToString()   => name;
+
         private AssemblyDoc(string name, Dictionary<string, string>  signatures) {
             this.name       = name;
             this.signatures = signatures;
@@ -56,15 +60,21 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         internal static AssemblyDoc Load(Assembly assembly) {
-            var fullName        = assembly.FullName;
+            var name            = assembly.GetName().Name;
             var assemblyPath    = assembly.Location;
             var assemblyExt     = Path.GetExtension(assembly.Location);
             var docsPath        = assemblyPath.Substring(0, assemblyPath.Length - assemblyExt.Length) + ".xml";
-            var documentation   = XDocument.Load(docsPath);
+            if (!File.Exists(docsPath))
+                return new AssemblyDoc(name, null);
 
-            var signatures  = GetSignatures (documentation);
-            var docs        = new AssemblyDoc(fullName, signatures);
-            return docs;
+            try {
+                var documentation   = XDocument.Load(docsPath);
+                var signatures      = GetSignatures (documentation);
+                var docs            = new AssemblyDoc(name, signatures);
+                return docs;
+            } catch  {
+                return new AssemblyDoc(name, null);
+            }
         }
         
         private static Dictionary<string, string> GetSignatures (XDocument documentation) {

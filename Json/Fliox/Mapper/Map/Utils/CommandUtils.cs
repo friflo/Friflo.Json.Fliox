@@ -15,9 +15,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         private const string CommandType = "Friflo.Json.Fliox.Hub.Client.CommandTask`1";
         
         public static CommandInfo[] GetCommandInfos (Type type) {
+            var docs            = new AssemblyDocs();
             var commandInfos    = new List<CommandInfo>();
             var commandPrefix   = GetCommandPrefix(type.CustomAttributes);
-            var commands        = GetCommandTypes(type, commandPrefix);
+            var commands        = GetCommandTypes(type, commandPrefix, docs);
             if (commands != null) {
                 commandInfos.AddRange(commands);
             }
@@ -25,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (hubCommands != null) {
                 foreach (var hubCommand in hubCommands) {
                     var prefix          = hubCommand.name + ".";
-                    var clientCommands  = GetCommandTypes(hubCommand.commandsType, prefix);
+                    var clientCommands  = GetCommandTypes(hubCommand.commandsType, prefix, docs);
                     if (clientCommands == null)
                         continue;
                     commandInfos.AddRange(clientCommands);
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             return commandInfos.ToArray();
         }
 
-        private static CommandInfo[] GetCommandTypes(Type type, string prefix) {
+        private static CommandInfo[] GetCommandTypes(Type type, string prefix, AssemblyDocs docs) {
             if (CommandInfoCache.TryGetValue(type, out  CommandInfo[] result)) {
                 return result;
             }
@@ -43,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
-                if (!IsCommand(method, prefix, out CommandInfo commandInfo))
+                if (!IsCommand(method, prefix, docs, out CommandInfo commandInfo))
                     continue;
                 commands.Add(commandInfo);
             }
@@ -56,7 +57,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             return array;
         }
         
-        private static bool IsCommand(MethodInfo methodInfo, string prefix, out CommandInfo commandInfo) {
+        private static bool IsCommand(MethodInfo methodInfo, string prefix, AssemblyDocs docs, out CommandInfo commandInfo) {
             commandInfo = new CommandInfo();
             var returnType = methodInfo.ReturnType;
             if (!returnType.IsGenericType)
@@ -79,8 +80,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (parameters.Length == 1) {
                 valueType = parameters[0].ParameterType;
             }
-            var qualifiedName = prefix == "" ? name : prefix + name;
-            commandInfo = new CommandInfo(qualifiedName, valueType, resultType);
+            var qualifiedName   =  prefix == "" ? name : prefix + name;
+            var assembly        = methodInfo.DeclaringType?.Assembly;
+            var doc             = docs.GetDocs(assembly, "XXX");
+            
+            commandInfo = new CommandInfo(qualifiedName, valueType, resultType, doc);
             return true;
         }
         
@@ -100,17 +104,20 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         public  readonly    string  name;
         public  readonly    Type    valueType;
         public  readonly    Type    resultType;
+        public  readonly    string  docs;
 
         public  override    string  ToString() => name;
 
         internal CommandInfo (
-            string         name,
-            Type           valueType,
-            Type           resultType)
+            string  name,
+            Type    valueType,
+            Type    resultType,
+            string  docs)
         {
             this.name       = name;
             this.valueType  = valueType;
             this.resultType = resultType;
+            this.docs       = docs;
         }
     }
 }
