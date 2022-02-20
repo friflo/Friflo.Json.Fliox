@@ -142,7 +142,7 @@ export class EntityEditor
             liCommand.appendChild(commandLabel);
             const runCommand            = createEl('div');
             runCommand.classList.value  = "command";
-            runCommand.title            = "POST command";
+            runCommand.title            = "Send the command using POST";
             liCommand.appendChild(runCommand);
 
             ulCommands.append(liCommand);
