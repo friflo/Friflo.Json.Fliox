@@ -197,12 +197,14 @@ $@"    <br><chapter>commands</chapter>
             foreach (var command in type.Commands) {
                 var commandParam    = GetTypeName(command.param,  context);
                 var commandResult   = GetTypeName(command.result, context);
+                var docs            = command.docs == null ? ""
+                                        : $"\n        <tr><td colspan='2'>{command.docs}</td></tr>";
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
                 sb.AppendLine(
 $@"        <tr>
             <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
-        </tr>");
+        </tr>{docs}");
             }
             sb.AppendLine("    </table>");
         }

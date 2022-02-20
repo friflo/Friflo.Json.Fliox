@@ -154,13 +154,15 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  readonly    string          name;
         public  readonly    TypeDef         param;
         public  readonly    TypeDef         result;
+        public  readonly    string          docs;
 
         public  override    string          ToString() => name;
         
-        public CommandDef(string name, TypeDef param, TypeDef result) {
+        public CommandDef(string name, TypeDef param, TypeDef result, string docs) {
             this.name       = name;
             this.param      = param;
             this.result     = result;
+            this.docs       = docs;
         }
     }
 

@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             foreach (var command in commands) {
                 var valueType   = nativeTypes[command.paramType];
                 var resultType  = nativeTypes[command.resultType];
-                var commandDef  = new CommandDef(command.name, valueType, resultType);
+                var commandDef  = new CommandDef(command.name, valueType, resultType, command.docs);
                 commandDefs.Add(commandDef);
             }
         }

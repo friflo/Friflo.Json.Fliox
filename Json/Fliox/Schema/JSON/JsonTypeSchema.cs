@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             field.name      = commandName;
             var valueType   = FindFieldType(null, field.param,  context);
             var resultType  = FindFieldType(null, field.result, context);
-            var commandDef  = new CommandDef(commandName, valueType, resultType);
+            var commandDef  = new CommandDef(commandName, valueType, resultType, field.description);
             typeDef.commands.Add(commandDef);
         }
         
