@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper
         private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
         public      readonly    ITypeResolver                   typeResolver;
         public      readonly    StoreConfig                     config;
-        private     readonly    AssemblyDocs                    assemblyDocs = new AssemblyDocs();
+        internal    readonly    AssemblyDocs                    assemblyDocs = new AssemblyDocs();
 
         public                  int                             typeCreationCount;
         public                  int                             storeLookupCount;

@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                         typeDef.fields.Add(fieldDef);
                     }
                 }
-                var commands = CommandUtils.GetCommandInfos(typeDef.native);
+                var commands = CommandUtils.GetCommandInfos(typeDef.native, typeStore);
                 AddCommands(typeDef, commands);
 
                 if (typeDef.Discriminant != null) {

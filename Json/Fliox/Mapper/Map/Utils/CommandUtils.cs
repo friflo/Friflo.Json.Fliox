@@ -14,8 +14,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
 
         private const string CommandType = "Friflo.Json.Fliox.Hub.Client.CommandTask`1";
         
-        public static CommandInfo[] GetCommandInfos (Type type) {
-            var docs            = new AssemblyDocs();
+        public static CommandInfo[] GetCommandInfos (Type type, TypeStore typeStore) {
+            var docs            = typeStore.assemblyDocs;
             var commandInfos    = new List<CommandInfo>();
             var commandPrefix   = GetCommandPrefix(type.CustomAttributes);
             var commands        = GetCommandTypes(type, commandPrefix, docs);

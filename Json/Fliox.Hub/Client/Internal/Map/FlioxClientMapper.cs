@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 fieldInfo.SetValue(this, fields);
             }
             
-            var commands = CommandUtils.GetCommandInfos(type);
+            var commands = CommandUtils.GetCommandInfos(type, typeStore);
             AddCommands(typeStore, commands);
         }
         
