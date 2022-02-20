@@ -22,8 +22,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <DocumentationFile>$(TargetDir)/Friflo.Json.Fliox.DemoHub.xml</DocumentationFile>
-      <NoWarn>1701;1702;1591</NoWarn>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
