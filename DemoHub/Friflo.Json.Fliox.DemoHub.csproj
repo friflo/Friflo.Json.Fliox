@@ -22,7 +22,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <DocumentationFile>$(ProjectDir)$(OutDir)/Friflo.Json.Fliox.DemoHub.xml</DocumentationFile>
+      <DocumentationFile>$(TargetDir)/Friflo.Json.Fliox.DemoHub.xml</DocumentationFile>
       <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
