@@ -416,6 +416,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("delete error", resultError.message, 500);
                 return;
             }
+            var entityErrors = restResult.syncResponse.deleteErrors;
+            if (entityErrors != null) {
+                var sb = new StringBuilder();
+                FormatEntityErrors (entityErrors, sb);
+                context.WriteError("DELETE errors", sb.ToString(), 400);
+                return;
+            }
             context.WriteString("deleted successful", "text/plain");
         }
         
