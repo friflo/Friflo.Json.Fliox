@@ -27,7 +27,8 @@
                 "isStruct":             { "type": ["boolean", "null"] },
                 "required":             { "type": ["array", "null"], "items": { "type": "string" } },
                 "additionalProperties": { "type": "boolean" },
-                "enum":                 { "type": ["array", "null"], "items": { "type": "string" } }
+                "enum":                 { "type": ["array", "null"], "items": { "type": "string" } },
+                "description":          { "type": ["string", "null"] }
             },
             "required": [
                 "additionalProperties"
@@ -59,15 +60,17 @@
                 "$ref":                 { "type": ["string", "null"] },
                 "additionalProperties": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
                 "isAutoIncrement":      { "type": ["boolean", "null"] },
-                "relation":             { "type": ["string", "null"] }
+                "relation":             { "type": ["string", "null"] },
+                "description":          { "type": ["string", "null"] }
             },
             "additionalProperties": false
         },
         "CommandType": {
             "type": "object",
             "properties": {
-                "param":  { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
-                "result": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] }
+                "param":       { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "result":      { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "description": { "type": ["string", "null"] }
             },
             "additionalProperties": false
         }

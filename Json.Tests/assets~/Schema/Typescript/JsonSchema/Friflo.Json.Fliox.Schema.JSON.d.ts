@@ -19,6 +19,7 @@ export class JsonType {
     required?             : string[] | null;
     additionalProperties  : boolean;
     enum?                 : string[] | null;
+    description?          : string | null;
 }
 
 export class TypeRef {
@@ -39,10 +40,12 @@ export class FieldType {
     additionalProperties? : FieldType | null;
     isAutoIncrement?      : boolean | null;
     relation?             : string | null;
+    description?          : string | null;
 }
 
 export class CommandType {
-    param?  : FieldType | null;
-    result? : FieldType | null;
+    param?       : FieldType | null;
+    result?      : FieldType | null;
+    description? : string | null;
 }
 

@@ -79,6 +79,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         [Fri.Ignore]
         public  string                          name;
+        
+        public  string                          description;
 
         public override string                  ToString() => name;
     }
@@ -121,6 +123,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         public  string          relation;
         
+        public  string          description; 
+        
         public override string  ToString() => name;
     }
  
@@ -130,6 +134,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public  string          name;
         public  FieldType       param;
         public  FieldType       result;
+        public  string          description;
 
         public override string  ToString() => name;
     }
