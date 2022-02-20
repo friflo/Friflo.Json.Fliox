@@ -76,16 +76,25 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var parameters = methodInfo.GetParameters();
             if (parameters.Length > 1)
                 return false;
-            Type valueType = typeof(JsonValue);
+            Type paramType = typeof(JsonValue);
             if (parameters.Length == 1) {
-                valueType = parameters[0].ParameterType;
+                paramType = parameters[0].ParameterType;
             }
-            var qualifiedName   =  prefix == "" ? name : prefix + name;
-            var assembly        = methodInfo.DeclaringType?.Assembly;
-            var doc             = docs.GetDocs(assembly, "XXX");
+            var qualifiedName   = prefix == "" ? name : prefix + name;
+            var doc             = GetDocs(docs, methodInfo, paramType);
             
-            commandInfo = new CommandInfo(qualifiedName, valueType, resultType, doc);
+            commandInfo = new CommandInfo(qualifiedName, paramType, resultType, doc);
             return true;
+        }
+        
+        private static string GetDocs(AssemblyDocs docs, MethodInfo methodInfo, Type paramType) {
+            var declaringType   = methodInfo.DeclaringType;
+            if (declaringType == null)
+                return null;
+            var assembly    = declaringType.Assembly;
+            var signature   = $"M:{declaringType.FullName}.{methodInfo.Name}({paramType.FullName})";
+            var doc         = docs.GetDocs(assembly, signature);
+            return doc;
         }
         
         private static string GetCommandPrefix(IEnumerable<CustomAttributeData> attributes) {
@@ -102,7 +111,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
     
     public readonly struct CommandInfo {
         public  readonly    string  name;
-        public  readonly    Type    valueType;
+        public  readonly    Type    paramType;
         public  readonly    Type    resultType;
         public  readonly    string  docs;
 
@@ -110,12 +119,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
 
         internal CommandInfo (
             string  name,
-            Type    valueType,
+            Type    paramType,
             Type    resultType,
             string  docs)
         {
             this.name       = name;
-            this.valueType  = valueType;
+            this.paramType  = paramType;
             this.resultType = resultType;
             this.docs       = docs;
         }

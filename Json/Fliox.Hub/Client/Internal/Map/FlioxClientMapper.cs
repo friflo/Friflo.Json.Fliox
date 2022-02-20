@@ -45,8 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             if (commands == null || commands.Length == 0)
                 return;
             foreach (var command in commands) {
-                if (command.valueType != null)
-                    typeStore.GetTypeMapper(command.valueType);
+                if (command.paramType != null)
+                    typeStore.GetTypeMapper(command.paramType);
                 if (command.resultType != null)
                     typeStore.GetTypeMapper(command.resultType);
             }
