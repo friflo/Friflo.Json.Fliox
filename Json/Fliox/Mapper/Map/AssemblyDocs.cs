@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (name == null)
                 return null;
             if (!assemblyDocs.TryGetValue(name, out var docs)) {
-                docs = AssemblyDoc.Load(assembly);
+                docs = AssemblyDoc.Load(name, assembly);
                 assemblyDocs[name] = docs;
             }
             if (!docs.Available)
@@ -59,8 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return result;
         }
 
-        internal static AssemblyDoc Load(Assembly assembly) {
-            var name            = assembly.GetName().Name;
+        internal static AssemblyDoc Load(string name, Assembly assembly) {
             var assemblyPath    = assembly.Location;
             var assemblyExt     = Path.GetExtension(assembly.Location);
             var docsPath        = assemblyPath.Substring(0, assemblyPath.Length - assemblyExt.Length) + ".xml";
