@@ -6,7 +6,6 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 
-// ReSharper disable NotAccessedField.Local
 // ReSharper disable UseNullPropagation
 namespace Friflo.Json.Fliox.Mapper.Map
 {
