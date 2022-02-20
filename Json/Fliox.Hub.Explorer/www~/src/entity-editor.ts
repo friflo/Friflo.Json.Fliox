@@ -641,7 +641,7 @@ export class EntityEditor
 
         commandSignature.innerHTML  = this.getCommandDocsEl(database, command, signature);
     //  commandAnchor.innerHTML     = `GET <span style="opacity:0.5">${database}?command=</span>${command}`;
-        commandAnchor.innerHTML     = `GET &nbsp;&nbsp;${command}`;
+        commandAnchor.innerHTML     = command; // `GET &nbsp;&nbsp;${command}`;
         commandAnchor.href          = this.getCommandUrl(database, command);
         commandAnchor.onfocus       = () => {            
             commandAnchor.href = this.getCommandUrl(database, command);
