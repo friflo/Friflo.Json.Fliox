@@ -2,30 +2,40 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 
+// ReSharper disable NotAccessedField.Local
+// ReSharper disable UseNullPropagation
 namespace Friflo.Json.Fliox.Mapper.Map
 {
     internal class AssemblyDocs
     {
         private   readonly  string                      name;
-        internal  readonly  bool                        available;
-        private   readonly  Dictionary<string, string>  signatures; 
+        private   readonly  Dictionary<string, string>  signatures; // is null no documentation available
         
-        private AssemblyDocs(string name, bool available, Dictionary<string, string>  signatures) {
+        internal            bool                        Available => signatures != null;
+        
+        private AssemblyDocs(string name, Dictionary<string, string>  signatures) {
             this.name       = name;
-            this.available  = available;
             this.signatures = signatures;
+        }
+        
+        internal string GetDocumentation(string signature) {
+            signatures.TryGetValue(signature, out var result);
+            return result;
         }
 
         internal static AssemblyDocs Load(Assembly assembly) {
-            var name            = assembly.FullName;
-            var path            = assembly.Location;
-            var documentation   = XDocument.Load(path);
+            var fullName        = assembly.FullName;
+            var assemblyPath    = assembly.Location;
+            var assemblyExt     = Path.GetExtension(assembly.Location);
+            var docsPath        = assemblyPath.Substring(0, assemblyPath.Length - assemblyExt.Length) + ".xml";
+            var documentation   = XDocument.Load(docsPath);
 
             var signatures  = GetSignatures (documentation);
-            var docs        = new AssemblyDocs(name, true, signatures);
+            var docs        = new AssemblyDocs(fullName, signatures);
             return docs;
         }
         

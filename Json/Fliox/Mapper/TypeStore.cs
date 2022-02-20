@@ -6,6 +6,7 @@ using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
+// ReSharper disable UseNullPropagation
 #if !UNITY_5_3_OR_NEWER
     [assembly: CLSCompliant(true)]
 #endif
@@ -175,7 +176,7 @@ namespace Friflo.Json.Fliox.Mapper
             return new Dictionary<Type, TypeMapper>(typeMap);
         }
         
-        internal AssemblyDocs GetDocs(Assembly assembly) {
+        private AssemblyDocs GetAssemblyDocs(Assembly assembly) {
             var name = assembly.FullName;
             if (name == null)
                 return null;
@@ -183,9 +184,17 @@ namespace Friflo.Json.Fliox.Mapper
                 docs = AssemblyDocs.Load(assembly);
                 assemblyDocs[name] = docs;
             }
-            if (!docs.available)
+            if (!docs.Available)
                 return null;
             return docs;
+        }
+        
+        internal string GetDocs(Assembly assembly, string signature) {
+            var docs = GetAssemblyDocs(assembly);
+            if (docs == null)
+                return null;
+            var documentation = docs.GetDocumentation(signature);
+            return documentation;
         }
     }
 }
