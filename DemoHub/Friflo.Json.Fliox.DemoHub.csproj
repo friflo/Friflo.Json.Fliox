@@ -7,7 +7,6 @@
 
         <LangVersion>7.3</LangVersion>
 		<GenerateProgramFile>false</GenerateProgramFile>
-        <DocumentationFile>$(SolutionDir)$(ProjectDir)$(OutDir)/Friflo.Json.Fliox.DemoHub.xml</DocumentationFile>
         <!-- EnableDefaultContentItems: false prevents files in DB~/ copied to output directory -->
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
@@ -20,6 +19,11 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <OutputPath>.bin\Release\</OutputPath>
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <DocumentationFile>$(ProjectDir)$(OutDir)/Friflo.Json.Fliox.DemoHub.xml</DocumentationFile>
+      <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
