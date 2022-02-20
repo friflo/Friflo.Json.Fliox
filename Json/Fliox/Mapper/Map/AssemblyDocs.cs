@@ -10,14 +10,42 @@ using System.Xml.Linq;
 // ReSharper disable UseNullPropagation
 namespace Friflo.Json.Fliox.Mapper.Map
 {
+    // ------------------------------------ AssemblyDocs ------------------------------------
     internal class AssemblyDocs
     {
+        private     readonly    Dictionary <string, AssemblyDoc>   assemblyDocs =  new Dictionary <string, AssemblyDoc >();
+    
+        private AssemblyDoc GetAssemblyDoc(Assembly assembly) {
+            var name = assembly.FullName;
+            if (name == null)
+                return null;
+            if (!assemblyDocs.TryGetValue(name, out var docs)) {
+                docs = AssemblyDoc.Load(assembly);
+                assemblyDocs[name] = docs;
+            }
+            if (!docs.Available)
+                return null;
+            return docs;
+        }
+        
+        internal string GetDocs(Assembly assembly, string signature) {
+            var docs = GetAssemblyDoc(assembly);
+            if (docs == null)
+                return null;
+            var documentation = docs.GetDocumentation(signature);
+            return documentation;
+        }
+    }
+
+    // ------------------------------------ AssemblyDoc ------------------------------------
+    internal class AssemblyDoc
+    {
         private   readonly  string                      name;
-        private   readonly  Dictionary<string, string>  signatures; // is null no documentation available
+        private   readonly  Dictionary<string, string>  signatures; // is null if no documentation available
         
         internal            bool                        Available => signatures != null;
         
-        private AssemblyDocs(string name, Dictionary<string, string>  signatures) {
+        private AssemblyDoc(string name, Dictionary<string, string>  signatures) {
             this.name       = name;
             this.signatures = signatures;
         }
@@ -27,7 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return result;
         }
 
-        internal static AssemblyDocs Load(Assembly assembly) {
+        internal static AssemblyDoc Load(Assembly assembly) {
             var fullName        = assembly.FullName;
             var assemblyPath    = assembly.Location;
             var assemblyExt     = Path.GetExtension(assembly.Location);
@@ -35,7 +63,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             var documentation   = XDocument.Load(docsPath);
 
             var signatures  = GetSignatures (documentation);
-            var docs        = new AssemblyDocs(fullName, signatures);
+            var docs        = new AssemblyDoc(fullName, signatures);
             return docs;
         }
         
