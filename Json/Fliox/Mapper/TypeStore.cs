@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
@@ -49,14 +50,15 @@ namespace Friflo.Json.Fliox.Mapper
 #endif
     public sealed class TypeStore : IDisposable
     {
-        private     readonly    Dictionary <Type,  TypeMapper>  typeMap=        new Dictionary <Type,  TypeMapper >();
+        private     readonly    Dictionary <Type,  TypeMapper>      typeMap=        new Dictionary <Type,  TypeMapper >();
         
-        private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
-        public      readonly    ITypeResolver                   typeResolver;
-        public      readonly    StoreConfig                     config;
+        private     readonly    List<TypeMapper>                    newTypes =      new List<TypeMapper>();
+        public      readonly    ITypeResolver                       typeResolver;
+        public      readonly    StoreConfig                         config;
+        private     readonly    Dictionary <string, AssemblyDocs>   assemblyDocs =  new Dictionary <string, AssemblyDocs >();
 
-        public                  int                             typeCreationCount;
-        public                  int                             storeLookupCount;
+        public                  int                                 typeCreationCount;
+        public                  int                                 storeLookupCount;
 
         public TypeStore() {
             typeResolver    = new DefaultTypeResolver();
@@ -171,6 +173,19 @@ namespace Friflo.Json.Fliox.Mapper
 
         public Dictionary<Type, TypeMapper> GetTypeMappers() {
             return new Dictionary<Type, TypeMapper>(typeMap);
+        }
+        
+        internal AssemblyDocs GetDocs(Assembly assembly) {
+            var name = assembly.FullName;
+            if (name == null)
+                return null;
+            if (!assemblyDocs.TryGetValue(name, out var docs)) {
+                docs = AssemblyDocs.Load(assembly);
+                assemblyDocs[name] = docs;
+            }
+            if (!docs.available)
+                return null;
+            return docs;
         }
     }
 }

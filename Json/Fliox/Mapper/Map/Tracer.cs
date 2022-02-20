@@ -1,4 +1,7 @@
-﻿using Friflo.Json.Fliox.Mapper.Utils;
+﻿// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
