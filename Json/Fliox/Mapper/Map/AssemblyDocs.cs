@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private     readonly    Dictionary <string, AssemblyDoc>   assemblyDocs =  new Dictionary <string, AssemblyDoc >();
     
         private AssemblyDoc GetAssemblyDoc(Assembly assembly) {
+            // todo: may use Assembly reference instead of Assembly name as key
             var name = assembly.GetName().Name;
             if (name == null)
                 return null;

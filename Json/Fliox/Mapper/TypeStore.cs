@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Mapper
         public   readonly   bool                        useIL;
         public   readonly   IJsonNaming                 jsonNaming;
         internal readonly   Dictionary<Type, KeyMapper> keyMappers;
+        internal            AssemblyDocs                assemblyDocs;
 
         public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection, IJsonNaming jsonNaming = null) {
             this.useIL = typeAccess == TypeAccess.IL;
@@ -61,13 +62,13 @@ namespace Friflo.Json.Fliox.Mapper
 
         public TypeStore() {
             typeResolver    = new DefaultTypeResolver();
-            config          = new StoreConfig();
+            config          = new StoreConfig { assemblyDocs = assemblyDocs };
         }
         
         public static readonly TypeStore Global = new TypeStore();
         
         public TypeStore(StoreConfig config = null, ITypeResolver resolver = null) {
-            this.config     = config    ?? new StoreConfig();
+            this.config     = config    ?? new StoreConfig { assemblyDocs = assemblyDocs };
             typeResolver    = resolver  ?? new DefaultTypeResolver();
         }
             
