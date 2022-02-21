@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         public   readonly   bool            required;
-        private  readonly   string          docs;
+        public   readonly   string          docs;
         public   readonly   bool            isKey;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
