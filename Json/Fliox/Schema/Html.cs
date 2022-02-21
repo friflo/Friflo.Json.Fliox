@@ -173,11 +173,13 @@ $@"        <tr>
                     fieldTag    = "ref";
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
+                var docs = field.docs == null ? ""
+                    : $"\n        <tr><td colspan='2'>{field.docs}</td></tr>"; 
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
             <td><{fieldTag}>{field.name}</{fieldTag}>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
-        </tr>");
+        </tr>{docs}");
             }
             sb.AppendLine("    </table>");
             if (type.Commands != null) {
