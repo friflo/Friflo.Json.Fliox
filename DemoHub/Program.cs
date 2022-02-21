@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var c                   = new Config();
             var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
-            var database            = CreateDatabase(c, databaseSchema);
+            var database            = CreateDatabase(c, databaseSchema, new DemoHandler());
 
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "DemoHub";                                                        // optional
@@ -110,24 +110,14 @@ namespace Friflo.Json.Fliox.DemoHub
             internal readonly bool    useMemoryDbClone    = true;
         }
         
-        private static HttpHostHub CreateMiniHost() {
-            var c                   = new Config();
-            // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = CreateDatabase(c, null);
-            var hub          	    = new FlioxHub(database);
-            var hostHub             = new HttpHostHub(hub);
-            hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
-            return hostHub;
-        }
-        
-        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema) {
-            var fileDb = new FileDatabase(c.dbPath, new DemoHandler(), null, false);
+        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
+            var fileDb = new FileDatabase(c.dbPath, handler, null, false);
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
             // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
             // to minimize operation cost and prevent abuse as a free persistent database.   
-            var memoryDB = new MemoryDatabase(new DemoHandler());
+            var memoryDB = new MemoryDatabase(handler);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;

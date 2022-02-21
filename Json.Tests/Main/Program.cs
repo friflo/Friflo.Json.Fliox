@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Main
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
-            var database            = CreateDatabase(c, databaseSchema);
+            var database            = CreateDatabase(c, databaseSchema, new PocHandler());
             
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "Test Hub";                                                               // optional
@@ -108,19 +108,19 @@ namespace Friflo.Json.Tests.Main
         private static HttpHostHub CreateMiniHost() {
             var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
-            var database            = CreateDatabase(c, null);
+            var database            = CreateDatabase(c, null, new PocHandler());
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
             hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
         }
         
-        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema) {
-            var fileDb = new FileDatabase(c.dbPath, new PocHandler(), null, false);
+        private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
+            var fileDb = new FileDatabase(c.dbPath, handler, null, false);
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
-            var memoryDB = new MemoryDatabase(new PocHandler());
+            var memoryDB = new MemoryDatabase(handler);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;
