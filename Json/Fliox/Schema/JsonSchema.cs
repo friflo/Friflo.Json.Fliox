@@ -186,8 +186,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var command in commands) {
                 var commandParam    = GetTypeName(command.param,  context, true);
                 var commandResult   = GetTypeName(command.result, context, true);
-                var description     = command.docs == null ? ""
-                                        : $",\n                    \"description\": \"{command.docs}\"";
+                var description     = GetDescription("\n                    ", command.docs);
                 var indent          = Indent(maxFieldName, command.name);
                 Delimiter(sb, Next, ref firstField);
                 var signature = $"\"param\": {{ {commandParam} }}, \"result\": {{ {commandResult} }}";
@@ -230,6 +229,10 @@ namespace Friflo.Json.Fliox.Schema
             if (field.relation == null)
                 return "";
             return $", \"relation\": \"{field.relation }\"";
+        }
+        
+        private static string GetDescription(string indentation, string docs) {
+            return docs == null ? "" : $",{indentation}\"description\": \"{docs}\"";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
