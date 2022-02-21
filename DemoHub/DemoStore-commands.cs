@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.DemoHub
     [Fri.CommandPrefix("demo.")]
     public partial class DemoStore {
         // --- commands
-        /// <summary> Generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
+        /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
         public CommandTask<FakeResult>  Fake (Fake      param)  => SendCommand<Fake, FakeResult>("demo.Fake", param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
