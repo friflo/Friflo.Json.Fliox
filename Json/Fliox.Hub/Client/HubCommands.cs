@@ -69,13 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (Std.Commands,  new JsonValue());
         /// <summary>return the JSON Schema assigned to the database</summary>
         public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (Std.Schema,    new JsonValue());
-        /// <summary>return the number of container entities of the database</summary>
+        /// <summary>return the number entities in the containers of the database</summary>
         public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,     new JsonValue());
         
         // --- commands: host
-        /// <summary>returns descriptive information about the Hub</summary>
+        /// <summary>returns descriptive information about the Hub like version, host, project and environment name</summary>
         public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,  new JsonValue());
-        /// <summary>list all databases hosted by the Hub</summary>
+        /// <summary>list all databases and their containers hosted by the Hub</summary>
         public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,  new JsonValue());
     }
     

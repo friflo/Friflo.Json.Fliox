@@ -38,11 +38,11 @@
                 "std.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" },
                     "description": "return the JSON Schema assigned to the database" },
                 "std.Stats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
-                    "description": "return the number of container entities of the database" },
+                    "description": "return the number entities in the containers of the database" },
                 "std.Details":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
-                    "description": "returns descriptive information about the Hub" },
+                    "description": "returns descriptive information about the Hub like version, host, project and environment name" },
                 "std.Cluster":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
-                    "description": "list all databases hosted by the Hub" }
+                    "description": "list all databases and their containers hosted by the Hub" }
             }
         },
         "OrderItem": {
