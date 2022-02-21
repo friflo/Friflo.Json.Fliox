@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Xml.Linq;
 
 // ReSharper disable UseNullPropagation
@@ -85,15 +86,67 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return null;
             var memberElements  = members.Elements();
             var signatures      = new Dictionary<string, string>();
+            var sb              = new StringBuilder();
 
             foreach (XElement element in memberElements) {
                 var signature   = element.Attribute("name");
                 var summary     = element.Element("summary");
                 if (signature == null || summary == null)
                     continue;
-                signatures[signature.Value] = summary.Value;
+                var text = GetElementText(sb, summary);
+                signatures[signature.Value] = text;
             }
             return signatures;
+        }
+        
+        private static string GetElementText(StringBuilder sb, XElement element) {
+            var nodes = element.DescendantNodes();
+            // var nodes = element.DescendantsAndSelf();
+            // if (element.Value.Contains("Order")) { int i = 42; }
+            foreach (var node in nodes) {
+                var nodeText = GetNodeText(node);
+                sb.Append(nodeText);
+            }
+            var text = sb.ToString();
+            sb.Clear();
+            return text;
+        }
+        
+        private static string GetNodeText (XNode node) {
+            if (node is XText xtext) {
+                return xtext.Value;
+            }
+            if (node is XElement xElement) {
+                var name = xElement.Name.LocalName;
+                switch (name) {
+                    case "see":
+                    case "seealso":
+                    case "paramref":
+                    case "typeparamref":
+                        var attributes = xElement.Attributes();
+                        foreach (var attribute in attributes) {
+                            var attributeName = attribute.Name;
+                            if (attributeName == "cref" || attributeName == "name") {
+                                var value       = attribute.Value;
+                                var lastIndex   = value.LastIndexOf('.');
+                                var typeName    = lastIndex == -1 ? value : value.Substring(lastIndex + 1);
+                                return typeName;                            
+                            }
+                        }
+                        return "";
+                    case "br":      return "\n";
+                    case "para":    return "";
+                    case "list":    return "";
+                    case "item":    return "\n";
+                    case "b":       return "";
+                    case "i":       return "";
+                    case "c":       return "";
+                    case "code":    return "";
+                    case "returns": return "";
+                    default:        return "";
+                }
+            }
+            return "";
         }
     }
 }

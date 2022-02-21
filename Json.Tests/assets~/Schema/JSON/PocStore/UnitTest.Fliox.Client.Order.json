@@ -5,7 +5,7 @@
     "definitions": {
         "Order": {
             "type": "object",
-            "description": " Some useful docs about an Order :) ",
+            "description": " Some useful docs about an Order :). Test type reference 'OrderItem' ",
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": ["string", "null"], "relation": "customers" },
