@@ -17,6 +17,7 @@ const entityFilter = el("entityFilter");
 const filterRow = el("filterRow");
 const commandSignature = el("commandSignature");
 const commandAnchor = el("commandAnchor");
+const commandDocs = el("commandDocs");
 // entity/command editor
 const commandValueContainer = el("commandValueContainer");
 const commandParamBar = el("commandParamBar");
@@ -564,6 +565,8 @@ export class EntityEditor {
         commandAnchor.onfocus = () => {
             commandAnchor.href = this.getCommandUrl(database, command);
         };
+        const docs = signature.description;
+        commandDocs.innerText = docs ? docs : "";
     }
     getCommandUrl(database, command) {
         let param = this.commandValueEditor.getValue();
