@@ -34,31 +34,31 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public              string              Path            { get; internal set; }
         
         /// The class this type extends. In other words its base or parent class.  
-        public  abstract    TypeDef             BaseType        { get; }
+        public   abstract   TypeDef             BaseType        { get; }
         
         /// If <see cref="IsClass"/> is true it has <see cref="Fields"/>
-        public  abstract    bool                IsClass         { get; }
+        public   abstract   bool                IsClass         { get; }
         /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
-        public  abstract    bool                IsStruct        { get; }
+        public   abstract   bool                IsStruct        { get; }
         public              string              KeyField        => keyField;
-        public  abstract    List<FieldDef>      Fields          { get; }
+        public   abstract   List<FieldDef>      Fields          { get; }
         
-        public  abstract    List<CommandDef>    Commands        { get; }
+        public   abstract   List<CommandDef>    Commands        { get; }
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
-        public  abstract    UnionType           UnionType       { get; }
-        public  abstract    bool                IsAbstract      { get; }
+        public   abstract   UnionType           UnionType       { get; }
+        public   abstract   bool                IsAbstract      { get; }
         /// <summary><see cref="Discriminant"/> is not null if the type is an element of a <see cref="UnionType"/>
         /// Either both <see cref="Discriminant"/> and <see cref="Discriminator"/> are not null or both are null</summary>
-        public  abstract    string              Discriminant    { get; }
-        public  abstract    string              Discriminator   { get; }
+        public   abstract   string              Discriminant    { get; }
+        public   abstract   string              Discriminator   { get; }
         
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
-        public  abstract    bool                IsEnum          { get; }
-        public  abstract    ICollection<string> EnumValues      { get; }
+        public   abstract   bool                IsEnum          { get; }
+        public   abstract   ICollection<string> EnumValues      { get; }
         internal readonly   string              fullName;
         internal            string              keyField;
-        public  readonly    string              docs;
+        public   readonly   string              docs;
 
         
         protected TypeDef (string name, string @namespace, string docs) {
@@ -88,23 +88,23 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// To simplify code generation the primary key is exposed by <see cref="TypeDef.KeyField"/>.
     /// </summary>
     public sealed class FieldDef {
-        public  readonly    string          name;
-        public  readonly    bool            required;
-        public  readonly    bool            isKey;
-        public  readonly    bool            isAutoIncrement;
-        public  readonly    TypeDef         type;
+        public   readonly   string          name;
+        public   readonly   bool            required;
+        public   readonly   bool            isKey;
+        public   readonly   bool            isAutoIncrement;
+        public   readonly   TypeDef         type;
         /// if <see cref="isArray"/> is true <see cref="type"/> contains the element type.
-        public  readonly    bool            isArray;
+        public   readonly   bool            isArray;
         /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
-        public  readonly    bool            isDictionary;
+        public   readonly   bool            isDictionary;
         /// See <see cref="JSON.JsonTypeSchema.GetItemsFieldType"/>
-        public  readonly    bool            isNullableElement;  
-        public  readonly    TypeDef         ownerType;
+        public   readonly   bool            isNullableElement;  
+        public   readonly   TypeDef         ownerType;
         public              bool            IsDerivedField { get; private set; }
-        public  readonly    string          relation;
+        public   readonly   string          relation;
         public              TypeDef         RelationType => relationType;
         internal            TypeDef         relationType;
-        public  readonly    string          docs;
+        public   readonly   string          docs;
         
 
         public  override    string          ToString() => name;
@@ -156,12 +156,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// when a command is executed it returns an object of the given <see cref="result"/> type.
     /// </summary>
     public sealed class CommandDef {
-        public  readonly    string          name;
-        public  readonly    TypeDef         param;
-        public  readonly    TypeDef         result;
-        public  readonly    string          docs;
+        public   readonly   string          name;
+        public   readonly   TypeDef         param;
+        public   readonly   TypeDef         result;
+        public   readonly   string          docs;
 
-        public  override    string          ToString() => name;
+        public   override   string          ToString() => name;
         
         public CommandDef(string name, TypeDef param, TypeDef result, string docs) {
             this.name       = name;
@@ -172,8 +172,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
     }
 
     public class UnionType {
-        public  readonly    string          discriminator;
-        public  readonly    List<UnionItem> types;
+        public   readonly   string          discriminator;
+        public   readonly   List<UnionItem> types;
         
         public   override   string          ToString() => discriminator;
         
@@ -185,8 +185,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
     
     public readonly struct UnionItem
     {
-        public readonly TypeDef     typeDef;
-        public readonly string      discriminant;
+        public   readonly   TypeDef     typeDef;
+        public   readonly   string      discriminant;
         
         public UnionItem (TypeDef typeDef, string discriminant) {
             this.typeDef        = typeDef;
