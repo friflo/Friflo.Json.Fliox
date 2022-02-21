@@ -32,6 +32,11 @@ Compatible to .NET &amp; Unity.</Description>
       <OutputPath>.bin\Release\</OutputPath>
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1574,1591</NoWarn>
+    </PropertyGroup>
 	
     <ItemGroup>
       <None Remove="**/*.meta" />

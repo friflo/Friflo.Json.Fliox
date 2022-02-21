@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    ObjectReader    reader;
        
         /// <summary>
-        /// Return the <see cref="Json"/> value as the specified type <see cref="TMessage"/>.
+        /// Return the <see cref="Json"/> value as the specified type <typeparamref name="TMessage"/>.
         /// </summary>
         public              TMessage        Value => Message.Read<TMessage>(Json, reader);
 

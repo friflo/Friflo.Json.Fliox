@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <see cref="Key"/> or the <see cref="Entity"/>.
     /// 
     /// <para>
-    /// A reference is an <see cref="Key"/> of type <see cref="TKey"/>. A reference can be in two states:
+    /// A reference is an <see cref="Key"/> of type <typeparamref name="TKey"/>. A reference can be in two states:
     ///   <para><b>unresolved</b>
     ///     Only the access to <see cref="Key"/> is valid. This is always the case.
     ///     Access to the referenced entity instance via the property <see cref="Entity"/> result in an <see cref="Exception"/>.
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// The <see cref="Key"/> is used when serializing a <see cref="Ref{TKey,T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{TKey,T}"/> can be assigned in three ways:
-    ///     <para>1. By assigning an key of type <see cref="TKey"/>.                        Assigning a default (null) <see cref="TKey"/> is valid.</para>
+    ///     <para>1. By assigning an key of type <typeparamref name="TKey"/>.               Assigning a default (null) <typeparamref name="TKey"/> is valid.</para>
     ///     <para>2. By assigning an entity.                                                Assigning null as entity is valid.</para>
     ///     <para>3. By assigning with another reference of type <see cref="Ref{TKey,T}"/>. Assigning a default <see cref="Ref{TKey,T}"/> is valid.</para>
     /// </para>
@@ -151,8 +151,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="Key"/> is null.
-        /// Return always false in case <see cref="TKey"/> is a value type like <see cref="int"/> or <see cref="Guid"/>
+        /// Returns true only in case <typeparamref name="TKey"/> is a reference type like string and the <see cref="Key"/> is null.
+        /// Return always false in case <typeparamref name="TKey"/> is a value type like <see cref="int"/> or <see cref="Guid"/>
         /// as values type cannot be null. 
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

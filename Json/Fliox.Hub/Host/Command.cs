@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <summary>
     /// <see cref="Command{TParam}"/> contains all data relevant for command execution as properties. <br/>
     /// - the command <see cref="Name"/> == method name <br/>
-    /// - the input parameter <see cref="Param"/> of type <see cref="TParam"/> <br/>
+    /// - the input parameter <see cref="Param"/> of type <typeparamref name="TParam"/> <br/>
     /// - the input parameter <see cref="JsonParam"/> as raw JSON <br/>
     /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
