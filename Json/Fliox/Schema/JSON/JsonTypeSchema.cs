@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     {
         public  override    ICollection<TypeDef>            Types           { get; }
         public  override    StandardTypes                   StandardTypes   { get; }
-        public  override    TypeDef                         RootType       { get; }
+        public  override    TypeDef                         RootType        { get; }
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         

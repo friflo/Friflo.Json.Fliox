@@ -345,8 +345,8 @@ $@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{tag}</div
         }
         
         private static List<EmitFile> OrderNamespaces(Generator generator) {
-            var emitFiles = new List<EmitFile>(generator.fileEmits.Values);
-            var rootType = generator.rootType;
+            var emitFiles   = new List<EmitFile>(generator.fileEmits.Values);
+            var rootType    = generator.rootType;
             emitFiles.Sort((file1, file2) => {
                 // namespace Standard to bottom
                 if (file1.@namespace == "Standard")
