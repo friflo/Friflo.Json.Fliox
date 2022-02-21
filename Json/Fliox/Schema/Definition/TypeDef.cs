@@ -58,12 +58,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  abstract    ICollection<string> EnumValues      { get; }
         internal readonly   string              fullName;
         internal            string              keyField;
+        public  readonly    string              docs;
 
         
-        protected TypeDef (string name, string @namespace) {
+        protected TypeDef (string name, string @namespace, string docs) {
             fullName    = @namespace + "#" + name;
             Name        = name;
             Namespace   = @namespace;
+            this.docs   = docs;
         }
         
         internal FieldDef FindField(string name) {

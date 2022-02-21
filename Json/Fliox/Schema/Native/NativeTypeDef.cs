@@ -37,7 +37,7 @@ public sealed class NativeTypeDef : TypeDef
         public   override   string              ToString()      => $"{Namespace} {Name}";
         
         public NativeTypeDef (TypeMapper mapper, string name, string @namespace) :
-            base(name, @namespace) 
+            base(name, @namespace, mapper.docs) 
         {
             this.native     = mapper.type;
             this.mapper     = mapper;

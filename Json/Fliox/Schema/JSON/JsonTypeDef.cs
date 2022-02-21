@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   JsonSchema          schema;
 
         public JsonTypeDef (JsonType type, string name, string ns, JsonSchema schema) :
-            base (name, ns)
+            base (name, ns, type.description)
         {
             this.name   = name;
             this.type   = type;
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         }
         
         public JsonTypeDef (string name) :
-            base (name, null)
+            base (name, null, null)
         {
             this.name = name;
         }
