@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var command in commands) {
                 var commandParam    = GetTypeName(command.param,  context, true);
                 var commandResult   = GetTypeName(command.result, context, true);
-                var indent = Indent(maxFieldName, command.name);
+                var indent          = Indent(maxFieldName, command.name);
                 Delimiter(sb, Next, ref firstField);
                 var signature = $"\"param\": {{ {commandParam} }}, \"result\": {{ {commandResult} }}";
                 sb.Append($"                \"{command.name}\":{indent} {{ {signature} }}");

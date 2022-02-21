@@ -92,7 +92,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (declaringType == null)
                 return null;
             var assembly    = declaringType.Assembly;
-            var signature   = $"M:{declaringType.FullName}.{methodInfo.Name}({paramType.FullName})";
+            string signature;
+            if (paramType == typeof(JsonValue)) {
+                signature   = $"M:{declaringType.FullName}.{methodInfo.Name}";
+            } else {
+                signature   = $"M:{declaringType.FullName}.{methodInfo.Name}({paramType.FullName})";
+            }
             var doc         = docs.GetDocs(assembly, signature);
             return doc;
         }
