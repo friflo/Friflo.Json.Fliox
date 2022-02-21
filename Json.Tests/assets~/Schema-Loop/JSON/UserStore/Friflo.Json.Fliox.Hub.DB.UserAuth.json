@@ -5,6 +5,7 @@
         "UserStore": {
             "type": "object",
             "isAbstract": true,
+            "description": "\n            Provide access to a  storing user credentials ands roles.\n            It can also be used as a non thread safe  implementation.\n            For a thread safe  implementation use .\n            ",
             "properties": {
                 "credentials": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
                 "permissions": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },

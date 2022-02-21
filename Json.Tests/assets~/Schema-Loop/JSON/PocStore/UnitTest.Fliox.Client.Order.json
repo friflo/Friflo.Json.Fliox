@@ -5,6 +5,7 @@
     "definitions": {
         "Order": {
             "type": "object",
+            "description": " Some useful docs about an Order :) ",
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": ["string", "null"], "relation": "customers" },
