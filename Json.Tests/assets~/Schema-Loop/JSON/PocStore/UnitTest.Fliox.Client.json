@@ -29,19 +29,19 @@
                 "test.Command1":  { "param": { "type": "string" }, "result": { "type": "string" } },
                 "test.Command2":  { "param": { "type": "string" }, "result": { "type": "string" } },
                 "std.Echo":       { "param": {  }, "result": {  },
-                    "description": "echos the given parameter to assure a database is working appropriately. " },
+                    "description": "echos the given parameter to assure the database is working appropriately. " },
                 "std.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
-                    "description": "list all containers of a database" },
+                    "description": "list all containers of the database" },
                 "std.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" },
-                    "description": "list all commands exposed by a database" },
+                    "description": "list all commands exposed by the database" },
                 "std.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" },
-                    "description": "return the JSON Schema assigned to a database" },
+                    "description": "return the JSON Schema assigned to the database" },
                 "std.Stats":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
-                    "description": "return the number of container entities of a database" },
+                    "description": "return the number of container entities of the database" },
                 "std.Details":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
-                    "description": "returns descriptive information about a Hub" },
+                    "description": "returns descriptive information about the Hub" },
                 "std.Cluster":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
-                    "description": "list all databases hosted by a Hub" }
+                    "description": "list all databases hosted by the Hub" }
             }
         },
         "OrderItem": {
