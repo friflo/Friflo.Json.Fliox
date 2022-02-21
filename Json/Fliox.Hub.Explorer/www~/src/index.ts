@@ -463,6 +463,13 @@ export class App {
         return `<a title="open database schema exports in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
 
+    public getSchemaDescription(database: string) : string {
+        const schema        = this.databaseSchemas[database];
+        if (!schema)
+            return this.schemaLess;            
+        return schema._rootSchema.description ?? "";
+    }
+
     private static getType(database: string, def: JsonType) {
         const ns          = def._namespace;
         const name        = def._typeName;

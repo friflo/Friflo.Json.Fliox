@@ -69,6 +69,7 @@ export class EntityEditor {
         el("databaseSchema").innerHTML = app.getSchemaType(database);
         el("databaseExports").innerHTML = app.getSchemaExports(database);
         el("databaseType").innerHTML = dbContainer.databaseType;
+        el("schemaDescription").innerText = app.getSchemaDescription(database);
     }
     listCommands(database, dbCommands, dbContainer) {
         app.explorer.initExplorer(null, null, null, null);

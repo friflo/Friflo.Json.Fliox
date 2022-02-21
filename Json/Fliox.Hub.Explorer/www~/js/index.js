@@ -409,6 +409,13 @@ export class App {
             return this.schemaLess;
         return `<a title="open database schema exports in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
     }
+    getSchemaDescription(database) {
+        var _a;
+        const schema = this.databaseSchemas[database];
+        if (!schema)
+            return this.schemaLess;
+        return (_a = schema._rootSchema.description) !== null && _a !== void 0 ? _a : "";
+    }
     static getType(database, def) {
         const ns = def._namespace;
         const name = def._typeName;
