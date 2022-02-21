@@ -11,6 +11,12 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
+    /// <summary>
+    /// Provide information about databases exposed by the Hub. These are: <br/>
+    /// - available containers aka tables per database <br/>
+    /// - available commands per database <br/>
+    /// - the schema assigned to each database
+    /// </summary>
     public partial class ClusterStore : FlioxClient
     {
         // --- containers

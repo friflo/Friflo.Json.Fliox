@@ -15,6 +15,13 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
+    /// <summary>
+    /// Monitor access to the Hub and its databases. These are: <br/>
+    /// - requests and tasks executed per user <br/>
+    /// - requests and tasks executed per client. A user can access without, one or multiple client ids. <br/>
+    /// - events sent to clients (or buffered) they subscribed. <br/>
+    /// - aggregated access to the Hub in the last 30 seconds and 30 minutes.
+    /// </summary>
     public partial class  MonitorStore :  FlioxClient
     {
         internal            string                              hostName;
