@@ -40,7 +40,7 @@
             "properties": {
                 "error":      { "type": ["string", "null"] },
                 "container":  { "type": ["string", "null"] },
-                "count":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "count":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": " Is used only to show the number of ids in a serialized protocol message\n            to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information. " },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
             },

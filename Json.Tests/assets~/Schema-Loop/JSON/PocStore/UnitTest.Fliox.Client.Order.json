@@ -8,7 +8,7 @@
             "description": " Some useful docs about an Order :). Test type reference 'OrderItem' ",
             "properties": {
                 "id":       { "type": "string" },
-                "customer": { "type": ["string", "null"], "relation": "customers" },
+                "customer": { "type": ["string", "null"], "relation": "customers", "description": " Some useful member documentation 🙂 " },
                 "created":  { "$ref": "./Standard.json#/definitions/DateTime" },
                 "items":    { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/OrderItem" } }
             },

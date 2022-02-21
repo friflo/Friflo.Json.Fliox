@@ -156,7 +156,8 @@ namespace Friflo.Json.Fliox.Schema
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr} }}");
+                var docs    = GetDescription(", ", field.docs);
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{docs} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");
