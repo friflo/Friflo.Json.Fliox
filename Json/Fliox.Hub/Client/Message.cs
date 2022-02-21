@@ -20,13 +20,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         JsonValue           Json    { get; }
         
         /// <summary>
-        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>.
-        /// Throws a <see cref="JsonReaderException"/> in case <see cref="Json"/> is incompatible to <see cref="T"/></summary>
+        /// Read the <see cref="Json"/> value as the given type <typeparamref name="T"/>.
+        /// Throws a <see cref="JsonReaderException"/> in case <see cref="Json"/> is incompatible to <typeparamref name="T"/></summary>
         T                   ReadJson   <T>();
         
         /// <summary>
-        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>.
-        /// Return false and set <see cref="error"/> in case <see cref="Json"/> is incompatible to <see cref="T"/>
+        /// Read the <see cref="Json"/> value as the given type <typeparamref name="T"/>.
+        /// Return false and set <paramref name="error"/> in case <see cref="Json"/> is incompatible to <typeparamref name="T"/>
         /// </summary>
         bool                TryReadJson<T>(out T result, out JsonReaderException error);
     } 
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public override     string          ToString()  => Name;
         
         /// <summary>
-        /// <see cref="Json"/> is set to <see cref="SendCommand.value"/> json.
+        /// <see cref="Json"/> is set to <see cref="SyncMessageTask.value"/> json.
         /// If json is null <see cref="Json"/> is set to "null".
         /// </summary>
         internal Message(string name, JsonValue json, ObjectReader reader) {

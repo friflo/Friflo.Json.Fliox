@@ -257,8 +257,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
         
         /// <summary>
-        /// Add an <see cref="extensionDB"/> to the Hub.
-        /// This database can then be accessed via the <see cref="FlioxHub"/> by the given <see cref="name"/>.
+        /// Add an <paramref name="extensionDB"/> to the Hub.
+        /// This database can then be accessed via the <see cref="FlioxHub"/> by the given <paramref name="name"/>.
         /// </summary>
         public void AddExtensionDB(string name, EntityDatabase extensionDB) {
             extensionDbs.Add(name, extensionDB);

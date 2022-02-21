@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return Task.FromResult(result);
         }
         
-        ///<summary> Note: A <see cref="user"/> can remove only its own cursors </summary>
+        ///<summary> Note: A <paramref name="user"/> can remove only its own cursors </summary>
         private static void RemoveCursors(EntityContainer entityContainer, List<string> cursors, User user) {
             var containerCursors = entityContainer.cursors;
             if (cursors == null) {

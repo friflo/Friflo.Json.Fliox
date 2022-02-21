@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public readonly     StdCommands                 std;
 
         /// <summary>
-        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/>.
+        /// Instantiate a <see cref="FlioxClient"/> with a given <paramref name="hub"/>.
         /// </summary>
         public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
@@ -166,10 +166,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- SubscribeAllChanges
         /// <summary>
-        /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <see cref="changes"/>.
+        /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="changes"/>.
         /// By default these changes are applied to the <see cref="FlioxClient"/>.
         /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
-        /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
+        /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(IEnumerable<Change> changes) {
             AssertSubscriptionProcessor();
@@ -244,7 +244,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- SendCommand
         /// <summary>
-        /// Send a command with the given <see cref="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.
+        /// Send a command with the given <paramref name="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.
         /// The method can be used directly for rapid prototyping. For production grade encapsulate call by a command method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Send a command with the given <see cref="name"/> and <see cref="param"/> value to the attached <see cref="FlioxHub"/>.
+        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>.
         /// The method can be used directly for rapid prototyping. For production grade encapsulate call by a command method to
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
@@ -383,7 +383,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         /// <summary>
-        /// Returning current <see cref="ClientIntern.syncStore"/> as <see cref="syncStore"/> enables request handling
+        /// Returning current <see cref="ClientIntern.syncStore"/> as <paramref name="syncStore"/> enables request handling
         /// in a worker thread while calling <see cref="SyncStore"/> methods from 'main' thread.
         /// 
         /// If store has <see cref="ClientIntern.subscriptionProcessor"/> acknowledge received events to clear

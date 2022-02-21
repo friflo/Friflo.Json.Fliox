@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     public static class EntityUtils
     {
         /// <summary>
-        /// Add the given <see cref="entities"/> to the given <see cref="entityMap"/>.
-        /// The given <see cref="keyName"/> identifies the key property inside the JSON value in the given list of <see cref="entities"/>.
+        /// Add the given <paramref name="entities"/> to the given <paramref name="entityMap"/>.
+        /// The given <paramref name="keyName"/> identifies the key property inside the JSON value in the given list of <paramref name="entities"/>.
         /// </summary>
         public static void AddEntitiesToMap(
             List<JsonValue>                     entities,

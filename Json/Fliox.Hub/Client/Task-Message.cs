@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Return a type safe result of a command.
         /// The result is null if the command doesnt return a result.
-        /// Return false if read fails and set <see cref="error"/>.
+        /// Return false if read fails and set <paramref name="error"/>.
         /// </summary>
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
             var ok = IsOk("CommandTask.TryReadResult", out Exception e);

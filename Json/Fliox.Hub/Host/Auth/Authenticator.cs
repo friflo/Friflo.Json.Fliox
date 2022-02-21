@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
 
         /// <summary>
-        /// Register a predicate function by the given <see cref="name"/> which enables custom authorization via code,
+        /// Register a predicate function by the given <paramref name="name"/> which enables custom authorization via code,
         /// which cannot be expressed by one of the provided <see cref="Right"/> implementations.
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         /// <summary>
         /// Register a predicate function which enables custom authorization via code, which cannot be expressed by one of the
         /// provided <see cref="Right"/> implementations.
-        /// The <see cref="predicate"/> is registered by its delegate name.
+        /// The <paramref name="predicate"/> is registered by its delegate name.
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>

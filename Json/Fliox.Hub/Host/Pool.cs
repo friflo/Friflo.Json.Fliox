@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         ObjectPool<EntityProcessor> EntityProcessor { get; }
         ObjectPool<TypeValidator>   TypeValidator   { get; }
         /// <summary>
-        /// Enable pooling instances of the given Type <see cref="T"/>. In case no cached instance of <see cref="T"/>
-        /// is available the <see cref="factory"/> method is called to create a new instance.
+        /// Enable pooling instances of the given Type <typeparamref name="T"/>. In case no cached instance of <typeparamref name="T"/>
+        /// is available the <paramref name="factory"/> method is called to create a new instance.
         /// After returning a pooled instance to its pool with <see cref="ObjectPool{T}.Return"/> it is cached and
         /// will be reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
         /// To ensure pooled instances are not leaking use the using directive. E.g.

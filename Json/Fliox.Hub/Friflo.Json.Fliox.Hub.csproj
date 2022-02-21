@@ -35,7 +35,7 @@ Compatible to .NET &amp; Unity.</Description>
 
     <PropertyGroup>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <NoWarn>1574,1591</NoWarn>
+      <NoWarn>1591</NoWarn>
     </PropertyGroup>
 	
     <ItemGroup>

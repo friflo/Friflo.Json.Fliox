@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
        
         /// <summary>
-        /// Add all methods of the given <see cref="handlerClass"/> using <see cref="Command{TParam}"/> as a
+        /// Add all methods of the given <paramref name="handlerClass"/> using <see cref="Command{TParam}"/> as a
         /// single parameter as a command handler.
         /// E.g.
         /// <code>

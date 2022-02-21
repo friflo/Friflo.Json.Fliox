@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         }
         
         /// <summary>
-        /// Parse the given <see cref="json"/> while expecting the value is a JSON array of objects (entities).
+        /// Parse the given <paramref name="json"/> while expecting the value is a JSON array of objects (entities).
         /// The JSON objects returned by this method are 1:1 byte identical to its JSON input
         /// to preserve line feeds and white spaces.
         /// <br/>

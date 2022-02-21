@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // Opinion: This implicit type conversion tend to be irritating
         // public static implicit operator TKey (Ref<TKey, T> reference) { return reference.key; }
 
-        /// Schedule resolving the reference by the given <see cref="task"/>.
+        /// Schedule resolving the reference by the given <paramref name="task"/>.
         public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
             var find    = task.Find(key);
