@@ -65,7 +65,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     if (jsonName == null)
                         jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
                     
-                    if (fieldName == "customer") { int i = 42; }
                     string docs         = null;
                     var assemblyDocs    = typeStore.assemblyDocs;
                     var declaringType   = memberInfo.DeclaringType;
