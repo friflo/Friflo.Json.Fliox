@@ -19,6 +19,11 @@
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="5.10.3" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.18" />

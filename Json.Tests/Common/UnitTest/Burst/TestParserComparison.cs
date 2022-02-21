@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     /// <summary>
     /// Compare the usage of the <see cref="Utf8JsonParser"/> in two similar ways<br/>
     /// 1. using <see cref="NextObjectMember"/> and <see cref="NextArrayElement"/>
-    /// 2. using <see cref="Utf8JsonParser.NextObjectMember"/> and <see cref="Utf8JsonParser.NextArrayElement"/> 
+    /// 2. using <see cref="JObj.NextObjectMember"/> and <see cref="JArr.NextArrayElement"/> 
     /// </summary>
     public class TestParserComparison : LeakTestsFixture
     {

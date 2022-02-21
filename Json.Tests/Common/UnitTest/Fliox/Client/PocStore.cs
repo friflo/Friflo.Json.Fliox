@@ -48,6 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
 
     // ------------------------------ models ------------------------------
+    /// <summary> Some useful docs about an Order :) </summary>
     public class Order {
         [Req]   public  string                  id { get; set; }
                 public  Ref<string, Customer>   customer;

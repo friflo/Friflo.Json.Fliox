@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
 #if !DEBUG && !UNITY_5_3_OR_NEWER
-        /// Test boxing behavior of <see cref="EntityKeyT{TKey,T}.GetKeyAsType{TAsType}"/>
+        /// Test boxing behavior of <b>EntityKeyT{TKey,T}.GetKeyAsType{TAsType}</b>/>
         /// Will box in DEBUG - not in RELEASE
         [Test]
         public void TestRefAssignmentNoBoxing () {

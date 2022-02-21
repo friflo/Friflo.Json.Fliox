@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        /// test authorization of subscribing to container changes. E.g. create, upsert, delete & patch.
+        /// test authorization of subscribing to container changes. E.g. create, upsert, delete and patch.
         private static async Task AssertAuthAccessSubscriptions(FlioxHub hub) {
             using (var mutateUser       = new PocStore(hub) { UserId = "test-deny"}) {
                 mutateUser.Token = "test-deny-token";
