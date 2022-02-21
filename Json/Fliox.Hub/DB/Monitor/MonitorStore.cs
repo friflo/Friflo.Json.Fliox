@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
 
         public MonitorStore(FlioxHub hub, string database = null) : base(hub, database) { }
         
+        /// <summary>Reset all request, task and event counters</summary>
         public CommandTask<ClearStatsResult> ClearStats(ClearStats value = null) => SendCommand<ClearStats, ClearStatsResult>(nameof(ClearStats), value);
     }
     
