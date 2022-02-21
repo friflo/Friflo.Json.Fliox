@@ -19,12 +19,18 @@
             "commands": {
                 "AuthenticateUser": { "param": { "$ref": "#/definitions/AuthenticateUser" }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
                 "std.Echo":         { "param": {  }, "result": {  } },
-                "std.Containers":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" } },
-                "std.Commands":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" } },
-                "std.Schema":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" } },
-                "std.Stats":        { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" } },
-                "std.Details":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" } },
-                "std.Cluster":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" } }
+                "std.Containers":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
+                    "description": "list all containers of a database" },
+                "std.Commands":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" },
+                    "description": "list all commands exposed by a database" },
+                "std.Schema":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" },
+                    "description": "return the JSON Schema assigned to a database" },
+                "std.Stats":        { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
+                    "description": "return the number of container entities of a database" },
+                "std.Details":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
+                    "description": "returns descriptive information about a Hub" },
+                "std.Cluster":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
+                    "description": "list all databases hosted by a Hub" }
             }
         },
         "AuthenticateUser": {
