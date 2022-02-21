@@ -23,6 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         public   readonly   bool            required;
+        private  readonly   string          docs;
         public   readonly   bool            isKey;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
@@ -38,7 +39,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         private  readonly   Action<object, object>              setLambda;
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
-            int primIndex, int objIndex, bool required)
+            int primIndex, int objIndex, bool required, string docs)
         {
             this.name       = name;
             this.key        = new JsonKey(name);
@@ -68,6 +69,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
             this.required   = required;
+            this.docs       = docs;
         }
         
         public MemberInfo   Member { get {

@@ -28,13 +28,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             Type            memberType;
             string          jsonName;
             bool            required;
+            MemberInfo      memberInfo;
+            string          docPrefix;
             if (property != null) {
+                memberInfo   = property;
+                docPrefix    = "P:";
                 memberType   = property.PropertyType;
                 AttributeUtils.Property(property.CustomAttributes, out jsonName);
                 required = IsRequired(property.CustomAttributes);
                 if (property.GetSetMethod(false) == null)
                     required = true;
             } else {
+                memberInfo   = field;
+                docPrefix    = "F:";
                 memberType   = field.FieldType;
                 AttributeUtils.Property(field.CustomAttributes, out jsonName);
                 required = IsRequired(field.CustomAttributes);
@@ -59,14 +65,22 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     if (jsonName == null)
                         jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
                     
+                    if (fieldName == "customer") { int i = 42; }
+                    string docs         = null;
+                    var assemblyDocs    = typeStore.assemblyDocs;
+                    var declaringType   = memberInfo.DeclaringType;
+                    if (assemblyDocs != null && declaringType != null) {
+                        var signature  = $"{docPrefix}{declaringType.FullName}.{fieldName}";
+                        docs           = assemblyDocs.GetDocs(declaringType.Assembly, signature);
+                    }
                     PropField pf;
                     if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                        pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999, required); // force index exception in case of buggy impl.
+                        pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999, required, docs); // force index exception in case of buggy impl.
                     } else {
                         if (mapper.isValueType)
-                            pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount, required);
+                            pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount, required, docs);
                         else
-                            pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount, required); // force index exception in case of buggy impl.
+                            pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount, required, docs); // force index exception in case of buggy impl.
                     }
 
                     fieldList.Add(pf);
