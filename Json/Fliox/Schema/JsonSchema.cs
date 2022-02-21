@@ -105,10 +105,9 @@ namespace Friflo.Json.Fliox.Schema
                     sb.AppendLine($"            \"isStruct\": true,");
                 if (type.IsAbstract)
                     sb.AppendLine($"            \"isAbstract\": true,");
-                if (type.docs != null) {
-                    var docs = GetDescription("            ", type.docs);
-                    sb.AppendLine($"{docs},");
-                }
+                var docs = GetDescription("            ", type.docs, ",");
+                if (docs != "")
+                    sb.AppendLine(docs);
             } else {
                 sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
                 sb.AppendLine($"            \"oneOf\": [");
@@ -156,7 +155,7 @@ namespace Friflo.Json.Fliox.Schema
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                var docs    = GetDescription(", ", field.docs);
+                var docs    = GetDescription(", ", field.docs, "");
                 sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{docs} }}");
             }
             sb.AppendLine();
@@ -191,7 +190,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var command in commands) {
                 var commandParam    = GetTypeName(command.param,  context, true);
                 var commandResult   = GetTypeName(command.result, context, true);
-                var description     = GetDescription(",\n                    ", command.docs);
+                var description     = GetDescription(",\n                    ", command.docs, "");
                 var indent          = Indent(maxFieldName, command.name);
                 Delimiter(sb, Next, ref firstField);
                 var signature = $"\"param\": {{ {commandParam} }}, \"result\": {{ {commandResult} }}";
@@ -236,12 +235,12 @@ namespace Friflo.Json.Fliox.Schema
             return $", \"relation\": \"{field.relation }\"";
         }
         
-        private static string GetDescription(string leadingText, string docs) {
+        private static string GetDescription(string prefix, string docs, string suffix) {
             if (docs == null)
                 return "";
             docs = docs.Replace("\n", "\\n");
             docs = docs.Replace("\"", "'");
-            return $"{leadingText}\"description\": \"{docs}\"";
+            return $"{prefix}\"description\": \"{docs}\"{suffix}";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

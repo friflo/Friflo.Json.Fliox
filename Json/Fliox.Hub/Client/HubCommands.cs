@@ -62,21 +62,21 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // --- commands: database
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>
-        public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (Std.Echo, param);
+        public CommandTask<TParam>          Echo<TParam> (TParam param) => SendCommand<TParam,TParam>  (Std.Echo,   param);
         /// <summary>list all containers of the database</summary>
-        public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(Std.Containers,new JsonValue());
+        public CommandTask<DbContainers>    Containers()=>  SendCommand<JsonValue, DbContainers>(Std.Containers,    new JsonValue());
         /// <summary>list all commands exposed by the database</summary>
-        public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (Std.Commands,  new JsonValue());
+        public CommandTask<DbCommands>      Commands()  =>  SendCommand<JsonValue, DbCommands>  (Std.Commands,      new JsonValue());
         /// <summary>return the JSON Schema assigned to the database</summary>
-        public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (Std.Schema,    new JsonValue());
+        public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (Std.Schema,        new JsonValue());
         /// <summary>return the number entities in the containers of the database</summary>
-        public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,     new JsonValue());
+        public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,         new JsonValue());
         
         // --- commands: host
         /// <summary>returns descriptive information about the Hub like version, host, project and environment name</summary>
-        public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,  new JsonValue());
+        public CommandTask<HostDetails>     Details()   =>  SendCommand<JsonValue, HostDetails> (Std.HostDetails,   new JsonValue());
         /// <summary>list all databases and their containers hosted by the Hub</summary>
-        public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,  new JsonValue());
+        public CommandTask<HostCluster>     Cluster()   =>  SendCommand<JsonValue, HostCluster> (Std.HostCluster,   new JsonValue());
     }
     
     
