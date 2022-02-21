@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
-        /// <see cref="setMethodParams"/> need to be of Length 1
+        /// <paramref name="setMethodParams"/> need to be of Length 1
         public void SetField (object obj, object value, object[] setMethodParams)
         {
             if (field != null) {

@@ -25,6 +25,11 @@
       <OutputPath>.bin\Release\</OutputPath>
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>0419,1591</NoWarn>
+    </PropertyGroup>
 	
     <ItemGroup>
       <None Remove="**/*.meta" />

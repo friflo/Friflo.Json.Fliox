@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         /// Traverse the node tree returned by <see cref="QueryParser.CreateTree"/> and create itself a tree of
         /// <see cref="Operation"/>'s.
         /// <returns>An <see cref="Operation"/> is successful.
-        /// Otherwise it returns null and provide an descriptive <see cref="error"/> message.</returns>
+        /// Otherwise it returns null and provide an descriptive <paramref name="error"/> message.</returns>
         /// </summary>
         public static Operation Parse (string operation, out string error, QueryEnv env = null) {
             var result  = QueryLexer.Tokenize (operation,   out error);

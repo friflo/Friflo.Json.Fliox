@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Utils
     public readonly struct Pooled<T> : IDisposable where T : IDisposable
     {
         /// <summary>
-        /// Provide a cached <see cref="instance"/> of Type <see cref="T"/>.
+        /// Provide a cached <see cref="instance"/> of Type <typeparamref name="T"/>.
         /// Access to the <see cref="instance"/> is thread safe in the surrounding using scope.
         /// Safe access to <see cref="instance"/> is intended by calling <see cref="ObjectPool{T}.Get"/> in a using scope.
         /// E.g.:

@@ -339,7 +339,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             return name;
         }
 
-        /// <summary>Read a set of <see cref="JsonSchema"/>'s stored as files in the given <see cref="folder"/>.</summary>
+        /// <summary>Read a set of <see cref="JsonSchema"/>'s stored as files in the given <paramref name="folder"/>.</summary>
         public static List<JsonSchema> ReadSchemas(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var schemas = new List<JsonSchema>();

@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
     /// 1. Load the fields of a class instance into the <see cref="primitives"/> array.
     /// 2. Store the "instances fields" represented by the <see cref="primitives"/> array to the fields of a given class instance.
     ///  
-    /// This class contains IL specific state/data which is used by JsonReader & JsonWriter. So its not thread safe. 
+    /// This class contains IL specific state/data which is used by JsonReader and JsonWriter. So its not thread safe. 
     /// </summary>
     public sealed class ClassMirror : IDisposable
     {

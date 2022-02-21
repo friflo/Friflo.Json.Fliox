@@ -187,8 +187,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
         }
         
         /// <summary>
-        /// Push <see cref="newNode"/> to the stack.
-        /// In case <see cref="newNode"/> is not unary it:
+        /// Push <paramref name="newNode"/> to the stack.
+        /// In case <paramref name="newNode"/> is not unary it:
         /// <list type="bullet">
         ///   <item> either replaces the last operand of an operation with lower precedence </item>
         ///   <item> or gets the new stack root and add the old root as first operand </item>

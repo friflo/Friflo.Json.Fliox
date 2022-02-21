@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
         
         /// <summary>
-        /// Create a list from the given  <see cref="types"/> in the order:
+        /// Create a list from the given  <paramref name="types"/> in the order:
         /// <list>
         ///   <item>root type - schema</item>
         ///   <item>field types of root type - entity types</item>
