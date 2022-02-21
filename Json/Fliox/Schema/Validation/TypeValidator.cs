@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateObject(type, 0);
+                bool success = ValidateObjectIntern(type, 0);
                 return Return(type, success, out error);    
             }
             return RootError(type, "ValidateObject() expect object. was:", out error);
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(type, "ValidateArray() expect array. was:", out error);
         }
         
-        private bool ValidateObject (ValidationType type, int depth)
+        private bool ValidateObjectIntern (ValidationType type, int depth)
         {
             if (type.typeId == TypeId.Union) {
                 var ev      = parser.NextEvent();
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                             return false;
                         }
                         if (field.typeId == TypeId.Class) {
-                            if (ValidateObject (field.type, depth + 1))
+                            if (ValidateObjectIntern (field.type, depth + 1))
                                 continue;
                             return false;
                         }
@@ -234,7 +234,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     case JsonEvent.ObjectStart:
                         if (type.typeId == TypeId.Class || type.typeId == TypeId.Union) {
                             // in case of a dictionary the key is not relevant
-                            if (ValidateObject(type, depth + 1))
+                            if (ValidateObjectIntern(type, depth + 1))
                                 continue;
                             return false;
                         }

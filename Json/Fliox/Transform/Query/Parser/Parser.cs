@@ -32,11 +32,11 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
             var result  = QueryLexer.Tokenize (operation,   out error);
             if (error != null)
                 return null;
-            var node    = CreateTree(result.items,out error);
+            var node    = CreateTreeIntern(result.items,out error);
             return node;
         }
 
-        internal static QueryNode CreateTree(Token[] tokens, out string error) {
+        internal static QueryNode CreateTreeIntern(Token[] tokens, out string error) {
             error       = null;
             int pos     = 0;
             var stack   = new Stack<QueryNode>();

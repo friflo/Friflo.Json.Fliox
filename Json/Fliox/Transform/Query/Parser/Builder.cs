@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Parser
                 error = "operation is empty";
                 return null;
             }
-            var node = QueryParser.CreateTree(result.items,out error);
+            var node = QueryParser.CreateTreeIntern(result.items,out error);
             if (error != null)
                 return null;
             var cx  = new Context (env);
