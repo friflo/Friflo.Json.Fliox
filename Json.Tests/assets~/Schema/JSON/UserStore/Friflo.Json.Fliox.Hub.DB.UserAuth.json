@@ -18,7 +18,8 @@
             "additionalProperties": false,
             "commands": {
                 "AuthenticateUser": { "param": { "$ref": "#/definitions/AuthenticateUser" }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
-                "std.Echo":         { "param": {  }, "result": {  } },
+                "std.Echo":         { "param": {  }, "result": {  },
+                    "description": "echos the given parameter to assure a database is working appropriately. " },
                 "std.Containers":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
                     "description": "list all containers of a database" },
                 "std.Commands":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" },

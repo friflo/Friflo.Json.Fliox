@@ -56,7 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         protected internal StdCommands(FlioxClient client) : base(client) { }
         
-        // Declared only to generate command in Schema 
+        // Declared only to generate command in Schema
+        /// <summary>echos the given parameter to assure a database is working appropriately. </summary>
         internal CommandTask<JsonValue>     Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of DbEcho command");
 
         // --- commands: database

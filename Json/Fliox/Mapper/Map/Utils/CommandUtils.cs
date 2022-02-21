@@ -73,27 +73,28 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
             if (name == null)
                 name = methodInfo.Name;
-            var parameters = methodInfo.GetParameters();
-            if (parameters.Length > 1)
+            var parameters  = methodInfo.GetParameters();
+            var paramLen    = parameters.Length; 
+            if (paramLen > 1)
                 return false;
             Type paramType = typeof(JsonValue);
-            if (parameters.Length == 1) {
+            if (paramLen == 1) {
                 paramType = parameters[0].ParameterType;
             }
             var qualifiedName   = prefix == "" ? name : prefix + name;
-            var doc             = GetDocs(docs, methodInfo, paramType);
+            var doc             = GetDocs(docs, methodInfo, paramType, paramLen);
             
             commandInfo = new CommandInfo(qualifiedName, paramType, resultType, doc);
             return true;
         }
         
-        private static string GetDocs(AssemblyDocs docs, MethodInfo methodInfo, Type paramType) {
+        private static string GetDocs(AssemblyDocs docs, MethodInfo methodInfo, Type paramType, int paramLen) {
             var declaringType   = methodInfo.DeclaringType;
             if (declaringType == null)
                 return null;
             var assembly    = declaringType.Assembly;
             string signature;
-            if (paramType == typeof(JsonValue)) {
+            if (paramLen == 0) {
                 signature   = $"M:{declaringType.FullName}.{methodInfo.Name}";
             } else {
                 signature   = $"M:{declaringType.FullName}.{methodInfo.Name}({paramType.FullName})";
