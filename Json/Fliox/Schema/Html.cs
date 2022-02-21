@@ -173,8 +173,7 @@ $@"        <tr>
                     fieldTag    = "ref";
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
-                var docs = field.docs == null ? ""
-                    : $"\n        <tr><td colspan='2'>{field.docs}</td></tr>"; 
+                var docs = GetDescription("\n        <tr><td colspan='2'>", field.docs, "</td></tr>");
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
@@ -185,9 +184,9 @@ $@"        <tr>
             if (type.Commands != null) {
                 EmitServiceType(type, context, sb);
             }
-            if (type.docs != null) {
-                sb.AppendLine($"    <desc>{type.docs}</desc>");    
-            }
+            var typeDocs = GetDescription("    <desc>", type.docs, "</desc>");
+            if (typeDocs != "")
+                sb.AppendLine(typeDocs);   
             sb.AppendLine("    </div>");
             return new EmitType(type, sb, imports, dependencies);
         }
@@ -202,8 +201,7 @@ $@"    <br><chapter>commands</chapter>
             foreach (var command in type.Commands) {
                 var commandParam    = GetTypeName(command.param,  context);
                 var commandResult   = GetTypeName(command.result, context);
-                var docs            = command.docs == null ? ""
-                                        : $"\n        <tr><td colspan='2'>{command.docs}</td></tr>";
+                var docs            = GetDescription("\n        <tr><td colspan='2'>", command.docs, "</td></tr>");
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
                 sb.AppendLine(
@@ -248,6 +246,12 @@ $@"        <tr>
             sb.Clear();
             sb.Append($"<a href='#{type.Namespace}.{type.Name}'>{type.Name}</a>");
             return sb.ToString();
+        }
+        
+        private static string GetDescription(string prefix, string docs, string suffix) {
+            if (docs == null)
+                return "";
+            return $"{prefix}{docs}{suffix}";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
