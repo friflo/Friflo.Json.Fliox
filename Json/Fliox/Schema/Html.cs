@@ -183,6 +183,9 @@ $@"        <tr>
             if (type.Commands != null) {
                 EmitServiceType(type, context, sb);
             }
+            if (type.docs != null) {
+                sb.AppendLine($"    <desc>{type.docs}</desc>");    
+            }
             sb.AppendLine("    </div>");
             return new EmitType(type, sb, imports, dependencies);
         }
