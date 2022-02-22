@@ -4,8 +4,16 @@
     {
       "task":       "query",
       "container":  "articles",
-      "filter":     "o.name == 'Smartphone'"
+      "filter":     "o.name == 'Smartphone'",
+      "filterTree": {
+        "op"    : "equal",
+        "left"  : { "op": "field" , "name":  "o.name"     },
+        "right" : { "op": "string", "value": "Smartphone" }
+      }
     }
   ],
-  "info": "query articles with filter: o.name == 'Smartphone'"
+  "info": [
+    "query articles with filter: o.name == 'Smartphone'",
+    "'filterTree' has priority' - remove to use 'filter'"
+  ]  
 }
