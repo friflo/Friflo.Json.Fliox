@@ -2,9 +2,9 @@
 import { int64 } from "./Standard";
 
 export class DbContainers {
-    id            : string;
-    databaseType  : string;
-    containers    : string[];
+    id          : string;
+    storage     : string;
+    containers  : string[];
 }
 
 export class DbCommands {

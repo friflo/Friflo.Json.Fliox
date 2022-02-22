@@ -456,11 +456,11 @@ export class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${command}</a>`;
     }
 
-    public getSchemaExports(database: string) : string {
+    public getSchemaTypes(database: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema exports in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema, HTML</a>`;
+        return `<a title="open database schema types in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema</a>`;
     }
 
     public getSchemaDescription(database: string) : string {

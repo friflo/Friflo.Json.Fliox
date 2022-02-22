@@ -87,8 +87,8 @@ export class EntityEditor
     private setDatabaseInfo(database: string, dbContainer: DbContainers) {
         el("databaseName").innerHTML        = App.getDatabaseLink(database);
         el("databaseSchema").innerHTML      = app.getSchemaType(database);
-        el("databaseExports").innerHTML     = app.getSchemaExports(database);
-        el("databaseType").innerHTML        = dbContainer.databaseType;
+        el("databaseTypes").innerHTML       = app.getSchemaTypes(database);
+        el("databaseStorage").innerHTML     = dbContainer.storage;
         el("schemaDescription").innerText   = app.getSchemaDescription(database);
     }
 

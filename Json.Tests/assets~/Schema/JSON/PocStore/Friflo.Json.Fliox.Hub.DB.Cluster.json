@@ -5,13 +5,13 @@
         "DbContainers": {
             "type": "object",
             "properties": {
-                "id":           { "type": "string" },
-                "databaseType": { "type": "string" },
-                "containers":   { "type": "array", "items": { "type": "string" } }
+                "id":         { "type": "string" },
+                "storage":    { "type": "string" },
+                "containers": { "type": "array", "items": { "type": "string" } }
             },
             "required": [
                 "id",
-                "databaseType",
+                "storage",
                 "containers"
             ],
             "additionalProperties": false

@@ -18,9 +18,9 @@ export interface ClusterStore {
 }
 
 export class DbContainers {
-    id            : string;
-    databaseType  : string;
-    containers    : string[];
+    id          : string;
+    storage     : string;
+    containers  : string[];
 }
 
 export class DbCommands {

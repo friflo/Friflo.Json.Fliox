@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     public class DbContainers {
         [Req]   public  string                          id;
-        [Req]   public  string                          databaseType;
+        [Req]   public  string                          storage;
         [Req]   public  string[]                        containers;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");

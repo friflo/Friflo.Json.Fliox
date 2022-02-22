@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 containerList = await GetContainers().ConfigureAwait(false);
             }
-            return new DbContainers { containers = containerList, databaseType = GetType().Name };
+            return new DbContainers { containers = containerList, storage = GetType().Name };
         }
 
         private const bool ExposeSchemaCommands = true; // false for debugging

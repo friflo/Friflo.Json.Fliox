@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var containersResult = containers.Result;
             AreEqual(6,                 containersResult.containers.Length);
-            AreEqual("MemoryDatabase",  containersResult.databaseType);
+            AreEqual("MemoryDatabase",  containersResult.storage);
             
             var schemaResult = catalogSchema.Result;
             AreEqual(9,                 schemaResult.jsonSchemas.Count);
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(1,                 dbListResult.databases.Count);
             var catalog0 = dbListResult.databases[0];
             AreEqual(6,                 catalog0.containers.Length);
-            AreEqual("MemoryDatabase",  catalog0.databaseType);
+            AreEqual("MemoryDatabase",  catalog0.storage);
             
             var commandsResult = commands.Result;
             AreEqual(12,                commandsResult.commands.Length);
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var containersResult = containers.Result;
             AreEqual(1,                 containersResult.containers.Length);
-            AreEqual("MemoryDatabase",  containersResult.databaseType);
+            AreEqual("MemoryDatabase",  containersResult.storage);
             
             var schemaResult = catalogSchema.Result;
             IsNull(                     schemaResult);
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(1,                 dbListResult.databases.Count);
             var catalog0 = dbListResult.databases[0];
             AreEqual(1,                 catalog0.containers.Length);
-            AreEqual("MemoryDatabase",  catalog0.databaseType);
+            AreEqual("MemoryDatabase",  catalog0.storage);
             
             var commandsResult = commands.Result;
             AreEqual(12,                commandsResult.commands.Length);
