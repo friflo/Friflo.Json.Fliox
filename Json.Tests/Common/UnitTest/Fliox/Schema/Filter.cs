@@ -4,7 +4,6 @@
 using System;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Transform;
-using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
