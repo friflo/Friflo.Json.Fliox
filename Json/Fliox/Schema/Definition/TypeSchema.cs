@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
         
         protected static void  SetKeyField(TypeDef rootType) {
-            if (rootType.Commands == null)
+            if (!rootType.IsSchema)
                 return;
             var rootFields = rootType.Fields;
             foreach (var field in rootFields) {

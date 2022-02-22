@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Schema
             }
             var additionalProperties = unionType != null ? "true" : "false";
             sb.Append($"            \"additionalProperties\": {additionalProperties}");
-            if (type.Commands != null) {
+            if (type.IsSchema) {
                 EmitServiceType(type, context, sb);
             } else {
                 sb.AppendLine();

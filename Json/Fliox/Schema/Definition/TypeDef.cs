@@ -44,6 +44,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   List<FieldDef>      Fields          { get; }
         
         public   abstract   List<CommandDef>    Commands        { get; }
+        public              bool                IsSchema        => Commands != null; 
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
         public   abstract   UnionType           UnionType       { get; }

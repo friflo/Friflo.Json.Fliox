@@ -108,7 +108,7 @@ $@"    <div class='type'>
 
             var qualifiedName   = type.Namespace + "." + type.Name;
             var unionType       = type.UnionType;
-            var typeName        = type.Commands != null ? "schema": type.IsAbstract ? "abstract class" : "class";
+            var typeName        = type.IsSchema ? "schema": type.IsAbstract ? "abstract class" : "class";
             sb.AppendLine(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
@@ -124,7 +124,7 @@ $@"    <div class='type'>
 
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
-            if (type.Commands != null) {
+            if (type.IsSchema) {
                 sb.AppendLine($"    <chapter>containers</chapter>");    
             }
             sb.AppendLine($"    <table>");
@@ -181,7 +181,7 @@ $@"        <tr>
         </tr>{docs}");
             }
             sb.AppendLine("    </table>");
-            if (type.Commands != null) {
+            if (type.IsSchema) {
                 EmitServiceType(type, context, sb);
             }
             var typeDocs = GetDescription("    <desc>", type.docs, "</desc>");
@@ -198,7 +198,7 @@ $@"    <br><chapter>commands</chapter>
     <table>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
-            foreach (var command in type.Commands) {
+            foreach (var command in commands) {
                 var commandParam    = GetTypeName(command.param,  context);
                 var commandResult   = GetTypeName(command.result, context);
                 var docs            = GetDescription("\n        <tr><td colspan='2'>", command.docs, "</td></tr>");
@@ -311,7 +311,7 @@ $@"    <li><a href='#{ns}'>{ns}</a>
                     if (key != null) {
                         tag         = $"<key style='float:right'>{key}</key>";
                     }
-                    if (type.Commands != null) {
+                    if (type.IsSchema) {
                         tag         = $"<keyword style='float:right'>schema</keyword>";
                     }
                     if (type.IsEnum) {

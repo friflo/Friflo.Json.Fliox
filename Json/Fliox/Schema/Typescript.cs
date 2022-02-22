@@ -100,9 +100,9 @@ namespace Friflo.Json.Fliox.Schema
             }
             var unionType = type.UnionType;
             if (unionType == null) {
-                var typeName = type.Commands != null ? "interface" : type.IsAbstract ? "abstract class" : "class";
+                var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
                 sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
-                if (type.Commands != null)
+                if (type.IsSchema)
                     sb.AppendLine("    // --- containers");
             } else {
                 sb.AppendLine($"export type {type.Name}{Union} =");
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Schema
                 var nullStr = required ? "" : " | null";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
             }
-            if (type.Commands != null) {
+            if (type.IsSchema) {
                 EmitServiceType(type, context, sb);
             }
             sb.AppendLine("}");
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Schema
             var commands        = type.Commands;
             sb.AppendLine("\n    // --- commands");
             int maxFieldName    = commands.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
-            foreach (var command in type.Commands) {
+            foreach (var command in commands) {
                 var commandParam    = GetTypeName(command.param,  context);
                 var commandResult   = GetTypeName(command.result, context);
                 var indent = Indent(maxFieldName, command.name);
