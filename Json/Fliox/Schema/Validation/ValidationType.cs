@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public   readonly   int                 requiredFieldsCount;
         private  readonly   ValidationField[]   requiredFields;
         public   readonly   ValidationUnion     unionType;
-        private  readonly   Bytes[]             enumValues;
+        private  readonly   byte[][]            enumValues;
         
         public  override    string              ToString() => qualifiedName;
         
@@ -86,11 +86,20 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
+        private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false);
+        
+        internal static byte[] GetUtf8Bytes(string str) {
+            int len     = Utf8.GetByteCount(str);
+            var bytes   = new byte[len];
+            Utf8.GetBytes(str, 0, str.Length, bytes, 0);
+            return bytes;
+        }
+        
         private ValidationType (TypeDef typeDef, ICollection<string> typeEnums) : this (TypeId.Enum, typeDef.Name, typeDef) {
-            enumValues = new Bytes[typeEnums.Count];
+            enumValues = new byte[typeEnums.Count][];
             int n = 0;
             foreach (var enumValue in typeEnums) {
-                enumValues[n++] = new Bytes(enumValue);
+                enumValues[n++] = GetUtf8Bytes(enumValue);
             }
         }
 
@@ -109,11 +118,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         public void Dispose() {
-            if (enumValues != null) {
-                foreach (var enumValue in enumValues) {
-                    enumValue.Dispose();
-                }
-            }
             if (fields != null) {
                 foreach (var field in fields) {
                     field.Dispose();
@@ -146,7 +150,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal static bool FindEnum (ValidationType type, ref Bytes value, TypeValidator validator, ValidationType parent) {
             var enumValues = type.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
-                if (enumValues[n].IsEqual(ref value)) {
+                if (value.IsEqualArray(enumValues[n])) {
                     return true;
                 }
             }
@@ -156,7 +160,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal static bool FindField (ValidationType type, TypeValidator validator, out ValidationField field, bool[] foundFields) {
             ref var parser = ref validator.parser;
             foreach (var typeField in type.fields) {
-                if (!parser.key.IsEqual(ref typeField.name))
+                if (!parser.key.IsEqualArray(typeField.name))
                     continue;
                 field   = typeField;
                 var reqPos = field.requiredPos;
@@ -221,13 +225,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
     
     // could by a struct 
     public sealed class ValidationField : IDisposable {
-        public   readonly   string          fieldName;
-        public              Bytes           name;
-        public   readonly   bool            required;
-        public   readonly   bool            isArray;
-        public   readonly   bool            isDictionary;
-        public   readonly   bool            isNullableElement;  
-        public   readonly   int             requiredPos;
+        public    readonly  string          fieldName;
+        internal  readonly  byte[]          name;
+        public    readonly  bool            required;
+        public    readonly  bool            isArray;
+        public    readonly  bool            isDictionary;
+        public    readonly  bool            isNullableElement;  
+        public    readonly  int             requiredPos;
         public              ValidationType  Type => type;
     
         // --- internal
@@ -242,7 +246,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             typeDef             = fieldDef.type;
             typeName            = fieldDef.isArray ? $"{typeDef.Name}[]" : typeDef.Name; 
             fieldName           = fieldDef.name;
-            name                = new Bytes(fieldDef.name);
+            name                = ValidationType.GetUtf8Bytes(fieldDef.name);
             required            = fieldDef.required;
             isArray             = fieldDef.isArray;
             isDictionary        = fieldDef.isDictionary;
@@ -251,15 +255,14 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         public void Dispose() {
-            name.Dispose();
         }
     }
 
     public sealed class ValidationUnion : IDisposable {
-        private  readonly   UnionType   unionType;
-        public   readonly   string      discriminatorStr;
-        public              Bytes       discriminator;
-        private  readonly   UnionItem[] types;
+        private   readonly  UnionType   unionType;
+        public    readonly  string      discriminatorStr;
+        internal  readonly  byte[]      discriminator;
+        private   readonly  UnionItem[] types;
         public              string      TypesAsString { get; private set; }
 
         public   override   string      ToString()      => discriminatorStr;
@@ -267,16 +270,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public ValidationUnion(UnionType union) {
             unionType           = union;
             discriminatorStr    = $"'{union.discriminator}'";
-            discriminator       = new Bytes(union.discriminator);
+            discriminator       = ValidationType.GetUtf8Bytes(union.discriminator);
             types               = new UnionItem[union.types.Count];
         }
         
-        public void Dispose() {
-            discriminator.Dispose();
-            foreach (var type in types) {
-                type.discriminant.Dispose();
-            }
-        }
+        public void Dispose() { }
 
         internal void SetUnionTypes(Dictionary<TypeDef, ValidationType> typeMap) {
             int n = 0;
@@ -291,7 +289,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
             var types = union.types;
             for (int n = 0; n < types.Length; n++) {
-                if (discriminant.IsEqual(ref types[n].discriminant)) {
+                if (discriminant.IsEqualArray(types[n].discriminant)) {
                     type    = types[n].type;
                     return true;
                 }
@@ -318,17 +316,17 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
     }
     
-    public struct UnionItem
+    public readonly struct UnionItem
     {
         internal readonly   string          discriminantStr;
-        internal            Bytes           discriminant;
+        internal readonly   byte[]          discriminant;
         public   readonly   ValidationType  type;
 
         public   override   string          ToString() => discriminantStr;
 
         public UnionItem (string discriminant, ValidationType type) {
             discriminantStr     = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
-            this.discriminant   = new Bytes(discriminant);
+            this.discriminant   = ValidationType.GetUtf8Bytes(discriminant);
             this.type           = type;
         }
     }
