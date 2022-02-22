@@ -357,13 +357,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return null;
             }
             // --- handle filter tree
-            var queryFilter = queryParams["filter-tree"];
-            if (queryFilter == null) {
+            var filterTree = queryParams["filter-tree"];
+            if (filterTree == null) {
                 return Operation.FilterTrue;
             }
 
             var reader = mapper.reader;
-            var filterOp = mapper.reader.Read<FilterOperation>(queryFilter);
+            var filterOp = mapper.reader.Read<FilterOperation>(filterTree);
             if (reader.Error.ErrSet) {
                 context.WriteError(InvalidFilter, reader.Error.ToString(), 400);
                 return null;

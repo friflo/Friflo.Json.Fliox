@@ -53,9 +53,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   List<ValidationSet>                 validationSets  = new List<ValidationSet>();
         private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
         
-        internal            string                              Name => typeSchema.RootType.Name;
-        internal            string                              Path => typeSchema.RootType.Path + ".json";
-        
+        internal            string                              Name        => typeSchema.RootType.Name;
+        internal            string                              Path        => typeSchema.RootType.Path + ".json";
+
+        public   override   string                              ToString()  => typeSchema.RootType.Name;
+
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
             AddTypeSchema(typeSchema);
