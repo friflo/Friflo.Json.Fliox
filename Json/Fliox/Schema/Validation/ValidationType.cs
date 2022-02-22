@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private  readonly   ValidationField[]   fields;
         public   readonly   int                 requiredFieldsCount;
         private  readonly   ValidationField[]   requiredFields;
-        public   readonly   ValidationUnion     unionType;
+        internal readonly   ValidationUnion     unionType;
         private  readonly   byte[][]            enumValues;
         
         public              IEnumerable<ValidationField>    Fields      => fields;
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return null;
         }
         
-        public static string GetName (ValidationType type, bool qualified) {
+        internal static string GetName (ValidationType type, bool qualified) {
             var typeId = type.typeId; 
             if (typeId == TypeId.Class || typeId == TypeId.Union|| typeId == TypeId.Enum) {
                 if (qualified) {
@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
 
-        public bool HasMissingFields(bool[] foundFields, StringBuilder sb) {
+        internal bool HasMissingFields(bool[] foundFields, StringBuilder sb) {
             var foundCount = 0;
             for (int n = 0; n < requiredFieldsCount; n++) {
                 if (foundFields[n])
@@ -234,7 +234,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
 
         public  override    string          ToString() => fieldName;
         
-        public ValidationField(FieldDef fieldDef, int requiredPos) {
+        internal ValidationField(FieldDef fieldDef, int requiredPos) {
             typeDef             = fieldDef.type;
             typeName            = fieldDef.isArray ? $"{typeDef.Name}[]" : typeDef.Name; 
             fieldName           = fieldDef.name;
@@ -247,7 +247,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
     }
 
-    public sealed class ValidationUnion  {
+    internal sealed class ValidationUnion  {
         private   readonly  UnionType   unionType;
         public    readonly  string      discriminatorStr;
         internal  readonly  byte[]      discriminator;
@@ -303,7 +303,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
     }
     
-    public readonly struct UnionItem
+    internal readonly struct UnionItem
     {
         internal readonly   string          discriminantStr;
         internal readonly   byte[]          discriminant;
