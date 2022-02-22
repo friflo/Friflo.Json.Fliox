@@ -500,6 +500,25 @@ export class App {
             schemas.push(schemaEntry);
         }
     }
+    static refineFilterTree(jsonSchema) {
+        let refinements = 0;
+        for (const schemaName in jsonSchema) {
+            const schema = jsonSchema[schemaName];
+            for (const definitionName in schema.definitions) {
+                const definition = schema.definitions[definitionName];
+                const properties = definition.properties;
+                for (const propertyName in properties) {
+                    if (propertyName != "filterTree")
+                        continue;
+                    refinements++;
+                    const url = "http://filter/json-schema/Friflo.Json.Fliox.Transform.FilterOperation.json";
+                    properties[propertyName] = { "$ref": url, _resolvedDef: null };
+                }
+            }
+        }
+        if (refinements != 2)
+            console.error(`expect 2 filterTree refinements. was: ${refinements}`);
+    }
     async createProtocolSchemas() {
         // configure the JSON language support with schemas and schema associations
         // var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
@@ -537,6 +556,7 @@ export class App {
             const filterSchemaResponse = await fetch("schema/filter/json-schema.json");
             const filterSchema = await filterSchemaResponse.json();
             App.addSchema("filter/json-schema/", filterSchema, schemas);
+            App.refineFilterTree(protocolSchema);
         }
         catch (e) {
             console.error("load json-schema.json failed");

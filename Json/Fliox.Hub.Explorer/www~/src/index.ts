@@ -6,7 +6,7 @@ import { Explorer }                                             from "./explorer
 import { EntityEditor }                                         from "./entity-editor.js";
 import { Playground }                                           from "./playground.js";
 
-import { FieldType, JsonType }                                  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { FieldType, JsonSchema, JsonType }                                  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema, DbContainers, DbCommands, HostDetails }          from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union }    from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
@@ -561,7 +561,7 @@ export class App {
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
 
-    private static addSchema(prefix: string, jsonSchema: any, schemas: MonacoSchema[]) {
+    private static addSchema(prefix: string, jsonSchema: { [key: string]: JsonSchema }, schemas: MonacoSchema[]) {
         for (const schemaName in jsonSchema) {
             const schema          = jsonSchema[schemaName];
             const url             = prefix + schemaName;
@@ -572,6 +572,26 @@ export class App {
             schemas.push(schemaEntry);
         }
     }
+
+    private static refineFilterTree(jsonSchema: { [key: string]: JsonSchema }) {
+        let refinements = 0;
+        for (const schemaName in jsonSchema) {
+            const schema = jsonSchema[schemaName];
+            for (const definitionName in schema.definitions) {
+                const definition = schema.definitions[definitionName];
+                const properties = definition.properties;
+                for (const propertyName in properties) {
+                    if (propertyName != "filterTree")
+                        continue;
+                    refinements++;
+                    const url = "http://filter/json-schema/Friflo.Json.Fliox.Transform.FilterOperation.json";
+                    properties[propertyName] = { "$ref": url, _resolvedDef: null };
+                }
+            }
+        }
+        if (refinements != 2) console.error(`expect 2 filterTree refinements. was: ${refinements}`);
+    }
+
 
     private async createProtocolSchemas () {
 
@@ -606,12 +626,13 @@ export class App {
         const schemas: MonacoSchema[] = [];
         try {
             const protocolSchemaResponse    = await fetch("schema/protocol/json-schema.json");
-            const protocolSchema            = await protocolSchemaResponse.json();
+            const protocolSchema            = await protocolSchemaResponse.json() as { [key: string]: JsonSchema };
             App.addSchema("protocol/json-schema/", protocolSchema, schemas);
 
             const filterSchemaResponse      = await fetch("schema/filter/json-schema.json");
-            const filterSchema              = await filterSchemaResponse.json();
+            const filterSchema              = await filterSchemaResponse.json() as { [key: string]: JsonSchema };
             App.addSchema("filter/json-schema/", filterSchema, schemas);
+            App.refineFilterTree(protocolSchema);
 
         } catch (e) {
             console.error ("load json-schema.json failed");

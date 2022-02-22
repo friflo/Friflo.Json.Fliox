@@ -32,7 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
             schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
             var filterSchema        = new NativeTypeSchema(typeof(FilterOperation));
-            schemaHandler.AddSchema ("filter", filterSchema);
+            var filterRoot          = filterSchema.TypesAsTypeDefs(new [] {typeof(FilterOperation)});
+            schemaHandler.AddSchema ("filter", filterSchema, filterRoot);
             restHandler             = new RestHandler(hub);
             customHandlers          = new List<IRequestHandler>();
         }
