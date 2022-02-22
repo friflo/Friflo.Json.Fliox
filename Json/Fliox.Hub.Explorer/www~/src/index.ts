@@ -561,6 +561,18 @@ export class App {
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
 
+    private static addSchema(prefix: string, jsonSchema: any, schemas: MonacoSchema[]) {
+        for (const schemaName in jsonSchema) {
+            const schema          = jsonSchema[schemaName];
+            const url             = prefix + schemaName;
+            const schemaEntry: MonacoSchema = {
+                uri:    "http://" + url,
+                schema: schema            
+            };
+            schemas.push(schemaEntry);
+        }
+    }
+
     private async createProtocolSchemas () {
 
         // configure the JSON language support with schemas and schema associations
@@ -593,18 +605,14 @@ export class App {
             }]; */
         const schemas: MonacoSchema[] = [];
         try {
-            const jsonSchemaResponse  = await fetch("schema/protocol/json-schema.json");
-            const jsonSchema          = await jsonSchemaResponse.json();
+            const protocolSchemaResponse    = await fetch("schema/protocol/json-schema.json");
+            const protocolSchema            = await protocolSchemaResponse.json();
+            App.addSchema("protocol/json-schema/", protocolSchema, schemas);
 
-            for (const schemaName in jsonSchema) {
-                const schema          = jsonSchema[schemaName];
-                const url             = "protocol/json-schema/" + schemaName;
-                const schemaEntry: MonacoSchema = {
-                    uri:    "http://" + url,
-                    schema: schema            
-                };
-                schemas.push(schemaEntry);
-            }
+            const filterSchemaResponse      = await fetch("schema/filter/json-schema.json");
+            const filterSchema              = await filterSchemaResponse.json();
+            App.addSchema("filter/json-schema/", filterSchema, schemas);
+
         } catch (e) {
             console.error ("load json-schema.json failed");
         }

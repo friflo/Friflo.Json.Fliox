@@ -489,6 +489,17 @@ export class App {
     }
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
+    static addSchema(prefix, jsonSchema, schemas) {
+        for (const schemaName in jsonSchema) {
+            const schema = jsonSchema[schemaName];
+            const url = prefix + schemaName;
+            const schemaEntry = {
+                uri: "http://" + url,
+                schema: schema
+            };
+            schemas.push(schemaEntry);
+        }
+    }
     async createProtocolSchemas() {
         // configure the JSON language support with schemas and schema associations
         // var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
@@ -520,17 +531,12 @@ export class App {
             }]; */
         const schemas = [];
         try {
-            const jsonSchemaResponse = await fetch("schema/protocol/json-schema.json");
-            const jsonSchema = await jsonSchemaResponse.json();
-            for (const schemaName in jsonSchema) {
-                const schema = jsonSchema[schemaName];
-                const url = "protocol/json-schema/" + schemaName;
-                const schemaEntry = {
-                    uri: "http://" + url,
-                    schema: schema
-                };
-                schemas.push(schemaEntry);
-            }
+            const protocolSchemaResponse = await fetch("schema/protocol/json-schema.json");
+            const protocolSchema = await protocolSchemaResponse.json();
+            App.addSchema("protocol/json-schema/", protocolSchema, schemas);
+            const filterSchemaResponse = await fetch("schema/filter/json-schema.json");
+            const filterSchema = await filterSchemaResponse.json();
+            App.addSchema("filter/json-schema/", filterSchema, schemas);
         }
         catch (e) {
             console.error("load json-schema.json failed");

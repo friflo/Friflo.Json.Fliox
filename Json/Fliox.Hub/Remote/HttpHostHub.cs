@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Native;
+using Friflo.Json.Fliox.Transform;
 
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -30,6 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
             schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
             schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
+            var filterSchema        = new NativeTypeSchema(typeof(FilterOperation));
+            schemaHandler.AddSchema ("filter", filterSchema);
             restHandler             = new RestHandler(hub);
             customHandlers          = new List<IRequestHandler>();
         }
