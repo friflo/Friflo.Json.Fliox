@@ -49,6 +49,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 using (var pooled = pool.ObjectMapper.Get()) {
                     var reader      = pooled.instance.reader;
                     var filterOp    = reader.Read<FilterOperation>(filterTree);
+                    if (reader.Error.ErrSet) {
+                        error = InvalidTaskError($"filterTree error: {reader.Error.msg.ToString()}");
+                        return false;
+                    }
                     filterLambda    = new Filter("o", filterOp);
                     return true;
                 }

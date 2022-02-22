@@ -38,6 +38,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 filterOp    = reader.Read<FilterOperation>(filter);
+                if (reader.Error.ErrSet) {
+                    return Task.FromResult<SyncTaskResult>(InvalidTask($"filterTree error: {reader.Error.msg.ToString()}"));
+                }
             }
             
             var eventTarget = messageContext.eventTarget;
