@@ -50,7 +50,7 @@ data class QueryEntities (
               val container  : String,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
-              val filterTree : FilterOperation? = null,
+              val filterTree : JsonElement? = null,
               val filter     : String? = null,
               val references : List<References>? = null,
               val limit      : Int? = null,
@@ -64,7 +64,7 @@ data class QueryEntities (
 data class AggregateEntities (
               val container  : String,
               val type       : AggregateType,
-              val filterTree : FilterOperation? = null,
+              val filterTree : JsonElement? = null,
               val filter     : String? = null,
     override  val info       : JsonElement? = null,
 ) : SyncRequestTask()
@@ -132,7 +132,7 @@ data class CloseCursors (
 data class SubscribeChanges (
               val container : String,
               val changes   : List<Change>,
-              val filter    : FilterOperation? = null,
+              val filter    : JsonElement? = null,
     override  val info      : JsonElement? = null,
 ) : SyncRequestTask()
 

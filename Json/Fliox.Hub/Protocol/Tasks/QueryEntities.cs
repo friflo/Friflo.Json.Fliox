@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Required]  public  string              container;
                         public  string              keyName;
                         public  bool?               isIntKey;
-                        public  FilterOperation     filterTree;
+                        public  JsonValue           filterTree;
                         public  string              filter;
                         public  List<References>    references;
                         public  int?                limit;
@@ -38,15 +38,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
         
         internal static bool ValidateFilter(
-                FilterOperation     filterTree,
+                JsonValue           filterTree,
                 string              filter,
+                IPool               pool,
             ref FilterOperation     filterLambda,
             out TaskErrorResult     error)
         {
             error = null;
-            if (filterTree != null) {
-                filterLambda = new Filter("o", filterTree);
-                return true;
+            if (!filterTree.IsNull()) {
+                using (var pooled = pool.ObjectMapper.Get()) {
+                    var reader      = pooled.instance.reader;
+                    var filterOp    = reader.Read<FilterOperation>(filterTree);
+                    filterLambda    = new Filter("o", filterOp);
+                    return true;
+                }
             }
             if (filter == null)
                 return true;
@@ -68,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingContainer();
             if (!ValidReferences(references, out var error))
                 return error;
-            if (!ValidateFilter (filterTree, filter, ref filterLambda, out error))
+            if (!ValidateFilter (filterTree, filter, messageContext.pool, ref filterLambda, out error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {

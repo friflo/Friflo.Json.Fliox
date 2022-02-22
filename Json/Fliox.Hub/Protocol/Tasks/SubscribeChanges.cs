@@ -13,9 +13,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task -----------------------------------
     public sealed class SubscribeChanges : SyncRequestTask
     {
-        [Fri.Required]  public  string          container;
-        [Fri.Required]  public  List<Change>    changes;
-                        public  FilterOperation filter;
+        [Fri.Required]  public      string          container;
+        [Fri.Required]  public      List<Change>    changes;
+                        public      JsonValue       filter;
+                        
+        [Fri.Ignore]    internal    FilterOperation filterOp;
         
         internal override       TaskType        TaskType  => TaskType.subscribeChanges;
         public   override       string          TaskName  => $"container: '{container}'";
@@ -32,6 +34,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             
             if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, messageContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
+
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var reader  = pooled.instance.reader;
+                filterOp    = reader.Read<FilterOperation>(filter);
+            }
             
             var eventTarget = messageContext.eventTarget;
             if (!eventBroker.SubscribeChanges(this, messageContext.clientId, eventTarget, out error))

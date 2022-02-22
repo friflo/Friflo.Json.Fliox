@@ -243,7 +243,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
-                        entities    = FilterEntities(subscribe.filter, create.entities),
+                        entities    = FilterEntities(subscribe.filterOp, create.entities),
                         keyName     = create.keyName   
                     };
                     return createResult;
@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return null;
                     var upsertResult = new UpsertEntities {
                         container   = upsert.container,
-                        entities    = FilterEntities(subscribe.filter, upsert.entities),
+                        entities    = FilterEntities(subscribe.filterOp, upsert.entities),
                         keyName     = upsert.keyName
                     };
                     return upsertResult;

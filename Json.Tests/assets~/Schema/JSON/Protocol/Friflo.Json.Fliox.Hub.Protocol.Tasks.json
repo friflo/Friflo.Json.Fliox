@@ -89,7 +89,7 @@
                 "container":  { "type": "string" },
                 "keyName":    { "type": ["string", "null"] },
                 "isIntKey":   { "type": ["boolean", "null"] },
-                "filterTree": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
+                "filterTree": {  },
                 "filter":     { "type": ["string", "null"] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" } },
                 "limit":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
@@ -110,7 +110,7 @@
                 "task":       { "enum": ["aggregate"] },
                 "container":  { "type": "string" },
                 "type":       { "$ref": "#/definitions/AggregateType" },
-                "filterTree": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
+                "filterTree": {  },
                 "filter":     { "type": ["string", "null"] },
                 "info":       {  }
             },
@@ -235,7 +235,7 @@
                 "task":      { "enum": ["subscribeChanges"] },
                 "container": { "type": "string" },
                 "changes":   { "type": "array", "items": { "$ref": "#/definitions/Change" } },
-                "filter":    { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
+                "filter":    {  },
                 "info":      {  }
             },
             "required": [

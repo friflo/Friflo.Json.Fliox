@@ -7,16 +7,6 @@ import kotlinx.serialization.json.*
 
 @Serializable
 // @JsonClassDiscriminator("op") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class FilterOperation  : Operation() {
-}
-
-@Serializable
-// @JsonClassDiscriminator("op") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class Operation  {
-}
-
-@Serializable
-// @JsonClassDiscriminator("op") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class JsonPatch  {
 }
 

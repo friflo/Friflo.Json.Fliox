@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
@@ -33,6 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             typeStore.GetTypeMapper(typeof(UserStore));
             typeStore.GetTypeMapper(typeof(RemoteSubscriptionEvent));
             typeStore.GetTypeMapper(typeof(MonitorStore));
+            typeStore.GetTypeMapper(typeof(FilterOperation));
         }
         
         internal static TypeStore Get() {

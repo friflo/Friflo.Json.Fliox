@@ -435,10 +435,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     references = new List<References>(subRefs.Count);
                     AddReferences(references, subRefs);
                 }
-                var filterTree = query.filter;
+                var queryFilter = query.filter;
                 if (query.filter is Filter filter) {
-                    filterTree = filter.body;
+                    queryFilter = filter.body;
                 }
+                var filterTree  = FilterToJson(queryFilter);
                 var req = new QueryEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
@@ -458,10 +459,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (_aggregates == null || _aggregates.Count == 0)
                 return;
             foreach (var aggregate in _aggregates) {
-                var filterTree = aggregate.filter;
+                var aggregateFilter = aggregate.filter;
                 if (aggregate.filter is Filter filter) {
-                    filterTree = filter.body;
+                    aggregateFilter = filter.body;
                 }
+                var filterTree  = FilterToJson(aggregateFilter);
                 var req = new AggregateEntities {
                     container   = set.name,
                     type        = aggregate.type,
@@ -471,6 +473,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     filter      = aggregate.filterLinq
                 };
                 tasks.Add(req);
+            }
+        }
+        
+        private JsonValue FilterToJson(FilterOperation filter) {
+            using (var pooled = set.intern.store.ObjectMapper.Get()) {
+                var writer      = pooled.instance.writer;
+                var jsonFilter  = writer.Write(filter);
+                return new JsonValue(jsonFilter);
             }
         }
 
@@ -564,9 +574,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var sub = subscribeChanges;
             if (sub == null)
                 return;
+            var filterJson = FilterToJson(sub.filter);
             var req = new SubscribeChanges {
                 container   = set.name,
-                filter      = sub.filter,
+                filter      = filterJson,
                 changes     = sub.changes
             };
             tasks.Add(req);

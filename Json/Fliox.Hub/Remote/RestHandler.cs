@@ -288,8 +288,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task QueryEntities(RequestContext context, string database, string container, NameValueCollection queryParams) {
             if (database == EntityDatabase.MainDB)
                 database = null;
-            var filter = CreateFilter(context, queryParams);
-            if (filter == null)
+            var filter = CreateFilterTree(context, queryParams);
+            if (filter.IsNull())
                 return;
             if (!TryParseParamAsInt(context, "maxCount", queryParams, out int? maxCount))
                 return;
@@ -329,18 +329,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private const string DefaultParam = "o";
         private const string InvalidFilter = "invalid filter";
         
-        private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams) {
+        private JsonValue CreateFilterTree(RequestContext context, NameValueCollection queryParams) {
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var mapper = pooled.instance;
+                var filter = CreateFilter(context, queryParams, mapper);
+                if (filter == null)
+                    return new JsonValue();
+                var filterJson = mapper.writer.Write(filter);
+                return new JsonValue(filterJson);
+            }
+        }
+        
+        private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams, ObjectMapper mapper) {
             // --- handle filter expression
             var filter = queryParams["filter"];
             if (filter != null) {
-                var env         = new QueryEnv(DefaultParam); 
-                var filterOp    = Operation.Parse(filter, out string error, env);
+                var env   = new QueryEnv(DefaultParam); 
+                var op    = Operation.Parse(filter, out string error, env);
                 if (error != null) {
                     context.WriteError(InvalidFilter, error, 400);
                     return null;
                 }
-                if (filterOp is FilterOperation op) {
-                    return op;
+                if (op is FilterOperation filterOperation) {
+                    return filterOperation;
                 }
                 context.WriteError(InvalidFilter, "filter must be boolean operation", 400);
                 return null;
@@ -350,21 +361,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (queryFilter == null) {
                 return Operation.FilterTrue;
             }
-            using (var pooled = pool.ObjectMapper.Get()) {
-                var reader = pooled.instance.reader;
-                var filterOp = reader.Read<FilterOperation>(queryFilter);
-                if (reader.Error.ErrSet) {
-                    context.WriteError(InvalidFilter, reader.Error.ToString(), 400);
-                    return null;
-                }
-                // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
-                var operationCx = new OperationContext();
-                if (!operationCx.Init(filterOp, out var message)) {
-                    context.WriteError(InvalidFilter, message, 400);
-                    return null;
-                }
-                return filterOp;
+
+            var reader = mapper.reader;
+            var filterOp = mapper.reader.Read<FilterOperation>(queryFilter);
+            if (reader.Error.ErrSet) {
+                context.WriteError(InvalidFilter, reader.Error.ToString(), 400);
+                return null;
             }
+            // Early out on invalid filter (e.g. symbol not found). Init() is cheap. If successful QueryEntities does the same check. 
+            var operationCx = new OperationContext();
+            if (!operationCx.Init(filterOp, out var message)) {
+                context.WriteError(InvalidFilter, message, 400);
+                return null;
+            }
+            return filterOp;
         }
         
         private async Task GetEntity(RequestContext context, string database, string container, string id) {

@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         [Fri.Required]  public      string              container;
                         public      AggregateType       type;
-                        public      FilterOperation     filterTree;
+                        public      JsonValue           filterTree;
                         public      string              filter;
                         
         [Fri.Ignore]    private     FilterOperation     filterLambda;
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
-            if (!QueryEntities.ValidateFilter (filterTree, filter, ref filterLambda, out var error))
+            if (!QueryEntities.ValidateFilter (filterTree, filter, messageContext.pool, ref filterLambda, out var error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {
