@@ -17,8 +17,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public sealed class FileDatabase : EntityDatabase
     {
-        private  readonly   string  databaseFolder;
-        private  readonly   bool    pretty;
+        private  readonly   string      databaseFolder;
+        private  readonly   bool        pretty;
+        public   override   string      StorageName => "file-system";
         
         public FileDatabase(string databaseFolder, TaskHandler handler = null, DbOpt opt = null, bool pretty = true)
             : base(handler, opt)
