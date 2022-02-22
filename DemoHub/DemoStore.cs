@@ -9,7 +9,7 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// The <see cref="DemoStore"/> has two functionalities: <br/>
+    /// The <see cref="DemoStore"/> schema has two functionalities: <br/>
     /// 1. Defines a database schema by declaring its containers and commands <br/>
     /// 2. Is a database client providing type safe access to its containers and commands
     /// <br/>
