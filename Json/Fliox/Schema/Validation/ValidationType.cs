@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
 
-        public static ValidationType Create (TypeDef typeDef) {
+        internal static ValidationType Create (TypeDef typeDef) {
             var union = typeDef.UnionType;
             if (union != null) {
                 return new ValidationType(typeDef, union);

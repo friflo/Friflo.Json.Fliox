@@ -48,13 +48,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (!filterTree.IsNull()) {
                 var pool                = messageContext.pool;
                 var filterValidation    = messageContext.sharedCache.GetValidationType(typeof(FilterOperation));
-                /* using (var pooled = pool.TypeValidator.Get()) {
+                using (var pooled = pool.TypeValidator.Get()) {
                     var validator   = pooled.instance;
                     if (!validator.ValidateObject(filterTree, filterValidation, out var validationError)) {
                         error = InvalidTaskError($"filterTree error: {validationError}");
                         return false;
                     }
-                } */
+                }
                 using (var pooled = pool.ObjectMapper.Get()) {
                     var reader      = pooled.instance.reader;
                     var filterOp    = reader.Read<FilterOperation>(filterTree);

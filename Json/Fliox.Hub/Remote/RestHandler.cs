@@ -366,14 +366,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (filterTree == null) {
                 return Operation.FilterTrue;
             }
-            /* using (var pooled = pool.TypeValidator.Get()) {
+            using (var pooled = pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
                 var json        = new JsonValue(filterTree);
                 if (!validator.ValidateObject(json, filterValidation, out var error)) {
                     context.WriteError(InvalidFilter, error, 400);
                     return null;
                 }
-            } */
+            }
             var reader = mapper.reader;
             var filterOp = mapper.reader.Read<FilterOperation>(filterTree);
             if (reader.Error.ErrSet) {

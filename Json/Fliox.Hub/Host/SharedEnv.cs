@@ -69,7 +69,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly    Dictionary<Type, ValidationType> validationTypes = new Dictionary<Type, ValidationType>();
         
         public ValidationType GetValidationType(Type type) {
-            return null;
             if (!validationTypes.TryGetValue(type, out var validationType)) {
                 using (var nativeSchema = new NativeTypeSchema(type)) {
                     var validationSet   = new ValidationSet(nativeSchema);

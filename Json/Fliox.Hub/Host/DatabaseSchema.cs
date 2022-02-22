@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public void Dispose() {
             foreach (var validationSet in validationSets) {
-                validationSet.Dispose();
+                validationSet.Dispose(); // todo not necessary anymore
             }
         }
         
