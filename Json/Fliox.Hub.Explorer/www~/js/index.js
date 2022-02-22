@@ -32,6 +32,14 @@ export class App {
         this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
         // --------------------------------------- filter --------------------------------------- 
         this.filter = {};
+        // filterTree example for testing validation in Playground > query-filter task
+        this.filterTreeExample = {
+            "filterTree": {
+                "op": "equal",
+                "left": { "op": "field", "name": "o.name" },
+                "right": { "op": "string", "value": "Smartphone" }
+            }
+        };
         this.allMonacoSchemas = [];
         this.config = defaultConfig;
         this.explorer = new Explorer(this.config);

@@ -573,6 +573,15 @@ export class App {
         }
     }
 
+    // filterTree example for testing validation in Playground > query-filter task
+    filterTreeExample = {
+      "filterTree":{
+        "op"    : "equal",
+        "left"  : { "op": "field" , "name": "o.name" },
+        "right" : { "op": "string", "value": "Smartphone" }
+      }
+    };
+
     private static refineFilterTree(jsonSchema: { [key: string]: JsonSchema }) {
         let refinements = 0;
         for (const schemaName in jsonSchema) {
