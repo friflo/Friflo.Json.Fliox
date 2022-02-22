@@ -39,7 +39,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private   readonly  IUserAuth                                   userAuth;
         private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  NativeTypeSchema                            typeSchema;
-        private   readonly  DatabaseSchema                              databaseSchema;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
@@ -48,8 +47,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
             typeSchema              = new NativeTypeSchema(typeof(UserStore));
-            databaseSchema          = new DatabaseSchema(typeSchema);
-            userDatabase.Schema     = databaseSchema;
+            userDatabase.Schema     = new DatabaseSchema(typeSchema);
             userHub        	        = new FlioxHub(userDatabase, env);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             this.userAuth           = userAuth;
@@ -58,7 +56,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         public void Dispose() {
             userHub.Dispose();
-            databaseSchema.Dispose();
             typeSchema.Dispose();
         }
         

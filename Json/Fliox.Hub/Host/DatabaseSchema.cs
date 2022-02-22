@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </item>
     /// </list>   
     /// </summary>
-    public sealed class DatabaseSchema : IDisposable
+    public sealed class DatabaseSchema
     {
         internal readonly   TypeSchema                          typeSchema;
         private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
@@ -62,8 +62,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddTypeSchema(typeSchema);
             AddStoreSchema<SequenceStore>();
         }
-        
-        public void Dispose() { }
         
         public void AddStoreSchema<TFlioxClient>() where TFlioxClient : FlioxClient {
             var nativeSchema    = new NativeTypeSchema(typeof(TFlioxClient));
