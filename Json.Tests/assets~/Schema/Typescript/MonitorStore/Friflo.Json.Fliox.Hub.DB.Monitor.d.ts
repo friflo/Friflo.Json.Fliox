@@ -9,6 +9,7 @@ import { RequestCount } from "./Friflo.Json.Fliox.Hub.Host.Stats";
 import { int32 }        from "./Standard";
 import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
+// schema documentation only - not implemented right now
 export interface MonitorStore {
     // --- containers
     hosts      : { [key: string]: HostHits };

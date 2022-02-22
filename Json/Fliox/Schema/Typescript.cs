@@ -100,6 +100,7 @@ namespace Friflo.Json.Fliox.Schema
             }
             var unionType = type.UnionType;
             if (unionType == null) {
+                if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
                 var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
                 sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
                 if (type.IsSchema)

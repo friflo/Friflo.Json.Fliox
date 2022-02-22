@@ -11,6 +11,7 @@ import { int64 }        from "./Standard";
 import { int16 }        from "./Standard";
 import { uint8 }        from "./Standard";
 
+// schema documentation only - not implemented right now
 export interface EntityIdStore {
     // --- containers
     guidEntities       : { [key: string]: GuidEntity };

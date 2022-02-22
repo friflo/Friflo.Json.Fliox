@@ -14,6 +14,7 @@ import { int64 }        from "./Standard";
 import { float }        from "./Standard";
 import { double }       from "./Standard";
 
+// schema documentation only - not implemented right now
 export interface PocStore {
     // --- containers
     orders     : { [key: string]: Order };

@@ -31,6 +31,7 @@ export class Employee {
     lastName?  : string | null;
 }
 
+// schema documentation only - not implemented right now
 export interface PocStore {
     // --- containers
     orders     : { [key: string]: Order };

@@ -8,6 +8,7 @@ import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Right }        from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 import { Right_Union }  from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 
+// schema documentation only - not implemented right now
 export interface UserStore {
     // --- containers
     credentials  : { [key: string]: UserCredential };
