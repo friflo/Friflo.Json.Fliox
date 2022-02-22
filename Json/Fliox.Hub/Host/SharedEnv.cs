@@ -2,8 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Native;
+using Friflo.Json.Fliox.Schema.Validation;
 
 // ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Hub.Host
@@ -24,10 +27,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public class SharedEnv : IDisposable
     {
-        private readonly    TypeStore   typeStore;
-        
-        public  virtual     TypeStore   TypeStore   => typeStore;
-        public              Pool        Pool        { get; }
+        private  readonly   TypeStore       typeStore;
+        internal readonly   SharedCache     sharedCache;
+        public   virtual    TypeStore       TypeStore   => typeStore;
+        public              Pool            Pool        { get; }
         
         public static readonly SharedEnv Default = new DefaultSharedEnv();
 
@@ -35,11 +38,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         public SharedEnv() {
             typeStore       = new TypeStore();
             Pool            = new Pool(this);
+            sharedCache     = new SharedCache();
         }
         
         public SharedEnv(TypeStore typeStore) {
             this.typeStore  = typeStore;
             Pool            = new Pool(this);
+            sharedCache     = new SharedCache();
         }
 
         public virtual void Dispose () {
@@ -56,6 +61,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override void Dispose () {
             Pool.Dispose();
+        }
+    }
+    
+    public class SharedCache
+    {
+        private readonly    Dictionary<Type, ValidationSet> validationSets = new Dictionary<Type, ValidationSet>();
+        
+        public ValidationSet GetValidationSet(Type type) {
+            if (!validationSets.TryGetValue(type, out var validationSet)) {
+                using (var typeSchema = new NativeTypeSchema(type)) {
+                    validationSet = new ValidationSet(typeSchema);
+                }
+                validationSets.Add(type, validationSet);
+            }
+            return validationSet;
         }
     }
 }

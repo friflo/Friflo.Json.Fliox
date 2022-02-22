@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
             var localPool       = new Pool(sharedEnv);
-            var messageContext  = new MessageContext(localPool, null);
+            var messageContext  = new MessageContext(localPool, null, sharedEnv.sharedCache);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
             var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
             foreach (var container in containerNames) {

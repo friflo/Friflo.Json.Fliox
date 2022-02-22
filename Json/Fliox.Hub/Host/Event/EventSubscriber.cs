@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   HashSet<string>                         messageSubscriptions        = new HashSet<string>();
         internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
         private  readonly   Pool                                    pool;
+        private  readonly   SharedCache                             sharedCache;
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
         
@@ -70,6 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
             pool                = new Pool(env.Pool);
+            sharedCache         = env.sharedCache;
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;
@@ -148,7 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             
             while (DequeueEvent(out var ev)) {
                 try {
-                    var messageContext  = new MessageContext(pool, eventTarget);
+                    var messageContext  = new MessageContext(pool, eventTarget, sharedCache);
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     await eventTarget.ProcessEvent(ev, messageContext).ConfigureAwait(false);

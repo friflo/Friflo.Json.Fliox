@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- SyncTasks() / TrySyncTasks()
         public async Task<SyncResult> SyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.clientId);
+            var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.clientId);
+            var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
 
             var result = HandleSyncResponse(syncRequest, response, syncStore);

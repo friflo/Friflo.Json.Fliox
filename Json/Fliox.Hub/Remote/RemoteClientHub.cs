@@ -15,12 +15,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
         private  readonly   Pool                                pool;
+        private  readonly   SharedCache                         sharedCache;
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientHub(EntityDatabase database, SharedEnv env, string hostName = null)
             : base(database, env, hostName)
         {
-            pool = new Pool(sharedEnv.Pool);
+            pool        = new Pool(sharedEnv.Pool);
+            sharedCache = sharedEnv.sharedCache;
         }
 
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
@@ -38,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected void ProcessEvent(ProtocolEvent ev) {
             var eventTarget     = clientTargets[ev.dstClientId];
-            var messageContext  = new MessageContext(pool, eventTarget);
+            var messageContext  = new MessageContext(pool, eventTarget, sharedCache);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();
         }

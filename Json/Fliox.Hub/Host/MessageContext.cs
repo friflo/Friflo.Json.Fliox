@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              bool                Authenticated   => authState.authenticated;
         public              string              DatabaseName    { get; internal set; }
         public              EntityDatabase      Database        => hub.GetDatabase(DatabaseName);
+        public    readonly  SharedCache         sharedCache;
 
         // --- internal / private by intention
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
@@ -42,17 +43,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
-        internal MessageContext (IPool pool, IEventTarget eventTarget) {
+        internal MessageContext (IPool pool, IEventTarget eventTarget, SharedCache sharedCache) {
             this.pool           = pool;
             startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
+            this.sharedCache    = sharedCache;
         }
         
-        internal MessageContext (IPool pool, IEventTarget eventTarget, in JsonKey clientId) {
+        internal MessageContext (IPool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
             this.pool           = pool;
             startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
+            this.sharedCache    = sharedCache;
         }
         
         public void AuthenticationFailed(User user, string error, Authorizer authorizer) {
