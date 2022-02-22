@@ -9,13 +9,12 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="DemoStore"/> extends <see cref="FlioxClient"/> to provide two functionalities: <br/>
+    /// The <see cref="DemoStore"/> has two functionalities: <br/>
     /// 1. Defines a database schema by declaring its containers and commands <br/>
     /// 2. Is a database client providing type safe access to its containers and commands <br/>
-    /// <br/>
+    /// </summary>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs
-    /// </summary>
     public partial class DemoStore : FlioxClient {
         // --- containers
         public readonly EntitySet <Guid, Order>       orders;

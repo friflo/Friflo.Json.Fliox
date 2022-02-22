@@ -12,7 +12,7 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     /// <summary>
-    /// Provide information about databases exposed by the Hub. These are: <br/>
+    /// <see cref="ClusterStore"/> provide information about databases exposed by the Hub: <br/>
     /// - available containers aka tables per database <br/>
     /// - available commands per database <br/>
     /// - the schema assigned to each database
