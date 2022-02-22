@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 throw new InvalidOperationException($"Expect {nameof(TypeSchema)}.{nameof(TypeSchema.RootType)} not null");
             var validationSet   = new ValidationSet(typeSchema);
             var validationRoot = validationSet.GetValidationType(rootType);
-            foreach (var field in validationRoot.fields) {
+            foreach (var field in validationRoot.Fields) {
                 containerTypes.Add(field.fieldName, field.Type);
             }
         }

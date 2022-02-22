@@ -68,6 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private readonly    Dictionary<Type, ValidationType> validationTypes = new Dictionary<Type, ValidationType>();
         
+        /// <summary> Return an immutable <see cref="ValidationSet"/> for the given <param name="type"></param></summary>
         public ValidationType GetValidationType(Type type) {
             if (!validationTypes.TryGetValue(type, out var validationType)) {
                 using (var nativeSchema = new NativeTypeSchema(type)) {

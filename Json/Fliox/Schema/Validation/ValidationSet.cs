@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         /// <summary>
-        /// Construct a <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
+        /// Construct an immutable <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
         /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSet"/> is intended to be used by
         /// <see cref="TypeValidator"/> to validate JSON payloads by <see cref="TypeValidator.ValidateObject"/>. 
         /// </summary>

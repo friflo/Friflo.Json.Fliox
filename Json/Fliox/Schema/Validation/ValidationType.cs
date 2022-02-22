@@ -46,13 +46,14 @@ namespace Friflo.Json.Fliox.Schema.Validation
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         public   readonly   string              @namespace;
         public   readonly   TypeId              typeId;
-        public   readonly   ValidationField[]   fields;
+        private  readonly   ValidationField[]   fields;
         public   readonly   int                 requiredFieldsCount;
         private  readonly   ValidationField[]   requiredFields;
         public   readonly   ValidationUnion     unionType;
         private  readonly   byte[][]            enumValues;
         
-        public  override    string              ToString() => qualifiedName;
+        public              IEnumerable<ValidationField>    Fields      => fields;
+        public  override    string                          ToString()  => qualifiedName;
         
         internal ValidationType (TypeId typeId, string typeName, TypeDef typeDef) {
             this.typeId         = typeId;
