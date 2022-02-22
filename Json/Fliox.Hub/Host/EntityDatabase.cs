@@ -68,6 +68,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public   readonly   TaskHandler         handler;
         
+        public   virtual    string              StorageName => GetType().Name;     
+        
         
         internal const string MainDB = "main_db";
         
@@ -123,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } else {
                 containerList = await GetContainers().ConfigureAwait(false);
             }
-            return new DbContainers { containers = containerList, storage = GetType().Name };
+            return new DbContainers { containers = containerList, storage = StorageName };
         }
 
         private const bool ExposeSchemaCommands = true; // false for debugging

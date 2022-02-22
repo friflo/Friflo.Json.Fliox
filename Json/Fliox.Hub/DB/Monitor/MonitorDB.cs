@@ -25,7 +25,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         private  readonly   NativeTypeSchema    typeSchema;     // not really required as db is readonly - but enables exposing schema
         private  readonly   DatabaseSchema      databaseSchema; // not really required as db is readonly - but enables exposing schema
 
-        public   override   string              ToString() => name;
+        public   override   string              ToString()  => name;
+        public   override   string              StorageName => stateDB.StorageName;
 
         public const string Name = "monitor";
         
