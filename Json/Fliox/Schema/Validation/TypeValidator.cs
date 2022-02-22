@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                                 continue;
                             return false;
                         }
-                        if (field.typeId == TypeId.Class) {
+                        if (field.typeId == TypeId.Class || field.typeId == TypeId.Union) {
                             if (ValidateObjectIntern (field.type, depth + 1))
                                 continue;
                             return false;

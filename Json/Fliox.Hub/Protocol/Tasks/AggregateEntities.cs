@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
-            if (!QueryEntities.ValidateFilter (filterTree, filter, messageContext.pool, ref filterLambda, out var error))
+            if (!QueryEntities.ValidateFilter (filterTree, filter, messageContext, ref filterLambda, out var error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {

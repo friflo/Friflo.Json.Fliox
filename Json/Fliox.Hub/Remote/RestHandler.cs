@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
@@ -28,10 +29,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private     const       string      RestBase = "/rest";
         private     readonly    FlioxHub    hub;
         private     readonly    Pool        pool;
+        private     readonly    SharedCache sharedCache;
         
         public RestHandler (FlioxHub hub) {
-            this.hub    = hub;
-            pool        = hub.sharedEnv.Pool;
+            var sharedEnv   = hub.sharedEnv;
+            this.hub        = hub;
+            pool            = sharedEnv.Pool;
+            sharedCache     = sharedEnv.sharedCache;
         }
         
         public bool IsMatch(RequestContext context) {
@@ -330,9 +334,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private const string InvalidFilter = "invalid filter";
         
         private JsonValue CreateFilterTree(RequestContext context, NameValueCollection queryParams) {
+            var filterValidation = sharedCache.GetValidationType(typeof(FilterOperation));
             using (var pooled = pool.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
-                var filter = CreateFilter(context, queryParams, mapper);
+                var filter = CreateFilter(context, queryParams, mapper, filterValidation);
                 if (filter == null)
                     return new JsonValue();
                 var filterJson = mapper.writer.Write(filter);
@@ -340,7 +345,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams, ObjectMapper mapper) {
+        private FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams, ObjectMapper mapper, ValidationType filterValidation) {
             // --- handle filter expression
             var filter = queryParams["filter"];
             if (filter != null) {
@@ -361,7 +366,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (filterTree == null) {
                 return Operation.FilterTrue;
             }
-
+            /* using (var pooled = pool.TypeValidator.Get()) {
+                var validator   = pooled.instance;
+                var json        = new JsonValue(filterTree);
+                if (!validator.ValidateObject(json, filterValidation, out var error)) {
+                    context.WriteError(InvalidFilter, error, 400);
+                    return null;
+                }
+            } */
             var reader = mapper.reader;
             var filterOp = mapper.reader.Read<FilterOperation>(filterTree);
             if (reader.Error.ErrSet) {
