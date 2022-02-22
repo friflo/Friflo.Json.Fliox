@@ -22,10 +22,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByJsonSchema() {
-            var schemas                 = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var jsonSchema              = new JsonTypeSchema(schemas);
-            using (var validationSet    = new ValidationSet(jsonSchema))
-            using (var validator        = new TypeValidator()) {
+            var schemas             = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
+            var jsonSchema          = new JsonTypeSchema(schemas);
+            using (var validator    = new TypeValidator()) {
+                var validationSet   = new ValidationSet(jsonSchema);
                 var test = new TestTypes {
                     guidEntityType    = jsonSchema.TypeAsValidationType<GuidEntity>(validationSet, "UnitTest.Fliox.Client")
                 };
@@ -36,9 +36,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema     = new NativeTypeSchema(EntityIdStoreTypes))
-            using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new TypeValidator()) {
+            using (var nativeSchema = new NativeTypeSchema(EntityIdStoreTypes))
+            using (var validator    = new TypeValidator()) {
+                var validationSet   = new ValidationSet(nativeSchema);
                 var test = new TestTypes {
                     guidEntityType    = nativeSchema.TypeAsValidationType<GuidEntity>(validationSet)
                 };

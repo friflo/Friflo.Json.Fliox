@@ -23,10 +23,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByJsonSchema() {
-            var schemas                 = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var jsonSchema              = new JsonTypeSchema(schemas);
-            using (var validationSet    = new ValidationSet(jsonSchema))
-            using (var validator        = new TypeValidator()) {
+            var schemas             = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
+            var jsonSchema          = new JsonTypeSchema(schemas);
+            using (var validator    = new TypeValidator()) {
+                var validationSet   = new ValidationSet(jsonSchema);
                 var test = new TestTypes {
                     roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Fliox.Hub.DB.UserAuth")
                 };
@@ -38,9 +38,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema     = new NativeTypeSchema(UserStoreTypes))
-            using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new TypeValidator()) {
+            using (var nativeSchema = new NativeTypeSchema(UserStoreTypes))
+            using (var validator    = new TypeValidator()) {
+                var validationSet   = new ValidationSet(nativeSchema);
                 var test = new TestTypes {
                     roleType    = nativeSchema.TypeAsValidationType<Role>(validationSet)
                 };

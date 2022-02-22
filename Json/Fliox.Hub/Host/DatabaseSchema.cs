@@ -50,7 +50,6 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         internal readonly   TypeSchema                          typeSchema;
         private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
-        private  readonly   List<ValidationSet>                 validationSets  = new List<ValidationSet>();
         private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
         
         internal            string                              Name        => typeSchema.RootType.Name;
@@ -64,11 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddStoreSchema<SequenceStore>();
         }
         
-        public void Dispose() {
-            foreach (var validationSet in validationSets) {
-                validationSet.Dispose(); // todo not necessary anymore
-            }
-        }
+        public void Dispose() { }
         
         public void AddStoreSchema<TFlioxClient>() where TFlioxClient : FlioxClient {
             var nativeSchema    = new NativeTypeSchema(typeof(TFlioxClient));
@@ -80,7 +75,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (rootType == null)
                 throw new InvalidOperationException($"Expect {nameof(TypeSchema)}.{nameof(TypeSchema.RootType)} not null");
             var validationSet   = new ValidationSet(typeSchema);
-            validationSets.Add(validationSet);
             var validationRoot = validationSet.GetValidationType(rootType);
             foreach (var field in validationRoot.fields) {
                 containerTypes.Add(field.fieldName, field.Type);

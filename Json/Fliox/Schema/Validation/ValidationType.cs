@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// Similar to <see cref="Definition.TypeDef"/> but operates on byte arrays instead of strings to gain
     /// performance.
     /// </summary>
-    public sealed class ValidationType : IDisposable {
+    public sealed class ValidationType  {
         // ReSharper disable once NotAccessedField.Local
         private  readonly   TypeDef             typeDef;    // only for debugging
         public   readonly   string              name;
@@ -115,15 +115,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 return new ValidationType(typeDef, typeDef.EnumValues);
             }
             return null;
-        }
-        
-        public void Dispose() {
-            if (fields != null) {
-                foreach (var field in fields) {
-                    field.Dispose();
-                }
-            }
-            unionType?.Dispose();
         }
         
         public static string GetName (ValidationType type, bool qualified) {
@@ -224,7 +215,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
     }
     
     // could by a struct 
-    public sealed class ValidationField : IDisposable {
+    public sealed class ValidationField  {
         public    readonly  string          fieldName;
         internal  readonly  byte[]          name;
         public    readonly  bool            required;
@@ -253,12 +244,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
             isNullableElement   = fieldDef.isNullableElement;
             this.requiredPos    = requiredPos;
         }
-        
-        public void Dispose() {
-        }
     }
 
-    public sealed class ValidationUnion : IDisposable {
+    public sealed class ValidationUnion  {
         private   readonly  UnionType   unionType;
         public    readonly  string      discriminatorStr;
         internal  readonly  byte[]      discriminator;
@@ -273,8 +261,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
             discriminator       = ValidationType.GetUtf8Bytes(union.discriminator);
             types               = new UnionItem[union.types.Count];
         }
-        
-        public void Dispose() { }
 
         internal void SetUnionTypes(Dictionary<TypeDef, ValidationType> typeMap) {
             int n = 0;

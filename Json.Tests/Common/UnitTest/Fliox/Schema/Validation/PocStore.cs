@@ -25,8 +25,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         public static void ValidateByJsonSchema() {
             var schemas                 = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var jsonSchema              = new JsonTypeSchema(schemas);
-            using (var validationSet    = new ValidationSet(jsonSchema))
             using (var validator        = new TypeValidator()) {
+                var validationSet   = new ValidationSet(jsonSchema);
                 var test = new TestTypes {
                     testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Fliox.Client"),
                     orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Fliox.Client"),
@@ -39,9 +39,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema     = new NativeTypeSchema(PocStoreTypes))
-            using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new TypeValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
+            using (var nativeSchema = new NativeTypeSchema(PocStoreTypes))
+            using (var validator    = new TypeValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
+                var validationSet   = new ValidationSet(nativeSchema);
                 validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
                     testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet),
