@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         
         // --- containers
         public  readonly    EntitySet <JsonKey, HostHits>       hosts;
-        public  readonly    EntitySet <JsonKey, ClientHits>     clients;
         public  readonly    EntitySet <JsonKey, UserHits>       users;
+        public  readonly    EntitySet <JsonKey, ClientHits>     clients;
         public  readonly    EntitySet <int,     HistoryHits>    histories;
 
         public MonitorStore(FlioxHub hub, string database = null) : base(hub, database) { }
@@ -41,6 +41,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     public class HostHits {
         [Req]   public  JsonKey                         id;
                 public  RequestCount                    counts;
+                        
+        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+    }
+    
+    public class UserHits {
+        [Req]   public  JsonKey                         id;
+        [Req]   public  List<Ref<JsonKey, ClientHits>>  clients;
+        public  List<RequestCount>                      counts = new List<RequestCount>();
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
@@ -67,14 +75,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         [Req]   public  string                          container;
         [Req]   public  List<Change>                    changes;
                 public  string                          filter;
-    }
-    
-    public class UserHits {
-        [Req]   public  JsonKey                         id;
-        [Req]   public  List<Ref<JsonKey, ClientHits>>  clients;
-                public  List<RequestCount>              counts = new List<RequestCount>();
-                        
-        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class HistoryHits {

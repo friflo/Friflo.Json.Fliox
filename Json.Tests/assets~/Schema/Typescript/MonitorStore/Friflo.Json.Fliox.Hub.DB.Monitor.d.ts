@@ -13,8 +13,8 @@ import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 export interface MonitorStore {
     // --- containers
     hosts      : { [key: string]: HostHits };
-    clients    : { [key: string]: ClientHits };
     users      : { [key: string]: UserHits };
+    clients    : { [key: string]: ClientHits };
     histories  : { [key: string]: HistoryHits };
 
     // --- commands
@@ -33,17 +33,17 @@ export class HostHits {
     counts  : RequestCount;
 }
 
+export class UserHits {
+    id       : string;
+    clients  : string[];
+    counts?  : RequestCount[] | null;
+}
+
 export class ClientHits {
     id      : string;
     user    : string;
     counts? : RequestCount[] | null;
     event?  : EventDelivery | null;
-}
-
-export class UserHits {
-    id       : string;
-    clients  : string[];
-    counts?  : RequestCount[] | null;
 }
 
 export class HistoryHits {
