@@ -17,10 +17,12 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
-    /// Provide access to a <see cref="FlioxHub"/> storing user credentials ands roles.
+    /// Control individual user access to database containers and commands.
+    /// Each user hast a set of roles.
+    /// Each role has a set of rights which grant or deny container access or command execution. 
+    /// </summary>
     /// It can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
     /// For a thread safe <see cref="IUserAuth"/> implementation use <see cref="UserAuth"/>.
-    /// </summary>
     public class UserStore : FlioxClient, IUserAuth
     {
         // --- containers
