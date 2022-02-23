@@ -30,27 +30,27 @@ namespace Friflo.Json.Fliox.DemoHub
     
     // ------------------------------ entity models ------------------------------
     public class Order {
-        [Req]   public  Guid                    id { get; set; }
-                public  Ref<Guid, Customer>     customer;
-                public  DateTime                created;
-                public  List<OrderItem>         items = new List<OrderItem>();
+        [Req]   public  Guid                id { get; set; }
+                public  Ref<Guid, Customer> customer;
+                public  DateTime            created;
+                public  List<OrderItem>     items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        [Req]  public   Ref<Guid, Article>      article;
-               public   int                     amount;
-               public   string                  name;
+        [Req]   public  Ref<Guid, Article>  article;
+                public  int                 amount;
+                public  string              name;
     }
 
     public class Article {
-        [Req]   public   Guid                   id { get; set; }
-        [Req]   public   string                 name;
-                public   Ref<Guid, Producer>    producer;
+        [Req]   public  Guid                id { get; set; }
+        [Req]   public  string              name;
+                public  Ref<Guid, Producer> producer;
     }
 
     public class Customer {
-        [Req]   public   Guid                   id { get; set; }
-        [Req]   public   string                 name;
+        [Req]   public  Guid                id { get; set; }
+        [Req]   public  string              name;
     }
     
     public class Producer {
@@ -60,8 +60,8 @@ namespace Friflo.Json.Fliox.DemoHub
     }
     
     public class Employee {
-        [Req]   public  Guid                    id { get; set; }
-        [Req]   public  string                  firstName;
-                public  string                  lastName;
+        [Req]   public  Guid                id { get; set; }
+        [Req]   public  string              firstName;
+                public  string              lastName;
     }
 }
