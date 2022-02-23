@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Hub.Host.Stats
+namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
+    // Is placed here in namespace DB.Monitor as it fits better than in Host.Stats
     public struct RequestCount {
         public              string  db;
         public              int     requests;

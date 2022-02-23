@@ -5,7 +5,6 @@ import { DbSchema }     from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { DbStats }      from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostDetails }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
-import { RequestCount } from "./Friflo.Json.Fliox.Hub.Host.Stats";
 import { int32 }        from "./Standard";
 import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
@@ -50,6 +49,12 @@ export class HistoryHits {
     id          : int32;
     counters    : int32[];
     lastUpdate  : int32;
+}
+
+export class RequestCount {
+    db?       : string | null;
+    requests  : int32;
+    tasks     : int32;
 }
 
 export class EventDelivery {
