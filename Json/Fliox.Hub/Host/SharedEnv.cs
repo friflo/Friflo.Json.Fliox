@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
@@ -64,11 +65,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
+    /// <summary>
+    /// <see cref="SharedCache"/> is a cache for shared instances directly or indirectly used by
+    /// <see cref="CommandHandler{TParam,TResult}"/> or <see cref="SyncRequestTask"/> methods. <br/>
+    /// Cached instances created and returned by <see cref="SharedCache"/> must me immutable to enable
+    /// concurrent and / or parallel usage.
+    /// </summary>
     public class SharedCache
     {
         private readonly    Dictionary<Type, ValidationType> validationTypes = new Dictionary<Type, ValidationType>();
         
-        /// <summary> Return an immutable <see cref="ValidationSet"/> for the given <param name="type"></param></summary>
+        /// <summary> Return an immutable <see cref="ValidationSet"/> instance for the given <param name="type"></param></summary>
         public ValidationType GetValidationType(Type type) {
             if (!validationTypes.TryGetValue(type, out var validationType)) {
                 using (var nativeSchema = new NativeTypeSchema(type)) {
