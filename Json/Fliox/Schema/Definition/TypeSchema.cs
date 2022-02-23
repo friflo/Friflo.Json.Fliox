@@ -32,11 +32,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </list>  
     /// <br></br>
     /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
+    /// Note: <see cref="TypeSchema"/> instances are immutable.
     /// </summary>
     public abstract class TypeSchema
     {
         /// <summary>Set of all types defined in the type system / schema.</summary>
-        public abstract     ICollection<TypeDef>    Types           { get; }
+        public abstract     IReadOnlyList<TypeDef>  Types           { get; }
         /// <summary>Set of all well known / standard types used in the type system / schema like integers,
         /// floating point numbers, strings, booleans and timestamps</summary>
         public abstract     StandardTypes           StandardTypes   { get; }

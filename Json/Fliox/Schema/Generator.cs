@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Schema
 
 
         /// map of all <see cref="TypeDef"/>'s required by the types provided for schema generation
-        public   readonly   ICollection<TypeDef>            types;
+        public   readonly   IReadOnlyList<TypeDef>          types;
         /// map of all generated files. key: file path  
         public   readonly   Dictionary<string, EmitFile>    fileEmits       = new Dictionary<string, EmitFile>();
         /// set of generated files and their source content. key: file name

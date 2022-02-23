@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Schema.Native
 {
     public sealed class NativeTypeSchema : TypeSchema, IDisposable
     {
-        public   override   ICollection<TypeDef>    Types           { get; }
+        public   override   IReadOnlyList<TypeDef>  Types           { get; }
         public   override   StandardTypes           StandardTypes   { get; }
         public   override   TypeDef                 RootType        { get; }
         
