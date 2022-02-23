@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 namespace Friflo.Json.Fliox.Hub.Client
 {
 
-    public class CloseCursorsTask : SyncTask
+    public sealed class CloseCursorsTask : SyncTask
     {
         internal readonly   List<string>    cursors;
         

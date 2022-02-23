@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>Contains general information about a Hub describing the development environment. <br/>
     /// Clients can request this information with the command <b>std.HostDetails</b></summary>
-    public class HubInfo {
+    public sealed class HubInfo {
         /// project name
         public  string  projectName;
         /// project website url

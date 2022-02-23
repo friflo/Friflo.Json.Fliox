@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
     }
     
-    internal class TypeDefKey
+    internal sealed class TypeDefKey
     {
         private readonly    string  @namespace;
         private readonly    string  name;

@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// Cached instances created and returned by <see cref="SharedCache"/> must me immutable to enable
     /// concurrent and / or parallel usage.
     /// </summary>
-    public class SharedCache
+    internal sealed class SharedCache
     {
         private readonly    Dictionary<Type, ValidationType> validationTypes = new Dictionary<Type, ValidationType>();
         

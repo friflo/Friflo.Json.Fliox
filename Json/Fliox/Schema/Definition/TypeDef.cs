@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
     }
 
-    public class UnionType {
+    public sealed class UnionType {
         public   readonly   string          discriminator;
         public   readonly   List<UnionItem> types;
         

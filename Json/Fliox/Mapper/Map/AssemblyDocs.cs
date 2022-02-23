@@ -11,7 +11,7 @@ using System.Xml.Linq;
 namespace Friflo.Json.Fliox.Mapper.Map
 {
     // ------------------------------------ AssemblyDocs ------------------------------------
-    internal class AssemblyDocs
+    internal sealed class AssemblyDocs
     {
         private     readonly    Dictionary <string, AssemblyDoc>   assemblyDocs =  new Dictionary <string, AssemblyDoc >();
     
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     }
 
     // ------------------------------------ AssemblyDoc ------------------------------------
-    internal class AssemblyDoc
+    internal sealed class AssemblyDoc
     {
         private   readonly  string                      name;
         private   readonly  Dictionary<string, string>  signatures; // is null if no documentation available
