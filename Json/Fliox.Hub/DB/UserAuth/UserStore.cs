@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
     /// Control individual user access to database containers and commands.
-    /// Each user hast a set of roles.
+    /// Each user has a set of roles stored in container <b>permissions</b>.
     /// Each role has a set of rights which grant or deny container access or command execution. 
     /// </summary>
     /// It can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
