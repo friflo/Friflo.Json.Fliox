@@ -352,9 +352,9 @@
         <tr><td colspan='2'>list all databases and their containers hosted by the Hub</td></tr>
     </table>
     <desc>
-            Provide access to a FlioxHub storing user credentials ands roles.
-            It can also be used as a non thread safe IUserAuth implementation.
-            For a thread safe IUserAuth implementation use UserAuth.
+            Control individual user access to database containers and commands.
+            Each user has a set of roles stored in container permissions.
+            Each role has a set of rights which grant or deny container access or command execution. 
             </desc>
     </div>
     <div class='type'>
