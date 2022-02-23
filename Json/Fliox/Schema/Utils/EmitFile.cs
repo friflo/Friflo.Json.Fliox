@@ -45,8 +45,10 @@ namespace Friflo.Json.Fliox.Schema.Utils
         
     public static class GeneratorExtension
     {
-        public static int MaxLength<TSource>(this ICollection<TSource> source, Func<TSource, int> selector) {
-            if (source.Count == 0)
+        // ReSharper disable UseMethodAny.2
+        // ReSharper disable PossibleMultipleEnumeration
+        public static int MaxLength<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector) {
+            if (source.Count() == 0)
                 return 0;
             return source.Max(selector); 
         }

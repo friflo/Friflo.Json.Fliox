@@ -7,21 +7,21 @@ using Friflo.Json.Fliox.Schema.Definition;
 namespace Friflo.Json.Fliox.Schema.JSON
 {
     public sealed class JsonTypeDef : TypeDef {
-        private  readonly   string              name;
-        internal readonly   JsonType            type;
+        private  readonly   string                      name;
+        internal readonly   JsonType                    type;
         
         // --- TypeDef
-        public   override   TypeDef             BaseType        => baseType;
-        public   override   bool                IsClass         => fields != null;
-        public   override   bool                IsStruct        => isStruct;
-        public   override   List<FieldDef>      Fields          => fields;
-        public   override   List<CommandDef>    Commands        => commands;
-        public   override   UnionType           UnionType       => unionType;
-        public   override   bool                IsAbstract      => isAbstract; 
-        public   override   string              Discriminant    => discriminant;
-        public   override   string              Discriminator   => discriminator;
-        public   override   bool                IsEnum          => EnumValues != null;
-        public   override   ICollection<string> EnumValues      { get; }
+        public   override   TypeDef                     BaseType        => baseType;
+        public   override   bool                        IsClass         => fields != null;
+        public   override   bool                        IsStruct        => isStruct;
+        public   override   IReadOnlyList<FieldDef>     Fields          => fields;
+        public   override   IReadOnlyList<CommandDef>   Commands        => commands;
+        public   override   UnionType                   UnionType       => unionType;
+        public   override   bool                        IsAbstract      => isAbstract; 
+        public   override   string                      Discriminant    => discriminant;
+        public   override   string                      Discriminator   => discriminator;
+        public   override   bool                        IsEnum          => EnumValues != null;
+        public   override   ICollection<string>         EnumValues      { get; }
 
         public   override   string              ToString()      => name; 
 

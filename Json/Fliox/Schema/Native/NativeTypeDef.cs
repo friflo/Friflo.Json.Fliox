@@ -12,29 +12,29 @@ namespace Friflo.Json.Fliox.Schema.Native
 public sealed class NativeTypeDef : TypeDef
     {
         // --- internal
-        internal readonly   Type                native;
-        internal readonly   TypeMapper          mapper;
-        internal            NativeTypeDef       baseType;
-        internal            List<FieldDef>      fields;
-        internal            List<CommandDef>    commands;
-        internal            UnionType           unionType;
-        internal            string              discriminator;
-        internal            bool                isAbstract;
+        internal readonly   Type                        native;
+        internal readonly   TypeMapper                  mapper;
+        internal            NativeTypeDef               baseType;
+        internal            List<FieldDef>              fields;
+        internal            List<CommandDef>            commands;
+        internal            UnionType                   unionType;
+        internal            string                      discriminator;
+        internal            bool                        isAbstract;
         
         // --- TypeDef
-        public   override   TypeDef             BaseType        => baseType;
-        public   override   bool                IsEnum          { get; }
-        public   override   bool                IsClass         { get; }
-        public   override   bool                IsStruct        { get; }
-        public   override   List<FieldDef>      Fields          => fields;
-        public   override   List<CommandDef>    Commands        => commands;
-        public   override   string              Discriminant    { get; }
-        public   override   string              Discriminator   => discriminator;
-        public   override   UnionType           UnionType       => unionType;
-        public   override   bool                IsAbstract      => isAbstract;
-        public   override   ICollection<string> EnumValues      { get; }
+        public   override   TypeDef                     BaseType        => baseType;
+        public   override   bool                        IsEnum          { get; }
+        public   override   bool                        IsClass         { get; }
+        public   override   bool                        IsStruct        { get; }
+        public   override   IReadOnlyList<FieldDef>     Fields          => fields;
+        public   override   IReadOnlyList<CommandDef>   Commands        => commands;
+        public   override   string                      Discriminant    { get; }
+        public   override   string                      Discriminator   => discriminator;
+        public   override   UnionType                   UnionType       => unionType;
+        public   override   bool                        IsAbstract      => isAbstract;
+        public   override   ICollection<string>         EnumValues      { get; }
         
-        public   override   string              ToString()      => $"{Namespace} {Name}";
+        public   override   string                      ToString()      => $"{Namespace} {Name}";
         
         public NativeTypeDef (TypeMapper mapper, string name, string @namespace) :
             base(name, @namespace, mapper.docs) 

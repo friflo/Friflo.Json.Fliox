@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             unionType       = new ValidationUnion(union);
         }
         
-        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef.Name, typeDef) {
+        private ValidationType (TypeDef typeDef, IReadOnlyList<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef.Name, typeDef) {
             int requiredCount = 0;
             foreach (var field in fieldDefs) {
                 if (field.required)

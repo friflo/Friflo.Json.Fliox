@@ -101,11 +101,18 @@ namespace Friflo.Json.Fliox.Schema.Definition
             if (!rootType.IsSchema)
                 return;
             var rootFields = rootType.Fields;
-            foreach (var field in rootFields) {
-                var jsonType = field.type;
+            foreach (var rootField in rootFields) {
+                var jsonType = rootField.type;
                 if (jsonType.keyField != null)
                     continue;
-                if (jsonType.Fields.Find(f => f.name == "id") == null)
+                bool foundId = false;
+                foreach (var field in jsonType.Fields) {
+                    if (field.name == "id") {
+                        foundId = true;
+                        break;
+                    }
+                }
+                if (!foundId)
                     throw new InvalidOperationException($"missing entity identifier at: {jsonType}");
                 jsonType.keyField = "id";
             }
