@@ -12,7 +12,7 @@ The schema transformation can be used for database schemas and JSON based protoc
 
 Another objective of this namespace is to enables type validation for JSON payloads.
 
-Currently supported input schemas are:
+Currently supported input type schemas are:
 - C#
 - JSON Schema
 
@@ -28,7 +28,7 @@ From these input schemas the following output schemas can be generate:
     - classes, structs, primitives and enums
     - Nullable structs, primitives and enums
     - container types like: arrays, List<>, Dictionary<>, Queue<>, Stack<>, ...
-    - polymorphic classes with discriminator / discriminants.
+    - polymorphic classes with discriminator and discriminants.
     - namespace support
 
 - Create clear and concise messages for validation errors. E.g.  
@@ -44,7 +44,7 @@ From these input schemas the following output schemas can be generate:
 - The generated JSON Schema files are compatible to the specification
   [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes.html).  
   This enables using external **JSON Schema validators** to validate JSON files against the generated schemas.  
-  E.g. by [Ajv JSON schema validator](https://ajv.js.org/) running in Node.js or in the browser.
+  E.g. by [Ajv JSON schema validator](https://ajv.js.org/) running in Node.js or in a browser.
 
 - The generated schemas for various languages are directly available via a **Fliox Hub** in the Browser.  
   To retrieve a zip or a single file click on a schema or type link in the [JSON Fliox Explorer](../../Fliox.Hub.Explorer/)
