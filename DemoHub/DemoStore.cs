@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// <summary>
     /// The <see cref="DemoStore"/> schema has two functionalities: <br/>
     /// 1. Defines a database schema by declaring its containers and commands <br/>
-    /// 2. Is a client providing type safe access to its containers and commands
+    /// 2. Is a database client providing type safe access to its containers and commands
     /// <br/>
     /// <i>Info</i>: The custom command: <b>demo.Fake</b> can be used to create fake records in various containers.
     /// </summary>
