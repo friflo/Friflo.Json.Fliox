@@ -8,7 +8,7 @@
 
 This namespace contains classes and methods to transform / generate Type Schemas.  
 For example to generate a **JSON Schema** from given **C#** model classes or vice vera.  
-The schema transformation can be used for database schemas and JSON based protocols.
+The schema transformation can be used for any types like database schemas or JSON based protocols.
 
 Another objective of this namespace is to enables type validation for JSON payloads.
 
