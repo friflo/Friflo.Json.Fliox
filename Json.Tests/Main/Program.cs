@@ -46,10 +46,11 @@ namespace Friflo.Json.Tests.Main
         /// The features of a <see cref="HttpHostHub"/> instance are:
         /// <list type="bullet">
         ///   <item> Providing all common database operations to query, read, create, update, delete and patch records </item>
-        ///   <item> Support of various database types: memory, file system, remote and NoSQL aka key-value or document databases </item>
-        ///   <item> Expose access to the service in two ways:<br/>
-        ///     1. POST via a single path ./ enabling batching multiple tasks in a single request <br/>
-        ///     2. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id <br/>
+        ///   <item> Support of various database types: memory, file-system, remote and NoSQL aka key-value or document databases </item>
+        ///   <item> Expose access to the service in three ways:<br/>
+        ///     1. HTTP POST via a single path ./ enabling batching multiple tasks in a single request <br/>
+        ///     2. Send batch requests containing multiple tasks via a WebSocket <br/>
+        ///     3. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id <br/>
         ///   </item>
         ///   <item> Enable Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
         ///   <item> Support query cursors to fetch container records iteratively </item>
