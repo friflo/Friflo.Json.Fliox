@@ -134,8 +134,8 @@ namespace Friflo.Json.Fliox.DemoHub
                 producers   = result.producers? .Length ?? 0,
                 employees   = result.employees? .Length ?? 0,
             };
-            var fakePrefix  = fakeCounter.ToString("x8");
-            result.info     = $"use container filter: o.id.StartsWith('{fakePrefix}-')";
+            var nowStr      = now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            result.info     = $"use container filter: o.created == '{nowStr}'";
             result.added    = added;
             return result;
         }
