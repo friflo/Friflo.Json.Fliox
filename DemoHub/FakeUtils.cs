@@ -121,12 +121,12 @@ namespace Friflo.Json.Fliox.DemoHub
                 }
             }
             
-            var added = new Fake {
-                orders      = result.orders?    .Length,
-                customers   = result.customers? .Length,
-                articles    = result.articles?  .Length,
-                producers   = result.producers? .Length,
-                employees   = result.employees? .Length,
+            var added = new Counts {
+                orders      = result.orders?    .Length ?? 0,
+                customers   = result.customers? .Length ?? 0,
+                articles    = result.articles?  .Length ?? 0,
+                producers   = result.producers? .Length ?? 0,
+                employees   = result.employees? .Length ?? 0,
             };
             var fakePrefix  = fakeCounter.ToString("x8");
             result.info     = $"use container filter: o.id.StartsWith('{fakePrefix}-')";

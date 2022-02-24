@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
 
-        private static async Task<Fake> CountLatest(Command<int?> command) {
+        private static async Task<Counts> CountLatest(Command<int?> command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
@@ -85,12 +85,12 @@ namespace Friflo.Json.Fliox.DemoHub
             
             await demoStore.SyncTasks();
             
-            var result = new Fake {
-                orders      = (int?)orderCount.Result,
-                customers   = (int?)customerCount.Result,
-                articles    = (int?)articleCount.Result,
-                producers   = (int?)producerCount.Result,
-                employees   = (int?)employeeCount.Result,
+            var result = new Counts {
+                orders      = (int?)orderCount.     Result ?? 0,
+                customers   = (int?)customerCount.  Result ?? 0,
+                articles    = (int?)articleCount.   Result ?? 0,
+                producers   = (int?)producerCount.  Result ?? 0,
+                employees   = (int?)employeeCount.  Result ?? 0,
             };
             return result;
         }

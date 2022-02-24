@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/> 
     /// </summary>
     /// <typeparam name="TParam">Type of the command input parameter</typeparam>
-    public readonly struct Command<TParam>{
+    public struct Command<TParam>{
         public              string          Name            { get; }
         public              IPool           Pool            => messageContext.pool;
         public              FlioxHub        Hub             => messageContext.hub;
@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              EntityDatabase  Database        => messageContext.Database;
         public              User            User            => messageContext.User;
         public              JsonKey         ClientId        => messageContext.clientId;
+        public              bool            WriteNull       { get; set; }
         
         internal            MessageContext  MessageContext  => messageContext;
         
@@ -51,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             Name                = name;
             this.param          = param;  
             this.messageContext = messageContext;
+            WriteNull           = false;
         }
     }
 }

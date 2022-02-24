@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public CommandTask<FakeResult>  Fake (Fake      param)      => SendCommand<Fake, FakeResult>("demo.Fake",   param);
 
         /// <summary> count the latest records added to containers. </summary>
-        public CommandTask<Fake>        CountLatest  (int? param)   => SendCommand<int?, Fake>("demo.CountLatest",   param);
+        public CommandTask<Counts>      CountLatest (int? param)    => SendCommand<int?, Counts>("demo.CountLatest",   param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
         public CommandTask<double>      Add  (Operands  param)      => SendCommand<Operands, double>("demo.Add",    param);
@@ -36,9 +36,17 @@ namespace Friflo.Json.Fliox.DemoHub
         public  bool?       addResults;
     }
     
+    public class Counts {
+        public  int         orders;
+        public  int         customers;
+        public  int         articles;
+        public  int         producers;
+        public  int         employees;
+    }
+    
     public class FakeResult {
         public  string      info;
-        public  Fake        added;
+        public  Counts      added;
         public  Order[]     orders;
         public  Customer[]  customers;
         public  Article[]   articles;

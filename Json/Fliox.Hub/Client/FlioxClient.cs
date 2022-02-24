@@ -82,6 +82,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --------------------------------------- public interface ---------------------------------------
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public bool WritePretty { set {
+            foreach (var setPair in _intern.setByType) {
+                setPair.Value.WritePretty = value;
+            }
+        } }
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public bool WriteNull { set {
+            foreach (var setPair in _intern.setByType) {
+                setPair.Value.WriteNull = value;
+            }
+        } }
+
         public void Reset() {
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;

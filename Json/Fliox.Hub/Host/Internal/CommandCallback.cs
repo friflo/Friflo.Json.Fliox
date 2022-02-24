@@ -50,7 +50,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             var     cmd     = new Command<TParam>(messageName, messageValue, messageContext);
             TResult result  = await handler(cmd).ConfigureAwait(false);
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
-                var jsonResult  = pooled.instance.WriteAsArray(result);
+                var writer = pooled.instance;
+                writer.WriteNullMembers = cmd.WriteNull;
+                var jsonResult          = writer.WriteAsArray(result);
                 return new JsonValue(jsonResult);
             }
         }

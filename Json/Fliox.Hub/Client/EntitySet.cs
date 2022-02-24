@@ -26,6 +26,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal  abstract  SyncSet     SyncSet     { get; }
         internal  abstract  SetInfo     SetInfo     { get; }
+        public    abstract  bool        WritePretty { get; set; }
+        public    abstract  bool        WriteNull   { get; set; }
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
@@ -136,9 +138,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string                      ToString()      => SetInfo.ToString();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        public   override   bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+        public   override   bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
 
         internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
