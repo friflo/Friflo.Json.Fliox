@@ -15,9 +15,9 @@
   "info": [
     "query articles with filter: o.name == 'Smartphone'",
 
-    "'filter' and 'filterTree' are the same expression",
+    "the expressions 'filter' and 'filterTree' are equal",
     " 'filter':     infix notation  - easy to read by humans",
     " 'filterTree': expression tree - suitable to read by code",
-    "'filterTree' has priority in protocol. Remove it to use 'filter'"
+    "'filterTree' has priority in protocol. Remove to use 'filter'"
   ]  
 }
