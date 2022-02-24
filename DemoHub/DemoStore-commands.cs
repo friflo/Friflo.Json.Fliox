@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
         public CommandTask<FakeResult>  Fake (Fake      param)      => SendCommand<Fake, FakeResult>("demo.Fake",   param);
 
-        /// <summary> count the latest records added to containers. </summary>
+        /// <summary> count records added to containers within the last param seconds. default 60.</summary>
         public CommandTask<Counts>      CountLatest (int? param)    => SendCommand<int?, Counts>("demo.CountLatest",   param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
