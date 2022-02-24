@@ -114,9 +114,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     [Fri.TypeMapper(typeof(EntitySetMatcher))]
     public class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
-        // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
-        // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
-        //          peers, name, container & store 
+        // Keep all utility related fields of EntitySet in SetIntern (intern) to enhance debugging overview.
+        // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
+        //          in following fields or properties while debugging:
+        //          name, _peers & SetInfo
         internal            SetIntern<TKey, T>          intern;
         
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means

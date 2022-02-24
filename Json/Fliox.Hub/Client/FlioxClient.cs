@@ -44,9 +44,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     [Fri.TypeMapper(typeof(FlioxClientMatcher))]
     public class FlioxClient : ITracerContext, IDisposable, IResetable
     {
-        // Keep all FlioxClient fields in StoreIntern to enhance debugging overview.
-        // Reason: FlioxClient is extended by application and add multiple EntitySet fields.
-        //         So internal fields are encapsulated in field intern.
+        // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
+        // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
+        //          This ensures focus on fields / properties relevant for an application which are:
+        //          StoreInfo, Tasks, ClientId & UserId
         // ReSharper disable once InconsistentNaming
         internal            ClientIntern                _intern;
         public              StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
