@@ -132,11 +132,10 @@ namespace Friflo.Json.Fliox.Schema
                 if (field.IsDerivedField)
                     continue;
                 bool required = field.required;
-                var fieldType = GetFieldType(field, context);
+                var fieldType = GetFieldType(field, context, required);
                 var indent  = Indent(maxFieldName, field.name);
                 var optStr  = required ? " ": "?";
-                var nullStr = required ? "" : " | null";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
+                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
             }
             if (type.IsSchema) {
                 EmitServiceType(type, context, sb);
@@ -151,24 +150,25 @@ namespace Friflo.Json.Fliox.Schema
             sb.AppendLine("\n    // --- commands");
             int maxFieldName    = commands.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
             foreach (var command in commands) {
-                var commandParam    = GetFieldType(command.param,  context);
-                var commandResult   = GetFieldType(command.result, context);
+                var commandParam    = GetFieldType(command.param,  context, command.param.required);
+                var commandResult   = GetFieldType(command.result, context, command.result.required);
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(param: {commandParam}) : {commandResult}";
                 sb.AppendLine($"    [\"{command.name}\"]{indent} {signature};");
             }
         }
         
-        private static string GetFieldType(FieldDef field, TypeContext context) {
+        private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
+            var nullStr = required ? "" : " | null";
             if (field.isArray) {
                 var elementTypeName = GetElementType(field, context);
-                return $"{elementTypeName}[]";
+                return $"{elementTypeName}[]{nullStr}";
             }
             if (field.isDictionary) {
                 var valueTypeName = GetElementType(field, context);
-                return $"{{ [key: string]: {valueTypeName} }}";
+                return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
             }
-            return GetTypeName(field.type, context);
+            return $"{GetTypeName(field.type, context)}{nullStr}";
         }
         
         private static string GetElementType(FieldDef field, TypeContext context) {

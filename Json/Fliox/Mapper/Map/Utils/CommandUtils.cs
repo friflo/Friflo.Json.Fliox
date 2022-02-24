@@ -97,7 +97,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (paramLen == 0) {
                 signature   = $"M:{declaringType.FullName}.{methodInfo.Name}";
             } else {
-                signature   = $"M:{declaringType.FullName}.{methodInfo.Name}({paramType.FullName})";
+                var underlyingType  = Nullable.GetUnderlyingType(paramType);  
+                var paramTypeName   = underlyingType != null ? $"System.Nullable{{{underlyingType.FullName}}}" : paramType.FullName;
+                signature   = $"M:{declaringType.FullName}.{methodInfo.Name}({paramTypeName})";
             }
             var doc         = docs.GetDocs(assembly, signature);
             return doc;
