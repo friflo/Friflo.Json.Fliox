@@ -27,7 +27,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, DateTime value) {
-            writer.WriteString(value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            var str = ToRFC_3339(value);
+            writer.WriteString(str);
         }
 
         // ReSharper disable once RedundantAssignment
@@ -41,6 +42,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             success = true;
             return slot;
         }
+        
+        public static string ToRFC_3339(in DateTime value) {
+            return value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+        }
     }
     
     internal sealed class NullableDateTimeMapper : TypeMapper<DateTime?>
@@ -52,10 +57,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, DateTime? value) {
-            if (value.HasValue)
-                writer.WriteString(value.Value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
-            else
+            if (value.HasValue) {
+                var str = DateTimeMapper.ToRFC_3339(value.Value);
+                writer.WriteString(str);
+            } else {
                 writer.AppendNull();
+            }
         }
 
         // ReSharper disable once RedundantAssignment

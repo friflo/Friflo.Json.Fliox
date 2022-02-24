@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.Utils;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -62,6 +64,8 @@ namespace Friflo.Json.Fliox.Transform.Query
                         return new Count(field);
                     }
                     break;
+                case ConstantExpression constant:
+                    return OperationFromConstant(constant, cx);
                 default:
                     throw NotSupported($"MemberExpression.Expression not supported: {member}", cx); 
             }
@@ -272,10 +276,27 @@ namespace Friflo.Json.Fliox.Transform.Query
                     throw NotSupported($"Method not supported. method: {binary}", cx);
             }
         }
-
+        
         private static Operation OperationFromConstant(ConstantExpression constant, QueryCx cx) {
-            Type type = constant.Type;
-            object value = constant.Value;
+            object  value       = constant.Value;
+            Type    type        = constant.Type;
+            
+            // is local variable used in expression? A DisplayClass is generated for them
+            if (type.IsDefined (typeof (CompilerGeneratedAttribute), false)) {
+                var fields  = type.GetFields();
+                var field   = fields[0];
+                value       = field.GetValue(value);
+                type        = field.FieldType;
+            }
+            var operation   =  OperationFromValue(value, type);    
+            
+            if (operation == null)
+                throw NotSupported($"Constant not supported: {constant}", cx);
+            return operation;
+        }
+
+        private static Operation OperationFromValue(object value, Type type)
+        {
             if (type == typeof(string))     return new StringLiteral((string)   value);
             
             // --- floating point
@@ -298,8 +319,12 @@ namespace Friflo.Json.Fliox.Transform.Query
             // --- null
             if (type == typeof(object) && value == null)
                 return new NullLiteral();
-
-            throw NotSupported($"Constant not supported: {constant}", cx);
+            
+            if (type == typeof(DateTime)) {
+                var str = DateTimeMapper.ToRFC_3339((DateTime)value);
+                return new StringLiteral(str);
+            }
+            return null;
         }
 
         public static Exception NotSupported(string message, QueryCx cx) {
