@@ -15,8 +15,11 @@ namespace Friflo.Json.Fliox.DemoHub
     /// <br/>
     /// <i>Info</i>: The custom command: <b>demo.Fake</b> can be used to create fake records in various containers.
     /// </summary>
+    /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
-    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs <br/>
+    /// DemoStore instances can be used on server and client side.
+    /// </remarks>
     public partial class DemoStore : FlioxClient {
         // --- containers
         public readonly EntitySet <Guid, Order>       orders;
