@@ -291,7 +291,7 @@ namespace Friflo.Json.Fliox.Transform.Query
             var operation   =  OperationFromValue(value, type);    
             
             if (operation == null)
-                throw NotSupported($"Constant not supported: {constant}", cx);
+                throw NotSupported($"Constant not supported: {constant}, type: {type.FullName}", cx);
             return operation;
         }
 
