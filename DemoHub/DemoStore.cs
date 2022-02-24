@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// 1. Defines a database schema by declaring its containers and commands <br/>
     /// 2. Is a database client providing type safe access to its containers and commands
     /// <br/>
-    /// <i>Info</i>: The custom command: <b>demo.Fake</b> can be used to create fake records in various containers.
+    /// <i>Info</i>: the command <b>demo.Fake</b> can be used to create fake records in various containers.
     /// </summary>
     /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
