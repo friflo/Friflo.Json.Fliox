@@ -1,13 +1,13 @@
 {
-    "msg": "sync",
-    "tasks": [
-      {
-        "task":       "closeCursors",
-        "container":  "articles"
-      }
-    ],
-    "info": [
-      "close all cursors to free database resources",
-      "specific cursors can be closed using 'cursors'"
-    ]
-  }
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":       "closeCursors",
+      "container":  "articles"
+    }
+  ],
+  "info": [
+    "close all cursors to free database resources",
+    "specific cursors can be closed using 'cursors'"
+  ]
+}

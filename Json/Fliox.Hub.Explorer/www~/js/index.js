@@ -600,14 +600,14 @@ export class App {
             this.requestModel = monaco.editor.createModel(null, "json", requestUri);
             this.requestEditor.setModel(this.requestModel);
             const defaultRequest = `{
-    "msg": "sync",
-    "tasks": [
-        {
-        "task":  "command",
-        "name":  "std.Echo",
-        "value": "Hello World"
-        }
-    ]
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":  "command",
+      "name":  "std.Echo",
+      "value": "Hello World"
+    }
+  ]
 }`;
             this.requestModel.setValue(defaultRequest);
         }

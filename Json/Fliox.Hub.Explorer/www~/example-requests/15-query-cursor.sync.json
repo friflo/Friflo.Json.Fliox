@@ -1,15 +1,15 @@
 {
-    "msg": "sync",
-    "tasks": [
-      {
-        "task":       "query",
-        "container":  "articles",
-        "maxCount":   5,
-        "cursor":     null
-      }
-    ],
-    "info": [
-      "query articles using maxCount forcing to return a cursor",
-      "assign returned cursor to cursor of the subsequent task"
-    ]
-  }
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":       "query",
+      "container":  "articles",
+      "maxCount":   5,
+      "cursor":     null
+    }
+  ],
+  "info": [
+    "query articles using maxCount forcing to return a cursor",
+    "assign returned cursor to cursor of the subsequent task"
+  ]
+}
