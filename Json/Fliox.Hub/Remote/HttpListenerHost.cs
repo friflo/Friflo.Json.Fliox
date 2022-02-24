@@ -52,8 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         catch (Exception e) {
                             var message = $"request failed - {e.GetType().Name}: {e.Message}";
                             Log(message);
-                            var     req             = ctx.Request;
-                            var     resp            = ctx.Response;
+                            var resp    = ctx.Response;
                             if (!resp.OutputStream.CanWrite)
                                 return;
                             byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
@@ -83,6 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        // ReSharper disable once UnusedMember.Local
         private static async Task HandleServerWebSocket (HttpListenerResponse resp) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
             byte[]  resultBytes = Encoding.UTF8.GetBytes(error);

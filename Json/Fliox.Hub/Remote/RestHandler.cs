@@ -19,8 +19,6 @@ using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
 
-// ReSharper disable SuggestBaseTypeForParameter
-// ReSharper disable ConvertIfStatementToSwitchStatement
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
 {
