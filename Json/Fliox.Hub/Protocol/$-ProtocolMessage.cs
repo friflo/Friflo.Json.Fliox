@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     // ----------------------------------- message -----------------------------------
     /// <summary>
     /// <see cref="ProtocolMessage"/> is the base type for all messages which are classified into request, response and event.
-    /// It can be used in communication protocols which support more than the request / response schema.
+    /// It can also be used in communication going beyond the request / response schema.
     /// <br/>
     /// A <see cref="ProtocolMessage"/> is either one of the following types:
     /// <list type="bullet">
@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// <para>
     ///     All messages like requests (their tasks), responses (their results) and events are stateless.
     ///     In other words: All messages are self-contained and doesnt (and must not) rely and previous sent messages.
+    ///     The technical aspect of having a connection e.g. HTTP or WebSocket is not relevant.
     ///     This enables embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
