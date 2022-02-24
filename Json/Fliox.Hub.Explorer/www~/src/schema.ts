@@ -142,17 +142,25 @@ export class Schema
                 continue;
             // if (propertyName == "dateTimeNull") debugger;
             const property  = (node as any)[propertyName] as FieldType;
-            const oneOf     = property.oneOf;
-            if (oneOf) {
-                for (const oneOfType of oneOf) {
-                    if (oneOfType.type == "null")
-                        continue;
-                    this.resolveNodeRefs(jsonSchemas, schema, oneOfType as JsonSchema); // todo fix cast
-                }
-                continue;                
-            }
-            this.resolveNodeRefs(jsonSchemas, schema, property as JsonSchema); // todo fix cast            
+            const fieldType = Schema.getFieldType(property);
+            this.resolveNodeRefs(jsonSchemas, schema, fieldType.type as JsonSchema); // todo fix cast            
         }
+    }
+
+    public static getFieldType(fieldType: FieldType) : { type: FieldType, isNullable: boolean } {
+        const oneOf     = fieldType.oneOf;
+        if (!oneOf)
+            return { type: fieldType, isNullable: false };
+        let isNullable              = false;
+        let oneOfType: FieldType    = null;
+        for (const item of oneOf) {
+            if (item.type == "null") {
+                isNullable = true;
+                continue;
+            }
+            oneOfType = item;
+        }
+        return { type: oneOfType, isNullable };
     }
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation

@@ -96,17 +96,24 @@ export class Schema {
                 continue;
             // if (propertyName == "dateTimeNull") debugger;
             const property = node[propertyName];
-            const oneOf = property.oneOf;
-            if (oneOf) {
-                for (const oneOfType of oneOf) {
-                    if (oneOfType.type == "null")
-                        continue;
-                    this.resolveNodeRefs(jsonSchemas, schema, oneOfType); // todo fix cast
-                }
+            const fieldType = Schema.getFieldType(property);
+            this.resolveNodeRefs(jsonSchemas, schema, fieldType.type); // todo fix cast            
+        }
+    }
+    static getFieldType(fieldType) {
+        const oneOf = fieldType.oneOf;
+        if (!oneOf)
+            return { type: fieldType, isNullable: false };
+        let isNullable = false;
+        let oneOfType = null;
+        for (const item of oneOf) {
+            if (item.type == "null") {
+                isNullable = true;
                 continue;
             }
-            this.resolveNodeRefs(jsonSchemas, schema, property); // todo fix cast            
+            oneOfType = item;
         }
+        return { type: oneOfType, isNullable };
     }
     // add a "fileMatch" property to all container entity type schemas used for editor validation
     static addFileMatcher(database, dbSchema, schemaMap) {

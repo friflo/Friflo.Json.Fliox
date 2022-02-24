@@ -487,9 +487,12 @@ export class App {
         if (type.type) {
             return type.type;
         }
-        const def = type._resolvedDef;
-        if (def) {
-            return App.getType(database, def);
+        const fieldType = Schema.getFieldType(type);
+        const def       = fieldType.type._resolvedDef;
+        if (def) {            
+            const typeStr = App.getType(database, def);
+            const nullStr = fieldType.isNullable ? " | null" : "";
+            return `${typeStr}${nullStr}`;
         }
         let result = JSON.stringify(type);
         return result = result == "{}" ? "any" : result;
