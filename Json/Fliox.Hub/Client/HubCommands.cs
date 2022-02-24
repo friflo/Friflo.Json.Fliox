@@ -49,8 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     // ---------------------------------- standard commands ----------------------------------
     /// <summary>
-    /// Contains commands addressed to the database. Its commands are prefixed with
-    /// <b>std.*</b>
+    /// Contains standard database commands. Its commands are prefixed with <b>std.*</b>
     /// </summary>
     public class StdCommands : HubCommands
     {
