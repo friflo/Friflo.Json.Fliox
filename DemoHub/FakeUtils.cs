@@ -15,20 +15,19 @@ namespace Friflo.Json.Fliox.DemoHub
     /// </summary>
     internal class FakeUtils
     {
-        private int fakeCounter = 1;
+        private long employeeCounter = 10;
+        private long producerCounter = 10;
+        private long articleCounter  = 10;
+        private long customerCounter = 10;
+        private long orderCounter    = 10;
 
-        
         internal FakeUtils() {
             Randomizer.Seed = new Random(1337);
         }
         
         internal FakeResult CreateFakes(Fake fake) {
-            int employeeCounter = 1;
-            int producerCounter = 1;
-            int articleCounter  = 1;
-            int customerCounter = 1;
-            int orderCounter    = 1;
-            fakeCounter++;
+
+            int fakeCounter = 0;
         
             var result = new FakeResult();
             var orders      = fake.orders       ?? 0; 
@@ -67,7 +66,7 @@ namespace Friflo.Json.Fliox.DemoHub
                     .RuleFor(p => p.employees,  f => {
                         if (employees == 0)
                             return null;
-                        return new List<Ref<Guid, Employee>> { f.PickRandom(result.employees) };
+                        return new List<Ref<long, Employee>> { f.PickRandom(result.employees) };
                     })
                     .RuleFor(e => e.created,    now);
                 
@@ -140,17 +139,8 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
 
-        private static bool UseRealGuids = false;
-
-        private static Guid NewId(int fakeCounter, long localCounter, short type) {
-            if (UseRealGuids)
-                return Guid.NewGuid();
-                
-            byte[] bytes = BitConverter.GetBytes(localCounter);
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(bytes);
-            short b = (short)(type << 12);
-            return new Guid(fakeCounter, b, 0, bytes);
+        private static long NewId(int fakeCounter, long localCounter, short type) {
+            return localCounter * 10 + type;
         }
     }
 }
