@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs <br/>
-    /// DemoStore instances can be used on server and client side.
+    /// <see cref="DemoStore"/> instances can be used on server and client side.
     /// </remarks>
     public partial class DemoStore : FlioxClient {
         // --- containers
