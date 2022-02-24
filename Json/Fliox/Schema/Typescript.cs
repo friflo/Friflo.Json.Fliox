@@ -151,8 +151,8 @@ namespace Friflo.Json.Fliox.Schema
             sb.AppendLine("\n    // --- commands");
             int maxFieldName    = commands.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
             foreach (var command in commands) {
-                var commandParam    = GetTypeName(command.param,  context);
-                var commandResult   = GetTypeName(command.result, context);
+                var commandParam    = GetFieldType(command.param,  context);
+                var commandResult   = GetFieldType(command.result, context);
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(param: {commandParam}) : {commandResult}";
                 sb.AppendLine($"    [\"{command.name}\"]{indent} {signature};");

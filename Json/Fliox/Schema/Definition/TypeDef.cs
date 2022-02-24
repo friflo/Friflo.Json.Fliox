@@ -158,14 +158,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// when a command is executed it returns an object of the given <see cref="result"/> type.
     /// </summary>
     public sealed class CommandDef {
-        public   readonly   string          name;
-        public   readonly   TypeDef         param;
-        public   readonly   TypeDef         result;
-        public   readonly   string          docs;
+        public   readonly   string      name;
+        public   readonly   FieldDef    param;
+        public   readonly   FieldDef    result;
+        public   readonly   string      docs;
 
-        public   override   string          ToString() => name;
+        public   override   string      ToString() => name;
         
-        public CommandDef(string name, TypeDef param, TypeDef result, string docs) {
+        public CommandDef(string name, FieldDef param, FieldDef result, string docs) {
             this.name       = name;
             this.param      = param;
             this.result     = result;

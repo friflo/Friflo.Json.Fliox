@@ -49,22 +49,26 @@ namespace Friflo.Json.Fliox.DemoHub
         [Req]   public  Guid                id { get; set; }
         [Req]   public  string              name;
                 public  Ref<Guid, Producer> producer;
+                public  DateTime            created;
     }
 
     public class Customer {
         [Req]   public  Guid                id { get; set; }
         [Req]   public  string              name;
+                public  DateTime            created;
     }
     
     public class Producer {
         [Req]   public  Guid                        id { get; set; }
         [Req]   public  string                      name;
                 public  List<Ref<Guid, Employee>>   employees;
+                public  DateTime                    created;
     }
     
     public class Employee {
         [Req]   public  Guid                id { get; set; }
         [Req]   public  string              firstName;
                 public  string              lastName;
+                public  DateTime            created;
     }
 }

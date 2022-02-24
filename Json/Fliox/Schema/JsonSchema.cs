@@ -188,8 +188,8 @@ namespace Friflo.Json.Fliox.Schema
             sb.AppendLine(",");
             sb.AppendLine("            \"commands\": {");
             foreach (var command in commands) {
-                var commandParam    = GetTypeName(command.param,  context, true);
-                var commandResult   = GetTypeName(command.result, context, true);
+                var commandParam    = GetFieldType(command.param,  context, true);
+                var commandResult   = GetFieldType(command.result, context, true);
                 var description     = GetDescription(",\n                    ", command.docs, "");
                 var indent          = Indent(maxFieldName, command.name);
                 Delimiter(sb, Next, ref firstField);

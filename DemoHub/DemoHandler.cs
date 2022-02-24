@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable UnusedMember.Local
 namespace Friflo.Json.Fliox.DemoHub
@@ -64,6 +66,32 @@ namespace Friflo.Json.Fliox.DemoHub
                 result.producers    = null;
                 result.employees    = null;
             }
+            return result;
+        }
+
+        private static async Task<Fake> CountLatest(Command<int?> command) {
+            var demoStore       = new DemoStore(command.Hub);
+            demoStore.UserInfo  = command.UserInfo;
+            
+            var seconds = command.Param ?? 5;
+            var nanos   = new TimeSpan(seconds * 10_000_000);
+            var from    = DateTime.Now.Subtract(nanos);
+
+            var orderCount      = demoStore.orders.     Aggregate(AggregateType.count, o => o.created >= from);
+            var customerCount   = demoStore.customers.  Aggregate(AggregateType.count, o => o.created >= from);
+            var articleCount    = demoStore.articles.   Aggregate(AggregateType.count, o => o.created >= from);
+            var producerCount   = demoStore.producers.  Aggregate(AggregateType.count, o => o.created >= from);
+            var employeeCount   = demoStore.employees.  Aggregate(AggregateType.count, o => o.created >= from);
+            
+            await demoStore.SyncTasks();
+            
+            var result = new Fake {
+                orders      = (int?)orderCount.Result,
+                customers   = (int?)customerCount.Result,
+                articles    = (int?)articleCount.Result,
+                producers   = (int?)producerCount.Result,
+                employees   = (int?)employeeCount.Result,
+            };
             return result;
         }
     }

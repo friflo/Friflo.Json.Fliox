@@ -199,10 +199,15 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private static void SetCommand (JsonTypeDef typeDef, string commandName, CommandType field, in JsonTypeContext context) {
             field.name      = commandName;
-            var valueType   = FindFieldType(null, field.param,  context);
-            var resultType  = FindFieldType(null, field.result, context);
+            var valueType   = GetCommandArg("param",   field.param,  context);
+            var resultType  = GetCommandArg("result",  field.result, context);
             var commandDef  = new CommandDef(commandName, valueType, resultType, field.description);
             typeDef.commands.Add(commandDef);
+        }
+        
+        private static FieldDef GetCommandArg(string name, FieldType fieldType, in JsonTypeContext context) {
+            var typeDef = FindFieldType(null, fieldType,  context);
+            return new FieldDef(name, true, false, false, typeDef, false, false, false, null, null, null);
         }
         
         private static TypeDef FindTypeFromJson (FieldType field, JsonValue jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {

@@ -199,8 +199,8 @@ $@"    <br><chapter>commands</chapter>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in commands) {
-                var commandParam    = GetTypeName(command.param,  context);
-                var commandResult   = GetTypeName(command.result, context);
+                var commandParam    = GetFieldType(command.param,  context);
+                var commandResult   = GetFieldType(command.result, context);
                 var docs            = GetDescription("\n        <tr><td colspan='2'>", command.docs, "</td></tr>");
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";

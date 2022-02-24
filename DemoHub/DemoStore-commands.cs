@@ -9,13 +9,16 @@ namespace Friflo.Json.Fliox.DemoHub
     public partial class DemoStore {
         // --- commands
         /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
-        public CommandTask<FakeResult>  Fake (Fake      param)  => SendCommand<Fake, FakeResult>("demo.Fake", param);
+        public CommandTask<FakeResult>  Fake (Fake      param)      => SendCommand<Fake, FakeResult>("demo.Fake",   param);
+
+        /// <summary> count the latest records added to containers. </summary>
+        public CommandTask<Fake>        CountLatest  (int? param)   => SendCommand<int?, Fake>("demo.CountLatest",   param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
-        public CommandTask<double>      Add  (Operands  param)  => SendCommand<Operands, double>("demo.Add",  param);
+        public CommandTask<double>      Add  (Operands  param)      => SendCommand<Operands, double>("demo.Add",    param);
         
         /// <summary> simple command multiplying two numbers - no database access. </summary>
-        public CommandTask<double>      Mul  (Operands  param)  => SendCommand<Operands, double>("demo.Mul",  param);
+        public CommandTask<double>      Mul  (Operands  param)      => SendCommand<Operands, double>("demo.Mul",    param);
     }
     
     // ------------------------------ command models ------------------------------
