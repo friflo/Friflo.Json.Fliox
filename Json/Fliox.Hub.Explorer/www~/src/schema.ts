@@ -185,47 +185,48 @@ export class Schema
             const command   = commands[commandName];
             // assign file matcher for command param
             const paramType = Schema.getResolvedType(command.param, schemaPath);
-            let url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
-            if (paramType.$ref) {
-                const uri       = "http://" + database + paramType.$ref.substring(1);
-                const schema    = schemaMap[uri];
-                schema.fileMatch.push(url); // requires a lower case string
-            } else {
-                // uri is never referenced - create an arbitrary unique uri
-                const uri = "http://" + database + "/command/param" + commandName;
-                const schema: MonacoSchema = {
-                    uri:        uri,
-                    schema:     paramType,
-                    fileMatch:  [url]
-                };
-                schemaMap[uri] = schema;
-            }
+            Schema.addCommandArgument("command-param", database, commandName, paramType, schemaMap);
+
             // assign file matcher for command result
             const resultType   = Schema.getResolvedType(command.result, schemaPath);
-            url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
-            if (resultType.$ref) {
-                const uri       = "http://" + database + resultType.$ref.substring(1);
-                const schema    = schemaMap[uri];
-                schema.fileMatch.push(url); // requires a lower case string
-            } else {
-                // uri is never referenced - create an arbitrary unique uri
-                const uri    = "http://" + database + "/command/result" + commandName;
-                const schema = {
-                    uri:        uri,
-                    schema:     resultType,
-                    fileMatch: [url]
-                };
-                schemaMap[uri] = schema;
-            }
+            Schema.addCommandArgument("command-result", database, commandName, resultType, schemaMap);
         }
     }
 
-    private static getResolvedType (type: FieldType, schemaPath: string) {
+    // a command argument is either the command param or command result
+    private static addCommandArgument (
+        argumentName:   string,
+        database:       string,
+        command:        string,
+        type:           FieldType,
+        schemaMap:      { [key: string]: MonacoSchema }
+    ) : void
+    {
+        const url = `${argumentName}://${database}.${command.toLocaleLowerCase()}.json`;
+        if (type.$ref) {
+            const uri       = "http://" + database + type.$ref.substring(1);
+            const schema    = schemaMap[uri];
+            schema.fileMatch.push(url); // requires a lower case string
+            return;
+        }
+        // create a new monaco schema with an uri that is never referenced
+        // - created uri is unique and descriptive
+        // - created uri allows resolving relative "$ref" types
+        const uri = "http://" + database + "/" + command + "#/" + argumentName;
+        const schema: MonacoSchema = {
+            uri:        uri,
+            schema:     type,
+            fileMatch:  [url]
+        };
+        schemaMap[uri] = schema;
+    }
+
+    private static getResolvedType (type: FieldType, schemaPath: string) : FieldType {
         const $ref = type.$ref;
         if (!$ref)
             return type;
         if ($ref[0] != "#")
             return type;
-        return { $ref: "./" + schemaPath + $ref };
+        return { $ref: "./" + schemaPath + $ref, _resolvedDef: null };
     }
 }
