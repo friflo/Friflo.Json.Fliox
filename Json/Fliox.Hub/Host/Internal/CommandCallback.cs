@@ -15,11 +15,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     internal sealed class CommandCallback<TValue, TResult> : CommandCallback
     {
         private  readonly   string                              name;
-        private  readonly   CommandHandler<TValue, TResult>     handler;
+        private  readonly   CmdHandler<TValue, TResult>         handler;
 
         public   override   string                              ToString() => name;
 
-        internal CommandCallback (string name, CommandHandler<TValue, TResult> handler) {
+        internal CommandCallback (string name, CmdHandler<TValue, TResult> handler) {
             this.name       = name;
             this.handler    = handler;
         }
@@ -36,12 +36,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     
     internal sealed class CommandAsyncCallback<TParam, TResult> : CommandCallback
     {
-        private  readonly   string                                  name;
-        private  readonly   CommandHandler<TParam, Task<TResult>>   handler;
+        private  readonly   string                              name;
+        private  readonly   CmdHandler<TParam, Task<TResult>>   handler;
 
-        public   override   string                                  ToString() => name;
+        public   override   string                              ToString() => name;
 
-        internal CommandAsyncCallback (string name, CommandHandler<TParam, Task<TResult>> handler) {
+        internal CommandAsyncCallback (string name, CmdHandler<TParam, Task<TResult>> handler) {
             this.name       = name;
             this.handler    = handler;
         }

@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     /// <summary>
     /// <see cref="SharedCache"/> is a cache for shared instances directly or indirectly used by
-    /// <see cref="CommandHandler{TParam,TResult}"/> or <see cref="SyncRequestTask"/> methods. <br/>
+    /// <see cref="CmdHandler{TParam,TResult}"/> or <see cref="SyncRequestTask"/> methods. <br/>
     /// Cached instances created and returned by <see cref="SharedCache"/> must me immutable to enable
     /// concurrent and / or parallel usage.
     /// </summary>

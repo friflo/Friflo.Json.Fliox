@@ -20,7 +20,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    internal delegate TResult CommandHandler<TParam, out TResult>(Command<TParam> command);
+    internal delegate TResult CmdHandler<TParam, out TResult>(Command<TParam> command);
 
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -60,17 +60,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         //  ReSharper disable once UnusedMember.Local
-        /// keep implementation to show how to add command handler using new CommandHandler()
+        /// keep implementation to show how to add command handler using new <see cref="CmdHandler{TParam,TResult}"/>
         private void AddUsingCommandHandler() {
             // --- database
-            AddCommandHandler       (Std.Echo,         new CommandHandler<JsonValue,JsonValue>          (Echo));
-            AddCommandHandlerAsync  (Std.Containers,   new CommandHandler<Empty,    Task<DbContainers>> (Containers));
-            AddCommandHandler       (Std.Commands,     new CommandHandler<Empty,    DbCommands>         (Commands));
-            AddCommandHandler       (Std.Schema,       new CommandHandler<Empty,    DbSchema>           (Schema));
-            AddCommandHandlerAsync  (Std.Stats,        new CommandHandler<string,   Task<DbStats>>      (Stats));
+            AddCommandHandler       (Std.Echo,         new CmdHandler<JsonValue,JsonValue>          (Echo));
+            AddCommandHandlerAsync  (Std.Containers,   new CmdHandler<Empty,    Task<DbContainers>> (Containers));
+            AddCommandHandler       (Std.Commands,     new CmdHandler<Empty,    DbCommands>         (Commands));
+            AddCommandHandler       (Std.Schema,       new CmdHandler<Empty,    DbSchema>           (Schema));
+            AddCommandHandlerAsync  (Std.Stats,        new CmdHandler<string,   Task<DbStats>>      (Stats));
             // --- host
-            AddCommandHandler       (Std.HostDetails,  new CommandHandler<Empty,    HostDetails>        (Details));
-            AddCommandHandlerAsync  (Std.HostCluster,  new CommandHandler<Empty,    Task<HostCluster>>  (Cluster));
+            AddCommandHandler       (Std.HostDetails,  new CmdHandler<Empty,    HostDetails>        (Details));
+            AddCommandHandlerAsync  (Std.HostCluster,  new CmdHandler<Empty,    Task<HostCluster>>  (Cluster));
         }
         
         /// <summary>
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// command handler methods can be static or instance methods.
         /// </summary>
         protected void AddCommand<TParam, TResult> (string name, Func<Command<TParam>, TResult> method) {
-            AddCommandHandler (name, new CommandHandler<TParam, TResult> (method));
+            AddCommandHandler (name, new CmdHandler<TParam, TResult> (method));
         }
         
         /// <summary>
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// command handler methods can be static or instance methods.
         /// </summary>
         protected void AddCommandAsync<TParam, TResult> (string name, Func<Command<TParam>, Task<TResult>> method) {
-            AddCommandHandlerAsync (name, new CommandHandler<TParam, Task<TResult>> (method));
+            AddCommandHandlerAsync (name, new CmdHandler<TParam, Task<TResult>> (method));
         }
        
         /// <summary>
@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 // if (handler.name == "DbContainers") { int i = 1; }
                 genericArgs[0]      = handler.valueType;
                 genericArgs[1]      = handler.resultType;
-                var genericTypeArgs = typeof(CommandHandler<,>).MakeGenericType(genericArgs);
+                var genericTypeArgs = typeof(CmdHandler<,>).MakeGenericType(genericArgs);
                 var firstArgument   = handler.method.IsStatic ? null : handlerClass;
                 var handlerDelegate = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
@@ -214,12 +214,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return commands.TryGetValue(name, out command);
         }
         
-        private void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
+        private void AddCommandHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        private void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+        private void AddCommandHandlerAsync<TValue, TResult>(string name, CmdHandler<TValue, Task<TResult>> handler) {
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
