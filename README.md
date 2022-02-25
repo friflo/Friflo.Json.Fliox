@@ -321,4 +321,5 @@ This project is licensed under AGPLv3.
 
 Project not publish nor released yet. 2021-04-18
 
+friflo JSON Fliox  
 Copyright © 2022 Ullrich Praetz
