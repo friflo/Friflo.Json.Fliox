@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -23,19 +24,6 @@ namespace Friflo.Json.Fliox.DemoHub
         
         internal DemoHandler() {
             AddCommandHandlers(this, "demo.");
-        }
-        
-        /// synchronous command handler - preferred if possible
-        private static double Add(Command<Operands> command) {
-            var param = command.Param;
-            return param.left + param.right;
-        }
-        
-        /// asynchronous command handler
-        private static Task<double> Mul(Command<Operands> command) {
-            var param = command.Param;
-            var result = param.left * param.right;
-            return Task.FromResult(result);
         }
         
         /// <summary>
@@ -92,6 +80,47 @@ namespace Friflo.Json.Fliox.DemoHub
                 employees   = (int?)employeeCount.  Result ?? 0,
             };
             return result;
+        }
+        
+        private static async Task<FakeResult> LatestRecords(Command<int?> command) {
+            var demoStore       = new DemoStore(command.Hub);
+            demoStore.UserInfo  = command.UserInfo;
+            
+            var seconds = command.Param ?? 60;
+            var from    = DateTime.Now.AddSeconds(-seconds);
+
+            var orderCount      = demoStore.orders.     Query(o => o.created >= from);
+            var customerCount   = demoStore.customers.  Query(o => o.created >= from);
+            var articleCount    = demoStore.articles.   Query(o => o.created >= from);
+            var producerCount   = demoStore.producers.  Query(o => o.created >= from);
+            var employeeCount   = demoStore.employees.  Query(o => o.created >= from);
+            
+            await demoStore.SyncTasks();
+            
+            var counts = new Counts {
+                orders      = orderCount.   Results.Count,
+                customers   = customerCount.Results.Count,
+                articles    = articleCount. Results.Count,
+                producers   = producerCount.Results.Count,
+                employees   = employeeCount.Results.Count,
+            };
+            
+            var result = new FakeResult {
+                added       = counts,
+                orders      = orderCount.   Results.Values.ToArray(),
+                customers   = customerCount.Results.Values.ToArray(),
+                articles    = articleCount. Results.Values.ToArray(),
+                producers   = producerCount.Results.Values.ToArray(),
+                employees   = employeeCount.Results.Values.ToArray(),
+            };
+            return result;
+        }
+        
+        /// synchronous command handler
+        /// use synchronous handler only when no async methods need to be awaited  
+        private static double Add(Command<Operands> command) {
+            var param = command.Param;
+            return param.left + param.right;
         }
     }
 }
