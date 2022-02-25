@@ -1,8 +1,9 @@
 import { el, createEl, Resource, Entity, parseAst }     from "./types.js";
 import { App, app }                                     from "./index.js";
+import { Schema }                                       from "./schema.js";
 
-import { CommandType, JsonType }        from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbContainers, DbCommands }     from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { CommandType, JsonType, FieldType } from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbContainers, DbCommands }         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 type AddRelation = (value: jsonToAst.ValueNode, container: string) => void;
 
@@ -625,12 +626,13 @@ export class EntityEditor
         app.layoutEditors();
     }
 
-    private showCommand(database: string, command: string) {
+    private showCommand(database: string, command: string)
+    {
         this.setExplorerEditor("command");
 
         const schema        = app.databaseSchemas[database]._rootSchema;
         const signature     = schema ? schema.commands[command] : null;
-        const def           = signature ? Object.keys(signature.param).length  == 0 ? "null" : "{}" : "null";
+        const defaultParam  = EntityEditor.getDefaultValue(signature?.param);
 
         this.entityIdentity = {
             database:   database,
@@ -638,7 +640,7 @@ export class EntityEditor
             entityIds:  null,
             command:    command,
         };
-        this.setCommandParam (database, command, def); // sets command param => must be called before getCommandUrl()
+        this.setCommandParam (database, command, defaultParam); // sets command param => must be called before getCommandUrl()
         this.setCommandResult(database, command);
 
         commandSignature.innerHTML  = this.getCommandDocsEl(database, command, signature);
@@ -650,6 +652,25 @@ export class EntityEditor
         };
         const docs                  = signature.description;
         commandDocs.innerText       = docs ? docs : "";
+    }
+
+    private static getDefaultValue(fieldType: FieldType) : string {
+        if (!fieldType)
+            return 'null';
+        const type  = Schema.getFieldType(fieldType);
+        if (type.isNullable)
+            return 'null';
+        fieldType   = type.type;
+        const resolvedDef = fieldType._resolvedDef;
+        if (!resolvedDef)
+            return 'null';
+        switch (resolvedDef.type) {
+            case "object":  return '{}';
+            case "array":   return '[]';
+            case "number":  return '0';
+            case "string":  return '""';
+            default:        return 'null';
+        }
     }
 
     private getCommandUrl(database: string, command: string) {

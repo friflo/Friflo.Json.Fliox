@@ -1,5 +1,6 @@
 import { el, createEl, parseAst } from "./types.js";
 import { App, app } from "./index.js";
+import { Schema } from "./schema.js";
 const entityExplorer = el("entityExplorer");
 const writeResult = el("writeResult");
 const readEntitiesDB = el("readEntitiesDB");
@@ -550,14 +551,14 @@ export class EntityEditor {
         this.setExplorerEditor("command");
         const schema = app.databaseSchemas[database]._rootSchema;
         const signature = schema ? schema.commands[command] : null;
-        const def = signature ? Object.keys(signature.param).length == 0 ? "null" : "{}" : "null";
+        const defaultParam = EntityEditor.getDefaultValue(signature === null || signature === void 0 ? void 0 : signature.param);
         this.entityIdentity = {
             database: database,
             container: null,
             entityIds: null,
             command: command,
         };
-        this.setCommandParam(database, command, def); // sets command param => must be called before getCommandUrl()
+        this.setCommandParam(database, command, defaultParam); // sets command param => must be called before getCommandUrl()
         this.setCommandResult(database, command);
         commandSignature.innerHTML = this.getCommandDocsEl(database, command, signature);
         //  commandAnchor.innerHTML     = `GET <span style="opacity:0.5">${database}?command=</span>${command}`;
@@ -568,6 +569,24 @@ export class EntityEditor {
         };
         const docs = signature.description;
         commandDocs.innerText = docs ? docs : "";
+    }
+    static getDefaultValue(fieldType) {
+        if (!fieldType)
+            return 'null';
+        const type = Schema.getFieldType(fieldType);
+        if (type.isNullable)
+            return 'null';
+        fieldType = type.type;
+        const resolvedDef = fieldType._resolvedDef;
+        if (!resolvedDef)
+            return 'null';
+        switch (resolvedDef.type) {
+            case "object": return '{}';
+            case "array": return '[]';
+            case "number": return '0';
+            case "string": return '""';
+            default: return 'null';
+        }
     }
     getCommandUrl(database, command) {
         let param = this.commandValueEditor.getValue();
