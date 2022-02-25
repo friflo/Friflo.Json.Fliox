@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <b> Caution </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<FakeResult> Fake(Command<Fake> command) {
+        private static async Task<Records> Fake(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
         
-        private static async Task<FakeResult> LatestRecords(Command<int?> command) {
+        private static async Task<Records> LatestRecords(Command<int?> command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.DemoHub
                 employees   = employeeCount.Results.Count,
             };
             
-            var result = new FakeResult {
+            var result = new Records {
                 added       = counts,
                 orders      = orderCount.   Results.Values.ToArray(),
                 customers   = customerCount.Results.Values.ToArray(),

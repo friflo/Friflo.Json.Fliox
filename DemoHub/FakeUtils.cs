@@ -25,11 +25,11 @@ namespace Friflo.Json.Fliox.DemoHub
             Randomizer.Seed = new Random(1337);
         }
         
-        internal FakeResult CreateFakes(Fake fake) {
+        internal Records CreateFakes(Fake fake) {
 
             int fakeCounter = 0;
         
-            var result = new FakeResult();
+            var result      = new Records();
             var orders      = fake.orders       ?? 0; 
             var articles    = fake.articles     ?? 0;
             var producers   = fake.producers    ?? 0;

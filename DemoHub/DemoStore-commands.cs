@@ -9,13 +9,13 @@ namespace Friflo.Json.Fliox.DemoHub
     public partial class DemoStore {
         // --- commands
         /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>
-        public CommandTask<FakeResult>  Fake (Fake      param)      => SendCommand<Fake, FakeResult>("demo.Fake",   param);
+        public CommandTask<Records>     Fake (Fake      param)      => SendCommand<Fake, Records>   ("demo.Fake",   param);
 
         /// <summary> count records added to containers within the last param seconds. default 60</summary>
         public CommandTask<Counts>      CountLatest (int? param)    => SendCommand<int?, Counts>    ("demo.CountLatest", param);
         
         /// <summary> return records added to containers within the last param seconds. default 60</summary>
-        public CommandTask<FakeResult>  LatestRecords(int? param)   => SendCommand<int?, FakeResult>("demo.LatestRecords", param);
+        public CommandTask<Records>     LatestRecords(int? param)   => SendCommand<int?, Records>   ("demo.LatestRecords", param);
 
         /// <summary> simple command adding two numbers - no database access. </summary>
         public CommandTask<double>      Add  (Operands  param)      => SendCommand<Operands, double>("demo.Add",    param);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public  int         employees;
     }
     
-    public class FakeResult {
+    public class Records {
         public  string      info;
         public  Counts      added;
         public  Order[]     orders;
