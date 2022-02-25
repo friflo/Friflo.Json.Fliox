@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.DemoHub
             };
             
             var result = new Records {
-                added       = counts,
+                counts      = counts,
                 orders      = orderCount.   Results.Values.ToArray(),
                 customers   = customerCount.Results.Values.ToArray(),
                 articles    = articleCount. Results.Values.ToArray(),

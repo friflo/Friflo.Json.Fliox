@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.DemoHub
                 }
             }
             
-            var added = new Counts {
+            var counts = new Counts {
                 orders      = result.orders?    .Length ?? 0,
                 customers   = result.customers? .Length ?? 0,
                 articles    = result.articles?  .Length ?? 0,
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.DemoHub
             };
             var nowStr      = now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             result.info     = $"use container filter: o.created == '{nowStr}'";
-            result.added    = added;
+            result.counts   = counts;
             return result;
         }
 

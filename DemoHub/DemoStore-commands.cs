@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DemoHub
     
     public class Records {
         public  string      info;
-        public  Counts      added;
+        public  Counts      counts;
         public  Order[]     orders;
         public  Customer[]  customers;
         public  Article[]   articles;
