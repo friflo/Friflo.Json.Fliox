@@ -9,9 +9,6 @@
                 "$ref":        { "type": ["string", "null"] },
                 "definitions": { "additionalProperties": { "$ref": "#/definitions/JsonType" }, "type": "object" }
             },
-            "required": [
-                "definitions"
-            ],
             "additionalProperties": false
         },
         "JsonType": {

@@ -43,11 +43,11 @@ export class Schema {
                     const schemaId = "." + path;
                     const uri = "http://" + database + path;
                     const containerName = containerRefs[schemaId];
-                    let schemaRef = { $ref: schemaId };
+                    let schemaRef = { $ref: schemaId, _resolvedDef: null };
                     if (containerName) {
                         dbSchema._containerSchemas[containerName] = definition;
                         // entityEditor type can either be its entity type or an array using this type
-                        schemaRef = { "oneOf": [schemaRef, { type: "array", items: schemaRef }] };
+                        schemaRef = { "oneOf": [schemaRef, { type: "array", items: schemaRef }], _resolvedDef: null };
                     }
                     // add reference for definitionName pointing to definition in current schemaPath
                     const definitionEntry = {

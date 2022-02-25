@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Fri.Property(Name =                           "$ref")]
                 public  string                          rootRef;
 
-        [Req]   public  Dictionary<string, JsonType>    definitions;
+                public  Dictionary<string, JsonType>    definitions;
 
         /// <summary>file name is <see cref="name"/> + ".json".
         /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>

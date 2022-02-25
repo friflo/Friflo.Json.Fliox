@@ -3,7 +3,7 @@ import { int64 } from "./Standard";
 
 export class JsonSchema {
     $ref?        : string | null;
-    definitions  : { [key: string]: JsonType };
+    definitions? : { [key: string]: JsonType } | null;
 }
 
 export class JsonType {
