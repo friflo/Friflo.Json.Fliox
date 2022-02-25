@@ -40,26 +40,26 @@ namespace Friflo.Json.Fliox.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Boolean,       "bool" );
-            AddType (map, standard.String,        "string" );
+            AddType (map, standard.Boolean,     "bool" );
+            AddType (map, standard.String,      "string" );
 
-            AddType (map, standard.Uint8,         "byte" );
-            AddType (map, standard.Int16,         "short" );
-            AddType (map, standard.Int32,         "int" );
-            AddType (map, standard.Int64,         "long" );
+            AddType (map, standard.Uint8,       "byte" );
+            AddType (map, standard.Int16,       "short" );
+            AddType (map, standard.Int32,       "int" );
+            AddType (map, standard.Int64,       "long" );
                
-            AddType (map, standard.Double,        "double" );
-            AddType (map, standard.Float,         "float" );
-            AddType (map, standard.JsonKey,       "string" );
+            AddType (map, standard.Double,      "double" );
+            AddType (map, standard.Float,       "float" );
+            AddType (map, standard.JsonKey,     "string" );
             return map;
         }
         
         private static Dictionary<TypeDef, string> GetCustomTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.BigInteger,      "System.Numerics" );
-            AddType (map, standard.DateTime,        "System" );
-            AddType (map, standard.Guid,            "System" );
-            AddType (map, standard.JsonValue,       "Friflo.Json.Fliox.Mapper" );
+            AddType (map, standard.BigInteger,  "System.Numerics" );
+            AddType (map, standard.DateTime,    "System" );
+            AddType (map, standard.Guid,        "System" );
+            AddType (map, standard.JsonValue,   "Friflo.Json.Fliox.Mapper" );
             return map;
         }
         

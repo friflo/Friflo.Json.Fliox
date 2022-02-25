@@ -40,26 +40,26 @@ namespace Friflo.Json.Fliox.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Boolean,       "Boolean" );
-            AddType (map, standard.String,        "String" );
+            AddType (map, standard.Boolean,     "Boolean" );
+            AddType (map, standard.String,      "String" );
 
-            AddType (map, standard.Uint8,         "Byte" );
-            AddType (map, standard.Int16,         "Short" );
-            AddType (map, standard.Int32,         "Int" );
-            AddType (map, standard.Int64,         "Long" );
+            AddType (map, standard.Uint8,       "Byte" );
+            AddType (map, standard.Int16,       "Short" );
+            AddType (map, standard.Int32,       "Int" );
+            AddType (map, standard.Int64,       "Long" );
                
-            AddType (map, standard.Double,        "Double" );
-            AddType (map, standard.Float,         "Float" );
-            AddType (map, standard.JsonKey,       "String" );
+            AddType (map, standard.Double,      "Double" );
+            AddType (map, standard.Float,       "Float" );
+            AddType (map, standard.JsonKey,     "String" );
             return map;
         }
         
         private static Dictionary<TypeDef, string> GetCustomTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.BigInteger,      "java.math" );
-            AddType (map, standard.DateTime,        "kotlinx.datetime" );
-            AddType (map, standard.Guid,            "java.util" );
-            AddType (map, standard.JsonValue,       "kotlinx.serialization.json" );
+            AddType (map, standard.BigInteger,  "java.math" );
+            AddType (map, standard.DateTime,    "kotlinx.datetime" );
+            AddType (map, standard.Guid,        "java.util" );
+            AddType (map, standard.JsonValue,   "kotlinx.serialization.json" );
             return map;
         }
 
