@@ -466,7 +466,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var filterTree  = FilterToJson(aggregateFilter);
                 var req = new AggregateEntities {
                     container   = set.name,
-                    type        = aggregate.type,
+                    type        = aggregate.Type,
                 //  keyName     = SyncKeyName(set.GetKeyName()),
                 //  isIntKey    = IsIntKey(set.IsIntKey()),
                     filterTree  = filterTree,
