@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DemoHub
         public CommandTask<FakeResult>  Fake (Fake      param)      => SendCommand<Fake, FakeResult>("demo.Fake",   param);
 
         /// <summary> count records added to containers within the last param seconds. default 60.</summary>
-        public CommandTask<Counts>      CountLatest (int? param)    => SendCommand<int?, Counts>("demo.CountLatest",   param);
+        public CommandTask<Counts>      CountLatest (int? param)    => SendCommand<int?, Counts>    ("demo.CountLatest", param);
         
         /// <summary> simple command adding two numbers - no database access. </summary>
         public CommandTask<double>      Add  (Operands  param)      => SendCommand<Operands, double>("demo.Add",    param);

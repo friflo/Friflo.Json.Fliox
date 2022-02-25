@@ -74,8 +74,7 @@ namespace Friflo.Json.Fliox.DemoHub
             demoStore.UserInfo  = command.UserInfo;
             
             var seconds = command.Param ?? 60;
-            var nanos   = new TimeSpan(seconds * 10_000_000);
-            var from    = DateTime.Now.Subtract(nanos);
+            var from    = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Aggregate(AggregateType.count, o => o.created >= from);
             var customerCount   = demoStore.customers.  Aggregate(AggregateType.count, o => o.created >= from);
