@@ -20,7 +20,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public delegate TResult CommandHandler<TParam, out TResult>(Command<TParam> command);
+    internal delegate TResult CommandHandler<TParam, out TResult>(Command<TParam> command);
 
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
