@@ -220,26 +220,26 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- Aggregate
-        public AggregateTask<TKey, T> Aggregate(AggregateType type, Expression<Func<T, bool>> filter) {
+        public AggregateTask<TKey, T> Count(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Aggregate() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, RefQueryPath);
-            var task = GetSyncSet().AggregateFilter(type, op);
+            var task = GetSyncSet().AggregateFilter(AggregateType.count, op);
             intern.store.AddTask(task);
             return task;
         }
         
-        public AggregateTask<TKey, T> AggregateByFilter(AggregateType type, EntityFilter<T> filter) {
+    /*  public AggregateTask<TKey, T> CountByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.AggregateByFilter() filter must not be null. EntitySet: {name}");
-            var task = GetSyncSet().AggregateFilter(type, filter.op);
+            var task = GetSyncSet().AggregateFilter(AggregateType.count, filter.op);
             intern.store.AddTask(task);
             return task;
-        }
+        } */
         
-        public AggregateTask<TKey, T> AggregateAll(AggregateType type) {
+        public AggregateTask<TKey, T> CountAll() {
             var all = Operation.FilterTrue;
-            var task = GetSyncSet().AggregateFilter(type, all);
+            var task = GetSyncSet().AggregateFilter(AggregateType.count, all);
             intern.store.AddTask(task);
             return task;
         }

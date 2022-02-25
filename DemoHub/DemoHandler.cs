@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable UnusedMember.Local
 namespace Friflo.Json.Fliox.DemoHub
@@ -64,11 +63,11 @@ namespace Friflo.Json.Fliox.DemoHub
             var seconds = command.Param ?? 60;
             var from    = DateTime.Now.AddSeconds(-seconds);
 
-            var orderCount      = demoStore.orders.     Aggregate(AggregateType.count, o => o.created >= from);
-            var customerCount   = demoStore.customers.  Aggregate(AggregateType.count, o => o.created >= from);
-            var articleCount    = demoStore.articles.   Aggregate(AggregateType.count, o => o.created >= from);
-            var producerCount   = demoStore.producers.  Aggregate(AggregateType.count, o => o.created >= from);
-            var employeeCount   = demoStore.employees.  Aggregate(AggregateType.count, o => o.created >= from);
+            var orderCount      = demoStore.orders.     Count(o => o.created >= from);
+            var customerCount   = demoStore.customers.  Count(o => o.created >= from);
+            var articleCount    = demoStore.articles.   Count(o => o.created >= from);
+            var producerCount   = demoStore.producers.  Count(o => o.created >= from);
+            var employeeCount   = demoStore.employees.  Count(o => o.created >= from);
             
             await demoStore.SyncTasks();
             

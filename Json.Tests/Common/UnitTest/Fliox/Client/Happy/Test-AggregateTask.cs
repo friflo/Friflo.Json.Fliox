@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var orders      = store.orders;
             var articles    = store.articles;
 
-            var orderCount      = orders.AggregateAll(AggregateType.count)                              .TaskName("orderCount");
-            var articleCount    = articles.Aggregate(AggregateType.count, a => a.name == "Smartphone")  .TaskName("articleCount");
+            var orderCount      = orders.CountAll()                             .TaskName("orderCount");
+            var articleCount    = articles.Count(a => a.name == "Smartphone")   .TaskName("articleCount");
 
             await store.SyncTasks(); // ----------------
             
