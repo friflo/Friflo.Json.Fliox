@@ -388,14 +388,14 @@
             <td><key>id</key></td>       <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>customer</ref>?</td> <td><type>string</type><rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></td>
+            <td><ref>customer</ref></td> <td><type>string</type> | null<rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a></td>
         </tr>
         <tr><td colspan='2'> Some useful member documentation 🙂 </td></tr>
         <tr>
             <td><field>created</field></td>  <td><a href='#Standard.DateTime'>DateTime</a></td>
         </tr>
         <tr>
-            <td><field>items</field>?</td>    <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>OrderItem</a>[]</td>
+            <td><field>items</field></td>    <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>OrderItem</a>[] | null</td>
         </tr>
     </table>
     <desc> Some useful docs about an Order :). Test type reference 'OrderItem' </desc>
@@ -427,7 +427,7 @@
             <td><field>name</field></td>     <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>producer</ref>?</td> <td><type>string</type><rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a></td>
+            <td><ref>producer</ref></td> <td><type>string</type> | null<rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a></td>
         </tr>
     </table>
     </div>
@@ -444,7 +444,7 @@
             <td><field>name</field></td>      <td><type>string</type></td>
         </tr>
         <tr>
-            <td><ref>employees</ref>?</td> <td><type>string</type>[]<rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a></td>
+            <td><ref>employees</ref></td> <td><type>string</type>[] | null<rel></rel><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a></td>
         </tr>
     </table>
     </div>
@@ -461,7 +461,7 @@
             <td><field>firstName</field></td> <td><type>string</type></td>
         </tr>
         <tr>
-            <td><field>lastName</field>?</td>  <td><type>string</type></td>
+            <td><field>lastName</field></td>  <td><type>string</type> | null</td>
         </tr>
     </table>
     </div>
@@ -487,79 +487,79 @@
             <td><field>dateTime</field></td>         <td><a href='#Standard.DateTime'>DateTime</a></td>
         </tr>
         <tr>
-            <td><field>dateTimeNull</field>?</td>     <td><a href='#Standard.DateTime'>DateTime</a></td>
+            <td><field>dateTimeNull</field></td>     <td><a href='#Standard.DateTime'>DateTime</a> | null</td>
         </tr>
         <tr>
             <td><field>bigInt</field></td>           <td><a href='#Standard.BigInteger'>BigInteger</a></td>
         </tr>
         <tr>
-            <td><field>bigIntNull</field>?</td>       <td><a href='#Standard.BigInteger'>BigInteger</a></td>
+            <td><field>bigIntNull</field></td>       <td><a href='#Standard.BigInteger'>BigInteger</a> | null</td>
         </tr>
         <tr>
             <td><field>boolean</field></td>          <td><type>boolean</type></td>
         </tr>
         <tr>
-            <td><field>booleanNull</field>?</td>      <td><type>boolean</type></td>
+            <td><field>booleanNull</field></td>      <td><type>boolean</type> | null</td>
         </tr>
         <tr>
             <td><field>uint8</field></td>            <td><a href='#Standard.uint8'>uint8</a></td>
         </tr>
         <tr>
-            <td><field>uint8Null</field>?</td>        <td><a href='#Standard.uint8'>uint8</a></td>
+            <td><field>uint8Null</field></td>        <td><a href='#Standard.uint8'>uint8</a> | null</td>
         </tr>
         <tr>
             <td><field>int16</field></td>            <td><a href='#Standard.int16'>int16</a></td>
         </tr>
         <tr>
-            <td><field>int16Null</field>?</td>        <td><a href='#Standard.int16'>int16</a></td>
+            <td><field>int16Null</field></td>        <td><a href='#Standard.int16'>int16</a> | null</td>
         </tr>
         <tr>
             <td><field>int32</field></td>            <td><a href='#Standard.int32'>int32</a></td>
         </tr>
         <tr>
-            <td><field>int32Null</field>?</td>        <td><a href='#Standard.int32'>int32</a></td>
+            <td><field>int32Null</field></td>        <td><a href='#Standard.int32'>int32</a> | null</td>
         </tr>
         <tr>
             <td><field>int64</field></td>            <td><a href='#Standard.int64'>int64</a></td>
         </tr>
         <tr>
-            <td><field>int64Null</field>?</td>        <td><a href='#Standard.int64'>int64</a></td>
+            <td><field>int64Null</field></td>        <td><a href='#Standard.int64'>int64</a> | null</td>
         </tr>
         <tr>
             <td><field>float32</field></td>          <td><a href='#Standard.float'>float</a></td>
         </tr>
         <tr>
-            <td><field>float32Null</field>?</td>      <td><a href='#Standard.float'>float</a></td>
+            <td><field>float32Null</field></td>      <td><a href='#Standard.float'>float</a> | null</td>
         </tr>
         <tr>
             <td><field>float64</field></td>          <td><a href='#Standard.double'>double</a></td>
         </tr>
         <tr>
-            <td><field>float64Null</field>?</td>      <td><a href='#Standard.double'>double</a></td>
+            <td><field>float64Null</field></td>      <td><a href='#Standard.double'>double</a> | null</td>
         </tr>
         <tr>
             <td><field>pocStruct</field></td>        <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'>PocStruct</a></td>
         </tr>
         <tr>
-            <td><field>pocStructNull</field>?</td>    <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'>PocStruct</a></td>
+            <td><field>pocStructNull</field></td>    <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStruct'>PocStruct</a> | null</td>
         </tr>
         <tr>
             <td><field>intArray</field></td>         <td><a href='#Standard.int32'>int32</a>[]</td>
         </tr>
         <tr>
-            <td><field>intArrayNull</field>?</td>     <td><a href='#Standard.int32'>int32</a>[]</td>
+            <td><field>intArrayNull</field></td>     <td><a href='#Standard.int32'>int32</a>[] | null</td>
         </tr>
         <tr>
-            <td><field>intNullArray</field>?</td>     <td>(<a href='#Standard.int32'>int32</a> | null)[]</td>
+            <td><field>intNullArray</field></td>     <td>(<a href='#Standard.int32'>int32</a> | null)[] | null</td>
         </tr>
         <tr>
-            <td><field>jsonValue</field>?</td>        <td><type>any</type></td>
+            <td><field>jsonValue</field></td>        <td><type>any</type> | null</td>
         </tr>
         <tr>
             <td><field>derivedClass</field></td>     <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'>DerivedClass</a></td>
         </tr>
         <tr>
-            <td><field>derivedClassNull</field>?</td> <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'>DerivedClass</a></td>
+            <td><field>derivedClassNull</field></td> <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.DerivedClass'>DerivedClass</a> | null</td>
         </tr>
     </table>
     </div>
@@ -576,7 +576,7 @@
             <td><field>amount</field></td>  <td><a href='#Standard.int32'>int32</a></td>
         </tr>
         <tr>
-            <td><field>name</field>?</td>    <td><type>string</type></td>
+            <td><field>name</field></td>    <td><type>string</type> | null</td>
         </tr>
     </table>
     </div>
@@ -610,7 +610,7 @@
     </h3>
     <table>
         <tr>
-            <td><field>text</field>?</td> <td><type>string</type></td>
+            <td><field>text</field></td> <td><type>string</type> | null</td>
         </tr>
     </table>
     </div>
@@ -678,7 +678,7 @@
     </h3>
     <table>
         <tr>
-            <td><field>containers</field>?</td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>[]</td>
+            <td><field>containers</field></td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>[] | null</td>
         </tr>
     </table>
     </div>
@@ -706,19 +706,19 @@
             <td><field>version</field></td>        <td><type>string</type></td>
         </tr>
         <tr>
-            <td><field>hostName</field>?</td>       <td><type>string</type></td>
+            <td><field>hostName</field></td>       <td><type>string</type> | null</td>
         </tr>
         <tr>
-            <td><field>projectName</field>?</td>    <td><type>string</type></td>
+            <td><field>projectName</field></td>    <td><type>string</type> | null</td>
         </tr>
         <tr>
-            <td><field>projectWebsite</field>?</td> <td><type>string</type></td>
+            <td><field>projectWebsite</field></td> <td><type>string</type> | null</td>
         </tr>
         <tr>
-            <td><field>envName</field>?</td>        <td><type>string</type></td>
+            <td><field>envName</field></td>        <td><type>string</type> | null</td>
         </tr>
         <tr>
-            <td><field>envColor</field>?</td>       <td><type>string</type></td>
+            <td><field>envColor</field></td>       <td><type>string</type> | null</td>
         </tr>
     </table>
     </div>

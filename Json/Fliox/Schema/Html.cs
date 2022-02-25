@@ -159,10 +159,8 @@ $@"        <tr>
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                bool required   = field.required;
-                var fieldType   = GetFieldType(field, context);
+                var fieldType   = GetFieldType(field, context, field.required);
                 var indent      = Indent(maxFieldName, field.name);
-                var optStr      = required ? "": "?";
                 var fieldTag    = "field";
                 if (type.KeyField == field.name) {
                     fieldTag    = "key";
@@ -177,7 +175,7 @@ $@"        <tr>
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}>{optStr}</td>{indent} <td>{fieldType}{reference}</td>
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td>{fieldType}{reference}</td>
         </tr>{docs}");
             }
             sb.AppendLine("    </table>");
@@ -199,8 +197,8 @@ $@"    <br><chapter>commands</chapter>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in commands) {
-                var commandParam    = GetFieldType(command.param,  context);
-                var commandResult   = GetFieldType(command.result, context);
+                var commandParam    = GetFieldType(command.param,  context, command.param.required);
+                var commandResult   = GetFieldType(command.result, context, command.result.required);
                 var docs            = GetDescription("\n        <tr><td colspan='2'>", command.docs, "</td></tr>");
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
@@ -212,18 +210,19 @@ $@"        <tr>
             sb.AppendLine("    </table>");
         }
         
-        private static string GetFieldType(FieldDef field, TypeContext context) {
+        private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
+            var nullStr = required ? "" : " | null";
             if (field.isArray) {
                 var elementTypeName = GetElementType(field, context);
-                return $"{elementTypeName}[]";
+                return $"{elementTypeName}[]{nullStr}";
             }
             if (field.isDictionary) {
                 var keyField = field.type.KeyField;
                 var valueTypeName = GetElementType(field, context);
                 var key = keyField != null ? $"<key>{keyField}</key>" : "key";
-                return $"{key} ➞ {valueTypeName}";
+                return $"{key} ➞ {valueTypeName}{nullStr}";
             }
-            return GetTypeName(field.type, context);
+            return GetTypeName(field.type, context) + nullStr;
         }
         
         private static string GetElementType(FieldDef field, TypeContext context) {
