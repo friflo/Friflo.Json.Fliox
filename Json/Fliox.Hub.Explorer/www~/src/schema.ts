@@ -1,21 +1,11 @@
 import { FieldType, JsonType, JsonSchema }  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema }                         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
-export type MonacoSchema = {
-    readonly uri: string;
-    /**
-     * A list of glob patterns that describe for which file URIs the JSON schema will be used.
-     * '*' and '**' wildcards are supported. Exclusion patterns start with '!'.
-     * For example '*.schema.json', 'package.json', '!foo*.schema.json', 'foo/**\/BADRESP.json'.
-     * A match succeeds when there is at least one pattern matching and last matching pattern does not start with '!'.
-     */
-             fileMatch?: string[];
-    /**
-     * The schema for the given URI.
-     */
-    readonly schema?: JsonSchema;
-
-    _resolvedDef?: JsonSchema
+declare module "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
+    interface DbSchema {
+        _rootSchema:        JsonType;
+        _containerSchemas : { [key: string] : JsonType };        
+    }
 }
 
 declare module "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
@@ -35,12 +25,23 @@ declare module "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Frif
     }
 }
 
-declare module "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
-    interface DbSchema {
-        _rootSchema:        JsonType;
-        _containerSchemas : { [key: string] : JsonType };        
-    }
+export type MonacoSchema = {
+    readonly uri: string;
+    /**
+     * A list of glob patterns that describe for which file URIs the JSON schema will be used.
+     * '*' and '**' wildcards are supported. Exclusion patterns start with '!'.
+     * For example '*.schema.json', 'package.json', '!foo*.schema.json', 'foo/**\/BADRESP.json'.
+     * A match succeeds when there is at least one pattern matching and last matching pattern does not start with '!'.
+     */
+             fileMatch?: string[];
+    /**
+     * The schema for the given URI.
+     */
+    readonly schema?: JsonSchema;
+
+    _resolvedDef?: JsonSchema
 }
+
 
 // ----------------------------------------------- Schema -----------------------------------------------
 export class Schema
