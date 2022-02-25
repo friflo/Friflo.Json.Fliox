@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="DemoHandler"/> is a <see cref="TaskHandler"/> sub class used to implement custom database commands
+    /// <see cref="CommandHandler"/> is a <see cref="TaskHandler"/> sub class used to implement custom database commands
     /// executed at the host and declared by the <see cref="DemoStore"/>.
     /// <br/>
     /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/>.
@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.DemoHub
     /// parameter is added as a command handler. <br/>
     /// Their method names need to match the commands methods declared in the <see cref="DemoStore"/>.
     /// </summary>
-    public class DemoHandler : TaskHandler
+    public class CommandHandler : TaskHandler
     {
         private static readonly FakeUtils FakeUtils = new FakeUtils();
         
-        internal DemoHandler() {
+        internal CommandHandler() {
             AddCommandHandlers(this, "demo.");
         }
         

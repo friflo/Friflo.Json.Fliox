@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var c                   = new Config();
             var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
-            var database            = CreateDatabase(c, databaseSchema, new DemoHandler());
+            var database            = CreateDatabase(c, databaseSchema, new CommandHandler());
 
             var hub                 = new FlioxHub(database);
             hub.Info.projectName    = "DemoHub";                                                        // optional
