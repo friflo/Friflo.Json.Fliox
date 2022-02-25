@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         private     Dictionary<string, QueryTask<TKey, T>>  _queries;
 
-        private     List<AggregateTask<TKey, T>>            _aggregates;
+        private     List<AggregateTask<T>>                  _aggregates;
         private     int                                     aggregatesTasksIndex;
 
         private     List<CloseCursorsTask>                  _closeCursors;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/>
         private     Dictionary<string, QueryTask<TKey, T>>  Queries()    => _queries     ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
 
-        private     List<AggregateTask<TKey, T>>            Aggregates() => _aggregates  ?? (_aggregates  = new List<AggregateTask<TKey, T>>());
+        private     List<AggregateTask<T>>                  Aggregates() => _aggregates  ?? (_aggregates  = new List<AggregateTask<T>>());
 
         private     List<CloseCursorsTask>                  CloseCursors()=> _closeCursors ?? (_closeCursors  = new List<CloseCursorsTask>());
 
@@ -146,9 +146,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Aggregate
-        internal AggregateTask<TKey, T> AggregateFilter(AggregateType type, FilterOperation filter) {
+        internal CountTask<T> CountFilter(FilterOperation filter) {
             var aggregates = Aggregates();
-            var aggregate = new AggregateTask<TKey, T>(type, filter);
+            var aggregate = new CountTask<T>(filter);
             aggregates.Add(aggregate);
             return  aggregate;
         }

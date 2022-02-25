@@ -72,11 +72,11 @@ namespace Friflo.Json.Fliox.DemoHub
             await demoStore.SyncTasks();
             
             var result = new Counts {
-                orders      = (int?)orderCount.     Result ?? 0,
-                customers   = (int?)customerCount.  Result ?? 0,
-                articles    = (int?)articleCount.   Result ?? 0,
-                producers   = (int?)producerCount.  Result ?? 0,
-                employees   = (int?)employeeCount.  Result ?? 0,
+                orders      = orderCount.     Result,
+                customers   = customerCount.  Result,
+                articles    = articleCount.   Result,
+                producers   = producerCount.  Result,
+                employees   = employeeCount.  Result,
             };
             return result;
         }
