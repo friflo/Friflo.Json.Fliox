@@ -410,8 +410,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     references = new List<References>(_reads.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
-                var ids = Helper.CreateHashSet(read.results.Keys.Count, JsonKey.Equality);
-                foreach (var key in read.results.Keys) {
+                var ids = Helper.CreateHashSet(read.result.Keys.Count, JsonKey.Equality);
+                foreach (var key in read.result.Keys) {
                     var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
                     ids.Add(id);
                 }

@@ -58,8 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   Dictionary<TKey, T>     results;
 
         public              T                       this[TKey key]      => IsOk("FindRange[]", out Exception e) ? results[key] : throw e;
-        public              Dictionary<TKey, T>     Results { get {
-            if (IsOk("FindRange.Results", out Exception e))
+        public              Dictionary<TKey, T>     Result { get {
+            if (IsOk("FindRange.Result", out Exception e))
                 return results;
             throw e;
         } }
@@ -109,14 +109,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            TaskState               state;
         internal readonly   EntitySet<TKey, T>      set;
         internal            RefsTask                refsTask;
-        internal readonly   Dictionary<TKey, T>     results     = SyncSet.CreateDictionary<TKey,T>();
+        internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
         internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
 
-        public              Dictionary<TKey, T>     Results         => IsOk("ReadTask.Results", out Exception e) ? results      : throw e;
-        public              T                       this[TKey key]  => IsOk("ReadTask[]",       out Exception e) ? results[key] : throw e;
+        public              Dictionary<TKey, T>     Result          => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
+        public              T                       this[TKey key]  => IsOk("ReadTask[]",      out Exception e) ? result[key] : throw e;
 
         internal override   TaskState               State       => state;
-        public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
+        public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {result.Count})";
         
 
         internal ReadTask(EntitySet<TKey, T> set) {
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"ReadTask.Find() id must not be null. EntitySet: {set.name}");
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            results.Add(key, null);
+            result.Add(key, null);
             var find = new Find<TKey, T>(key);
             findTasks.Add(find);
             set.intern.store.AddTask(find);
@@ -141,11 +141,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            results.EnsureCapacity(results.Count + keys.Count);
+            result.EnsureCapacity(result.Count + keys.Count);
             foreach (var id in keys) {
                 if (id == null)
                     throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
-                results.TryAdd(id, null);
+                result.TryAdd(id, null);
             }
             var find = new FindRange<TKey, T>(keys);
             findTasks.Add(find);

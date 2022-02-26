@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 userStore.UserId = UserStore.AuthenticationUser;
                 var queryRoles = userStore.roles.QueryAll();
                 await userStore.TrySyncTasks().ConfigureAwait(false);
-                Dictionary<string, Role> roles = queryRoles.Results;
+                Dictionary<string, Role> roles = queryRoles.Result;
                 foreach (var pair in roles) {
                     var role = pair.Value;
                     foreach (var right in role.rights) {
@@ -204,7 +204,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 return;
             var readRoles = userStore.roles.Read().FindRange(newRoles);
             await userStore.SyncTasks().ConfigureAwait(false);
-            foreach (var newRolePair in readRoles.Results) {
+            foreach (var newRolePair in readRoles.Result) {
                 string role     = newRolePair.Key;
                 Role newRole    = newRolePair.Value;
                 if (newRole == null)

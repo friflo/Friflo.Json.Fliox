@@ -91,8 +91,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
-            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Results requires SyncTasks(). hasOrderCamera", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
+            AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
@@ -120,13 +120,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
             
-            AreEqual(1,                 ordersWithCustomer1.Results.Count);
+            AreEqual(1,                 ordersWithCustomer1.Result.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             
-            AreEqual(1,                 ordersAnyAmountLower2.Results.Count);
+            AreEqual(1,                 ordersAnyAmountLower2.Result.Count);
             NotNull(ordersAnyAmountLower2["order-1"]);
             
-            AreEqual(2,                 ordersAllAmountGreater0.Results.Count);
+            AreEqual(2,                 ordersAllAmountGreater0.Result.Count);
             NotNull(ordersAllAmountGreater0["order-1"]);
 
 
@@ -135,27 +135,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual(articleError, allArticles.Error.ToString());
             
             TaskResultException te;
-            te = Throws<TaskResultException>(() => { var _ = allArticles.Results; });
+            te = Throws<TaskResultException>(() => { var _ = allArticles.Result; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
-            te = Throws<TaskResultException>(() => { var _ = allArticles.Results["article-galaxy"]; });
+            te = Throws<TaskResultException>(() => { var _ = allArticles.Result["article-galaxy"]; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
-            AreEqual(1,                 hasOrderCamera.Results.Count);
+            AreEqual(1,                 hasOrderCamera.Result.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
     
             AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
             IsFalse(articleProducer.Success);
-            te = Throws<TaskResultException>(() => { var _ = articleProducer.Results; });
+            te = Throws<TaskResultException>(() => { var _ = articleProducer.Result; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
                 
             IsFalse(producerEmployees.Success);
-            te = Throws<TaskResultException>(() => { var _ = producerEmployees.Results; });
+            te = Throws<TaskResultException>(() => { var _ = producerEmployees.Result; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             IsTrue(orders2WithTaskError.Success);
             IsFalse(order2CustomerError.Success);
-            AreEqual("read-task-error", orders2WithTaskError.Results["order-2"].customer.Key);
+            AreEqual("read-task-error", orders2WithTaskError.Result["order-2"].customer.Key);
             AreEqual("DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
             
             // --- Test invalid response

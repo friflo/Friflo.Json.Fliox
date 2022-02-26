@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         public              int?                    limit;
-        /// <summary> return <see cref="maxCount"/> number of entities within <see cref="Results"/>.
+        /// <summary> return <see cref="maxCount"/> number of entities within <see cref="Result"/>.
         /// After task execution <see cref="ResultCursor"/> is not null if more entities available.
         /// To access them create new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>.   
         /// </summary>
@@ -30,12 +30,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            RefsTask                refsTask;
         internal readonly   FilterOperation         filter;
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
-        internal            Dictionary<TKey, T>     results;
+        internal            Dictionary<TKey, T>     result;
         internal            string                  resultCursor;
         private  readonly   FlioxClient             store;
 
-        public              Dictionary<TKey, T>     Results         => IsOk("QueryTask.Results", out Exception e) ? results      : throw e;
-        public              T                       this[TKey key]  => IsOk("QueryTask[]",       out Exception e) ? results[key] : throw e;
+        public              Dictionary<TKey, T>     Result          => IsOk("QueryTask.Result",  out Exception e) ? result      : throw e;
+        public              T                       this[TKey key]  => IsOk("QueryTask[]",       out Exception e) ? result[key] : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>

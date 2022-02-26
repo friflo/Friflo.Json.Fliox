@@ -97,20 +97,20 @@ namespace Friflo.Json.Fliox.DemoHub
             await demoStore.SyncTasks();
             
             var counts = new Counts {
-                orders      = orderCount.   Results.Count,
-                customers   = customerCount.Results.Count,
-                articles    = articleCount. Results.Count,
-                producers   = producerCount.Results.Count,
-                employees   = employeeCount.Results.Count,
+                orders      = orderCount.   Result.Count,
+                customers   = customerCount.Result.Count,
+                articles    = articleCount. Result.Count,
+                producers   = producerCount.Result.Count,
+                employees   = employeeCount.Result.Count,
             };
             
             var result = new Records {
                 counts      = counts,
-                orders      = orderCount.   Results.Values.ToArray(),
-                customers   = customerCount.Results.Values.ToArray(),
-                articles    = articleCount. Results.Values.ToArray(),
-                producers   = producerCount.Results.Values.ToArray(),
-                employees   = employeeCount.Results.Values.ToArray(),
+                orders      = orderCount.   Result.Values.ToArray(),
+                customers   = customerCount.Result.Values.ToArray(),
+                articles    = articleCount. Result.Values.ToArray(),
+                producers   = producerCount.Result.Values.ToArray(),
+                employees   = employeeCount.Result.Values.ToArray(),
             };
             return result;
         }

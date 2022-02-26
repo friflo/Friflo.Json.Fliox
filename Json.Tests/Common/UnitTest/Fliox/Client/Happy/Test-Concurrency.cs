@@ -113,9 +113,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     var readEntities = store.entities.Read();
                     readEntities.Find(id);
                     await store.SyncTasks();
-                    if (1 !=  readEntities.Results.Count)
-                        throw new TestException($"Expect entities Count: 1. was: {readEntities.Results.Count}");
-                    if (!readEntities.Results.ContainsKey(id))
+                    if (1 !=  readEntities.Result.Count)
+                        throw new TestException($"Expect entities Count: 1. was: {readEntities.Result.Count}");
+                    if (!readEntities.Result.ContainsKey(id))
                         throw new TestException($"Expect entity with id: {id}");
                 }
             });

@@ -60,8 +60,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
-            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Results requires SyncTasks(). hasOrderCamera", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
+            AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
@@ -75,36 +75,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
 
             await store.SyncTasks(); // ----------------
-            AreEqual(1,                 ordersWithCustomer1.Results.Count);
+            AreEqual(1,                 ordersWithCustomer1.Result.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             
-            AreEqual(1,                 ordersItemsAmount.Results.Count);
+            AreEqual(1,                 ordersItemsAmount.Result.Count);
             NotNull(ordersItemsAmount["order-1"]);
 
-            AreEqual(1,                 ordersAnyAmountLower2.Results.Count);
+            AreEqual(1,                 ordersAnyAmountLower2.Result.Count);
             NotNull(ordersAnyAmountLower2["order-1"]);
             
-            AreEqual(2,                 ordersAllAmountGreater0.Results.Count);
+            AreEqual(2,                 ordersAllAmountGreater0.Result.Count);
             NotNull(ordersAllAmountGreater0["order-1"]);
 
-            AreEqual(6,                 allArticles.Results.Count);
-            AreEqual("Galaxy S10",      allArticles.Results["article-galaxy"].name);
-            AreEqual("iPad Pro",        allArticles.Results["article-ipad"].name);
+            AreEqual(6,                 allArticles.Result.Count);
+            AreEqual("Galaxy S10",      allArticles.Result["article-galaxy"].name);
+            AreEqual("iPad Pro",        allArticles.Result["article-ipad"].name);
             
             // AreEqual(2,                 allArticlesLimit.Results.Count); todo
             
-            AreEqual(1,                 hasOrderCamera.Results.Count);
+            AreEqual(1,                 hasOrderCamera.Result.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
     
             AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
-            AreEqual(3,                 producersTask.Results.Count);
+            AreEqual(3,                 producersTask.Result.Count);
             AreEqual("Samsung",         producersTask["producer-samsung"].name);
             AreEqual("Canon",           producersTask["producer-canon"].name);
             AreEqual("Apple",           producersTask["producer-apple"].name);
                 
-            AreEqual(1,                 producerEmployees.Results.Count);
+            AreEqual(1,                 producerEmployees.Result.Count);
             AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
         }
         
@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
                 await store.SyncTasks();
                 
-                count          += queryAll.Results.Count;
+                count          += queryAll.Result.Count;
                 var cursor      = queryAll.ResultCursor;
                 if (cursor == null)
                     break;

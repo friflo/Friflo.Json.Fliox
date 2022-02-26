@@ -126,14 +126,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
         private static void AssertResult(MonitorResult result) {
             // --- hosts
-            var hosts   = result.hosts.Results;
+            var hosts   = result.hosts.Result;
             AreEqual(1, hosts.Count);
             
             var host    = hosts[new JsonKey("Test")];
             AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
             
             // --- users
-            var users   = result.users.Results;
+            var users   = result.users.Result;
             AreEqual(3, users.Count);
             
             var anonymousInfo = users[User.AnonymousId].ToString();
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("{'id':'poc-admin','clients':['poc-client'],'counts':[{'db':'main_db','requests':1,'tasks':2}]}", pocAdmin);
             
             // --- clients
-            var clients = result.clients.Results;
+            var clients = result.clients.Result;
             AreEqual(2, clients.Count);
             
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();

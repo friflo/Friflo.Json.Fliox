@@ -359,12 +359,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(stringId ==  customIdRef.Key);
                 
-                AreEqual (1,        intRefs.Results.Count);
-                IsNotNull(          intRefs.Results[intId]);
+                AreEqual (1,        intRefs.Result.Count);
+                IsNotNull(          intRefs.Result[intId]);
                 IsNotNull(          intRefs[intId]);
                 
-                AreEqual (1,        intNullRefs.Results.Count);
-                IsNotNull(          intNullRefs.Results[intId]);
+                AreEqual (1,        intNullRefs.Result.Count);
+                IsNotNull(          intNullRefs.Result[intId]);
                 IsNotNull(          intNullRefs[intId]);
             }
             

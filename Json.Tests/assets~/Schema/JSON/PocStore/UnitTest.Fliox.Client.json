@@ -5,7 +5,7 @@
         "PocStore": {
             "type": "object",
             "isAbstract": true,
-            "description": "PocStore extends FlioxClient to provide two functionalities: \n\n            1. Defines a database schema be declaring its containers and commands \n\n            2. Is a database client with type safe access to its containers and commands \n\n \n            Its containers are fields or properties of type EntitySet`2. \n\n            Its commands are methods returning a CommandTask`1.\n            ",
+            "description": "\n            The PocStore schema has two functionalities: \n\n            1. Defines a database schema by declaring its containers and commands \n\n            2. Is a database client providing type safe access to its containers and commands\n            \n",
             "properties": {
                 "orders":    { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Order.json#/definitions/Order" }, "type": "object" },
                 "customers": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Customer.json#/definitions/Customer" }, "type": "object" },

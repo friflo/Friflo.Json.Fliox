@@ -56,8 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
             AreEqual("ReadRefsTask[] requires SyncTasks(). readOrders -> .items[*].article", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires SyncTasks(). readOrders -> .items[*].article", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Result; });
+            AreEqual("ReadRefsTask.Result requires SyncTasks(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
@@ -78,23 +78,23 @@ articleSet", string.Join("\n", store.Tasks));
 
             await store.SyncTasks(); // ----------------
         
-            AreEqual(2,                 articleRefsTask.Results.Count);
+            AreEqual(2,                 articleRefsTask.Result.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);
             AreEqual("Smartphone",      articleRefsTask["article-2"].name);
             
-            AreEqual(1,                 articleProducerTask.Results.Count);
+            AreEqual(1,                 articleProducerTask.Result.Count);
             AreEqual("Canon",           articleProducerTask["producer-canon"].name);
 
-            AreEqual(2,                 articleSet.Results.Count);
+            AreEqual(2,                 articleSet.Result.Count);
             AreEqual("Galaxy S10",      articleSet["article-galaxy"].name);
             AreEqual("iPad Pro",        articleSet["article-ipad"].name);
             
             AreEqual("Galaxy S10",      galaxy.Result.name);
             
-            AreEqual(2,                 article1And2.Results.Count);
+            AreEqual(2,                 article1And2.Result.Count);
             AreEqual("Smartphone",      article1And2["article-2"].name);
             
-            AreEqual(4,                 readTask.Results.Count);
+            AreEqual(4,                 readTask.Result.Count);
             AreEqual("Galaxy S10",      readTask["article-galaxy"].name);
         }
     }

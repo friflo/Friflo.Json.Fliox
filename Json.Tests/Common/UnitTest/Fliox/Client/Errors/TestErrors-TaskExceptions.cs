@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqualTrimStack("UnhandledException ~ SimulationException: simulated read task exception", te.Message);
             AreEqual("SimulationException: simulated read task exception", te.error.taskMessage);
 
-            te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
+            te = Throws<TaskResultException>(() => { var _ = customerQuery.Result; });
             AreEqualTrimStack("UnhandledException ~ SimulationException: simulated query exception", te.error.Message);
 
             IsFalse(createError.Success);

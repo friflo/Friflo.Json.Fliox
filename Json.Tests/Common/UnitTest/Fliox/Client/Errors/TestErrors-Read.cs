@@ -72,8 +72,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles["article-1"]; });
             AreEqual("ReadRefsTask[] requires SyncTasks(). orderArticles", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Results; });
-            AreEqual("ReadRefsTask.Results requires SyncTasks(). orderArticles", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Result; });
+            AreEqual("ReadRefsTask.Result requires SyncTasks(). orderArticles", e.Message);
 
             var articleProducer = orderArticles.ReadRefs(a => a.producer)                           .TaskName("articleProducer");
             AreEqual("orderArticles -> .producer", articleProducer.Details);
@@ -129,7 +129,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
             
             IsTrue(readOrders.Success);
-            AreEqual(3, readOrders.Results["order-1"].items.Count);
+            AreEqual(3, readOrders.Result["order-1"].items.Count);
             // readOrders is successful
             // but resolving its Ref<>'s (.items[*].article and .items[*].article > .producer) failed:
             
@@ -143,14 +143,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             TaskResultException te;
             
             IsFalse(readArticles.Success);
-            te = Throws<TaskResultException>(() => { var _ = readArticles.Results; });
+            te = Throws<TaskResultException>(() => { var _ = readArticles.Result; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
             IsTrue(articleSet.Success);
-            AreEqual(2,             articleSet.Results.Count);
-            AreEqual("Galaxy S10",  articleSet.Results[duplicateId].name);
-            AreEqual("iPad Pro",    articleSet.Results["article-ipad"].name);
+            AreEqual(2,             articleSet.Result.Count);
+            AreEqual("Galaxy S10",  articleSet.Result[duplicateId].name);
+            AreEqual("iPad Pro",    articleSet.Result["article-ipad"].name);
 
             IsTrue(galaxy.Success);
             AreEqual("Galaxy S10",  galaxy.Result.name);
@@ -159,7 +159,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual(@"EntityErrors ~ count: 1
 | ReadError: articles [article-1], simulated read entity error", article1.Error.ToString());
 
-            te = Throws<TaskResultException>(() => { var _ = article1And2.Results; });
+            te = Throws<TaskResultException>(() => { var _ = article1And2.Result; });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             

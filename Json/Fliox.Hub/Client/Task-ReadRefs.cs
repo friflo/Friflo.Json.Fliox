@@ -38,12 +38,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<T>  where T : class
     {
         private             RefsTask                refsTask;
-        private             Dictionary<TKey, T>     results;
+        private             Dictionary<TKey, T>     result;
         private   readonly  SyncTask                parent;
         private   readonly  FlioxClient             store;
             
-        public              Dictionary<TKey, T>     Results         => IsOk("ReadRefsTask.Results", out Exception e) ? results      : throw e;
-        public              T                       this[TKey key]  => IsOk("ReadRefsTask[]",       out Exception e) ? results[key] : throw e;
+        public              Dictionary<TKey, T>     Result          => IsOk("ReadRefsTask.Result", out Exception e) ? result      : throw e;
+        public              T                       this[TKey key]  => IsOk("ReadRefsTask[]",      out Exception e) ? result[key] : throw e;
         
         internal  override  TaskState               State       => state;
         public    override  string                  Details     => $"{parent.GetLabel()} -> {Selector}";
@@ -69,13 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
             var entitySet = (EntitySetBase<T>) set;
-            results = SyncSet.CreateDictionary<TKey, T>(ids.Count);
+            result = SyncSet.CreateDictionary<TKey, T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 if (peer.error == null) {
                     var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                    results.Add(key, peer.Entity);
+                    result.Add(key, peer.Entity);
                 } else {
                     entityErrorInfo.AddEntityError(peer.error);
                 }

@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("DatabaseError ~ simulated read task error", te.Message);
             AreEqual(TaskErrorType.DatabaseError, customerRead.Error.type);
             
-            te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
+            te = Throws<TaskResultException>(() => { var _ = customerQuery.Result; });
             AreEqual("DatabaseError ~ simulated query error", te.Message);
             AreEqual(TaskErrorType.DatabaseError, customerQuery.Error.type);
             
