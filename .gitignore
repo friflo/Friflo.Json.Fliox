@@ -9,7 +9,7 @@ riderModule.iml
 /_ReSharper.Caches/
 # .idea/
 
-# .Net
+# .NET
 *.user
 **/.vs/
 

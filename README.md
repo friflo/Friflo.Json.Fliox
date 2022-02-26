@@ -145,7 +145,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - **UTF-8** support
 
 - Compatible to **.NET Standard**.
-    That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
+    That is: .NET Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 
 - **CLS compliant API**. Meaning the API of the **Friflo.Json.Fliox** library is compatible to all languages targeting .NET. These are:
   C#, C++/CLI, Eiffel, F#, IronPython, IronRuby, PowerBuilder, Visual Basic, Visual COBOL, and Windows PowerShell. See more at:

@@ -24,7 +24,7 @@ From these input schemas the following output schemas can be generate:
 - Kotlin
 
 ## Features:
-- Code generators and JSON Validator support all common C#/.Net types like:
+- Code generators and JSON Validator support all common C#/.NET types like:
     - classes, structs, primitives and enums
     - Nullable structs, primitives and enums
     - container types like: arrays, List<>, Dictionary<>, Queue<>, Stack<>, ...
