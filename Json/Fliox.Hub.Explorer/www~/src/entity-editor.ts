@@ -50,7 +50,7 @@ export class EntityEditor
     private entityEditor:       CodeEditor  = null;
     private commandValueEditor: CodeEditor  = null;
     private selectedCommandEl:  HTMLElement = null;
-    private selectedCommand:    string      = null;    
+    private selectedCommands:   { [database: string]: string} = { }; // store selected command per database
 
 
     public initEditor(entityEditor: CodeEditor, commandValueEditor: CodeEditor) : void {
@@ -89,23 +89,23 @@ export class EntityEditor
         el("schemaDescription").innerText   = app.getSchemaDescription(database);
     }
 
-    private setExplorerSelection(element: HTMLElement, command: string | null) {
+    private setExplorerSelection(database: string, command: string | null, element: HTMLElement) {
         this.selectedCommandEl?.classList.remove("selected");
         this.selectedCommandEl  = element;
         element.classList.add("selected");
-        this.selectedCommand    = command;
+        this.selectedCommands[database] = command;
     }
 
-    private selectDatabaseInfo() {
+    private selectDatabaseInfo(database: string) {
         this.setExplorerEditor("dbInfo");
         const infoEl = el("databaseInfo");
-        this.setExplorerSelection(infoEl, null);
+        this.setExplorerSelection(database, null, infoEl);
         this.setEditorHeader("database");
     }
 
     private selectCommand(database: string, command: string, commandEl: HTMLElement) {
         this.setEditorHeader("command");
-        this.setExplorerSelection(commandEl, command);
+        this.setExplorerSelection(database, command, commandEl);
         this.showCommand(database, command);
     }
 
@@ -135,7 +135,7 @@ export class EntityEditor
         databaseAnchor.style.width  = "100%";
         databaseAnchor.target       = "blank";
         databaseAnchor.rel          = "noopener noreferrer";
-        databaseAnchor.onclick      = (ev) => { this.selectDatabaseInfo(); ev.preventDefault(); };
+        databaseAnchor.onclick      = (ev) => { this.selectDatabaseInfo(database); ev.preventDefault(); };
         databaseAnchor.innerHTML    = '<span style="" title="show general database information">database info</span>';
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
@@ -189,13 +189,13 @@ export class EntityEditor
         liCommands.append(ulCommands);
         entityExplorer.appendChild(ulDatabase);
         
-        const selectedCommand = this.selectedCommand;
-        if (selectedCommand) {
-            const liCommand = commands[selectedCommand];
+        const selectedCommand   = this.selectedCommands[database];
+        const liCommand         = commands[selectedCommand];
+        if (liCommand) {
             this.selectCommand(database, selectedCommand, liCommand);
             liCommand.scrollIntoView();
         } else {
-            this.selectDatabaseInfo();
+            this.selectDatabaseInfo(database);
         }        
     }
 
