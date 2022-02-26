@@ -326,8 +326,15 @@ export class App {
         classList.remove(className);        
     }
 
-    private selectedCatalog:    HTMLElement;
+    private selectedTreeEl:     HTMLElement;
     private hostDetails:        HostDetails;
+
+    private selectTreeElement(element: HTMLElement) {
+        if (this.selectedTreeEl)
+            this.selectedTreeEl.classList.remove("selected");
+        this.selectedTreeEl =element;
+        element.classList.add("selected");
+    }
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
@@ -368,27 +375,23 @@ export class App {
         const ulCatalogs = createEl('ul');
         ulCatalogs.onclick = (ev) => {
             const path = ev.composedPath() as HTMLElement[];
-            const selectedElement = path[0];
-            if (selectedElement.classList.contains("caret")) {
+            const databaseElement = path[0];
+            if (databaseElement.classList.contains("caret")) {
                 path[2].classList.toggle("active");
                 return;
             }
             path[1].classList.add("active");
-            if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-            this.selectedCatalog =selectedElement;
-            selectedElement.classList.add("selected");
-            const databaseName      = selectedElement.childNodes[1].textContent;
+            this.selectTreeElement(databaseElement);
+
+            const databaseName      = databaseElement.childNodes[1].textContent;
             const commands          = dbCommands.find   (c => c.id == databaseName);
             const containers        = dbContainers.find (c => c.id == databaseName);
             this.editor.listCommands(databaseName, commands, containers);
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
-            const liCatalog       = createEl('li');
-            if (firstDatabase) {
-                firstDatabase = false;
-                liCatalog.classList.add("active");
-            }
+            const liCatalog = createEl('li');
+
             const liDatabase            = createEl('div');
             const catalogCaret          = createEl('div');
             catalogCaret.classList.value= "caret";
@@ -400,19 +403,21 @@ export class App {
             liDatabase.append(catalogLabel);
             liCatalog.appendChild(liDatabase);
             ulCatalogs.append(liCatalog);
-
+            if (firstDatabase) {
+                firstDatabase = false;
+                liCatalog.classList.add("active");
+                this.selectTreeElement(liDatabase);
+            }
             const ulContainers = createEl('ul');
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
                 const path = ev.composedPath() as HTMLElement[];
-                const selectedElement = path[0];
+                const containerElement = path[0];
                 // in case of a multiline text selection selectedElement is the parent
-                if (selectedElement.tagName.toLowerCase() != "div")
+                if (containerElement.tagName.toLowerCase() != "div")
                     return;
-                if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-                this.selectedCatalog    = selectedElement;
-                this.selectedCatalog.classList.add("selected");
-                const containerName     = this.selectedCatalog.innerText.trim();
+                this.selectTreeElement(containerElement);
+                const containerName     = this.selectedTreeEl.innerText.trim();
                 const databaseName      = path[3].childNodes[0].childNodes[1].textContent;
                 const params: Resource  = { database: databaseName, container: containerName, ids: [] };
                 this.editor.clearEntity(databaseName, containerName);
