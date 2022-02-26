@@ -17,13 +17,16 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     /// <summary>
-    /// <see cref="PocStore"/> extends <see cref="FlioxClient"/> to provide two functionalities: <br/>
-    /// 1. Defines a database schema be declaring its containers and commands <br/>
-    /// 2. Is a database client with type safe access to its containers and commands <br/>  
-    /// <br/> 
-    /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
-    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.
+    /// The <see cref="PocStore"/> schema has two functionalities: <br/>
+    /// 1. Defines a database schema by declaring its containers and commands <br/>
+    /// 2. Is a database client providing type safe access to its containers and commands
+    /// <br/>
     /// </summary>
+    /// <remarks>
+    /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.<br/>
+    /// <see cref="PocStore"/> instances can be used on server and client side.
+    /// </remarks>
     public class PocStore : FlioxClient
     {
         // --- containers
