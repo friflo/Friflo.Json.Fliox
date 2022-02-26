@@ -333,7 +333,7 @@ export class EntityEditor
         const entities          = Array.isArray(value) ? value : [value];
         const type              = app.getContainerSchema(database, container);
         const keyName           = EntityEditor.getEntityKeyName(type as JsonType);
-        const ids               = entities.map(entity => entity[keyName]) as string[];
+        const ids               = entities.map(entity => String(entity[keyName]));
         writeResult.innerHTML   = 'save <span class="spinner"></span>';
         const requestIds        = Array.isArray(value) ? null : ids[0];
         const response          = await App.restRequest("PUT", jsonValue, database, container, requestIds, null);
