@@ -11,6 +11,12 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper
 {
+    /// <summary>
+    /// <see cref="JsonValue"/> instances contain <b>immutable</b> JSON values. <br/>
+    /// A JSON value can be an object, an array, a string, a number, a boolean or null. <br/>
+    /// To ensure immutability when creating a <see cref="JsonValue"/> with <see cref="JsonValue(byte[])"/>
+    /// the passed array must not be changed subsequently.
+    /// </summary>
     public readonly struct JsonValue {
         // array & Array are not public to prevent potential side effects by application code mutating array elements
         private  readonly   byte[]  array;                                          // can be null
