@@ -3,11 +3,13 @@
   "tasks": [
     {
       "task":       "closeCursors",
-      "container":  "articles"
+      "container":  "articles",
+      "cursors":    null
     }
   ],
   "info": [
     "close all cursors to free database resources",
-    "specific cursors can be closed using 'cursors'"
+    "specific cursors can be closed using 'cursors'",
+    "returned result contains the 'count' of open cursors"
   ]
 }
