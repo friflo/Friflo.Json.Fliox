@@ -95,8 +95,10 @@ export class EntityEditor {
         // database link
         const databaseLink = createEl('li');
         databaseLink.id = "databaseInfo";
+        databaseLink.style.display = "flex";
         const databaseAnchor = createEl("a");
         databaseAnchor.href = "#";
+        databaseAnchor.style.width = "100%";
         databaseAnchor.target = "blank";
         databaseAnchor.rel = "noopener noreferrer";
         databaseAnchor.onclick = (ev) => { this.selectDatabaseInfo(); ev.preventDefault(); };
