@@ -329,13 +329,12 @@ export class EntityEditor {
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, error);
+            return;
         }
-        else {
-            this.entityIdentity.entityIds = [];
-            writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, "");
-            this.setEntityValue(database, container, "");
-            app.explorer.removeExplorerIds(ids);
-        }
+        this.entityIdentity.entityIds = [];
+        writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, "");
+        this.setEntityValue(database, container, "");
+        app.explorer.removeExplorerIds(ids);
     }
     static async deleteIds(database, container, ids) {
         const idsStr = JSON.stringify(ids);

@@ -387,12 +387,12 @@ export class EntityEditor
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, error);
-        } else {
-            this.entityIdentity.entityIds = [];
-            writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, "");
-            this.setEntityValue(database, container, "");
-            app.explorer.removeExplorerIds(ids);
+            return;
         }
+        this.entityIdentity.entityIds = [];
+        writeResult.innerHTML = EntityEditor.formatResult("Delete", response.status, response.statusText, "");
+        this.setEntityValue(database, container, "");
+        app.explorer.removeExplorerIds(ids);        
     }
 
     private static async deleteIds(database: string, container: string, ids: string[]) : Promise<Response> {

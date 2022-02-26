@@ -1032,8 +1032,8 @@ export class Explorer
 
     public removeExplorerIds(ids: string[]) : void {
         const selected = this.findContainerEntities(ids);
-        for (const id in selected)
-            selected.delete(id);
+        for (const [,row] of selected)
+            row.remove();
         for (const id of ids) {
             this.explorerRows.delete(id);
             this.selectedRows.delete(id);
