@@ -93,10 +93,15 @@ export class EntityEditor
         el("schemaDescription").innerText   = app.getSchemaDescription(database);
     }
 
+    private selectDatabaseInfo() {
+        this.setExplorerEditor("dbInfo");
+        const infoEl = el("databaseInfo");
+        this.setSelectedCommand(infoEl);
+    }
+
     public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) : void {
         app.explorer.initExplorer(null, null, null, null);
         this.setDatabaseInfo(database, dbContainer);
-        this.setExplorerEditor("dbInfo");
 
         const schemaType                = app.getSchemaType(database);
         catalogSchema.innerHTML         = schemaType;
@@ -114,11 +119,12 @@ export class EntityEditor
 
         // database link
         const databaseLink      = createEl('li');
+        databaseLink.id          = "databaseInfo";
         const databaseAnchor    = createEl("a");
         databaseAnchor.href     = "#";
         databaseAnchor.target   = "blank";
         databaseAnchor.rel      = "noopener noreferrer";
-        databaseAnchor.onclick  = (ev) => { this.setExplorerEditor("dbInfo"); ev.preventDefault(); };
+        databaseAnchor.onclick  = (ev) => { this.selectDatabaseInfo(); ev.preventDefault(); };
         databaseAnchor.innerHTML= '<span style="" title="show general database information">database info</span>';
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
@@ -171,6 +177,7 @@ export class EntityEditor
         entityExplorer.innerText = "";
         liCommands.append(ulCommands);
         entityExplorer.appendChild(ulDatabase);
+        this.selectDatabaseInfo();
     }
 
     private entityIdentity = { } as {
