@@ -28,6 +28,7 @@ export class EntityEditor {
     constructor() {
         this.entityEditor = null;
         this.commandValueEditor = null;
+        this.selectedCommandEl = null;
         this.selectedCommand = null;
         this.entityIdentity = {};
         this.entityHistoryPos = -1;
@@ -39,12 +40,6 @@ export class EntityEditor {
     initEditor(entityEditor, commandValueEditor) {
         this.entityEditor = entityEditor;
         this.commandValueEditor = commandValueEditor;
-    }
-    setSelectedCommand(element) {
-        var _a;
-        (_a = this.selectedCommand) === null || _a === void 0 ? void 0 : _a.classList.remove("selected");
-        this.selectedCommand = element;
-        element.classList.add("selected");
     }
     setEditorHeader(show) {
         const displayEntity = show == "entity" ? "contents" : "none";
@@ -72,11 +67,23 @@ export class EntityEditor {
         el("databaseStorage").innerHTML = dbContainer.storage;
         el("schemaDescription").innerText = app.getSchemaDescription(database);
     }
+    setExplorerSelection(element, command) {
+        var _a;
+        (_a = this.selectedCommandEl) === null || _a === void 0 ? void 0 : _a.classList.remove("selected");
+        this.selectedCommandEl = element;
+        element.classList.add("selected");
+        this.selectedCommand = command;
+    }
     selectDatabaseInfo() {
         this.setExplorerEditor("dbInfo");
         const infoEl = el("databaseInfo");
-        this.setSelectedCommand(infoEl);
+        this.setExplorerSelection(infoEl, null);
         this.setEditorHeader("database");
+    }
+    selectCommand(database, command, commandEl) {
+        this.setEditorHeader("command");
+        this.setExplorerSelection(commandEl, command);
+        this.showCommand(database, command);
     }
     listCommands(database, dbCommands, dbContainer) {
         app.explorer.initExplorer(null, null, null, null);
@@ -102,7 +109,7 @@ export class EntityEditor {
         databaseAnchor.target = "blank";
         databaseAnchor.rel = "noopener noreferrer";
         databaseAnchor.onclick = (ev) => { this.selectDatabaseInfo(); ev.preventDefault(); };
-        databaseAnchor.innerHTML = '<span style="" title="show general database information">database</span>';
+        databaseAnchor.innerHTML = '<span style="" title="show general database information">database info</span>';
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
         // commands link
@@ -119,7 +126,6 @@ export class EntityEditor {
         ulDatabase.appendChild(liCommands);
         const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
-            this.setEditorHeader("command");
             const path = ev.composedPath();
             let selectedElement = path[0];
             // in case of a multiline text selection selectedElement is the parent
@@ -128,12 +134,12 @@ export class EntityEditor {
                 selectedElement = path[1];
             }
             const commandName = selectedElement.children[0].textContent;
-            this.setSelectedCommand(selectedElement);
-            this.showCommand(database, commandName);
+            this.selectCommand(database, commandName, selectedElement);
             if (path[0].classList.contains("command")) {
                 this.sendCommand();
             }
         };
+        const commands = {};
         for (const command of dbCommands.commands) {
             const liCommand = createEl('li');
             const commandLabel = createEl('div');
@@ -144,11 +150,20 @@ export class EntityEditor {
             runCommand.title = "Send the command using POST";
             liCommand.appendChild(runCommand);
             ulCommands.append(liCommand);
+            commands[command] = liCommand;
         }
         entityExplorer.innerText = "";
         liCommands.append(ulCommands);
         entityExplorer.appendChild(ulDatabase);
-        this.selectDatabaseInfo();
+        const selectedCommand = this.selectedCommand;
+        if (selectedCommand) {
+            const liCommand = commands[selectedCommand];
+            this.selectCommand(database, selectedCommand, liCommand);
+            liCommand.scrollIntoView();
+        }
+        else {
+            this.selectDatabaseInfo();
+        }
     }
     storeCursor() {
         if (this.entityHistoryPos < 0)
