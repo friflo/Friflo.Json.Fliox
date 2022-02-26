@@ -88,10 +88,26 @@ export class EntityEditor {
         readEntitiesCount.innerHTML = "";
         const ulDatabase = createEl('ul');
         ulDatabase.classList.value = "database";
-        const commandLabel = createEl('li');
-        const label = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
-        commandLabel.innerHTML = `<a href="./rest/${database}?command=std.Commands" target="_blank" rel="noopener noreferrer">${label}</a>`;
-        ulDatabase.append(commandLabel);
+        // database link
+        const databaseLink = createEl('li');
+        const databaseAnchor = createEl("a");
+        databaseAnchor.href = "#";
+        databaseAnchor.target = "blank";
+        databaseAnchor.rel = "noopener noreferrer";
+        databaseAnchor.onclick = (ev) => { this.setExplorerEditor("dbInfo"); ev.preventDefault(); };
+        databaseAnchor.innerHTML = '<span style="" title="show general database information">database info</span>';
+        databaseLink.append(databaseAnchor);
+        ulDatabase.append(databaseLink);
+        // commands link
+        const commandLink = createEl('li');
+        const commandAnchor = createEl('a');
+        commandAnchor.href = `./rest/${database}?command=std.Commands`;
+        commandAnchor.target = "blank";
+        commandAnchor.rel = "noopener noreferrer";
+        commandAnchor.innerHTML = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
+        commandLink.append(commandAnchor);
+        ulDatabase.append(commandLink);
+        // commands list
         const liCommands = createEl('li');
         ulDatabase.appendChild(liCommands);
         const ulCommands = createEl('ul');
