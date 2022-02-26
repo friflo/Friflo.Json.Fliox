@@ -97,6 +97,7 @@ export class EntityEditor
         this.setExplorerEditor("dbInfo");
         const infoEl = el("databaseInfo");
         this.setSelectedCommand(infoEl);
+        this.setEditorHeader("database");
     }
 
     public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) : void {
@@ -106,7 +107,6 @@ export class EntityEditor
         const schemaType                = app.getSchemaType(database);
         catalogSchema.innerHTML         = schemaType;
         explorerTools.innerHTML         = "";
-        this.setEditorHeader("database");
         el("databaseLabel").innerHTML   = `${schemaType}&nbsp;<span style="opacity:0.5;">schema</span>`;
         filterRow.style.visibility      = "hidden";
         entityFilter.style.visibility   = "hidden";
@@ -127,7 +127,7 @@ export class EntityEditor
         databaseAnchor.target       = "blank";
         databaseAnchor.rel          = "noopener noreferrer";
         databaseAnchor.onclick      = (ev) => { this.selectDatabaseInfo(); ev.preventDefault(); };
-        databaseAnchor.innerHTML    = '<span style="" title="show general database information">database info</span>';
+        databaseAnchor.innerHTML    = '<span style="" title="show general database information">database</span>';
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
 
