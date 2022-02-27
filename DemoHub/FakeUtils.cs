@@ -25,10 +25,8 @@ namespace Friflo.Json.Fliox.DemoHub
             Randomizer.Seed = new Random(1337);
         }
         
-        internal Records CreateFakes(Fake fake) {
-
-            int fakeCounter = 0;
-        
+        internal Records CreateFakes(Fake fake)
+        {
             var result      = new Records();
             var orders      = fake.orders       ?? 0; 
             var articles    = fake.articles     ?? 0;
@@ -49,7 +47,7 @@ namespace Friflo.Json.Fliox.DemoHub
             
             if (employees > 0) {
                 var faker = new Faker<Employee>()
-                    .RuleFor(e => e.id,         f => NewId(fakeCounter, employeeCounter++, 3))
+                    .RuleFor(e => e.id,         f => NewId(employeeCounter++, 3))
                     .RuleFor(e => e.firstName,  f => f.Name.FirstName())
                     .RuleFor(e => e.lastName,   f => f.Name.LastName())
                     .RuleFor(e => e.created,    now);
@@ -61,7 +59,7 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (producers > 0) {
                 var faker = new Faker<Producer>()
-                    .RuleFor(p => p.id,         f => NewId(fakeCounter, producerCounter++, 5))
+                    .RuleFor(p => p.id,         f => NewId(producerCounter++, 5))
                     .RuleFor(p => p.name,       f => f.Company.CompanyName())
                     .RuleFor(p => p.employees,  f => {
                         if (employees == 0)
@@ -77,7 +75,7 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (articles > 0) {
                 var faker = new Faker<Article>()
-                    .RuleFor(a => a.id,         f => NewId(fakeCounter, articleCounter++, 1))
+                    .RuleFor(a => a.id,         f => NewId(articleCounter++, 1))
                     .RuleFor(a => a.name,       f => f.Commerce.ProductName())
                     .RuleFor(a => a.producer,   f => {
                         if (producers == 0)
@@ -93,7 +91,7 @@ namespace Friflo.Json.Fliox.DemoHub
             }
             if (customers > 0) {
                 var faker = new Faker<Customer>()
-                    .RuleFor(c => c.id,         f => NewId(fakeCounter, customerCounter++, 2))
+                    .RuleFor(c => c.id,         f => NewId(customerCounter++, 2))
                     .RuleFor(c => c.name,       f => f.Company.CompanyName())
                     .RuleFor(e => e.created,    now);
 
@@ -111,7 +109,7 @@ namespace Friflo.Json.Fliox.DemoHub
                     item.amount     = f.Random.Number(1, 10);
                 });
                 var faker = new Faker<Order>()
-                    .RuleFor(o => o.id,         f => NewId(fakeCounter, orderCounter++, 4))
+                    .RuleFor(o => o.id,         f => NewId(orderCounter++, 4))
                     .RuleFor(o => o.created,    f => now)
                     .RuleFor(o => o.customer,   f => {
                         if (customers == 0)
@@ -139,7 +137,7 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
 
-        private static long NewId(int fakeCounter, long localCounter, short type) {
+        private static long NewId(long localCounter, short type) {
             return localCounter * 10 + type;
         }
     }
