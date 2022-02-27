@@ -72,6 +72,28 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
+        public bool ValidateParam(out TParam result, out string error) {
+            var pool = messageContext.pool;
+            var paramValidation = messageContext.sharedCache.GetValidationType(typeof(TParam));
+            using (var pooled = pool.TypeValidator.Get()) {
+                var validator   = pooled.instance;
+                if (!validator.ValidateObject(param, paramValidation, out error)) {
+                    result = default;
+                    return false;
+                }
+            }
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var reader  = pooled.instance.reader;
+                result      = reader.Read<TParam>(param);
+                if (reader.Error.ErrSet) {
+                    error   = reader.Error.msg.ToString();
+                    return false;
+                }
+                error = null;
+                return true;
+            }
+        }
+        
         public TResult Error<TResult>(string message) {
             error = message;
             return default;

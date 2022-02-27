@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.TryParam(out var param, out var error))
+            if (!command.ValidateParam(out var param, out var error))
                 return command.Error<Records>(error);
             var result = FakeUtils.CreateFakes(param);
             

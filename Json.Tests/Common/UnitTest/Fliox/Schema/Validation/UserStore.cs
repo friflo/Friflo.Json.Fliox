@@ -76,13 +76,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             AreEqual("unexpected EOF on root at Role > (root), pos: 0", error);
             
             IsFalse(validator.ValidateObject("123",                 test.roleType, out error));
-            AreEqual("ValidateObject() expect object. was: ValueNumber at Role > (root), pos: 3", error);
+            AreEqual("expect object. was: 123 at Role > (root), pos: 3", error);
             
             IsFalse(validator.ValidateObject("{}",                  test.roleType, out error));
             AreEqual("Missing required fields: [id, rights] at Role > (root), pos: 2", error);
             
             IsFalse(validator.ValidateObject("[]",                  test.roleType, out error));
-            AreEqual("ValidateObject() expect object. was: ArrayStart at Role > [], pos: 1", error);
+            AreEqual("expect object. was: array at Role > [], pos: 1", error);
             
             var json = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));

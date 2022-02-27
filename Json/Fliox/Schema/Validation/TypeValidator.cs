@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 bool success = ValidateObjectIntern(type, 0);
                 return Return(type, success, out error);    
             }
-            return RootError(type, "ValidateObject() expect object. was:", out error);
+            return RootError(type, "expect object. was:", out error);
         }
         
         public bool ValidateObjectMap (JsonValue json, ValidationType type, out string error) {
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 bool success = ValidateElement(type, false, null, 0);
                 return Return(type, success, out error);    
             }
-            return RootError(type, "ValidateObjectMap() expect object. was:", out error);
+            return RootError(type, "expect object. was:", out error);
         }
         
         public bool ValidateArray (JsonValue json, ValidationType type, out string error) {
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 bool success = ValidateElement(type, false, null, 0);
                 return Return(type, success, out error);    
             }
-            return RootError(type, "ValidateArray() expect array. was:", out error);
+            return RootError(type, "expect array. was:", out error);
         }
         
         private bool ValidateObjectIntern (ValidationType type, int depth)
@@ -259,10 +259,24 @@ namespace Friflo.Json.Fliox.Schema.Validation
             if (parser.Event == JsonEvent.Error) {
                 Error(parser.error.GetMessageBody(), type);
             } else {
-                ErrorValue(msg, parser.Event.ToString(), false, type);
+                string errorValue = GetErrorValue();
+                ErrorValue(msg, errorValue, false, type);
             }
             error = validationError.AsString(sb, qualifiedTypeErrors);
             return false;
+        }
+        
+        private string GetErrorValue () {
+            var ev = parser.Event;
+            switch (ev) {
+                case JsonEvent.ValueNull:   return "null";
+                case JsonEvent.ValueBool:   return parser.boolValue ? "true" : "false"; 
+                case JsonEvent.ValueNumber:
+                case JsonEvent.ValueString: return parser.value.ToString();
+                case JsonEvent.ObjectStart: return "object";
+                case JsonEvent.ArrayStart:  return "array";
+                default:                    return ev.ToString();
+            }
         }
         
         internal bool ErrorType (string msg, string was, bool isString, string expect, string expectNamespace, ValidationType type) {
