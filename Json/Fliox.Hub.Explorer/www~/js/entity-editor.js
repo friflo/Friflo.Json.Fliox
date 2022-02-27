@@ -616,9 +616,8 @@ export class EntityEditor {
             return 'null';
         fieldType = type.type;
         const resolvedDef = fieldType._resolvedDef;
-        if (!resolvedDef)
-            return 'null';
-        switch (resolvedDef.type) {
+        const paramType = resolvedDef ? resolvedDef.type : fieldType.type;
+        switch (paramType) {
             case "object": return '{}';
             case "array": return '[]';
             case "string": return '""';

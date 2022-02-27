@@ -704,11 +704,10 @@ export class EntityEditor
         const type  = Schema.getFieldType(fieldType);
         if (type.isNullable)
             return 'null';
-        fieldType   = type.type;
-        const resolvedDef = fieldType._resolvedDef;
-        if (!resolvedDef)
-            return 'null';
-        switch (resolvedDef.type) {
+        fieldType           = type.type;
+        const resolvedDef   = fieldType._resolvedDef;
+        const paramType     = resolvedDef ? resolvedDef.type : fieldType.type;
+        switch (paramType) {
             case "object":  return '{}';
             case "array":   return '[]';
             case "string":  return '""';
