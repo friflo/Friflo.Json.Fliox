@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.ValidateParam(out var param, out var error))
+            if (!command.ParamValidate(out var param, out var error))
                 return command.Error<Records>(error);
             var result = FakeUtils.CreateFakes(param);
             
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// synchronous command handler
         /// use synchronous handler only when no async methods need to be awaited  
         private static double Add(Command<Operands> command) {
-            if (!command.ValidateParam(out var param, out var error))
+            if (!command.ParamValidate(out var param, out var error))
                 return command.Error<double>(error);
             return param.left + param.right;
         }

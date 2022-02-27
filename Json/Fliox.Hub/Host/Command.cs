@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.messageContext = messageContext;
         }
         
-        public bool TryParam(out TParam result, out string error) {
+        public bool ParamTry(out TParam result, out string error) {
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 result      = reader.Read<TParam>(param);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public bool ValidateParam(out TParam result, out string error) {
+        public bool ParamValidate(out TParam result, out string error) {
             var pool = messageContext.pool;
             var paramValidation = messageContext.sharedCache.GetValidationType(typeof(TParam));
             using (var pooled = pool.TypeValidator.Get()) {
