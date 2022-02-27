@@ -82,16 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     return false;
                 }
             }
-            using (var pooled = pool.ObjectMapper.Get()) {
-                var reader  = pooled.instance.reader;
-                result      = reader.Read<TParam>(param);
-                if (reader.Error.ErrSet) {
-                    error   = reader.Error.msg.ToString();
-                    return false;
-                }
-                error = null;
-                return true;
-            }
+            return ParamTry(out result, out error);
         }
         
         public TResult Error<TResult>(string message) {
