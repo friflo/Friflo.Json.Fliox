@@ -34,10 +34,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     
     internal sealed class CommandCallback<TValue, TResult> : CommandCallback
     {
-        private  readonly   string                      name;
-        private  readonly   CmdHandler<TValue, TResult> handler;
+        private  readonly   string                          name;
+        private  readonly   CmdHandler<TValue, TResult>     handler;
 
-        public   override   string                      ToString() => name;
+        public   override   string                          ToString() => name;
 
         internal CommandCallback (string name, CmdHandler<TValue, TResult> handler) {
             this.name       = name;
