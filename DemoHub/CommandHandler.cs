@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DemoHub
         private static async Task<Records> Fake(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
-            command.WriteNull   = false;
+            
             if (!command.TryParam(out var param, out var error))
                 return command.Error<Records>(error);
             var result = FakeUtils.CreateFakes(param);

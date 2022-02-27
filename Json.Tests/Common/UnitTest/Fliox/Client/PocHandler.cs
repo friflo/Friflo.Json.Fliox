@@ -34,6 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// </summary>
     public class TestCommandsHandler {
         private static string Command1(Command<string> command) {
+            command.WriteNull = true; // ensure API available
             return "hello Command1";
         }
         
