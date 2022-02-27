@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]  private   readonly  JsonValue       param;
         [DebuggerBrowsable(Never)]  private   readonly  MessageContext  messageContext;
 
-        public   override   string          ToString()      => Name;
+        public   override   string          ToString()      => $"{Name}(param: {param.AsString()})";
         
         public              TParam          Param { get {
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
