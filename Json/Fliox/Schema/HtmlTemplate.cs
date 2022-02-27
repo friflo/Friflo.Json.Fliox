@@ -101,7 +101,8 @@ namespace Friflo.Json.Fliox.Schema
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
-        desc        { margin-left: 50px; }
+        desc        { margin-left: 50px; display: block; }
+        docs        { margin-left: 10px; display: block; }
 
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }

@@ -171,12 +171,12 @@ $@"        <tr>
                     fieldTag    = "ref";
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
-                var docs = GetDescription("\n        <tr><td colspan='2'>", field.docs, "</td></tr>");
+                var docs = GetDescription("\n            <td><docs>", field.docs, "</docs></td>");
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td>{fieldType}{reference}</td>
-        </tr>{docs}");
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td>{fieldType}{reference}</td>{docs}
+        </tr>");
             }
             sb.AppendLine("    </table>");
             if (type.IsSchema) {
@@ -199,7 +199,7 @@ $@"    <br><chapter>commands</chapter>
             foreach (var command in commands) {
                 var commandParam    = GetFieldType(command.param,  context, command.param.required);
                 var commandResult   = GetFieldType(command.result, context, command.result.required);
-                var docs            = GetDescription("\n            <td>", command.docs, "</td>");
+                var docs            = GetDescription("\n            <td><docs>", command.docs, "</docs></td>");
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
                 sb.AppendLine(
