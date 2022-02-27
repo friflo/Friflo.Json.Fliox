@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Schema
         .head       { overflow: hidden; }
         .nav        { overflow: auto; background: var(--bg2); }
         .docs-border{ overflow: auto; background: var(--bg2); }
-        .docs       { overflow: auto; background: var(--bg2);  padding-left: 30px; }
+        .docs       { overflow: auto; background: var(--bg2);  padding-left: 5px; }
 
         .title      { margin: 0px 0px 0px 20px; height: 26px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px  7px  7px #0000000a; border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer; }
         .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Schema
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
-        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
+        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 30px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         sig         { white-space: nowrap; }
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Schema
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
 
         h2      { margin-right: 30px;  }
-        h3      { margin-right: 30px; margin-left: 30px;  margin-bottom: 5px; }
+        h3      { margin-right: 20px; margin-left: 20px;  margin-bottom: 5px; }
         h2.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
         h3.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
 
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Schema
 
         .namespace                          { scroll-margin-top: 5px; }
         .type                               { scroll-margin-top: 5px; scroll-margin-bottom: 100px;  } /* enable scrolling to next type without aligning next element on top */
-        div.type table                      { margin-left: 70px; }
+        div.type table                      { margin-left: 40px; }
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
     </style>
     <script>
