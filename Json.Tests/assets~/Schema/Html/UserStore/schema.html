@@ -79,7 +79,7 @@
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
-        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 30px; }
+        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); display: block; margin-left: 30px; margin-top: 10px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         sig         { white-space: nowrap; }
@@ -93,7 +93,7 @@
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
-        desc        { margin-left: 40px; display: block; opacity: 0.7; }
+        desc        { margin-left: 40px; margin-bottom: 10px; display: block; opacity: 0.7; }
         docs        { margin-left: 10px; display: block; opacity: 0.7; }
 
         .namespace  { margin-bottom: 100px; }
@@ -324,7 +324,7 @@
             <td><field>roles</field></td>       <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></td>
         </tr>
     </table>
-    <br><chapter>commands</chapter>
+    <chapter>commands</chapter>
     <table>
 
         <tr>
