@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     internal abstract class CommandCallback
     {
         internal string     error;
+        internal bool       writeNull;
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
         internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
     }
@@ -50,7 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
                 return Task.FromResult(new InvokeResult(error));
             }
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
-                var jsonResult  = pooled.instance.WriteAsArray(result);
+                var writer = pooled.instance.writer;
+                writer.WriteNullMembers = writeNull;
+                var jsonResult          = writer.WriteAsArray(result);
                 return Task.FromResult(new InvokeResult(jsonResult));
             }
         }
@@ -76,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             }
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var writer = pooled.instance;
-                writer.WriteNullMembers = cmd.WriteNull;
+                writer.WriteNullMembers = writeNull;
                 var jsonResult          = writer.WriteAsArray(result);
                 return new InvokeResult(jsonResult);
             }

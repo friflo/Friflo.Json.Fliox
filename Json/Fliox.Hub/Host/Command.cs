@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              EntityDatabase  Database        => messageContext.Database;
         public              User            User            => messageContext.User;
         public              JsonKey         ClientId        => messageContext.clientId;
-        public              bool            WriteNull       { get; set; }
-        
+        public              bool            WriteNull       { get => callback.writeNull; set => callback.writeNull = value; }
+
         [DebuggerBrowsable(Never)]  internal            MessageContext  MessageContext  => messageContext;
         [DebuggerBrowsable(Never)]  private   readonly  JsonValue       param;
         [DebuggerBrowsable(Never)]  private   readonly  MessageContext  messageContext;
@@ -57,7 +57,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             Name                = name;
             this.param          = param;  
             this.messageContext = messageContext;
-            WriteNull           = false;
             this.callback       = callback;
         }
         
