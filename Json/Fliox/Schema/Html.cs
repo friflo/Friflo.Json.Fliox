@@ -109,6 +109,8 @@ $@"    <div class='type'>
             var qualifiedName   = type.Namespace + "." + type.Name;
             var unionType       = type.UnionType;
             var typeName        = type.IsSchema ? "schema": type.IsAbstract ? "abstract class" : "class";
+            var typeDocs        = GetDescription("    <desc>", type.docs, "\n    </desc>");
+
             sb.AppendLine(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
@@ -121,7 +123,8 @@ $@"    <div class='type'>
                 imports.Add(baseType);
             }
             sb.AppendLine("    </h3>");
-
+            if (typeDocs != "")
+                sb.AppendLine(typeDocs);
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (type.IsSchema) {
@@ -182,9 +185,6 @@ $@"        <tr>
             if (type.IsSchema) {
                 EmitServiceType(type, context, sb);
             }
-            var typeDocs = GetDescription("    <desc>", type.docs, "</desc>");
-            if (typeDocs != "")
-                sb.AppendLine(typeDocs);   
             sb.AppendLine("    </div>");
             return new EmitType(type, sb, imports, dependencies);
         }
@@ -192,7 +192,7 @@ $@"        <tr>
         private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
             var commands        = type.Commands;
             sb.AppendLine(
-$@"    <br><chapter>commands</chapter>
+$@"    <chapter>commands</chapter>
     <table>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);

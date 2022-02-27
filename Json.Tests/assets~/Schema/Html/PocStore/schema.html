@@ -93,8 +93,8 @@
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
-        desc        { margin-left: 50px; display: block; }
-        docs        { margin-left: 10px; display: block; }
+        desc        { margin-left: 40px; display: block; opacity: 0.7; }
+        docs        { margin-left: 10px; display: block; opacity: 0.7; }
 
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
@@ -300,6 +300,15 @@
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.PocStore'>PocStore</a>
         <keyword>schema</keyword>
     </h3>
+    <desc>
+            The PocStore schema has two functionalities: 
+
+            1. Defines a database schema by declaring its containers and commands 
+
+            2. Is a database client providing type safe access to its containers and commands
+            
+
+    </desc>
     <chapter>containers</chapter>
     <table>
         <tr>
@@ -368,20 +377,14 @@
             <td><docs>list all databases and their containers hosted by the Hub</docs></td>
         </tr>
     </table>
-    <desc>
-            The PocStore schema has two functionalities: 
-
-            1. Defines a database schema by declaring its containers and commands 
-
-            2. Is a database client providing type safe access to its containers and commands
-            
-</desc>
     </div>
     <div class='type'>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>
         <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>Order</a>
         <keyword>class</keyword>
     </h3>
+    <desc> Some useful docs about an Order :). Test type reference 'OrderItem' 
+    </desc>
     <table>
         <tr>
             <td><key>id</key></td>       <td><type>string</type></td>
@@ -397,7 +400,6 @@
             <td><field>items</field></td>    <td><a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.OrderItem'>OrderItem</a>[] | null</td>
         </tr>
     </table>
-    <desc> Some useful docs about an Order :). Test type reference 'OrderItem' </desc>
     </div>
     <div class='type'>
     <h3 id='Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>

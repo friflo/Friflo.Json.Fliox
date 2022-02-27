@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Schema
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
-        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 30px; }
+        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); display: block; margin-left: 30px; margin-top: 10px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         sig         { white-space: nowrap; }
@@ -101,8 +101,8 @@ namespace Friflo.Json.Fliox.Schema
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
-        desc        { margin-left: 50px; display: block; }
-        docs        { margin-left: 10px; display: block; }
+        desc        { margin-left: 40px; display: block; opacity: 0.7; }
+        docs        { margin-left: 10px; display: block; opacity: 0.7; }
 
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }

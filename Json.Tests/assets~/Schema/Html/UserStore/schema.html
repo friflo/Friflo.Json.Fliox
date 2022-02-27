@@ -93,8 +93,8 @@
         field       { color: var(--field);    font-family: var(--mono-font); }
         discriminant{ color: var(--value);    font-family: var(--mono-font); }
 
-        desc        { margin-left: 50px; display: block; }
-        docs        { margin-left: 10px; display: block; }
+        desc        { margin-left: 40px; display: block; opacity: 0.7; }
+        docs        { margin-left: 10px; display: block; opacity: 0.7; }
 
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
@@ -306,6 +306,12 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore'>UserStore</a>
         <keyword>schema</keyword>
     </h3>
+    <desc>
+            Control individual user access to database containers and commands.
+            Each user has a set of roles stored in container permissions.
+            Each role in roles has a set of rights which grant or deny container access or command execution. 
+            
+    </desc>
     <chapter>containers</chapter>
     <table>
         <tr>
@@ -353,11 +359,6 @@
             <td><docs>list all databases and their containers hosted by the Hub</docs></td>
         </tr>
     </table>
-    <desc>
-            Control individual user access to database containers and commands.
-            Each user has a set of roles stored in container permissions.
-            Each role in roles has a set of rights which grant or deny container access or command execution. 
-            </desc>
     </div>
     <div class='type'>
     <h3 id='Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>
