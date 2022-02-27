@@ -103,7 +103,6 @@ namespace Friflo.Json.Fliox.DemoHub
                 producers   = producerCount.Result.Count,
                 employees   = employeeCount.Result.Count,
             };
-            
             var result = new Records {
                 counts      = counts,
                 orders      = orderCount.   Result.Values.ToArray(),
