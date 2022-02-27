@@ -6,10 +6,29 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
+    internal readonly struct InvokeResult
+    {
+        internal readonly   JsonValue   value;
+        internal readonly   string      error;
+
+        public override     string      ToString() => error ?? value.AsString();
+
+        internal InvokeResult(byte[] value) {
+            this.value  = new JsonValue(value);
+            this.error  = null;
+        }
+        
+        internal InvokeResult(string error) {
+            this.value  = default;
+            this.error  = error;
+        }
+    }
+    
     internal abstract class CommandCallback
     {
+        internal string     error;
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
-        internal abstract Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
+        internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
     }
     
     internal sealed class CommandCallback<TValue, TResult> : CommandCallback
@@ -24,19 +43,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var     cmd     = new Command<TValue>(messageName, messageValue, messageContext);
+        internal override Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
+            var     cmd     = new Command<TValue>(messageName, messageValue, messageContext, this);
             TResult result  = handler(cmd);
+            if (error != null) {
+                return Task.FromResult(new InvokeResult(error));
+            }
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var jsonResult  = pooled.instance.WriteAsArray(result);
-                return Task.FromResult(new JsonValue(jsonResult));
+                return Task.FromResult(new InvokeResult(jsonResult));
             }
         }
     }
     
     internal sealed class CommandAsyncCallback<TParam, TResult> : CommandCallback
     {
-        private  readonly   string                              name;
+        private  readonly   string                                          name;
         private  readonly   CmdHandler<TParam, Task<TResult>>   handler;
 
         public   override   string                              ToString() => name;
@@ -46,14 +68,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var     cmd     = new Command<TParam>(messageName, messageValue, messageContext);
-            TResult result  = await handler(cmd).ConfigureAwait(false);
+        internal override async Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
+            var cmd     = new Command<TParam>(messageName, messageValue, messageContext, this);
+            var result  = await handler(cmd).ConfigureAwait(false);
+            if (error != null) {
+                return new InvokeResult(error);
+            }
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var writer = pooled.instance;
                 writer.WriteNullMembers = cmd.WriteNull;
                 var jsonResult          = writer.WriteAsArray(result);
-                return new JsonValue(jsonResult);
+                return new InvokeResult(jsonResult);
             }
         }
     }

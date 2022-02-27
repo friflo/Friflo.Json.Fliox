@@ -266,6 +266,7 @@ enum class TaskErrorResultType {
     DatabaseError,
     FilterError,
     ValidationError,
+    CommandError,
     InvalidTask,
     NotImplemented,
     PermissionDenied,

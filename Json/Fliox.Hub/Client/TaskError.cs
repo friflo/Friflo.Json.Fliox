@@ -36,6 +36,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         ValidationError,
         
+        CommandError,
+        
         NotImplemented,
         
         InvalidTask,
@@ -100,6 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
                 case TaskErrorResultType.FilterError:           return TaskErrorType.FilterError;
                 case TaskErrorResultType.ValidationError:       return TaskErrorType.ValidationError;
+                case TaskErrorResultType.CommandError:          return TaskErrorType.CommandError;
                 case TaskErrorResultType.InvalidTask:           return TaskErrorType.InvalidTask;
                 case TaskErrorResultType.NotImplemented:        return TaskErrorType.NotImplemented;
                 case TaskErrorResultType.PermissionDenied:      return TaskErrorType.PermissionDenied;

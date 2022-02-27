@@ -277,6 +277,7 @@ export type TaskErrorResultType =
     | "DatabaseError"
     | "FilterError"
     | "ValidationError"
+    | "CommandError"
     | "InvalidTask"
     | "NotImplemented"
     | "PermissionDenied"
