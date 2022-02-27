@@ -7,6 +7,8 @@ using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Mapper;
 
+using static System.Diagnostics.DebuggerBrowsableState;
+
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
@@ -31,12 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              JsonKey         ClientId        => messageContext.clientId;
         public              bool            WriteNull       { get; set; }
         
-        internal            MessageContext  MessageContext  => messageContext;
-        
-        private  readonly   JsonValue       param;
-        private  readonly   MessageContext  messageContext;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private  readonly   CommandCallback callback;       // used to set command errors
+        [DebuggerBrowsable(Never)]  internal            MessageContext  MessageContext  => messageContext;
+        [DebuggerBrowsable(Never)]  private   readonly  JsonValue       param;
+        [DebuggerBrowsable(Never)]  private   readonly  MessageContext  messageContext;
+        [DebuggerBrowsable(Never)]  private   readonly  CommandCallback callback;       // used to set command errors
 
         public   override   string          ToString()      => Name;
         

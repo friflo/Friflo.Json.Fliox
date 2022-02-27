@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
 // These classes are declared here to simplify navigation to EntitySet<TKey, T>.
@@ -129,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         private             SyncSet<TKey, T>            syncSet;
         internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
@@ -137,10 +138,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   SyncSet                     SyncSet         => syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public   override   bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public   override   bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+        [DebuggerBrowsable(Never)] public override bool WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        [DebuggerBrowsable(Never)] public override bool WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
 
         internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };

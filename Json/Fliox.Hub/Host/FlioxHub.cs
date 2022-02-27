@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -117,16 +118,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         internal readonly   HostStats           hostStats = new HostStats();
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private             HubInfo             info                = new HubInfo();
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private             Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private             ClientController    clientController    = new IncrementClientController();
+        [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
+        [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
+        [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();
 
-        
         /// <summary>
         /// Construct a <see cref="FlioxHub"/> with the given default database.
         /// database can be null in case of using a <see cref="FlioxHub"/> instance without a default database. 

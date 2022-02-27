@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Utils;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 #if !UNITY_5_3_OR_NEWER
 [assembly: CLSCompliant(true)]
@@ -24,10 +25,9 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public readonly struct UserInfo {
-        public  readonly    JsonKey     userId; 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public  readonly    string      token;
-        public  readonly    JsonKey     clientId;
+                                    public  readonly    JsonKey     userId; 
+        [DebuggerBrowsable(Never)]  public  readonly    string      token;
+                                    public  readonly    JsonKey     clientId;
 
         public override     string      ToString() => $"userId: {userId}, clientId: {clientId}";
 
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                         GetSyncCount()  => _intern.syncCount;
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
 
         // --- commands
@@ -82,14 +82,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --------------------------------------- public interface ---------------------------------------
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         public bool WritePretty { set {
             foreach (var setPair in _intern.setByType) {
                 setPair.Value.WritePretty = value;
             }
         } }
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         public bool WriteNull { set {
             foreach (var setPair in _intern.setByType) {
                 setPair.Value.WriteNull = value;
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             set => _intern.userId = new JsonKey(value);
         }
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         public string Token {
             get => _intern.token;
             set => _intern.token   = value;
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         public UserInfo UserInfo {
             get => new UserInfo (_intern.userId, _intern.token, _intern.clientId);
             set {
