@@ -35,7 +35,9 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            var result = FakeUtils.CreateFakes(command.Param);
+            if (!command.TryParam(out var param, out var error))
+                return command.Error<Records>(error);
+            var result = FakeUtils.CreateFakes(param);
             
             if (result.orders       != null)    demoStore.orders    .UpsertRange(result.orders);
             if (result.customers    != null)    demoStore.customers .UpsertRange(result.customers);

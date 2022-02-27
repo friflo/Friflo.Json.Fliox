@@ -33,15 +33,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private  readonly   JsonValue       param;
         private  readonly   MessageContext  messageContext;
+        private             string          error;
 
         public   override   string          ToString()      => Name;
         
         public              TParam          Param { get {
-            using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
-                return pooledMapper.instance.Read<TParam>(param);
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var reader = pooled.instance.reader;
+                return reader.Read<TParam>(param);
             }
         }}
-        
+
         public              UserInfo        UserInfo { get {
             var user = messageContext.User;
             return new UserInfo (user.userId, user.token, messageContext.clientId);
@@ -53,6 +55,25 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.param          = param;  
             this.messageContext = messageContext;
             WriteNull           = false;
+            error               = null;
+        }
+        
+        public bool TryParam(out TParam result, out string error) {
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var reader  = pooled.instance.reader;
+                result      = reader.Read<TParam>(param);
+                if (reader.Error.ErrSet) {
+                    error   = reader.Error.msg.ToString();
+                    return false;
+                }
+                error = null;
+                return true;
+            }
+        }
+        
+        public TResult Error<TResult>(string message) {
+            error = message;
+            return default;
         }
     }
 }
