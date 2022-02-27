@@ -199,13 +199,13 @@ $@"    <br><chapter>commands</chapter>
             foreach (var command in commands) {
                 var commandParam    = GetFieldType(command.param,  context, command.param.required);
                 var commandResult   = GetFieldType(command.result, context, command.result.required);
-                var docs            = GetDescription("\n        <tr><td colspan='2'>", command.docs, "</td></tr>");
+                var docs            = GetDescription("\n            <td>", command.docs, "</td>");
                 var indent = Indent(maxFieldName, command.name);
                 var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
                 sb.AppendLine(
 $@"        <tr>
-            <td><cmd>{command.name}</cmd></td>{indent}<td>{signature}</td>
-        </tr>{docs}");
+            <td><cmd>{command.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{docs}
+        </tr>");
             }
             sb.AppendLine("    </table>");
         }

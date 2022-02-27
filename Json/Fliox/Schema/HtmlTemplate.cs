@@ -90,6 +90,7 @@ namespace Friflo.Json.Fliox.Schema
         chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
+        sig         { white-space: nowrap; }
         key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
         rel         { color: var(--key);  }
         rel::before { content: ' ➞ '; }

@@ -82,6 +82,7 @@
         chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); margin-left: 60px; }
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
+        sig         { white-space: nowrap; }
         key         { color: var(--key);      font-family: var(--mono-font); margin-left: -3px; padding: 0 2px; border-radius: 2px; border: 1px solid var(--key-border);   background: var(--bg); }
         rel         { color: var(--key);  }
         rel::before { content: ' ➞ '; }
@@ -320,36 +321,36 @@
     <table>
 
         <tr>
-            <td><cmd>AuthenticateUser</cmd></td><td>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></td>
+            <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></sig></td>
         </tr>
         <tr>
-            <td><cmd>std.Echo</cmd></td>        <td>(<keyword>param</keyword>: <type>any</type>) : <type>any</type></td>
+            <td><cmd>std.Echo</cmd></td>        <td><sig>(<keyword>param</keyword>: <type>any</type>) : <type>any</type></sig></td>
+            <td>echos the given parameter to assure the database is working appropriately. </td>
         </tr>
-        <tr><td colspan='2'>echos the given parameter to assure the database is working appropriately. </td></tr>
         <tr>
-            <td><cmd>std.Containers</cmd></td>  <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></td>
+            <td><cmd>std.Containers</cmd></td>  <td><sig>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></sig></td>
+            <td>list all containers of the database</td>
         </tr>
-        <tr><td colspan='2'>list all containers of the database</td></tr>
         <tr>
-            <td><cmd>std.Commands</cmd></td>    <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a></td>
+            <td><cmd>std.Commands</cmd></td>    <td><sig>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbCommands'>DbCommands</a></sig></td>
+            <td>list all commands exposed by the database</td>
         </tr>
-        <tr><td colspan='2'>list all commands exposed by the database</td></tr>
         <tr>
-            <td><cmd>std.Schema</cmd></td>      <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></td>
+            <td><cmd>std.Schema</cmd></td>      <td><sig>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></sig></td>
+            <td>return the JSON Schema assigned to the database</td>
         </tr>
-        <tr><td colspan='2'>return the JSON Schema assigned to the database</td></tr>
         <tr>
-            <td><cmd>std.Stats</cmd></td>       <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></td>
+            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
+            <td>return the number entities in the containers of the database</td>
         </tr>
-        <tr><td colspan='2'>return the number entities in the containers of the database</td></tr>
         <tr>
-            <td><cmd>std.Details</cmd></td>     <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'>HostDetails</a></td>
+            <td><cmd>std.Details</cmd></td>     <td><sig>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'>HostDetails</a></sig></td>
+            <td>returns descriptive information about the Hub like version, host, project and environment name</td>
         </tr>
-        <tr><td colspan='2'>returns descriptive information about the Hub like version, host, project and environment name</td></tr>
         <tr>
-            <td><cmd>std.Cluster</cmd></td>     <td>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></td>
+            <td><cmd>std.Cluster</cmd></td>     <td><sig>(<keyword>param</keyword>: <type>any</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></sig></td>
+            <td>list all databases and their containers hosted by the Hub</td>
         </tr>
-        <tr><td colspan='2'>list all databases and their containers hosted by the Hub</td></tr>
     </table>
     <desc>
             Control individual user access to database containers and commands.
