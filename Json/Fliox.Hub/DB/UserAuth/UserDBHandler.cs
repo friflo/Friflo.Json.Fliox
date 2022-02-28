@@ -24,7 +24,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var readCredentials = store.credentials.Read();
                 var findCred        = readCredentials.Find(userId);
                 
-                await store.SyncTasks().ConfigureAwait(false);
+                await store.TrySyncTasks().ConfigureAwait(false);
+                
+                if (!readCredentials.Success) {
+                    command.Error(readCredentials.Error.Message);
+                    return null;  
+                }
 
                 UserCredential  cred    = findCred.Result;
                 bool            isValid = cred != null && cred.token == authenticate.token;
