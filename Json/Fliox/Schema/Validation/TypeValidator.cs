@@ -76,6 +76,39 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return success;
         }
         
+        public bool ValidateField (JsonValue json, ValidationField field, out string error) {
+            ValidationType type = field.Type;
+            if (type == null)   throw new NullReferenceException("field.Type");
+            return ValidateObject(json, type, out error);
+            /* Init(json);
+            var ev      = parser.NextEvent();
+            var type    = field.type;
+            switch (type.typeId) {
+                case TypeId.Class:
+                case TypeId.Union:
+                    if (ev == JsonEvent.ObjectStart) {
+                        bool success = ValidateObjectIntern(type, 0);    
+                        return Return(type, success, out error);
+                    }
+                    break;
+                case TypeId.Uint8:
+                case TypeId.Int16:
+                case TypeId.Int32:
+                case TypeId.Int64:
+                case TypeId.Float:
+                case TypeId.Double:
+                    break;
+                case TypeId.String:
+                case TypeId.BigInteger:
+                case TypeId.DateTime:
+                case TypeId.Guid:
+                case TypeId.Enum:
+                    break;
+                
+            }
+            return false; */
+        }
+        
         public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();

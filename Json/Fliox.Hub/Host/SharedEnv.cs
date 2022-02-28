@@ -73,19 +73,19 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     internal sealed class SharedCache
     {
-        private readonly    Dictionary<Type, ValidationType> validationTypes = new Dictionary<Type, ValidationType>();
+        private readonly    Dictionary<Type, ValidationField> validationFields = new Dictionary<Type, ValidationField>();
         
         /// <summary> Return an immutable <see cref="ValidationSet"/> instance for the given <param name="type"></param></summary>
-        public ValidationType GetValidationType(Type type) {
-            if (!validationTypes.TryGetValue(type, out var validationType)) {
-                using (var nativeSchema = new NativeTypeSchema(type)) {
+        public ValidationField GetValidationType(Type type) {
+            if (!validationFields.TryGetValue(type, out var validationField)) {
+                var types = new [] { type };
+                using (var nativeSchema = new NativeTypeSchema(types)) {
                     var validationSet   = new ValidationSet(nativeSchema);
-                    var typeDef         = nativeSchema.TypeAsTypeDef(type);
-                    validationType      = validationSet.TypeDefAsValidationType(typeDef);
-                    validationTypes.Add(type, validationType);
+                    validationField     = validationSet.GetValidationField(nativeSchema, type);
+                    validationFields.Add(type, validationField);
                 }
             }
-            return validationType;
+            return validationField;
         }
     }
 }

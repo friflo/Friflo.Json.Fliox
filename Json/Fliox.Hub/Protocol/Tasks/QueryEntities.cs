@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 var filterValidation    = messageContext.sharedCache.GetValidationType(typeof(FilterOperation));
                 using (var pooled = pool.TypeValidator.Get()) {
                     var validator   = pooled.instance;
-                    if (!validator.ValidateObject(filterTree, filterValidation, out var validationError)) {
+                    if (!validator.ValidateField(filterTree, filterValidation, out var validationError)) {
                         error = InvalidTaskError($"filterTree error: {validationError}");
                         return false;
                     }

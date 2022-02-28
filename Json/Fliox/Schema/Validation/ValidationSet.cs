@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
@@ -118,6 +119,19 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
             }
+        }
+        
+        public ValidationField  GetValidationField(NativeTypeSchema nativeSchema, Type type) {
+            var typeDef             = nativeSchema.GetNativeType(type);
+            var mapper              = typeDef.mapper;
+            var underlyingMapper    = mapper.GetUnderlyingMapper();
+            var fieldType           = nativeSchema.GetNativeType(underlyingMapper.type);
+            var required            = !mapper.isNullable;
+            var fieldDef            = new FieldDef("param", required, false, false, fieldType, false, false, false, null, null, null);
+            var validationField     = new ValidationField(fieldDef, -1);
+            validationField.type    = TypeDefAsValidationType(fieldType);
+
+            return validationField;
         }
     }
 }

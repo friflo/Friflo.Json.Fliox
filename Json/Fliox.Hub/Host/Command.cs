@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var paramValidation = messageContext.sharedCache.GetValidationType(typeof(T));
             using (var pooled = messageContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
-                if (!validator.ValidateObject(param, paramValidation, out error)) {
+                if (!validator.ValidateField(param, paramValidation, out error)) {
                     result = default;
                     return false;
                 }

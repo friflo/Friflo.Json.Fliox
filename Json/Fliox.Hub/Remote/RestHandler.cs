@@ -335,7 +335,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filterValidation = sharedCache.GetValidationType(typeof(FilterOperation));
             using (var pooled = pool.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
-                var filter = CreateFilter(context, queryParams, mapper, filterValidation);
+                var filter = CreateFilter(context, queryParams, mapper, filterValidation.Type);
                 if (filter == null)
                     return new JsonValue();
                 var filterJson = mapper.writer.Write(filter);

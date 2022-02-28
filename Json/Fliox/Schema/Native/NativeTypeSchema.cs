@@ -18,6 +18,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   TypeDef                 RootType        { get; }
         
         public              TypeDef                 TypeAsTypeDef(Type type) => nativeTypes[type];
+        internal            NativeTypeDef           GetNativeType(Type type) => nativeTypes[type];
 
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
