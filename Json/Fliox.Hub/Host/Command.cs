@@ -90,6 +90,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             return GetParam(out result, out error);
         }
+        
+        public void Error(string message) {
+            error = message;
+        }
 
         public TResult Error<TResult>(string message) {
             error = message;
