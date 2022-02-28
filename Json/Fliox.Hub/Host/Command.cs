@@ -61,11 +61,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         public bool GetParam(out TParam result, out string error) {
             return GetParam<TParam>(out result, out error);
         }
-            
-        public bool GetParam<T>(out T result, out string error) {
-            return ReadParam(out result, out error);
-        }
         
+        public bool GetParam<T>(out T result, out string error) {
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var reader  = pooled.instance.reader;
+                result      = reader.Read<T>(param);
+                if (reader.Error.ErrSet) {
+                    error   = reader.Error.msg.ToString();
+                    return false;
+                }
+                error = null;
+                return true;
+            }
+        }
+
         public bool ValidateParam(out TParam result, out string error) {
             return ValidateParam<TParam>(out result, out error);
         }
@@ -79,22 +88,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                     return false;
                 }
             }
-            return ReadParam(out result, out error);
+            return GetParam(out result, out error);
         }
 
-        private bool ReadParam<T>(out T result, out string error) {
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
-                var reader  = pooled.instance.reader;
-                result      = reader.Read<T>(param);
-                if (reader.Error.ErrSet) {
-                    error   = reader.Error.msg.ToString();
-                    return false;
-                }
-                error = null;
-                return true;
-            }
-        }
-        
         public TResult Error<TResult>(string message) {
             error = message;
             return default;
