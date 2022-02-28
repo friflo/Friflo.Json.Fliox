@@ -120,11 +120,12 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
         
-        /// synchronous command handler
         /// use synchronous handler only when no async methods need to be awaited  
         private static double Add(Command<Operands> command) {
             if (!command.ValidateParam(out var param, out var error))
                 return command.Error<double>(error);
+            if (param == null)
+                return command.Error<double>("expect param not null");
             return param.left + param.right;
         }
     }
