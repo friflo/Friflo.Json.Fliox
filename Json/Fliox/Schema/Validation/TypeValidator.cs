@@ -77,36 +77,45 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         public bool ValidateField (JsonValue json, ValidationField field, out string error) {
-            ValidationType type = field.Type;
-            if (type == null)   throw new NullReferenceException("field.Type");
-            return ValidateObject(json, type, out error);
-            /* Init(json);
+            Init(json);
             var ev      = parser.NextEvent();
             var type    = field.type;
-            switch (type.typeId) {
-                case TypeId.Class:
-                case TypeId.Union:
-                    if (ev == JsonEvent.ObjectStart) {
-                        bool success = ValidateObjectIntern(type, 0);    
-                        return Return(type, success, out error);
+            switch (ev) {
+                case JsonEvent.ValueNull:
+                    if (field.required) {
+                        error = "expect non null value. was null";
+                        return false;
                     }
-                    break;
-                case TypeId.Uint8:
-                case TypeId.Int16:
-                case TypeId.Int32:
-                case TypeId.Int64:
-                case TypeId.Float:
-                case TypeId.Double:
-                    break;
-                case TypeId.String:
-                case TypeId.BigInteger:
-                case TypeId.DateTime:
-                case TypeId.Guid:
-                case TypeId.Enum:
-                    break;
-                
+                    error = null;
+                    return true;
+                case JsonEvent.ValueBool:
+                    if (type.typeId == TypeId.Boolean) {
+                        error = null;
+                        return true;
+                    }
+                    error = $"expect boolean value. was: {GetErrorValue()}";
+                    return false;
+                case JsonEvent.ValueNumber: {
+                    var success = ValidateNumber(type, null);
+                    return Return(type, success, out error);
+                }
+                case JsonEvent.ValueString:{
+                    var success = ValidateString(ref parser.value, type, null);
+                    return Return(type, success, out error);
+                }
+                case JsonEvent.ObjectStart: {
+                    bool success = ValidateObjectIntern(type, 0);    
+                    return Return(type, success, out error);
+                }
+                case JsonEvent.ArrayStart: {
+                    bool success = ValidateElement(type, false, null, 0);
+                    return Return(type, success, out error);
+                }
+                case JsonEvent.Error:
+                    error = parser.error.GetMessageBody();
+                    return false;
             }
-            return false; */
+            throw new InvalidOperationException($"Unexpected JSON event: {ev}");
         }
         
         public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
