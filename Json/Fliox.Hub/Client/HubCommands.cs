@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>return the JSON Schema assigned to the database</summary>
         public CommandTask<DbSchema>        Schema()    =>  SendCommand<JsonValue, DbSchema>    (Std.Schema,        new JsonValue());
         /// <summary>return the number entities in the containers of the database</summary>
-        public CommandTask<DbStats>         Stats()     =>  SendCommand<JsonValue, DbStats>     (Std.Stats,         new JsonValue());
+        public CommandTask<DbStats>         Stats(string param) => SendCommand<string,DbStats>  (Std.Stats,  param);
         
         // --- commands: host
         /// <summary>returns descriptive information about the Hub like version, host, project and environment name</summary>

@@ -34,7 +34,7 @@ export interface PocStore {
     ["std.Containers"]     (param: any) : DbContainers;
     ["std.Commands"]       (param: any) : DbCommands;
     ["std.Schema"]         (param: any) : DbSchema;
-    ["std.Stats"]          (param: any) : DbStats;
+    ["std.Stats"]          (param: string) : DbStats;
     ["std.Details"]        (param: any) : HostDetails;
     ["std.Cluster"]        (param: any) : HostCluster;
 }

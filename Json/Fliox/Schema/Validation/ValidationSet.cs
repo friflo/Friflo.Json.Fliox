@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 typeDef     = nativeSchema.GetNativeType(underlyingType);
             } else {
                 typeDef     = nativeSchema.GetNativeType(type);
-                required    = !typeDef.IsClass;
+                required    = !type.IsClass;
             }
             var isArray             = typeDef.mapper.IsArray;
             var fieldDef            = new FieldDef("param", required, false, false, typeDef, isArray, false, false, null, null, null);
