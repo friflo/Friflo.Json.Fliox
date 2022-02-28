@@ -11,7 +11,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// <see cref="Command{TParam}"/> contains all data relevant for command execution as properties. <br/>
+    /// <see cref="Command{TParam}"/> expose all data relevant for command execution as properties or methods. <br/>
     /// - the command <see cref="Name"/> == method name <br/>
     /// - the unvalidated input parameter <see cref="GetParam"/> of type <typeparamref name="TParam"/><br/>
     /// - the validated input parameter <see cref="ValidateParam"/> of type <typeparamref name="TParam"/><br/>
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
     /// - the <see cref="Hub"/> exposing general Hub information <br/>
-    /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/> 
+    /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// </summary>
     /// <typeparam name="TParam">Type of the command input parameter</typeparam>
     public class Command<TParam>{
@@ -97,8 +97,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             error = message;
         }
 
-        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error
-        /// It returns the default value of <typeparam name="TResult"></typeparam>. 
+        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error.
+        /// It returns the default value of the given <typeparam name="TResult"></typeparam>. 
         /// </summary>
         public TResult Error<TResult>(string message) {
             error = message;
