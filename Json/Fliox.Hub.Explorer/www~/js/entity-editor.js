@@ -620,7 +620,7 @@ export class EntityEditor {
         switch (paramType) {
             case "object": return '{}';
             case "array": return '[]';
-            case "string": return '""';
+            case "string": return 'null';
             case "number": return '0';
             case "boolean": return 'false';
             default: return 'null';
