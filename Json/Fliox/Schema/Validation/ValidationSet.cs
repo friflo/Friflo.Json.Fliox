@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 
+// ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Schema.Validation
 {
     /// <summary>
@@ -129,12 +130,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 type        = underlyingType;
             }
             var typeDef             = nativeSchema.GetNativeType(type);
-            var fieldType           = nativeSchema.GetNativeType(type);
             var isArray             = typeDef.mapper.IsArray;
-            var fieldDef            = new FieldDef("param", required, false, false, fieldType, isArray, false, false, null, null, null);
+            var fieldDef            = new FieldDef("param", required, false, false, typeDef, isArray, false, false, null, null, null);
             var validationField     = new ValidationField(fieldDef, -1);
-            validationField.type    = TypeDefAsValidationType(fieldType);
-
+            validationField.type    = TypeDefAsValidationType(typeDef);
             return validationField;
         }
     }
