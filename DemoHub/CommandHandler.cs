@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.ParamValidate(out var param, out var error))
+            if (!command.ValidateParam(out var param, out var error))
                 return command.Error<Records>(error);
             var result = FakeUtils.CreateFakes(param);
             
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DemoHub
             
             await demoStore.SyncTasks();
             
-            var addResults  = command.Param.addResults;
+            var addResults  = param.addResults;
             if (addResults.HasValue && addResults.Value == false) {
                 result.orders       = null;
                 result.customers    = null;
@@ -62,7 +62,9 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            var seconds = command.Param ?? 60;
+            if (!command.GetParam(out var param, out var error))
+                return command.Error<Counts>(error);
+            var seconds = param ?? 60;
             var from    = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Count(o => o.created >= from);
@@ -87,7 +89,9 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            var seconds = command.Param ?? 60;
+            if (!command.GetParam(out var param, out var error))
+                return command.Error<Records>(error);
+            var seconds = param ?? 60;
             var from    = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Query(o => o.created >= from);
@@ -119,7 +123,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// synchronous command handler
         /// use synchronous handler only when no async methods need to be awaited  
         private static double Add(Command<Operands> command) {
-            if (!command.ParamValidate(out var param, out var error))
+            if (!command.ValidateParam(out var param, out var error))
                 return command.Error<double>(error);
             return param.left + param.right;
         }
