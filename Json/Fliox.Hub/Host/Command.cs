@@ -13,7 +13,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <summary>
     /// <see cref="Command{TParam}"/> contains all data relevant for command execution as properties. <br/>
     /// - the command <see cref="Name"/> == method name <br/>
-    /// - the input parameter <see cref="GetParam"/> of type <typeparamref name="TParam"/> <br/>
+    /// - the unvalidated input parameter <see cref="GetParam"/> of type <typeparamref name="TParam"/><br/>
+    /// - the validated input parameter <see cref="ValidateParam"/> of type <typeparamref name="TParam"/><br/>
     /// - the input parameter <see cref="JsonParam"/> as raw JSON <br/>
     /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
@@ -91,10 +92,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             return GetParam(out result, out error);
         }
         
+        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error</summary>
         public void Error(string message) {
             error = message;
         }
 
+        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error
+        /// It returns the default value of <typeparam name="TResult"></typeparam>. 
+        /// </summary>
         public TResult Error<TResult>(string message) {
             error = message;
             return default;
