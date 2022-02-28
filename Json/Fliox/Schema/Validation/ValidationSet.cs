@@ -123,20 +123,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         public ValidationField  GetValidationField(NativeTypeSchema nativeSchema, Type type) {
-            bool            required;
-            var             underlyingType = Nullable.GetUnderlyingType(type);
-            NativeTypeDef   typeDef;
-            if (underlyingType != null) {
-                required    = false;
-                typeDef     = nativeSchema.GetNativeType(underlyingType);
-            } else {
-                typeDef     = nativeSchema.GetNativeType(type);
-                required    = !type.IsClass;
-            }
-            var isArray             = typeDef.mapper.IsArray;
-            var fieldDef            = new FieldDef("param", required, false, false, typeDef, isArray, false, false, null, null, null);
+            var m                   = nativeSchema.GetArgModifier(type);
+            var isArray             = m.typeDef.mapper.IsArray;
+            var fieldDef            = new FieldDef("param", m.required, false, false, m.typeDef, isArray, false, false, null, null, null);
             var validationField     = new ValidationField(fieldDef, -1);
-            validationField.type    = TypeDefAsValidationType(typeDef);
+            validationField.type    = TypeDefAsValidationType(m.typeDef);
             return validationField;
         }
     }
