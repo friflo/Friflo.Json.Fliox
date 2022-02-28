@@ -127,7 +127,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
             var underlyingMapper    = mapper.GetUnderlyingMapper();
             var fieldType           = nativeSchema.GetNativeType(underlyingMapper.type);
             var required            = !mapper.isNullable;
-            var fieldDef            = new FieldDef("param", required, false, false, fieldType, false, false, false, null, null, null);
+            var isArray             = mapper.IsArray;
+            var fieldDef            = new FieldDef("param", required, false, false, fieldType, isArray, false, false, null, null, null);
             var validationField     = new ValidationField(fieldDef, -1);
             validationField.type    = TypeDefAsValidationType(fieldType);
 
