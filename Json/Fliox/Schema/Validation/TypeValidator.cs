@@ -88,13 +88,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     }
                     error = null;
                     return true;
-                case JsonEvent.ValueBool:
-                    if (type.typeId == TypeId.Boolean) {
-                        error = null;
-                        return true;
-                    }
-                    error = $"expect boolean value. was: {GetErrorValue()}";
-                    return false;
+                case JsonEvent.ValueBool: {
+                    var success = ValidateBoolean(type, null);
+                    return Return(type, success, out error);
+                }
                 case JsonEvent.ValueNumber: {
                     var success = ValidateNumber(type, null);
                     return Return(type, success, out error);
@@ -188,10 +185,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     case JsonEvent.ValueBool:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
                             return false;
-                        if (field.typeId == TypeId.Boolean)
+                        if (ValidateBoolean(field.type, type))
                             continue;
-                        var value = parser.boolValue ? "true" : "false";
-                        return ErrorType("Incorrect type.", value, false, field.typeName, field.type.@namespace, type);
+                        return false;
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
@@ -259,10 +255,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         return false;
                         
                     case JsonEvent.ValueBool:
-                        if (type.typeId == TypeId.Boolean)
+                        if (ValidateBoolean(type, parent))
                             continue;
-                        var value = parser.boolValue ? "true" : "false";
-                        return ErrorType("Incorrect type.", value, false, type.name, null, parent);
+                        return false;
                     
                     case JsonEvent.ValueNull:
                         if (isNullableElement)
@@ -385,6 +380,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
             if (str.Length < 20)
                 return str;
             return str.Substring(20) + "...";
+        }
+        
+        private bool ValidateBoolean (ValidationType type, ValidationType owner) {
+            if (type.typeId == TypeId.Boolean)
+                return true;
+            var value = parser.boolValue ? "true" : "false";
+            return ErrorType("Incorrect type.", value, false, type.name, type.@namespace, owner);
         }
         
         private bool ValidateNumber (ValidationType type, ValidationType owner) {
