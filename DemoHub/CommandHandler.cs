@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DemoHub
             
             await demoStore.SyncTasks();
             
-            var addResults  = param.addResults;
+            var addResults  = param?.addResults;
             if (addResults.HasValue && addResults.Value == false) {
                 result.orders       = null;
                 result.customers    = null;

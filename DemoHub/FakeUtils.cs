@@ -28,11 +28,11 @@ namespace Friflo.Json.Fliox.DemoHub
         internal Records CreateFakes(Fake fake)
         {
             var result      = new Records();
-            var orders      = fake.orders       ?? 0; 
-            var articles    = fake.articles     ?? 0;
-            var producers   = fake.producers    ?? 0;
-            var customers   = fake.customers    ?? 0;
-            var employees   = fake.employees    ?? 0;
+            var orders      = fake?.orders      ?? 0; 
+            var articles    = fake?.articles    ?? 0;
+            var producers   = fake?.producers   ?? 0;
+            var customers   = fake?.customers   ?? 0;
+            var employees   = fake?.employees   ?? 0;
             
             // set default counts if all counts == 0
             if (orders == 0 && articles == 0 && producers == 0 && customers == 0 && employees == 0) {
