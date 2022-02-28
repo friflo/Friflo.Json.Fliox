@@ -71,21 +71,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public bool ValidateParam<T>(out T result, out string error) {
-            if (!ValidateParam<T>(out error)) {
-                result = default;
-                return false;
-            }
-            return ReadParam(out result, out error);
-        }
-        
-        private bool ValidateParam<T>(out string error) {
             var paramValidation = messageContext.sharedCache.GetValidationType(typeof(T));
             using (var pooled = messageContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
-                return validator.ValidateObject(param, paramValidation, out error);
+                if (!validator.ValidateObject(param, paramValidation, out error)) {
+                    result = default;
+                    return false;
+                }
             }
+            return ReadParam(out result, out error);
         }
-        
+
         private bool ReadParam<T>(out T result, out string error) {
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
