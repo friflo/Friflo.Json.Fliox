@@ -75,15 +75,16 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private readonly    Dictionary<Type, ValidationField> validationFields = new Dictionary<Type, ValidationField>();
         
-        /// <summary> Return an immutable <see cref="ValidationSet"/> instance for the given <param name="type"></param></summary>
+        /// <summary> Return an immutable <see cref="ValidationField"/> instance for the given <param name="type"></param></summary>
         public ValidationField GetValidationType(Type type) {
-            if (!validationFields.TryGetValue(type, out var validationField)) {
-                var types = new [] { type };
-                using (var nativeSchema = new NativeTypeSchema(types)) {
-                    var validationSet   = new ValidationSet(nativeSchema);
-                    validationField     = validationSet.GetValidationField(nativeSchema, type);
-                    validationFields.Add(type, validationField);
-                }
+            if (validationFields.TryGetValue(type, out var validationField))
+                return validationField;
+            
+            var types = new [] { type };
+            using (var nativeSchema = new NativeTypeSchema(types)) {
+                var validationSet   = new ValidationSet(nativeSchema);
+                validationField     = validationSet.GetValidationField(nativeSchema, type);
+                validationFields.Add(type, validationField);
             }
             return validationField;
         }
