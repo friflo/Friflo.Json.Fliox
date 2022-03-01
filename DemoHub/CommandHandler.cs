@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <b> Note </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<Records> Fake(Command<Fake> command) {
+        private static async Task<Records> FakeRecords(Command<Fake> command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
