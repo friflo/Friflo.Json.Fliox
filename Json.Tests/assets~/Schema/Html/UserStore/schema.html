@@ -159,8 +159,9 @@
                 docsSelection?.classList.remove('selected');
                 docsSelection = element;
                 element.classList.add('selected');
-                const parent = element.parentElement;
-                const block = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
+                const isChapter = id == 'commands' || id == 'containers';
+                const parent    = isChapter ? element : element.parentElement;
+                const block     = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
                 parent.scrollIntoView({ behavior: 'smooth', block: block });
 
                 // set focus after scrolling finished. Calling focus() directly cancel the scroll animation
@@ -313,7 +314,7 @@
             Each role in roles has a set of rights which grant or deny container access or command execution. 
             
     </desc>
-    <chapter>containers</chapter>
+    <chapter id='containers'><a href='#containers'>containers</a></chapter>
     <table>
         <tr>
             <td><field>credentials</field></td> <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></td>
@@ -325,7 +326,7 @@
             <td><field>roles</field></td>       <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></td>
         </tr>
     </table>
-    <chapter>commands</chapter>
+    <chapter id='commands'><a href='#commands'>commands</a></chapter>
     <table class='commands'>
 
         <tr>
