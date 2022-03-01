@@ -59,22 +59,22 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }} */
     
-        /// <summary>Return the command param without validation in <paramref name="result"/></summary>
-        /// <param name="result">the param value if conversion successful</param>
+        /// <summary>Return the command <paramref name="param"/></summary> without validation 
+        /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool GetParam(out TParam result, out string error) {
-            return GetParam<TParam>(out result, out error);
+        public bool GetParam(out TParam param, out string error) {
+            return GetParam<TParam>(out param, out error);
         }
         
-        /// <summary>Return the command param as the given type <typeparamref name="T"/> without validation in <paramref name="result"/></summary>
-        /// <param name="result">the param value if conversion successful</param>
+        /// <summary>Return the command <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
+        /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool GetParam<T>(out T result, out string error) {
+        public bool GetParam<T>(out T param, out string error) {
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                result      = reader.Read<T>(param);
+                param      = reader.Read<T>(this.param);
                 if (reader.Error.ErrSet) {
                     error   = reader.Error.msg.ToString();
                     return false;
@@ -84,28 +84,28 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
 
-        /// <summary>Return the validated command param in <paramref name="result"/></summary>
-        /// <param name="result">the param value if conversion successful</param>
+        /// <summary>Return the validated command <paramref name="param"/></summary>
+        /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool ValidateParam(out TParam result, out string error) {
-            return ValidateParam<TParam>(out result, out error);
+        public bool ValidateParam(out TParam param, out string error) {
+            return ValidateParam<TParam>(out param, out error);
         }
         
-        /// <summary>Return the validated command param as the given type <typeparamref name="T"/> in <paramref name="result"/></summary>
-        /// <param name="result">the param value if conversion successful</param>
+        /// <summary>Return the validated command <paramref name="param"/> as the given type <typeparamref name="T"/></summary>
+        /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool ValidateParam<T>(out T result, out string error) {
+        public bool ValidateParam<T>(out T param, out string error) {
             var paramValidation = messageContext.sharedCache.GetValidationType(typeof(T));
             using (var pooled = messageContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
-                if (!validator.ValidateField(param, paramValidation, out error)) {
-                    result = default;
+                if (!validator.ValidateField(this.param, paramValidation, out error)) {
+                    param = default;
                     return false;
                 }
             }
-            return GetParam(out result, out error);
+            return GetParam(out param, out error);
         }
         
         /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error</summary>
