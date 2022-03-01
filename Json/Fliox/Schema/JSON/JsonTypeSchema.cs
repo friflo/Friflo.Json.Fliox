@@ -140,24 +140,36 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public void Dispose() { }
 
         private static void SetField (JsonTypeDef typeDef, string fieldName, FieldType field, in JsonTypeContext context) {
-            field.name              = fieldName;
-            TypeDef fieldType; // not initialized by intention
-            bool    isArray         = false;
-            bool    isDictionary    = false;
-            bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
-
-            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
+            field.name      = fieldName;
+            if (field.discriminant != null) {
+                typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
+                return;
+            }
+            bool required       = typeDef.type.required?.Contains(fieldName) ?? false;
+            var  attr           = new FieldAttributes();
+            var  fieldType      = GetFieldType(field, ref attr, context);
+            
+            var isKey           = field.isKey.HasValue && field.isKey.Value;
+            var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
+            var relation        = field.relation;
+            
+            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType,
+                attr.isArray, attr.isDictionary, attr.isNullableElement, typeDef, relation, field.description);
+            typeDef.fields.Add(fieldDef);
+        }
+        
+        private static TypeDef GetFieldType (FieldType field, ref FieldAttributes attr, in JsonTypeContext context) {
+            FieldType   items       = GetItemsFieldType(field.items, out attr.isNullableElement);
             JsonValue   jsonType    = field.type;
             FieldType   addProps    = field.additionalProperties;
-
             if (field.reference != null) {
-                fieldType = FindRef(field.reference, context);
+                return FindRef(field.reference, context);
             }
-            else if (items?.reference != null) {
-                isArray = true;
-                fieldType = FindFieldType(field, items, context);
+            if (items?.reference != null) {
+                attr.isArray = true;
+                return FindFieldType(field, items, context);
             }
-            else if (field.oneOf != null) {
+            if (field.oneOf != null) {
                 TypeDef oneOfType = null; 
                 foreach (var item in field.oneOf) {
                     var itemType = FindFieldType(field, item, context);
@@ -167,36 +179,22 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 }
                 if (oneOfType == null)
                     throw new InvalidOperationException($"'oneOf' array without a type: {field.oneOf}");
-                fieldType = oneOfType;
+                return oneOfType;
             }
-            else if (addProps != null) {
-                isDictionary = true;
+            if (addProps != null) {
+                attr.isDictionary = true;
                 if (addProps.reference != null) {
-                    fieldType = FindRef(addProps.reference, context);
-                } else {
-                    fieldType = FindTypeFromJson(field, jsonType, items, context, ref isArray);
+                    return FindRef(addProps.reference, context);
                 }
+                return FindTypeFromJson(field, jsonType, items, context, ref attr.isArray);
             }
-            else if (!jsonType.IsNull()) {
-                fieldType = FindTypeFromJson (field, jsonType, items, context, ref isArray);
+            if (!jsonType.IsNull()) {
+                return FindTypeFromJson (field, jsonType, items, context, ref attr.isArray);
             }
-            else if (field.discriminant != null) {
-                typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
-                return;
-            }
-            else {
-                fieldType = context.standardTypes.JsonValue;
-                // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
-            }
-            var isKey           = field.isKey.HasValue && field.isKey.Value;
-            var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
-            var relation        = field.relation;
-            
-            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType,
-                isArray, isDictionary, isNullableElement, typeDef, relation, field.description);
-            typeDef.fields.Add(fieldDef);
+            // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
+            return context.standardTypes.JsonValue;
         }
-        
+
         private static void SetCommand (JsonTypeDef typeDef, string commandName, CommandType field, in JsonTypeContext context) {
             field.name      = commandName;
             var valueType   = GetCommandArg("param",   field.param,  context);
@@ -378,6 +376,13 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public TypeDef TypeAsTypeDef(string type) {
             return typeMap[type];
         }
+    }
+    
+    internal struct FieldAttributes
+    {
+        internal    bool    isArray;
+        internal    bool    isDictionary;
+        internal    bool    isNullableElement;
     }
     
     internal readonly struct JsonTypeContext
