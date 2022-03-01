@@ -123,6 +123,7 @@
         .type                               { scroll-margin-top: 5px; scroll-margin-bottom: 100px;  } /* enable scrolling to next type without aligning next element on top */
         div.type table                      { margin-left: 40px; }
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
+        .commands tr                        { vertical-align: top; }
     </style>
     <script>
         // ----------------- theme dark / light
@@ -325,7 +326,7 @@
         </tr>
     </table>
     <chapter>commands</chapter>
-    <table>
+    <table class='commands'>
 
         <tr>
             <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></sig></td>

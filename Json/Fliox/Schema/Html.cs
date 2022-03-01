@@ -193,7 +193,7 @@ $@"        <tr>
             var commands        = type.Commands;
             sb.AppendLine(
 $@"    <chapter>commands</chapter>
-    <table>
+    <table class='commands'>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             foreach (var command in commands) {

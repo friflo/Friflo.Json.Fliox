@@ -131,6 +131,7 @@ namespace Friflo.Json.Fliox.Schema
         .type                               { scroll-margin-top: 5px; scroll-margin-bottom: 100px;  } /* enable scrolling to next type without aligning next element on top */
         div.type table                      { margin-left: 40px; }
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
+        .commands tr                        { vertical-align: top; }
     </style>
     <script>
         // ----------------- theme dark / light
