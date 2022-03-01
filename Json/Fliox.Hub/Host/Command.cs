@@ -97,8 +97,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             error = message;
         }
 
-        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error.
-        /// It returns the default value of the given <typeparam name="TResult"></typeparam>. 
+        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error. <br/>
+        /// It returns the default value of the given <typeparamref name="TResult"></typeparamref> to simplify
+        /// returning from a command handler with a single statement like:
+        /// <code>
+        /// if (!command.ValidateParam(out var param, out var error))
+        ///     return command.Error &lt;int&gt;(error);
+        /// </code>  
         /// </summary>
         public TResult Error<TResult>(string message) {
             error = message;
