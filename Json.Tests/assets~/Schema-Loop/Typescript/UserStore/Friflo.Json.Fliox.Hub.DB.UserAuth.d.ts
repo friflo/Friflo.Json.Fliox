@@ -16,12 +16,12 @@ export interface UserStore {
     roles        : { [key: string]: Role };
 
     // --- commands
-    ["AuthenticateUser"]     (param: AuthenticateUser) : AuthenticateUserResult;
+    ["AuthenticateUser"]     (param: AuthenticateUser | null) : AuthenticateUserResult;
     ["std.Echo"]             (param: any) : any;
     ["std.Containers"]       (param: any) : DbContainers;
     ["std.Commands"]         (param: any) : DbCommands;
     ["std.Schema"]           (param: any) : DbSchema;
-    ["std.Stats"]            (param: string) : DbStats;
+    ["std.Stats"]            (param: string | null) : DbStats;
     ["std.Details"]          (param: any) : HostDetails;
     ["std.Cluster"]          (param: any) : HostCluster;
 }

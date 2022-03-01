@@ -42,16 +42,16 @@ export interface PocStore {
     types      : { [key: string]: TestType };
 
     // --- commands
-    ["TestCommand"]        (param: TestCommand) : boolean;
-    ["SyncCommand"]        (param: string) : string;
-    ["AsyncCommand"]       (param: string) : string;
-    ["test.Command1"]      (param: string) : string;
-    ["test.Command2"]      (param: string) : string;
+    ["TestCommand"]        (param: TestCommand | null) : boolean;
+    ["SyncCommand"]        (param: string | null) : string;
+    ["AsyncCommand"]       (param: string | null) : string;
+    ["test.Command1"]      (param: string | null) : string;
+    ["test.Command2"]      (param: string | null) : string;
     ["std.Echo"]           (param: any) : any;
     ["std.Containers"]     (param: any) : DbContainers;
     ["std.Commands"]       (param: any) : DbCommands;
     ["std.Schema"]         (param: any) : DbSchema;
-    ["std.Stats"]          (param: string) : DbStats;
+    ["std.Stats"]          (param: string | null) : DbStats;
     ["std.Details"]        (param: any) : HostDetails;
     ["std.Cluster"]        (param: any) : HostCluster;
 }

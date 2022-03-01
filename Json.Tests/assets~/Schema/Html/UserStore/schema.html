@@ -328,7 +328,7 @@
     <table>
 
         <tr>
-            <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></sig></td>
+            <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></sig></td>
         </tr>
         <tr>
             <td><cmd>std.Echo</cmd></td>        <td><sig>(<keyword>param</keyword>: <type>any</type>) : <type>any</type></sig></td>
@@ -347,7 +347,7 @@
             <td><docs>return the JSON Schema assigned to the database</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <type>string</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
+            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
             <td><docs>return the number of entities of all containers (or the given container) of the database</docs></td>
         </tr>
         <tr>

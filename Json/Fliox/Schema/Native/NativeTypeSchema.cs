@@ -179,16 +179,17 @@ namespace Friflo.Json.Fliox.Schema.Native
             }
             typeDef.commands = commandDefs;
             foreach (var command in commands) {
-                var paramArg    = GetCommandArg("param",   command.paramType);
-                var resultArg   = GetCommandArg("result",  command.resultType);
+                var paramArg    = GetCommandArg("param",   command.paramType,  false);
+                var resultArg   = GetCommandArg("result",  command.resultType, true);
                 var commandDef  = new CommandDef(command.name, paramArg, resultArg, command.docs);
                 commandDefs.Add(commandDef);
             }
         }
         
-        private FieldDef GetCommandArg(string name, Type type) {
-            var m = GetArgModifier(type);
-            return new FieldDef(name, m.required, false, false, m.typeDef, false, false, false, null, null, null);
+        private FieldDef GetCommandArg(string name, Type type, bool required) {
+            var m       = GetArgModifier(type);
+            required   |= m.required;
+            return new FieldDef(name, required, false, false, m.typeDef, false, false, false, null, null, null);
         }
         
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
@@ -265,7 +266,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 return new ArgModifier(false, typeDef);
             } else {
                 var typeDef     = nativeTypes[type];
-                bool required   = true; // !type.IsClass;
+                bool required   = !type.IsClass;
                 return new ArgModifier(required, typeDef);
             }
         }

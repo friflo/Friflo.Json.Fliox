@@ -136,10 +136,10 @@ export class Schema {
         for (const commandName in commands) {
             const command = commands[commandName];
             // assign file matcher for command param
-            const paramType = Schema.getResolvedType(command.param, schemaPath);
+            const paramType = Schema.replaceLocalRefsClone(command.param, schemaPath);
             Schema.addCommandArgument("command-param", database, commandName, paramType, schemaMap);
             // assign file matcher for command result
-            const resultType = Schema.getResolvedType(command.result, schemaPath);
+            const resultType = Schema.replaceLocalRefsClone(command.result, schemaPath);
             Schema.addCommandArgument("command-result", database, commandName, resultType, schemaMap);
         }
     }
@@ -170,6 +170,33 @@ export class Schema {
         if ($ref[0] != "#")
             return type;
         return { $ref: "./" + schemaPath + $ref, _resolvedDef: null };
+    }
+    static replaceLocalRefsClone(type, schemaPath) {
+        const clone = JSON.parse(JSON.stringify(type));
+        Schema.replaceLocalRefs(clone, schemaPath);
+        return clone;
+    }
+    static replaceLocalRefs(node, schemaPath) {
+        for (const propertyName in node) {
+            const property = node[propertyName];
+            switch (typeof property) {
+                case "string":
+                    if (propertyName == "$ref") {
+                        const $ref = property;
+                        if ($ref && $ref[0] == "#") {
+                            node.$ref = "./" + schemaPath + $ref;
+                        }
+                    }
+                    break;
+                case "object":
+                    if (propertyName.startsWith("_")) {
+                        node[propertyName] = null;
+                        break;
+                    }
+                    Schema.replaceLocalRefs(property, schemaPath);
+                    break;
+            }
+        }
     }
 }
 //# sourceMappingURL=schema.js.map

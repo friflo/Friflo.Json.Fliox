@@ -334,19 +334,19 @@
     <table>
 
         <tr>
-            <td><cmd>TestCommand</cmd></td>   <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'>TestCommand</a>) : <type>boolean</type></sig></td>
+            <td><cmd>TestCommand</cmd></td>   <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestCommand'>TestCommand</a> | null) : <type>boolean</type></sig></td>
         </tr>
         <tr>
-            <td><cmd>SyncCommand</cmd></td>   <td><sig>(<keyword>param</keyword>: <type>string</type>) : <type>string</type></sig></td>
+            <td><cmd>SyncCommand</cmd></td>   <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <type>string</type></sig></td>
         </tr>
         <tr>
-            <td><cmd>AsyncCommand</cmd></td>  <td><sig>(<keyword>param</keyword>: <type>string</type>) : <type>string</type></sig></td>
+            <td><cmd>AsyncCommand</cmd></td>  <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <type>string</type></sig></td>
         </tr>
         <tr>
-            <td><cmd>test.Command1</cmd></td> <td><sig>(<keyword>param</keyword>: <type>string</type>) : <type>string</type></sig></td>
+            <td><cmd>test.Command1</cmd></td> <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <type>string</type></sig></td>
         </tr>
         <tr>
-            <td><cmd>test.Command2</cmd></td> <td><sig>(<keyword>param</keyword>: <type>string</type>) : <type>string</type></sig></td>
+            <td><cmd>test.Command2</cmd></td> <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <type>string</type></sig></td>
         </tr>
         <tr>
             <td><cmd>std.Echo</cmd></td>      <td><sig>(<keyword>param</keyword>: <type>any</type>) : <type>any</type></sig></td>
@@ -365,7 +365,7 @@
             <td><docs>return the JSON Schema assigned to the database</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Stats</cmd></td>     <td><sig>(<keyword>param</keyword>: <type>string</type>) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
+            <td><cmd>std.Stats</cmd></td>     <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
             <td><docs>return the number of entities of all containers (or the given container) of the database</docs></td>
         </tr>
         <tr>
