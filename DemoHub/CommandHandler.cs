@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.GetParam(out var param, out var error))
+            if (!command.ValidateParam(out var param, out var error))
                 return command.Error<Records>(error);
             var seconds = param ?? 60;
             var from    = DateTime.Now.AddSeconds(-seconds);
