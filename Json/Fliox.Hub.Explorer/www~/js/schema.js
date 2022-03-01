@@ -146,12 +146,12 @@ export class Schema {
     // a command argument is either the command param or command result
     static addCommandArgument(argumentName, database, command, type, schemaMap) {
         const url = `${argumentName}://${database}.${command.toLocaleLowerCase()}.json`;
-        if (type.$ref) {
-            const uri = "http://" + database + type.$ref.substring(1);
-            const schema = schemaMap[uri];
+        /* if (type.$ref) {
+            const uri       = "http://" + database + type.$ref.substring(1);
+            const schema    = schemaMap[uri];
             schema.fileMatch.push(url); // requires a lower case string
             return;
-        }
+        } */
         // create a new monaco schema with an uri that is never referenced
         // - created uri is unique and descriptive
         // - created uri allows resolving relative "$ref" types
