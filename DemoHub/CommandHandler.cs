@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.DemoHub
             if (!command.ValidateParam(out var param, out var error))
                 return command.Error<double>(error);
             if (param == null)
-                return command.Error<double>("expect param not null");
+                return 0;
             return param.left + param.right;
         }
     }
