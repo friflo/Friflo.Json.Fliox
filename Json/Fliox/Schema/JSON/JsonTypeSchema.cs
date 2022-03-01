@@ -158,7 +158,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
             typeDef.fields.Add(fieldDef);
         }
         
-        private static TypeDef GetFieldType (FieldType field, ref FieldAttributes attr, in JsonTypeContext context) {
+        private static TypeDef GetFieldType (FieldType field, ref FieldAttributes attr, in JsonTypeContext context)
+        {
             FieldType   items       = GetItemsFieldType(field.items, out attr.isNullableElement);
             JsonValue   jsonType    = field.type;
             FieldType   addProps    = field.additionalProperties;
@@ -172,6 +173,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
             if (field.oneOf != null) {
                 TypeDef oneOfType = null; 
                 foreach (var item in field.oneOf) {
+                    if (item.type.AsString() == "\"null\"") {
+                        attr.isNullable = true;
+                        continue;
+                    }
                     var itemType = FindFieldType(field, item, context);
                     if (itemType == null)
                         continue;
@@ -186,10 +191,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 if (addProps.reference != null) {
                     return FindRef(addProps.reference, context);
                 }
-                return FindTypeFromJson(field, jsonType, items, context, ref attr.isArray);
+                return FindTypeFromJson(field, jsonType, items, context, ref attr);
             }
             if (!jsonType.IsNull()) {
-                return FindTypeFromJson (field, jsonType, items, context, ref attr.isArray);
+                return FindTypeFromJson(field, jsonType, items, context, ref attr);
             }
             // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             return context.standardTypes.JsonValue;
@@ -204,16 +209,24 @@ namespace Friflo.Json.Fliox.Schema.JSON
         }
         
         private static FieldDef GetCommandArg(string name, FieldType fieldType, in JsonTypeContext context) {
-            var typeDef = FindFieldType(null, fieldType,  context);
-            return new FieldDef(name, true, false, false, typeDef, false, false, false, null, null, null);
+            var attr        = new FieldAttributes();
+            var argType     = GetFieldType(fieldType, ref attr, context);
+            var required    = !attr.isNullable;
+            return new FieldDef(name, required, false, false, argType, attr.isArray, attr.isDictionary, false, null, null, null);
         }
         
-        private static TypeDef FindTypeFromJson (FieldType field, JsonValue jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {
+        private static TypeDef FindTypeFromJson (
+            FieldType           field,
+            JsonValue           jsonArray,
+            FieldType           items,
+            in JsonTypeContext  context,
+            ref FieldAttributes attr)
+        {
             var json = jsonArray.AsString();
             if     (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
                 if (jsonValue == "array") {
-                    isArray = true;
+                    attr.isArray = true;
                     return FindFieldType (field, items, context);
                 }
                 if (jsonValue == "null")
@@ -225,10 +238,12 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 TypeDef elementType = null;
                 var fieldTypes = context.reader.Read<List<string>>(json);
                 foreach (var itemType in fieldTypes) {
-                    if (itemType == "null")
+                    if (itemType == "null") {
+                        attr.isNullable = true;
                         continue;
+                    }
                     if (itemType == "array") {
-                        isArray = true;
+                        attr.isArray = true;
                         return FindFieldType (field, items, context);
                     }
                     var elementTypeDef = FindType(itemType, context);
@@ -272,9 +287,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
             }
             var jsonType =  itemType.type;
             if (!jsonType.IsNull()) {
-                bool isArray = true;
-                var itemTypeItems = GetItemsFieldType(itemType.items, out _);
-                return FindTypeFromJson(field, jsonType, itemTypeItems, context, ref isArray);
+                var attr            = new FieldAttributes();
+                var itemTypeItems   = GetItemsFieldType(itemType.items, out _);
+                return FindTypeFromJson(field, jsonType, itemTypeItems, context, ref attr);
             }
             return context.standardTypes.JsonValue;
         }
@@ -380,6 +395,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     
     internal struct FieldAttributes
     {
+        internal    bool    isNullable;
         internal    bool    isArray;
         internal    bool    isDictionary;
         internal    bool    isNullableElement;
