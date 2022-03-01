@@ -187,9 +187,9 @@ namespace Friflo.Json.Fliox.Schema.Native
         }
         
         private FieldDef GetCommandArg(string name, Type type, bool required) {
-            var m       = GetArgModifier(type);
-            required   |= m.required;
-            return new FieldDef(name, required, false, false, m.typeDef, false, false, false, null, null, null);
+            var attr    = GetArgAttributes(type);
+            required   |= attr.required;
+            return new FieldDef(name, required, false, false, attr.typeDef, false, false, false, null, null, null);
         }
         
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
@@ -259,25 +259,25 @@ namespace Friflo.Json.Fliox.Schema.Native
             return list;
         }
         
-        internal ArgModifier GetArgModifier(Type type) {
+        internal ArgAttributes GetArgAttributes(Type type) {
             var underlyingType  = Nullable.GetUnderlyingType(type);
             if (underlyingType != null) {
                 var typeDef     = nativeTypes[underlyingType];
-                return new ArgModifier(false, typeDef);
+                return new ArgAttributes(false, typeDef);
             } else {
                 var typeDef     = nativeTypes[type];
                 bool required   = !type.IsClass;
-                return new ArgModifier(required, typeDef);
+                return new ArgAttributes(required, typeDef);
             }
         }
     }
     
-    internal readonly struct ArgModifier
+    internal readonly struct ArgAttributes
     {
         internal  readonly  bool            required;
         internal  readonly  NativeTypeDef   typeDef;
         
-        internal ArgModifier (bool required, NativeTypeDef typeDef) {
+        internal ArgAttributes (bool required, NativeTypeDef typeDef) {
             this.required   = required;
             this.typeDef    = typeDef;
         }
