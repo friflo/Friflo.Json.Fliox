@@ -167,8 +167,9 @@ namespace Friflo.Json.Fliox.Schema
                 docsSelection?.classList.remove('selected');
                 docsSelection = element;
                 element.classList.add('selected');
-                const parent = element.parentElement;
-                const block = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
+                const isChapter = id == 'commands' || id == 'containers';
+                const parent    = isChapter ? element : element.parentElement;
+                const block     = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
                 parent.scrollIntoView({ behavior: 'smooth', block: block });
 
                 // set focus after scrolling finished. Calling focus() directly cancel the scroll animation

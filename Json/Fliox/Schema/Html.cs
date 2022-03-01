@@ -128,7 +128,7 @@ $@"    <div class='type'>
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (type.IsSchema) {
-                sb.AppendLine($"    <chapter>containers</chapter>");    
+                sb.AppendLine($"    <chapter id='containers'><a href='#containers'>containers</a></chapter>");
             }
             sb.AppendLine($"    <table>");
             if (unionType != null) {
@@ -192,7 +192,7 @@ $@"        <tr>
         private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
             var commands        = type.Commands;
             sb.AppendLine(
-$@"    <chapter>commands</chapter>
+$@"    <chapter id='commands'><a href='#commands'>commands</a></chapter>
     <table class='commands'>
 ");
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
