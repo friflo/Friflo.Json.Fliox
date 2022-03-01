@@ -79,7 +79,10 @@
 
         type        { color: var(--type) }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
-        chapter     { font-size: 13px; font-weight: normal; color: var(--keyword); display: block; margin-left: 30px; margin-top: 10px; }
+        chapter     { font-size: 13px; font-weight: normal; display: block; margin-left: 30px; margin-top: 10px; }
+        chapter a:link,
+        chapter a:visited { color: var(--keyword); }
+        
         extends     { font-size: 13px; }
         cmd         { color: var(--value);    font-family: var(--mono-font); }
         sig         { white-space: nowrap; }
