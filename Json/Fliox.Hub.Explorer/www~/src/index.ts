@@ -458,7 +458,7 @@ export class App {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html#commands" target="${database}">${command}</a>`;
+        return `<a title="open commands API in new tab" href="./schema/${database}/html/schema.html#commands" target="${database}">${command}</a>`;
     }
 
     public getSchemaTypes(database: string) : string {
