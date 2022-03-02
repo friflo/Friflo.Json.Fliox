@@ -19,9 +19,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// 
     /// The intention of this memory database is to reduce the number of heap allocations required by a <see cref="MemoryDatabase"/>.
     /// The <see cref="MemoryDatabase"/> allocates values as byte arrays and keys as strings on the heap.
-    /// Note: Key string are used only, if the <see cref="JsonKey"/>s are not of type long or GUID.
+    /// Note: Key strings are used only, if the <see cref="JsonKey"/>s are not of type long or GUID.
     /// The strings and byte arrays are likely to move to Generation 2.
-    /// Doing so put pressure ony GC when collecting garbage of Generation 2 objects.
+    /// Doing so put pressure on GC when collecting garbage of Generation 2 objects.
     /// <br/>
     /// <see cref="MemoryArenaContainer"/> instead is intended to store multiple keys and values into a continuous byte array.
     /// This reduces the number of heap allocation significant and also enables higher memory locality when iterating key values.
