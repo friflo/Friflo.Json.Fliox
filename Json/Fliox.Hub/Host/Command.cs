@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// </summary>
     /// <typeparam name="TParam">Type of the command input parameter</typeparam>
-    public class Command<TParam>{
+    public class Command<TParam> : IMessage {
         public              string          Name            { get; }
         public              IPool           Pool            => messageContext.pool;
         public              FlioxHub        Hub             => messageContext.hub;
