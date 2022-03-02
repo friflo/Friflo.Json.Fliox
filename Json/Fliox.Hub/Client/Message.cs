@@ -7,26 +7,26 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> value of a received message.
-    /// The method <see cref="GetParam{TParam}"/> provide type safe access to the <see cref="JsonParam"/> value of a message. 
+    /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> of a received message.
+    /// The method <see cref="GetParam{TParam}"/> provide type safe access to the <see cref="JsonParam"/> of a message. 
     /// </summary>
     public interface IMessage {
         /// <summary>Returns the message name.</summary>
         string              Name        { get; }
         /// <summary>
-        /// Returns the message value as JSON.
+        /// Returns the message param as JSON.
         /// </summary>
         JsonValue           JsonParam   { get; }
         
         /// <summary>
-        /// Read the <see cref="JsonParam"/> value as the given type <typeparamref name="TParam"/>.
+        /// Read the <see cref="JsonParam"/> as the given type <typeparamref name="TParam"/>.
         /// Return false and set <paramref name="error"/> in case <see cref="JsonParam"/> is incompatible to <typeparamref name="TParam"/>
         /// </summary>
         bool                GetParam<TParam>(out TParam   param, out string error);
     } 
     
     /// <summary>
-    /// Expose the <see cref="Name"/>, the <see cref="JsonParam"/> value and the type safe <see cref="GetParam"/> of a received message.
+    /// Expose the <see cref="Name"/>, the <see cref="JsonParam"/> and the type safe <see cref="GetParam"/> of a received message.
     /// </summary>
     public readonly struct Message<TMessage> : IMessage {
         public              string          Name        { get; }
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    ObjectReader    reader;
        
         /// <summary>
-        /// Return the <see cref="JsonParam"/> value as the specified type <typeparamref name="TMessage"/>.
+        /// Return the <see cref="JsonParam"/> as the specified type <typeparamref name="TMessage"/>.
         /// </summary>
         public  bool    GetParam        (out TMessage param, out string error) => Message.Read(JsonParam, reader, out param, out error);
         public  bool    GetParam<TParam>(out TParam   param, out string error) => Message.Read(JsonParam, reader, out param, out error);
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     /// <summary>
-    /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> value of a received message.
+    /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> of a received message.
     /// </summary>
     public readonly struct Message  : IMessage {
         public              string          Name        { get; }
