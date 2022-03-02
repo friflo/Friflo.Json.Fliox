@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DemoHub
 
     internal class FakeUtils
     {
-        internal FakeResult CreateFakes(Fake fake) {
+        internal Records CreateFakes(Fake fake) {
             return null;
         }
     }
