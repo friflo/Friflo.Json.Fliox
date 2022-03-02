@@ -9,7 +9,6 @@ using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -93,42 +92,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg) => {
                 processor.testMessageCalls++;
-                TestCommand value = msg.Param;
-                AreEqual("test message",        value.text);
+                msg.GetParam(out TestCommand param, out _);
+                AreEqual("test message",        param.text);
                 AreEqual(nameof(TestCommand),   msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
-                AreEqual(42,                            msg.Param);
+                msg.GetParam(out int param, out _);
+                AreEqual(42,                            param);
                 AreEqual("42",                          msg.JsonParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
-                IsTrue(msg.TryReadJson(out int result, out _));
+                IsTrue(msg.GetParam(out int result, out _));
                 AreEqual(42, result);
                 
                 // test reading Json to incompatible types
-                IsFalse(msg.TryReadJson<string>(out _, out var error));
-                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error.Message);
+                IsFalse(msg.GetParam<string>(out _, out var error));
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error);
                 
-                var e = Throws<JsonReaderException> (() => msg.ReadJson<string>());
-                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", e.Message);
+                msg.GetParam<string>(out _, out string error2);
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error2);
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
-                var val = msg.ReadJson<int>();
+                msg.GetParam(out int val, out _);
                 AreEqual(42,                            val);
                 AreEqual("42",                          msg.JsonParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
-                IsTrue(msg.TryReadJson(out int result, out _));
+                IsTrue(msg.GetParam(out int result, out _));
                 AreEqual(42, result);
                 
                 // test reading Json to incompatible types
-                IsFalse(msg.TryReadJson<string>(out _, out var error));
-                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error.Message);
+                IsFalse(msg.GetParam<string>(out _, out var error));
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error);
                 
-                var e = Throws<JsonReaderException> (() => msg.ReadJson<string>());
-                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", e.Message);
+                msg.GetParam<string>(out _, out string error2);
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error2);
             });
             
             var subscribeMessage4   = store.SubscribeMessage  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
@@ -214,14 +214,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         AreEqual("null", message.JsonParam.AsString());
                         break;
                     case nameof(TestRelationPoC.TestMessageInt):
-                        var intVal = message.ReadJson<int>();
+                        message.GetParam(out int intVal, out _);
                         AreEqual(42, intVal);
                         break;
                     case nameof(TestRelationPoC.TestRemoveHandler):
                     case nameof(TestRelationPoC.TestRemoveAllHandler):
                         break;
                     case nameof(TestCommand):
-                        var testVal = message.ReadJson<TestCommand>();
+                        message.GetParam(out TestCommand testVal, out _);
                         AreEqual("test message", testVal.text);
                         break;
                     default:
