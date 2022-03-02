@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Message(in InvokeContext invokeContext) {
             Name        = invokeContext.name;
             JsonParam   = invokeContext.param;  
-            this.reader = invokeContext.reader;
+            reader      = invokeContext.reader;
         }
     }
     
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal Message(in InvokeContext invokeContext) {
             Name        = invokeContext.name;
             JsonParam   = invokeContext.param;
-            this.reader = invokeContext.reader;
+            reader      = invokeContext.reader;
         }
         
         /// <summary>Return the message <paramref name="param"/></summary> without validation 
