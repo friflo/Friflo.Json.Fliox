@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             var keys = command.ids;
             if (keys != null && keys.Count > 0) {
                 foreach (var key in keys) {
-                    keyValues.Remove(key, out _);
+                    keyValues.TryRemove(key, out _);
                 }
             }
             var all = command.all;
