@@ -93,13 +93,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg) => {
                 processor.testMessageCalls++;
-                TestCommand value = msg.Value;
+                TestCommand value = msg.Param;
                 AreEqual("test message",        value.text);
                 AreEqual(nameof(TestCommand),   msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
-                AreEqual(42,                            msg.Value);
+                AreEqual(42,                            msg.Param);
                 AreEqual("42",                          msg.JsonParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
