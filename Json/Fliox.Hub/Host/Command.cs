@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// </summary>
     /// <typeparam name="TParam">Type of the command input parameter</typeparam>
-    // Note: Implement IMessage only to ensure Message & Command<> have the same API. Technically this is not necessary. 
-    public class Command<TParam> : IMessage {
+    /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
+    public class Command<TParam> { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
         public              IPool           Pool            => messageContext.pool;
         public              FlioxHub        Hub             => messageContext.hub;
