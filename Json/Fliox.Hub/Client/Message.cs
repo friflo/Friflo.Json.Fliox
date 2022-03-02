@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <returns> true if successful; false otherwise </returns>
         public  bool    GetParam<T> (out T      param, out string error) => Message.Read(JsonParam, reader, out param, out error);
 
-        public override string          ToString()  => Name;
+        public override string          ToString()  => $"{Name}(param: {JsonParam.AsString()})";
         
         /// <summary>
         /// <see cref="JsonParam"/> is set to <see cref="SyncMessageTask.param"/> json.
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private readonly    ObjectReader    reader;
         
-        public override     string          ToString()  => Name;
+        public override     string          ToString()  => $"{Name}(param: {JsonParam.AsString()})";
         
         internal Message(in InvokeContext invokeContext) {
             Name        = invokeContext.name;

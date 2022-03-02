@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  readonly  JsonValue       param;
         internal  readonly  ObjectReader    reader;
 
-        public    override  string          ToString() => name;
+        public    override  string          ToString() => $"{name}(param: {param.AsString()})";
 
         internal InvokeContext(string name, in JsonValue param, ObjectReader reader) {
             this.name   = name;
