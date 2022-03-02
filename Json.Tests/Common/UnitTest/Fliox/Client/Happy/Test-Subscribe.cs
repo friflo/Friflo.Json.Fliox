@@ -88,8 +88,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
                 processor.receivedAll = true;
-                IsTrue(                     msg.Json.IsNull());
-                AreEqual("null",            msg.Json.AsString());
+                IsTrue(                     msg.JsonParam.IsNull());
+                AreEqual("null",            msg.JsonParam.AsString());
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg) => {
                 processor.testMessageCalls++;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
                 AreEqual(42,                            msg.Value);
-                AreEqual("42",                          msg.Json.AsString());
+                AreEqual("42",                          msg.JsonParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
                 IsTrue(msg.TryReadJson(out int result, out _));
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 processor.testMessageIntCalls++;
                 var val = msg.ReadJson<int>();
                 AreEqual(42,                            val);
-                AreEqual("42",                          msg.Json.AsString());
+                AreEqual("42",                          msg.JsonParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
                 IsTrue(msg.TryReadJson(out int result, out _));
@@ -210,8 +210,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             foreach (var message in messages) {
                 switch (message.Name) {
                     case nameof(TestRelationPoC.EndCreate):
-                        IsTrue  (        message.Json.IsNull());
-                        AreEqual("null", message.Json.AsString());
+                        IsTrue  (        message.JsonParam.IsNull());
+                        AreEqual("null", message.JsonParam.AsString());
                         break;
                     case nameof(TestRelationPoC.TestMessageInt):
                         var intVal = message.ReadJson<int>();

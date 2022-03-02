@@ -100,14 +100,14 @@ data class DeleteEntities (
 @SerialName("message")
 data class SendMessage (
     override  val name  : String,
-    override  val value : JsonElement? = null,
+    override  val param : JsonElement? = null,
     override  val info  : JsonElement? = null,
 ) : SyncMessageTask()
 
 @Serializable
 abstract class SyncMessageTask {
     abstract  val name  : String
-    abstract  val value : JsonElement?
+    abstract  val param : JsonElement?
     abstract  val info  : JsonElement?
 }
 
@@ -115,7 +115,7 @@ abstract class SyncMessageTask {
 @SerialName("command")
 data class SendCommand (
     override  val name  : String,
-    override  val value : JsonElement? = null,
+    override  val param : JsonElement? = null,
     override  val info  : JsonElement? = null,
 ) : SyncMessageTask()
 

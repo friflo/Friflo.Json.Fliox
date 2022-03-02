@@ -69,22 +69,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 if (database == EntityDatabase.MainDB)
                     database = null;
-                JsonValue value;
+                JsonValue param;
                 if (isPost) {
-                    value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    param = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 } else {
                     var queryValue = queryParams["param"];
-                    value = new JsonValue(queryValue);
+                    param = new JsonValue(queryValue);
                 }
-                if (!IsValidJson(pool, value, out string error)) {
+                if (!IsValidJson(pool, param, out string error)) {
                     context.WriteError(GetErrorType(command), error, 400);
                     return;
                 }
                 if (command != null) {
-                    await Command(context, database, command, value).ConfigureAwait(false); 
+                    await Command(context, database, command, param).ConfigureAwait(false); 
                     return;
                 }
-                await Message(context, database, message, value).ConfigureAwait(false);
+                await Message(context, database, message, param).ConfigureAwait(false);
                 return;
             }
             var resource = resourcePath.Split('/');
@@ -526,8 +526,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- command / message -----------------------------------------
-        private async Task Command(RequestContext context, string database, string command, JsonValue value) {
-            var sendCommand = new SendCommand { name    = command, value   = value };
+        private async Task Command(RequestContext context, string database, string command, JsonValue param) {
+            var sendCommand = new SendCommand { name = command, param = param };
             var restResult  = await ExecuteTask(context, database, sendCommand).ConfigureAwait(false);
             
             if (restResult.taskResult == null)
@@ -541,8 +541,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(sendResult.result, 0, "application/json", 200);
         }
         
-        private async Task Message(RequestContext context, string database, string message, JsonValue value) {
-            var sendMessage = new SendMessage { name = message, value   = value };
+        private async Task Message(RequestContext context, string database, string message, JsonValue param) {
+            var sendMessage = new SendMessage { name = message, param = param };
             var restResult  = await ExecuteTask(context, database, sendMessage).ConfigureAwait(false);
             
             if (restResult.taskResult == null)

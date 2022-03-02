@@ -27,10 +27,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        internal void InvokeCallbacks(ObjectReader reader, string messageName, JsonValue messageValue) {
+        internal void InvokeCallbacks(ObjectReader reader, string messageName, JsonValue param) {
             foreach (var callbackHandler in callbackHandlers) {
                 try {
-                    callbackHandler.InvokeCallback(reader, messageName, messageValue);
+                    callbackHandler.InvokeCallback(reader, messageName, param);
                 }
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool    HasHandler (object handler) => handler == handlerObject;
         public   override   string  ToString()                  => name;
 
-        internal abstract void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue);
+        internal abstract void InvokeCallback(ObjectReader reader, string messageName, JsonValue param);
         
         internal MessageCallback (string name, object handler) {
             this.name       = name;
@@ -65,8 +65,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
-            var msg = new Message(messageName, messageValue, reader);
+        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue param) {
+            var msg = new Message(messageName, param, reader);
             handler(msg);
         }
     }
@@ -79,8 +79,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
-            var msg = new Message<TMessage>(messageName, messageValue, reader);
+        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue param) {
+            var msg = new Message<TMessage>(messageName, param, reader);
             handler(msg);
         }
     }

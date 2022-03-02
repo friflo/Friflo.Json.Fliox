@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// A <see cref="MessageTask"/> contains the message (or command) <see cref="name"/> and <see cref="value"/> sent to
+    /// A <see cref="MessageTask"/> contains the message (or command) <see cref="name"/> and <see cref="param"/> sent to
     /// an <see cref="EntityDatabase"/> by <see cref="FlioxClient.SendMessage"/>.<br/>
     /// It is used to send to the message (or command) as en event to all clients which successful subscribed the
     /// message by its <see cref="name"/>.
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public class MessageTask : SyncTask
     {
         internal readonly   string          name;
-        internal readonly   JsonValue       value;
+        internal readonly   JsonValue       param;
         
         internal            TaskState       state;
         internal override   TaskState       State       => state;
@@ -27,9 +27,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public   override   string          Details     => $"MessageTask (name: {name})";
 
         
-        internal MessageTask(string name, JsonValue value) {
+        internal MessageTask(string name, JsonValue param) {
             this.name   = name;
-            this.value  = value;
+            this.param  = param;
         }
     }
 
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       ResultJson  => IsOk("CommandTask.ResultJson", out Exception e) ? result : throw e;
         
-        internal CommandTask(string name, JsonValue value, IPool pool) : base (name, value) {
+        internal CommandTask(string name, JsonValue param, IPool pool) : base (name, param) {
             this.pool = pool;
         }
 
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              TResult         Result => ReadResult<TResult>();
         
-        internal CommandTask(string name, JsonValue value, IPool pool) : base (name, value, pool) { }
+        internal CommandTask(string name, JsonValue param, IPool pool) : base (name, param, pool) { }
     }
 }
 

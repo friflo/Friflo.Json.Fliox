@@ -7,88 +7,88 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Expose the <see cref="Name"/> and the <see cref="Json"/> value of a received message.
+    /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> value of a received message.
     /// The methods <see cref="ReadJson{T}"/> and <see cref="TryReadJson{T}"/> provide type safe access to
-    /// the <see cref="Json"/> value of a message. 
+    /// the <see cref="JsonParam"/> value of a message. 
     /// </summary>
     public interface IMessage {
         /// <summary>Returns the message name.</summary>
-        string              Name    { get; }
+        string              Name        { get; }
         /// <summary>
         /// Returns the message value as JSON.
         /// </summary>
-        JsonValue           Json    { get; }
+        JsonValue           JsonParam   { get; }
         
         /// <summary>
-        /// Read the <see cref="Json"/> value as the given type <typeparamref name="T"/>.
-        /// Throws a <see cref="JsonReaderException"/> in case <see cref="Json"/> is incompatible to <typeparamref name="T"/></summary>
+        /// Read the <see cref="JsonParam"/> value as the given type <typeparamref name="T"/>.
+        /// Throws a <see cref="JsonReaderException"/> in case <see cref="JsonParam"/> is incompatible to <typeparamref name="T"/></summary>
         T                   ReadJson   <T>();
         
         /// <summary>
-        /// Read the <see cref="Json"/> value as the given type <typeparamref name="T"/>.
-        /// Return false and set <paramref name="error"/> in case <see cref="Json"/> is incompatible to <typeparamref name="T"/>
+        /// Read the <see cref="JsonParam"/> value as the given type <typeparamref name="T"/>.
+        /// Return false and set <paramref name="error"/> in case <see cref="JsonParam"/> is incompatible to <typeparamref name="T"/>
         /// </summary>
         bool                TryReadJson<T>(out T result, out JsonReaderException error);
     } 
     
     /// <summary>
-    /// Expose the <see cref="Name"/>, the <see cref="Json"/> value and the type safe <see cref="Value"/> of a received message.
+    /// Expose the <see cref="Name"/>, the <see cref="JsonParam"/> value and the type safe <see cref="Value"/> of a received message.
     /// </summary>
     public readonly struct Message<TMessage> : IMessage {
-        public              string          Name    { get; }
-        public              JsonValue       Json    { get; }
+        public              string          Name        { get; }
+        public              JsonValue       JsonParam   { get; }
         
         private readonly    ObjectReader    reader;
        
         /// <summary>
-        /// Return the <see cref="Json"/> value as the specified type <typeparamref name="TMessage"/>.
+        /// Return the <see cref="JsonParam"/> value as the specified type <typeparamref name="TMessage"/>.
         /// </summary>
-        public              TMessage        Value => Message.Read<TMessage>(Json, reader);
+        public              TMessage        Value => Message.Read<TMessage>(JsonParam, reader);
 
         public override     string          ToString()  => Name;
         
         /// <summary>
-        /// <see cref="Json"/> is set to <see cref="SyncMessageTask.value"/> json.
-        /// If json is null <see cref="Json"/> is set to "null".
+        /// <see cref="JsonParam"/> is set to <see cref="SyncMessageTask.param"/> json.
+        /// If json is null <see cref="JsonParam"/> is set to "null".
         /// </summary>
-        internal Message(string name, JsonValue json, ObjectReader reader) {
+        internal Message(string name, JsonValue param, ObjectReader reader) {
             Name        = name;
-            Json        = json;  
+            JsonParam   = param;  
             this.reader = reader;
         }
         
         public T ReadJson<T>() {
-            return Message.Read<T>(Json, reader);
+            return Message.Read<T>(JsonParam, reader);
         }
         
         public bool TryReadJson<T>(out T result, out JsonReaderException error) {
-            return Message.TryRead(Json, reader, out result, out error);
+            return Message.TryRead(JsonParam, reader, out result, out error);
         }
     }
     
     /// <summary>
-    /// Expose the <see cref="Name"/> and the <see cref="Json"/> value of a received message.
+    /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> value of a received message.
     /// </summary>
     public readonly struct Message  : IMessage {
-        public              string          Name    { get; }
-        public              JsonValue       Json    { get; }
+        public              string          Name        { get; }
+        public              JsonValue       JsonParam   { get; }
         
         private readonly    ObjectReader    reader;
         
         public override     string          ToString()  => Name;
         
-        internal Message(string name, JsonValue json, ObjectReader reader) {
+        internal Message(string name, JsonValue param, ObjectReader reader) {
             Name        = name;
-            Json        = json;
+            JsonParam   = param;
             this.reader = reader;
         }
         
         public T ReadJson<T>() {
-            return Read<T>(Json, reader);
+            return Read<T>(JsonParam, reader);
         }
         
         public bool TryReadJson<T>(out T result, out JsonReaderException error) {
-            return TryRead(Json, reader, out result, out error);
+            return TryRead(JsonParam, reader, out result, out error);
         }
         
         // --- internals

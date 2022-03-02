@@ -198,21 +198,21 @@
         "SendMessage": {
             "properties": {
                 "name":  { "type": "string" },
-                "value": { "nullable": true },
+                "param": { "nullable": true },
                 "info":  { "nullable": true }
             }
         },
         "SyncMessageTask": {
             "properties": {
                 "name":  { "type": "string" },
-                "value": { "nullable": true },
+                "param": { "nullable": true },
                 "info":  { "nullable": true }
             }
         },
         "SendCommand": {
             "properties": {
                 "name":  { "type": "string" },
-                "value": { "nullable": true },
+                "param": { "nullable": true },
                 "info":  { "nullable": true }
             }
         },

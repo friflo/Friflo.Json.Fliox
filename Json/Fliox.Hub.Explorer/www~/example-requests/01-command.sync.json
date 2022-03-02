@@ -4,13 +4,13 @@
     {
       "task":  "command",
       "name":  "std.Echo",
-      "value": "Hello World"
+      "param": "Hello World"
     }
   ],
   "info": [
       "Send a command to host.",
       "When handled by host it returns a result.",
       "'std.Echo' is a standard host command.",
-      "It simply echos the given value."
+      "It simply echos the given param."
   ]
 }

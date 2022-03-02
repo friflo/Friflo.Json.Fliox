@@ -175,7 +175,7 @@
             "properties": {
                 "task":  { "enum": ["message"] },
                 "name":  { "type": "string" },
-                "value": {  },
+                "param": {  },
                 "info":  {  }
             },
             "required": [
@@ -190,7 +190,7 @@
             "isAbstract": true,
             "properties": {
                 "name":  { "type": "string" },
-                "value": {  },
+                "param": {  },
                 "info":  {  }
             },
             "required": [
@@ -204,7 +204,7 @@
             "properties": {
                 "task":  { "enum": ["command"] },
                 "name":  { "type": "string" },
-                "value": {  },
+                "param": {  },
                 "info":  {  }
             },
             "required": [

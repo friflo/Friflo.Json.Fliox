@@ -55,9 +55,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             foreach (var messageTask in messageTasks) {
                 SyncMessageTask msg;
                 if (messageTask is CommandTask) {
-                    msg = new SendCommand { name  = messageTask.name, value = messageTask.value };
+                    msg = new SendCommand { name  = messageTask.name, param = messageTask.param };
                 } else {
-                    msg = new SendMessage { name  = messageTask.name, value = messageTask.value };
+                    msg = new SendMessage { name  = messageTask.name, param = messageTask.param };
                 }
                 tasks.Add(msg);
             }

@@ -707,7 +707,7 @@ export class App {
     {
       "task":  "command",
       "name":  "std.Echo",
-      "value": "Hello World"
+      "param": "Hello World"
     }
   ]
 }`;

@@ -165,11 +165,11 @@ namespace Friflo.Json.Fliox.Hub.Client
                             // and ProcessEvent() can be called concurrently from the 'main' thread.
                             var reader = mapper.reader;
                             if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
-                                subscriber.InvokeCallbacks(reader, name, message.value);    
+                                subscriber.InvokeCallbacks(reader, name, message.param);    
                             }
                             foreach (var sub in client._intern.subscriptionsPrefix) {
                                 if (name.StartsWith(sub.name)) {
-                                    sub.InvokeCallbacks(reader, name, message.value);
+                                    sub.InvokeCallbacks(reader, name, message.param);
                                 }
                             }
                             break;
@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     if (!(task is SyncMessageTask messageTask)) 
                         continue;
                     var reader  = mapper.reader;
-                    var message = new Message(messageTask.name, messageTask.value, reader);
+                    var message = new Message(messageTask.name, messageTask.param, reader);
                     messages.Add(message);
                 }
                 return messages;

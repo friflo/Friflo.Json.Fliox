@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return MissingField(nameof(name));
             }
             if (database.handler.TryGetCommand(name, out var callback)) {
-                var result  = await callback.InvokeCallback(name, value, messageContext).ConfigureAwait(false);
+                var result  = await callback.InvokeCallback(name, param, messageContext).ConfigureAwait(false);
                 if (result.error == null)
                     return new SendCommandResult { result = result.value };
                 return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);
