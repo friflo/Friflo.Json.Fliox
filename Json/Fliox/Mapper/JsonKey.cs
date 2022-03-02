@@ -15,7 +15,8 @@ namespace Friflo.Json.Fliox.Mapper
         internal readonly       long        lng;
         internal readonly       Guid        guid;
         
-        public   override       string      ToString() { var value = AsString(); return value ?? "null"; }
+        public                  JsonKeyType Type        => type;
+        public   override       string      ToString()  { var value = AsString(); return value ?? "null"; }
 
         public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
