@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UserInfo (user.userId, user.token, messageContext.clientId);
         } }
 
-        internal Command(string name, JsonValue param, MessageContext messageContext) {
+        internal Command(string name, in JsonValue param, MessageContext messageContext) {
             Name                = name;
             this.param          = param;  
             this.messageContext = messageContext;
