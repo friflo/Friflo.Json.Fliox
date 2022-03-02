@@ -148,8 +148,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         // ------------------------------------- memory-arena -------------------------------------
-        internal    byte[]  arenaBuffer;
-        internal    int     arenaIndex;
+        internal    byte[]  arenaBuffer = new byte[0];
+        internal    int     arenaIndex  = 0;
         
         private ArenaEntry CreateEntry (in JsonKey key, in JsonValue value) {
             if (key.Type == JsonKeyType.String) {
@@ -166,8 +166,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
     }
     
-    internal struct ArenaEntry {
-        internal    uint     index;
+    internal readonly struct ArenaEntry {
+        internal readonly    uint     index;
+        
+        internal ArenaEntry(uint index) {
+            this.index = index;
+        }
     }
     
     internal class MemoryArenaQueryEnumerator : QueryEnumerator
