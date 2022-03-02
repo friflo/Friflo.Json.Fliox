@@ -28,17 +28,17 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// Expose the <see cref="Name"/>, the <see cref="JsonParam"/> and the type safe <see cref="GetParam"/> of a received message.
     /// </summary>
-    public readonly struct Message<TMessage> : IMessage {
+    public readonly struct Message<TParam> : IMessage {
         public              string          Name        { get; }
         public              JsonValue       JsonParam   { get; }
         
         private readonly    ObjectReader    reader;
        
         /// <summary>
-        /// Return the <see cref="JsonParam"/> as the specified type <typeparamref name="TMessage"/>.
+        /// Return the <see cref="JsonParam"/> as the specified type <typeparamref name="TParam"/>.
         /// </summary>
-        public  bool    GetParam        (out TMessage param, out string error) => Message.Read(JsonParam, reader, out param, out error);
-        public  bool    GetParam<TParam>(out TParam   param, out string error) => Message.Read(JsonParam, reader, out param, out error);
+        public  bool    GetParam    (out TParam param, out string error) => Message.Read(JsonParam, reader, out param, out error);
+        public  bool    GetParam<T> (out T      param, out string error) => Message.Read(JsonParam, reader, out param, out error);
 
         public override string          ToString()  => Name;
         
