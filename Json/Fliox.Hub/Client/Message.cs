@@ -34,10 +34,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private readonly    ObjectReader    reader;
        
-        /// <summary>
-        /// Return the <see cref="JsonParam"/> as the specified type <typeparamref name="TParam"/>.
-        /// </summary>
+        /// <summary>Return the message <paramref name="param"/></summary> without validation 
+        /// <param name="param">the param value if conversion successful</param>
+        /// <param name="error">contains the error message if conversion failed</param>
+        /// <returns> true if successful; false otherwise </returns>
         public  bool    GetParam    (out TParam param, out string error) => Message.Read(JsonParam, reader, out param, out error);
+        /// <summary>Return the message <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
+        /// <param name="param">the param value if conversion successful</param>
+        /// <param name="error">contains the error message if conversion failed</param>
+        /// <returns> true if successful; false otherwise </returns>
         public  bool    GetParam<T> (out T      param, out string error) => Message.Read(JsonParam, reader, out param, out error);
 
         public override string          ToString()  => Name;
@@ -70,6 +75,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.reader = reader;
         }
         
+        /// <summary>Return the message <paramref name="param"/></summary> without validation 
+        /// <param name="param">the param value if conversion successful</param>
+        /// <param name="error">contains the error message if conversion failed</param>
+        /// <returns> true if successful; false otherwise </returns>
         public bool GetParam<TParam>(out TParam param, out string error) {
             return Read(JsonParam, reader, out param, out error);
         }
