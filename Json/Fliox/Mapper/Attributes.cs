@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 using System;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable UnusedParameter.Local
 namespace Friflo.Json.Fliox.Mapper
 {
 #if !UNITY_5_3_OR_NEWER
