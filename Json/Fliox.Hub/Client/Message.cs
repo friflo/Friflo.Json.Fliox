@@ -52,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="JsonParam"/> is set to <see cref="SyncMessageTask.param"/> json.
         /// If json is null <see cref="JsonParam"/> is set to "null".
         /// </summary>
-        internal Message(string name, in JsonValue param, in InvokeContext invokeContext) {
-            Name        = name;
-            JsonParam   = param;  
+        internal Message(in InvokeContext invokeContext) {
+            Name        = invokeContext.name;
+            JsonParam   = invokeContext.param;  
             this.reader = invokeContext.reader;
         }
     }
@@ -70,9 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public override     string          ToString()  => Name;
         
-        internal Message(string name, in JsonValue param, in InvokeContext invokeContext) {
-            Name        = name;
-            JsonParam   = param;
+        internal Message(in InvokeContext invokeContext) {
+            Name        = invokeContext.name;
+            JsonParam   = invokeContext.param;
             this.reader = invokeContext.reader;
         }
         
