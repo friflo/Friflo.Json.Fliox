@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper.Map.Key;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    internal class KeyMapper
+    public class KeyMapper
     {
         internal static Dictionary<Type, KeyMapper> CreateDefaultKeyMappers() {
             var keyMappers = new Dictionary<Type, KeyMapper> {
@@ -23,8 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
     }
     
-    [InternalsVisibleToHub]
-    internal abstract class KeyMapper<TKey> : KeyMapper
+    public abstract class KeyMapper<TKey> : KeyMapper
     {
         public abstract void        WriteKey       (ref Writer writer, in TKey key);
         public abstract TKey        ReadKey        (ref Reader reader, out bool success);

@@ -2,19 +2,12 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
 
 #if !UNITY_5_3_OR_NEWER
-    [assembly: CLSCompliant(true), InternalsVisibleTo("Friflo.Json.Fliox.Hub")]
-    // Note: internal types, methods, fields used by Hub must be annotated with [InternalsVisibleToHub]
+    [assembly: CLSCompliant(true)]
 #endif
-
-namespace Friflo.Json.Fliox {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    internal sealed class InternalsVisibleToHubAttribute : Attribute { }
-}
 
 namespace Friflo.Json.Fliox.Mapper
 {
@@ -36,8 +29,7 @@ namespace Friflo.Json.Fliox.Mapper
             this.keyMappers = KeyMapper.CreateDefaultKeyMappers();
         }
         
-        [InternalsVisibleToHub]
-        internal KeyMapper GetKeyMapper (Type type) {
+        public KeyMapper GetKeyMapper (Type type) {
             return keyMappers[type];
         }
     }
@@ -87,7 +79,7 @@ namespace Friflo.Json.Fliox.Mapper
             }
         }
         
-        internal bool AddKeyMapper (Type keyType, KeyMapper keyMapper) {
+        public bool AddKeyMapper (Type keyType, KeyMapper keyMapper) {
             return config.keyMappers.TryAdd(keyType, keyMapper);
         }
         
