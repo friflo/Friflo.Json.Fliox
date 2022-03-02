@@ -27,10 +27,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        internal void InvokeCallbacks(ObjectReader reader, string messageName, JsonValue param) {
+        internal void InvokeCallbacks(in InvokeContext invokeContext, string messageName, JsonValue param) {
             foreach (var callbackHandler in callbackHandlers) {
                 try {
-                    callbackHandler.InvokeCallback(reader, messageName, param);
+                    callbackHandler.InvokeCallback(invokeContext, messageName, param);
                 }
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
@@ -42,6 +42,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
     }
     
+    internal readonly struct InvokeContext
+    {
+        internal  readonly  ObjectReader    reader;
+        
+        internal InvokeContext(ObjectReader reader) {
+            this.reader = reader;
+        }
+    }
+    
     internal abstract class MessageCallback {
         internal readonly   string  name;
         private  readonly   object  handlerObject;
@@ -49,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool    HasHandler (object handler) => handler == handlerObject;
         public   override   string  ToString()                  => name;
 
-        internal abstract void InvokeCallback(ObjectReader reader, string messageName, JsonValue param);
+        internal abstract void InvokeCallback(in InvokeContext invokeContext, string messageName, JsonValue param);
         
         internal MessageCallback (string name, object handler) {
             this.name       = name;
@@ -65,8 +74,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue param) {
-            var msg = new Message(messageName, param, reader);
+        internal override void InvokeCallback(in InvokeContext invokeContext, string messageName, JsonValue param) {
+            var msg = new Message(messageName, param, invokeContext);
             handler(msg);
         }
     }
@@ -79,8 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue param) {
-            var msg = new Message<TMessage>(messageName, param, reader);
+        internal override void InvokeCallback(in InvokeContext invokeContext, string messageName, JsonValue param) {
+            var msg = new Message<TMessage>(messageName, param, invokeContext);
             handler(msg);
         }
     }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
@@ -51,10 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="JsonParam"/> is set to <see cref="SyncMessageTask.param"/> json.
         /// If json is null <see cref="JsonParam"/> is set to "null".
         /// </summary>
-        internal Message(string name, in JsonValue param, ObjectReader reader) {
+        internal Message(string name, in JsonValue param, in InvokeContext invokeContext) {
             Name        = name;
             JsonParam   = param;  
-            this.reader = reader;
+            this.reader = invokeContext.reader;
         }
     }
     
@@ -69,10 +70,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public override     string          ToString()  => Name;
         
-        internal Message(string name, in JsonValue param, ObjectReader reader) {
+        internal Message(string name, in JsonValue param, in InvokeContext invokeContext) {
             Name        = name;
             JsonParam   = param;
-            this.reader = reader;
+            this.reader = invokeContext.reader;
         }
         
         /// <summary>Return the message <paramref name="param"/></summary> without validation 

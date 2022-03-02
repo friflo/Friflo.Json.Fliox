@@ -163,13 +163,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                             // and ProcessEvent() can be called concurrently from the 'main' thread.
-                            var reader = mapper.reader;
+                            var invokeContext = new InvokeContext(mapper.reader);
                             if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
-                                subscriber.InvokeCallbacks(reader, name, message.param);    
+                                subscriber.InvokeCallbacks(invokeContext, name, message.param);    
                             }
                             foreach (var sub in client._intern.subscriptionsPrefix) {
                                 if (name.StartsWith(sub.name)) {
-                                    sub.InvokeCallbacks(reader, name, message.param);
+                                    sub.InvokeCallbacks(invokeContext, name, message.param);
                                 }
                             }
                             break;
@@ -219,12 +219,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         public List<Message> GetMessages(EventMessage eventMessage) {
             messages.Clear();
             using (var pooled = client.ObjectMapper.Get()) {
-                var mapper = pooled.instance;
+                var reader = pooled.instance.reader;
                 foreach (var task in eventMessage.tasks) {
                     if (!(task is SyncMessageTask messageTask)) 
                         continue;
-                    var reader  = mapper.reader;
-                    var message = new Message(messageTask.name, messageTask.param, reader);
+                    var invokeContext   = new InvokeContext(reader);
+                    var message         = new Message(messageTask.name, messageTask.param, invokeContext);
                     messages.Add(message);
                 }
                 return messages;
