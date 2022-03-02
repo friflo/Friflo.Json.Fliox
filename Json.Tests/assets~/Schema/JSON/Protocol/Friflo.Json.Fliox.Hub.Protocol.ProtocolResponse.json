@@ -11,7 +11,7 @@
             ],
             "properties": {
                 "msg": { "enum": ["resp", "error"] },
-                "req": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": "Set to the value of the corresponding reqId" },
+                "req": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding reqId" },
                 "clt": { "type": ["string", "null"], "description": "\n            Set to clientId of a SyncRequest in case the given\n            clientId was valid. Otherwise it is set to null.\n            Calling String@) when clientId == null a\n            new unique client id will be assigned.\n            For tasks which require a clientId a client need to set clientId\n            to clientId.\n            This enables tasks like SubscribeMessage or SubscribeChanges identifying the\n            EventMessage target. \n            " }
             },
             "required": [

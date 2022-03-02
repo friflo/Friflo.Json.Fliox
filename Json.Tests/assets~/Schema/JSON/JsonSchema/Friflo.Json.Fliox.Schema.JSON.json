@@ -14,7 +14,7 @@
         "JsonType": {
             "type": "object",
             "properties": {
-                "extends":              { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/TypeRef" }] },
+                "extends":              { "oneOf": [{ "$ref": "#/definitions/TypeRef" }, {"type": "null"}] },
                 "discriminator":        { "type": ["string", "null"] },
                 "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
                 "isAbstract":           { "type": ["boolean", "null"] },
@@ -49,14 +49,14 @@
             "properties": {
                 "type":                 {  },
                 "enum":                 { "type": ["array", "null"], "items": { "type": "string" } },
-                "items":                { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "items":                { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
                 "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
-                "minimum":              { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }] },
-                "maximum":              { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }] },
+                "minimum":              { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}] },
+                "maximum":              { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}] },
                 "pattern":              { "type": ["string", "null"] },
                 "format":               { "type": ["string", "null"] },
                 "$ref":                 { "type": ["string", "null"] },
-                "additionalProperties": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "additionalProperties": { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
                 "isAutoIncrement":      { "type": ["boolean", "null"] },
                 "relation":             { "type": ["string", "null"] },
                 "description":          { "type": ["string", "null"] }
@@ -66,8 +66,8 @@
         "CommandType": {
             "type": "object",
             "properties": {
-                "param":       { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
-                "result":      { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
+                "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
                 "description": { "type": ["string", "null"] }
             },
             "additionalProperties": false

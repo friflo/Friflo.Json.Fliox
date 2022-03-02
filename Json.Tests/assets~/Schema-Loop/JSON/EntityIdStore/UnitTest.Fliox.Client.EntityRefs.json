@@ -8,19 +8,19 @@
             "properties": {
                 "id":              { "type": "string" },
                 "guidEntity":      { "$ref": "./Standard.json#/definitions/Guid", "relation": "guidEntities" },
-                "guidNullEntity":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/Guid" }], "relation": "guidEntities" },
+                "guidNullEntity":  { "oneOf": [{ "$ref": "./Standard.json#/definitions/Guid" }, {"type": "null"}], "relation": "guidEntities" },
                 "intEntity":       { "$ref": "./Standard.json#/definitions/int32", "relation": "intEntities" },
-                "intNullEntity":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "relation": "intEntities" },
-                "intNullEntity2":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "relation": "intEntities" },
+                "intNullEntity":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "relation": "intEntities" },
+                "intNullEntity2":  { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "relation": "intEntities" },
                 "longEntity":      { "$ref": "./Standard.json#/definitions/int64", "relation": "longEntities" },
-                "longNullEntity":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }], "relation": "longEntities" },
+                "longNullEntity":  { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}], "relation": "longEntities" },
                 "shortEntity":     { "$ref": "./Standard.json#/definitions/int16", "relation": "shortEntities" },
-                "shortNullEntity": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int16" }], "relation": "shortEntities" },
+                "shortNullEntity": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int16" }, {"type": "null"}], "relation": "shortEntities" },
                 "byteEntity":      { "$ref": "./Standard.json#/definitions/uint8", "relation": "byteEntities" },
-                "byteNullEntity":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/uint8" }], "relation": "byteEntities" },
+                "byteNullEntity":  { "oneOf": [{ "$ref": "./Standard.json#/definitions/uint8" }, {"type": "null"}], "relation": "byteEntities" },
                 "customIdEntity":  { "type": ["string", "null"], "relation": "customIdEntities" },
                 "intEntities":     { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" }, "relation": "intEntities" },
-                "intNullEntities": { "type": ["array", "null"], "items": { "oneOf": [{ "type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }]}, "relation": "intEntities" }
+                "intNullEntities": { "type": ["array", "null"], "items": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, { "type": "null"}]}, "relation": "intEntities" }
             },
             "required": [
                 "id",

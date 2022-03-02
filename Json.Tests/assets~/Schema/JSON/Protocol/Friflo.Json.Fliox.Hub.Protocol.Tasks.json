@@ -34,7 +34,7 @@
             "properties": {
                 "task":          { "enum": ["create"] },
                 "container":     { "type": "string" },
-                "reservedToken": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/Guid" }] },
+                "reservedToken": { "oneOf": [{ "$ref": "./Standard.json#/definitions/Guid" }, {"type": "null"}] },
                 "keyName":       { "type": ["string", "null"] },
                 "entities":      { "type": "array", "items": {  } },
                 "info":          {  }
@@ -92,8 +92,8 @@
                 "filterTree": {  },
                 "filter":     { "type": ["string", "null"] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" } },
-                "limit":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
-                "maxCount":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}] },
+                "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}] },
                 "cursor":     { "type": ["string", "null"] },
                 "info":       {  }
             },
@@ -352,7 +352,7 @@
                 "task":       { "enum": ["query"] },
                 "container":  { "type": ["string", "null"] },
                 "cursor":     { "type": ["string", "null"] },
-                "count":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": " Is used only to show the number of ids in a serialized protocol message\n            to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information. " },
+                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": " Is used only to show the number of ids in a serialized protocol message\n            to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information. " },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },
@@ -368,7 +368,7 @@
             "properties": {
                 "task":      { "enum": ["aggregate"] },
                 "container": { "type": ["string", "null"] },
-                "value":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/double" }] }
+                "value":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/double" }, {"type": "null"}] }
             },
             "required": [
                 "task"
@@ -469,7 +469,7 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
                 "task": { "enum": ["reserveKeys"] },
-                "keys": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/ReservedKeys" }] }
+                "keys": { "oneOf": [{ "$ref": "#/definitions/ReservedKeys" }, {"type": "null"}] }
             },
             "required": [
                 "task"

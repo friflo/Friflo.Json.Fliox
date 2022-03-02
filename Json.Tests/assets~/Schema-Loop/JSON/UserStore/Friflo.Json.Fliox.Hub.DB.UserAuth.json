@@ -18,7 +18,7 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "AuthenticateUser": { "param": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/AuthenticateUser" }] }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
+                "AuthenticateUser": { "param": { "oneOf": [{ "$ref": "#/definitions/AuthenticateUser" }, {"type": "null"}] }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
                 "std.Echo":         { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately. " },
                 "std.Containers":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },

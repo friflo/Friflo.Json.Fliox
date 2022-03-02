@@ -214,7 +214,7 @@ namespace Friflo.Json.Fliox.Schema
         private static string GetElementType(FieldDef field, TypeContext context) {
             var elementTypeName = GetTypeName(field.type, context, true);
             if (field.isNullableElement)
-                return $"{{ \"oneOf\": [{{ \"type\": \"null\"}}, {{ {elementTypeName} }}]}}";
+                return $"{{ \"oneOf\": [{{ {elementTypeName} }}, {{ \"type\": \"null\"}}]}}";
             return $"{{ {elementTypeName} }}";
         }
         
@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.Schema
             var prefix      = samePath ? "" : $"./{typePath}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";
             if (!required)
-                return $"\"oneOf\": [{{\"type\": \"null\"}}, {{ {refType} }}]";
+                return $"\"oneOf\": [{{ {refType} }}, {{\"type\": \"null\"}}]";
             return refType;
         }
         

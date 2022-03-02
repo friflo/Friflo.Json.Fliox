@@ -7,11 +7,11 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json#/definitions/ProtocolRequest" },
             "properties": {
                 "msg":      { "enum": ["sync"] },
-                "req":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": "Used only for RemoteClientHub to enable:\n            \n              1. Out of order response handling for their corresponding requests.\n            \n              2. Multiplexing of requests and their responses for multiple clients e.g. FlioxClient\n                 using the same connection.\n                 This is not a common scenario but it enables using a single WebSocketClientHub\n                 used by multiple clients.\n            \n            The host itself only echos the reqId to reqId and doesn't do\n            anythings else with it.\n            " },
+                "req":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for RemoteClientHub to enable:\n            \n              1. Out of order response handling for their corresponding requests.\n            \n              2. Multiplexing of requests and their responses for multiple clients e.g. FlioxClient\n                 using the same connection.\n                 This is not a common scenario but it enables using a single WebSocketClientHub\n                 used by multiple clients.\n            \n            The host itself only echos the reqId to reqId and doesn't do\n            anythings else with it.\n            " },
                 "clt":      { "type": ["string", "null"] },
                 "user":     { "type": ["string", "null"], "description": "\n            Identify the user performing a sync request.\n            In case using of using UserAuthenticator the userId and token\n            are use for user authentication.\n            " },
                 "token":    { "type": ["string", "null"] },
-                "ack":      { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": "eventAck is used to ensure (change) events are delivered reliable.\n            A client set eventAck to the last received seq in case\n            it has subscribed to database changes by a SubscribeChanges task.\n            Otherwise eventAck is null.\n            " },
+                "ack":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "eventAck is used to ensure (change) events are delivered reliable.\n            A client set eventAck to the last received seq in case\n            it has subscribed to database changes by a SubscribeChanges task.\n            Otherwise eventAck is null.\n            " },
                 "tasks":    { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" } },
                 "database": { "type": ["string", "null"] },
                 "info":     {  }
@@ -27,7 +27,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
                 "msg":          { "enum": ["resp"] },
-                "req":          { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": "Set to the value of the corresponding reqId" },
+                "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding reqId" },
                 "clt":          { "type": ["string", "null"], "description": "\n            Set to clientId of a SyncRequest in case the given\n            clientId was valid. Otherwise it is set to null.\n            Calling String@) when clientId == null a\n            new unique client id will be assigned.\n            For tasks which require a clientId a client need to set clientId\n            to clientId.\n            This enables tasks like SubscribeMessage or SubscribeChanges identifying the\n            EventMessage target. \n            " },
                 "database":     { "type": ["string", "null"] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" } },
@@ -47,7 +47,7 @@
             "type": "object",
             "properties": {
                 "container": { "type": "string" },
-                "count":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": " Is only set when using a RemoteHostHub to show the number of entities\n            in a serialized protocol message to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information. " },
+                "count":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": " Is only set when using a RemoteHostHub to show the number of entities\n            in a serialized protocol message to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information. " },
                 "entities":  { "type": "array", "items": {  } },
                 "notFound":  { "type": ["array", "null"], "items": { "type": "string" } },
                 "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object" }
@@ -74,7 +74,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
                 "msg":     { "enum": ["error"] },
-                "req":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }], "description": "Set to the value of the corresponding reqId" },
+                "req":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding reqId" },
                 "clt":     { "type": ["string", "null"], "description": "\n            Set to clientId of a SyncRequest in case the given\n            clientId was valid. Otherwise it is set to null.\n            Calling String@) when clientId == null a\n            new unique client id will be assigned.\n            For tasks which require a clientId a client need to set clientId\n            to clientId.\n            This enables tasks like SubscribeMessage or SubscribeChanges identifying the\n            EventMessage target. \n            " },
                 "message": { "type": ["string", "null"] },
                 "type":    { "$ref": "#/definitions/ErrorResponseType" }

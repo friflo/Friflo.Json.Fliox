@@ -24,7 +24,7 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "TestCommand":    { "param": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/TestCommand" }] }, "result": { "type": "boolean" } },
+                "TestCommand":    { "param": { "oneOf": [{ "$ref": "#/definitions/TestCommand" }, {"type": "null"}] }, "result": { "type": "boolean" } },
                 "SyncCommand":    { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "AsyncCommand":   { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "test.Command1":  { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
