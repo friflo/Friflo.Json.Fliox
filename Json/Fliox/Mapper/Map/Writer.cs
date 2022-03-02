@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteKey<T>(KeyMapper<T> keyMapper, T key, int pos) {
+        internal void WriteKey<T>(KeyMapper<T> keyMapper, T key, int pos) {
             WriteDelimiter(pos);
             keyMapper.WriteKey(ref this, key);
             if (!pretty)
