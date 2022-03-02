@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.JSON
 {
-    public sealed class JsonStandardTypes : StandardTypes
+    internal sealed class JsonStandardTypes : StandardTypes
     {
         public   override   TypeDef     Boolean     { get; }
         public   override   TypeDef     String      { get; }

@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
 {
-    public sealed class NativeStandardTypes : StandardTypes
+    internal sealed class NativeStandardTypes : StandardTypes
     {
         public   override   TypeDef     Boolean     { get; }
         public   override   TypeDef     String      { get; }

@@ -47,16 +47,16 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// </summary>
     public sealed class JsonSchema
     {
-        [Fri.Property(Name =                           "$ref")]
-                public  string                          rootRef;
+        [Fri.Property(Name =                               "$ref")]
+                public      string                          rootRef;
 
-                public  Dictionary<string, JsonType>    definitions;
+                public      Dictionary<string, JsonType>    definitions;
 
         /// <summary>file name is <see cref="name"/> + ".json".
         /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>
-        [Ignore]public  string                          fileName;
-        [Ignore]public  string                          name;
-        [Ignore]public  Dictionary<string, JsonTypeDef> typeDefs;
+        [Ignore]public      string                          fileName;
+        [Ignore]public      string                          name;
+        [Ignore]internal    Dictionary<string, JsonTypeDef> typeDefs;
 
         public override string                          ToString() => fileName;
     }
@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 public override string  ToString() => name;
     }
 
-    public enum SchemaType {
+    internal enum SchemaType {
         [Fri.EnumValue(Name = "null")]      Null,
         [Fri.EnumValue(Name = "object")]    Object,
         [Fri.EnumValue(Name = "string")]    String,

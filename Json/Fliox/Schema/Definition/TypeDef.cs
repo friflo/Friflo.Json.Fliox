@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   bool            isDictionary;
         /// See <see cref="JSON.JsonTypeSchema.GetItemsFieldType"/>
         public   readonly   bool            isNullableElement;  
-        public   readonly   TypeDef         ownerType;
+        private  readonly   TypeDef         ownerType;
         public              bool            IsDerivedField { get; private set; }
         public   readonly   string          relation;
         public              TypeDef         RelationType => relationType;

@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.JSON
 {
-    public sealed class JsonTypeDef : TypeDef {
+    internal sealed class JsonTypeDef : TypeDef {
         private  readonly   string                      name;
         internal readonly   JsonType                    type;
         
