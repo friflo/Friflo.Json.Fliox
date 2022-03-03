@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Ignore]    public  CommandError                    Error { get; set; }
 
         
-        internal override   TaskType            TaskType => TaskType.query;
-        public   override   string              ToString() => $"(container: {container})";
+        internal override       TaskType                        TaskType => TaskType.query;
+        public   override       string                          ToString() => $"(container: {container})";
     }
 }

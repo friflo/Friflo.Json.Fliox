@@ -52,6 +52,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Ignore] public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    deleteErrors;
 
-        internal override   TaskType                        TaskType => TaskType.delete;
+        internal override   TaskType                            TaskType => TaskType.delete;
     }
 }

@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// and the accessed <see cref="EntityContainer"/> implementation expose this data.</summary>
         [Fri.Ignore]        public  string              stacktrace;
 
-        public override     string              ToString() => AsText(true);
+        public override             string              ToString() => AsText(true);
 
         public EntityError() { } // required for TypeMapper
 

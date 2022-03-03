@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         
         [Fri.Ignore]    internal    FilterOperation filterOp;
         
-        internal override       TaskType        TaskType  => TaskType.subscribeChanges;
-        public   override       string          TaskName  => $"container: '{container}'";
+        internal override           TaskType        TaskType  => TaskType.subscribeChanges;
+        public   override           string          TaskName  => $"container: '{container}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var hub         = messageContext.Hub;
