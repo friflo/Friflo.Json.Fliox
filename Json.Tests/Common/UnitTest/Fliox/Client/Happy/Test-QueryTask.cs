@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var allArticles2            = articles.QueryByFilter(filterAll)                         .TaskName("allArticles2");
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var allArticlesLimit        = articles.QueryAll();
-            // allArticlesLimit.limit      = 2; // todo
+            allArticlesLimit.limit      = 2;
 
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer.Key == "customer-1")         .TaskName("ordersWithCustomer1");
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("Galaxy S10",      allArticles.Result["article-galaxy"].name);
             AreEqual("iPad Pro",        allArticles.Result["article-ipad"].name);
             
-            // AreEqual(2,                 allArticlesLimit.Results.Count); todo
+            AreEqual(2,                 allArticlesLimit.Result.Count);
             
             AreEqual(1,                 hasOrderCamera.Result.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
