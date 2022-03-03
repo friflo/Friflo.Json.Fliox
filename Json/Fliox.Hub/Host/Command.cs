@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             Name                = name;
             this.param          = param;  
             this.messageContext = messageContext;
+            WritePretty         = true;
         }
         
     /*  public TParam Param { get {
