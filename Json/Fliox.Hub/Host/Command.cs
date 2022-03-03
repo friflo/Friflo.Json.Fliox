@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              User            User            => messageContext.User;
         public              JsonKey         ClientId        => messageContext.clientId;
         public              bool            WriteNull       { get; set; }
+        public              bool            WritePretty     { get; set; }
         
         internal            string          error;
 

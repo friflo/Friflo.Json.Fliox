@@ -37,6 +37,8 @@ namespace Friflo.Json.Fliox.DemoHub
             
             if (!command.ValidateParam(out var param, out var error))
                 return command.Error<Records>(error);
+            
+            command.WritePretty  = true;
             var result = FakeUtils.CreateFakes(param);
             
             if (result.orders       != null)    demoStore.orders    .UpsertRange(result.orders);
@@ -64,8 +66,10 @@ namespace Friflo.Json.Fliox.DemoHub
             
             if (!command.ValidateParam(out var param, out var error))
                 return command.Error<Counts>(error);
-            var seconds = param ?? 60;
-            var from    = DateTime.Now.AddSeconds(-seconds);
+            
+            command.WritePretty = true;
+            var seconds         = param ?? 60;
+            var from            = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Count(o => o.created >= from);
             var customerCount   = demoStore.customers.  Count(o => o.created >= from);
@@ -91,8 +95,10 @@ namespace Friflo.Json.Fliox.DemoHub
             
             if (!command.ValidateParam(out var param, out var error))
                 return command.Error<Records>(error);
-            var seconds = param ?? 60;
-            var from    = DateTime.Now.AddSeconds(-seconds);
+            
+            command.WritePretty = true;
+            var seconds         = param ?? 60;
+            var from            = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Query(o => o.created >= from);
             var customerCount   = demoStore.customers.  Query(o => o.created >= from);

@@ -147,9 +147,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static HostDetails Details (Command<Empty> command) {
-            var hub     = command.Hub;
-            var info    = hub.Info;
-            var details = new HostDetails {
+            command.WritePretty = true;
+            var hub             = command.Hub;
+            var info            = hub.Info;
+            var details         = new HostDetails {
                 version         = hub.Version,
                 hostName        = hub.hostName,
                 projectName     = info?.projectName,
@@ -161,6 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         private static async Task<DbContainers> Containers (Command<Empty> command) {
+            command.WritePretty = true;
             var database        = command.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
             dbContainers.id     = command.DatabaseName ?? EntityDatabase.MainDB;
@@ -168,6 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static DbCommands Commands (Command<Empty> command) {
+            command.WritePretty = true;
             var database        = command.Database;  
             var dbCommands      = database.GetDbCommands();
             dbCommands.id       = command.DatabaseName ?? EntityDatabase.MainDB;
@@ -185,6 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             string[] containerNames;
             if (!command.ValidateParam(out var param, out var error))
                 return command.Error<DbStats>(error);
+            command.WritePretty = true;
             var containerName   = param;
             if (containerName == null) {
                 var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
@@ -207,7 +211,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static async Task<HostCluster> Cluster (Command<Empty> command) {
-            var hub = command.Hub;
+            command.WritePretty = true;
+            var hub             = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }
         

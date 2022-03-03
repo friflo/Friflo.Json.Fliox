@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 writer.WriteNullMembers = cmd.WriteNull;
+                writer.Pretty           = cmd.WritePretty;
                 var jsonResult          = writer.WriteAsArray(result);
                 return Task.FromResult(new InvokeResult(jsonResult));
             }
@@ -84,6 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var writer = pooled.instance;
                 writer.WriteNullMembers = cmd.WriteNull;
+                writer.Pretty           = cmd.WritePretty;
                 var jsonResult          = writer.WriteAsArray(result);
                 return new InvokeResult(jsonResult);
             }
