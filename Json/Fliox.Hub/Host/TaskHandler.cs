@@ -229,12 +229,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal string[] GetCommands() {
             var result = new string[commands.Count];
             int n = 0;
-            foreach (var pair in commands) { result[n++] = pair.Key; }
+            // add std. commands on the bottom
+            AddCommands(result, ref n, false, commands);
+            AddCommands(result, ref n, true,  commands);
             return result;
         }
-
-
         
+        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, CommandCallback> commandMap) {
+            foreach (var pair in commandMap) {
+                var name = pair.Key;
+                if (name.StartsWith("std.") == standard)
+                    commands[n++] = name;
+            }
+        }
+
         protected static bool AuthorizeTask(SyncRequestTask task, MessageContext messageContext, out SyncTaskResult error) {
             var authorizer = messageContext.authState.authorizer;
             if (authorizer.Authorize(task, messageContext)) {
