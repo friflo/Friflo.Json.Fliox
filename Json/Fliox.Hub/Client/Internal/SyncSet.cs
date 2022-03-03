@@ -62,29 +62,29 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
 
         // --- lazy-initialized getters => they behave like readonly fields
-        private     List<ReadTask<TKey, T>>         Reads()      => _reads       ?? (_reads       = new List<ReadTask<TKey, T>>());
+        private     List<ReadTask<TKey, T>>         Reads()         => _reads       ?? (_reads       = new List<ReadTask<TKey, T>>());
 
-        private     List<QueryTask<TKey, T>>        Queries()    => _queries     ?? (_queries     = new List<QueryTask<TKey, T>>());
+        private     List<QueryTask<TKey, T>>        Queries()       => _queries     ?? (_queries     = new List<QueryTask<TKey, T>>());
 
-        private     List<AggregateTask>             Aggregates() => _aggregates  ?? (_aggregates  = new List<AggregateTask>());
+        private     List<AggregateTask>             Aggregates()    => _aggregates  ?? (_aggregates  = new List<AggregateTask>());
 
-        private     List<CloseCursorsTask>          CloseCursors()=>_closeCursors?? (_closeCursors= new List<CloseCursorsTask>());
+        private     List<CloseCursorsTask>          CloseCursors()  =>_closeCursors ?? (_closeCursors= new List<CloseCursorsTask>());
 
         private     SubscribeChangesTask<T>         subscribeChanges;
 
-        private     HashSet<T>                      Autos()      => _autos       ?? (_autos       = new HashSet<T>(EntityEqualityComparer<T>.Instance));
+        private     HashSet<T>                      Autos()         => _autos       ?? (_autos       = new HashSet<T>(EntityEqualityComparer<T>.Instance));
 
-        private     Dictionary<JsonKey, Peer<T>>    Creates()    => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                 CreateTasks()=> _createTasks ?? (_createTasks = new List<WriteTask>());
+        private     Dictionary<JsonKey, Peer<T>>    Creates()       => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                 CreateTasks()   => _createTasks ?? (_createTasks = new List<WriteTask>());
 
-        private     Dictionary<JsonKey, Peer<T>>    Upserts()    => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                 UpsertTasks()=> _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
+        private     Dictionary<JsonKey, Peer<T>>    Upserts()       => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                 UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
 
-        private     Dictionary<JsonKey, EntityPatch>Patches()    => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
-        private     List<PatchTask<T>>              PatchTasks() => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
+        private     Dictionary<JsonKey, EntityPatch>Patches()       => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
+        private     List<PatchTask<T>>              PatchTasks()    => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
 
-        private     HashSet<TKey>                   Deletes()    => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
-        private     List<DeleteTask<TKey, T>>       DeleteTasks()=> _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
+        private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
+        private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
 
         private     DeleteAllTask<TKey, T>          _deleteTaskAll;
 
