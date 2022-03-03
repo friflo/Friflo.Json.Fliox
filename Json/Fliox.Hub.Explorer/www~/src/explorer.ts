@@ -207,7 +207,9 @@ export class Explorer
         // const tasks =  [{ "task": "query", "container": p.container, "filterJson":{ "op": "true" }}];
         filterRow.style.visibility      = "";
         entityFilter.style.visibility   = "";
-        catalogSchema.innerHTML  = app.getSchemaType(p.database) + "&nbsp;·&nbsp;" + app.getEntityType(p.database, p.container);
+        const schema             = app.databaseSchemas[p.database];
+        const entityDocs         = schema ? "&nbsp;·&nbsp;" + app.getEntityType(p.database, p.container) : "";
+        catalogSchema.innerHTML  = app.getSchemaType(p.database) + entityDocs;
         explorerTools.innerHTML  = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;

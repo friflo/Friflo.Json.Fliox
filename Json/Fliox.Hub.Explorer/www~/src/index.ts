@@ -503,7 +503,7 @@ export class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    public readonly schemaLess = '<span title="schema-less database - no type definition available" style="opacity:0.5">schema-less</span>';
+    public readonly schemaLess = '<span title="schema-less database - no type information available" style="opacity:0.5">schema-less</span>';
 
     public static getDatabaseLink(database: string) : string {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;

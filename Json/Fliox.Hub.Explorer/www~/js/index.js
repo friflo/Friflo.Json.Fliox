@@ -29,7 +29,7 @@ export class App {
     constructor() {
         // --------------------------------------- schema ---------------------------------------
         this.databaseSchemas = {};
-        this.schemaLess = '<span title="schema-less database - no type definition available" style="opacity:0.5">schema-less</span>';
+        this.schemaLess = '<span title="schema-less database - no type information available" style="opacity:0.5">schema-less</span>';
         // --------------------------------------- filter --------------------------------------- 
         this.filter = {};
         // filterTree example for testing validation in Playground > query-filter task
