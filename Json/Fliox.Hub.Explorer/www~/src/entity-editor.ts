@@ -674,7 +674,7 @@ export class EntityEditor
     {
         this.setExplorerEditor("command");
 
-        const schema        = app.databaseSchemas[database]._rootSchema;
+        const schema        = app.databaseSchemas[database]?._rootSchema;
         const signature     = schema ? schema.commands[command] : null;
         const defaultParam  = EntityEditor.getDefaultValue(signature?.param);
 
@@ -694,7 +694,7 @@ export class EntityEditor
         commandAnchor.onfocus       = () => {            
             commandAnchor.href = this.getCommandUrl(database, command);
         };
-        const docs                  = signature.description;
+        const docs                  = signature?.description;
         commandDocs.innerText       = docs ? docs : "";
     }
 
