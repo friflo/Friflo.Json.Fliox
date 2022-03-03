@@ -471,7 +471,7 @@ export class App {
     public getSchemaDescription(database: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
-            return this.schemaLess;            
+            return ""; // this.schemaLess;
         return schema._rootSchema.description ?? "";
     }
 
@@ -503,7 +503,7 @@ export class App {
         return result = result == "{}" ? "any" : result;
     }
 
-    public readonly schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
+    public readonly schemaLess = '<span title="schema-less database - no type definition available" style="opacity:0.5">schema-less</span>';
 
     public static getDatabaseLink(database: string) : string {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;

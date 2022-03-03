@@ -91,7 +91,7 @@ export class EntityEditor {
         const schemaType = app.getSchemaType(database);
         catalogSchema.innerHTML = schemaType;
         explorerTools.innerHTML = "";
-        el("databaseLabel").innerHTML = `${schemaType}&nbsp;<span style="opacity:0.5;">schema</span>`;
+        el("databaseLabel").innerHTML = schemaType;
         filterRow.style.visibility = "hidden";
         entityFilter.style.visibility = "hidden";
         readEntitiesDB.innerHTML = App.getDatabaseLink(database);

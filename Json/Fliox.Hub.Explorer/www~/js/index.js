@@ -29,7 +29,7 @@ export class App {
     constructor() {
         // --------------------------------------- schema ---------------------------------------
         this.databaseSchemas = {};
-        this.schemaLess = '<span title="missing type definition - schema-less database" style="opacity:0.5">unknown</span>';
+        this.schemaLess = '<span title="schema-less database - no type definition available" style="opacity:0.5">schema-less</span>';
         // --------------------------------------- filter --------------------------------------- 
         this.filter = {};
         // filterTree example for testing validation in Playground > query-filter task
@@ -422,7 +422,7 @@ export class App {
         var _a;
         const schema = this.databaseSchemas[database];
         if (!schema)
-            return this.schemaLess;
+            return ""; // this.schemaLess;
         return (_a = schema._rootSchema.description) !== null && _a !== void 0 ? _a : "";
     }
     static getType(database, def) {
