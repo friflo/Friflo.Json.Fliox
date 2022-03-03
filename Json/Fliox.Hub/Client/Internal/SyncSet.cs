@@ -36,7 +36,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- backing fields for lazy-initialized getters
         private     List<ReadTask<TKey, T>>                 _reads;
 
-        private     Dictionary<string, QueryTask<TKey, T>>  _queries;
+        private     List<QueryTask<TKey, T>>                _queries;
+        private     int                                     queriesTasksIndex;
 
         private     List<AggregateTask>                     _aggregates;
         private     int                                     aggregatesTasksIndex;
@@ -63,8 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- lazy-initialized getters => they behave like readonly fields
         private     List<ReadTask<TKey, T>>                 Reads()      => _reads       ?? (_reads       = new List<ReadTask<TKey, T>>());
 
-        /// key: <see cref="QueryTask{TKey,T}.filterLinq"/>
-        private     Dictionary<string, QueryTask<TKey, T>>  Queries()    => _queries     ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
+        private     List<QueryTask<TKey, T>>                Queries()    => _queries     ?? (_queries     = new List<QueryTask<TKey, T>>());
 
         private     List<AggregateTask>                     Aggregates() => _aggregates  ?? (_aggregates  = new List<AggregateTask>());
 
@@ -129,12 +129,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Query
         internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
-            var filterLinq = filter.Linq;
             var queries = Queries();
-            if (queries.TryGetValue(filterLinq, out QueryTask<TKey, T> query))
-                return query;
-            query = new QueryTask<TKey, T>(filter, set.intern.store);
-            queries.Add(filterLinq, query);
+            var query   = new QueryTask<TKey, T>(filter, set.intern.store);
+            queries.Add(query);
             return query;
         }
 
@@ -147,8 +144,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- Aggregate
         internal CountTask<T> CountFilter(FilterOperation filter) {
-            var aggregates = Aggregates();
-            var aggregate = new CountTask<T>(filter);
+            var aggregates  = Aggregates();
+            var aggregate   = new CountTask<T>(filter);
             aggregates.Add(aggregate);
             return  aggregate;
         }
@@ -427,8 +424,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void QueryEntities(List<SyncRequestTask> tasks) {
             if (_queries == null || _queries.Count == 0)
                 return;
-            foreach (var queryPair in _queries) {
-                QueryTask<TKey, T> query = queryPair.Value;
+            foreach (var query in _queries) {
                 var subRefs = query.refsTask.subRefs;
                 List<References> references = null;
                 if (subRefs.Count > 0) {

@@ -243,8 +243,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result, ContainerEntities queryEntities) {
-            var filterLinq = task.filter;
-            var query = Queries()[filterLinq];
+            var queries = Queries();
+            var query   = queries[queriesTasksIndex++];
             if (result is TaskErrorResult taskError) {
                 var taskErrorInfo = new TaskErrorInfo(taskError);
                 query.state.SetError(taskErrorInfo);
