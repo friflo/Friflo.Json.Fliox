@@ -59,6 +59,7 @@
             --link-color:       #d400b8;
             --link-deco:        #00000040;
             --color:            #000;
+            --doc-link:         #5555c0;
             --table-bar:        #e8e8e8;
         }
         [data-theme="dark"] {
@@ -77,6 +78,7 @@
             --link-color:       #e64bd1;
             --link-deco:        #ffffff60;
             --color:            #fff;
+            --doc-link:         #c0c0ff;
             --table-bar:        #444;
         }
 
@@ -84,6 +86,8 @@
            text-decoration-thickness: 2px;  color: color: var(--link-color) !important */
         .refLinkDecoration          { color: var(--link-color) !important;  }
         .refLinkDecoration:hover    { text-decoration: underline; text-decoration-thickness: 2px; text-decoration-color: var(--link-deco) !important; }
+        .docLink:link,
+        .docLink:visited            { color: var(--doc-link); }
 
         .navigate           { cursor: pointer; font-size: 14px; height: 22px; width: 22px; text-align: center;
                               user-select: none; -moz-user-select: none;
@@ -554,7 +558,7 @@
     <!-- ------- schema link, entity command/type ------- -->
     <div style="grid-area: ex-schema; display:flex; height: 23px; padding-top: 1px; overflow:hidden;">
       <span  id="explorerTools"></span>
-      <small id="catalogSchema" style="display: flex; justify-content: center; align-items: center;"></small>
+      <small id="catalogSchema" class="docLink" style="display: flex; justify-content: center; align-items: center;"></small>
     </div>
     <div style="grid-area: ex-action; display:flex; overflow:hidden; white-space:nowrap; height: 23px; padding-top: 1px;">
         <div title="Go back (Alt + 🠔)"    class="navigate" onclick="app.editor.navigateEntity(app.editor.entityHistoryPos - 1)">⏴</div>
@@ -710,11 +714,11 @@
     <div class="settings">
       <table style="font-size: 14px; margin-left: 20px;">
         <tr>
-          <td><a target='_blank' rel='noopener' href="./schema/protocol/html/schema.html">protocol schema</a></td>
+          <td><a target='_blank' rel='noopener' href="./schema/protocol/html/schema.html" class="docLink">protocol schema</a></td>
           <td style="opacity: 0.6;">used by batch API in Playground</td>
         </tr>
         <tr>
-          <td><a target='_blank' rel='noopener' href="./schema/filter/html/schema.html">filter schema</a></td>
+          <td><a target='_blank' rel='noopener' href="./schema/filter/html/schema.html" class="docLink">filter schema</a></td>
           <td style="opacity: 0.6;">used by "filterTree" in SyncRequestTask: query & aggregate </td>
         </tr>        
       </table>

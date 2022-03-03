@@ -451,21 +451,21 @@ export class App {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}">${schema.schemaName}</a>`;
+        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}" class="docLink">${schema.schemaName}</a>`;
     }
 
     public getSchemaCommand(database: string, command: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open commands API in new tab" href="./schema/${database}/html/schema.html#commands" target="${database}">${command}</a>`;
+        return `<a title="open commands API in new tab" href="./schema/${database}/html/schema.html#commands" target="${database}" class="docLink">${command}</a>`;
     }
 
     public getSchemaTypes(database: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema types in new tab" href="./schema/${database}/index.html" target="${database}">Typescript, C#, Kotlin, JSON Schema</a>`;
+        return `<a title="open database schema types in new tab" href="./schema/${database}/index.html" target="${database}" class="docLink">Typescript, C#, Kotlin, JSON Schema</a>`;
     }
 
     public getSchemaDescription(database: string) : string {
@@ -478,7 +478,7 @@ export class App {
     private static getType(database: string, def: JsonType) {
         const ns          = def._namespace;
         const name        = def._typeName;
-        return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}">${name}</a>`;
+        return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}" class="docLink">${name}</a>`;
     }
 
     public getEntityType(database: string, container: string) : string {
