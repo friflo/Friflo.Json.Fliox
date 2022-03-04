@@ -3,7 +3,6 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
