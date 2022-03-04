@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Host
+namespace Friflo.Json.Fliox.Hub.Host.Utils
 {
     public abstract class QueryEnumerator : IEnumerator<JsonKey>
     {
