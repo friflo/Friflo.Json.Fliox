@@ -183,29 +183,30 @@ $@"        <tr>
         </tr>");
             }
             sb.AppendLine("    </table>");
-            if (type.IsSchema) {
-                EmitServiceType(type, context, sb);
-            }
+            EmitMessages("commands", type.Commands, context, sb);
+            EmitMessages("messages", type.Messages, context, sb);
             sb.AppendLine("    </div>");
             return new EmitType(type, sb, imports, dependencies);
         }
         
-        private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
-            var commands        = type.Commands;
-            sb.AppendLine(
-$@"    <chapter id='commands'><a href='#commands'>commands</a></chapter>
-    <table class='commands'>
+        private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
+            if (messageDefs == null)
+                return;
+            sb.Append(
+$@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
+    <table class='{type}'>
 ");
-            int maxFieldName    = commands.MaxLength(field => field.name.Length);
-            foreach (var command in commands) {
-                var commandParam    = GetFieldType(command.param,  context, command.param.required);
-                var commandResult   = GetFieldType(command.result, context, command.result.required);
-                var docs            = GetDescription("\n            <td><docs>", command.docs, "</docs></td>");
-                var indent = Indent(maxFieldName, command.name);
-                var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult}";
+            int maxFieldName    = messageDefs.MaxLength(field => field.name.Length);
+            foreach (var messageDef in messageDefs) {
+                var commandParam    = GetFieldType(messageDef.param,  context, messageDef.param.required);
+                var result          = messageDef.result;
+                var commandResult   = result != null ? GetFieldType(result, context, result.required) : null;
+                var docs            = GetDescription("\n            <td><docs>", messageDef.docs, "</docs></td>");
+                var indent = Indent(maxFieldName, messageDef.name);
+                var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult ?? "void"}";
                 sb.AppendLine(
 $@"        <tr>
-            <td><cmd>{command.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{docs}
+            <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{docs}
         </tr>");
             }
             sb.AppendLine("    </table>");

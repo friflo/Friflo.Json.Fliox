@@ -138,24 +138,26 @@ namespace Friflo.Json.Fliox.Schema
                 var optStr  = required ? " ": "?";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
             }
-            if (type.IsSchema) {
-                EmitServiceType(type, context, sb);
-            }
+            EmitMessages("commands", type.Commands, context, sb);
+            EmitMessages("messages", type.Messages, context, sb);
+
             sb.AppendLine("}");
             sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }
         
-        private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
-            var commands        = type.Commands;
-            sb.AppendLine("\n    // --- commands");
-            int maxFieldName    = commands.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
-            foreach (var command in commands) {
-                var commandParam    = GetFieldType(command.param,  context, command.param.required);
-                var commandResult   = GetFieldType(command.result, context, command.result.required);
-                var indent = Indent(maxFieldName, command.name);
-                var signature = $"(param: {commandParam}) : {commandResult}";
-                sb.AppendLine($"    [\"{command.name}\"]{indent} {signature};");
+        private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
+            if (messageDefs == null)
+                return;
+            sb.AppendLine($"\n    // --- {type}");
+            int maxFieldName    = messageDefs.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
+            foreach (var messageDef in messageDefs) {
+                var commandParam    = GetFieldType(messageDef.param,  context, messageDef.param.required);
+                var result          = messageDef.result;
+                var commandResult   = result != null ? GetFieldType(result, context, result.required) : null;
+                var indent = Indent(maxFieldName, messageDef.name);
+                var signature = $"(param: {commandParam}) : {commandResult ?? "void"}";
+                sb.AppendLine($"    [\"{messageDef.name}\"]{indent} {signature};");
             }
         }
         

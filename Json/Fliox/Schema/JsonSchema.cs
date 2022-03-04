@@ -180,23 +180,23 @@ namespace Friflo.Json.Fliox.Schema
             return new EmitType(type, sb);
         }
         
-        private static void EmitMessages(string messageType, IReadOnlyList<MessageDef> commands, TypeContext context, StringBuilder sb) {
-            if (commands == null)
+        private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
+            if (messageDefs == null)
                 return;
             bool    firstField  = true;
-            int maxFieldName    = commands.MaxLength(field => field.name.Length);
+            int maxFieldName    = messageDefs.MaxLength(field => field.name.Length);
             sb.AppendLine(",");
-            sb.AppendLine($"            \"{messageType}\": {{");
-            foreach (var command in commands) {
-                var commandParam    = GetFieldType(command.param,  context, command.param.required);
-                var result          = command.result;
+            sb.AppendLine($"            \"{type}\": {{");
+            foreach (var messageDef in messageDefs) {
+                var commandParam    = GetFieldType(messageDef.param,  context, messageDef.param.required);
+                var result          = messageDef.result;
                 var commandType     = result != null ? GetFieldType(result, context, result.required) : null;
                 var resultStr       = commandType != null ? $", \"result\": {{ {commandType} }}" : "";
-                var description     = GetDescription(",\n                    ", command.docs, "");
-                var indent          = Indent(maxFieldName, command.name);
+                var description     = GetDescription(",\n                    ", messageDef.docs, "");
+                var indent          = Indent(maxFieldName, messageDef.name);
                 Delimiter(sb, Next, ref firstField);
                 var signature = $"\"param\": {{ {commandParam} }}{resultStr}";
-                sb.Append($"                \"{command.name}\":{indent} {{ {signature}{description} }}");
+                sb.Append($"                \"{messageDef.name}\":{indent} {{ {signature}{description} }}");
             }
             sb.Append("\n            }");
         }

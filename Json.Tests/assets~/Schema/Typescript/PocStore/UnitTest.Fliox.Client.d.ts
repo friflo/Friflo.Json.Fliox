@@ -37,6 +37,9 @@ export interface PocStore {
     ["std.Stats"]          (param: string | null) : DbStats;
     ["std.Details"]        (param: any) : HostDetails;
     ["std.Cluster"]        (param: any) : HostCluster;
+
+    // --- messages
+    ["test.TestMessage"]     (param: string | null) : void;
 }
 
 export class Order {
