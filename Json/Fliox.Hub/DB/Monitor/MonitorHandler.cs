@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             AddCommandHandler<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
         }
         
-        internal ClearStatsResult ClearStats(Param<ClearStats> param, CommandContext command) {
+        internal ClearStatsResult ClearStats(Param<ClearStats> param, MessageContext command) {
             // clear request counts of the hub. Extension databases share the same hub.
             hub.Authenticator.ClearUserStats();
             hub.ClientController.ClearClientStats();

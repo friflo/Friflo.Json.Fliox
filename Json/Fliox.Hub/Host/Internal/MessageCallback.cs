@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
         
         internal override Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new CommandContext(messageName,  executeContext);
+            var cmd     = new MessageContext(messageName,  executeContext);
             var param   = new Param<TValue> (messageValue, executeContext); 
             handler(param, cmd);
             
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
         
         internal override Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new CommandContext(messageName,  executeContext);
+            var cmd     = new MessageContext(messageName,  executeContext);
             var param   = new Param<TValue> (messageValue, executeContext); 
             TResult result  = handler(param, cmd);
             
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
         
         internal override async Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new CommandContext(messageName,  executeContext);
+            var cmd     = new MessageContext(messageName,  executeContext);
             var param   = new Param<TParam> (messageValue, executeContext); 
             var result  = await handler(param, cmd).ConfigureAwait(false);
             

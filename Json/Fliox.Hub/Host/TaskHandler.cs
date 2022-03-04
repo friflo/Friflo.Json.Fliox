@@ -21,7 +21,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     internal  delegate  void    MsgHandler<TParam>              (Param<TParam> param, MessageContext message);
-    internal  delegate  TResult CmdHandler<TParam, out TResult> (Param<TParam> param, CommandContext command);
+    internal  delegate  TResult CmdHandler<TParam, out TResult> (Param<TParam> param, MessageContext command);
 
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandHandler<TParam, TResult> (string name, Func<Param<TParam>, CommandContext, TResult> method) {
+        protected void AddCommandHandler<TParam, TResult> (string name, Func<Param<TParam>, MessageContext, TResult> method) {
             AddCmdHandler (name, new CmdHandler<TParam, TResult> (method));
         }
         
@@ -96,12 +96,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandHandlerAsync<TParam, TResult> (string name, Func<Param<TParam>, CommandContext, Task<TResult>> method) {
+        protected void AddCommandHandlerAsync<TParam, TResult> (string name, Func<Param<TParam>, MessageContext, Task<TResult>> method) {
             AddCmdHandlerAsync (name, new CmdHandler<TParam, Task<TResult>> (method));
         }
        
         /// <summary>
-        /// Add all methods of the given <paramref name="handlerClass"/> using <see cref="CommandContext"/> as a
+        /// Add all methods of the given <paramref name="handlerClass"/> using <see cref="MessageContext"/> as a
         /// single parameter as a command handler.
         /// E.g.
         /// <code>
@@ -147,11 +147,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // ------------------------------ command handler methods ------------------------------
-        private static JsonValue Echo (Param<JsonValue> param, CommandContext command) {
+        private static JsonValue Echo (Param<JsonValue> param, MessageContext command) {
             return param.JsonParam;
         }
         
-        private static HostDetails Details (Param<Empty> param, CommandContext command) {
+        private static HostDetails Details (Param<Empty> param, MessageContext command) {
             var hub             = command.Hub;
             var info            = hub.Info;
             var details         = new HostDetails {
@@ -165,28 +165,28 @@ namespace Friflo.Json.Fliox.Hub.Host
             return details;
         }
 
-        private static async Task<DbContainers> Containers (Param<Empty> param, CommandContext command) {
+        private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext command) {
             var database        = command.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
             dbContainers.id     = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbContainers;
         }
         
-        private static DbCommands Commands (Param<Empty> param, CommandContext command) {
+        private static DbCommands Commands (Param<Empty> param, MessageContext command) {
             var database        = command.Database;  
             var dbCommands      = database.GetDbCommands();
             dbCommands.id       = command.DatabaseName ?? EntityDatabase.MainDB;
             return dbCommands;
         }
         
-        private static DbSchema Schema (Param<Empty> param, CommandContext command) {
+        private static DbSchema Schema (Param<Empty> param, MessageContext command) {
             command.WritePretty = false;
             var database        = command.Database;  
             var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static async Task<DbStats> Stats (Param<string> param, CommandContext command) {
+        private static async Task<DbStats> Stats (Param<string> param, MessageContext command) {
             var database        = command.Database;
             string[] containerNames;
             if (!param.GetValidate(out var containerName, out var error))
@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        private static async Task<HostCluster> Cluster (Param<Empty> param, CommandContext command) {
+        private static async Task<HostCluster> Cluster (Param<Empty> param, MessageContext command) {
             var hub             = command.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }
