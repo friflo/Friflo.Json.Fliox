@@ -112,16 +112,26 @@ export class EntityEditor {
         databaseAnchor.innerHTML = '<span style="" title="show general database information">database info</span>';
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
+        const liMap = {};
         // commands link
         const commandLink = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messages = this.createMessages(database, dbCommands);
-        ulDatabase.appendChild(messages.rootEl);
+        const messagesLi = this.createMessages(database, dbCommands.commands, liMap);
+        ulDatabase.appendChild(messagesLi);
+        const messages = dbCommands.messages;
+        if (messages) {
+            // messages link
+            const commandLink = this.createMessagesLink(database, "messages");
+            ulDatabase.append(commandLink);
+            // messages list
+            const messagesLi = this.createMessages(database, dbCommands.messages, liMap);
+            ulDatabase.appendChild(messagesLi);
+        }
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulDatabase);
         const selectedCommand = this.selectedCommands[database];
-        const liCommand = messages.map[selectedCommand];
+        const liCommand = liMap[selectedCommand];
         if (liCommand) {
             this.selectCommand(database, selectedCommand, liCommand);
             liCommand.scrollIntoView();
@@ -140,7 +150,7 @@ export class EntityEditor {
         commandLink.append(commandAnchor);
         return commandLink;
     }
-    createMessages(database, dbCommands) {
+    createMessages(database, messages, liMap) {
         const liCommands = createEl('li');
         const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
@@ -157,21 +167,20 @@ export class EntityEditor {
                 this.sendCommand();
             }
         };
-        const commands = {};
-        for (const command of dbCommands.commands) {
+        for (const message of messages) {
             const liCommand = createEl('li');
             const commandLabel = createEl('div');
-            commandLabel.innerText = command;
+            commandLabel.innerText = message;
             liCommand.appendChild(commandLabel);
             const runCommand = createEl('div');
             runCommand.classList.value = "command";
             runCommand.title = "Send the command using POST";
             liCommand.appendChild(runCommand);
             ulCommands.append(liCommand);
-            commands[command] = liCommand;
+            liMap[message] = liCommand;
         }
         liCommands.append(ulCommands);
-        return { rootEl: liCommands, map: commands };
+        return liCommands;
     }
     storeCursor() {
         if (this.entityHistoryPos < 0)

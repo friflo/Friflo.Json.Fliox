@@ -140,18 +140,29 @@ export class EntityEditor
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
 
+        const liMap = {} as { [key: string] : HTMLLIElement };
         // commands link
         const commandLink = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messages = this.createMessages(database, dbCommands);
-        ulDatabase.appendChild(messages.rootEl);
+        const messagesLi = this.createMessages(database, dbCommands.commands, liMap);
+        ulDatabase.appendChild(messagesLi);
+
+        const messages = dbCommands.messages;
+        if (messages) {
+            // messages link
+            const commandLink = this.createMessagesLink(database, "messages");
+            ulDatabase.append(commandLink);
+            // messages list
+            const messagesLi = this.createMessages(database, dbCommands.messages, liMap);
+            ulDatabase.appendChild(messagesLi);
+        }
 
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulDatabase);
         
         const selectedCommand   = this.selectedCommands[database];
-        const liCommand         = messages.map[selectedCommand];
+        const liCommand         = liMap[selectedCommand];
         if (liCommand) {
             this.selectCommand(database, selectedCommand, liCommand);
             liCommand.scrollIntoView();
@@ -171,11 +182,7 @@ export class EntityEditor
         return commandLink;
     }
 
-    private createMessages(database: string, dbCommands: DbCommands) : {
-        rootEl: HTMLLIElement,
-        map:    { [key: string] : HTMLLIElement }
-    }
-    {
+    private createMessages(database: string, messages: string[], liMap: { [key: string] : HTMLLIElement }) : HTMLLIElement {
         const liCommands  = createEl('li');
         const ulCommands    = createEl('ul');
         ulCommands.onclick  = (ev) => {
@@ -194,11 +201,10 @@ export class EntityEditor
                 this.sendCommand();
             }
         };
-        const commands = {} as { [key: string] : HTMLLIElement };
-        for (const command of dbCommands.commands) {
+        for (const message of messages) {
             const liCommand             = createEl('li');
             const commandLabel          = createEl('div');
-            commandLabel.innerText      = command;
+            commandLabel.innerText      = message;
             liCommand.appendChild(commandLabel);
             const runCommand            = createEl('div');
             runCommand.classList.value  = "command";
@@ -206,11 +212,11 @@ export class EntityEditor
             liCommand.appendChild(runCommand);
 
             ulCommands.append(liCommand);
-            commands[command]           = liCommand;
+            liMap[message]                = liCommand;
         }
         liCommands.append(ulCommands);
 
-        return { rootEl: liCommands, map: commands };
+        return liCommands;
     }
 
     private entityIdentity = { } as {
