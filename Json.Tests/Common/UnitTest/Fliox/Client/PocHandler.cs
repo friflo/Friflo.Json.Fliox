@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddMessageHandlers{TClass}"/>
     /// </summary>
     public class TestCommandsHandler {
-        // private static void TestMessage(Param<string> param, MessageContext command) { }
+        private static void TestMessage(Param<string> param, MessageContext command) { }
         
         private static string Command1(Param<string> param, MessageContext command) {
             return "hello Command1";

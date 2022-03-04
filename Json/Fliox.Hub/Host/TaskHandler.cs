@@ -122,13 +122,33 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return;
 
             foreach (var handler in handlers) {
-                var messageCallback = CreateCmdCallback(handlerClass, handler);
+                MessageCallback messageCallback;
+                if (handler.resultType == typeof(void)) {
+                    messageCallback = CreateMessageCallback(handlerClass, handler);
+                } else {
+                    messageCallback = CreateCommandCallback(handlerClass, handler);
+                }
                 var name            = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
                 messages.Add(name, messageCallback);
             }
         }
         
-        private static MessageCallback  CreateCmdCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class
+        private static MessageCallback  CreateMessageCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class {
+            var genericArgs         = new Type[1];
+            var constructorParams   = new object[2];
+            // if (handler.name == "DbContainers") { int i = 1; }
+            genericArgs[0]          = handler.valueType;
+            var genericTypeArgs     = typeof(MsgHandler<>).MakeGenericType(genericArgs);
+            var firstArgument       = handler.method.IsStatic ? null : handlerClass;
+            var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
+
+            constructorParams[0]    = handler.name;
+            constructorParams[1]    = handlerDelegate;
+            object instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageCallback<>),      genericArgs, constructorParams);   
+            return (MessageCallback)instance;
+        }
+        
+        private static MessageCallback  CreateCommandCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class
         {
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
@@ -244,12 +264,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal string[] GetCommands() {
-            var result = new string[messages.Count];
+            var count = CountMessageTypes(MsgType.Command);
+            var result = new string[count];
             int n = 0;
             // add std. commands on the bottom
             AddCommands(result, ref n, false, messages);
             AddCommands(result, ref n, true,  messages);
             return result;
+        }
+        
+        private int CountMessageTypes (MsgType msgType) {
+            int count = 0;
+            foreach (var pair in messages) {
+                if (pair.Value.MsgType == msgType) count++;
+            }
+            return count;
         }
         
         private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, MessageCallback> commandMap) {
