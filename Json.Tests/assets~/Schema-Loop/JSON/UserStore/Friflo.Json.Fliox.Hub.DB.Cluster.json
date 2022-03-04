@@ -20,11 +20,13 @@
             "type": "object",
             "properties": {
                 "id":       { "type": "string" },
-                "commands": { "type": "array", "items": { "type": "string" } }
+                "commands": { "type": "array", "items": { "type": "string" } },
+                "messages": { "type": "array", "items": { "type": "string" } }
             },
             "required": [
                 "id",
-                "commands"
+                "commands",
+                "messages"
             ],
             "additionalProperties": false
         },

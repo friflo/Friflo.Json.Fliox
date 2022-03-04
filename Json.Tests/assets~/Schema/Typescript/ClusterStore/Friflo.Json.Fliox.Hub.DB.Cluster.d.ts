@@ -27,6 +27,7 @@ export class DbContainers {
 export class DbCommands {
     id        : string;
     commands  : string[];
+    messages  : string[];
 }
 
 export class DbSchema {

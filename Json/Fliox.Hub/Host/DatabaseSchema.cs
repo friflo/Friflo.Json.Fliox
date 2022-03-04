@@ -155,11 +155,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public string[] GetCommands() {
-            var rootType    = typeSchema.RootType;
-            var commands    = rootType.Commands;
-            var result      = new string [commands.Count];
+            var rootType = typeSchema.RootType;
+            return GetMessages(rootType.Commands);
+        }
+        
+        public string[] GetMessages() {
+            var rootType = typeSchema.RootType;
+            return GetMessages(rootType.Messages);
+        }
+
+        private static string[] GetMessages(IReadOnlyList<MessageDef> messageDefs) {
+            if (messageDefs == null)
+                return Array.Empty<string>();
+            var result      = new string [messageDefs.Count];
             int n = 0;
-            foreach (var field in commands) {
+            foreach (var field in messageDefs) {
                 result[n++] = field.name;
             }
             return result;

@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class DbCommands {
         [Req]   public  string                          id;
         [Req]   public  string[]                        commands;
+        [Req]   public  string[]                        messages;
                         
         public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }

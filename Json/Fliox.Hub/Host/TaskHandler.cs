@@ -263,6 +263,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             messages.Add(name, command);
         }
         
+        internal string[] GetMessages() {
+            var count = CountMessageTypes(MsgType.Message);
+            var result = new string[count];
+            int n = 0;
+            foreach (var pair in messages) {
+                if (pair.Value.MsgType == MsgType.Message)
+                    result[n++] = pair.Key;
+            }
+            return result;
+        }
+        
         internal string[] GetCommands() {
             var count = CountMessageTypes(MsgType.Command);
             var result = new string[count];
