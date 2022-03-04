@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
+    // ----------------------------------- MessageCallback -----------------------------------
     internal abstract class MessageCallback
     {
         // Note! Must not contain any state
@@ -33,6 +34,33 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext);
     }
     
+    // ----------------------------------- MessageCallback<> -----------------------------------
+    internal sealed class MessageCallback<TValue> : MessageCallback
+    {
+        private  readonly   string                  name;
+        private  readonly   MsgHandler<TValue>      handler;
+
+        public   override   string                  ToString() => name;
+
+        internal MessageCallback (string name, MsgHandler<TValue> handler) {
+            this.name       = name;
+            this.handler    = handler;
+        }
+        
+        internal override Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
+            var cmd     = new CommandContext(messageName,  executeContext);
+            var param   = new Param<TValue> (messageValue, executeContext); 
+            handler(param, cmd);
+            
+            var error = cmd.error;
+            if (error != null) {
+                return Task.FromResult(new InvokeResult(error));
+            }
+            return Task.FromResult(new InvokeResult((byte[])null));
+        }
+    }
+    
+    // ----------------------------------- CommandCallback<,> -----------------------------------
     internal sealed class CommandCallback<TValue, TResult> : MessageCallback
     {
         private  readonly   string                          name;
@@ -64,6 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
+    // ----------------------------------- CommandAsyncCallback<,> -----------------------------------
     internal sealed class CommandAsyncCallback<TParam, TResult> : MessageCallback
     {
         private  readonly   string                              name;

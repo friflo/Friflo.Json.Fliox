@@ -20,7 +20,8 @@ using Friflo.Json.Fliox.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    internal delegate TResult CmdHandler<TParam, out TResult>(Param<TParam> param, CommandContext command);
+    internal  delegate  void    MsgHandler<TParam>              (Param<TParam> param, MessageContext message);
+    internal  delegate  TResult CmdHandler<TParam, out TResult> (Param<TParam> param, CommandContext command);
 
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -71,6 +72,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- host
             AddCmdHandler       (Std.HostDetails,  new CmdHandler<Empty,    HostDetails>        (Details));
             AddCmdHandlerAsync  (Std.HostCluster,  new CmdHandler<Empty,    Task<HostCluster>>  (Cluster));
+        }
+        
+        protected void AddMessageHandler<TParam> (string name, Action<Param<TParam>, MessageContext> methods) {
+            AddMsgHandler (name, new MsgHandler<TParam> (methods));
         }
         
         /// <summary>
@@ -215,6 +220,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --- internal API ---
         internal bool TryGetMessage(string name, out MessageCallback message) {
             return messages.TryGetValue(name, out message);
+        }
+        
+        private void AddMsgHandler<TValue>(string name, MsgHandler<TValue> handler) {
+            var command = new MessageCallback<TValue>(name, handler);
+            messages.Add(name, command);
         }
         
         private void AddCmdHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
