@@ -7,14 +7,14 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="CommandHandler"/> is a <see cref="TaskHandler"/> sub class used to implement custom database commands
+    /// <see cref="CommandHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands
     /// executed at the host and declared by the <see cref="DemoStore"/>.
     /// <br/>
     /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/>.
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
-    /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with a <see cref="Command"/>
-    /// parameter is added as a command handler. <br/>
+    /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with the parameter
+    /// <see cref="Param{TParam}"/> and <see cref="Command"/> is added as a command handler. <br/>
     /// Their method names need to match the commands methods declared in the <see cref="DemoStore"/>.
     /// </summary>
     public class CommandHandler : TaskHandler
