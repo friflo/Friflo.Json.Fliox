@@ -170,23 +170,29 @@ namespace Friflo.Json.Fliox.Schema.Native
         
         public void Dispose() { }
         
-        private void AddMessages(NativeTypeDef typeDef, MessageInfo[] commands) {
-            if (commands == null || commands.Length == 0)
+        private void AddMessages(NativeTypeDef typeDef, MessageInfo[] messageInfos) {
+            if (messageInfos == null || messageInfos.Length == 0)
                 return;
+            var messageDefs = typeDef.messages;
             var commandDefs = typeDef.commands;
-            if (commandDefs == null) {
-                commandDefs = typeDef.commands = new List<CommandDef>(commands.Length);
-            }
-            typeDef.commands = commandDefs;
-            foreach (var command in commands) {
-                var paramArg    = GetCommandArg("param",   command.paramType,  false);
-                var resultArg   = GetCommandArg("result",  command.resultType, true);
-                var commandDef  = new CommandDef(command.name, paramArg, resultArg, command.docs);
-                commandDefs.Add(commandDef);
+            foreach (var command in messageInfos) {
+                var paramArg    = GetMessageArg("param",   command.paramType,  false);
+                if (command.resultType != null) {
+                    var resultArg   = GetMessageArg("result",  command.resultType, true);
+                    var commandDef  = new CommandDef(command.name, paramArg, resultArg, command.docs);
+                    if (commandDefs == null)
+                        commandDefs = typeDef.commands = new List<CommandDef>();
+                    commandDefs.Add(commandDef);
+                } else {
+                    var messageDef  = new MessageDef(command.name, paramArg, command.docs);
+                    if (messageDefs == null)
+                        messageDefs = typeDef.messages = new List<MessageDef>();
+                    messageDefs.Add(messageDef);
+                }
             }
         }
         
-        private FieldDef GetCommandArg(string name, Type type, bool required) {
+        private FieldDef GetMessageArg(string name, Type type, bool required) {
             var attr    = GetArgAttributes(type);
             required   |= attr.required;
             return new FieldDef(name, required, false, false, attr.typeDef, false, false, false, null, null, null);
