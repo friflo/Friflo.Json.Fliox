@@ -18,6 +18,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.param          = param;
             this.messageContext = messageContext;
         }
+        
+        /*  public TParam Param { get {
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var reader = pooled.instance.reader;
+                return reader.Read<TParam>(param);
+            }
+        }} */
 
         /// <summary>Return the command <paramref name="param"/></summary> without validation 
         /// <param name="param">the param value if conversion successful</param>

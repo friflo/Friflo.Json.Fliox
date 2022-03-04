@@ -48,15 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             WritePretty         = true;
         }
         
-    /*  public TParam Param { get {
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
-                var reader = pooled.instance.reader;
-                return reader.Read<TParam>(param);
-            }
-        }} */
-    
-
-        
         /// <summary>Set result of <see cref="Command"/> execution to an error</summary>
         public void Error(string message) {
             error = message;
