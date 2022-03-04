@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///     <item><see cref="JsonType.discriminator"/></item>
     ///     <item><see cref="JsonType.isStruct"/></item>
     ///     <item><see cref="JsonType.isAbstract"/></item>
+    ///     <item><see cref="JsonType.messages"/></item>
     ///     <item><see cref="JsonType.commands"/></item>
     ///     <item><see cref="JsonType.key"/></item>
     ///     <item><see cref="FieldType.relation"/></item>
@@ -74,6 +75,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 public  string                          key;  // if null a property named "id" must exist
                 public  Dictionary<string, FieldType>   properties;
                 public  Dictionary<string, CommandType> commands;
+                public  Dictionary<string, MessageType> messages;
                 public  bool?                           isStruct;
                 public  List<string>                    required;
                 public  bool                            additionalProperties;
@@ -129,6 +131,15 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string          ToString() => name;
     }
 
+    public sealed class MessageType
+    {
+        [Ignore]public  string          name;
+        public  FieldType       param;
+        public  string          description;
+
+        public override string  ToString() => name;
+    }
+    
     public sealed class CommandType
     {
         [Ignore]public  string          name;
@@ -138,7 +149,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
 
                 public override string  ToString() => name;
     }
-
+    
     internal enum SchemaType {
         [Fri.EnumValue(Name = "null")]      Null,
         [Fri.EnumValue(Name = "object")]    Object,

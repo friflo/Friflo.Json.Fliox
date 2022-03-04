@@ -79,6 +79,15 @@ namespace Friflo.Json.Fliox.Schema.JSON
                                 SetField(typeDef, fieldName, field, context);
                             }
                         }
+                        var messages      = type.messages;
+                        if (messages != null) {
+                            typeDef.messages = new List<MessageDef>(messages.Count);
+                            foreach (var msgPair in messages) {
+                                string      messageName = msgPair.Key;
+                                MessageType message     = msgPair.Value;
+                                SetMessage(typeDef, messageName, message, context);
+                            }
+                        }
                         var commands      = type.commands;
                         if (commands != null) {
                             typeDef.commands = new List<CommandDef>(commands.Count);
@@ -198,6 +207,13 @@ namespace Friflo.Json.Fliox.Schema.JSON
             }
             // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             return context.standardTypes.JsonValue;
+        }
+        
+        private static void SetMessage (JsonTypeDef typeDef, string commandName, MessageType field, in JsonTypeContext context) {
+            field.name      = commandName;
+            var valueType   = GetCommandArg("param",   field.param,  context);
+            var messageDef  = new MessageDef(commandName, valueType, field.description);
+            typeDef.messages.Add(messageDef);
         }
 
         private static void SetCommand (JsonTypeDef typeDef, string commandName, CommandType field, in JsonTypeContext context) {

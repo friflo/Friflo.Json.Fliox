@@ -44,6 +44,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public              string                      KeyField        => keyField;
         public   abstract   IReadOnlyList<FieldDef>     Fields          { get; }
         
+        public   abstract   IReadOnlyList<MessageDef>   Messages        { get; }
         public   abstract   IReadOnlyList<CommandDef>   Commands        { get; }
         public              bool                        IsSchema        => Commands != null; 
         
@@ -148,6 +149,20 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 }
                 parent = parent.BaseType;
             }
+        }
+    }
+    
+    public sealed class MessageDef {
+        public   readonly   string      name;
+        public   readonly   FieldDef    param;
+        public   readonly   string      docs;
+
+        public   override   string      ToString() => name;
+        
+        public MessageDef(string name, FieldDef param, string docs) {
+            this.name       = name;
+            this.param      = param;
+            this.docs       = docs;
         }
     }
     

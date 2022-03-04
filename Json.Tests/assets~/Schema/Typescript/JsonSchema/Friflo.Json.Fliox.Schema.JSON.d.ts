@@ -15,6 +15,7 @@ export class JsonType {
     key?                  : string | null;
     properties?           : { [key: string]: FieldType } | null;
     commands?             : { [key: string]: CommandType } | null;
+    messages?             : { [key: string]: MessageType } | null;
     isStruct?             : boolean | null;
     required?             : string[] | null;
     additionalProperties  : boolean;
@@ -46,6 +47,11 @@ export class FieldType {
 export class CommandType {
     param?       : FieldType | null;
     result?      : FieldType | null;
+    description? : string | null;
+}
+
+export class MessageType {
+    param?       : FieldType | null;
     description? : string | null;
 }
 
