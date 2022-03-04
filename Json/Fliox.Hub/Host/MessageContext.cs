@@ -28,8 +28,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              User            User            => executeContext.User;
         public              JsonKey         ClientId        => executeContext.clientId;
         
-        [DebuggerBrowsable(Never)]  internal            ExecuteContext  ExecuteContext  => executeContext;
-        [DebuggerBrowsable(Never)]  protected readonly  ExecuteContext  executeContext;
+        [DebuggerBrowsable(Never)]
+        internal            ExecuteContext  ExecuteContext  => executeContext;
+        [DebuggerBrowsable(Never)]
+        protected readonly  ExecuteContext  executeContext;
 
         public   override   string          ToString()      => Name;
         
