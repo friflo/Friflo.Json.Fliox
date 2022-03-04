@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             using(var pooled = command.Pool.Type(() => new UserStore(command.Hub)).Get()) {
                 var store           = pooled.instance;
                 store.UserId        = UserStore.Server;
-                if (!param.ValidateParam(out var authenticate, out var error)) {
+                if (!param.GetValidate(out var authenticate, out var error)) {
                     command.Error(error);
                     return null;
                 }

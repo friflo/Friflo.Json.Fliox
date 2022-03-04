@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task<DbStats> Stats (Param<string> param, Command command) {
             var database        = command.Database;
             string[] containerNames;
-            if (!param.ValidateParam(out var containerName, out var error))
+            if (!param.GetValidate(out var containerName, out var error))
                 return command.Error<DbStats>(error);
 
             if (containerName == null) {

@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/>.
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
-    /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with the parameter
+    /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with the parameters
     /// <see cref="Param{TParam}"/> and <see cref="Command"/> is added as a command handler. <br/>
     /// Their method names need to match the commands methods declared in the <see cref="DemoStore"/>.
     /// </summary>
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!param.ValidateParam(out var fake, out var error))
+            if (!param.GetValidate(out var fake, out var error))
                 return command.Error<Records>(error);
             
             var result = FakeUtils.CreateFakes(fake);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!param.ValidateParam(out var duration, out var error))
+            if (!param.GetValidate(out var duration, out var error))
                 return command.Error<Counts>(error);
             
             var seconds         = duration ?? 60;
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.DemoHub
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!param.ValidateParam(out var duration, out var error))
+            if (!param.GetValidate(out var duration, out var error))
                 return command.Error<Records>(error);
             
             var seconds         = duration ?? 60;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.DemoHub
         
         /// use synchronous handler only when no async methods need to be awaited  
         private static double Add(Param<Operands> param, Command command) {
-            if (!param.ValidateParam(out var operands, out var error))
+            if (!param.GetValidate(out var operands, out var error))
                 return command.Error<double>(error);
             if (operands == null)
                 return 0;

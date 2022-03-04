@@ -23,15 +23,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool GetParam(out TParam param, out string error) {
-            return GetParam<TParam>(out param, out error);
+        public bool Get(out TParam param, out string error) {
+            return Get<TParam>(out param, out error);
         }
         
         /// <summary>Return the command <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool GetParam<T>(out T param, out string error) {
+        public bool Get<T>(out T param, out string error) {
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 param      = reader.Read<T>(this.param);
@@ -48,24 +48,35 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool ValidateParam(out TParam param, out string error) {
-            return ValidateParam<TParam>(out param, out error);
+        public bool GetValidate(out TParam param, out string error) {
+            return GetValidate<TParam>(out param, out error);
         }
         
         /// <summary>Return the validated command <paramref name="param"/> as the given type <typeparamref name="T"/></summary>
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public bool ValidateParam<T>(out T param, out string error) {
+        public bool GetValidate<T>(out T param, out string error) {
+            if (!Validate<T>(out error)) {
+                param = default;
+                return false;
+            }
+            return Get(out param, out error);
+        }
+        
+        public bool Validate(out string error) {
+            return Validate<TParam>(out error);
+        }
+        
+        public bool Validate<T>(out string error) {
             var paramValidation = messageContext.sharedCache.GetValidationType(typeof(T));
             using (var pooled = messageContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
                 if (!validator.ValidateField(this.param, paramValidation, out error)) {
-                    param = default;
                     return false;
                 }
             }
-            return GetParam(out param, out error);
+            return true;
         }
     }
 }
