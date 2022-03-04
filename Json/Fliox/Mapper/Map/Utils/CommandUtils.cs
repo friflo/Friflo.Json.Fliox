@@ -8,57 +8,57 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Utils
 {
-    public static class CommandUtils
+    public static class MessageUtils
     {
-        private static readonly Dictionary<Type, CommandInfo[]> CommandInfoCache = new Dictionary<Type, CommandInfo[]>();
+        private static readonly Dictionary<Type, MessageInfo[]> MessageInfoCache = new Dictionary<Type, MessageInfo[]>();
 
         private const string CommandType = "Friflo.Json.Fliox.Hub.Client.CommandTask`1";
         
-        public static CommandInfo[] GetCommandInfos (Type type, TypeStore typeStore) {
+        public static MessageInfo[] GetMessageInfos (Type type, TypeStore typeStore) {
             var docs            = typeStore.assemblyDocs;
-            var commandInfos    = new List<CommandInfo>();
-            var commandPrefix   = GetCommandPrefix(type.CustomAttributes);
-            var commands        = GetCommandTypes(type, commandPrefix, docs);
-            if (commands != null) {
-                commandInfos.AddRange(commands);
+            var messageInfos    = new List<MessageInfo>();
+            var messagePrefix   = GetMessagePrefix(type.CustomAttributes);
+            var messages        = GetMessageInfos(type, messagePrefix, docs);
+            if (messages != null) {
+                messageInfos.AddRange(messages);
             }
             var hubCommands     = HubCommandsUtils.GetHubMessageInfos(type);
             if (hubCommands != null) {
                 foreach (var hubCommand in hubCommands) {
                     var prefix          = hubCommand.name + ".";
-                    var clientCommands  = GetCommandTypes(hubCommand.commandsType, prefix, docs);
+                    var clientCommands  = GetMessageInfos(hubCommand.commandsType, prefix, docs);
                     if (clientCommands == null)
                         continue;
-                    commandInfos.AddRange(clientCommands);
+                    messageInfos.AddRange(clientCommands);
                 }
             }
-            return commandInfos.ToArray();
+            return messageInfos.ToArray();
         }
 
-        private static CommandInfo[] GetCommandTypes(Type type, string prefix, AssemblyDocs docs) {
-            if (CommandInfoCache.TryGetValue(type, out  CommandInfo[] result)) {
+        private static MessageInfo[] GetMessageInfos(Type type, string prefix, AssemblyDocs docs) {
+            if (MessageInfoCache.TryGetValue(type, out  MessageInfo[] result)) {
                 return result;
             }
-            var commands = new List<CommandInfo>();
-            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            var messageInfos    = new List<MessageInfo>();
+            var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
-                if (!IsCommand(method, prefix, docs, out CommandInfo commandInfo))
+                if (!IsCommand(method, prefix, docs, out MessageInfo messageInfo))
                     continue;
-                commands.Add(commandInfo);
+                messageInfos.Add(messageInfo);
             }
-            if (commands.Count == 0) {
-                CommandInfoCache[type] = null;
+            if (messageInfos.Count == 0) {
+                MessageInfoCache[type] = null;
                 return null;
             }
-            var array = commands.ToArray();
-            CommandInfoCache[type] = array;
+            var array = messageInfos.ToArray();
+            MessageInfoCache[type] = array;
             return array;
         }
         
-        private static bool IsCommand(MethodInfo methodInfo, string prefix, AssemblyDocs docs, out CommandInfo commandInfo) {
-            commandInfo = new CommandInfo();
+        private static bool IsCommand(MethodInfo methodInfo, string prefix, AssemblyDocs docs, out MessageInfo messageInfo) {
+            messageInfo = new MessageInfo();
             var returnType = methodInfo.ReturnType;
             if (!returnType.IsGenericType)
                 return false;
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var qualifiedName   = prefix == "" ? name : prefix + name;
             var doc             = GetDocs(docs, methodInfo, paramType, paramLen);
             
-            commandInfo = new CommandInfo(qualifiedName, paramType, resultType, doc);
+            messageInfo = new MessageInfo(qualifiedName, paramType, resultType, doc);
             return true;
         }
         
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             return doc;
         }
         
-        private static string GetCommandPrefix(IEnumerable<CustomAttributeData> attributes) {
+        private static string GetMessagePrefix(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.CommandPrefixAttribute)) {
                     var arg     = attr.ConstructorArguments;
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         }
     }
     
-    public readonly struct CommandInfo {
+    public readonly struct MessageInfo {
         public  readonly    string  name;
         public  readonly    Type    paramType;
         public  readonly    Type    resultType;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
 
         public  override    string  ToString() => name;
 
-        internal CommandInfo (
+        internal MessageInfo (
             string  name,
             Type    paramType,
             Type    resultType,

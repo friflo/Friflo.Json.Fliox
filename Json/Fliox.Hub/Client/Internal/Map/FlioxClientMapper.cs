@@ -37,18 +37,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 fieldInfo.SetValue(this, fields);
             }
             
-            var commands = CommandUtils.GetCommandInfos(type, typeStore);
-            AddCommands(typeStore, commands);
+            var messageInfos = MessageUtils.GetMessageInfos(type, typeStore);
+            AddMessages(typeStore, messageInfos);
         }
         
-        private static void AddCommands(TypeStore typeStore, CommandInfo[] commands) {
-            if (commands == null || commands.Length == 0)
+        private static void AddMessages(TypeStore typeStore, MessageInfo[] messageInfos) {
+            if (messageInfos == null || messageInfos.Length == 0)
                 return;
-            foreach (var command in commands) {
-                if (command.paramType != null)
-                    typeStore.GetTypeMapper(command.paramType);
-                if (command.resultType != null)
-                    typeStore.GetTypeMapper(command.resultType);
+            foreach (var messageInfo in messageInfos) {
+                if (messageInfo.paramType != null)
+                    typeStore.GetTypeMapper(messageInfo.paramType);
+                if (messageInfo.resultType != null)
+                    typeStore.GetTypeMapper(messageInfo.resultType);
             }
         }
         
