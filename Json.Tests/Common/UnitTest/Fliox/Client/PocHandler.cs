@@ -16,13 +16,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public PocHandler() {
             // add all command handlers of the passed handler classes
-            AddCommandHandlers(this,    "");
-            AddCommandHandlers(test,    "test.");
-            AddCommandHandlers(empty,   "empty.");
+            AddMessageHandlers(this,    "");
+            AddMessageHandlers(test,    "test.");
+            AddMessageHandlers(empty,   "empty.");
             
             // add command handlers individually
-            AddCommand      <string,string>("SyncCommand",  TestCommandsHandler2.SyncCommand);
-            AddCommandAsync <string,string>("AsyncCommand", TestCommandsHandler2.AsyncCommand);
+            AddCommandHandler      <string,string>("SyncCommand",  TestCommandsHandler2.SyncCommand);
+            AddCommandHandlerAsync <string,string>("AsyncCommand", TestCommandsHandler2.AsyncCommand);
         }
         
         private static bool TestCommand(Param<TestCommand> param, CommandContext command) {
@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     /// <summary>
-    /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddCommandHandlers{TClass}"/>
+    /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddMessageHandlers{TClass}"/>
     /// </summary>
     public class TestCommandsHandler {
         private static string Command1(Param<string> param, CommandContext command) {
@@ -47,8 +47,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     /// <summary>
-    /// Uses to show adding its command handlers individually by <see cref="TaskHandler.AddCommand{TParam,TResult}"/>
-    /// or <see cref="TaskHandler.AddCommandAsync{TParam,TResult}"/>
+    /// Uses to show adding its command handlers individually by <see cref="TaskHandler.AddCommandHandler{TParam,TResult}"/>
+    /// or <see cref="TaskHandler.AddCommandHandlerAsync{TParam,TResult}"/>
     /// </summary>
     public class TestCommandsHandler2 {
         public static string SyncCommand(Param<string> param, CommandContext command) {

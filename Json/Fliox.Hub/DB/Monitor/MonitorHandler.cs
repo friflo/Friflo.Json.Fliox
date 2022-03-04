@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         
         internal MonitorHandler (FlioxHub hub) {
             this.hub = hub;
-            AddCommand<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
+            AddCommandHandler<ClearStats, ClearStatsResult> (nameof(ClearStats), ClearStats);
         }
         
         internal ClearStatsResult ClearStats(Param<ClearStats> param, CommandContext command) {

@@ -49,28 +49,28 @@ namespace Friflo.Json.Fliox.Hub.Host
             // AddUsingCommandHandler();
             // add each command handler individually
             // --- database
-            AddCommand      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
-            AddCommandAsync <Empty,       DbContainers> (Std.Containers,   Containers);
-            AddCommand      <Empty,       DbCommands>   (Std.Commands,     Commands);
-            AddCommand      <Empty,       DbSchema>     (Std.Schema,       Schema);
-            AddCommandAsync <string,      DbStats>      (Std.Stats,        Stats);
+            AddCommandHandler      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
+            AddCommandHandlerAsync <Empty,       DbContainers> (Std.Containers,   Containers);
+            AddCommandHandler      <Empty,       DbCommands>   (Std.Commands,     Commands);
+            AddCommandHandler      <Empty,       DbSchema>     (Std.Schema,       Schema);
+            AddCommandHandlerAsync <string,      DbStats>      (Std.Stats,        Stats);
             // --- host
-            AddCommand      <Empty,       HostDetails>  (Std.HostDetails,  Details);
-            AddCommandAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
+            AddCommandHandler      <Empty,       HostDetails>  (Std.HostDetails,  Details);
+            AddCommandHandlerAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
         }
         
         //  ReSharper disable once UnusedMember.Local
         /// keep implementation to show how to add command handler using new <see cref="CmdHandler{TParam,TResult}"/>
         private void AddUsingCommandHandler() {
             // --- database
-            AddCommandHandler       (Std.Echo,         new CmdHandler<JsonValue,JsonValue>          (Echo));
-            AddCommandHandlerAsync  (Std.Containers,   new CmdHandler<Empty,    Task<DbContainers>> (Containers));
-            AddCommandHandler       (Std.Commands,     new CmdHandler<Empty,    DbCommands>         (Commands));
-            AddCommandHandler       (Std.Schema,       new CmdHandler<Empty,    DbSchema>           (Schema));
-            AddCommandHandlerAsync  (Std.Stats,        new CmdHandler<string,   Task<DbStats>>      (Stats));
+            AddCmdHandler       (Std.Echo,         new CmdHandler<JsonValue,JsonValue>          (Echo));
+            AddCmdHandlerAsync  (Std.Containers,   new CmdHandler<Empty,    Task<DbContainers>> (Containers));
+            AddCmdHandler       (Std.Commands,     new CmdHandler<Empty,    DbCommands>         (Commands));
+            AddCmdHandler       (Std.Schema,       new CmdHandler<Empty,    DbSchema>           (Schema));
+            AddCmdHandlerAsync  (Std.Stats,        new CmdHandler<string,   Task<DbStats>>      (Stats));
             // --- host
-            AddCommandHandler       (Std.HostDetails,  new CmdHandler<Empty,    HostDetails>        (Details));
-            AddCommandHandlerAsync  (Std.HostCluster,  new CmdHandler<Empty,    Task<HostCluster>>  (Cluster));
+            AddCmdHandler       (Std.HostDetails,  new CmdHandler<Empty,    HostDetails>        (Details));
+            AddCmdHandlerAsync  (Std.HostCluster,  new CmdHandler<Empty,    Task<HostCluster>>  (Cluster));
         }
         
         /// <summary>
@@ -80,8 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommand<TParam, TResult> (string name, Func<Param<TParam>, CommandContext, TResult> method) {
-            AddCommandHandler (name, new CmdHandler<TParam, TResult> (method));
+        protected void AddCommandHandler<TParam, TResult> (string name, Func<Param<TParam>, CommandContext, TResult> method) {
+            AddCmdHandler (name, new CmdHandler<TParam, TResult> (method));
         }
         
         /// <summary>
@@ -91,8 +91,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandAsync<TParam, TResult> (string name, Func<Param<TParam>, CommandContext, Task<TResult>> method) {
-            AddCommandHandlerAsync (name, new CmdHandler<TParam, Task<TResult>> (method));
+        protected void AddCommandHandlerAsync<TParam, TResult> (string name, Func<Param<TParam>, CommandContext, Task<TResult>> method) {
+            AddCmdHandlerAsync (name, new CmdHandler<TParam, Task<TResult>> (method));
         }
        
         /// <summary>
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="handlerClass">the instance of class containing command handler methods.
         ///     Commonly the instance of a <see cref="TaskHandler"/></param>
         /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" to add commands without prefix</param>
-        protected void AddCommandHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
+        protected void AddMessageHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
         {
             var type                = handlerClass.GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
@@ -217,12 +217,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return commands.TryGetValue(name, out command);
         }
         
-        private void AddCommandHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
+        private void AddCmdHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        private void AddCommandHandlerAsync<TValue, TResult>(string name, CmdHandler<TValue, Task<TResult>> handler) {
+        private void AddCmdHandlerAsync<TValue, TResult>(string name, CmdHandler<TValue, Task<TResult>> handler) {
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
