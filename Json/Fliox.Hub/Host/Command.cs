@@ -11,23 +11,18 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// <see cref="Command{TParam}"/> expose all data relevant for command execution as properties or methods. <br/>
+    /// <see cref="Command"/> expose all data relevant for command execution as properties or methods. <br/>
     /// - the command <see cref="Name"/> == method name <br/>
-    /// - the unvalidated input parameter <see cref="GetParam"/> of type <typeparamref name="TParam"/><br/>
-    /// - the validated input parameter <see cref="ValidateParam"/> of type <typeparamref name="TParam"/><br/>
-    /// - the input parameter <see cref="JsonParam"/> as raw JSON <br/>
     /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
     /// - the <see cref="Hub"/> exposing general Hub information <br/>
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// </summary>
-    /// <typeparam name="TParam">Type of the command input parameter</typeparam>
     /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
-    public class Command<TParam> { // : IMessage { // uncomment to check API consistency
+    public class Command { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
         public              IPool           Pool            => messageContext.pool;
         public              FlioxHub        Hub             => messageContext.hub;
-        public              JsonValue       JsonParam       => param;
         public              string          DatabaseName    => messageContext.DatabaseName;
         public              EntityDatabase  Database        => messageContext.Database;
         public              User            User            => messageContext.User;
@@ -38,19 +33,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal            string          error;
 
         [DebuggerBrowsable(Never)]  internal            MessageContext  MessageContext  => messageContext;
-        [DebuggerBrowsable(Never)]  private   readonly  JsonValue       param;
         [DebuggerBrowsable(Never)]  private   readonly  MessageContext  messageContext;
 
-        public   override   string          ToString()      => $"{Name}(param: {param.AsString()})";
+        public   override   string          ToString()      => Name;
         
         public              UserInfo        UserInfo { get {
             var user = messageContext.User;
             return new UserInfo (user.userId, user.token, messageContext.clientId);
         } }
 
-        internal Command(string name, in JsonValue param, MessageContext messageContext) {
+        internal Command(string name, MessageContext messageContext) {
             Name                = name;
-            this.param          = param;  
             this.messageContext = messageContext;
             WritePretty         = true;
         }
@@ -62,61 +55,14 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }} */
     
-        /// <summary>Return the command <paramref name="param"/></summary> without validation 
-        /// <param name="param">the param value if conversion successful</param>
-        /// <param name="error">contains the error message if conversion failed</param>
-        /// <returns> true if successful; false otherwise </returns>
-        public bool GetParam(out TParam param, out string error) {
-            return GetParam<TParam>(out param, out error);
-        }
-        
-        /// <summary>Return the command <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
-        /// <param name="param">the param value if conversion successful</param>
-        /// <param name="error">contains the error message if conversion failed</param>
-        /// <returns> true if successful; false otherwise </returns>
-        public bool GetParam<T>(out T param, out string error) {
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
-                var reader  = pooled.instance.reader;
-                param      = reader.Read<T>(this.param);
-                if (reader.Error.ErrSet) {
-                    error   = reader.Error.msg.ToString();
-                    return false;
-                }
-                error = null;
-                return true;
-            }
-        }
 
-        /// <summary>Return the validated command <paramref name="param"/></summary>
-        /// <param name="param">the param value if conversion successful</param>
-        /// <param name="error">contains the error message if conversion failed</param>
-        /// <returns> true if successful; false otherwise </returns>
-        public bool ValidateParam(out TParam param, out string error) {
-            return ValidateParam<TParam>(out param, out error);
-        }
         
-        /// <summary>Return the validated command <paramref name="param"/> as the given type <typeparamref name="T"/></summary>
-        /// <param name="param">the param value if conversion successful</param>
-        /// <param name="error">contains the error message if conversion failed</param>
-        /// <returns> true if successful; false otherwise </returns>
-        public bool ValidateParam<T>(out T param, out string error) {
-            var paramValidation = messageContext.sharedCache.GetValidationType(typeof(T));
-            using (var pooled = messageContext.pool.TypeValidator.Get()) {
-                var validator   = pooled.instance;
-                if (!validator.ValidateField(this.param, paramValidation, out error)) {
-                    param = default;
-                    return false;
-                }
-            }
-            return GetParam(out param, out error);
-        }
-        
-        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error</summary>
+        /// <summary>Set result of <see cref="Command"/> execution to an error</summary>
         public void Error(string message) {
             error = message;
         }
 
-        /// <summary>Set result of <see cref="Command{TParam}"/> execution to an error. <br/>
+        /// <summary>Set result of <see cref="Command"/> execution to an error. <br/>
         /// It returns the default value of the given <typeparamref name="TResult"/> to simplify
         /// returning from a command handler with a single statement like:
         /// <code>

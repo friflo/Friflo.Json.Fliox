@@ -40,13 +40,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             // if (methodInfo.Name == "DbContainers") { var i = 1; }
             
             var parameters = methodInfo.GetParameters();
-            if (parameters.Length != 1)
+            if (parameters.Length != 2)
                 return false;
-            var commandParam = parameters[0];
+            var commandParam    = parameters[0];
+            var command         = parameters[1];
+            var commandType     = command.ParameterType;
+            if (commandType != typeof(Command))
+                return false;
             var genericParamType = commandParam.ParameterType;
             if (!genericParamType.IsGenericType)
                 return false;
-            if (genericParamType.GetGenericTypeDefinition() != typeof(Command<>))
+            if (genericParamType.GetGenericTypeDefinition() != typeof(Param<>))
                 return false;
             var genericArgs = genericParamType.GenericTypeArguments;
             if (genericArgs.Length != 1)

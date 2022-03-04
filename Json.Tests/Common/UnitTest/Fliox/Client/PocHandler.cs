@@ -25,10 +25,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AddCommandAsync <string,string>("AsyncCommand", TestCommandsHandler2.AsyncCommand);
         }
         
-        private static bool TestCommand(Command<TestCommand> command) {
+        private static bool TestCommand(Param<TestCommand> param, Command command) {
             AreEqual("TestCommand", command.Name);
-            var expectToString = $"{command.Name}(param: {command.JsonParam.AsString()})";
-            AreEqual(expectToString, command.ToString());
+            AreEqual("TestCommand", command.ToString());
             command.WriteNull = true; // ensure API available
             return true;
         }
@@ -38,11 +37,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddCommandHandlers{TClass}"/>
     /// </summary>
     public class TestCommandsHandler {
-        private static string Command1(Command<string> command) {
+        private static string Command1(Param<string> param, Command command) {
             return "hello Command1";
         }
         
-        private static string Command2(Command<string> command) {
+        private static string Command2(Param<string> param, Command command) {
             return "hello Command2";
         }
     }
@@ -52,11 +51,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// or <see cref="TaskHandler.AddCommandAsync{TParam,TResult}"/>
     /// </summary>
     public class TestCommandsHandler2 {
-        public static string SyncCommand(Command<string> command) {
+        public static string SyncCommand(Param<string> param, Command command) {
             return "hello SyncCommand";
         }
         
-        public static Task<string> AsyncCommand(Command<string> command) {
+        public static Task<string> AsyncCommand(Param<string> param, Command command) {
             return Task.FromResult("hello AsyncCommand");
         }
     }

@@ -31,14 +31,14 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <b> Note </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<Records> FakeRecords(Command<Fake> command) {
+        private static async Task<Records> FakeRecords(Param<Fake> param, Command command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.ValidateParam(out var param, out var error))
+            if (!param.ValidateParam(out var fake, out var error))
                 return command.Error<Records>(error);
             
-            var result = FakeUtils.CreateFakes(param);
+            var result = FakeUtils.CreateFakes(fake);
             
             if (result.orders       != null)    demoStore.orders    .UpsertRange(result.orders);
             if (result.customers    != null)    demoStore.customers .UpsertRange(result.customers);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.DemoHub
             
             await demoStore.SyncTasks();
             
-            var addResults  = param?.addResults;
+            var addResults  = fake?.addResults;
             if (addResults.HasValue && addResults.Value == false) {
                 result.orders       = null;
                 result.customers    = null;
@@ -59,14 +59,14 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
 
-        private static async Task<Counts> CountLatest(Command<int?> command) {
+        private static async Task<Counts> CountLatest(Param<int?> param, Command command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.ValidateParam(out var param, out var error))
+            if (!param.ValidateParam(out var duration, out var error))
                 return command.Error<Counts>(error);
             
-            var seconds         = param ?? 60;
+            var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Count(o => o.created >= from);
@@ -87,14 +87,14 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
         
-        private static async Task<Records> LatestRecords(Command<int?> command) {
+        private static async Task<Records> LatestRecords(Param<int?> param, Command command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
-            if (!command.ValidateParam(out var param, out var error))
+            if (!param.ValidateParam(out var duration, out var error))
                 return command.Error<Records>(error);
             
-            var seconds         = param ?? 60;
+            var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
 
             var orderCount      = demoStore.orders.     Query(o => o.created >= from);
@@ -124,12 +124,12 @@ namespace Friflo.Json.Fliox.DemoHub
         }
         
         /// use synchronous handler only when no async methods need to be awaited  
-        private static double Add(Command<Operands> command) {
-            if (!command.ValidateParam(out var param, out var error))
+        private static double Add(Param<Operands> param, Command command) {
+            if (!param.ValidateParam(out var operands, out var error))
                 return command.Error<double>(error);
-            if (param == null)
+            if (operands == null)
                 return 0;
-            return param.left + param.right;
+            return operands.left + operands.right;
         }
     }
 }
