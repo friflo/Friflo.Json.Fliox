@@ -9,40 +9,40 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
 {
     public static class HubCommandsUtils
     {
-        private static readonly Dictionary<Type, HubCommandsInfo[]> HubCommandsInfoCache = new Dictionary<Type, HubCommandsInfo[]>();
+        private static readonly Dictionary<Type, HubMessageInfo[]> HubMessageInfoCache = new Dictionary<Type, HubMessageInfo[]>();
         
         private const string HubCommandsType = "Friflo.Json.Fliox.Hub.Client.HubCommands";
 
-        internal static HubCommandsInfo[] GetHubCommandsTypes(Type type) {
-            if (HubCommandsInfoCache.TryGetValue(type, out  HubCommandsInfo[] result)) {
+        internal static HubMessageInfo[] GetHubMessageInfos(Type type) {
+            if (HubMessageInfoCache.TryGetValue(type, out  HubMessageInfo[] result)) {
                 return result;
             }
-            var commands = new List<HubCommandsInfo>();
+            var messageInfos = new List<HubMessageInfo>();
             var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             FieldInfo[] fields = type.GetFields(flags);
             for (int n = 0; n < fields.Length; n++) {
                 var  field         = fields[n];
-                if (!IsHubCommands(field, out HubCommandsInfo commandInfo))
+                if (!IsHubCommands(field, out HubMessageInfo messageInfo))
                     continue;
-                commands.Add(commandInfo);
+                messageInfos.Add(messageInfo);
             }
-            if (commands.Count == 0) {
-                HubCommandsInfoCache[type] = null;
+            if (messageInfos.Count == 0) {
+                HubMessageInfoCache[type] = null;
                 return null;
             }
-            var array = commands.ToArray();
-            HubCommandsInfoCache[type] = array;
+            var array = messageInfos.ToArray();
+            HubMessageInfoCache[type] = array;
             return array;
         }
         
-        private static bool IsHubCommands(FieldInfo fieldInfo, out HubCommandsInfo hubCommandsInfo) {
-            hubCommandsInfo = new HubCommandsInfo();
+        private static bool IsHubCommands(FieldInfo fieldInfo, out HubMessageInfo messageInfo) {
+            messageInfo = new HubMessageInfo();
             var fieldType   = fieldInfo.FieldType;
             var type        = fieldType;
             
             while (type != null) {
                 if (type.FullName == HubCommandsType) {
-                    hubCommandsInfo = new HubCommandsInfo(fieldInfo.Name, fieldType);
+                    messageInfo = new HubMessageInfo(fieldInfo.Name, fieldType);
                     return true;
                 }
                 if (!type.IsClass)
@@ -53,13 +53,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         }
     }
     
-    internal readonly struct HubCommandsInfo {
+    internal readonly struct HubMessageInfo {
         internal    readonly    string  name;
         internal    readonly    Type    commandsType;
 
         public      override    string  ToString() => name;
 
-        internal HubCommandsInfo (string name, Type commandsType) {
+        internal HubMessageInfo (string name, Type commandsType) {
             this.name           = name;
             this.commandsType   = commandsType;
         }

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (commands != null) {
                 commandInfos.AddRange(commands);
             }
-            var hubCommands     = HubCommandsUtils.GetHubCommandsTypes(type);
+            var hubCommands     = HubCommandsUtils.GetHubMessageInfos(type);
             if (hubCommands != null) {
                 foreach (var hubCommand in hubCommands) {
                     var prefix          = hubCommand.name + ".";
