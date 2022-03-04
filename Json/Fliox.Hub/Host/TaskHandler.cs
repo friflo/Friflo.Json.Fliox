@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public class TaskHandler
     {
-        private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
+        private readonly Dictionary<string, MessageCallback> messages = new Dictionary<string, MessageCallback>();
         
         public TaskHandler () {
             // AddUsingCommandHandler();
@@ -135,9 +135,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 } else {
                     instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
                 }
-                var commandCallback = (CommandCallback)instance;
+                var messageCallback = (MessageCallback)instance;
                 var name = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
-                commands.Add(name, commandCallback);
+                messages.Add(name, messageCallback);
             }
         }
         
@@ -213,30 +213,30 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // --- internal API ---
-        internal bool TryGetCommand(string name, out CommandCallback command) {
-            return commands.TryGetValue(name, out command);
+        internal bool TryGetMessage(string name, out MessageCallback message) {
+            return messages.TryGetValue(name, out message);
         }
         
         private void AddCmdHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
-            commands.Add(name, command);
+            messages.Add(name, command);
         }
         
         private void AddCmdHandlerAsync<TValue, TResult>(string name, CmdHandler<TValue, Task<TResult>> handler) {
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
-            commands.Add(name, command);
+            messages.Add(name, command);
         }
         
         internal string[] GetCommands() {
-            var result = new string[commands.Count];
+            var result = new string[messages.Count];
             int n = 0;
             // add std. commands on the bottom
-            AddCommands(result, ref n, false, commands);
-            AddCommands(result, ref n, true,  commands);
+            AddCommands(result, ref n, false, messages);
+            AddCommands(result, ref n, true,  messages);
             return result;
         }
         
-        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, CommandCallback> commandMap) {
+        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, MessageCallback> commandMap) {
             foreach (var pair in commandMap) {
                 var name = pair.Key;
                 if (name.StartsWith("std.") == standard)

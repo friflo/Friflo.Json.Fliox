@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
-    internal abstract class CommandCallback
+    internal abstract class MessageCallback
     {
         // Note! Must not contain any state
         
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext);
     }
     
-    internal sealed class CommandCallback<TValue, TResult> : CommandCallback
+    internal sealed class CommandCallback<TValue, TResult> : MessageCallback
     {
         private  readonly   string                          name;
         private  readonly   CmdHandler<TValue, TResult>     handler;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
-    internal sealed class CommandAsyncCallback<TParam, TResult> : CommandCallback
+    internal sealed class CommandAsyncCallback<TParam, TResult> : MessageCallback
     {
         private  readonly   string                              name;
         private  readonly   CmdHandler<TParam, Task<TResult>>   handler;
