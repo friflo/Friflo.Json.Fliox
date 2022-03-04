@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
     /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with the parameters
-    /// <see cref="Param{TParam}"/> and <see cref="Command"/> is added as a command handler. <br/>
+    /// <see cref="Param{TParam}"/> and <see cref="CommandContext"/> is added as a command handler. <br/>
     /// Their method names need to match the commands methods declared in the <see cref="DemoStore"/>.
     /// </summary>
     public class CommandHandler : TaskHandler
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DemoHub
         /// <b> Note </b>: Using a synchronous method would require to <see cref="Task.Wait()"/> on the SyncTasks() call
         /// resulting in worse performance as a worker thread is exclusively blocked by the while method execution.
         /// </summary> 
-        private static async Task<Records> FakeRecords(Param<Fake> param, Command command) {
+        private static async Task<Records> FakeRecords(Param<Fake> param, CommandContext command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
 
-        private static async Task<Counts> CountLatest(Param<int?> param, Command command) {
+        private static async Task<Counts> CountLatest(Param<int?> param, CommandContext command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.DemoHub
             return result;
         }
         
-        private static async Task<Records> LatestRecords(Param<int?> param, Command command) {
+        private static async Task<Records> LatestRecords(Param<int?> param, CommandContext command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
             
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.DemoHub
         }
         
         /// use synchronous handler only when no async methods need to be awaited  
-        private static double Add(Param<Operands> param, Command command) {
+        private static double Add(Param<Operands> param, CommandContext command) {
             if (!param.GetValidate(out var operands, out var error))
                 return command.Error<double>(error);
             if (operands == null)

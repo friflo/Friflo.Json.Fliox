@@ -11,7 +11,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// <see cref="Command"/> expose all data relevant for command execution as properties or methods. <br/>
+    /// <see cref="CommandContext"/> expose all data relevant for command execution as properties or methods. <br/>
     /// - the command <see cref="Name"/> == method name <br/>
     /// - the <see cref="DatabaseName"/> <br/>
     /// - the <see cref="Database"/> instance <br/>
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// </summary>
     /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
-    public class Command { // : IMessage { // uncomment to check API consistency
+    public class CommandContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
         public              IPool           Pool            => executeContext.pool;
         public              FlioxHub        Hub             => executeContext.hub;
@@ -42,18 +42,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UserInfo (user.userId, user.token, executeContext.clientId);
         } }
 
-        internal Command(string name, ExecuteContext executeContext) {
+        internal CommandContext(string name, ExecuteContext executeContext) {
             Name                = name;
             this.executeContext = executeContext;
             WritePretty         = true;
         }
         
-        /// <summary>Set result of <see cref="Command"/> execution to an error</summary>
+        /// <summary>Set result of <see cref="CommandContext"/> execution to an error</summary>
         public void Error(string message) {
             error = message;
         }
 
-        /// <summary>Set result of <see cref="Command"/> execution to an error. <br/>
+        /// <summary>Set result of <see cref="CommandContext"/> execution to an error. <br/>
         /// It returns the default value of the given <typeparamref name="TResult"/> to simplify
         /// returning from a command handler with a single statement like:
         /// <code>

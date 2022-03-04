@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             var commandParam    = parameters[0];
             var command         = parameters[1];
             var commandType     = command.ParameterType;
-            if (commandType != typeof(Command))
+            if (commandType != typeof(CommandContext))
                 return false;
             var genericParamType = commandParam.ParameterType;
             if (!genericParamType.IsGenericType)
