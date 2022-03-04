@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DemoHub
     /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/>.
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
-    /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with a <see cref="Command{TParam}"/>
+    /// By calling <see cref="TaskHandler.AddCommandHandlers{TClass}"/> every method with a <see cref="Command"/>
     /// parameter is added as a command handler. <br/>
     /// Their method names need to match the commands methods declared in the <see cref="DemoStore"/>.
     /// </summary>
