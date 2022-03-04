@@ -117,7 +117,7 @@ export class EntityEditor {
         const commandLink = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi = this.createMessages(database, dbCommands.commands, liMap);
+        const messagesLi = this.createMessagesLi(database, dbCommands.commands, liMap);
         ulDatabase.appendChild(messagesLi);
         const messages = dbCommands.messages;
         if (messages) {
@@ -125,7 +125,7 @@ export class EntityEditor {
             const commandLink = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi = this.createMessages(database, dbCommands.messages, liMap);
+            const messagesLi = this.createMessagesLi(database, dbCommands.messages, liMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";
@@ -150,8 +150,7 @@ export class EntityEditor {
         commandLink.append(commandAnchor);
         return commandLink;
     }
-    createMessages(database, messages, liMap) {
-        const liCommands = createEl('li');
+    createMessagesLi(database, messages, liMap) {
         const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
             const path = ev.composedPath();
@@ -179,6 +178,7 @@ export class EntityEditor {
             ulCommands.append(liCommand);
             liMap[message] = liCommand;
         }
+        const liCommands = createEl('li');
         liCommands.append(ulCommands);
         return liCommands;
     }

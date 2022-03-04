@@ -142,22 +142,21 @@ export class EntityEditor
 
         const liMap = {} as { [key: string] : HTMLLIElement };
         // commands link
-        const commandLink = this.createMessagesLink(database, "commands");
+        const commandLink   = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi = this.createMessages(database, dbCommands.commands, liMap);
+        const messagesLi    = this.createMessagesLi(database, dbCommands.commands, liMap);
         ulDatabase.appendChild(messagesLi);
 
         const messages = dbCommands.messages;
         if (messages) {
             // messages link
-            const commandLink = this.createMessagesLink(database, "messages");
+            const commandLink   = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi = this.createMessages(database, dbCommands.messages, liMap);
+            const messagesLi    = this.createMessagesLi(database, dbCommands.messages, liMap);
             ulDatabase.appendChild(messagesLi);
         }
-
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulDatabase);
         
@@ -182,8 +181,7 @@ export class EntityEditor
         return commandLink;
     }
 
-    private createMessages(database: string, messages: string[], liMap: { [key: string] : HTMLLIElement }) : HTMLLIElement {
-        const liCommands  = createEl('li');
+    private createMessagesLi(database: string, messages: string[], liMap: { [key: string] : HTMLLIElement }) : HTMLLIElement {
         const ulCommands    = createEl('ul');
         ulCommands.onclick  = (ev) => {
             const path      = ev.composedPath() as HTMLElement[];
@@ -214,8 +212,8 @@ export class EntityEditor
             ulCommands.append(liCommand);
             liMap[message]                = liCommand;
         }
+        const liCommands  = createEl('li');
         liCommands.append(ulCommands);
-
         return liCommands;
     }
 
