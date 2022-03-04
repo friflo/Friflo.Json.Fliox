@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.anonymousAuthorizer = anonymousAuthorizer ?? throw new NullReferenceException(nameof(anonymousAuthorizer));
         }
         
-        public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
+        public override Task Authenticate(SyncRequest syncRequest, ExecuteContext executeContext) {
             User user;
             ref var userId = ref syncRequest.userId;
             if (userId.IsNull()) {
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
                     users.TryAdd(userId, user);
                 }
             }
-            messageContext.AuthenticationFailed(user, "not authenticated", anonymousAuthorizer);
+            executeContext.AuthenticationFailed(user, "not authenticated", anonymousAuthorizer);
             return Task.CompletedTask;
         }
     }

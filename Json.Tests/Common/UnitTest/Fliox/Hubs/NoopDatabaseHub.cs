@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         internal NoopDatabaseHub (SharedEnv env, string hostName = null) : base(null, env, hostName) { }
                 
-        public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
             var result = new SyncResponse {
                 tasks       = new List<SyncTaskResult>(),
                 resultMap   = new Dictionary<string, ContainerEntities>()

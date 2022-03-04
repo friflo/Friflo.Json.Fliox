@@ -27,11 +27,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.status = status;
         }
         
-        public static JsonResponse CreateError(MessageContext messageContext, string message, ErrorResponseType type)
+        public static JsonResponse CreateError(ExecuteContext executeContext, string message, ErrorResponseType type)
         {
             var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
             var errorResponse   = new ErrorResponse { message = message, type = type };
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;

@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// will be reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
         /// To ensure pooled instances are not leaking use the using directive. E.g.
         /// <code>
-        /// using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
+        /// using (var pooledMapper = executeContext.pool.ObjectMapper.Get()) {
         ///     ...
         /// }
         /// </code>

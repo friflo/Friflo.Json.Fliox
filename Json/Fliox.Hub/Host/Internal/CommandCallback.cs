@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         // Note! Must not contain any state
         
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
-        internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
+        internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext);
     }
     
     internal sealed class CommandCallback<TValue, TResult> : CommandCallback
@@ -44,16 +44,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var cmd     = new Command       (messageName,  messageContext);
-            var param   = new Param<TValue> (messageValue, messageContext); 
+        internal override Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
+            var cmd     = new Command       (messageName,  executeContext);
+            var param   = new Param<TValue> (messageValue, executeContext); 
             TResult result  = handler(param, cmd);
             
             var error = cmd.error;
             if (error != null) {
                 return Task.FromResult(new InvokeResult(error));
             }
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
@@ -75,16 +75,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var cmd     = new Command       (messageName,  messageContext);
-            var param   = new Param<TParam> (messageValue, messageContext); 
+        internal override async Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
+            var cmd     = new Command       (messageName,  executeContext);
+            var param   = new Param<TParam> (messageValue, executeContext); 
             var result  = await handler(param, cmd).ConfigureAwait(false);
             
             var error   = cmd.error;
             if (error != null) {
                 return new InvokeResult(error);
             }
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
                 var writer = pooled.instance;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;

@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Ignore] public     int                 index;
         [Fri.Ignore] internal   JsonValue?          json;
         
-        internal abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
+        internal abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext);
         internal abstract   TaskType                TaskType { get; }
         public   abstract   string                  TaskName { get; }
 

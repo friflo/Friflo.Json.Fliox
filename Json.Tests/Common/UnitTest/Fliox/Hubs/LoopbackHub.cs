@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             host.Dispose();
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var response = await host.ExecuteSync(syncRequest, messageContext);
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
+            var response = await host.ExecuteSync(syncRequest, executeContext);
             return response;
         }
     }

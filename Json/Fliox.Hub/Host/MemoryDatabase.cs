@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             Pretty = pretty;
         }
         
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
             Dictionary<JsonKey, EntityError> createErrors = null;
             AssertEntityCounts(command.entityKeys, entities);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(result);
         }
 
-        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
+        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
             for (int n = 0; n < entities.Count; n++) {
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(result);
         }
 
-        public override Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, MessageContext messageContext) {
+        public override Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, ExecuteContext executeContext) {
             var keys = command.ids;
             var entities = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             foreach (var key in keys) {
@@ -96,13 +96,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return Task.FromResult(result);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            if (!FindCursor(command.cursor, messageContext, out var keyValueEnum, out var error)) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, ExecuteContext executeContext) {
+            if (!FindCursor(command.cursor, executeContext, out var keyValueEnum, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
             keyValueEnum = keyValueEnum ?? new MemoryQueryEnumerator(keyValues);   // TAG_PERF
             try {
-                var result  = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
+                var result  = await FilterEntities(command, keyValueEnum, executeContext).ConfigureAwait(false);
                 return result;
             }
             finally {
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, ExecuteContext executeContext) {
             var filter = command.GetFilter();
             switch (command.type) {
                 case AggregateType.count:
@@ -119,13 +119,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                         var count = keyValues.Count;
                         return new AggregateEntitiesResult { container = command.container, value = count };
                     }
-                    var result = await CountEntities(command, messageContext).ConfigureAwait(false);
+                    var result = await CountEntities(command, executeContext).ConfigureAwait(false);
                     return result;
             }
             return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
         }
 
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, ExecuteContext executeContext) {
             var keys = command.ids;
             if (keys != null && keys.Count > 0) {
                 foreach (var key in keys) {

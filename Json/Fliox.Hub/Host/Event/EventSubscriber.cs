@@ -150,12 +150,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             
             while (DequeueEvent(out var ev)) {
                 try {
-                    var messageContext  = new MessageContext(pool, eventTarget, sharedCache);
+                    var executeContext  = new ExecuteContext(pool, eventTarget, sharedCache);
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    await eventTarget.ProcessEvent(ev, messageContext).ConfigureAwait(false);
+                    await eventTarget.ProcessEvent(ev, executeContext).ConfigureAwait(false);
                     
-                    messageContext.Release();
+                    executeContext.Release();
                 }
                 catch (Exception e) {
                     var error = e.ToString();

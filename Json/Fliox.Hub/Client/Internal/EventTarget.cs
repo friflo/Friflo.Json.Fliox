@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- IEventTarget
         public bool     IsOpen ()   => true;
 
-        public Task<bool> ProcessEvent(ProtocolEvent ev, MessageContext messageContext) {
+        public Task<bool> ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext) {
             if (!ev.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
             

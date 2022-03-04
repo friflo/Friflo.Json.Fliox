@@ -15,10 +15,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  int             count;
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            var hub = messageContext.Hub;
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+            var hub = executeContext.Hub;
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
-            var pool = messageContext.pool;
+            var pool = executeContext.pool;
             using (var pooledStore = pool.Type(() => new SequenceStore(hub)).Get()) {
                 var store = pooledStore.instance;
                 store.UserId = "ReserveKeys";
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     container   = container,
                     start       = sequence.autoId,
                     count       = count,
-                    user        = messageContext.clientId
+                    user        = executeContext.clientId
                 };
                 store.sequenceKeys.Upsert(sequenceKeys);
                 store.sequence.Upsert(sequence);

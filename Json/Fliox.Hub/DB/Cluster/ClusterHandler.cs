@@ -10,17 +10,17 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     internal sealed class ClusterHandler : TaskHandler
     {
-        public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            if (!AuthorizeTask(task, messageContext, out var error)) {
+        public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+            if (!AuthorizeTask(task, executeContext, out var error)) {
                 return Task.FromResult(error);
             }
             var clusterDB = (ClusterDB)database;
             switch (task.TaskType) {
                 case TaskType.command:
-                    return base.ExecuteTask(task, database, response, messageContext);
+                    return base.ExecuteTask(task, database, response, executeContext);
                 case TaskType.read:
                 case TaskType.query:
-                    return base.ExecuteTask(task, clusterDB.stateDB, response, messageContext);
+                    return base.ExecuteTask(task, clusterDB.stateDB, response, executeContext);
                 default:
                     SyncTaskResult result = SyncRequestTask.InvalidTask ($"ClusterDB does not support task: '{task.TaskType}'");
                     return Task.FromResult(result);

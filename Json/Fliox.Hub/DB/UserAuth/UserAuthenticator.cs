@@ -82,24 +82,24 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
         private const string InvalidUserToken = "Authentication failed";
         
-        public override async Task Authenticate(SyncRequest syncRequest, MessageContext messageContext)
+        public override async Task Authenticate(SyncRequest syncRequest, ExecuteContext executeContext)
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", anonymousAuthorizer);
+                executeContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", anonymousAuthorizer);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", anonymousAuthorizer);
+                executeContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", anonymousAuthorizer);
                 return;
             }
             if (users.TryGetValue(userId, out User user)) {
                 if (user.token != token) {
-                    messageContext.AuthenticationFailed(user, InvalidUserToken, anonymousAuthorizer);
+                    executeContext.AuthenticationFailed(user, InvalidUserToken, anonymousAuthorizer);
                     return;
                 }
-                messageContext.AuthenticationSucceed(user, user.authorizer);
+                executeContext.AuthenticationSucceed(user, user.authorizer);
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             // Note 1: UserStore could be created in smaller scope
             // Note 2: UserStore could be cached. This requires a FlioxClient.ClearEntities()
             // UserStore is not thread safe, create new one per Authenticate request.
-            var pool = messageContext.pool;
+            var pool = executeContext.pool;
             using (var pooled = pool.Type(() => new UserStore (userHub)).Get()) {
                 var userStore = pooled.instance;
                 userStore.UserId = UserStore.AuthenticationUser;
@@ -122,22 +122,22 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 }
                 
                 if (user == null || token != user.token) {
-                    messageContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer);
+                    executeContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer);
                     return;
                 }
-                messageContext.AuthenticationSucceed(user, user.authorizer);
+                executeContext.AuthenticationSucceed(user, user.authorizer);
             }
         }
         
-        public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
-            ref var clientId = ref messageContext.clientId; 
+        public override ClientIdValidation ValidateClientId(ClientController clientController, ExecuteContext executeContext) {
+            ref var clientId = ref executeContext.clientId; 
             if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
-            if (!messageContext.Authenticated) {
+            if (!executeContext.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            var user        = messageContext.User;
+            var user        = executeContext.User;
             var userClients = user.clients; 
             if (userClients.ContainsKey(clientId)) {
                 return ClientIdValidation.Valid;
@@ -154,18 +154,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             return ClientIdValidation.Invalid;
         }
         
-        public override bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
-            switch (messageContext.clientIdValidation) {
+        public override bool EnsureValidClientId(ClientController clientController, ExecuteContext executeContext, out string error) {
+            switch (executeContext.clientIdValidation) {
                 case ClientIdValidation.Valid:
                     error = null;
                     return true;
                 case ClientIdValidation.Invalid:
-                    error = $"invalid client id. 'clt': {messageContext.clientId}";
+                    error = $"invalid client id. 'clt': {executeContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    var user                            = messageContext.User; 
-                    messageContext.clientId             = clientController.NewClientIdFor(user);
-                    messageContext.clientIdValidation   = ClientIdValidation.Valid;
+                    var user                            = executeContext.User; 
+                    executeContext.clientId             = clientController.NewClientIdFor(user);
+                    executeContext.clientIdValidation   = ClientIdValidation.Valid;
                     error = null;
                     return true;
             }

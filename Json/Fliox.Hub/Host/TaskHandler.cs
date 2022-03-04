@@ -197,7 +197,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var name in containerNames) {
                 var container   = database.GetOrCreateContainer(name);
                 var aggregate   = new AggregateEntities { container = name, type = AggregateType.count };
-                var aggResult   = await container.AggregateEntities(aggregate, command.MessageContext).ConfigureAwait(false);
+                var aggResult   = await container.AggregateEntities(aggregate, command.ExecuteContext).ConfigureAwait(false);
                 
                 double count    = aggResult.value ?? 0;
                 var stats       = new ContainerStats { name = name, count = (long)count };
@@ -244,21 +244,21 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
 
-        protected static bool AuthorizeTask(SyncRequestTask task, MessageContext messageContext, out SyncTaskResult error) {
-            var authorizer = messageContext.authState.authorizer;
-            if (authorizer.Authorize(task, messageContext)) {
+        protected static bool AuthorizeTask(SyncRequestTask task, ExecuteContext executeContext, out SyncTaskResult error) {
+            var authorizer = executeContext.authState.authorizer;
+            if (authorizer.Authorize(task, executeContext)) {
                 error = null;
                 return true;
             }
             var sb = new StringBuilder(); // todo StringBuilder could be pooled
             sb.Append("not authorized");
-            var authError = messageContext.authState.error; 
+            var authError = executeContext.authState.error; 
             if (authError != null) {
                 sb.Append(". ");
                 sb.Append(authError);
             }
-            var anonymous = messageContext.hub.Authenticator.anonymousUser;
-            var user = messageContext.User;
+            var anonymous = executeContext.hub.Authenticator.anonymousUser;
+            var user = executeContext.User;
             if (user != anonymous) {
                 sb.Append(". user: ");
                 sb.Append(user.userId);
@@ -268,9 +268,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             return false;
         }
         
-        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            if (AuthorizeTask(task, messageContext, out var error)) {
-                var result = await task.Execute(database, response, messageContext).ConfigureAwait(false);
+        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+            if (AuthorizeTask(task, executeContext, out var error)) {
+                var result = await task.Execute(database, response, executeContext).ConfigureAwait(false);
                 return result;
             }
             return error;

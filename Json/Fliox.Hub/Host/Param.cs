@@ -12,15 +12,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         public                      JsonValue       JsonParam       => param;
         
         [DebuggerBrowsable(Never)]  private   readonly  JsonValue       param;
-        [DebuggerBrowsable(Never)]  private   readonly  MessageContext  messageContext;
+        [DebuggerBrowsable(Never)]  private   readonly  ExecuteContext  executeContext;
         
-        internal Param(in JsonValue param, MessageContext  messageContext) {
+        internal Param(in JsonValue param, ExecuteContext  executeContext) {
             this.param          = param;
-            this.messageContext = messageContext;
+            this.executeContext = executeContext;
         }
         
         /*  public TParam Param { get {
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
                 return reader.Read<TParam>(param);
             }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
         public bool Get<T>(out T param, out string error) {
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 param      = reader.Read<T>(this.param);
                 if (reader.Error.ErrSet) {
@@ -76,8 +76,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public bool Validate<T>(out string error) {
-            var paramValidation = messageContext.sharedCache.GetValidationType(typeof(T));
-            using (var pooled = messageContext.pool.TypeValidator.Get()) {
+            var paramValidation = executeContext.sharedCache.GetValidationType(typeof(T));
+            using (var pooled = executeContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
                 if (!validator.ValidateField(this.param, paramValidation, out error)) {
                     return false;

@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public abstract class Authorizer
     {
-        public abstract bool Authorize(SyncRequestTask task, MessageContext messageContext);
+        public abstract bool Authorize(SyncRequestTask task, ExecuteContext executeContext);
     }
     
     public abstract class AuthorizerDatabase : Authorizer
@@ -45,8 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        protected bool AuthorizeDatabase(MessageContext messageContext) {
-            var db = messageContext.DatabaseName;
+        protected bool AuthorizeDatabase(ExecuteContext executeContext) {
+            var db = executeContext.DatabaseName;
             if (isPrefix) {
                 if (db != null) 
                     return db.StartsWith(database);
@@ -63,13 +63,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public AuthorizeAllow () { }
         public AuthorizeAllow (string database) : base (database) { }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return AuthorizeDatabase(messageContext);
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            return AuthorizeDatabase(executeContext);
         }
     }    
     
     public sealed class AuthorizeDeny : Authorizer {
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             return false;
         }
     }
@@ -81,9 +81,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.list = list;    
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             foreach (var item in list) {
-                if (!item.Authorize(task, messageContext))
+                if (!item.Authorize(task, executeContext))
                     return false;
             }
             return true;
@@ -97,9 +97,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.list = list;    
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             foreach (var item in list) {
-                if (item.Authorize(task, messageContext))
+                if (item.Authorize(task, executeContext))
                     return true;
             }
             return false;
@@ -115,8 +115,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.type       = type;    
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (!AuthorizeDatabase(messageContext))
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            if (!AuthorizeDatabase(executeContext))
                 return false;
             return task.TaskType == type;
         }
@@ -138,8 +138,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             messageName = message;
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (!AuthorizeDatabase(messageContext))
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            if (!AuthorizeDatabase(executeContext))
                 return false;
             if (!(task is SyncMessageTask messageTask))
                 return false;
@@ -166,8 +166,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             messageName = message;
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (!AuthorizeDatabase(messageContext))
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            if (!AuthorizeDatabase(executeContext))
                 return false;
             if (!(task is SubscribeMessage subscribe))
                 return false;
@@ -228,8 +228,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (!AuthorizeDatabase(messageContext))
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            if (!AuthorizeDatabase(executeContext))
                 return false;
             switch (task.TaskType) {
                 case TaskType.create:       return create       && ((CreateEntities)    task).container == container;
@@ -272,7 +272,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             if (!(task is SubscribeChanges subscribe))
                 return false;
             if (subscribe.container != container)
@@ -302,8 +302,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.predicate  = predicate;    
         }
             
-        public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return predicate(task, messageContext.pool);
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            return predicate(task, executeContext.pool);
         }
     }
 }

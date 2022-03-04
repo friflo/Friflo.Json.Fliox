@@ -21,10 +21,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             bool?                               isIntKey,
             string                              newKeyName,
             Dictionary<JsonKey, EntityValue>    entityMap,
-            MessageContext                      messageContext)
+            ExecuteContext                      executeContext)
         {
             var asIntKey = isIntKey == true;
-            using (var pooled = messageContext.pool.EntityProcessor.Get()) {
+            using (var pooled = executeContext.pool.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 foreach (var entity in entities) {
                     var  json = processor.ReplaceKey(entity, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
@@ -52,11 +52,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         internal static List<JsonKey> GetKeysFromEntities (
             string              keyName,
             List<JsonValue>     entities,
-            MessageContext      messageContext,
+            ExecuteContext      executeContext,
             out string          error
         ) {
             var keys = new List<JsonKey>(entities.Count);
-            using (var pooled = messageContext.pool.EntityProcessor.Get()) {
+            using (var pooled = executeContext.pool.EntityProcessor.Get()) {
                 var processor = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];

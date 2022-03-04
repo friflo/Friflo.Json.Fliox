@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         internal override       TaskType        TaskType => TaskType.message;
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
             SyncTaskResult result = new SendMessageResult();

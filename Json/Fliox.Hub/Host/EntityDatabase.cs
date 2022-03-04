@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, MessageContext messageContext) {
+        public virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, ExecuteContext executeContext) {
             return Task.CompletedTask;
         }
 
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
             var localPool       = new Pool(sharedEnv);
-            var messageContext  = new MessageContext(localPool, null, sharedEnv.sharedCache);
+            var executeContext  = new ExecuteContext(localPool, null, sharedEnv.sharedCache);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
             var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
             foreach (var container in containerNames) {
@@ -155,26 +155,26 @@ namespace Friflo.Json.Fliox.Hub.Host
                 if (entityTypes != null && entityTypes.TryGetValue(container, out TypeDef entityType)) {
                     keyName = entityType.KeyField;
                 }
-                await SeedContainer(src, container, keyName, messageContext).ConfigureAwait(false);
+                await SeedContainer(src, container, keyName, executeContext).ConfigureAwait(false);
             }
         }
         
-        private async Task SeedContainer(EntityDatabase src, string container, string keyName, MessageContext messageContext)
+        private async Task SeedContainer(EntityDatabase src, string container, string keyName, ExecuteContext executeContext)
         {
             var srcContainer    = src.GetOrCreateContainer(container);
             var dstContainer    = GetOrCreateContainer(container);
             var filterContext   = new OperationContext();
             filterContext.Init(Operation.FilterTrue, out _);
             var query           = new QueryEntities { container = container, filterContext = filterContext, keyName = keyName };
-            var queryResult     = await srcContainer.QueryEntities(query, messageContext).ConfigureAwait(false);
+            var queryResult     = await srcContainer.QueryEntities(query, executeContext).ConfigureAwait(false);
             
             var entities        = new List<JsonValue>(queryResult.entities.Count);
             foreach (var entity in queryResult.entities) {
                 entities.Add(entity.Value.Json);
             }
-            var entityKeys      = EntityUtils.GetKeysFromEntities (keyName, entities, messageContext, out _);
+            var entityKeys      = EntityUtils.GetKeysFromEntities (keyName, entities, executeContext, out _);
             var upsert          = new UpsertEntities { container = container, entities = entities, entityKeys = entityKeys };
-            await dstContainer.UpsertEntities(upsert, messageContext).ConfigureAwait(false);
+            await dstContainer.UpsertEntities(upsert, executeContext).ConfigureAwait(false);
         }
     }
 }

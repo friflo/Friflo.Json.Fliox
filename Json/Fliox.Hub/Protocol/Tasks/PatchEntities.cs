@@ -20,13 +20,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override       TaskType                            TaskType => TaskType.patch;
         public   override       string                              TaskName =>  $"container: '{container}'";
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
             if (container == null)
                 return MissingContainer();
             if (patches == null)
                 return MissingField(nameof(patches));
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.PatchEntities(this, response, messageContext).ConfigureAwait(false);
+            var result = await entityContainer.PatchEntities(this, response, executeContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }

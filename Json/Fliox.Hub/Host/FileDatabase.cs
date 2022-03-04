@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return folder + key + ".json";
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
             Dictionary<JsonKey, EntityError> createErrors = null;
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new CreateEntitiesResult{createErrors = createErrors};
         }
 
-        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
             Dictionary<JsonKey, EntityError> upsertErrors = null;
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new UpsertEntitiesResult{upsertErrors = upsertErrors};
         }
 
-        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, MessageContext messageContext) {
+        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, ExecuteContext executeContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
@@ -142,17 +142,17 @@ namespace Friflo.Json.Fliox.Hub.Host
                 rwLock.ReleaseReaderLock();
             }
             var result = new ReadEntitiesSetResult{entities = entities};
-            result.ValidateEntities(name, command.keyName, messageContext);
+            result.ValidateEntities(name, command.keyName, executeContext);
             return result;
         }
 
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            if (!FindCursor(command.cursor, messageContext, out var keyValueEnum, out var error)) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, ExecuteContext executeContext) {
+            if (!FindCursor(command.cursor, executeContext, out var keyValueEnum, out var error)) {
                 return new QueryEntitiesResult { Error = error };
             }
             keyValueEnum = keyValueEnum ?? new FileQueryEnumerator(folder);
             try {
-                var result = await FilterEntities(command, keyValueEnum, messageContext).ConfigureAwait(false);
+                var result = await FilterEntities(command, keyValueEnum, executeContext).ConfigureAwait(false);
                 return result;
             }
             finally {
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
         
-        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, MessageContext messageContext) {
+        public override async Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, ExecuteContext executeContext) {
             var filter = command.GetFilter();
             switch (command.type) {
                 case AggregateType.count:
@@ -176,13 +176,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                             keyValueEnum.Dispose();
                         }
                     }
-                    var result = await CountEntities(command, messageContext).ConfigureAwait(false);
+                    var result = await CountEntities(command, executeContext).ConfigureAwait(false);
                     return result;
             }
             return new AggregateEntitiesResult { Error = new CommandError($"aggregate {command.type} not implement") };
         }
 
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, ExecuteContext executeContext) {
             var keys = command.ids;
             Dictionary<JsonKey, EntityError> deleteErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);

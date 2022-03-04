@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private  readonly   Dictionary<string, EntitySet>               setByName;
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
         internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
-        internal readonly   ConcurrentDictionary<Task, MessageContext>  pendingSyncs;
+        internal readonly   ConcurrentDictionary<Task, ExecuteContext>  pendingSyncs;
         internal readonly   List<JsonKey>                               idsBuf;
 
         // --- mutable state
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
-            pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
+            pendingSyncs                = new ConcurrentDictionary<Task, ExecuteContext>();
             idsBuf                      = new List<JsonKey>();
 
             // --- mutable state

@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();
-        Task<bool>  ProcessEvent(ProtocolEvent ev, MessageContext messageContext);
+        Task<bool>  ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext);
     }
     
     public sealed class EventBroker : IDisposable
@@ -140,14 +140,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private void ProcessSubscriber(SyncRequest syncRequest, MessageContext messageContext) {
-            ref JsonKey  clientId = ref messageContext.clientId;
+        private void ProcessSubscriber(SyncRequest syncRequest, ExecuteContext executeContext) {
+            ref JsonKey  clientId = ref executeContext.clientId;
             if (clientId.IsNull())
                 return;
             
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
-            var eventTarget = messageContext.eventTarget;
+            var eventTarget = executeContext.eventTarget;
             if (eventTarget != null) {
                 subscriber.UpdateTarget (eventTarget);
             }
@@ -166,9 +166,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             tasks.Add(task);
         }
 
-        internal void EnqueueSyncTasks (SyncRequest syncRequest, MessageContext messageContext) {
-            ProcessSubscriber (syncRequest, messageContext);
-            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+        internal void EnqueueSyncTasks (SyncRequest syncRequest, ExecuteContext executeContext) {
+            ProcessSubscriber (syncRequest, executeContext);
+            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
                 ObjectWriter writer = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         throw new InvalidOperationException("Expect SubscriptionCount > 0");
                     
                     // Enqueue only change events for (change) tasks which are not send by the client itself
-                    bool subscriberIsSender = messageContext.clientId.IsEqual(subscriber.clientId);
+                    bool subscriberIsSender = executeContext.clientId.IsEqual(subscriber.clientId);
                     
                     foreach (var task in syncRequest.tasks) {
                         foreach (var changesPair in subscriber.changeSubscriptions) {

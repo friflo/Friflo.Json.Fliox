@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         public UserDatabaseAuthenticator() : base (null) { }
 
-        public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
+        public override Task Authenticate(SyncRequest syncRequest, ExecuteContext executeContext) {
             ref var userId = ref syncRequest.userId;
             User user;
             if (userId.IsNull()) {
@@ -58,11 +58,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
 
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
-                messageContext.AuthenticationSucceed(user, rights);
+                executeContext.AuthenticationSucceed(user, rights);
                 return Task.CompletedTask;
             }
             // AuthenticationFailed() is not called to avoid giving a hint for a valid userId (user)
-            messageContext.AuthenticationSucceed(user, UnknownRights);
+            executeContext.AuthenticationSucceed(user, UnknownRights);
             return Task.CompletedTask;
         }
     }

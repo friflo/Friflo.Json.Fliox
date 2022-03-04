@@ -23,31 +23,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
             localHub = hub;
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var response    = await localHub.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
+            var response    = await localHub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             SetContainerResults(response.success);
             response.Result.reqId       = syncRequest.reqId;
             return response;
         }
 
-        public async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, MessageContext messageContext) {
+        public async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, ExecuteContext executeContext) {
             try {
-                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, messageContext.pool, out string error);
+                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, executeContext.pool, out string error);
                 switch (request) {
                     case null:
-                        return JsonResponse.CreateError(messageContext, error, ErrorResponseType.BadResponse);
+                        return JsonResponse.CreateError(executeContext, error, ErrorResponseType.BadResponse);
                     case SyncRequest syncRequest:
-                        var         response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-                        JsonValue   jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pool);
+                        var         response        = await ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+                        JsonValue   jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, executeContext.pool);
                         return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";
-                        return JsonResponse.CreateError(messageContext, msg, ErrorResponseType.BadResponse);
+                        return JsonResponse.CreateError(executeContext, msg, ErrorResponseType.BadResponse);
                 }
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateError(messageContext, errorMsg, ErrorResponseType.Exception);
+                return JsonResponse.CreateError(executeContext, errorMsg, ErrorResponseType.Exception);
             }
         }
         

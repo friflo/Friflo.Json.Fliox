@@ -570,8 +570,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             };
             var sharedEnv       = hub.sharedEnv;
             var localPool       = new Pool(sharedEnv);
-            var messageContext  = new MessageContext(localPool, null, sharedEnv.sharedCache);
-            var result = await hub.ExecuteSync(synRequest, messageContext).ConfigureAwait(false);
+            var executeContext  = new ExecuteContext(localPool, null, sharedEnv.sharedCache);
+            var result = await hub.ExecuteSync(synRequest, executeContext).ConfigureAwait(false);
             
             var error = result.error;
             if (error != null) {

@@ -47,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return stateDB.CreateContainer(name, database);
         }
 
-        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
-            var pool = messageContext.pool;
+        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, ExecuteContext executeContext) {
+            var pool = executeContext.pool;
             using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
                 var cluster = pooled.instance;
                 var tasks = syncRequest.tasks;

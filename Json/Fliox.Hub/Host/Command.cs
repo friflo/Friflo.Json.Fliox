@@ -21,30 +21,30 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
     public class Command { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
-        public              IPool           Pool            => messageContext.pool;
-        public              FlioxHub        Hub             => messageContext.hub;
-        public              string          DatabaseName    => messageContext.DatabaseName;
-        public              EntityDatabase  Database        => messageContext.Database;
-        public              User            User            => messageContext.User;
-        public              JsonKey         ClientId        => messageContext.clientId;
+        public              IPool           Pool            => executeContext.pool;
+        public              FlioxHub        Hub             => executeContext.hub;
+        public              string          DatabaseName    => executeContext.DatabaseName;
+        public              EntityDatabase  Database        => executeContext.Database;
+        public              User            User            => executeContext.User;
+        public              JsonKey         ClientId        => executeContext.clientId;
         public              bool            WriteNull       { get; set; }
         public              bool            WritePretty     { get; set; }
         
         internal            string          error;
 
-        [DebuggerBrowsable(Never)]  internal            MessageContext  MessageContext  => messageContext;
-        [DebuggerBrowsable(Never)]  private   readonly  MessageContext  messageContext;
+        [DebuggerBrowsable(Never)]  internal            ExecuteContext  ExecuteContext  => executeContext;
+        [DebuggerBrowsable(Never)]  private   readonly  ExecuteContext  executeContext;
 
         public   override   string          ToString()      => Name;
         
         public              UserInfo        UserInfo { get {
-            var user = messageContext.User;
-            return new UserInfo (user.userId, user.token, messageContext.clientId);
+            var user = executeContext.User;
+            return new UserInfo (user.userId, user.token, executeContext.clientId);
         } }
 
-        internal Command(string name, MessageContext messageContext) {
+        internal Command(string name, ExecuteContext executeContext) {
             Name                = name;
-            this.messageContext = messageContext;
+            this.executeContext = executeContext;
             WritePretty         = true;
         }
         
