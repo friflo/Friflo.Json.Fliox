@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   IReadOnlyList<FieldDef>     Fields          { get; }
         
         public   abstract   IReadOnlyList<MessageDef>   Messages        { get; }
-        public   abstract   IReadOnlyList<CommandDef>   Commands        { get; }
+        public   abstract   IReadOnlyList<MessageDef>   Commands        { get; }
         public              bool                        IsSchema        => Commands != null; 
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
@@ -152,27 +152,13 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
     }
     
-    public sealed class MessageDef {
-        public   readonly   string      name;
-        public   readonly   FieldDef    param;
-        public   readonly   string      docs;
-
-        public   override   string      ToString() => name;
-        
-        public MessageDef(string name, FieldDef param, string docs) {
-            this.name       = name;
-            this.param      = param;
-            this.docs       = docs;
-        }
-    }
-    
     /// <summary>
-    /// <see cref="CommandDef"/> is used to specify the interface of a command (= RPC) within a service.
+    /// <see cref="MessageDef"/> is used to specify the interface of a command (= RPC) within a service.
     /// The structure of a command consists of its <see cref="name"/> its command <see cref="param"/> type and its
     /// command <see cref="result"/> type. The command <see cref="param"/> type specify the parameters and
     /// when a command is executed it returns an object of the given <see cref="result"/> type.
     /// </summary>
-    public sealed class CommandDef {
+    public sealed class MessageDef {
         public   readonly   string      name;
         public   readonly   FieldDef    param;
         public   readonly   FieldDef    result;
@@ -180,13 +166,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
         public   override   string      ToString() => name;
         
-        public CommandDef(string name, FieldDef param, FieldDef result, string docs) {
+        public MessageDef(string name, FieldDef param, FieldDef result, string docs) {
             this.name       = name;
             this.param      = param;
             this.result     = result;
             this.docs       = docs;
         }
     }
+    
 
     public sealed class UnionType {
         public   readonly   string                      discriminator;

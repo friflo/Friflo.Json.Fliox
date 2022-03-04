@@ -12,9 +12,14 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         public                      JsonValue       JsonParam       => param;
         
-        [DebuggerBrowsable(Never)]  private   readonly  JsonValue       param;
-        [DebuggerBrowsable(Never)]  private   readonly  ExecuteContext  executeContext;
+        public    override          string          ToString() => param.AsString();
         
+        [DebuggerBrowsable(Never)]
+        private   readonly          JsonValue       param;
+        [DebuggerBrowsable(Never)]
+        private   readonly          ExecuteContext  executeContext;
+
+
         internal Param(in JsonValue param, ExecuteContext  executeContext) {
             this.param          = param;
             this.executeContext = executeContext;

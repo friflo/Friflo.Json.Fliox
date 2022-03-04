@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                         }
                         var commands      = type.commands;
                         if (commands != null) {
-                            typeDef.commands = new List<CommandDef>(commands.Count);
+                            typeDef.commands = new List<MessageDef>(commands.Count);
                             foreach (var msgPair in commands) {
                                 string      messageName = msgPair.Key;
                                 CommandType command     = msgPair.Value;
@@ -211,20 +211,20 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private static void SetMessage (JsonTypeDef typeDef, string commandName, MessageType field, in JsonTypeContext context) {
             field.name      = commandName;
-            var valueType   = GetCommandArg("param",   field.param,  context);
-            var messageDef  = new MessageDef(commandName, valueType, field.description);
+            var valueType   = GetMessageArg("param",   field.param,  context);
+            var messageDef  = new MessageDef(commandName, valueType, null, field.description);
             typeDef.messages.Add(messageDef);
         }
 
         private static void SetCommand (JsonTypeDef typeDef, string commandName, CommandType field, in JsonTypeContext context) {
             field.name      = commandName;
-            var valueType   = GetCommandArg("param",   field.param,  context);
-            var resultType  = GetCommandArg("result",  field.result, context);
-            var commandDef  = new CommandDef(commandName, valueType, resultType, field.description);
+            var valueType   = GetMessageArg("param",   field.param,  context);
+            var resultType  = GetMessageArg("result",  field.result, context);
+            var commandDef  = new MessageDef(commandName, valueType, resultType, field.description);
             typeDef.commands.Add(commandDef);
         }
         
-        private static FieldDef GetCommandArg(string name, FieldType fieldType, in JsonTypeContext context) {
+        private static FieldDef GetMessageArg(string name, FieldType fieldType, in JsonTypeContext context) {
             var attr        = new FieldAttributes();
             var argType     = GetFieldType(fieldType, ref attr, context);
             var required    = !attr.isNullable;

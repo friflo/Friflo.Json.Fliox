@@ -165,8 +165,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public TestCommands(FlioxClient client) : base(client) { }
         
         // --- commands
-        public CommandTask<string>    Command1 (string param)  => SendCommand<string, string>("test.Command1", param);
-        public CommandTask<string>    Command2 (string param)  => SendCommand<string, string>("test.Command2", param);
+        public MessageTask          TestMessage (string param)  => SendMessage                ("test.TestMessage",  param);
+        public CommandTask<string>  Command1 (string param)     => SendCommand<string, string>("test.Command1",     param);
+        public CommandTask<string>  Command2 (string param)     => SendCommand<string, string>("test.Command2",     param);
     }
     
     public class TestCommand {

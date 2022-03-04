@@ -172,31 +172,33 @@ namespace Friflo.Json.Fliox.Schema
             }
             var additionalProperties = unionType != null ? "true" : "false";
             sb.Append($"            \"additionalProperties\": {additionalProperties}");
-            if (type.IsSchema) {
-                EmitServiceType(type, context, sb);
-            } else {
-                sb.AppendLine();
-            }
+            EmitMessages("commands", type.Commands, context, sb);
+            EmitMessages("messages", type.Messages, context, sb);
+            sb.AppendLine();
+
             sb.Append     ("        }");
             return new EmitType(type, sb);
         }
         
-        private static void EmitServiceType(TypeDef type, TypeContext context, StringBuilder sb) {
-            var     commands    = type.Commands;
+        private static void EmitMessages(string messageType, IReadOnlyList<MessageDef> commands, TypeContext context, StringBuilder sb) {
+            if (commands == null)
+                return;
             bool    firstField  = true;
             int maxFieldName    = commands.MaxLength(field => field.name.Length);
             sb.AppendLine(",");
-            sb.AppendLine("            \"commands\": {");
+            sb.AppendLine($"            \"{messageType}\": {{");
             foreach (var command in commands) {
                 var commandParam    = GetFieldType(command.param,  context, command.param.required);
-                var commandResult   = GetFieldType(command.result, context, command.result.required);
+                var result          = command.result;
+                var commandType     = result != null ? GetFieldType(result, context, result.required) : null;
+                var resultStr       = commandType != null ? $", \"result\": {{ {commandType} }}" : "";
                 var description     = GetDescription(",\n                    ", command.docs, "");
                 var indent          = Indent(maxFieldName, command.name);
                 Delimiter(sb, Next, ref firstField);
-                var signature = $"\"param\": {{ {commandParam} }}, \"result\": {{ {commandResult} }}";
+                var signature = $"\"param\": {{ {commandParam} }}{resultStr}";
                 sb.Append($"                \"{command.name}\":{indent} {{ {signature}{description} }}");
             }
-            sb.AppendLine("\n            }");
+            sb.Append("\n            }");
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {

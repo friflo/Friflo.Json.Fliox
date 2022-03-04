@@ -42,6 +42,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.client = client;
         }
         
+        protected MessageTask SendMessage<TParam>(string name, TParam param) {
+            return client.SendMessage(name, param);
+        }
+        
         protected CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
             return client.SendCommand<TParam, TResult>(name, param);
         }

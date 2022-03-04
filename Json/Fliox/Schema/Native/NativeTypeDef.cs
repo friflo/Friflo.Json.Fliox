@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         internal            NativeTypeDef               baseType;
         internal            List<FieldDef>              fields;
         internal            List<MessageDef>            messages;
-        internal            List<CommandDef>            commands;
+        internal            List<MessageDef>            commands;
         internal            UnionType                   unionType;
         internal            string                      discriminator;
         internal            bool                        isAbstract;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   bool                        IsStruct        { get; }
         public   override   IReadOnlyList<FieldDef>     Fields          => fields;
         public   override   IReadOnlyList<MessageDef>   Messages        => messages;
-        public   override   IReadOnlyList<CommandDef>   Commands        => commands;
+        public   override   IReadOnlyList<MessageDef>   Commands        => commands;
         public   override   string                      Discriminant    { get; }
         public   override   string                      Discriminator   => discriminator;
         public   override   UnionType                   UnionType       => unionType;

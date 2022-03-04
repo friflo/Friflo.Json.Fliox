@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
     {
         private static readonly Dictionary<Type, MessageInfo[]> MessageInfoCache = new Dictionary<Type, MessageInfo[]>();
 
+        private const string MessageType = "Friflo.Json.Fliox.Hub.Client.MessageTask";
         private const string CommandType = "Friflo.Json.Fliox.Hub.Client.CommandTask`1";
         
         public static MessageInfo[] GetMessageInfos (Type type, TypeStore typeStore) {
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                 return result;
             }
             var messageInfos    = new List<MessageInfo>();
-            var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            var flags           = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
@@ -60,16 +61,21 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         private static bool IsCommand(MethodInfo methodInfo, string prefix, AssemblyDocs docs, out MessageInfo messageInfo) {
             messageInfo = new MessageInfo();
             var returnType = methodInfo.ReturnType;
-            if (!returnType.IsGenericType)
-                return false;
-            if (returnType.GetGenericTypeDefinition().FullName != CommandType)
-                return false;
-            var returnTypeArgs = returnType.GenericTypeArguments;
-            if (returnTypeArgs.Length != 1)
-                return false;
-            var resultType = returnTypeArgs[0];
-            if (resultType.IsGenericParameter)
-                return false;
+            Type resultType;
+            if (returnType.IsGenericType) {
+                if (returnType.GetGenericTypeDefinition().FullName != CommandType)
+                    return false;
+                var returnTypeArgs = returnType.GenericTypeArguments;
+                if (returnTypeArgs.Length != 1)
+                    return false;
+                resultType = returnTypeArgs[0];
+                if (resultType.IsGenericParameter)
+                    return false;
+            } else {
+                if (returnType.FullName != MessageType)
+                    return false;
+                resultType = null;
+            }
             var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
             if (name == null)
                 name = methodInfo.Name;

@@ -43,6 +43,9 @@
                     "description": "returns descriptive information about the Hub like version, host, project and environment name" },
                 "std.Cluster":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
                     "description": "list all databases and their containers hosted by the Hub" }
+            },
+            "messages": {
+                "test.TestMessage": { "param": { "type": ["string", "null"] } }
             }
         },
         "OrderItem": {

@@ -70,13 +70,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertCommands(PocStore store) {
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
-            
+            var testMessage     = store.test.TestMessage("hello there");
+            var testCommand     = store.test.Command2("foo");
             var containers      = store.std.Containers();
             var commands        = store.std.Commands();
             var catalogSchema   = store.std.Schema();
             var dbList          = store.std.Cluster();
             await store.SyncTasks();
             
+            IsTrue(testMessage.Success);
+            AreEqual("hello there", testCommand.Result);
+
             var containersResult = containers.Result;
             AreEqual(1,                 containersResult.containers.Length);
             AreEqual("memory",          containersResult.storage);
