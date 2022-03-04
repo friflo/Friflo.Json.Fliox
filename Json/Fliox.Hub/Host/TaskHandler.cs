@@ -248,6 +248,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, MessageCallback> commandMap) {
             foreach (var pair in commandMap) {
+                if (pair.Value.MsgType != MsgType.Command)
+                    continue;
                 var name = pair.Key;
                 if (name.StartsWith("std.") == standard)
                     commands[n++] = name;

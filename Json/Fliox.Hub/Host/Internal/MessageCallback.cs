@@ -25,13 +25,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
+    internal enum MsgType {
+        Command,
+        Message
+    }
+    
     // ----------------------------------- MessageCallback -----------------------------------
     internal abstract class MessageCallback
     {
         // Note! Must not contain any state
+        internal  abstract  MsgType             MsgType { get; }  
         
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
-        internal abstract Task<InvokeResult> InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext);
+        internal  abstract  Task<InvokeResult>  InvokeCallback(string messageName, JsonValue messageValue, ExecuteContext executeContext);
     }
     
     // ----------------------------------- MessageCallback<> -----------------------------------
@@ -40,7 +46,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         private  readonly   string                  name;
         private  readonly   MsgHandler<TValue>      handler;
 
-        public   override   string                  ToString() => name;
+        internal override   MsgType                 MsgType     => MsgType.Message;
+        public   override   string                  ToString()  => name;
 
         internal MessageCallback (string name, MsgHandler<TValue> handler) {
             this.name       = name;
@@ -63,10 +70,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- CommandCallback<,> -----------------------------------
     internal sealed class CommandCallback<TValue, TResult> : MessageCallback
     {
-        private  readonly   string                          name;
-        private  readonly   CmdHandler<TValue, TResult>     handler;
+        private  readonly   string                      name;
+        private  readonly   CmdHandler<TValue, TResult> handler;
 
-        public   override   string                          ToString() => name;
+        internal override   MsgType                     MsgType     => MsgType.Command;
+        public   override   string                      ToString()  => name;
 
         internal CommandCallback (string name, CmdHandler<TValue, TResult> handler) {
             this.name       = name;
@@ -98,7 +106,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         private  readonly   string                              name;
         private  readonly   CmdHandler<TParam, Task<TResult>>   handler;
 
-        public   override   string                              ToString() => name;
+        internal override   MsgType                             MsgType     => MsgType.Command;
+        public   override   string                              ToString()  => name;
 
         internal CommandAsyncCallback (string name, CmdHandler<TParam, Task<TResult>> handler) {
             this.name       = name;
