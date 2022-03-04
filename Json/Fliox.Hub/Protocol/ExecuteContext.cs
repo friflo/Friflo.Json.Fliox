@@ -3,12 +3,12 @@
 
 using System;
 using System.Diagnostics;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Host
+namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ------------------------------------ ExecuteContext ------------------------------------
     /// <summary>

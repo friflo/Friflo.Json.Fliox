@@ -3,7 +3,6 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 

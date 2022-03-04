@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth

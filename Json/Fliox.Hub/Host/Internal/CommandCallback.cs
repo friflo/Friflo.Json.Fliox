@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Internal
