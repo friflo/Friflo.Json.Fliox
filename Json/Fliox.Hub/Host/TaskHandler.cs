@@ -120,30 +120,36 @@ namespace Friflo.Json.Fliox.Hub.Host
             var handlers            = TaskHandlerUtils.GetHandlers(type);
             if (handlers == null)
                 return;
-            var genericArgs         = new Type[2];
-            var constructorParams   = new object[2];
-            foreach (var handler in handlers) {
-                // if (handler.name == "DbContainers") { int i = 1; }
-                genericArgs[0]      = handler.valueType;
-                genericArgs[1]      = handler.resultType;
-                var genericTypeArgs = typeof(CmdHandler<,>).MakeGenericType(genericArgs);
-                var firstArgument   = handler.method.IsStatic ? null : handlerClass;
-                var handlerDelegate = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
-                constructorParams[0]    = handler.name;
-                constructorParams[1]    = handlerDelegate;
-                object instance;
-                // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
-                if (handler.resultTaskType != null) {
-                    genericArgs[1] = handler.resultTaskType;
-                    instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandAsyncCallback<,>), genericArgs, constructorParams);
-                } else {
-                    instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
-                }
-                var messageCallback = (MessageCallback)instance;
-                var name = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
+            foreach (var handler in handlers) {
+                var messageCallback = CreateCmdCallback(handlerClass, handler);
+                var name            = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
                 messages.Add(name, messageCallback);
             }
+        }
+        
+        private static MessageCallback  CreateCmdCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class
+        {
+            var genericArgs         = new Type[2];
+            var constructorParams   = new object[2];
+            // if (handler.name == "DbContainers") { int i = 1; }
+            genericArgs[0]          = handler.valueType;
+            genericArgs[1]          = handler.resultType;
+            var genericTypeArgs     = typeof(CmdHandler<,>).MakeGenericType(genericArgs);
+            var firstArgument       = handler.method.IsStatic ? null : handlerClass;
+            var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
+
+            constructorParams[0]    = handler.name;
+            constructorParams[1]    = handlerDelegate;
+            object instance;
+            // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
+            if (handler.resultTaskType != null) {
+                genericArgs[1] = handler.resultTaskType;
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandAsyncCallback<,>), genericArgs, constructorParams);
+            } else {
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
+            }
+            return (MessageCallback)instance;
         }
         
         // ------------------------------ command handler methods ------------------------------
