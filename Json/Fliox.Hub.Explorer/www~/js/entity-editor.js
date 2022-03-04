@@ -113,17 +113,35 @@ export class EntityEditor {
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
         // commands link
+        const commandLink = this.createMessagesLink(database, "commands");
+        ulDatabase.append(commandLink);
+        // commands list
+        const messages = this.createMessages(database, dbCommands);
+        ulDatabase.appendChild(messages.rootEl);
+        entityExplorer.innerText = "";
+        entityExplorer.appendChild(ulDatabase);
+        const selectedCommand = this.selectedCommands[database];
+        const liCommand = messages.map[selectedCommand];
+        if (liCommand) {
+            this.selectCommand(database, selectedCommand, liCommand);
+            liCommand.scrollIntoView();
+        }
+        else {
+            this.selectDatabaseInfo(database);
+        }
+    }
+    createMessagesLink(database, type) {
         const commandLink = createEl('li');
         const commandAnchor = createEl('a');
         commandAnchor.href = `./rest/${database}?command=std.Commands`;
         commandAnchor.target = "blank";
         commandAnchor.rel = "noopener noreferrer";
-        commandAnchor.innerHTML = '<small style="opacity:0.5; margin-left: 10px;" title="open database commands in new tab">&nbsp;commands</small>';
+        commandAnchor.innerHTML = `<small style="opacity:0.5; margin-left: 10px;" title="open database ${type} in new tab">&nbsp;${type}</small>`;
         commandLink.append(commandAnchor);
-        ulDatabase.append(commandLink);
-        // commands list
+        return commandLink;
+    }
+    createMessages(database, dbCommands) {
         const liCommands = createEl('li');
-        ulDatabase.appendChild(liCommands);
         const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
             const path = ev.composedPath();
@@ -152,18 +170,8 @@ export class EntityEditor {
             ulCommands.append(liCommand);
             commands[command] = liCommand;
         }
-        entityExplorer.innerText = "";
         liCommands.append(ulCommands);
-        entityExplorer.appendChild(ulDatabase);
-        const selectedCommand = this.selectedCommands[database];
-        const liCommand = commands[selectedCommand];
-        if (liCommand) {
-            this.selectCommand(database, selectedCommand, liCommand);
-            liCommand.scrollIntoView();
-        }
-        else {
-            this.selectDatabaseInfo(database);
-        }
+        return { rootEl: liCommands, map: commands };
     }
     storeCursor() {
         if (this.entityHistoryPos < 0)
