@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   string                      Discriminator   => discriminator;
         public   override   UnionType                   UnionType       => unionType;
         public   override   bool                        IsAbstract      => isAbstract;
-        public   override   ICollection<string>         EnumValues      { get; }
+        public   override   IReadOnlyList<string>       EnumValues      { get; }
         
         public   override   string                      ToString()      => $"{Namespace} {Name}";
         

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   string                      Discriminant    => discriminant;
         public   override   string                      Discriminator   => discriminator;
         public   override   bool                        IsEnum          => EnumValues != null;
-        public   override   ICollection<string>         EnumValues      { get; }
+        public   override   IReadOnlyList<string>       EnumValues      { get; }
 
         public   override   string              ToString()      => name; 
 
