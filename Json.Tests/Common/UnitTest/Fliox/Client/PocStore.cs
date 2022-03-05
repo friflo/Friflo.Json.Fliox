@@ -42,12 +42,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             test = new TestCommands(this);
         }
         
-        // --- commands
         public readonly TestCommands    test;
+        
+        // --- commands
         [Fri.Command(Name =            "TestCommand")]
-        public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand", param);
-        public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>("SyncCommand",   param);
-        public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>("AsyncCommand",  param);
+        public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand",param);
+        public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>  ("SyncCommand", param);
+        public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>  ("AsyncCommand",param);
+        public CommandTask<string>      Command1 (string param)     => SendCommand<string, string>  ("Command1",    param);
+        
+        // --- messages
+        public MessageTask              Message1 (string param)     => SendMessage                  ("Message1",    param);
     }
 
     // ------------------------------ models ------------------------------
@@ -165,9 +170,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public TestCommands(FlioxClient client) : base(client) { }
         
         // --- commands
-        public MessageTask          TestMessage (string param)  => SendMessage                ("test.TestMessage",  param);
-        public CommandTask<string>  Command1 (string param)     => SendCommand<string, string>("test.Command1",     param);
-        public CommandTask<string>  Command2 (string param)     => SendCommand<string, string>("test.Command2",     param);
+        public CommandTask<string>  Command2 (string param)         => SendCommand<string, string>("test.Command2",     param);
+        public CommandTask<string>  CommandHello (string param)     => SendCommand<string, string>("test.CommandHello",     param);
+        
+        // --- messages
+        public MessageTask          Message2 (string param)     => SendMessage                ("test.Message2",  param);
     }
     
     public class TestCommand {

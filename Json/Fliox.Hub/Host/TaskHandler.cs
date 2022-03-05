@@ -74,8 +74,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCmdHandlerAsync  (Std.HostCluster,  new CmdHandler<Empty,    Task<HostCluster>>  (Cluster));
         }
         
-        protected void AddMessageHandler<TParam> (string name, Action<Param<TParam>, MessageContext> methods) {
-            AddMsgHandler (name, new MsgHandler<TParam> (methods));
+        protected void AddMessageHandler<TParam> (string name, Action<Param<TParam>, MessageContext> method) {
+            AddMsgHandler (name, new MsgHandler<TParam> (method));
         }
         
         /// <summary>

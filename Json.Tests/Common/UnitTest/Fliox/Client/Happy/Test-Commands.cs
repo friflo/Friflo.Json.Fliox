@@ -64,23 +64,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("memory",          catalog0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(12,                commandsResult.commands.Length);
-            AreEqual(1,                 commandsResult.messages.Length);
+            AreEqual(13,                commandsResult.commands.Length);
+            AreEqual(2,                 commandsResult.messages.Length);
         }
         
         private static async Task AssertCommands(PocStore store) {
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
-            var testMessage     = store.test.TestMessage("hello there");
-            var testCommand     = store.test.Command2("foo");
+            var message1        = store.Message1("test message1");
+            var message2        = store.test.Message2("test message2");
+
+            var command1        = store.Command1("foo");
+            var command2        = store.test.Command2("foo");
+            var commandHello    = store.test.CommandHello("hello");
             var containers      = store.std.Containers();
             var commands        = store.std.Commands();
             var catalogSchema   = store.std.Schema();
             var dbList          = store.std.Cluster();
+            
             await store.SyncTasks();
             
-            IsTrue(testMessage.Success);
-            AreEqual("hello there", testCommand.Result);
+            IsTrue(message1.Success);
+            IsTrue(message2.Success);
+            
+            AreEqual("test message1",   command1.Result);
+            AreEqual("test message2",   command2.Result);
+            
+            AreEqual("hello",           commandHello.Result);
 
             var containersResult = containers.Result;
             AreEqual(1,                 containersResult.containers.Length);
@@ -96,8 +106,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("memory",          catalog0.storage);
             
             var commandsResult = commands.Result;
-            AreEqual(12,                commandsResult.commands.Length);
-            AreEqual(1,                 commandsResult.messages.Length);
+            AreEqual(13,                commandsResult.commands.Length);
+            AreEqual(2,                 commandsResult.messages.Length);
         }
     }
 }

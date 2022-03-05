@@ -10,9 +10,9 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public class PocHandler : TaskHandler {
-        private readonly TestCommandsHandler    test    = new TestCommandsHandler();
-        private readonly TestCommandsHandler2   test2   = new TestCommandsHandler2();
-        private readonly EmptyCommandsHandler   empty   = new EmptyCommandsHandler();
+        private readonly TestHandlerScan        test    = new TestHandlerScan();
+        private readonly TestHandlerManual      manual  = new TestHandlerManual();
+        private readonly EmptyHandler           empty   = new EmptyHandler();
         
         public PocHandler() {
             // add all command handlers of the passed handler classes
@@ -21,8 +21,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AddMessageHandlers(empty,   "empty.");
             
             // add command handlers individually
-            AddCommandHandler      <string,string>("SyncCommand",  TestCommandsHandler2.SyncCommand);
-            AddCommandHandlerAsync <string,string>("AsyncCommand", TestCommandsHandler2.AsyncCommand);
+            AddCommandHandler       <string,string> ("SyncCommand",     TestHandlerManual.SyncCommand);
+            AddCommandHandlerAsync  <string,string> ("AsyncCommand",    TestHandlerManual.AsyncCommand);
+            AddCommandHandler       <string,string> ("Command1",        manual.Command1);
+            AddMessageHandler       <string>        ("Message1",        manual.Message1);
         }
         
         private static bool TestCommand(Param<TestCommand> param, MessageContext command) {
@@ -36,27 +38,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// <summary>
     /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddMessageHandlers{TClass}"/>
     /// </summary>
-    public class TestCommandsHandler {
-        private string testMessageValue;
+    public class TestHandlerScan {
+        private string message2;
             
-        private void TestMessage(Param<string> param, MessageContext command) {
-            param.Get(out testMessageValue, out _);
-        }
-        
-        private static string Command1(Param<string> param, MessageContext command) {
-            return "hello Command1";
+        private void Message2(Param<string> param, MessageContext command) {
+            param.Get(out message2, out _);
         }
         
         private string Command2(Param<string> param, MessageContext command) {
-            return testMessageValue;
+            return message2;
+        }
+        
+        private static string CommandHello(Param<string> param, MessageContext command) {
+            param.Get(out var result, out _);
+            return result;
         }
     }
     
     /// <summary>
-    /// Uses to show adding its command handlers individually by <see cref="TaskHandler.AddCommandHandler{TParam,TResult}"/>
+    /// Uses to show adding its command handlers manual by <see cref="TaskHandler.AddCommandHandler{TParam,TResult}"/>
     /// or <see cref="TaskHandler.AddCommandHandlerAsync{TParam,TResult}"/>
     /// </summary>
-    public class TestCommandsHandler2 {
+    public class TestHandlerManual {
+        private string message1;
+        
         public static string SyncCommand(Param<string> param, MessageContext command) {
             return "hello SyncCommand";
         }
@@ -64,7 +69,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public static Task<string> AsyncCommand(Param<string> param, MessageContext command) {
             return Task.FromResult("hello AsyncCommand");
         }
+        
+        public string Command1(Param<string> param, MessageContext command) {
+            return message1;
+        }
+        
+        public void Message1(Param<string> param, MessageContext command) {
+            param.Get(out message1, out _);
+        }
     }
     
-    public class EmptyCommandsHandler { }
+    public class EmptyHandler { }
 }

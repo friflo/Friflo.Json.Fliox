@@ -24,28 +24,30 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "TestCommand":    { "param": { "oneOf": [{ "$ref": "#/definitions/TestCommand" }, {"type": "null"}] }, "result": { "type": "boolean" } },
-                "SyncCommand":    { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
-                "AsyncCommand":   { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
-                "test.Command1":  { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
-                "test.Command2":  { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
-                "std.Echo":       { "param": {  }, "result": {  },
+                "TestCommand":       { "param": { "oneOf": [{ "$ref": "#/definitions/TestCommand" }, {"type": "null"}] }, "result": { "type": "boolean" } },
+                "SyncCommand":       { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
+                "AsyncCommand":      { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
+                "Command1":          { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
+                "test.Command2":     { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
+                "test.CommandHello": { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
+                "std.Echo":          { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately. " },
-                "std.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
+                "std.Containers":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
                     "description": "list all containers of the database" },
-                "std.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" },
+                "std.Commands":      { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" },
                     "description": "list all commands exposed by the database" },
-                "std.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" },
+                "std.Schema":        { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" },
                     "description": "return the JSON Schema assigned to the database" },
-                "std.Stats":      { "param": { "type": ["string", "null"] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
+                "std.Stats":         { "param": { "type": ["string", "null"] }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats" },
                     "description": "return the number of entities of all containers (or the given container) of the database" },
-                "std.Details":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
+                "std.Details":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails" },
                     "description": "returns descriptive information about the Hub like version, host, project and environment name" },
-                "std.Cluster":    { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
+                "std.Cluster":       { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster" },
                     "description": "list all databases and their containers hosted by the Hub" }
             },
             "messages": {
-                "test.TestMessage": { "param": { "type": ["string", "null"] } }
+                "Message1":      { "param": { "type": ["string", "null"] } },
+                "test.Message2": { "param": { "type": ["string", "null"] } }
             }
         },
         "OrderItem": {
