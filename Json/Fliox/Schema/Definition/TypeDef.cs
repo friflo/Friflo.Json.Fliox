@@ -160,7 +160,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </summary>
     public sealed class MessageDef {
         public   readonly   string      name;
+        /// <summary>null: missing param    <br/>not null: message/command param: Type</summary>
         public   readonly   FieldDef    param;
+        /// <summary>null: is message       <br/>not null: is command</summary>
         public   readonly   FieldDef    result;
         public   readonly   string      docs;
 
