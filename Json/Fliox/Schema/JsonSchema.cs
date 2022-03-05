@@ -188,17 +188,23 @@ namespace Friflo.Json.Fliox.Schema
             sb.AppendLine(",");
             sb.AppendLine($"            \"{type}\": {{");
             foreach (var messageDef in messageDefs) {
-                var commandParam    = GetFieldType(messageDef.param,  context, messageDef.param.required);
-                var result          = messageDef.result;
-                var commandType     = result != null ? GetFieldType(result, context, result.required) : null;
-                var resultStr       = commandType != null ? $", \"result\": {{ {commandType} }}" : "";
+                var param           = GetMessageArg("param",  messageDef.param,  context);
+                var result          = GetMessageArg("result", messageDef.result, context);
                 var description     = GetDescription(",\n                    ", messageDef.docs, "");
                 var indent          = Indent(maxFieldName, messageDef.name);
                 Delimiter(sb, Next, ref firstField);
-                var signature = $"\"param\": {{ {commandParam} }}{resultStr}";
+                var argDelimiter    = param.Length > 0 && result.Length > 0 ? ", " : "";
+                var signature       = $"{param}{argDelimiter}{result}";
                 sb.Append($"                \"{messageDef.name}\":{indent} {{ {signature}{description} }}");
             }
             sb.Append("\n            }");
+        }
+        
+        private static string GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
+            if (fieldDef == null)
+                return "";
+            var argType = GetFieldType(fieldDef, context, fieldDef.required);
+            return $"\"{name}\": {{ {argType} }}";
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {

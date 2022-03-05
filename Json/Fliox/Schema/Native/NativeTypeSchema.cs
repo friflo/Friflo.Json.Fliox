@@ -193,6 +193,8 @@ namespace Friflo.Json.Fliox.Schema.Native
         }
         
         private FieldDef GetMessageArg(string name, Type type, bool required) {
+            if (type == null)
+                return null;
             var attr    = GetArgAttributes(type);
             required   |= attr.required;
             return new FieldDef(name, required, false, false, attr.typeDef, false, false, false, null, null, null);

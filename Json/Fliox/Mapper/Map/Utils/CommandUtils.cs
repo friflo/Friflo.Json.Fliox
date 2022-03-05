@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var paramLen    = parameters.Length; 
             if (paramLen > 1)
                 return false;
-            Type paramType = typeof(JsonValue);
+            Type paramType = typeof(JsonValue); // null
             if (paramLen == 1) {
                 paramType = parameters[0].ParameterType;
             }

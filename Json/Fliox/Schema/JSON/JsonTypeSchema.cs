@@ -225,6 +225,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         }
         
         private static FieldDef GetMessageArg(string name, FieldType fieldType, in JsonTypeContext context) {
+            if (fieldType == null)
+                return null; 
             var attr        = new FieldAttributes();
             var argType     = GetFieldType(fieldType, ref attr, context);
             var required    = !attr.isNullable;

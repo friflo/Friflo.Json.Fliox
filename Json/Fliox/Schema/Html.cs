@@ -198,18 +198,24 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
 ");
             int maxFieldName    = messageDefs.MaxLength(field => field.name.Length);
             foreach (var messageDef in messageDefs) {
-                var commandParam    = GetFieldType(messageDef.param,  context, messageDef.param.required);
-                var result          = messageDef.result;
-                var commandResult   = result != null ? GetFieldType(result, context, result.required) : null;
-                var docs            = GetDescription("\n            <td><docs>", messageDef.docs, "</docs></td>");
-                var indent = Indent(maxFieldName, messageDef.name);
-                var signature = $"(<keyword>param</keyword>: {commandParam}) : {commandResult ?? "void"}";
+                var param   = GetMessageArg("param", messageDef.param, context);
+                var result  = GetMessageArg(null,    messageDef.result, context);
+                var docs    = GetDescription("\n            <td><docs>", messageDef.docs, "</docs></td>");
+                var indent  = Indent(maxFieldName, messageDef.name);
+                var signature = $"({param}) : {result}";
                 sb.AppendLine(
 $@"        <tr>
             <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{docs}
         </tr>");
             }
             sb.AppendLine("    </table>");
+        }
+        
+        private static string GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
+            if (fieldDef == null)
+                return name != null ? "" : "void";
+            var argType = GetFieldType(fieldDef, context, fieldDef.required);
+            return name != null ? $"<keyword>{name}</keyword>: {argType}" : argType;
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
