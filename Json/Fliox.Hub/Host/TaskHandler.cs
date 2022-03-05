@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public class TaskHandler
     {
-        private readonly Dictionary<string, MessageCallback> messages = new Dictionary<string, MessageCallback>();
+        private readonly Dictionary<string, MessageDelegate> messages = new Dictionary<string, MessageDelegate>();
         
         public TaskHandler () {
             // AddUsingCommandHandler();
@@ -128,18 +128,18 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return;
 
             foreach (var handler in handlers) {
-                MessageCallback messageCallback;
+                MessageDelegate messageDelegate;
                 if (handler.resultType == typeof(void)) {
-                    messageCallback = CreateMessageCallback(instance, handler);
+                    messageDelegate = CreateMessageCallback(instance, handler);
                 } else {
-                    messageCallback = CreateCommandCallback(instance, handler);
+                    messageDelegate = CreateCommandCallback(instance, handler);
                 }
                 var name            = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
-                messages.Add(name, messageCallback);
+                messages.Add(name, messageDelegate);
             }
         }
         
-        private static MessageCallback  CreateMessageCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class {
+        private static MessageDelegate  CreateMessageCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class {
             var genericArgs         = new Type[1];
             var constructorParams   = new object[2];
             // if (handler.name == "DbContainers") { int i = 1; }
@@ -150,11 +150,11 @@ namespace Friflo.Json.Fliox.Hub.Host
 
             constructorParams[0]    = handler.name;
             constructorParams[1]    = handlerDelegate;
-            object instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageCallback<>),      genericArgs, constructorParams);   
-            return (MessageCallback)instance;
+            object instance = TypeMapperUtils.CreateGenericInstance(typeof(MessageDelegate<>),      genericArgs, constructorParams);   
+            return (MessageDelegate)instance;
         }
         
-        private static MessageCallback  CreateCommandCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class
+        private static MessageDelegate  CreateCommandCallback<TClass>(TClass handlerClass, HandlerInfo handler) where TClass : class
         {
             var genericArgs         = new Type[2];
             var constructorParams   = new object[2];
@@ -171,11 +171,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             // is return type of command handler of type: Task<TResult> ?  (==  is async command handler)
             if (handler.resultTaskType != null) {
                 genericArgs[1] = handler.resultTaskType;
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandAsyncCallback<,>), genericArgs, constructorParams);
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandAsyncDelegate<,>), genericArgs, constructorParams);
             } else {
-                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandCallback<,>),      genericArgs, constructorParams);    
+                instance = TypeMapperUtils.CreateGenericInstance(typeof(CommandDelegate<,>),      genericArgs, constructorParams);    
             }
-            return (MessageCallback)instance;
+            return (MessageDelegate)instance;
         }
         
         // ------------------------------ command handler methods ------------------------------
@@ -250,22 +250,22 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // --- internal API ---
-        internal bool TryGetMessage(string name, out MessageCallback message) {
+        internal bool TryGetMessage(string name, out MessageDelegate message) {
             return messages.TryGetValue(name, out message);
         }
         
         private void AddMsgHandler<TValue>(string name, MsgHandler<TValue> handler) {
-            var command = new MessageCallback<TValue>(name, handler);
+            var command = new MessageDelegate<TValue>(name, handler);
             messages.Add(name, command);
         }
         
         private void AddCmdHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
-            var command = new CommandCallback<TValue, TResult>(name, handler);
+            var command = new CommandDelegate<TValue, TResult>(name, handler);
             messages.Add(name, command);
         }
         
         private void AddCmdHandlerAsync<TValue, TResult>(string name, CmdHandler<TValue, Task<TResult>> handler) {
-            var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
+            var command = new CommandAsyncDelegate<TValue, TResult>(name, handler);
             messages.Add(name, command);
         }
         
@@ -298,7 +298,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return count;
         }
         
-        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, MessageCallback> commandMap) {
+        private static void AddCommands (string[] commands, ref int n, bool standard, Dictionary<string, MessageDelegate> commandMap) {
             foreach (var pair in commandMap) {
                 if (pair.Value.MsgType != MsgType.Command)
                     continue;
