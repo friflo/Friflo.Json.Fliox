@@ -489,6 +489,9 @@ export class App {
     }
 
     public getTypeLabel(database: string, type: FieldType) : string {
+        if (!type) {
+            return "";
+        }
         if (type.type) {
             return type.type;
         }

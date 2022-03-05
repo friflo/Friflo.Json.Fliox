@@ -659,17 +659,22 @@ export class EntityEditor {
     getCommandDocsEl(database, command, signature) {
         if (!signature)
             return app.schemaLess;
-        const param = app.getTypeLabel(database, signature.param);
+        const param = EntityEditor.getMessageArg("param", database, signature.param);
         const result = app.getTypeLabel(database, signature.result);
-        const commandDocs = app.getSchemaCommand(database, command);
+        const commandEl = app.getSchemaCommand(database, command);
         const el = `<span title="command parameter type">
-            ${commandDocs}
-            <span style="opacity: 0.5;">(param:</span>
-            <span>${param}</span>
+            ${commandEl}
+            (${param})
         </span>
-        <span style="opacity: 0.5;">) :&nbsp;</span>
+        <span style="opacity: 0.5;">&nbsp;:&nbsp;</span>
         <span title="command result type">${result}</span>`;
         return el;
+    }
+    static getMessageArg(name, database, fieldType) {
+        if (!fieldType)
+            return "";
+        const type = app.getTypeLabel(database, fieldType);
+        return `<span style="opacity: 0.5;">${name}: </span><span>${type}</span>`;
     }
     tryFollowLink(value, column, line) {
         try {

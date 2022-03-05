@@ -18,12 +18,12 @@ export interface UserStore {
     // --- commands
     ["AuthenticateUser"]     (param: AuthenticateUser | null) : AuthenticateUserResult;
     ["std.Echo"]             (param: any) : any;
-    ["std.Containers"]       (param: any) : DbContainers;
-    ["std.Messages"]         (param: any) : DbMessages;
-    ["std.Schema"]           (param: any) : DbSchema;
+    ["std.Containers"]       () : DbContainers;
+    ["std.Messages"]         () : DbMessages;
+    ["std.Schema"]           () : DbSchema;
     ["std.Stats"]            (param: string | null) : DbStats;
-    ["std.Details"]          (param: any) : HostDetails;
-    ["std.Cluster"]          (param: any) : HostCluster;
+    ["std.Details"]          () : HostDetails;
+    ["std.Cluster"]          () : HostCluster;
 }
 
 export class AuthenticateUser {

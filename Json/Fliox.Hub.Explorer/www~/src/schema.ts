@@ -211,6 +211,9 @@ export class Schema
             schema.fileMatch.push(url); // requires a lower case string
             return;
         } */
+        if (type == null) {
+            type = { type: "null", _resolvedDef: null};
+        }
         // create a new monaco schema with an uri that is never referenced
         // - created uri is unique and descriptive
         // - created uri allows resolving relative "$ref" types
@@ -233,6 +236,9 @@ export class Schema
     }
 
     private static replaceLocalRefsClone (type: FieldType, schemaPath: string) : FieldType {
+        if (!type) {
+            return null;
+        }
         const clone = JSON.parse(JSON.stringify(type)) as FieldType;
         Schema.replaceLocalRefs(clone, schemaPath);
         return clone;

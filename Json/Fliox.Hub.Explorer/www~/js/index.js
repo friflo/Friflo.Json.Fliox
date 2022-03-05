@@ -437,6 +437,9 @@ export class App {
         return App.getType(database, def);
     }
     getTypeLabel(database, type) {
+        if (!type) {
+            return "";
+        }
         if (type.type) {
             return type.type;
         }
