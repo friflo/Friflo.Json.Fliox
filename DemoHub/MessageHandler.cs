@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="CommandHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands
+    /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands
     /// executed at the host and declared by the <see cref="DemoStore"/>.
     /// <br/>
     /// A <see cref="TaskHandler"/> instance need to be passed when instantiating an <see cref="EntityDatabase"/>. <br/>
@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.DemoHub
     /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) is added as a command handler. <br/>
     /// Their method names need to match the command methods declared in the <see cref="DemoStore"/>.
     /// </summary>
-    public class CommandHandler : TaskHandler
+    public class MessageHandler : TaskHandler
     {
-        private static readonly FakeUtils FakeUtils = new FakeUtils();
+        private static readonly Utils FakeUtils = new Utils();
         
-        internal CommandHandler() {
+        internal MessageHandler() {
             AddMessageHandlers(this, "demo.");
         }
         

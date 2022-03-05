@@ -9,11 +9,11 @@ using Friflo.Json.Fliox.Hub.Client;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// <see cref="FakeUtils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>
+    /// <see cref="Utils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>
     /// The records are generated with random data by using: <br/>
     /// [bchavez/Bogus: A simple fake data generator for C#] https://github.com/bchavez/Bogus
     /// </summary>
-    internal class FakeUtils
+    internal class Utils
     {
         private long employeeCounter = 10;
         private long producerCounter = 10;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DemoHub
         private long customerCounter = 10;
         private long orderCounter    = 10;
 
-        internal FakeUtils() {
+        internal Utils() {
             Randomizer.Seed = new Random(1337);
         }
         
