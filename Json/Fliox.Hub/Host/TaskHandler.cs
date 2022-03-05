@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
     /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
     /// <br/>
-    /// Each task is either a database operation or a custom command.
+    /// Each task is either a database operation, a command or a message.
     /// <list type="bullet">
     ///   <item>
     ///     <b>Database operations</b> are a build-in functionality of every <see cref="EntityDatabase"/>.
@@ -36,9 +36,14 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     <see cref="PatchEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
     ///   </item>
     ///   <item>
-    ///     <b>Custom commands</b> are added by an application to perform custom operations.
-    ///     Each command is a tuple of its name and its command value. See <see cref="SendCommand"/>.
-    ///     When executed by its handler method it returns a command result. See <see cref="SendCommandResult"/>. 
+    ///     An application can add <b>commands</b> to perform custom operations.
+    ///     Each command is a tuple of its name and param. See <see cref="SendCommand"/>.
+    ///     When executed by its handler method it returns a result. See <see cref="SendCommandResult"/>. 
+    ///   </item>
+    ///   <item>
+    ///     Similar to commands an application can add <b>messages</b> to send events or notifications.
+    ///     Each message is a tuple of its name and param. See <see cref="SendMessage"/>.
+    ///     In contrast to commands messages doesnt send back response results.
     ///   </item>
     /// </list>  
     /// </summary>
