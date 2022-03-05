@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Schema
                 docsSelection?.classList.remove('selected');
                 docsSelection = element;
                 element.classList.add('selected');
-                const isChapter = id == 'commands' || id == 'containers';
+                const isChapter = id == 'commands' || id == 'messages' || id == 'containers';
                 const parent    = isChapter ? element : element.parentElement;
                 const block     = element.tagName == 'H3' ? 'nearest' : 'start'; // align only namespace to top
                 parent.scrollIntoView({ behavior: 'smooth', block: block });

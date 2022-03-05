@@ -173,7 +173,7 @@ export class EntityEditor
     private createMessagesLink (database: string, type: "commands" | "messages") : HTMLLIElement {
         const commandLink       = createEl('li');
         const commandAnchor     = createEl('a');
-        commandAnchor.href      = `./rest/${database}?command=std.Commands`;
+        commandAnchor.href      = `./rest/${database}?command=std.Messages`;
         commandAnchor.target    = "blank";
         commandAnchor.rel       = "noopener noreferrer";
         commandAnchor.innerHTML = `<small style="opacity:0.5; margin-left: 10px;" title="open database ${type} in new tab">&nbsp;${type}</small>`;
