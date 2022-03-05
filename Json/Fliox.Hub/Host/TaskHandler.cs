@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
        
         /// <summary>
-        /// Add all methods of the given <paramref name="handlerClass"/> using <see cref="MessageContext"/> as a
+        /// Add all methods of the given <paramref name="instance"/> using <see cref="MessageContext"/> as a
         /// single parameter as a command handler.
         /// E.g.
         /// <code>
@@ -111,12 +111,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        /// <param name="handlerClass">the instance of class containing command handler methods.
+        /// <param name="instance">the instance of class containing command handler methods.
         ///     Commonly the instance of a <see cref="TaskHandler"/></param>
         /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" to add commands without prefix</param>
-        protected void AddMessageHandlers<TClass>(TClass handlerClass, string commandPrefix) where TClass : class
+        protected void AddMessageHandlers<TClass>(TClass instance, string commandPrefix) where TClass : class
         {
-            var type                = handlerClass.GetType();
+            var type                = instance.GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
             if (handlers == null)
                 return;
@@ -124,9 +124,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var handler in handlers) {
                 MessageCallback messageCallback;
                 if (handler.resultType == typeof(void)) {
-                    messageCallback = CreateMessageCallback(handlerClass, handler);
+                    messageCallback = CreateMessageCallback(instance, handler);
                 } else {
-                    messageCallback = CreateCommandCallback(handlerClass, handler);
+                    messageCallback = CreateCommandCallback(instance, handler);
                 }
                 var name            = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
                 messages.Add(name, messageCallback);
