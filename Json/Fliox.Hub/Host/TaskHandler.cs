@@ -102,10 +102,11 @@ namespace Friflo.Json.Fliox.Hub.Host
        
         /// <summary>
         /// Add all methods of the given <paramref name="instance"/> with the parameters <br/>
-        /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) <br/>
-        /// as a message/command handler. E.g.
+        /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) as a message/command handler. <br/>
+        /// A command handler has return type - a message handler returns void. <br/>
+        /// Command handler example:
         /// <code>
-        /// bool TestCommand(Param&lt;TestCommand&gt; param, MessageContext context)
+        /// bool TestCommand(Param&lt;TestCommand&gt; param, MessageContext context) { ... }
         /// </code>
         /// Message handler methods can be: <br/>
         /// - static or instance methods <br/>

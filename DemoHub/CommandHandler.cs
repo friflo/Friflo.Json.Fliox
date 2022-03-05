@@ -10,12 +10,11 @@ namespace Friflo.Json.Fliox.DemoHub
     /// <see cref="CommandHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands
     /// executed at the host and declared by the <see cref="DemoStore"/>.
     /// <br/>
-    /// An instance of this class need to be passed when instantiating an <see cref="EntityDatabase"/>.
+    /// A <see cref="TaskHandler"/> instance need to be passed when instantiating an <see cref="EntityDatabase"/>. <br/>
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
     /// By calling <see cref="TaskHandler.AddMessageHandlers{TClass}"/> every method with the parameters <br/>
-    /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) <br/>
-    /// is added as a command handler. <br/>
+    /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) is added as a command handler. <br/>
     /// Their method names need to match the command methods declared in the <see cref="DemoStore"/>.
     /// </summary>
     public class CommandHandler : TaskHandler
