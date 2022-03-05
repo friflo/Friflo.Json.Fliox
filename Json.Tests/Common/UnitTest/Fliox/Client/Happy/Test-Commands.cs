@@ -74,8 +74,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var message1        = store.Message1("test message1");
             var message2        = store.test.Message2("test message2");
 
-            var command1        = store.Command1("foo");
-            var command2        = store.test.Command2("foo");
+            var command1        = store.Command1();
+            var command2        = store.test.Command2();
             var commandHello    = store.test.CommandHello("hello");
             var containers      = store.std.Containers();
             var commands        = store.std.Commands();

@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// Uses to show adding all its command handlers by <see cref="TaskHandler.AddMessageHandlers{TClass}"/>
     /// </summary>
     public class TestHandlerScan {
-        private string message2;
+        private string message2 = "nothing received";
             
         private void Message2(Param<string> param, MessageContext command) {
             param.Get(out message2, out _);
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// or <see cref="TaskHandler.AddCommandHandlerAsync{TParam,TResult}"/>
     /// </summary>
     public class TestHandlerManual {
-        private string message1;
+        private string message1 = "nothing received";
         
         public static string SyncCommand(Param<string> param, MessageContext command) {
             return "hello SyncCommand";

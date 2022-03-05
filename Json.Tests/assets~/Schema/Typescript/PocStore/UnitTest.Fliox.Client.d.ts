@@ -28,8 +28,8 @@ export interface PocStore {
     ["TestCommand"]           (param: TestCommand | null) : boolean;
     ["SyncCommand"]           (param: string | null) : string;
     ["AsyncCommand"]          (param: string | null) : string;
-    ["Command1"]              (param: string | null) : string;
-    ["test.Command2"]         (param: string | null) : string;
+    ["Command1"]              (param: any) : string;
+    ["test.Command2"]         (param: any) : string;
     ["test.CommandHello"]     (param: string | null) : string;
     ["std.Echo"]              (param: any) : any;
     ["std.Containers"]        (param: any) : DbContainers;
