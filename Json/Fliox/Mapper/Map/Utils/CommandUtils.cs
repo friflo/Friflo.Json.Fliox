@@ -125,7 +125,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
     
     public readonly struct MessageInfo {
         public  readonly    string  name;
+        /// <summary>null: missing param    <br/>not null: message/command param: Type</summary>
         public  readonly    Type    paramType;
+        /// <summary>null: is message       <br/>not null: is command</summary>
         public  readonly    Type    resultType;
         public  readonly    string  docs;
 
