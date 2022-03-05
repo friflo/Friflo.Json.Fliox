@@ -3,7 +3,7 @@ import { App, app }                                     from "./index.js";
 import { Schema }                                       from "./schema.js";
 
 import { CommandType, JsonType, FieldType } from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbContainers, DbCommands }         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbContainers, DbMessages }         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 type AddRelation = (value: jsonToAst.ValueNode, container: string) => void;
 
@@ -109,7 +109,7 @@ export class EntityEditor
         this.showCommand(database, command);
     }
 
-    public listCommands (database: string, dbCommands: DbCommands, dbContainer: DbContainers) : void {
+    public listCommands (database: string, dbMessages: DbMessages, dbContainer: DbContainers) : void {
         app.explorer.initExplorer(null, null, null, null);
         this.setDatabaseInfo(database, dbContainer);
 
@@ -145,16 +145,16 @@ export class EntityEditor
         const commandLink   = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi    = this.createMessagesLi(database, dbCommands.commands, liMap);
+        const messagesLi    = this.createMessagesLi(database, dbMessages.commands, liMap);
         ulDatabase.appendChild(messagesLi);
 
-        const messages = dbCommands.messages;
+        const messages = dbMessages.messages;
         if (messages) {
             // messages link
             const commandLink   = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi    = this.createMessagesLi(database, dbCommands.messages, liMap);
+            const messagesLi    = this.createMessagesLi(database, dbMessages.messages, liMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";

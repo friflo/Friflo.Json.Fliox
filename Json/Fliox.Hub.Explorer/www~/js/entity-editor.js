@@ -85,7 +85,7 @@ export class EntityEditor {
         this.setExplorerSelection(database, command, commandEl);
         this.showCommand(database, command);
     }
-    listCommands(database, dbCommands, dbContainer) {
+    listCommands(database, dbMessages, dbContainer) {
         app.explorer.initExplorer(null, null, null, null);
         this.setDatabaseInfo(database, dbContainer);
         const schemaType = app.getSchemaType(database);
@@ -117,15 +117,15 @@ export class EntityEditor {
         const commandLink = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi = this.createMessagesLi(database, dbCommands.commands, liMap);
+        const messagesLi = this.createMessagesLi(database, dbMessages.commands, liMap);
         ulDatabase.appendChild(messagesLi);
-        const messages = dbCommands.messages;
+        const messages = dbMessages.messages;
         if (messages) {
             // messages link
             const commandLink = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi = this.createMessagesLi(database, dbCommands.messages, liMap);
+            const messagesLi = this.createMessagesLi(database, dbMessages.messages, liMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";

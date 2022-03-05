@@ -16,7 +16,7 @@
             ],
             "additionalProperties": false
         },
-        "DbCommands": {
+        "DbMessages": {
             "type": "object",
             "properties": {
                 "id":       { "type": "string" },

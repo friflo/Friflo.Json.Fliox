@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         private const bool ExposeSchemaCommands = true; // false for debugging
 
-        public DbCommands GetDbCommands() {
+        public DbMessages GetDbMessages() {
             string[] commands;
             string[] messages;
             var schema = Schema;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 commands = handler.GetCommands();
                 messages = handler.GetMessages();
             }
-            return new DbCommands { commands = commands, messages = messages };
+            return new DbMessages { commands = commands, messages = messages };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);

@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- database
             AddCommandHandler      <JsonValue,   JsonValue>    (Std.Echo,         Echo);
             AddCommandHandlerAsync <Empty,       DbContainers> (Std.Containers,   Containers);
-            AddCommandHandler      <Empty,       DbCommands>   (Std.Commands,     Commands);
+            AddCommandHandler      <Empty,       DbMessages>   (Std.Messages,     Messages);
             AddCommandHandler      <Empty,       DbSchema>     (Std.Schema,       Schema);
             AddCommandHandlerAsync <string,      DbStats>      (Std.Stats,        Stats);
             // --- host
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             // --- database
             AddCmdHandler       (Std.Echo,         new CmdHandler<JsonValue,JsonValue>          (Echo));
             AddCmdHandlerAsync  (Std.Containers,   new CmdHandler<Empty,    Task<DbContainers>> (Containers));
-            AddCmdHandler       (Std.Commands,     new CmdHandler<Empty,    DbCommands>         (Commands));
+            AddCmdHandler       (Std.Messages,     new CmdHandler<Empty,    DbMessages>         (Messages));
             AddCmdHandler       (Std.Schema,       new CmdHandler<Empty,    DbSchema>           (Schema));
             AddCmdHandlerAsync  (Std.Stats,        new CmdHandler<string,   Task<DbStats>>      (Stats));
             // --- host
@@ -174,12 +174,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // ------------------------------ command handler methods ------------------------------
-        private static JsonValue Echo (Param<JsonValue> param, MessageContext command) {
+        private static JsonValue Echo (Param<JsonValue> param, MessageContext context) {
             return param.JsonParam;
         }
         
-        private static HostDetails Details (Param<Empty> param, MessageContext command) {
-            var hub             = command.Hub;
+        private static HostDetails Details (Param<Empty> param, MessageContext context) {
+            var hub             = context.Hub;
             var info            = hub.Info;
             var details         = new HostDetails {
                 version         = hub.Version,
@@ -192,32 +192,32 @@ namespace Friflo.Json.Fliox.Hub.Host
             return details;
         }
 
-        private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext command) {
-            var database        = command.Database;  
+        private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {
+            var database        = context.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
-            dbContainers.id     = command.DatabaseName ?? EntityDatabase.MainDB;
+            dbContainers.id     = context.DatabaseName ?? EntityDatabase.MainDB;
             return dbContainers;
         }
         
-        private static DbCommands Commands (Param<Empty> param, MessageContext command) {
-            var database        = command.Database;  
-            var dbCommands      = database.GetDbCommands();
-            dbCommands.id       = command.DatabaseName ?? EntityDatabase.MainDB;
-            return dbCommands;
+        private static DbMessages Messages (Param<Empty> param, MessageContext context) {
+            var database        = context.Database;  
+            var dbMessages      = database.GetDbMessages();
+            dbMessages.id       = context.DatabaseName ?? EntityDatabase.MainDB;
+            return dbMessages;
         }
         
-        private static DbSchema Schema (Param<Empty> param, MessageContext command) {
-            command.WritePretty = false;
-            var database        = command.Database;  
-            var databaseName    = command.DatabaseName ?? EntityDatabase.MainDB;
+        private static DbSchema Schema (Param<Empty> param, MessageContext context) {
+            context.WritePretty = false;
+            var database        = context.Database;  
+            var databaseName    = context.DatabaseName ?? EntityDatabase.MainDB;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         
-        private static async Task<DbStats> Stats (Param<string> param, MessageContext command) {
-            var database        = command.Database;
+        private static async Task<DbStats> Stats (Param<string> param, MessageContext context) {
+            var database        = context.Database;
             string[] containerNames;
             if (!param.GetValidate(out var containerName, out var error))
-                return command.Error<DbStats>(error);
+                return context.Error<DbStats>(error);
 
             if (containerName == null) {
                 var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
@@ -229,7 +229,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             foreach (var name in containerNames) {
                 var container   = database.GetOrCreateContainer(name);
                 var aggregate   = new AggregateEntities { container = name, type = AggregateType.count };
-                var aggResult   = await container.AggregateEntities(aggregate, command.ExecuteContext).ConfigureAwait(false);
+                var aggResult   = await container.AggregateEntities(aggregate, context.ExecuteContext).ConfigureAwait(false);
                 
                 double count    = aggResult.value ?? 0;
                 var stats       = new ContainerStats { name = name, count = (long)count };
@@ -239,8 +239,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             return result;
         }
         
-        private static async Task<HostCluster> Cluster (Param<Empty> param, MessageContext command) {
-            var hub             = command.Hub;
+        private static async Task<HostCluster> Cluster (Param<Empty> param, MessageContext context) {
+            var hub             = context.Hub;
             return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
         }
         

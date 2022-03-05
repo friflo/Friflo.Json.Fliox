@@ -33,7 +33,7 @@
                     "description": "echos the given parameter to assure the database is working appropriately. " },
                 "std.Containers": { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
                     "description": "list all containers of the database" },
-                "std.Commands":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbCommands" },
+                "std.Messages":   { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbMessages" },
                     "description": "list all commands exposed by the database" },
                 "std.Schema":     { "param": {  }, "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema" },
                     "description": "return the JSON Schema assigned to the database" },

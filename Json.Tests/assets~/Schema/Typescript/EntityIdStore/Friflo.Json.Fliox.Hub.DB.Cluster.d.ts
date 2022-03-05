@@ -7,7 +7,7 @@ export class DbContainers {
     containers  : string[];
 }
 
-export class DbCommands {
+export class DbMessages {
     id        : string;
     commands  : string[];
     messages  : string[];

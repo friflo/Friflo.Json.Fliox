@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertCommandsSchema(PocStore store) {
             var containers      = store.std.Containers();
-            var commands        = store.std.Commands();
+            var commands        = store.std.Messages();
             var catalogSchema   = store.std.Schema();
             var dbList          = store.std.Cluster();
             await store.SyncTasks();
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var command2        = store.test.Command2();
             var commandHello    = store.test.CommandHello("hello");
             var containers      = store.std.Containers();
-            var commands        = store.std.Commands();
+            var commands        = store.std.Messages();
             var catalogSchema   = store.std.Schema();
             var dbList          = store.std.Cluster();
             

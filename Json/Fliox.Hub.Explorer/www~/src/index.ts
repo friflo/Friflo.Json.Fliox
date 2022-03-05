@@ -7,7 +7,7 @@ import { EntityEditor }                                         from "./entity-e
 import { Playground }                                           from "./playground.js";
 
 import { FieldType, JsonSchema, JsonType }                                  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbCommands, HostDetails }          from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { DbSchema, DbContainers, DbMessages, HostDetails }          from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union }    from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
@@ -340,7 +340,7 @@ export class App {
         const tasks: SyncRequestTask_Union[] = [
             { "task": "query",  "container": "containers"},
             { "task": "query",  "container": "schemas"},
-            { "task": "query",  "container": "commands"},
+            { "task": "query",  "container": "messages"},
             { "task": "command","name": "std.Details" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
@@ -353,7 +353,7 @@ export class App {
         }
         const dbContainers  = content.containers[0].entities    as DbContainers[];
         const dbSchemas     = content.containers[1].entities    as DbSchema[];
-        const dbCommands    = content.containers[2].entities    as DbCommands[];
+        const dbMessages    = content.containers[2].entities    as DbMessages[];
         const hubInfoResult = content.tasks[3]                  as SendCommandResult;
         this.hostDetails    = hubInfoResult.result              as HostDetails;
         //
@@ -384,9 +384,9 @@ export class App {
             this.selectTreeElement(databaseElement);
 
             const databaseName      = databaseElement.childNodes[1].textContent;
-            const commands          = dbCommands.find   (c => c.id == databaseName);
+            const messages          = dbMessages.find   (c => c.id == databaseName);
             const containers        = dbContainers.find (c => c.id == databaseName);
-            this.editor.listCommands(databaseName, commands, containers);
+            this.editor.listCommands(databaseName, messages, containers);
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
@@ -440,7 +440,7 @@ export class App {
         catalogExplorer.textContent = "";
         catalogExplorer.appendChild(ulCatalogs);
 
-        this.editor.listCommands(dbCommands[0].id, dbCommands[0], dbContainers[0]);
+        this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
     }
 
 

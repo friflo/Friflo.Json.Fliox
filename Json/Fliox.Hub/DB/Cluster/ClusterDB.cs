@@ -83,10 +83,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     dbContainers.id     = databaseName;
                     containers.Upsert(dbContainers);
                 }
-                if (ClusterDB.FindTask(nameof(commands), dbKey, tasks)) {
-                    var dbCommands  = database.GetDbCommands();
-                    dbCommands.id   = databaseName;
-                    commands.Upsert(dbCommands);
+                if (ClusterDB.FindTask(nameof(messages), dbKey, tasks)) {
+                    var dbMessages  = database.GetDbMessages();
+                    dbMessages.id   = databaseName;
+                    messages.Upsert(dbMessages);
                 }
                 if (ClusterDB.FindTask(nameof(schemas),dbKey, tasks)) {
                     var schema = CreateCatalogSchema(database, databaseName);

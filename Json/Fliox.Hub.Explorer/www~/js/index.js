@@ -301,7 +301,7 @@ export class App {
         const tasks = [
             { "task": "query", "container": "containers" },
             { "task": "query", "container": "schemas" },
-            { "task": "query", "container": "commands" },
+            { "task": "query", "container": "messages" },
             { "task": "command", "name": "std.Details" }
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
@@ -314,7 +314,7 @@ export class App {
         }
         const dbContainers = content.containers[0].entities;
         const dbSchemas = content.containers[1].entities;
-        const dbCommands = content.containers[2].entities;
+        const dbMessages = content.containers[2].entities;
         const hubInfoResult = content.tasks[3];
         this.hostDetails = hubInfoResult.result;
         //
@@ -345,9 +345,9 @@ export class App {
             path[1].classList.add("active");
             this.selectTreeElement(databaseElement);
             const databaseName = databaseElement.childNodes[1].textContent;
-            const commands = dbCommands.find(c => c.id == databaseName);
+            const messages = dbMessages.find(c => c.id == databaseName);
             const containers = dbContainers.find(c => c.id == databaseName);
-            this.editor.listCommands(databaseName, commands, containers);
+            this.editor.listCommands(databaseName, messages, containers);
         };
         let firstDatabase = true;
         for (const dbContainer of dbContainers) {
@@ -398,7 +398,7 @@ export class App {
         this.addSchemas(monacoSchemas);
         catalogExplorer.textContent = "";
         catalogExplorer.appendChild(ulCatalogs);
-        this.editor.listCommands(dbCommands[0].id, dbCommands[0], dbContainers[0]);
+        this.editor.listCommands(dbMessages[0].id, dbMessages[0], dbContainers[0]);
     }
     getSchemaType(database) {
         const schema = this.databaseSchemas[database];

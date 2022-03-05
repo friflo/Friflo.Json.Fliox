@@ -5,13 +5,13 @@ import { int64 } from "./Standard";
 export interface ClusterStore {
     // --- containers
     containers  : { [key: string]: DbContainers };
-    commands    : { [key: string]: DbCommands };
+    messages    : { [key: string]: DbMessages };
     schemas     : { [key: string]: DbSchema };
 
     // --- commands
     ["std.Echo"]           (param: any) : any;
     ["std.Containers"]     (param: any) : DbContainers;
-    ["std.Commands"]       (param: any) : DbCommands;
+    ["std.Messages"]       (param: any) : DbMessages;
     ["std.Schema"]         (param: any) : DbSchema;
     ["std.Stats"]          (param: string | null) : DbStats;
     ["std.Details"]        (param: any) : HostDetails;
@@ -24,7 +24,7 @@ export class DbContainers {
     containers  : string[];
 }
 
-export class DbCommands {
+export class DbMessages {
     id        : string;
     commands  : string[];
     messages  : string[];

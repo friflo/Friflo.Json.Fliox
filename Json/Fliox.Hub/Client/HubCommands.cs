@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>list all containers of the database</summary>
         public CommandTask<DbContainers>Containers()        => SendCommand<DbContainers>            (Std.Containers);
         /// <summary>list all commands exposed by the database</summary>
-        public CommandTask<DbCommands>  Commands()          => SendCommand<DbCommands>              (Std.Commands);
+        public CommandTask<DbMessages>  Messages()          => SendCommand<DbMessages>              (Std.Messages);
         /// <summary>return the JSON Schema assigned to the database</summary>
         public CommandTask<DbSchema>    Schema()            => SendCommand<DbSchema>                (Std.Schema);
         /// <summary>return the number of entities of all containers (or the given container) of the database</summary>
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- database
         public const string Echo        = "std.Echo";
         public const string Containers  = "std.Containers";
-        public const string Commands    = "std.Commands";
+        public const string Messages    = "std.Messages";
         public const string Schema      = "std.Schema";
         public const string Stats       = "std.Stats";
 
