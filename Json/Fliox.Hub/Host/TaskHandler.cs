@@ -101,19 +101,19 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
        
         /// <summary>
-        /// Add all methods of the given <paramref name="instance"/> using <see cref="MessageContext"/> as a
-        /// single parameter as a command handler.
-        /// E.g.
+        /// Add all methods of the given <paramref name="instance"/> with the parameters <br/>
+        /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) <br/>
+        /// as a message/command handler. E.g.
         /// <code>
-        /// private string TestCommand(Command&lt;int&gt; command) { ... }
+        /// bool TestCommand(Param&lt;TestCommand&gt; param, MessageContext context)
         /// </code>
-        /// Command handler methods can be: <br/>
+        /// Message handler methods can be: <br/>
         /// - static or instance methods <br/>
         /// - synchronous or asynchronous - using <see cref="Task{TResult}"/> as return type.
         /// </summary>
-        /// <param name="instance">the instance of class containing command handler methods.
+        /// <param name="instance">the instance of class containing message handler methods.
         ///     Commonly the instance of a <see cref="TaskHandler"/></param>
-        /// <param name="commandPrefix">the prefix of a command - e.g. "test."; null or "" to add commands without prefix</param>
+        /// <param name="commandPrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
         protected void AddMessageHandlers<TClass>(TClass instance, string commandPrefix) where TClass : class
         {
             var type                = instance.GetType();
