@@ -21,7 +21,7 @@
                 "type":                 { "type": ["string", "null"] },
                 "key":                  { "type": ["string", "null"] },
                 "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object" },
-                "commands":             { "additionalProperties": { "$ref": "#/definitions/CommandType" }, "type": "object" },
+                "commands":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object" },
                 "messages":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object" },
                 "isStruct":             { "type": ["boolean", "null"] },
                 "required":             { "type": ["array", "null"], "items": { "type": "string" } },
@@ -64,19 +64,11 @@
             },
             "additionalProperties": false
         },
-        "CommandType": {
-            "type": "object",
-            "properties": {
-                "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
-                "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
-                "description": { "type": ["string", "null"] }
-            },
-            "additionalProperties": false
-        },
         "MessageType": {
             "type": "object",
             "properties": {
                 "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
+                "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
                 "description": { "type": ["string", "null"] }
             },
             "additionalProperties": false

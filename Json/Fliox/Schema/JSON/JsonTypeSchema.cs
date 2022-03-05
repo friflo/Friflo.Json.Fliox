@@ -79,24 +79,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
                                 SetField(typeDef, fieldName, field, context);
                             }
                         }
-                        var messages      = type.messages;
-                        if (messages != null) {
-                            typeDef.messages = new List<MessageDef>(messages.Count);
-                            foreach (var msgPair in messages) {
-                                string      messageName = msgPair.Key;
-                                MessageType message     = msgPair.Value;
-                                SetMessage(typeDef, messageName, message, context);
-                            }
-                        }
-                        var commands      = type.commands;
-                        if (commands != null) {
-                            typeDef.commands = new List<MessageDef>(commands.Count);
-                            foreach (var msgPair in commands) {
-                                string      messageName = msgPair.Key;
-                                CommandType command     = msgPair.Value;
-                                SetCommand(typeDef, messageName, command, context);
-                            }
-                        }
+                        typeDef.commands = CreateMessages(type.commands, true,  context);
+                        typeDef.messages = CreateMessages(type.messages, false, context);
                     }
                     if (oneOf != null) {
                         var unionTypes = new List<UnionItem>(oneOf.Count);
@@ -209,21 +193,26 @@ namespace Friflo.Json.Fliox.Schema.JSON
             return context.standardTypes.JsonValue;
         }
         
-        private static void SetMessage (JsonTypeDef typeDef, string commandName, MessageType field, in JsonTypeContext context) {
-            field.name      = commandName;
-            var valueType   = GetMessageArg("param",   field.param,  context);
-            var messageDef  = new MessageDef(commandName, valueType, null, field.description);
-            typeDef.messages.Add(messageDef);
+        private static List<MessageDef> CreateMessages (Dictionary<string, MessageType> signatures, bool isCommand, in JsonTypeContext context) {
+            if (signatures == null)
+                return null;
+            var messages = new List<MessageDef>(signatures.Count);
+            foreach (var msgPair in signatures) {
+                string      messageName = msgPair.Key;
+                MessageType signature   = msgPair.Value;
+                var m = CreateMessage(messageName, signature, isCommand, context);
+                messages.Add(m);
+            }
+            return messages;
         }
-
-        private static void SetCommand (JsonTypeDef typeDef, string commandName, CommandType field, in JsonTypeContext context) {
-            field.name      = commandName;
-            var valueType   = GetMessageArg("param",   field.param,  context);
-            var resultType  = GetMessageArg("result",  field.result, context);
-            if (resultType == null)
+        
+        private static MessageDef CreateMessage (string commandName, MessageType signature, bool isCommand, in JsonTypeContext context) {
+            signature.name  = commandName;
+            var valueType   = GetMessageArg("param",   signature.param,  context);
+            var resultType  = GetMessageArg("result",  signature.result, context);
+            if (isCommand && resultType == null)
                 throw new ArgumentException($"missing result. command: {commandName}");
-            var commandDef  = new MessageDef(commandName, valueType, resultType, field.description);
-            typeDef.commands.Add(commandDef);
+            return new MessageDef(commandName, valueType, resultType, signature.description);
         }
         
         private static FieldDef GetMessageArg(string name, FieldType fieldType, in JsonTypeContext context) {

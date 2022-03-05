@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 public  string                          type; // null or SchemaType
                 public  string                          key;  // if null a property named "id" must exist
                 public  Dictionary<string, FieldType>   properties;
-                public  Dictionary<string, CommandType> commands;
+                public  Dictionary<string, MessageType> commands;
                 public  Dictionary<string, MessageType> messages;
                 public  bool?                           isStruct;
                 public  List<string>                    required;
@@ -135,19 +135,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
     {
         [Ignore]public  string          name;
                 public  FieldType       param;
-                public  string          description;
-
-        public override string          ToString() => name;
-    }
-    
-    public sealed class CommandType
-    {
-        [Ignore]public  string          name;
-                public  FieldType       param;
                 public  FieldType       result;
                 public  string          description;
 
-                public override string  ToString() => name;
+        public override string          ToString() => name;
     }
     
     internal enum SchemaType {
