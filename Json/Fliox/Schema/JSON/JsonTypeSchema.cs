@@ -220,6 +220,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
             field.name      = commandName;
             var valueType   = GetMessageArg("param",   field.param,  context);
             var resultType  = GetMessageArg("result",  field.result, context);
+            if (resultType == null)
+                throw new ArgumentException($"missing result. command: {commandName}");
             var commandDef  = new MessageDef(commandName, valueType, resultType, field.description);
             typeDef.commands.Add(commandDef);
         }

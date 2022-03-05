@@ -134,10 +134,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
     public sealed class MessageType
     {
         [Ignore]public  string          name;
-        public  FieldType       param;
-        public  string          description;
+                public  FieldType       param;
+                public  string          description;
 
-        public override string  ToString() => name;
+        public override string          ToString() => name;
     }
     
     public sealed class CommandType
