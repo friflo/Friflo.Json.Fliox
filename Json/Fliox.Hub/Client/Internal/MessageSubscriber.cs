@@ -74,9 +74,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     
     internal sealed class NonGenericMessageCallback : MessageCallback
     {
-        private  readonly   MessageHandler   handler;
+        private  readonly   MessageSubscription   handler;
         
-        internal NonGenericMessageCallback (string name, MessageHandler handler) : base(name, handler) {
+        internal NonGenericMessageCallback (string name, MessageSubscription handler) : base(name, handler) {
             this.handler = handler;
         }
         
@@ -88,9 +88,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     
     internal sealed class GenericMessageCallback<TMessage> : MessageCallback
     {
-        private  readonly   MessageHandler<TMessage>   handler;
+        private  readonly   MessageSubscription<TMessage>   handler;
         
-        internal GenericMessageCallback (string name, MessageHandler<TMessage> handler) : base(name, handler) {
+        internal GenericMessageCallback (string name, MessageSubscription<TMessage> handler) : base(name, handler) {
             this.handler = handler;
         }
         

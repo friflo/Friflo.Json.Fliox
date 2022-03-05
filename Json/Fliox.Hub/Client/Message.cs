@@ -96,6 +96,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);
-    public delegate void MessageHandler             (Message            message);
+    public delegate void MessageSubscription<TMessage>  (Message<TMessage>  message);
+    public delegate void MessageSubscription            (Message            message);
 }
