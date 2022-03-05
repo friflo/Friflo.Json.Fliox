@@ -120,7 +120,7 @@ export class EntityEditor {
         const messagesLi = this.createMessagesLi(database, dbMessages.commands, liMap);
         ulDatabase.appendChild(messagesLi);
         const messages = dbMessages.messages;
-        if (messages) {
+        if (messages && messages.length > 0) {
             // messages link
             const commandLink = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
