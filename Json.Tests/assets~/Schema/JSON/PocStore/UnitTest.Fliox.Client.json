@@ -47,6 +47,7 @@
             },
             "messages": {
                 "Message1":      { "param": { "type": ["string", "null"] } },
+                "AsyncMessage":  { "param": { "type": ["string", "null"] } },
                 "test.Message2": { "param": { "type": ["string", "null"] } }
             }
         },

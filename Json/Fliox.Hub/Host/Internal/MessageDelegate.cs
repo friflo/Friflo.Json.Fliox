@@ -33,24 +33,26 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- MessageDelegate -----------------------------------
     internal abstract class MessageDelegate
     {
-        // Note! Must not contain any state
+        // Note! Must not contain any mutable state
+        private   readonly  string              name;
         internal  abstract  MsgType             MsgType { get; }  
+        public    override  string              ToString()  => name;
         
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
         internal  abstract  Task<InvokeResult>  InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext);
+        
+        protected MessageDelegate (string name) {
+            this.name   = name;
+        }
     }
     
     // ----------------------------------- MessageDelegate<> -----------------------------------
     internal sealed class MessageDelegate<TValue> : MessageDelegate
     {
-        private  readonly   string                      name;
         private  readonly   HostMessageHandler<TValue>  handler;
-
         internal override   MsgType                     MsgType     => MsgType.Message;
-        public   override   string                      ToString()  => name;
 
-        internal MessageDelegate (string name, HostMessageHandler<TValue> handler) {
-            this.name       = name;
+        internal MessageDelegate (string name, HostMessageHandler<TValue> handler) : base(name){
             this.handler    = handler;
         }
         
@@ -67,17 +69,36 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
     }
     
+    // ----------------------------------- MessageAsyncDelegate<> -----------------------------------
+    internal sealed class MessageAsyncDelegate<TParam> : MessageDelegate
+    {
+        private  readonly   HostMessageHandlerAsync<TParam>     handler;
+        internal override   MsgType                             MsgType     => MsgType.Message;
+
+        internal MessageAsyncDelegate (string name, HostMessageHandlerAsync<TParam> handler) : base(name) {
+            this.handler    = handler;
+        }
+        
+        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
+            var cmd     = new MessageContext(messageName,  executeContext);
+            var param   = new Param<TParam> (messageValue, executeContext); 
+            await handler(param, cmd).ConfigureAwait(false);
+            
+            var error   = cmd.error;
+            if (error != null) {
+                return new InvokeResult(error);
+            }
+            return new InvokeResult((byte[])null);
+        }
+    }
+    
     // ----------------------------------- CommandDelegate<,> -----------------------------------
     internal sealed class CommandDelegate<TValue, TResult> : MessageDelegate
     {
-        private  readonly   string                              name;
         private  readonly   HostCommandHandler<TValue, TResult> handler;
-
         internal override   MsgType                             MsgType     => MsgType.Command;
-        public   override   string                              ToString()  => name;
 
-        internal CommandDelegate (string name, HostCommandHandler<TValue, TResult> handler) {
-            this.name       = name;
+        internal CommandDelegate (string name, HostCommandHandler<TValue, TResult> handler) : base(name){
             this.handler    = handler;
         }
         
@@ -103,14 +124,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- CommandAsyncDelegate<,> -----------------------------------
     internal sealed class CommandAsyncDelegate<TParam, TResult> : MessageDelegate
     {
-        private  readonly   string                                      name;
         private  readonly   HostCommandHandler<TParam, Task<TResult>>   handler;
 
         internal override   MsgType                                     MsgType     => MsgType.Command;
-        public   override   string                                      ToString()  => name;
 
-        internal CommandAsyncDelegate (string name, HostCommandHandler<TParam, Task<TResult>> handler) {
-            this.name       = name;
+        internal CommandAsyncDelegate (string name, HostCommandHandler<TParam, Task<TResult>> handler) : base(name) {
             this.handler    = handler;
         }
         

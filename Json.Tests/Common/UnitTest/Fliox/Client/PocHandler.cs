@@ -25,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AddCommandHandlerAsync  <string,string> ("AsyncCommand",    TestHandlerManual.AsyncCommand);
             AddCommandHandler       <string,string> ("Command1",        manual.Command1);
             AddMessageHandler       <string>        ("Message1",        manual.Message1);
+            AddMessageHandlerAsync  <string>        ("AsyncMessage",    manual.AsyncMessage);
         }
         
         private static bool TestCommand(Param<TestCommand> param, MessageContext command) {
@@ -76,6 +77,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public void Message1(Param<string> param, MessageContext command) {
             param.Get(out message1, out _);
+        }
+        
+        public Task AsyncMessage(Param<string> param, MessageContext command) {
+            param.Get(out _, out _);
+            return Task.CompletedTask;
         }
     }
     

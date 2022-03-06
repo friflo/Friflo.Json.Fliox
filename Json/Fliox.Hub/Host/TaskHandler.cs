@@ -21,6 +21,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public  delegate  void    HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
+    public  delegate  Task    HostMessageHandlerAsync<TParam>         (Param<TParam> param, MessageContext context);
     public  delegate  TResult HostCommandHandler<TParam, out TResult> (Param<TParam> param, MessageContext context);
 
     /// <summary>
@@ -74,6 +75,18 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         protected void AddMessageHandler<TParam> (string name, HostMessageHandler<TParam> handler) {
             var message = new MessageDelegate<TParam>(name, handler);
+            messages.Add(name, message);
+        }
+        
+        /// <summary>
+        /// Add an asynchronous message handler method with a method signature like:
+        /// <code>
+        /// Task TestMessage(Param&lt;TestCommand&gt; param, MessageContext context) { ... }
+        /// </code>
+        /// message handler methods can be static or instance methods.
+        /// </summary>
+        protected void AddMessageHandlerAsync<TParam> (string name, HostMessageHandlerAsync<TParam> handler) {
+            var message = new MessageAsyncDelegate<TParam>(name, handler);
             messages.Add(name, message);
         }
         
