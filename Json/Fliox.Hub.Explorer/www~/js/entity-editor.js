@@ -112,12 +112,12 @@ export class EntityEditor {
         databaseAnchor.innerHTML = '<span style="" title="show general database information">database info</span>';
         databaseLink.append(databaseAnchor);
         ulDatabase.append(databaseLink);
-        const liMap = {};
+        const messageMap = {};
         // commands link
         const commandLink = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi = this.createMessagesLi(database, "commands", dbMessages.commands, liMap);
+        const messagesLi = this.createMessagesLi(database, "commands", dbMessages.commands, messageMap);
         ulDatabase.appendChild(messagesLi);
         const messages = dbMessages.messages;
         if (messages && messages.length > 0) {
@@ -125,32 +125,32 @@ export class EntityEditor {
             const commandLink = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi = this.createMessagesLi(database, "messages", dbMessages.messages, liMap);
+            const messagesLi = this.createMessagesLi(database, "messages", dbMessages.messages, messageMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulDatabase);
         const selectedCommand = this.selectedCommands[database];
-        const liCommand = liMap[selectedCommand];
+        const liCommand = messageMap[selectedCommand];
         if (liCommand) {
-            this.selectCommand(database, selectedCommand, liCommand);
-            liCommand.scrollIntoView();
+            this.selectCommand(database, selectedCommand, liCommand.li);
+            liCommand.li.scrollIntoView();
         }
         else {
             this.selectDatabaseInfo(database);
         }
     }
-    createMessagesLink(database, type) {
+    createMessagesLink(database, category) {
         const commandLink = createEl('li');
         const commandAnchor = createEl('a');
         commandAnchor.href = `./rest/${database}?command=std.Messages`;
         commandAnchor.target = "blank";
         commandAnchor.rel = "noopener noreferrer";
-        commandAnchor.innerHTML = `<small style="opacity:0.5; margin-left: 10px;" title="open database ${type} in new tab">&nbsp;${type}</small>`;
+        commandAnchor.innerHTML = `<small style="opacity:0.5; margin-left: 10px;" title="open database ${category} in new tab">&nbsp;${category}</small>`;
         commandLink.append(commandAnchor);
         return commandLink;
     }
-    createMessagesLi(database, type, messages, liMap) {
+    createMessagesLi(database, category, messages, messageMap) {
         const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
             const path = ev.composedPath();
@@ -173,10 +173,10 @@ export class EntityEditor {
             liCommand.appendChild(commandLabel);
             const runCommand = createEl('div');
             runCommand.classList.value = "command";
-            runCommand.title = `Send the ${type} using POST`;
+            runCommand.title = `Send the ${category} using POST`;
             liCommand.appendChild(runCommand);
             ulCommands.append(liCommand);
-            liMap[message] = liCommand;
+            messageMap[message] = { li: liCommand, type: category == "commands" ? "command" : "message" };
         }
         const liCommands = createEl('li');
         liCommands.append(ulCommands);
@@ -659,10 +659,10 @@ export class EntityEditor {
     getCommandDocsEl(database, command, signature) {
         if (!signature)
             return app.schemaLess;
-        const type = signature.result ? "commands" : "messages";
+        const category = signature.result ? "commands" : "messages";
         const param = EntityEditor.getMessageArg("param", database, signature.param);
         const result = app.getTypeLabel(database, signature.result);
-        const commandEl = app.getSchemaCommand(database, type, command);
+        const commandEl = app.getSchemaCommand(database, category, command);
         const el = `<span title="command parameter type">
             ${commandEl}
             (${param})

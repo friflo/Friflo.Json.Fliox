@@ -1,13 +1,13 @@
 /// <reference types="../../../../node_modules/monaco-editor/monaco" />
 
-import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessagesType } from "./types.js";
+import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessageCategory } from "./types.js";
 import { Schema, MonacoSchema }                                 from "./schema.js";
 import { Explorer }                                             from "./explorer.js";
 import { EntityEditor }                                         from "./entity-editor.js";
 import { Playground }                                           from "./playground.js";
 
-import { FieldType, JsonSchema, JsonType }                                  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbSchema, DbContainers, DbMessages, HostDetails }          from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { FieldType, JsonSchema, JsonType }                      from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbSchema, DbContainers, DbMessages, HostDetails }      from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 import { SyncRequest, SyncResponse, ProtocolResponse_Union }    from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
@@ -454,11 +454,11 @@ export class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}" class="docLink">${schema.schemaName}</a>`;
     }
 
-    public getSchemaCommand(database: string, type: MessagesType, command: string) : string {
+    public getSchemaCommand(database: string, category: MessageCategory, command: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open ${type} API in new tab" href="./schema/${database}/html/schema.html#${type}" target="${database}" class="docLink">${command}</a>`;
+        return `<a title="open ${category} API in new tab" href="./schema/${database}/html/schema.html#${category}" target="${database}" class="docLink">${command}</a>`;
     }
 
     public getSchemaTypes(database: string) : string {

@@ -406,11 +406,11 @@ export class App {
             return this.schemaLess;
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}" class="docLink">${schema.schemaName}</a>`;
     }
-    getSchemaCommand(database, type, command) {
+    getSchemaCommand(database, category, command) {
         const schema = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open ${type} API in new tab" href="./schema/${database}/html/schema.html#${type}" target="${database}" class="docLink">${command}</a>`;
+        return `<a title="open ${category} API in new tab" href="./schema/${database}/html/schema.html#${category}" target="${database}" class="docLink">${command}</a>`;
     }
     getSchemaTypes(database) {
         const schema = this.databaseSchemas[database];
