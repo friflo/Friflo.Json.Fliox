@@ -488,21 +488,24 @@ export class App {
         return App.getType(database, def);
     }
 
-    public getTypeLabel(database: string, type: FieldType) : string {
-        if (!type) {
+    public getTypeLabel(database: string, fieldType: FieldType) : string {
+        if (!fieldType) {
             return "";
         }
-        if (type.type) {
-            return type.type;
+        const typeType = fieldType.type;
+        if (typeType) {
+            if (Array.isArray(typeType))
+                return typeType.join(" | ");
+            return typeType;
         }
-        const fieldType = Schema.getFieldType(type);
-        const def       = fieldType.type._resolvedDef;
+        const type = Schema.getFieldType(fieldType);
+        const def       = type.type._resolvedDef;
         if (def) {            
             const typeStr = App.getType(database, def);
-            const nullStr = fieldType.isNullable ? " | null" : "";
+            const nullStr = type.isNullable ? " | null" : "";
             return `${typeStr}${nullStr}`;
         }
-        let result = JSON.stringify(type);
+        let result = JSON.stringify(fieldType);
         return result = result == "{}" ? "any" : result;
     }
 
