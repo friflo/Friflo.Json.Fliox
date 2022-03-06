@@ -36,14 +36,14 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     <see cref="PatchEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
     ///   </item>
     ///   <item>
-    ///     An application can add <b>commands</b> to perform custom operations.
+    ///     An application can add <b>command</b> handlers to perform custom operations.
     ///     Each command is a tuple of its name and param. See <see cref="SendCommand"/>.
-    ///     When executed by its handler method it returns a result. See <see cref="SendCommandResult"/>. 
+    ///     When executed by its handler it returns a result. See <see cref="SendCommandResult"/>. 
     ///   </item>
     ///   <item>
-    ///     Similar to commands an application can add <b>messages</b> to send events or notifications.
+    ///     Similar to commands an application can add <b>message</b> handlers to process events or notifications.
     ///     Each message is a tuple of its name and param. See <see cref="SendMessage"/>.
-    ///     In contrast to commands messages doesnt return response results.
+    ///     In contrast to commands messages doesnt return results.
     ///   </item>
     /// </list>  
     /// </summary>
