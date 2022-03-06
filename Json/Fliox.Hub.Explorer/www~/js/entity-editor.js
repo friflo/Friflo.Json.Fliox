@@ -53,9 +53,11 @@ export class EntityEditor {
     }
     async sendCommand() {
         const param = this.commandValueEditor.getValue();
-        const database = this.entityIdentity.database;
-        const command = this.entityIdentity.command;
-        const response = await App.restRequest("POST", param, database, null, null, `command=${command}`);
+        const e = this.entityIdentity;
+        const database = e.database;
+        const command = e.command;
+        const type = e.msgType;
+        const response = await App.restRequest("POST", param, database, null, null, `${type}=${command}`);
         let content = await response.text();
         content = app.formatJson(app.config.formatResponses, content);
         this.entityEditor.setValue(content);
@@ -307,7 +309,8 @@ export class EntityEditor {
             database: database,
             container: container,
             entityIds: [],
-            command: null
+            command: null,
+            msgType: null
         };
         entityType.innerHTML = app.getEntityType(database, container);
         writeResult.innerHTML = "";
@@ -614,6 +617,7 @@ export class EntityEditor {
             container: null,
             entityIds: null,
             command: command,
+            msgType: type
         };
         this.setCommandParam(database, command, defaultParam); // sets command param => must be called before getCommandUrl()
         this.setCommandResult(database, command);
