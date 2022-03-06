@@ -76,3 +76,5 @@ export const getColorBasedOnBackground = (color: string) : any => {
         return "#000000";
     return "#ffffff";
 };
+
+export type MessagesType = "commands" | "messages";

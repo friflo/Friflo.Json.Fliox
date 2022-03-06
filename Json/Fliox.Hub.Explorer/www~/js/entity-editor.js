@@ -117,7 +117,7 @@ export class EntityEditor {
         const commandLink = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi = this.createMessagesLi(database, dbMessages.commands, liMap);
+        const messagesLi = this.createMessagesLi(database, "commands", dbMessages.commands, liMap);
         ulDatabase.appendChild(messagesLi);
         const messages = dbMessages.messages;
         if (messages && messages.length > 0) {
@@ -125,7 +125,7 @@ export class EntityEditor {
             const commandLink = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi = this.createMessagesLi(database, dbMessages.messages, liMap);
+            const messagesLi = this.createMessagesLi(database, "messages", dbMessages.messages, liMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";
@@ -150,7 +150,7 @@ export class EntityEditor {
         commandLink.append(commandAnchor);
         return commandLink;
     }
-    createMessagesLi(database, messages, liMap) {
+    createMessagesLi(database, type, messages, liMap) {
         const ulCommands = createEl('ul');
         ulCommands.onclick = (ev) => {
             const path = ev.composedPath();
@@ -173,7 +173,7 @@ export class EntityEditor {
             liCommand.appendChild(commandLabel);
             const runCommand = createEl('div');
             runCommand.classList.value = "command";
-            runCommand.title = "Send the command using POST";
+            runCommand.title = `Send the ${type} using POST`;
             liCommand.appendChild(runCommand);
             ulCommands.append(liCommand);
             liMap[message] = liCommand;
@@ -659,9 +659,10 @@ export class EntityEditor {
     getCommandDocsEl(database, command, signature) {
         if (!signature)
             return app.schemaLess;
+        const type = signature.result ? "commands" : "messages";
         const param = EntityEditor.getMessageArg("param", database, signature.param);
         const result = app.getTypeLabel(database, signature.result);
-        const commandEl = app.getSchemaCommand(database, command);
+        const commandEl = app.getSchemaCommand(database, type, command);
         const el = `<span title="command parameter type">
             ${commandEl}
             (${param})

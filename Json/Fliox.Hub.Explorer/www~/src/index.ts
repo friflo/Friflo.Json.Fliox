@@ -1,6 +1,6 @@
 /// <reference types="../../../../node_modules/monaco-editor/monaco" />
 
-import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground } from "./types.js";
+import { el, createEl, Resource, Method, ConfigKey, Config, defaultConfig, getColorBasedOnBackground, MessagesType } from "./types.js";
 import { Schema, MonacoSchema }                                 from "./schema.js";
 import { Explorer }                                             from "./explorer.js";
 import { EntityEditor }                                         from "./entity-editor.js";
@@ -454,11 +454,11 @@ export class App {
         return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}" class="docLink">${schema.schemaName}</a>`;
     }
 
-    public getSchemaCommand(database: string, command: string) : string {
+    public getSchemaCommand(database: string, type: MessagesType, command: string) : string {
         const schema        = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open commands API in new tab" href="./schema/${database}/html/schema.html#commands" target="${database}" class="docLink">${command}</a>`;
+        return `<a title="open ${type} API in new tab" href="./schema/${database}/html/schema.html#${type}" target="${database}" class="docLink">${command}</a>`;
     }
 
     public getSchemaTypes(database: string) : string {
