@@ -158,7 +158,7 @@ export class EntityEditor
         const commandLink   = this.createMessagesLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
-        const messagesLi    = this.createMessagesLi(database, "commands", dbMessages.commands, messageMap);
+        const messagesLi    = this.createMessagesLi(database, "command", dbMessages.commands, messageMap);
         ulDatabase.appendChild(messagesLi);
 
         const messages = dbMessages.messages;
@@ -167,7 +167,7 @@ export class EntityEditor
             const commandLink   = this.createMessagesLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
-            const messagesLi    = this.createMessagesLi(database, "messages", dbMessages.messages, messageMap);
+            const messagesLi    = this.createMessagesLi(database, "message", dbMessages.messages, messageMap);
             ulDatabase.appendChild(messagesLi);
         }
         entityExplorer.innerText = "";
@@ -194,7 +194,7 @@ export class EntityEditor
         return commandLink;
     }
 
-    private createMessagesLi(database: string, category: MessageCategory, messages: string[], messageMap: MessageMap) : HTMLLIElement {
+    private createMessagesLi(database: string, type: MsgType, messages: string[], messageMap: MessageMap) : HTMLLIElement {
         const ulCommands    = createEl('ul');
         ulCommands.onclick  = (ev) => {
             const path      = ev.composedPath() as HTMLElement[];
@@ -220,11 +220,11 @@ export class EntityEditor
             liCommand.appendChild(commandLabel);
             const runCommand            = createEl('div');
             runCommand.classList.value  = "command";
-            runCommand.title            = `Send the ${category} using POST`;
+            runCommand.title            = `Send ${type} using POST`;
             liCommand.appendChild(runCommand);
 
             ulCommands.append(liCommand);
-            messageMap[message] = { li: liCommand, type: category == "commands" ? "command" : "message" };
+            messageMap[message] = { li: liCommand, type: type };
         }
         const liCommands  = createEl('li');
         liCommands.append(ulCommands);
