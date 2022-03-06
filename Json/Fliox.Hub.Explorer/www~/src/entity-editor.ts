@@ -671,7 +671,7 @@ export class EntityEditor
     }
 
     private setCommandParam (database: string, command: string, value: string) {
-        const url           = `command-param://${database}.${command}.json`;
+        const url           = `message-param://${database}.${command}.json`;
         const isNewModel    = this.entityModels[url] == undefined;
         const model         = this.getModel(url);
         if (isNewModel) {
@@ -681,7 +681,7 @@ export class EntityEditor
     }
 
     private setCommandResult (database: string, command: string) {
-        const url   = `command-result://${database}.${command}.json`;
+        const url   = `message-result://${database}.${command}.json`;
         const model = this.getModel(url);
         this.entityEditor.setModel (model);
     }
@@ -709,7 +709,8 @@ export class EntityEditor
         this.setExplorerEditor("command");
 
         const schema        = app.databaseSchemas[database]?._rootSchema;
-        const signature     = schema ? schema.commands[command] : null;
+        const messages      = type == "command" ? schema?.commands : schema?.messages;
+        const signature     = messages ? messages[command] : null;
         const defaultParam  = EntityEditor.getDefaultValue(signature?.param);
 
         this.entityIdentity = {
@@ -768,17 +769,23 @@ export class EntityEditor
         if (!signature)
             return app.schemaLess;
         const category: MessageCategory = signature.result ? "commands" : "messages";
-        const param     = EntityEditor.getMessageArg("param", database, signature.param);
-        const result    = app.getTypeLabel(database, signature.result);
-        const commandEl = app.getSchemaCommand(database, category, command);        
+        const param         = EntityEditor.getMessageArg("param", database, signature.param);
+        const returnHtml    = EntityEditor.getReturnType(database, signature.result);
+        const commandEl     = app.getSchemaCommand(database, category, command);        
         const el =
         `<span title="command parameter type">
             ${commandEl}
             (${param})
         </span>
-        <span style="opacity: 0.5;">&nbsp;:&nbsp;</span>
-        <span title="command result type">${result}</span>`;
+        ${returnHtml}`;
         return el;
+    }
+
+    private static getReturnType(database: string, returnType: FieldType) : string {
+        if (!returnType)
+            return "&nbsp;: void";
+        const resultType = app.getTypeLabel(database, returnType);
+        return `<span style="opacity: 0.5;">&nbsp;:&nbsp;</span><span title="command result type">${resultType}</span>`;
     }
 
     private static getMessageArg(name: string, database: string, fieldType: FieldType) : string {

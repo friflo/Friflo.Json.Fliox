@@ -580,7 +580,7 @@ export class EntityEditor {
         return new monaco.Range(start.line, start.column + trim, end.line, end.column - trim);
     }
     setCommandParam(database, command, value) {
-        const url = `command-param://${database}.${command}.json`;
+        const url = `message-param://${database}.${command}.json`;
         const isNewModel = this.entityModels[url] == undefined;
         const model = this.getModel(url);
         if (isNewModel) {
@@ -589,7 +589,7 @@ export class EntityEditor {
         this.commandValueEditor.setModel(model);
     }
     setCommandResult(database, command) {
-        const url = `command-result://${database}.${command}.json`;
+        const url = `message-result://${database}.${command}.json`;
         const model = this.getModel(url);
         this.entityEditor.setModel(model);
     }
@@ -610,7 +610,8 @@ export class EntityEditor {
         var _a;
         this.setExplorerEditor("command");
         const schema = (_a = app.databaseSchemas[database]) === null || _a === void 0 ? void 0 : _a._rootSchema;
-        const signature = schema ? schema.commands[command] : null;
+        const messages = type == "command" ? schema === null || schema === void 0 ? void 0 : schema.commands : schema === null || schema === void 0 ? void 0 : schema.messages;
+        const signature = messages ? messages[command] : null;
         const defaultParam = EntityEditor.getDefaultValue(signature === null || signature === void 0 ? void 0 : signature.param);
         this.entityIdentity = {
             database: database,
@@ -666,15 +667,20 @@ export class EntityEditor {
             return app.schemaLess;
         const category = signature.result ? "commands" : "messages";
         const param = EntityEditor.getMessageArg("param", database, signature.param);
-        const result = app.getTypeLabel(database, signature.result);
+        const returnHtml = EntityEditor.getReturnType(database, signature.result);
         const commandEl = app.getSchemaCommand(database, category, command);
         const el = `<span title="command parameter type">
             ${commandEl}
             (${param})
         </span>
-        <span style="opacity: 0.5;">&nbsp;:&nbsp;</span>
-        <span title="command result type">${result}</span>`;
+        ${returnHtml}`;
         return el;
+    }
+    static getReturnType(database, returnType) {
+        if (!returnType)
+            return "&nbsp;: void";
+        const resultType = app.getTypeLabel(database, returnType);
+        return `<span style="opacity: 0.5;">&nbsp;:&nbsp;</span><span title="command result type">${resultType}</span>`;
     }
     static getMessageArg(name, database, fieldType) {
         if (!fieldType)

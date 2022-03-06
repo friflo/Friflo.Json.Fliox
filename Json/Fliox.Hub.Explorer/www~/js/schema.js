@@ -131,16 +131,23 @@ export class Schema {
             const url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
             schema.fileMatch.push(url); // requires a lower case string
         }
-        const commandType = jsonSchema.definitions[schemaName];
-        const commands = commandType.commands;
+        const commands = dbType.commands;
         for (const commandName in commands) {
             const command = commands[commandName];
             // assign file matcher for command param
             const paramType = Schema.replaceLocalRefsClone(command.param, schemaPath);
-            Schema.addCommandArgument("command-param", database, commandName, paramType, schemaMap);
+            Schema.addCommandArgument("message-param", database, commandName, paramType, schemaMap);
             // assign file matcher for command result
             const resultType = Schema.replaceLocalRefsClone(command.result, schemaPath);
-            Schema.addCommandArgument("command-result", database, commandName, resultType, schemaMap);
+            Schema.addCommandArgument("message-result", database, commandName, resultType, schemaMap);
+        }
+        const messages = dbType.messages;
+        for (const messageName in messages) {
+            const message = messages[messageName];
+            // assign file matcher for command param
+            const paramType = Schema.replaceLocalRefsClone(message.param, schemaPath);
+            Schema.addCommandArgument("message-param", database, messageName, paramType, schemaMap);
+            // note: messages have no result -> no return type
         }
     }
     // a command argument is either the command param or command result
