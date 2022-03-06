@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// - the <see cref="Hub"/> exposing general Hub information <br/>
     /// - a <see cref="Pool"/> mainly providing common utilities to transform JSON <br/>
     /// </summary>
-    /// <remarks>For consistency the API to access the command param is same a <see cref="IClientMessage"/></remarks>
+    /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
     public class MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
         public              IPool           Pool            => executeContext.pool;
