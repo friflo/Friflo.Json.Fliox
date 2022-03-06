@@ -20,8 +20,8 @@ using Friflo.Json.Fliox.Mapper.Map;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    internal  delegate  void    MsgHandler<TParam>              (Param<TParam> param, MessageContext message);
-    internal  delegate  TResult CmdHandler<TParam, out TResult> (Param<TParam> param, MessageContext command);
+    public  delegate  void    HostMessageHandler<TParam>              (Param<TParam> param, MessageContext context);
+    public  delegate  TResult HostCommandHandler<TParam, out TResult> (Param<TParam> param, MessageContext context);
 
     /// <summary>
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
@@ -65,22 +65,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandlerAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
         }
         
-        //  ReSharper disable once UnusedMember.Local
-        /// keep implementation to show how to add command handler using new <see cref="CmdHandler{TParam,TResult}"/>
-        private void AddUsingCommandHandler() {
-            // --- database
-            AddCmdHandler       (Std.Echo,         new CmdHandler<JsonValue,JsonValue>          (Echo));
-            AddCmdHandlerAsync  (Std.Containers,   new CmdHandler<Empty,    Task<DbContainers>> (Containers));
-            AddCmdHandler       (Std.Messages,     new CmdHandler<Empty,    DbMessages>         (Messages));
-            AddCmdHandler       (Std.Schema,       new CmdHandler<Empty,    DbSchema>           (Schema));
-            AddCmdHandlerAsync  (Std.Stats,        new CmdHandler<string,   Task<DbStats>>      (Stats));
-            // --- host
-            AddCmdHandler       (Std.HostDetails,  new CmdHandler<Empty,    HostDetails>        (Details));
-            AddCmdHandlerAsync  (Std.HostCluster,  new CmdHandler<Empty,    Task<HostCluster>>  (Cluster));
-        }
-        
-        protected void AddMessageHandler<TParam> (string name, Action<Param<TParam>, MessageContext> method) {
-            AddMsgHandler (name, new MsgHandler<TParam> (method));
+        protected void AddMessageHandler<TParam> (string name, HostMessageHandler<TParam> handler) {
+            var command = new MessageDelegate<TParam>(name, handler);
+            messages.Add(name, command);
         }
         
         /// <summary>
@@ -90,10 +77,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandHandler<TParam, TResult> (string name, Func<Param<TParam>, MessageContext, TResult> method) {
-            AddCmdHandler (name, new CmdHandler<TParam, TResult> (method));
+        protected void AddCommandHandler<TParam, TResult> (string name, HostCommandHandler<TParam, TResult> handler) {
+            var command = new CommandDelegate<TParam, TResult>(name, handler);
+            messages.Add(name, command);
         }
-        
+
         /// <summary>
         /// Add an asynchronous command handler method with a method signature like:
         /// <code>
@@ -101,8 +89,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
-        protected void AddCommandHandlerAsync<TParam, TResult> (string name, Func<Param<TParam>, MessageContext, Task<TResult>> method) {
-            AddCmdHandlerAsync (name, new CmdHandler<TParam, Task<TResult>> (method));
+        protected void AddCommandHandlerAsync<TParam, TResult> (string name, HostCommandHandler<TParam, Task<TResult>> handler) {
+            var command = new CommandAsyncDelegate<TParam, TResult>(name, handler);
+            messages.Add(name, command);
         }
        
         /// <summary>
@@ -144,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var constructorParams   = new object[2];
             // if (handler.name == "DbContainers") { int i = 1; }
             genericArgs[0]          = handler.valueType;
-            var genericTypeArgs     = typeof(MsgHandler<>).MakeGenericType(genericArgs);
+            var genericTypeArgs     = typeof(HostMessageHandler<>).MakeGenericType(genericArgs);
             var firstArgument       = handler.method.IsStatic ? null : handlerClass;
             var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
@@ -161,7 +150,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             // if (handler.name == "DbContainers") { int i = 1; }
             genericArgs[0]          = handler.valueType;
             genericArgs[1]          = handler.resultType;
-            var genericTypeArgs     = typeof(CmdHandler<,>).MakeGenericType(genericArgs);
+            var genericTypeArgs     = typeof(HostCommandHandler<,>).MakeGenericType(genericArgs);
             var firstArgument       = handler.method.IsStatic ? null : handlerClass;
             var handlerDelegate     = Delegate.CreateDelegate(genericTypeArgs, firstArgument, handler.method);
 
@@ -252,21 +241,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --- internal API ---
         internal bool TryGetMessage(string name, out MessageDelegate message) {
             return messages.TryGetValue(name, out message);
-        }
-        
-        private void AddMsgHandler<TValue>(string name, MsgHandler<TValue> handler) {
-            var command = new MessageDelegate<TValue>(name, handler);
-            messages.Add(name, command);
-        }
-        
-        private void AddCmdHandler<TValue, TResult>(string name, CmdHandler<TValue, TResult> handler) {
-            var command = new CommandDelegate<TValue, TResult>(name, handler);
-            messages.Add(name, command);
-        }
-        
-        private void AddCmdHandlerAsync<TValue, TResult>(string name, CmdHandler<TValue, Task<TResult>> handler) {
-            var command = new CommandAsyncDelegate<TValue, TResult>(name, handler);
-            messages.Add(name, command);
         }
         
         internal string[] GetMessages() {

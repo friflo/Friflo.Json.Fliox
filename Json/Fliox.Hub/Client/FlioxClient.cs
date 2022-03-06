@@ -287,7 +287,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --- SubscribeMessage
-        public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscription<TMessage> handler) {
+        public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscriptionProcessor();
             var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
@@ -295,7 +295,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscription handler) {
+        public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscriptionProcessor();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
@@ -304,13 +304,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- UnsubscribeMessage
-        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscription<TMessage> handler) {
+        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }
         
-        public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscription handler) {
+        public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;

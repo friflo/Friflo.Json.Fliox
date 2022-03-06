@@ -43,13 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- MessageDelegate<> -----------------------------------
     internal sealed class MessageDelegate<TValue> : MessageDelegate
     {
-        private  readonly   string                  name;
-        private  readonly   MsgHandler<TValue>      handler;
+        private  readonly   string                      name;
+        private  readonly   HostMessageHandler<TValue>  handler;
 
-        internal override   MsgType                 MsgType     => MsgType.Message;
-        public   override   string                  ToString()  => name;
+        internal override   MsgType                     MsgType     => MsgType.Message;
+        public   override   string                      ToString()  => name;
 
-        internal MessageDelegate (string name, MsgHandler<TValue> handler) {
+        internal MessageDelegate (string name, HostMessageHandler<TValue> handler) {
             this.name       = name;
             this.handler    = handler;
         }
@@ -70,13 +70,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- CommandDelegate<,> -----------------------------------
     internal sealed class CommandDelegate<TValue, TResult> : MessageDelegate
     {
-        private  readonly   string                      name;
-        private  readonly   CmdHandler<TValue, TResult> handler;
+        private  readonly   string                              name;
+        private  readonly   HostCommandHandler<TValue, TResult> handler;
 
-        internal override   MsgType                     MsgType     => MsgType.Command;
-        public   override   string                      ToString()  => name;
+        internal override   MsgType                             MsgType     => MsgType.Command;
+        public   override   string                              ToString()  => name;
 
-        internal CommandDelegate (string name, CmdHandler<TValue, TResult> handler) {
+        internal CommandDelegate (string name, HostCommandHandler<TValue, TResult> handler) {
             this.name       = name;
             this.handler    = handler;
         }
@@ -103,13 +103,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     // ----------------------------------- CommandAsyncDelegate<,> -----------------------------------
     internal sealed class CommandAsyncDelegate<TParam, TResult> : MessageDelegate
     {
-        private  readonly   string                              name;
-        private  readonly   CmdHandler<TParam, Task<TResult>>   handler;
+        private  readonly   string                                      name;
+        private  readonly   HostCommandHandler<TParam, Task<TResult>>   handler;
 
-        internal override   MsgType                             MsgType     => MsgType.Command;
-        public   override   string                              ToString()  => name;
+        internal override   MsgType                                     MsgType     => MsgType.Command;
+        public   override   string                                      ToString()  => name;
 
-        internal CommandAsyncDelegate (string name, CmdHandler<TParam, Task<TResult>> handler) {
+        internal CommandAsyncDelegate (string name, HostCommandHandler<TParam, Task<TResult>> handler) {
             this.name       = name;
             this.handler    = handler;
         }

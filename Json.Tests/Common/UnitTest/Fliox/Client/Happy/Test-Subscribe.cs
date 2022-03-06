@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return processor;
         }
         
-        private static readonly MessageSubscription<int> RemovedHandler = (msg) => {
+        private static readonly MessageSubscriptionHandler<int> RemovedHandler = (msg) => {
             Fail("unexpected call");
         };
     }
