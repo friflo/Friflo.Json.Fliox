@@ -221,7 +221,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Set a <see cref="SubscriptionHandler"/> which is called for all events received by the store.
+        /// Set a <see cref="SubscriptionHandler"/> which is called for all events received by the client.
         /// These events fall in two categories:
         /// <para>
         ///   1. change events.
@@ -229,8 +229,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         ///      <see cref="EntitySet{TKey,T}.SubscribeChanges"/> and its sibling methods.
         /// </para>
         /// <para>
-        ///   2. message events.
-        ///      To receive message events use <see cref="SubscribeMessage"/> or sibling methods.
+        ///   2. message/command events.
+        ///      To receive message/command events use <see cref="SubscribeMessage"/> or sibling methods.
         /// </para>
         /// </summary>
         public void SetSubscriptionHandler(SubscriptionHandler handler) {
