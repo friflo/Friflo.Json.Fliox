@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <item>
     ///     Similar to commands an application can add <b>message</b> handlers to process events or notifications.
     ///     Each message is a tuple of its name and param. See <see cref="SendMessage"/>.
-    ///     In contrast to commands messages doesnt return results.
+    ///     In contrast to commands message handlers return void (nothing).
     ///   </item>
     /// </list>  
     /// </summary>
