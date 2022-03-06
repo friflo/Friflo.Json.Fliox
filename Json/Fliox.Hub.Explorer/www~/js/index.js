@@ -94,49 +94,60 @@ export class App {
             this.applyCtrlKey(event);
     }
     onKeyDown(event) {
-        const editor = this.editor;
         if (event.code == "ControlLeft")
             this.applyCtrlKey(event);
         switch (this.config.activeTab) {
             case "playground":
-                if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
-                    this.playground.sendSyncRequest();
-                    event.preventDefault();
-                }
-                if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                    this.playground.postSyncRequest();
-                    event.preventDefault();
-                }
-                if (event.code == 'KeyS' && event.ctrlKey) {
-                    // event.preventDefault(); // avoid accidentally opening "Save As" dialog
-                }
+                this.onKeyDownPlayground(event);
                 break;
             case "explorer":
-                switch (event.code) {
-                    case 'KeyS':
-                        if (event.ctrlKey)
-                            this.execute(event, () => editor.saveEntitiesAction());
-                        break;
-                    case 'KeyP':
-                        if (event.ctrlKey && event.altKey)
-                            this.execute(event, () => editor.sendCommand());
-                        break;
-                    case 'ArrowLeft':
-                        if (event.altKey)
-                            this.execute(event, () => editor.navigateEntity(editor.entityHistoryPos - 1));
-                        break;
-                    case 'ArrowRight':
-                        if (event.altKey)
-                            this.execute(event, () => editor.navigateEntity(editor.entityHistoryPos + 1));
-                        break;
-                    case 'Digit1':
-                        if (!event.altKey)
-                            break;
-                        this.switchTab();
-                        break;
-                }
+                this.onKeyDownExplorer(event);
+                break;
         }
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
+    }
+    onKeyDownPlayground(event) {
+        if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
+            this.playground.sendSyncRequest();
+            event.preventDefault();
+        }
+        if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+            this.playground.postSyncRequest();
+            event.preventDefault();
+        }
+        if (event.code == 'KeyS' && event.ctrlKey) {
+            // event.preventDefault(); // avoid accidentally opening "Save As" dialog
+        }
+    }
+    onKeyDownExplorer(event) {
+        const editor = this.editor;
+        switch (event.code) {
+            case 'KeyS':
+                if (!event.ctrlKey)
+                    return;
+                switch (editor.activeExplorerEditor) {
+                    case "command":
+                        this.execute(event, () => editor.sendCommand());
+                        return;
+                    case "entity":
+                        this.execute(event, () => editor.saveEntitiesAction());
+                        return;
+                }
+                break;
+            case 'ArrowLeft':
+                if (event.altKey)
+                    this.execute(event, () => editor.navigateEntity(editor.entityHistoryPos - 1));
+                break;
+            case 'ArrowRight':
+                if (event.altKey)
+                    this.execute(event, () => editor.navigateEntity(editor.entityHistoryPos + 1));
+                break;
+            case 'Digit1':
+                if (!event.altKey)
+                    break;
+                this.switchTab();
+                break;
+        }
     }
     switchTab() {
         if (document.activeElement == entityExplorer)
