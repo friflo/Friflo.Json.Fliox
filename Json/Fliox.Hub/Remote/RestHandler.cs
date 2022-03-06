@@ -553,7 +553,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("message error", resultError.message, 500);
                 return;
             }
-            context.WriteString("received", "text/plain");
+            context.WriteString("\"received\"", "application/json");
         }
 
 
