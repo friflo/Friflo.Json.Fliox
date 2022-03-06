@@ -43,9 +43,12 @@ const commandValueContainer  = el("commandValueContainer");
 const commandParamBar        = el("commandParamBar");
 const entityContainer        = el("entityContainer");
 
+
+type MsgType = "command" | "message";
+
 interface Message {
     li:     HTMLLIElement,
-    type:   "command" | "message"
+    type:   MsgType;
 }
 
 type MessageMap = {
@@ -111,10 +114,10 @@ export class EntityEditor
         this.setEditorHeader("database");
     }
 
-    private selectCommand(database: string, command: string, commandEl: HTMLElement) {
+    private selectCommand(database: string, command: string, message: Message) {
         this.setEditorHeader("command");
-        this.setExplorerSelection(database, command, commandEl);
-        this.showCommand(database, command);
+        this.setExplorerSelection(database, command, message.li);
+        this.showCommand(database, command, message.type);
     }
 
     public listCommands (database: string, dbMessages: DbMessages, dbContainer: DbContainers) : void {
@@ -169,10 +172,10 @@ export class EntityEditor
         entityExplorer.appendChild(ulDatabase);
         
         const selectedCommand   = this.selectedCommands[database];
-        const liCommand         = messageMap[selectedCommand];
-        if (liCommand) {
-            this.selectCommand(database, selectedCommand, liCommand.li);
-            liCommand.li.scrollIntoView();
+        const message           = messageMap[selectedCommand];
+        if (message) {
+            this.selectCommand(database, selectedCommand, message);
+            message.li.scrollIntoView();
         } else {
             this.selectDatabaseInfo(database);
         }        
@@ -201,7 +204,8 @@ export class EntityEditor
                 selectedElement = path[1];
             }
             const commandName = selectedElement.children[0].textContent;
-            this.selectCommand(database, commandName, selectedElement);
+            const message       = messageMap[commandName];
+            this.selectCommand(database, commandName, message);
 
             if (path[0].classList.contains("command")) {
                 this.sendCommand();
@@ -696,7 +700,7 @@ export class EntityEditor
         app.layoutEditors();
     }
 
-    private showCommand(database: string, command: string)
+    private showCommand(database: string, command: string, type: MsgType)
     {
         this.setExplorerEditor("command");
 
@@ -716,9 +720,9 @@ export class EntityEditor
         commandSignature.innerHTML  = this.getCommandDocsEl(database, command, signature);
     //  commandAnchor.innerHTML     = `GET <span style="opacity:0.5">${database}?command=</span>${command}`;
         commandAnchor.innerHTML     = command; // `GET &nbsp;&nbsp;${command}`;
-        commandAnchor.href          = this.getCommandUrl(database, command);
+        commandAnchor.href          = this.getCommandUrl(database, command, type);
         commandAnchor.onfocus       = () => {            
-            commandAnchor.href = this.getCommandUrl(database, command);
+            commandAnchor.href = this.getCommandUrl(database, command, type);
         };
         const docs                  = signature?.description;
         commandDocs.innerText       = docs ? docs : "";
@@ -743,7 +747,7 @@ export class EntityEditor
         }
     }
 
-    private getCommandUrl(database: string, command: string) {
+    private getCommandUrl(database: string, command: string, type: MsgType) {
         let param = this.commandValueEditor.getValue();
         try {
             const valueStr  = JSON.parse(param);
@@ -752,7 +756,7 @@ export class EntityEditor
             // use unformatted invalid value instead
         }
         const commandParam  = param == "null" ? "" : `&param=${param}`;
-        return `./rest/${database}?command=${command}${commandParam}`;
+        return `./rest/${database}?${type}=${command}${commandParam}`;
     }
 
     private getCommandDocsEl(database: string, command: string, signature: MessageType) {

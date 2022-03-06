@@ -80,10 +80,10 @@ export class EntityEditor {
         this.setExplorerSelection(database, null, infoEl);
         this.setEditorHeader("database");
     }
-    selectCommand(database, command, commandEl) {
+    selectCommand(database, command, message) {
         this.setEditorHeader("command");
-        this.setExplorerSelection(database, command, commandEl);
-        this.showCommand(database, command);
+        this.setExplorerSelection(database, command, message.li);
+        this.showCommand(database, command, message.type);
     }
     listCommands(database, dbMessages, dbContainer) {
         app.explorer.initExplorer(null, null, null, null);
@@ -131,10 +131,10 @@ export class EntityEditor {
         entityExplorer.innerText = "";
         entityExplorer.appendChild(ulDatabase);
         const selectedCommand = this.selectedCommands[database];
-        const liCommand = messageMap[selectedCommand];
-        if (liCommand) {
-            this.selectCommand(database, selectedCommand, liCommand.li);
-            liCommand.li.scrollIntoView();
+        const message = messageMap[selectedCommand];
+        if (message) {
+            this.selectCommand(database, selectedCommand, message);
+            message.li.scrollIntoView();
         }
         else {
             this.selectDatabaseInfo(database);
@@ -161,7 +161,8 @@ export class EntityEditor {
                 selectedElement = path[1];
             }
             const commandName = selectedElement.children[0].textContent;
-            this.selectCommand(database, commandName, selectedElement);
+            const message = messageMap[commandName];
+            this.selectCommand(database, commandName, message);
             if (path[0].classList.contains("command")) {
                 this.sendCommand();
             }
@@ -602,7 +603,7 @@ export class EntityEditor {
         //
         app.layoutEditors();
     }
-    showCommand(database, command) {
+    showCommand(database, command, type) {
         var _a;
         this.setExplorerEditor("command");
         const schema = (_a = app.databaseSchemas[database]) === null || _a === void 0 ? void 0 : _a._rootSchema;
@@ -619,9 +620,9 @@ export class EntityEditor {
         commandSignature.innerHTML = this.getCommandDocsEl(database, command, signature);
         //  commandAnchor.innerHTML     = `GET <span style="opacity:0.5">${database}?command=</span>${command}`;
         commandAnchor.innerHTML = command; // `GET &nbsp;&nbsp;${command}`;
-        commandAnchor.href = this.getCommandUrl(database, command);
+        commandAnchor.href = this.getCommandUrl(database, command, type);
         commandAnchor.onfocus = () => {
-            commandAnchor.href = this.getCommandUrl(database, command);
+            commandAnchor.href = this.getCommandUrl(database, command, type);
         };
         const docs = signature === null || signature === void 0 ? void 0 : signature.description;
         commandDocs.innerText = docs ? docs : "";
@@ -644,7 +645,7 @@ export class EntityEditor {
             default: return 'null';
         }
     }
-    getCommandUrl(database, command) {
+    getCommandUrl(database, command, type) {
         let param = this.commandValueEditor.getValue();
         try {
             const valueStr = JSON.parse(param);
@@ -654,7 +655,7 @@ export class EntityEditor {
             // use unformatted invalid value instead
         }
         const commandParam = param == "null" ? "" : `&param=${param}`;
-        return `./rest/${database}?command=${command}${commandParam}`;
+        return `./rest/${database}?${type}=${command}${commandParam}`;
     }
     getCommandDocsEl(database, command, signature) {
         if (!signature)
