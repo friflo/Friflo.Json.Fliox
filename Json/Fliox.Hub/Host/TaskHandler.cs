@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <item>
     ///     An application can add <b>command</b> handlers to perform custom operations.
     ///     Each command is a tuple of its name and param. See <see cref="SendCommand"/>.
-    ///     When executed by its handler it returns a result. See <see cref="SendCommandResult"/>. 
+    ///     Its command handler must return a result. See <see cref="SendCommandResult"/>. 
     ///   </item>
     ///   <item>
     ///     Similar to commands an application can add <b>message</b> handlers to process events or notifications.
