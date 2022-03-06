@@ -73,8 +73,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// message handler methods can be static or instance methods.
         /// </summary>
         protected void AddMessageHandler<TParam> (string name, HostMessageHandler<TParam> handler) {
-            var command = new MessageDelegate<TParam>(name, handler);
-            messages.Add(name, command);
+            var message = new MessageDelegate<TParam>(name, handler);
+            messages.Add(name, message);
         }
         
         /// <summary>
