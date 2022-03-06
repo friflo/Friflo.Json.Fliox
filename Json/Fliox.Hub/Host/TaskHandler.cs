@@ -65,6 +65,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandlerAsync <Empty,       HostCluster>  (Std.HostCluster,  Cluster);
         }
         
+        /// <summary>
+        /// Add a synchronous message handler method with a method signature like:
+        /// <code>
+        /// void TestMessage(Param&lt;string&gt; param, MessageContext context) { ... }
+        /// </code>
+        /// message handler methods can be static or instance methods.
+        /// </summary>
         protected void AddMessageHandler<TParam> (string name, HostMessageHandler<TParam> handler) {
             var command = new MessageDelegate<TParam>(name, handler);
             messages.Add(name, command);
@@ -73,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Add a synchronous command handler method with a method signature like:
         /// <code>
-        /// private static string TestCommand(Command&lt;int&gt; command) { ... }
+        /// bool TestCommand(Param&lt;TestCommand&gt; param, MessageContext context) { ... }
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
@@ -85,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>
         /// Add an asynchronous command handler method with a method signature like:
         /// <code>
-        /// private static Task&lt;string&gt; TestCommand(Command&lt;int&gt; command) { ... }
+        /// Task&lt;bool&gt; TestCommand(Param&lt;TestCommand&gt; param, MessageContext context) { ... }
         /// </code>
         /// command handler methods can be static or instance methods.
         /// </summary>
