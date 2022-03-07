@@ -129,13 +129,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     case "paramref":
                     case "typeparamref":
                         return GetAttributeText(xElement);
-                    case "para":
-                    case "list":
-                    case "item":
-                        var sb = new StringBuilder();
-                        value = GetElementText(sb, xElement);
-                        return $"<{name}>{value}</{name}>";
-                    case "br":      return "\n";
+                    case "para":    return GetContainerText(xElement, "p");
+                    case "list":    return GetContainerText(xElement, "ul");
+                    case "item":    return GetContainerText(xElement, "li");
+                    
+                    case "br":      return "<br/>";
                     case "b":       return $"<b>{value}</b>";
                     case "i":       return $"<i>{value}</i>";
                     case "c":       return $"<c>{value}</c>";
@@ -145,6 +143,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 }
             }
             return "";
+        }
+        
+        private static string GetContainerText (XElement xElement, string tag) {
+            var sb = new StringBuilder();
+            var value = GetElementText(sb, xElement);
+            return $"<{tag}>{value}</{tag}>";
         }
         
         private static string GetAttributeText (XElement xElement) {

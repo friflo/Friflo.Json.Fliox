@@ -258,7 +258,7 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "properties": {
                 "task":   { "enum": ["subscribeMessage"] },
-                "name":   { "type": "string", "description": "Filter all <b>name</b>'s starting with one of the given <b>name</b> strings.\n              <para><b>name</b> = {''} => subscribe all message events.</para><para><b>name</b> = {} => unsubscribe message events.</para>" },
+                "name":   { "type": "string", "description": "Filter all <b>name</b>'s starting with one of the given <b>name</b> strings.\n              <p><b>name</b> = {''} => subscribe all message events.</p><p><b>name</b> = {} => unsubscribe message events.</p>" },
                 "remove": { "type": ["boolean", "null"] },
                 "info":   {  }
             },

@@ -9,11 +9,11 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
-    /// The <see cref="DemoStore"/> schema has two functionalities: <br/>
-    /// 1. Defines a database schema by declaring its containers and commands <br/>
-    /// 2. Is a database client providing type safe access to its containers and commands
+    /// The <see cref="DemoStore"/> has two functionalities: <br/>
+    /// 1. Defines a database <b>schema</b> by declaring its containers and commands <br/>
+    /// 2. Is a database <b>client</b> providing type safe access to its containers and commands <br/>
     /// <br/>
-    /// <i>Info</i>: the command <b>demo.FakeRecords</b> can be used to create fake records in various containers.
+    /// <i>Info</i>: the command <b>demo.FakeRecords</b> is used to create fake records in various containers.
     /// </summary>
     /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>

@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     ///   <item> <see cref="ProtocolEvent"/>    send by hosts / received by clients</item>
     /// </list>
     /// The list of these types is returned by <see cref="Types"/> 
-    /// <br></br>
-    /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
+    /// <br/>
+    /// <i>Note</i>: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
     /// <br></br>
     /// General principle of the application communication of <see cref="Fliox"/>
@@ -32,9 +32,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     ///     All messages like requests (their tasks), responses (their results) and events are stateless.
     ///     In other words: All messages are self-contained and doesnt (and must not) rely and previous sent messages.
     ///     The technical aspect of having a connection e.g. HTTP or WebSocket is not relevant.
-    ///     This enables two fundamental features:
-    ///     1. embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC or datagram based protocols.
-    ///     2. multiplexing of messages from different clients, servers or peers in a shared connection.
+    ///     This enables two fundamental features:<br/>
+    ///     1. embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC or datagram based protocols.<br/>
+    ///     2. multiplexing of messages from different clients, servers or peers in a shared connection.<br/>
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
     ///     This principle also enables using a single <see cref="FlioxHub"/> by multiple clients like
     ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.

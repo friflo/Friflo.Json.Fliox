@@ -7,7 +7,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json#/definitions/ProtocolRequest" },
             "properties": {
                 "msg":      { "enum": ["sync"] },
-                "req":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for <b>RemoteClientHub</b> to enable:\n            <para>\n              1. Out of order response handling for their corresponding requests.\n            </para><para>\n              2. Multiplexing of requests and their responses for multiple clients e.g. <b>FlioxClient</b>\n                 using the same connection.\n                 This is not a common scenario but it enables using a single <b>WebSocketClientHub</b>\n                 used by multiple clients.\n            </para>\n            The host itself only echos the <b>reqId</b> to <b>reqId</b> and doesn't do\n            anythings else with it." },
+                "req":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for <b>RemoteClientHub</b> to enable:\n            <p>\n              1. Out of order response handling for their corresponding requests.\n            </p><p>\n              2. Multiplexing of requests and their responses for multiple clients e.g. <b>FlioxClient</b>\n                 using the same connection.\n                 This is not a common scenario but it enables using a single <b>WebSocketClientHub</b>\n                 used by multiple clients.\n            </p>\n            The host itself only echos the <b>reqId</b> to <b>reqId</b> and doesn't do\n            anythings else with it." },
                 "clt":      { "type": ["string", "null"] },
                 "user":     { "type": ["string", "null"], "description": "Identify the user performing a sync request.\n            In case using of using <b>UserAuthenticator</b> the <b>userId</b> and <b>token</b>\n            are use for user authentication." },
                 "token":    { "type": ["string", "null"] },
@@ -100,7 +100,7 @@
                 "seq":   { "$ref": "./Standard.json#/definitions/int32" },
                 "src":   { "type": "string" },
                 "clt":   { "type": "string" },
-                "tasks": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:\n            <list><item><b>CreateEntities</b></item><item><b>UpsertEntities</b></item><item><b>DeleteEntities</b></item><item><b>PatchEntities</b></item><item><b>SendCommand</b></item></list>" }
+                "tasks": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:\n            <ul><li><b>CreateEntities</b></li><li><b>UpsertEntities</b></li><li><b>DeleteEntities</b></li><li><b>PatchEntities</b></li><li><b>SendCommand</b></li></ul>" }
             },
             "required": [
                 "msg",
