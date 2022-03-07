@@ -731,7 +731,7 @@ export class EntityEditor
             commandAnchor.href = this.getCommandUrl(database, command, type);
         };
         const docs                  = signature?.description;
-        commandDocs.innerText       = docs ? docs : "";
+        commandDocs.innerHTML       = docs ? docs : "";
     }
 
     private static getDefaultValue(fieldType: FieldType) : string {

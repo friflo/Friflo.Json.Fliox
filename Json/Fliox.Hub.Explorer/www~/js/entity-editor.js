@@ -630,7 +630,7 @@ export class EntityEditor {
             commandAnchor.href = this.getCommandUrl(database, command, type);
         };
         const docs = signature === null || signature === void 0 ? void 0 : signature.description;
-        commandDocs.innerText = docs ? docs : "";
+        commandDocs.innerHTML = docs ? docs : "";
     }
     static getDefaultValue(fieldType) {
         if (!fieldType)
