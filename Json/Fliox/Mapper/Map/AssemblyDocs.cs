@@ -163,7 +163,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     return $"<b>{typeName}</b>";                            
                 }
                 if (attributeName == "href") {
-                    return attribute.Value;
+                    var link = attribute.Value;
+                    return $"<a href='{link}'>{link}</a>";
                 }
             }
             return "";
