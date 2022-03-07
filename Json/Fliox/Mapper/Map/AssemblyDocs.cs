@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private static string GetElementText(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
             // var nodes = element.DescendantsAndSelf();
-            // if (element.Value.Contains("Order")) { int i = 42; }
+            // if (element.Value.Contains("Check some new lines")) { int i = 42; }
             foreach (var node in nodes) {
                 if (node.Parent != element)
                     continue;
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         private static string GetNodeText (XNode node) {
             if (node is XText xtext) {
-                return xtext.Value;
+                return TrimLines(xtext);
             }
             if (node is XElement xElement) {
                 var name    = xElement.Name.LocalName;
@@ -168,6 +168,27 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 }
             }
             return "";
+        }
+        
+        /// <summary>Trim leading tabs and spaces. Normalize new lines</summary>
+        private static string TrimLines (XText node) {
+            string value    = node.Value;
+            value           = value.Replace("\r\n", "\n");
+            var lines       = value.Split("\n");
+            if (lines.Length == 1)
+                return value;
+            var sb      = new StringBuilder();
+            bool first  = true;
+            foreach (var line in lines) {
+                if (first) {
+                    first = false;
+                    sb.Append(line);
+                    continue;
+                }
+                sb.Append('\n');
+                sb.Append(line.TrimStart());
+            }
+            return sb.ToString();
         }
     }
 }

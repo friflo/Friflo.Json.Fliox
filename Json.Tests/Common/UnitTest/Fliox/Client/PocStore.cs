@@ -57,10 +57,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
 
     // ------------------------------ models ------------------------------
-    /// <summary> Some useful docs about an Order :). Test type reference '<see cref="OrderItem"/>' </summary>
+    /// <summary>
+    /// Some useful class documentation :)
+    /// Test type reference '<see cref="OrderItem"/>' </summary>
     public class Order {
         [Req]   public  string                  id { get; set; }
-                /// <summary> Some <b>useful</b> member documentation 🙂 </summary>
+                /// <summary>
+                /// Some <b>useful</b> field documentation 🙂
+                /// Check some new lines
+                /// in documentation
+                /// </summary>
                 public  Ref<string, Customer>   customer;
                 public  DateTime                created;
                 public  List<OrderItem>         items = new List<OrderItem>();

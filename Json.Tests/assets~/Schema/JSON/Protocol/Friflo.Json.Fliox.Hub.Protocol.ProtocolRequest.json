@@ -10,7 +10,7 @@
             ],
             "properties": {
                 "msg": { "enum": ["sync"] },
-                "req": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for <b>RemoteClientHub</b> to enable:\n            <p>\n              1. Out of order response handling for their corresponding requests.\n            </p><p>\n              2. Multiplexing of requests and their responses for multiple clients e.g. <b>FlioxClient</b>\n                 using the same connection.\n                 This is not a common scenario but it enables using a single <b>WebSocketClientHub</b>\n                 used by multiple clients.\n            </p>\n            The host itself only echos the <b>reqId</b> to <b>reqId</b> and doesn't do\n            anythings else with it." },
+                "req": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for <b>RemoteClientHub</b> to enable:\n<p>\n1. Out of order response handling for their corresponding requests.\n</p><p>\n2. Multiplexing of requests and their responses for multiple clients e.g. <b>FlioxClient</b>\nusing the same connection.\nThis is not a common scenario but it enables using a single <b>WebSocketClientHub</b>\nused by multiple clients.\n</p>\nThe host itself only echos the <b>reqId</b> to <b>reqId</b> and doesn't do\nanythings else with it." },
                 "clt": { "type": ["string", "null"] }
             },
             "required": [
