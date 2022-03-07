@@ -100,7 +100,7 @@
                 "seq":   { "$ref": "./Standard.json#/definitions/int32" },
                 "src":   { "type": "string" },
                 "clt":   { "type": "string" },
-                "tasks": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:\n            <ul><li><b>CreateEntities</b></li><li><b>UpsertEntities</b></li><li><b>DeleteEntities</b></li><li><b>PatchEntities</b></li><li><b>SendCommand</b></li></ul>" }
+                "tasks": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:\n            <ul><li><b>CreateEntities</b></li><li><b>UpsertEntities</b></li><li><b>DeleteEntities</b></li><li><b>PatchEntities</b></li><li><b>SendMessage</b></li><li><b>SendCommand</b></li></ul>" }
             },
             "required": [
                 "msg",

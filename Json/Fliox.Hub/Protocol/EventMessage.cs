@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         ///   <item><see cref="UpsertEntities"/></item>
         ///   <item><see cref="DeleteEntities"/></item>
         ///   <item><see cref="PatchEntities"/></item>
+        ///   <item><see cref="SendMessage"/></item>
         ///   <item><see cref="SendCommand"/></item>
         /// </list>
         /// </summary>
