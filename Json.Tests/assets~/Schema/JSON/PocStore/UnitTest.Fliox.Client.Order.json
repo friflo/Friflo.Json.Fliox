@@ -5,10 +5,10 @@
     "definitions": {
         "Order": {
             "type": "object",
-            "description": "Some useful docs about an Order :). Test type reference 'OrderItem'",
+            "description": "Some useful docs about an Order :). Test type reference '<b>OrderItem</b>'",
             "properties": {
                 "id":       { "type": "string" },
-                "customer": { "type": ["string", "null"], "relation": "customers", "description": "Some useful member documentation 🙂" },
+                "customer": { "type": ["string", "null"], "relation": "customers", "description": "Some <b>useful</b> member documentation 🙂" },
                 "created":  { "$ref": "./Standard.json#/definitions/DateTime" },
                 "items":    { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/OrderItem" } }
             },

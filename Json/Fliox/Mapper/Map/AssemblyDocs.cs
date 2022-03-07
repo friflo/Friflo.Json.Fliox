@@ -106,6 +106,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
             // var nodes = element.DescendantsAndSelf();
             // if (element.Value.Contains("Order")) { int i = 42; }
             foreach (var node in nodes) {
+                if (node.Parent != element)
+                    continue;
                 var nodeText = GetNodeText(node);
                 sb.Append(nodeText);
             }
@@ -119,33 +121,45 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 return xtext.Value;
             }
             if (node is XElement xElement) {
-                var name = xElement.Name.LocalName;
+                var name    = xElement.Name.LocalName;
+                var value   = xElement.Value;
                 switch (name) {
                     case "see":
                     case "seealso":
                     case "paramref":
                     case "typeparamref":
-                        var attributes = xElement.Attributes();
-                        foreach (var attribute in attributes) {
-                            var attributeName = attribute.Name;
-                            if (attributeName == "cref" || attributeName == "name") {
-                                var value       = attribute.Value;
-                                var lastIndex   = value.LastIndexOf('.');
-                                var typeName    = lastIndex == -1 ? value : value.Substring(lastIndex + 1);
-                                return typeName;                            
-                            }
-                        }
-                        return "";
+                        return GetAttributeText(xElement);
+                    case "para":
+                    case "list":
+                    case "item":
+                        var sb = new StringBuilder();
+                        value = GetElementText(sb, xElement);
+                        return $"<{name}>{value}</{name}>";
                     case "br":      return "\n";
-                    case "para":    return "";
-                    case "list":    return "";
-                    case "item":    return "\n";
-                    case "b":       return "";
-                    case "i":       return "";
-                    case "c":       return "";
-                    case "code":    return "";
+                    case "b":       return $"<b>{value}</b>";
+                    case "i":       return $"<i>{value}</i>";
+                    case "c":       return $"<c>{value}</c>";
+                    case "code":    return $"<code>{value}</code";
                     case "returns": return "";
-                    default:        return "";
+                    default:        return value;
+                }
+            }
+            return "";
+        }
+        
+        private static string GetAttributeText (XElement xElement) {
+            var attributes = xElement.Attributes();
+            // if (xElement.Value.Contains("TypeValidator")) { int i = 111; }
+            foreach (var attribute in attributes) {
+                var attributeName = attribute.Name;
+                if (attributeName == "cref" || attributeName == "name") {
+                    var value       = attribute.Value;
+                    var lastIndex   = value.LastIndexOf('.');
+                    var typeName    = lastIndex == -1 ? value : value.Substring(lastIndex + 1);
+                    return $"<b>{typeName}</b>";                            
+                }
+                if (attributeName == "href") {
+                    return attribute.Value;
                 }
             }
             return "";
