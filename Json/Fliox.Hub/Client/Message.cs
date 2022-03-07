@@ -7,6 +7,9 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message);
+    public delegate void MessageSubscriptionHandler            (Message            message);
+
     /// <summary>
     /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> of a received message.
     /// The method <see cref="GetParam{TParam}"/> provide type safe access to the <see cref="JsonParam"/> of a message. 
@@ -95,7 +98,4 @@ namespace Friflo.Json.Fliox.Hub.Client
             return false;
         }
     }
-    
-    public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message);
-    public delegate void MessageSubscriptionHandler            (Message            message);
 }
