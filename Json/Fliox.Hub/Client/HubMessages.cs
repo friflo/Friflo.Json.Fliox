@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Command methods can be added directly to a <see cref="FlioxClient"/> sub class.
     /// When adding many commands it can cause confusion between <see cref="FlioxClient"/> own methods and the command methods.
     /// <br/>
-    /// The intention is to use a sub class of <see cref="HubCommands"/> as a field in a class extending <see cref="FlioxClient"/>.
+    /// The intention is to use a sub class of <see cref="HubMessages"/> as a field in a class extending <see cref="FlioxClient"/>.
     /// This establish differentiation between <see cref="FlioxClient"/> own methods and commands added
     /// to a <see cref="FlioxClient"/> sub class.
     /// <code>
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///         }
     ///     }
     ///
-    ///     public class MyCommands : HubCommands
+    ///     public class MyCommands : HubMessages
     ///     {
     ///         public MyCommands(FlioxClient client) : base(client) { }
     ///    
@@ -34,11 +34,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///     } 
     /// </code>
     /// </summary>
-    public class HubCommands
+    public class HubMessages
     {
         private readonly    FlioxClient client;
         
-        protected HubCommands (FlioxClient client) {
+        protected HubMessages (FlioxClient client) {
             this.client = client;
         }
         
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// Contains standard database commands. Its commands are prefixed with <b>std.*</b>
     /// </summary>
-    public class StdCommands : HubCommands
+    public class StdCommands : HubMessages
     {
         protected internal StdCommands(FlioxClient client) : base(client) { }
         

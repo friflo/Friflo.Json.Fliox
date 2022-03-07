@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
     {
         private static readonly Dictionary<Type, HubMessageInfo[]> HubMessageInfoCache = new Dictionary<Type, HubMessageInfo[]>();
         
-        private const string HubCommandsType = "Friflo.Json.Fliox.Hub.Client.HubCommands";
+        private const string HubCommandsType = "Friflo.Json.Fliox.Hub.Client.HubMessages";
 
         internal static HubMessageInfo[] GetHubMessageInfos(Type type) {
             if (HubMessageInfoCache.TryGetValue(type, out  HubMessageInfo[] result)) {

@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         }
     }
     
-    public class MyCommands : HubCommands
+    public class MyCommands : HubMessages
     {
         public MyCommands(FlioxClient client) : base(client) { }
         

@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     // ------------------------------ command params / results ------------------------------
-    public class TestCommands : HubCommands
+    public class TestCommands : HubMessages
     {
         public TestCommands(FlioxClient client) : base(client) { }
         
