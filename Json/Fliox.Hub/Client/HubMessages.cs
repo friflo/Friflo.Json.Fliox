@@ -8,13 +8,13 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Used to group commands by a single class. <br/>
+    /// Used to group message/command methods by a single class. <br/>
     /// <br/>
-    /// Command methods can be added directly to a <see cref="FlioxClient"/> sub class.
-    /// When adding many commands it can cause confusion between <see cref="FlioxClient"/> own methods and the command methods.
+    /// Message/command methods can be added directly to a <see cref="FlioxClient"/> sub class.
+    /// When adding many methods it can cause confusion between <see cref="FlioxClient"/> own methods and the message/command methods.
     /// <br/>
     /// The intention is to use a sub class of <see cref="HubMessages"/> as a field in a class extending <see cref="FlioxClient"/>.
-    /// This establish differentiation between <see cref="FlioxClient"/> own methods and commands added
+    /// This establish differentiation between <see cref="FlioxClient"/> own methods and message/command methods added
     /// to a <see cref="FlioxClient"/> sub class.
     /// <code>
     ///     public class MyStore : FlioxClient
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // --- commands: database
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>
-        public CommandTask<TParam>      Echo<TParam> (TParam param) => SendCommand<TParam,TParam>   (Std.Echo,       param);
+        public CommandTask<TParam>      Echo<TParam> (TParam param) => SendCommand<TParam,TParam>   (Std.Echo, param);
         /// <summary>list all containers of the database</summary>
         public CommandTask<DbContainers>Containers()        => SendCommand<DbContainers>            (Std.Containers);
         /// <summary>list all commands exposed by the database</summary>
