@@ -67,7 +67,7 @@ export class EntityEditor {
         el("databaseSchema").innerHTML = app.getSchemaType(database);
         el("databaseTypes").innerHTML = app.getSchemaTypes(database);
         el("databaseStorage").innerHTML = dbContainer.storage;
-        el("schemaDescription").innerText = app.getSchemaDescription(database);
+        el("schemaDescription").innerHTML = app.getSchemaDescription(database);
     }
     setExplorerSelection(database, command, element) {
         var _a;
