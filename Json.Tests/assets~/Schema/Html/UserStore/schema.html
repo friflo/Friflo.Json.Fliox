@@ -77,7 +77,8 @@
         .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
         .toggleTheme{ margin: 5px 20px;         height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg2); border-radius: 2px; cursor: pointer;  }
 
-        type        { color: var(--type) }
+        type        { white-space: nowrap; }
+        predef      { color: var(--type); }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
         chapter     { font-size: 13px; font-weight: normal; display: block; margin-left: 30px; margin-top: 10px; }
         chapter a:link,
@@ -127,6 +128,7 @@
         div.type table                      { margin-left: 40px; }
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
         .commands tr                        { vertical-align: top; }
+        .fields tr                          { vertical-align: top; }
     </style>
     <script>
         // ----------------- theme dark / light
@@ -318,15 +320,15 @@
             
     </desc>
     <chapter id='containers'><a href='#containers'>containers</a></chapter>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>credentials</field></td> <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></td>
+            <td><field>credentials</field></td> <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></type></td>
         </tr>
         <tr>
-            <td><field>permissions</field></td> <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a></td>
+            <td><field>permissions</field></td> <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a></type></td>
         </tr>
         <tr>
-            <td><field>roles</field></td>       <td><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></td>
+            <td><field>roles</field></td>       <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></type></td>
         </tr>
     </table>
     <chapter id='commands'><a href='#commands'>commands</a></chapter>
@@ -335,7 +337,7 @@
             <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a></sig></td>
         </tr>
         <tr>
-            <td><cmd>std.Echo</cmd></td>        <td><sig>(<keyword>param</keyword>: <type>any</type>) : <type>any</type></sig></td>
+            <td><cmd>std.Echo</cmd></td>        <td><sig>(<keyword>param</keyword>: <predef>any</predef>) : <predef>any</predef></sig></td>
             <td><docs>echos the given parameter to assure the database is working appropriately. </docs></td>
         </tr>
         <tr>
@@ -351,7 +353,7 @@
             <td><docs>return the JSON Schema assigned to the database</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <type>string</type> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
+            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
             <td><docs>return the number of entities of all containers (or the given container) of the database</docs></td>
         </tr>
         <tr>
@@ -369,12 +371,12 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><key>id</key></td>    <td><type>string</type></td>
+            <td><key>id</key></td>    <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>token</field></td> <td><type>string</type> | null</td>
+            <td><field>token</field></td> <td><type><predef>string</predef> | null</type></td>
         </tr>
     </table>
     </div>
@@ -383,12 +385,12 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><key>id</key></td>    <td><type>string</type></td>
+            <td><key>id</key></td>    <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><ref>roles</ref></td> <td><type>string</type>[] | null<rel></rel><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></td>
+            <td><ref>roles</ref></td> <td><type><predef>string</predef>[] | null<rel></rel><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></type></td>
         </tr>
     </table>
     </div>
@@ -397,15 +399,15 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><key>id</key></td>          <td><type>string</type></td>
+            <td><key>id</key></td>          <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>rights</field></td>      <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>[]</td>
+            <td><field>rights</field></td>      <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>[]</type></td>
         </tr>
         <tr>
-            <td><field>description</field></td> <td><type>string</type> | null</td>
+            <td><field>description</field></td> <td><type><predef>string</predef> | null</type></td>
         </tr>
     </table>
     </div>
@@ -414,12 +416,12 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUser'>AuthenticateUser</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>userId</field></td> <td><type>string</type></td>
+            <td><field>userId</field></td> <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>token</field></td>  <td><type>string</type></td>
+            <td><field>token</field></td>  <td><type><predef>string</predef></type></td>
         </tr>
     </table>
     </div>
@@ -428,9 +430,9 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthenticateUserResult'>AuthenticateUserResult</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>isValid</field></td> <td><type>boolean</type></td>
+            <td><field>isValid</field></td> <td><type><predef>boolean</predef></type></td>
         </tr>
     </table>
     </div>
@@ -445,15 +447,15 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><key>id</key></td>         <td><type>string</type></td>
+            <td><key>id</key></td>         <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>storage</field></td>    <td><type>string</type></td>
+            <td><field>storage</field></td>    <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>containers</field></td> <td><type>string</type>[]</td>
+            <td><field>containers</field></td> <td><type><predef>string</predef>[]</type></td>
         </tr>
     </table>
     </div>
@@ -462,15 +464,15 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><key>id</key></td>       <td><type>string</type></td>
+            <td><key>id</key></td>       <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>commands</field></td> <td><type>string</type>[]</td>
+            <td><field>commands</field></td> <td><type><predef>string</predef>[]</type></td>
         </tr>
         <tr>
-            <td><field>messages</field></td> <td><type>string</type>[]</td>
+            <td><field>messages</field></td> <td><type><predef>string</predef>[]</type></td>
         </tr>
     </table>
     </div>
@@ -479,18 +481,18 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><key>id</key></td>          <td><type>string</type></td>
+            <td><key>id</key></td>          <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>schemaName</field></td>  <td><type>string</type></td>
+            <td><field>schemaName</field></td>  <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>schemaPath</field></td>  <td><type>string</type></td>
+            <td><field>schemaPath</field></td>  <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>jsonSchemas</field></td> <td>key ➞ <type>any</type></td>
+            <td><field>jsonSchemas</field></td> <td><type>key ➞ <predef>any</predef></type></td>
         </tr>
     </table>
     </div>
@@ -499,9 +501,9 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>containers</field></td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>[] | null</td>
+            <td><field>containers</field></td> <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>[] | null</type></td>
         </tr>
     </table>
     </div>
@@ -510,12 +512,12 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>name</field></td>  <td><type>string</type></td>
+            <td><field>name</field></td>  <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>count</field></td> <td><a href='#Standard.int64'>int64</a></td>
+            <td><field>count</field></td> <td><type><a href='#Standard.int64'>int64</a></type></td>
         </tr>
     </table>
     </div>
@@ -524,24 +526,29 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'>HostDetails</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>version</field></td>        <td><type>string</type></td>
+            <td><field>version</field></td>        <td><type><predef>string</predef></type></td>
         </tr>
         <tr>
-            <td><field>hostName</field></td>       <td><type>string</type> | null</td>
+            <td><field>hostName</field></td>       <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>projectName</field></td>    <td><type>string</type> | null</td>
+            <td><field>projectName</field></td>    <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>projectWebsite</field></td> <td><type>string</type> | null</td>
+            <td><field>projectWebsite</field></td> <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>envName</field></td>        <td><type>string</type> | null</td>
+            <td><field>envName</field></td>        <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>envColor</field></td>       <td><type>string</type> | null</td>
+            <td><field>envColor</field></td>       <td><type><predef>string</predef> | null</type></td>
+            <td><docs>
+            the color used to display the environment name in GUI's using CSS color format.
+
+            E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
+            </docs></td>
         </tr>
     </table>
     </div>
@@ -550,9 +557,9 @@
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>databases</field></td> <td><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</td>
+            <td><field>databases</field></td> <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</type></td>
         </tr>
     </table>
     </div>
@@ -567,7 +574,7 @@
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>
         <keyword>abstract class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><br><discUnion>type</discUnion></td>
             <td><table>
@@ -599,7 +606,7 @@
             </table></td>
         </tr>
         <tr>
-            <td><field>description</field></td> <td><type>string</type> | null</td>
+            <td><field>description</field></td> <td><type><predef>string</predef> | null</type></td>
         </tr>
     </table>
     </div>
@@ -609,12 +616,12 @@
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"allow"</discriminant></td>
         </tr>
         <tr>
-            <td><field>database</field></td>    <td><type>string</type> | null</td>
+            <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
         </tr>
     </table>
     </div>
@@ -624,15 +631,15 @@
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"task"</discriminant></td>
         </tr>
         <tr>
-            <td><field>database</field></td>    <td><type>string</type> | null</td>
+            <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>types</field></td>       <td><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a>[]</td>
+            <td><field>types</field></td>       <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a>[]</type></td>
         </tr>
     </table>
     </div>
@@ -642,15 +649,15 @@
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"message"</discriminant></td>
         </tr>
         <tr>
-            <td><field>database</field></td>    <td><type>string</type> | null</td>
+            <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>names</field></td>       <td><type>string</type>[]</td>
+            <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>
         </tr>
     </table>
     </div>
@@ -660,15 +667,15 @@
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"subscribeMessage"</discriminant></td>
         </tr>
         <tr>
-            <td><field>database</field></td>    <td><type>string</type> | null</td>
+            <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>names</field></td>       <td><type>string</type>[]</td>
+            <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>
         </tr>
     </table>
     </div>
@@ -678,15 +685,15 @@
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"operation"</discriminant></td>
         </tr>
         <tr>
-            <td><field>database</field></td>    <td><type>string</type> | null</td>
+            <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
         </tr>
         <tr>
-            <td><field>containers</field></td>  <td>key ➞ <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a></td>
+            <td><field>containers</field></td>  <td><type>key ➞ <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a></type></td>
         </tr>
     </table>
     </div>
@@ -695,12 +702,12 @@
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a>
         <keyword>class</keyword>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
-            <td><field>operations</field></td>       <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>[] | null</td>
+            <td><field>operations</field></td>       <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>[] | null</type></td>
         </tr>
         <tr>
-            <td><field>subscribeChanges</field></td> <td><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>Change</a>[] | null</td>
+            <td><field>subscribeChanges</field></td> <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>Change</a>[] | null</type></td>
         </tr>
     </table>
     </div>
@@ -728,12 +735,12 @@
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <table>
+    <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"predicate"</discriminant></td>
         </tr>
         <tr>
-            <td><field>names</field></td>       <td><type>string</type>[]</td>
+            <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>
         </tr>
     </table>
     </div>

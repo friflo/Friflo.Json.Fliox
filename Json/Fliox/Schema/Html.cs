@@ -131,7 +131,7 @@ $@"    <div class='type'>
             if (type.IsSchema) {
                 sb.AppendLine($"    <chapter id='containers'><a href='#containers'>containers</a></chapter>");
             }
-            sb.AppendLine($"    <table>");
+            sb.AppendLine($"    <table class='fields'>");
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
@@ -179,7 +179,7 @@ $@"        <tr>
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td>{fieldType}{reference}</td>{docs}
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{docs}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -243,11 +243,11 @@ $@"        <tr>
         private static string GetTypeName(TypeDef type, TypeContext context) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
-                return "<type>any</type>"; // known as Mr anti-any  :) 
+                return "<predef>any</predef>"; // known as Mr anti-any  :) 
             if (type == standard.String || type == standard.JsonKey)
-                return "<type>string</type>";
+                return "<predef>string</predef>";
             if (type == standard.Boolean)
-                return "<type>boolean</type>";
+                return "<predef>boolean</predef>";
             context.imports.Add(type);
             var sb = context.sb;
             sb.Clear();

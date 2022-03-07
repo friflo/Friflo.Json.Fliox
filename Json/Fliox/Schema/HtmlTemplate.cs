@@ -85,7 +85,8 @@ namespace Friflo.Json.Fliox.Schema
         .languages  { margin: 0px 20px;         height: 18px; padding: 3px 10px; display: inline-flex; background: var(--bg2); box-shadow: 0px 0px 10px 10px #00000018; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
         .toggleTheme{ margin: 5px 20px;         height: 24px; padding: 3px 5px;  display: inline-flex; background: var(--bg2); border-radius: 2px; cursor: pointer;  }
 
-        type        { color: var(--type) }
+        type        { white-space: nowrap; }
+        predef      { color: var(--type); }
         keyword     { font-size: 13px; font-weight: normal; color: var(--keyword); }
         chapter     { font-size: 13px; font-weight: normal; display: block; margin-left: 30px; margin-top: 10px; }
         chapter a:link,
@@ -135,6 +136,7 @@ namespace Friflo.Json.Fliox.Schema
         div.type table                      { margin-left: 40px; }
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
         .commands tr                        { vertical-align: top; }
+        .fields tr                          { vertical-align: top; }
     </style>
     <script>
         // ----------------- theme dark / light

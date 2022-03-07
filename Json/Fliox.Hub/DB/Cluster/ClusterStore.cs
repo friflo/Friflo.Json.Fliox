@@ -70,6 +70,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 public  string                          projectName;
                 public  string                          projectWebsite;
                 public  string                          envName;
+                /// <summary>
+                /// the color used to display the environment name in GUI's using CSS color format.<br/>
+                /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
+                /// </summary>
                 public  string                          envColor;
     }
     
