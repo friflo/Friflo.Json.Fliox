@@ -94,6 +94,8 @@ namespace Friflo.Json.Fliox.Schema
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
+            var docs            = GetDescription(type.docs, "");
+            sb.Append(docs);
             if (baseType != null) {
                 extendsStr = $"extends {baseType.Name} ";
                 dependencies.Add(baseType);
@@ -132,6 +134,8 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
+                var fieldDocs = GetDescription(field.docs, "    ");
+                sb.Append(fieldDocs);
                 bool required = field.required;
                 var fieldType = GetFieldType(field, context, required);
                 var indent  = Indent(maxFieldName, field.name);
@@ -199,6 +203,10 @@ namespace Friflo.Json.Fliox.Schema
             if (type.UnionType != null)
                 return $"{type.Name}{Union}";
             return type.Name;
+        }
+        
+        private static string GetDescription(string docs, string indent) {
+            return TypeDoc.HtmlToText(docs, indent, "/**", " *", " */");
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

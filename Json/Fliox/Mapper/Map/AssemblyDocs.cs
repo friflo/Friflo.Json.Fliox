@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     case "b":       return $"<b>{value}</b>";
                     case "i":       return $"<i>{value}</i>";
                     case "c":       return $"<c>{value}</c>";
-                    case "code":    return $"<code>{value}</code";
+                    case "code":    return $"<code>{value}</code>";
                     case "returns": return "";
                     default:        return value;
                 }

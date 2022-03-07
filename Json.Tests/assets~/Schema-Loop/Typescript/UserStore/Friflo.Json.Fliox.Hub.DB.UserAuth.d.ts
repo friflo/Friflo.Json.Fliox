@@ -8,6 +8,11 @@ import { HostCluster }  from "./Friflo.Json.Fliox.Hub.DB.Cluster";
 import { Right }        from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 import { Right_Union }  from "./Friflo.Json.Fliox.Hub.Host.Auth.Rights";
 
+/**
+ * Control individual user access to database containers and commands.
+ * Each user has a set of roles stored in container permissions.
+ * Each role in roles has a set of rights which grant or deny container access or command execution.
+ */
 // schema documentation only - not implemented right now
 export interface UserStore {
     // --- containers

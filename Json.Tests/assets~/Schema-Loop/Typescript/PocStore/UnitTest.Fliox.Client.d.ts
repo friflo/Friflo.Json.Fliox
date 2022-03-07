@@ -31,6 +31,11 @@ export class Employee {
     lastName?  : string | null;
 }
 
+/**
+ * The PocStore offer two functionalities: 
+ * 1. Defines a database schema by declaring its containers and commands 
+ * 2. Is a database client providing type-safe access to its containers and commands 
+ */
 // schema documentation only - not implemented right now
 export interface PocStore {
     // --- containers
@@ -84,9 +89,19 @@ export class TestCommand {
     text? : string | null;
 }
 
+/**
+ * Some useful class documentation :)
+ * Test type reference 'OrderItem'
+ */
 export class Order {
     id        : string;
+    /**
+     * Some useful field documentation 🙂
+     * Check some new lines
+     * in documentation
+     */
     customer? : string | null;
+    /** single line documentation */
     created   : DateTime;
     items?    : OrderItem[] | null;
 }

@@ -67,6 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 /// in documentation
                 /// </summary>
                 public  Ref<string, Customer>   customer;
+                /// <summary>single line documentation</summary>
                 public  DateTime                created;
                 public  List<OrderItem>         items = new List<OrderItem>();
                         

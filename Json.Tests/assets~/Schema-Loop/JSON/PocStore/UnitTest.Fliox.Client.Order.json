@@ -9,7 +9,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": ["string", "null"], "relation": "customers", "description": "Some <b>useful</b> field documentation 🙂\nCheck some new lines\nin documentation" },
-                "created":  { "$ref": "./Standard.json#/definitions/DateTime" },
+                "created":  { "$ref": "./Standard.json#/definitions/DateTime", "description": "single line documentation" },
                 "items":    { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/OrderItem" } }
             },
             "required": [
