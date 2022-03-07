@@ -27,6 +27,7 @@ type CellData = {
 
 type Column = {
     readonly name:      string,
+    readonly docs:      string,
     readonly path:      string[],
     readonly type:      DataType,
              th?:       HTMLTableCellElement,
@@ -788,6 +789,7 @@ export class Explorer
 
     private static setColumns(columns: Column[], path: string[], fieldType: FieldType) {
         // if (path[0] == "uint8Null") debugger;
+        const docs                  = Explorer.getTextFromHtml(fieldType?.description);
         const type:     DataType    = Explorer.getDataType(fieldType);
         const typeName: TypeName    = type.typeName;
         switch (typeName) {
@@ -797,7 +799,7 @@ export class Explorer
             case "boolean":
             case "array": {
                 const name = path.join(".");
-                columns.push({name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
+                columns.push({name: name, docs, path: path, type: type, width: Explorer.defaultColumnWidth });
                 break;
             }
             case "object": {
@@ -806,7 +808,7 @@ export class Explorer
                 const isAny =   addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
                 if (isAny) {
                     const name = path.join(".");
-                    columns.push({name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
+                    columns.push({name: name, docs, path: path, type: type, width: Explorer.defaultColumnWidth });
                     break;
                 }
                 const properties = (type.jsonType as JsonType).properties;
@@ -818,6 +820,14 @@ export class Explorer
                 break;
             }
         }
+    }
+
+    private static getTextFromHtml(html: string) : string {
+        if (!html)
+            return null;
+        const span = document.createElement('span');
+        span.innerHTML = html;
+        return span.innerText;
     }
 
     private createExplorerHead (entityType: JsonType, entityFields: { [key: string] : Column }) : HTMLTableRowElement {
@@ -834,7 +844,7 @@ export class Explorer
             }
         } else {
             const type: DataType    = { typeName: "string", jsonType: null, isNullable: false };
-            entityFields[keyName]   = { name: keyName, path: [keyName], type, width: Explorer.defaultColumnWidth };
+            entityFields[keyName]   = { name: keyName, docs: null, path: [keyName], type, width: Explorer.defaultColumnWidth };
         }
         const   head            = createEl('tr');
 
@@ -860,7 +870,8 @@ export class Explorer
             const type          = column.type;
             const jsonType      = type.jsonType as JsonType;
             const fieldType     = `\ntype:   ${jsonType?._typeName ?? type.typeName}${type.isNullable ? "?": ""}`;
-            thIdDiv.title       = `name: ${fieldName}${fieldType}`;
+            const docs          = column.docs ? `\n\n${column.docs}` : "";
+            thIdDiv.title       = `name: ${fieldName}${fieldType}${docs}`;
             thIdDiv.setAttribute("fieldName", fieldName);
             th.append(thIdDiv);
             const grip          = createEl('div');

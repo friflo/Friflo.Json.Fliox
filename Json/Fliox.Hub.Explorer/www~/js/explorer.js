@@ -689,6 +689,7 @@ export class Explorer {
     }
     static setColumns(columns, path, fieldType) {
         // if (path[0] == "uint8Null") debugger;
+        const docs = Explorer.getTextFromHtml(fieldType === null || fieldType === void 0 ? void 0 : fieldType.description);
         const type = Explorer.getDataType(fieldType);
         const typeName = type.typeName;
         switch (typeName) {
@@ -698,7 +699,7 @@ export class Explorer {
             case "boolean":
             case "array": {
                 const name = path.join(".");
-                columns.push({ name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
+                columns.push({ name: name, docs, path: path, type: type, width: Explorer.defaultColumnWidth });
                 break;
             }
             case "object": {
@@ -707,7 +708,7 @@ export class Explorer {
                 const isAny = addProps !== null && typeof addProps == "object" && Object.keys(addProps).length == 0;
                 if (isAny) {
                     const name = path.join(".");
-                    columns.push({ name: name, path: path, type: type, width: Explorer.defaultColumnWidth });
+                    columns.push({ name: name, docs, path: path, type: type, width: Explorer.defaultColumnWidth });
                     break;
                 }
                 const properties = type.jsonType.properties;
@@ -719,6 +720,13 @@ export class Explorer {
                 break;
             }
         }
+    }
+    static getTextFromHtml(html) {
+        if (!html)
+            return null;
+        const span = document.createElement('span');
+        span.innerHTML = html;
+        return span.innerText;
     }
     createExplorerHead(entityType, entityFields) {
         var _a;
@@ -736,7 +744,7 @@ export class Explorer {
         }
         else {
             const type = { typeName: "string", jsonType: null, isNullable: false };
-            entityFields[keyName] = { name: keyName, path: [keyName], type, width: Explorer.defaultColumnWidth };
+            entityFields[keyName] = { name: keyName, docs: null, path: [keyName], type, width: Explorer.defaultColumnWidth };
         }
         const head = createEl('tr');
         // cell: checkbox
@@ -760,7 +768,8 @@ export class Explorer {
             const type = column.type;
             const jsonType = type.jsonType;
             const fieldType = `\ntype:   ${(_a = jsonType === null || jsonType === void 0 ? void 0 : jsonType._typeName) !== null && _a !== void 0 ? _a : type.typeName}${type.isNullable ? "?" : ""}`;
-            thIdDiv.title = `name: ${fieldName}${fieldType}`;
+            const docs = column.docs ? `\n\n${column.docs}` : "";
+            thIdDiv.title = `name: ${fieldName}${fieldType}${docs}`;
             thIdDiv.setAttribute("fieldName", fieldName);
             th.append(thIdDiv);
             const grip = createEl('div');
