@@ -258,7 +258,7 @@
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "properties": {
                 "task":   { "enum": ["subscribeMessage"] },
-                "name":   { "type": "string", "description": "\n              Filter all name's starting with one of the given name strings.\n              name = {''} => subscribe all message events.name = {} => unsubscribe message events." },
+                "name":   { "type": "string", "description": "Filter all name's starting with one of the given name strings.\n              name = {''} => subscribe all message events.name = {} => unsubscribe message events." },
                 "remove": { "type": ["boolean", "null"] },
                 "info":   {  }
             },
@@ -352,7 +352,7 @@
                 "task":       { "enum": ["query"] },
                 "container":  { "type": ["string", "null"] },
                 "cursor":     { "type": ["string", "null"] },
-                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": " Is used only to show the number of ids in a serialized protocol message\n            to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information. " },
+                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Is used only to show the number of ids in a serialized protocol message\n            to avoid counting them by hand when debugging.\n            It is not used by the library as it is redundant information." },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },

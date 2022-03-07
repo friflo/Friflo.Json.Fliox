@@ -10,7 +10,7 @@
             ],
             "properties": {
                 "msg": { "enum": ["sync"] },
-                "req": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for RemoteClientHub to enable:\n            \n              1. Out of order response handling for their corresponding requests.\n            \n              2. Multiplexing of requests and their responses for multiple clients e.g. FlioxClient\n                 using the same connection.\n                 This is not a common scenario but it enables using a single WebSocketClientHub\n                 used by multiple clients.\n            \n            The host itself only echos the reqId to reqId and doesn't do\n            anythings else with it.\n            " },
+                "req": { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for RemoteClientHub to enable:\n            \n              1. Out of order response handling for their corresponding requests.\n            \n              2. Multiplexing of requests and their responses for multiple clients e.g. FlioxClient\n                 using the same connection.\n                 This is not a common scenario but it enables using a single WebSocketClientHub\n                 used by multiple clients.\n            \n            The host itself only echos the reqId to reqId and doesn't do\n            anythings else with it." },
                 "clt": { "type": ["string", "null"] }
             },
             "required": [

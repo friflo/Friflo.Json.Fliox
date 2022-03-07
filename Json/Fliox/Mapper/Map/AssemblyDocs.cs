@@ -93,7 +93,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 var summary     = element.Element("summary");
                 if (signature == null || summary == null)
                     continue;
+                // if (signature.Value.Contains("envColor")) { int i = 33; }
                 var text = GetElementText(sb, summary);
+                text = text.Trim();
                 signatures[signature.Value] = text;
             }
             return signatures;

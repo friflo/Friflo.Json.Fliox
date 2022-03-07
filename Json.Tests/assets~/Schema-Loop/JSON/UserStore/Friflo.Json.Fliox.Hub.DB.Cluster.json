@@ -73,7 +73,7 @@
                 "projectName":    { "type": ["string", "null"] },
                 "projectWebsite": { "type": ["string", "null"] },
                 "envName":        { "type": ["string", "null"] },
-                "envColor":       { "type": ["string", "null"], "description": "\n            the color used to display the environment name in GUI's using CSS color format.\n\n            E.g. using red for a production environment: '#ff0000' or 'rgb(255 0 0)'\n            " }
+                "envColor":       { "type": ["string", "null"], "description": "the color used to display the environment name in GUI's using CSS color format.\n\n            E.g. using red for a production environment: '#ff0000' or 'rgb(255 0 0)'" }
             },
             "required": [
                 "version"

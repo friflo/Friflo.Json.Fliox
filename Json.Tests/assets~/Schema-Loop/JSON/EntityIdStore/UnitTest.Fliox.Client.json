@@ -30,7 +30,7 @@
             "additionalProperties": false,
             "commands": {
                 "std.Echo":       { "param": {  }, "result": {  },
-                    "description": "echos the given parameter to assure the database is working appropriately. " },
+                    "description": "echos the given parameter to assure the database is working appropriately." },
                 "std.Containers": { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
                     "description": "list all containers of the database" },
                 "std.Messages":   { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbMessages" },
