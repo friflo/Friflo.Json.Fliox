@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
             var localSb = new StringBuilder();
             AppendElementText(localSb, element);
             var text        = localSb.ToString();
-            var lines       = text.Split("\n");
+            var lines       = text.Split('\n');
             var firstLine   = true;
             foreach (var line in lines) {
                 if (line == "")

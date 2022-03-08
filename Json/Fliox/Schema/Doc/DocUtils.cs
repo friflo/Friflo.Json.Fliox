@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
             var nodes = element.DescendantNodes();
             foreach (var node in nodes) {
                 if (node is XText text) {
-                    if (text.Value.Contains('\n'))
+                    if (text.Value.Contains("\n"))
                         return true;
                 }
             }
