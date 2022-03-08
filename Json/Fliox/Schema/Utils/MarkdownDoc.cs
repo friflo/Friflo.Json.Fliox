@@ -72,10 +72,10 @@ namespace Friflo.Json.Fliox.Schema.Utils
         }
         
         private static void AppendCode (StringBuilder sb, XElement element) {
-            var bounds = HasNewLine(element) ? "```" : "`"; 
-            sb.Append(bounds);
+            var hasNewLine = HasNewLine(element); 
+            sb.Append(hasNewLine ? "```\n" : "`");
             AppendElementText(sb, element);
-            sb.Append(bounds);
+            sb.Append(hasNewLine ? "\n```" : "`");
         }
         
         private static bool HasNewLine (XElement element) {

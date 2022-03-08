@@ -82,7 +82,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         private static void AppendCode (StringBuilder sb, XElement element) {
             sb.Append("<code>");
-            AppendElement(sb, element);
+            var localSb = new StringBuilder();
+            AppendElement(localSb, element);
+            var code = localSb.ToString().Trim();
+            sb.Append(code);
             sb.Append("</code>");
         }
         
