@@ -17,9 +17,9 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
-    /// Control individual user access to database containers and commands.
-    /// Each user has a set of roles stored in container <b>permissions</b>.
-    /// Each role in <b>roles</b> has a set of rights which grant or deny container access or command execution. 
+    /// Control individual user access to database containers and commands. <br/>
+    /// Each <b>user</b> has a set of <b>roles</b> stored in container <b>permissions</b>. <br/>
+    /// Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which grant or deny container access or command execution. 
     /// </summary>
     /// <remarks>
     /// <see cref="UserStore"/> can also be used as a non thread safe <see cref="IUserAuth"/> implementation.

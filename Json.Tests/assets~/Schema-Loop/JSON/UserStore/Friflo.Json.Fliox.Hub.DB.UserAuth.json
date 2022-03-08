@@ -5,7 +5,7 @@
         "UserStore": {
             "type": "object",
             "isAbstract": true,
-            "description": "Control individual user access to database containers and commands.\nEach user has a set of roles stored in container <b>permissions</b>.\nEach role in <b>roles</b> has a set of rights which grant or deny container access or command execution.",
+            "description": "Control individual user access to database containers and commands. <br/>\nEach <b>user</b> has a set of <b>roles</b> stored in container <b>permissions</b>. <br/>\nEach <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which grant or deny container access or command execution.",
             "properties": {
                 "credentials": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
                 "permissions": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
