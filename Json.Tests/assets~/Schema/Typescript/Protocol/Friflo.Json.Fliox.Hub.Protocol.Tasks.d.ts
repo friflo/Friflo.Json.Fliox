@@ -147,8 +147,8 @@ export type Change =
 export class SubscribeMessage extends SyncRequestTask {
     task    : "subscribeMessage";
     /**
-     * Filter all **name**'s starting with one of the given **name** strings.
-     * **name** = {""} => subscribe all message events.**name** = {} => unsubscribe message events.
+     * Filter all messages with the given **name**.
+     * **name** == "*"           => filter all message**name** == "std.*"       => filter all message with given prefix: std.**name** == "std.Echo"    => filter std.Echo messages
      */
     name    : string;
     remove? : boolean | null;
