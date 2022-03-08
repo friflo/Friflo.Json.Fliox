@@ -11,8 +11,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
     {
         internal static void AppendElement(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
-            // var nodes = element.DescendantsAndSelf();
-            // if (element.Value.Contains("Check some new lines")) { int i = 42; }
             foreach (var node in nodes) {
                 if (node.Parent != element)
                     continue;
@@ -32,7 +30,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     case "see":
                     case "seealso":
                     case "paramref":
-                    case "typeparamref": AppendAttribute(sb, element);          return;
+                    case "typeparamref":
+                                    AppendAttribute(sb, element);               return;
                     
                     case "para":    AppendContainer(sb, element, "p");          return;
                     case "list":    AppendContainer(sb, element, "ul");         return;
@@ -63,7 +62,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         private static void AppendAttribute (StringBuilder sb, XElement element) {
             var attributes = element.Attributes();
-            // if (element.Value.Contains("TypeValidator")) { int i = 111; }
             foreach (var attribute in attributes) {
                 var attributeName = attribute.Name;
                 if (attributeName == "cref" || attributeName == "name") {
@@ -75,7 +73,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 }
                 if (attributeName == "href") {
                     var link    = attribute.Value;
-                    var a       = $"<a href='{link}'>"; 
+                    var a       = $"<a href='{link}'>";
                     AppendTag(sb, a, "</a>", link);
                     return;
                 }
