@@ -101,10 +101,11 @@ namespace Friflo.Json.Fliox.Schema.Utils
             var localSb = new StringBuilder();
             AppendElementText(localSb, element);
             var text        = localSb.ToString();
-            text            = text.Trim();
             var lines       = text.Split("\n");
             var firstLine   = true;
             foreach (var line in lines) {
+                if (line == "")
+                    continue;
                 sb.Append(firstLine ? "- " : "  ");
                 firstLine = false;
                 sb.Append(line);
