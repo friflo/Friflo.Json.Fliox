@@ -5,7 +5,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.DemoHub
 {
-    [Fri.CommandPrefix("demo.")]
+    [Fri.MessagePrefix("demo.")]
     public partial class DemoStore {
         // --- commands
         /// <summary> generate random entities (records) in the containers listed in the <see cref="DemoHub.Fake"/> param </summary>

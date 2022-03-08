@@ -69,8 +69,8 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         [AttributeUsage(AttributeTargets.Class)]
-        public sealed class CommandPrefixAttribute : Attribute {
-            public CommandPrefixAttribute (string prefix) { }
+        public sealed class MessagePrefixAttribute : Attribute {
+            public MessagePrefixAttribute (string prefix) { }
         }
     }
     

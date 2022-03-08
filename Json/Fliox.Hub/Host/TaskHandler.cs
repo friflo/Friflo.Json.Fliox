@@ -128,8 +128,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         /// <param name="instance">the instance of class containing message handler methods.
         ///     Commonly the instance of a <see cref="TaskHandler"/></param>
-        /// <param name="commandPrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
-        protected void AddMessageHandlers<TClass>(TClass instance, string commandPrefix) where TClass : class
+        /// <param name="messagePrefix">the prefix of a message/command - e.g. "test."; null or "" to add messages without prefix</param>
+        protected void AddMessageHandlers<TClass>(TClass instance, string messagePrefix) where TClass : class
         {
             var type                = instance.GetType();
             var handlers            = TaskHandlerUtils.GetHandlers(type);
@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 } else {
                     messageDelegate = CreateCommandCallback(instance, handler);
                 }
-                var name            = string.IsNullOrEmpty(commandPrefix) ? handler.name : $"{commandPrefix}{handler.name}";
+                var name            = string.IsNullOrEmpty(messagePrefix) ? handler.name : $"{messagePrefix}{handler.name}";
                 messages.Add(name, messageDelegate);
             }
         }
