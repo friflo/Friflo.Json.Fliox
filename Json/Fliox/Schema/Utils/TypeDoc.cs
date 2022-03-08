@@ -86,9 +86,9 @@ namespace Friflo.Json.Fliox.Schema.Utils
                         sb.Append("**");
                         return;
                     case "i":
-                        sb.Append("*");
+                        sb.Append('*');
                         AppendElementText(sb, element);
-                        sb.Append("*");
+                        sb.Append('*');
                         return;
                     default:
                         AppendElementText(sb, element);
