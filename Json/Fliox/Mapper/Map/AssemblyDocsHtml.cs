@@ -9,21 +9,20 @@ namespace Friflo.Json.Fliox.Mapper.Map
     /// convert C# / .NET xml to HTML
     internal static class AssemblyDocsHtml
     {
-        internal static void GetElementText(StringBuilder sb, XElement element) {
+        internal static void AppendElement(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
             // var nodes = element.DescendantsAndSelf();
             // if (element.Value.Contains("Check some new lines")) { int i = 42; }
             foreach (var node in nodes) {
                 if (node.Parent != element)
                     continue;
-                GetNodeText(sb, node);
+                AppendNode(sb, node);
             }
         }
         
-        private static void GetNodeText (StringBuilder sb, XNode node) {
+        private static void AppendNode (StringBuilder sb, XNode node) {
             if (node is XText text) {
-                var trim = TrimLines(text);
-                sb.Append(trim);
+                AppendTrimLines(sb, text);
                 return;
             }
             if (node is XElement element) {
@@ -33,11 +32,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     case "see":
                     case "seealso":
                     case "paramref":
-                    case "typeparamref": GetAttributeText(sb, element);         return;
+                    case "typeparamref": AppendAttribute(sb, element);          return;
                     
-                    case "para":    GetContainerText(sb, element, "p");         return;
-                    case "list":    GetContainerText(sb, element, "ul");        return;
-                    case "item":    GetContainerText(sb, element, "li");        return;
+                    case "para":    AppendContainer(sb, element, "p");          return;
+                    case "list":    AppendContainer(sb, element, "ul");         return;
+                    case "item":    AppendContainer(sb, element, "li");         return;
                     
                     case "br":      sb.Append("<br/>");                         return;
                     case "b":       AppendTag(sb, "<b>",    "</b>",    value);  return;
@@ -56,13 +55,13 @@ namespace Friflo.Json.Fliox.Mapper.Map
             sb.Append(end);
         }
         
-        private static void GetContainerText (StringBuilder sb, XElement element, string tag) {
+        private static void AppendContainer (StringBuilder sb, XElement element, string tag) {
             sb.Append('<'); sb.Append(tag); sb.Append('>');
-            GetElementText(sb, element);
+            AppendElement(sb, element);
             sb.Append("</"); sb.Append(tag); sb.Append('>');
         }
         
-        private static void GetAttributeText (StringBuilder sb, XElement element) {
+        private static void AppendAttribute (StringBuilder sb, XElement element) {
             var attributes = element.Attributes();
             // if (element.Value.Contains("TypeValidator")) { int i = 111; }
             foreach (var attribute in attributes) {
@@ -84,13 +83,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         /// <summary>Trim leading tabs and spaces. Normalize new lines</summary>
-        private static string TrimLines (XText text) {
+        private static void AppendTrimLines (StringBuilder sb, XText text) {
             string value    = text.Value;
             value           = value.Replace("\r\n", "\n");
             var lines       = value.Split("\n");
-            if (lines.Length == 1)
-                return value;
-            var sb      = new StringBuilder();
+            if (lines.Length == 1) {
+                sb.Append(value);
+                return;
+            }
             bool first  = true;
             foreach (var line in lines) {
                 if (first) {
@@ -101,7 +101,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 sb.Append('\n');
                 sb.Append(line.TrimStart());
             }
-            return sb.ToString();
         }
     }
 }
