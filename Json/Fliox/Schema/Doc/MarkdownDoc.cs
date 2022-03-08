@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
         }
         
         private static void AppendCode (StringBuilder sb, XElement element) {
-            var hasNewLine = DocUtils.HasNewLine(element); 
+            var hasNewLine = TypeDoc.HasNewLine(element); 
             sb.Append(hasNewLine ? "```\n" : "`");
             AppendElementText(sb, element);
             sb.Append(hasNewLine ? "\n```" : "`");
