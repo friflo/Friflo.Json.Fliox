@@ -62,8 +62,8 @@ export abstract class ProtocolRequest extends ProtocolMessage {
      * This is not a common scenario but it enables using a single **WebSocketClientHub**
      * used by multiple clients.
      * 
-     * The host itself only echos the **reqId** to **reqId** and doesn't do
-     * anythings else with it.
+     * The host itself only echos the **reqId** to **reqId** and
+     * does **not** utilize it internally.
      */
     req? : int32 | null;
     clt? : string | null;

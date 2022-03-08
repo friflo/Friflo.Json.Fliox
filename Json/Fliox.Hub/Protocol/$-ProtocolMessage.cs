@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         ///      This is not a common scenario but it enables using a single <see cref="WebSocketClientHub"/>
         ///      used by multiple clients.
         /// </para>
-        /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and doesn't do
-        /// anythings else with it.
+        /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and
+        /// does <b>not</b> utilize it internally.
         /// </summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
