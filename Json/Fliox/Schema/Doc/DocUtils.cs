@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
 {
     public static class TypeDoc
     {
-        /// <summary>Convert the given <see cref="html"/> to source code documentation</summary>
+        /// <summary>Convert the given <see paramref="html"/> to source code documentation</summary>
         public static string HtmlToDoc (string html, string indent, string start, string newLine, string end) {
             if (html == null)
                 return "";
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
             return sb.ToString();
         }
         
-        /// <summary>Convert the given <see cref="html"/> string to string[]. Each array item is a lines</summary>
+        /// <summary>Convert the given <see paramref="html"/> string to string[]. Each array item is a lines</summary>
         public static string[] CreateMarkdownLines(StringBuilder sb, string html) {
             // --- convert html to XElement
             var htmlElement = CreateHtmlElement(sb, html);
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
             return markdown.Split('\n');
         }
         
-        /// <summary>Convert the given <see cref="html"/> string to an <see cref="XElement"/></summary>
+        /// <summary>Convert the given <see paramref="html"/> string to an <see cref="XElement"/></summary>
         public static XElement CreateHtmlElement(StringBuilder sb, string html) {
             sb.Clear();
             // --- create valid xml to enable parsing
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
             return docs.Root;
         }
         
-        /// <summary>Return true if text of the given <see cref="element"/> contains a new line</summary>
+        /// <summary>Return true if text of the given <see paramref="element"/> contains a new line</summary>
         public static bool HasNewLine (XElement element) {
             var nodes = element.DescendantNodes();
             foreach (var node in nodes) {
