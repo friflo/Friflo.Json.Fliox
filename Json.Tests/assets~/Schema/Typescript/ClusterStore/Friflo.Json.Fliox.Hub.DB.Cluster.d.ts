@@ -2,9 +2,9 @@
 import { int64 } from "./Standard";
 
 /**
- * **ClusterStore** provide information about databases hosted by the Hub: 
- * - available containers aka tables per database 
- * - available commands per database 
+ * **ClusterStore** provide information about databases hosted by the Hub:   
+ * - available containers aka tables per database   
+ * - available commands per database   
  * - the schema assigned to each database
  */
 // schema documentation only - not implemented right now
@@ -66,7 +66,7 @@ export class HostDetails {
     projectWebsite? : string | null;
     envName?        : string | null;
     /**
-     * the color used to display the environment name in GUI's using CSS color format.
+     * the color used to display the environment name in GUI's using CSS color format.  
      * E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
      */
     envColor?       : string | null;

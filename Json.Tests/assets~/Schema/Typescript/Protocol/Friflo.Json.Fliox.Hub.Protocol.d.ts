@@ -9,21 +9,21 @@ import { EntityError }           from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 /**
  * **ProtocolMessage** is the base type for all messages which are classified into request, response and event.
  * It can also be used in communication going beyond the request / response schema.
- * 
+ *   
  * A **ProtocolMessage** is either one of the following types:
  * - **ProtocolRequest**  send by clients / received by hosts
  * - **ProtocolResponse** send by hosts / received by clients
  * - **ProtocolEvent**    send by hosts / received by clients
  * *Note*: By applying this classification the protocol can also be used in peer-to-peer networking.
  * 
- * General principle of **Fliox** message protocol:
- * All messages like requests (their tasks), responses (their results) and events are stateless.
+ * General principle of **Fliox** message protocol:  
+ * All messages like requests (their tasks), responses (their results) and events are stateless.  
  * In other words: All messages are self-contained and doesnt (and must not) rely and previous sent messages.
  * The technical aspect of having a connection e.g. HTTP or WebSocket is not relevant.
- * This enables two fundamental features:
- * 1. embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC or datagram based protocols.
- * 2. multiplexing of messages from different clients, servers or peers in a shared connection.
- * This also means all **Fliox** messages doesnt (and must not) require a session.
+ * This enables two fundamental features:  
+ * 1. embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC or datagram based protocols.  
+ * 2. multiplexing of messages from different clients, servers or peers in a shared connection.  
+ * This also means all **Fliox** messages doesnt (and must not) require a session.  
  * This principle also enables using a single **FlioxHub** by multiple clients like
  * **FlioxClient** even for remote clients like **RemoteClientHub**.
  * 

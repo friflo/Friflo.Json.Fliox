@@ -78,6 +78,10 @@ namespace Friflo.Json.Fliox.Schema.Utils
             if (node is XElement element) {
                 var name    = element.Name.LocalName;
                 switch (name) {
+                    case "br":
+                        AppendElementText(sb, element);
+                        sb.Append("  "); // force new line in markdown
+                        return;
                     case "ul":  AppendElementText(sb, element);    return;
                     case "li":  AppendLiText(sb, element);         return;
                     case "b":
@@ -90,6 +94,7 @@ namespace Friflo.Json.Fliox.Schema.Utils
                         AppendElementText(sb, element);
                         sb.Append('*');
                         return;
+                    case "code":    AppendCode(sb, element);    return;
                     default:
                         AppendElementText(sb, element);
                         return;
@@ -112,5 +117,24 @@ namespace Friflo.Json.Fliox.Schema.Utils
                 sb.Append('\n');
             }
         }
+        
+        private static void AppendCode (StringBuilder sb, XElement element) {
+            var bounds = HasNewLine(element) ? "```\n" : "`"; 
+            sb.Append(bounds);
+            AppendElementText(sb, element);
+            sb.Append(bounds);
+        }
+        
+        private static bool HasNewLine (XElement element) {
+            var nodes = element.DescendantNodes();
+            foreach (var node in nodes) {
+                if (node is XText text) {
+                    if (text.Value.Contains('\n'))
+                        return true;
+                }
+            }
+            return false;
+        }
+
     }
 }

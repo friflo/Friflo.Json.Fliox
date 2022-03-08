@@ -9,10 +9,10 @@ import { int32 }        from "./Standard";
 import { Change }       from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 /**
- * **MonitorStore** expose access information of the Hub and its databases:
- * - request and task count executed per user 
- * - request and task count executed per client. A user can access without, one or multiple client ids. 
- * - events sent to (or buffered for) clients subscribed by these clients. 
+ * **MonitorStore** expose access information of the Hub and its databases:  
+ * - request and task count executed per user   
+ * - request and task count executed per client. A user can access without, one or multiple client ids.   
+ * - events sent to (or buffered for) clients subscribed by these clients.   
  * - aggregated access counts of the Hub in the last 30 seconds and 30 minutes.
  */
 // schema documentation only - not implemented right now

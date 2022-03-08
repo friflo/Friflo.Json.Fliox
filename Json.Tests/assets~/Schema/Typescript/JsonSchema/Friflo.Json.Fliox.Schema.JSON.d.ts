@@ -20,9 +20,9 @@ import { int64 } from "./Standard";
  *   The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
  *   This restriction enables generation of code and types for languages without support of anonymous types.
  *   It also enables concise error messages for validation errors when using **TypeValidator**.
- * - Note: Arrays and dictionaries are also valid schema properties. E.g. 
- *   A valid array property like: { "type": ["array", "null"], "items": { "type": "string" } }
- *   A valid dictionary property like:  { "type": "object", "additionalProperties": { "type": "string" } }
+ * - Note: Arrays and dictionaries are also valid schema properties. E.g.   
+ *   A valid array property like: `{ "type": ["array", "null"], "items": { "type": "string" } }`  
+ *   A valid dictionary property like:  `{ "type": "object", "additionalProperties": { "type": "string" } }`  
  *   These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
  * - On root level are only "$ref": "..." and "definitions": [...] allowed.
  * 
