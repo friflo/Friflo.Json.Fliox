@@ -62,7 +62,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal string GetDocumentation(string signature) {
             if (!signatures.TryGetValue(signature, out var result))
                 return null;
-            var text    = AssemblyDocsHtml.GetElementText(sb, result);
+            AssemblyDocsHtml.GetElementText(sb, result);
+            var text = sb.ToString();
             text        = text.Trim();
             sb.Clear();
             return text;

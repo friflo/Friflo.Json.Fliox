@@ -9,24 +9,22 @@ namespace Friflo.Json.Fliox.Mapper.Map
     /// convert C# / .NET xml to HTML
     internal static class AssemblyDocsHtml
     {
-        internal static string GetElementText(StringBuilder sb, XElement element) {
+        internal static void GetElementText(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
             // var nodes = element.DescendantsAndSelf();
             // if (element.Value.Contains("Check some new lines")) { int i = 42; }
             foreach (var node in nodes) {
                 if (node.Parent != element)
                     continue;
-                var nodeText = GetNodeText(node);
-                sb.Append(nodeText);
+                GetNodeText(sb, node);
             }
-            var text = sb.ToString();
-            sb.Clear();
-            return text;
         }
         
-        private static string GetNodeText (XNode node) {
+        private static void GetNodeText (StringBuilder sb, XNode node) {
             if (node is XText text) {
-                return TrimLines(text);
+                var trim = TrimLines(text);
+                sb.Append(trim);
+                return;
             }
             if (node is XElement element) {
                 var name    = element.Name.LocalName;
@@ -35,31 +33,36 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     case "see":
                     case "seealso":
                     case "paramref":
-                    case "typeparamref":
-                        return GetAttributeText(element);
-                    case "para":    return GetContainerText(element, "p");
-                    case "list":    return GetContainerText(element, "ul");
-                    case "item":    return GetContainerText(element, "li");
+                    case "typeparamref": GetAttributeText(sb, element);         return;
                     
-                    case "br":      return "<br/>";
-                    case "b":       return $"<b>{value}</b>";
-                    case "i":       return $"<i>{value}</i>";
-                    case "c":       return $"<c>{value}</c>";
-                    case "code":    return $"<code>{value}</code>";
-                    case "returns": return "";
-                    default:        return value;
+                    case "para":    GetContainerText(sb, element, "p");         return;
+                    case "list":    GetContainerText(sb, element, "ul");        return;
+                    case "item":    GetContainerText(sb, element, "li");        return;
+                    
+                    case "br":      sb.Append("<br/>");                         return;
+                    case "b":       AppendTag(sb, "<b>",    "</b>",    value);  return;
+                    case "i":       AppendTag(sb, "<i>",    "</i>",    value);  return;
+                    case "c":       AppendTag(sb, "<c>",    "</c>",    value);  return;
+                    case "code":    AppendTag(sb, "<code>", "</code>", value);  return;
+                    case "returns":                                             return;
+                    default:        sb.Append(value);                           return;
                 }
             }
-            return "";
         }
         
-        private static string GetContainerText (XElement element, string tag) {
-            var sb = new StringBuilder();
-            var value = GetElementText(sb, element);
-            return $"<{tag}>{value}</{tag}>";
+        private static void AppendTag (StringBuilder sb, string start, string end, string value) {
+            sb.Append(start);
+            sb.Append(value);
+            sb.Append(end);
         }
         
-        private static string GetAttributeText (XElement element) {
+        private static void GetContainerText (StringBuilder sb, XElement element, string tag) {
+            sb.Append('<'); sb.Append(tag); sb.Append('>');
+            GetElementText(sb, element);
+            sb.Append("</"); sb.Append(tag); sb.Append('>');
+        }
+        
+        private static void GetAttributeText (StringBuilder sb, XElement element) {
             var attributes = element.Attributes();
             // if (element.Value.Contains("TypeValidator")) { int i = 111; }
             foreach (var attribute in attributes) {
@@ -68,14 +71,16 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     var value       = attribute.Value;
                     var lastIndex   = value.LastIndexOf('.');
                     var typeName    = lastIndex == -1 ? value : value.Substring(lastIndex + 1);
-                    return $"<b>{typeName}</b>";                            
+                    AppendTag(sb, "<b>", "</b>", typeName);
+                    return;
                 }
                 if (attributeName == "href") {
-                    var link = attribute.Value;
-                    return $"<a href='{link}'>{link}</a>";
+                    var link    = attribute.Value;
+                    var a       = $"<a href='{link}'>"; 
+                    AppendTag(sb, a, "</a>", link);
+                    return;
                 }
             }
-            return "";
         }
         
         /// <summary>Trim leading tabs and spaces. Normalize new lines</summary>
