@@ -62,6 +62,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         internal string GetDocumentation(string signature) {
             if (!signatures.TryGetValue(signature, out var result))
                 return null;
+            // if (signature.Contains("clientId")) { int i = 22; }
             AssemblyDocsHtml.AppendElement(sb, result);
             var text    = sb.ToString();
             text        = text.Trim();

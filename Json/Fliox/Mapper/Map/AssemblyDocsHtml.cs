@@ -66,9 +66,16 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 var attributeName = attribute.Name;
                 if (attributeName == "cref" || attributeName == "name") {
                     var value       = attribute.Value;
-                    var lastIndex   = value.LastIndexOf('.');
-                    var typeName    = lastIndex == -1 ? value : value.Substring(lastIndex + 1);
-                    AppendTag(sb, "<b>", "</b>", typeName);
+                    // handle symbols referring to a method
+                    var bracket     = value.LastIndexOf('(');
+                    var end         = bracket == -1 ? value.Length : bracket;
+                    var lastIndex   = value.LastIndexOf('.', end - 1, end);
+                    var typeName    = lastIndex == -1 ? value : value.Substring(lastIndex + 1, end - lastIndex - 1);
+                    if (bracket == -1) {
+                        AppendTag(sb, "<b>", "</b>", typeName);
+                    } else {
+                        AppendTag(sb, "<b>", "</b>", typeName + "()");
+                    }
                     return;
                 }
                 if (attributeName == "href") {

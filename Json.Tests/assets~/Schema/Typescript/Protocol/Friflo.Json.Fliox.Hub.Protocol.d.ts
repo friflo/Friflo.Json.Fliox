@@ -105,7 +105,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
     /**
      * Set to **clientId** of a **SyncRequest** in case the given
      * **clientId** was valid. Otherwise it is set to null.
-     * Calling **String@)** when **clientId** == null a
+     * Calling **EnsureValidClientId()** when **clientId** == null a
      * new unique client id will be assigned.
      * For tasks which require a **clientId** a client need to set **clientId**
      * to **clientId**.
