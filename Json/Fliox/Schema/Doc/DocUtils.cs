@@ -30,14 +30,12 @@ namespace Friflo.Json.Fliox.Schema.Doc
             foreach (var line in lines) {
                 if (firstLine) {
                     firstLine = false;
-                    sb.Append(' ');
                     sb.Append(line);
                     sb.Append('\n');
                     continue;
                 }
                 sb.Append(indent);
                 sb.Append(newLine);
-                sb.Append(' ');
                 sb.Append(line);
                 sb.Append('\n');
             }

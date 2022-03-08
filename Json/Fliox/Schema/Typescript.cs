@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Schema
         }
         
         private static string GetDoc(string docs, string indent) {
-            return TypeDoc.HtmlToDoc(docs, indent, "/**", " *", " */");
+            return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
