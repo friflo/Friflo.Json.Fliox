@@ -59,6 +59,10 @@ export interface PocStore {
 
 /**
  * Some useful class documentation :)
+ * ```
+ * multiline line
+ * code documentation
+ * ```
  * Test type reference '**OrderItem**'
  */
 export class Order {
@@ -71,6 +75,7 @@ export class Order {
     customer? : string | null;
     /** single line documentation */
     created   : DateTime;
+    /** `single line code documentation` */
     items?    : OrderItem[] | null;
 }
 

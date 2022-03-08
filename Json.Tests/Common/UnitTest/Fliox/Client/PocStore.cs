@@ -58,6 +58,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     // ------------------------------ models ------------------------------
     /// <summary>
     /// Some useful class documentation :)
+    /// <code>
+    ///     multiline line
+    ///     code documentation
+    /// </code>
     /// Test type reference '<see cref="OrderItem"/>' </summary>
     public class Order {
         [Req]   public  string                  id { get; set; }
@@ -69,6 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 public  Ref<string, Customer>   customer;
                 /// <summary>single line documentation</summary>
                 public  DateTime                created;
+                /// <summary><code>single line code documentation</code></summary>
                 public  List<OrderItem>         items = new List<OrderItem>();
                         
         public override string                  ToString() => JsonSerializer.Serialize(this);

@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     case "b":       AppendTag(sb, "<b>",    "</b>",    value);  return;
                     case "i":       AppendTag(sb, "<i>",    "</i>",    value);  return;
                     case "c":       AppendTag(sb, "<c>",    "</c>",    value);  return;
-                    case "code":    AppendTag(sb, "<code>", "</code>", value);  return;
+                    case "code":    AppendCode(sb, element);                    return;
                     case "returns":                                             return;
                     default:        sb.Append(value);                           return;
                 }
@@ -78,6 +78,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     return;
                 }
             }
+        }
+        
+        private static void AppendCode (StringBuilder sb, XElement element) {
+            sb.Append("<code>");
+            AppendElement(sb, element);
+            sb.Append("</code>");
         }
         
         /// <summary>Trim leading tabs and spaces. Normalize new lines</summary>
