@@ -4,11 +4,17 @@
 using System.Text;
 using System.Xml.Linq;
 
-namespace Friflo.Json.Fliox.Schema.Utils
+namespace Friflo.Json.Fliox.Schema.Doc
 {
     public static class MarkdownDoc
     {
-        public static void AppendElementText(StringBuilder sb, XElement element) {
+        public static string CreateMarkdown(StringBuilder sb, XElement element) {
+            sb.Clear();
+            AppendElementText(sb, element);
+            return sb.ToString();
+        }
+
+        private static void AppendElementText(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
             // var nodes = element.DescendantsAndSelf();
             // if (element.Value.Contains("Check some new lines")) { int i = 42; }
@@ -72,21 +78,10 @@ namespace Friflo.Json.Fliox.Schema.Utils
         }
         
         private static void AppendCode (StringBuilder sb, XElement element) {
-            var hasNewLine = HasNewLine(element); 
+            var hasNewLine = DocUtils.HasNewLine(element); 
             sb.Append(hasNewLine ? "```\n" : "`");
             AppendElementText(sb, element);
             sb.Append(hasNewLine ? "\n```" : "`");
-        }
-        
-        private static bool HasNewLine (XElement element) {
-            var nodes = element.DescendantNodes();
-            foreach (var node in nodes) {
-                if (node is XText text) {
-                    if (text.Value.Contains('\n'))
-                        return true;
-                }
-            }
-            return false;
         }
     }
 }

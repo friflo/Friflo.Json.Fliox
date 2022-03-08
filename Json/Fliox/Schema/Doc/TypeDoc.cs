@@ -2,33 +2,25 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Text;
-using System.Xml.Linq;
 
-namespace Friflo.Json.Fliox.Schema.Utils
+namespace Friflo.Json.Fliox.Schema.Doc
 {
     public static class TypeDoc
     {
         public static string HtmlToText (string html, string indent, string start, string newLine, string end) {
             if (html == null)
                 return "";
-            var sb      = new StringBuilder();
-            // --- create valid xml to enable parsing
-            sb.Append("<summary>");
-            sb.Append(html);
-            sb.Append("</summary>");
-            var xml     = sb.ToString();
-            var docs    = XDocument.Parse(xml);
-            var root    = docs.Root;
-            if (root == null)
+            var sb = new StringBuilder();
+            // --- convert html to XElement
+            var htmlElement = DocUtils.CreateHtmlElement(sb, html);
+            if (htmlElement == null)
                 return "";
             
-            // --- convert html to code documentation string with markdown style
-            sb.Clear();
-            MarkdownDoc.AppendElementText(sb, root);
-            var str     = sb.ToString();
+            // --- convert htmlElement to markdown
+            var markdown = MarkdownDoc.CreateMarkdown(sb, htmlElement);
             
             // --- format markdown as code (Typescript) documentation
-            var lines   = str.Split('\n');
+            var lines = markdown.Split('\n');
             if (lines.Length == 1) {
                 return $"{indent}{start} {lines[0]}{end}\n";   
             }

@@ -149,8 +149,8 @@ export class SubscribeMessage extends SyncRequestTask {
     /**
      * Filter all messages with the given **name**.   
      * filter all message:                           **name** == "*"  
-     * filter all message with given prefix: std.    **name** == "std.*"  
-     * filter std.Echo messages                      **name** == "std.Echo"
+     * filter all message with given prefix 'std.'   **name** == "std.*"  
+     * filter message "std.Echo"                     **name** == "std.Echo"
      */
     name    : string;
     remove? : boolean | null;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Doc;
 using Friflo.Json.Fliox.Schema.Utils;
 using static Friflo.Json.Fliox.Schema.Generator;
 // Must not have other dependencies to Friflo.Json.Fliox.* except .Schema.Definition & .Schema.Utils
