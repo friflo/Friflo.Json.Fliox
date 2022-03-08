@@ -143,6 +143,7 @@ export class EntityEditor
         const databaseLink          = createEl('li');
         databaseLink.id             = "databaseInfo";
         databaseLink.style.display  = "flex";
+        databaseLink.style.marginBottom = "5px";
         const databaseAnchor        = createEl("a");
         databaseAnchor.href         = "#";
         databaseAnchor.style.width  = "100%";
