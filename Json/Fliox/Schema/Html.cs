@@ -110,7 +110,7 @@ $@"    <div class='type'>
             var qualifiedName   = type.Namespace + "." + type.Name;
             var unionType       = type.UnionType;
             var typeName        = type.IsSchema ? "schema": type.IsAbstract ? "abstract class" : "class";
-            var doc             = GetDoc("    <desc>", type.docs, "\n    </desc>");
+            var doc             = GetDoc("    <desc>", type.doc, "\n    </desc>");
 
             sb.AppendLine(
 $@"    <div class='type'>
@@ -175,7 +175,7 @@ $@"        <tr>
                     fieldTag    = "ref";
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
-                var fieldDoc    = GetDoc("\n            <td><docs>", field.docs, "</docs></td>");
+                var fieldDoc    = GetDoc("\n            <td><docs>", field.doc, "</docs></td>");
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
@@ -200,7 +200,7 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param, context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
-                var doc     = GetDoc("\n            <td><docs>", messageDef.docs, "</docs></td>");
+                var doc     = GetDoc("\n            <td><docs>", messageDef.doc, "</docs></td>");
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result}";
                 sb.AppendLine(

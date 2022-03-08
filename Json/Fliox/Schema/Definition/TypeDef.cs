@@ -61,14 +61,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   IReadOnlyList<string>       EnumValues      { get; }
         internal readonly   string                      fullName;
         internal            string                      keyField;
-        public   readonly   string                      docs;
+        public   readonly   string                      doc;
 
         
-        protected TypeDef (string name, string @namespace, string docs) {
+        protected TypeDef (string name, string @namespace, string doc) {
             fullName    = @namespace + "#" + name;
             Name        = name;
             Namespace   = @namespace;
-            this.docs   = docs;
+            this.doc    = doc;
         }
         
         internal FieldDef FindField(string name) {
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   string          relation;
         public              TypeDef         RelationType => relationType;
         internal            TypeDef         relationType;
-        public   readonly   string          docs;
+        public   readonly   string          doc;
         
 
         public  override    string          ToString() => name;
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             bool        isNullableElement,
             TypeDef     ownerType,
             string      relation,
-            string      docs)
+            string      doc)
         {
             this.name               = name;
             this.required           = required;
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             this.isNullableElement  = isNullableElement;
             this.ownerType          = ownerType;
             this.relation           = relation;
-            this.docs               = docs;
+            this.doc                = doc;
         }
         
         internal void MarkDerivedField() {
@@ -164,15 +164,15 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   FieldDef    param;
         /// <summary>null: is message       <br/>not null: is command</summary>
         public   readonly   FieldDef    result;
-        public   readonly   string      docs;
+        public   readonly   string      doc;
 
         public   override   string      ToString() => name;
         
-        public MessageDef(string name, FieldDef param, FieldDef result, string docs) {
+        public MessageDef(string name, FieldDef param, FieldDef result, string doc) {
             this.name       = name;
             this.param      = param;
             this.result     = result;
-            this.docs       = docs;
+            this.doc        = doc;
         }
     }
     

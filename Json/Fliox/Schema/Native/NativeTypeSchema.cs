@@ -179,12 +179,12 @@ namespace Friflo.Json.Fliox.Schema.Native
                 var paramArg    = GetMessageArg("param",   command.paramType,  false);
                 if (command.resultType != null) {
                     var resultArg   = GetMessageArg("result",  command.resultType, true);
-                    var commandDef  = new MessageDef(command.name, paramArg, resultArg, command.docs);
+                    var commandDef  = new MessageDef(command.name, paramArg, resultArg, command.doc);
                     if (commandDefs == null)
                         commandDefs = typeDef.commands = new List<MessageDef>();
                     commandDefs.Add(commandDef);
                 } else {
-                    var messageDef  = new MessageDef(command.name, paramArg, null, command.docs);
+                    var messageDef  = new MessageDef(command.name, paramArg, null, command.doc);
                     if (messageDefs == null)
                         messageDefs = typeDef.messages = new List<MessageDef>();
                     messageDefs.Add(messageDef);

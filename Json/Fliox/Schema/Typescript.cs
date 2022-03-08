@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Schema
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
-            var doc             = GetDoc(type.docs, "");
+            var doc             = GetDoc(type.doc, "");
             sb.Append(doc);
             if (baseType != null) {
                 extendsStr = $"extends {baseType.Name} ";
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                var fieldDoc    = GetDoc(field.docs, "    ");
+                var fieldDoc    = GetDoc(field.doc, "    ");
                 sb.Append(fieldDoc);
                 bool required   = field.required;
                 var fieldType   = GetFieldType(field, context, required);
@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param,  context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
-                var doc     = GetDoc(messageDef.docs, "    ");
+                var doc     = GetDoc(messageDef.doc, "    ");
                 sb.Append(doc);
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result ?? "void"}";

@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Schema
                     sb.AppendLine($"            \"isStruct\": true,");
                 if (type.IsAbstract)
                     sb.AppendLine($"            \"isAbstract\": true,");
-                var doc = GetDoc("            ", type.docs, ",");
+                var doc = GetDoc("            ", type.doc, ",");
                 if (doc != "")
                     sb.AppendLine(doc);
             } else {
@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Schema
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                var doc     = GetDoc(", ", field.docs, "");
+                var doc     = GetDoc(", ", field.doc, "");
                 sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{doc} }}");
             }
             sb.AppendLine();
@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var messageDef in messageDefs) {
                 var param           = GetMessageArg("param",  messageDef.param,  context);
                 var result          = GetMessageArg("result", messageDef.result, context);
-                var doc             = GetDoc(",\n                    ", messageDef.docs, "");
+                var doc             = GetDoc(",\n                    ", messageDef.doc, "");
                 var indent          = Indent(maxFieldName, messageDef.name);
                 Delimiter(sb, Next, ref firstField);
                 var argDelimiter    = param.Length > 0 && result.Length > 0 ? ", " : "";

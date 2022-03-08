@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         public  readonly    Type    paramType;
         /// <summary>null: is message       <br/>not null: is command</summary>
         public  readonly    Type    resultType;
-        public  readonly    string  docs;
+        public  readonly    string  doc;
 
         public  override    string  ToString() => name;
 
@@ -137,12 +137,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             string  name,
             Type    paramType,
             Type    resultType,
-            string  docs)
+            string  doc)
         {
             this.name       = name;
             this.paramType  = paramType;
             this.resultType = resultType;
-            this.docs       = docs;
+            this.doc        = doc;
         }
     }
 }
