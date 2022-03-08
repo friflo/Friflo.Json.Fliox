@@ -147,8 +147,8 @@ export type Change =
 export class SubscribeMessage extends SyncRequestTask {
     task    : "subscribeMessage";
     /**
-     * Filter all name's starting with one of the given name strings.
-     * name = {""} => subscribe all message events.name = {} => unsubscribe message events.
+     * Filter all **name**'s starting with one of the given **name** strings.
+     * **name** = {""} => subscribe all message events.**name** = {} => unsubscribe message events.
      */
     name    : string;
     remove? : boolean | null;
@@ -214,7 +214,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     container?  : string | null;
     cursor?     : string | null;
     /**
-     * Is used only to show the number of ids in a serialized protocol message
+     * Is used only to show the number of **ids** in a serialized protocol message
      * to avoid counting them by hand when debugging.
      * It is not used by the library as it is redundant information.
      */

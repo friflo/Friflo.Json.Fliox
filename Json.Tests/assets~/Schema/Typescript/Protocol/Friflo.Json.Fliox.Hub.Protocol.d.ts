@@ -7,22 +7,25 @@ import { SyncTaskResult_Union }  from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { EntityError }           from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 
 /**
- * ProtocolMessage is the base type for all messages which are classified into request, response and event.
+ * **ProtocolMessage** is the base type for all messages which are classified into request, response and event.
  * It can also be used in communication going beyond the request / response schema.
  * 
- * A ProtocolMessage is either one of the following types:
- * ProtocolRequest  send by clients / received by hostsProtocolResponse send by hosts / received by clientsProtocolEvent    send by hosts / received by clientsNote: By applying this classification the protocol can also be used in peer-to-peer networking.
+ * A **ProtocolMessage** is either one of the following types:
+ * - **ProtocolRequest**  send by clients / received by hosts
+ * - **ProtocolResponse** send by hosts / received by clients
+ * - **ProtocolEvent**    send by hosts / received by clients
+ * *Note*: By applying this classification the protocol can also be used in peer-to-peer networking.
  * 
- * General principle of Fliox message protocol:
+ * General principle of **Fliox** message protocol:
  * All messages like requests (their tasks), responses (their results) and events are stateless.
  * In other words: All messages are self-contained and doesnt (and must not) rely and previous sent messages.
  * The technical aspect of having a connection e.g. HTTP or WebSocket is not relevant.
  * This enables two fundamental features:
  * 1. embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC or datagram based protocols.
  * 2. multiplexing of messages from different clients, servers or peers in a shared connection.
- * This also means all Fliox messages doesnt (and must not) require a session.
- * This principle also enables using a single FlioxHub by multiple clients like
- * FlioxClient even for remote clients like RemoteClientHub.
+ * This also means all **Fliox** messages doesnt (and must not) require a session.
+ * This principle also enables using a single **FlioxHub** by multiple clients like
+ * **FlioxClient** even for remote clients like **RemoteClientHub**.
  * 
  */
 export type ProtocolMessage_Union =
@@ -50,16 +53,16 @@ export abstract class ProtocolRequest extends ProtocolMessage {
         | "sync"
     ;
     /**
-     * Used only for RemoteClientHub to enable:
+     * Used only for **RemoteClientHub** to enable:
      * 
      * 1. Out of order response handling for their corresponding requests.
      * 
-     * 2. Multiplexing of requests and their responses for multiple clients e.g. FlioxClient
+     * 2. Multiplexing of requests and their responses for multiple clients e.g. **FlioxClient**
      * using the same connection.
-     * This is not a common scenario but it enables using a single WebSocketClientHub
+     * This is not a common scenario but it enables using a single **WebSocketClientHub**
      * used by multiple clients.
      * 
-     * The host itself only echos the reqId to reqId and doesn't do
+     * The host itself only echos the **reqId** to **reqId** and doesn't do
      * anythings else with it.
      */
     req? : int32 | null;
@@ -70,16 +73,16 @@ export class SyncRequest extends ProtocolRequest {
     msg       : "sync";
     /**
      * Identify the user performing a sync request.
-     * In case using of using UserAuthenticator the userId and token
+     * In case using of using **UserAuthenticator** the **userId** and **token**
      * are use for user authentication.
      */
     user?     : string | null;
     token?    : string | null;
     /**
-     * eventAck is used to ensure (change) events are delivered reliable.
-     * A client set eventAck to the last received seq in case
-     * it has subscribed to database changes by a SubscribeChanges task.
-     * Otherwise eventAck is null.
+     * **eventAck** is used to ensure (change) events are delivered reliable.
+     * A client set **eventAck** to the last received **seq** in case
+     * it has subscribed to database changes by a **SubscribeChanges** task.
+     * Otherwise **eventAck** is null.
      */
     ack?      : int32 | null;
     tasks     : SyncRequestTask_Union[];
@@ -97,17 +100,17 @@ export abstract class ProtocolResponse extends ProtocolMessage {
         | "resp"
         | "error"
     ;
-    /** Set to the value of the corresponding reqId */
+    /** Set to the value of the corresponding **reqId** */
     req? : int32 | null;
     /**
-     * Set to clientId of a SyncRequest in case the given
-     * clientId was valid. Otherwise it is set to null.
-     * Calling String@) when clientId == null a
+     * Set to **clientId** of a **SyncRequest** in case the given
+     * **clientId** was valid. Otherwise it is set to null.
+     * Calling **String@)** when **clientId** == null a
      * new unique client id will be assigned.
-     * For tasks which require a clientId a client need to set clientId
-     * to clientId.
-     * This enables tasks like SubscribeMessage or SubscribeChanges identifying the
-     * EventMessage target.
+     * For tasks which require a **clientId** a client need to set **clientId**
+     * to **clientId**.
+     * This enables tasks like **SubscribeMessage** or **SubscribeChanges** identifying the
+     * **EventMessage** target.
      */
     clt? : string | null;
 }
@@ -127,7 +130,7 @@ export class SyncResponse extends ProtocolResponse {
 export class ContainerEntities {
     container  : string;
     /**
-     * Is only set when using a RemoteHostHub to show the number of entities
+     * Is only set when using a **RemoteHostHub** to show the number of **entities**
      * in a serialized protocol message to avoid counting them by hand when debugging.
      * It is not used by the library as it is redundant information.
      */
@@ -171,7 +174,13 @@ export class EventMessage extends ProtocolEvent {
     msg    : "ev";
     /**
      * Contains the events an application subscribed. These are:
-     * CreateEntitiesUpsertEntitiesDeleteEntitiesPatchEntitiesSendMessageSendCommand
+     * - **CreateEntities**
+     * - **UpsertEntities**
+     * - **DeleteEntities**
+     * - **PatchEntities**
+     * - **SendMessage**
+     * - **SendCommand**
+     * 
      */
     tasks? : SyncRequestTask_Union[] | null;
 }

@@ -15,9 +15,9 @@ import { float }        from "./Standard";
 import { double }       from "./Standard";
 
 /**
- * The PocStore offer two functionalities: 
- * 1. Defines a database schema by declaring its containers and commands 
- * 2. Is a database client providing type-safe access to its containers and commands 
+ * The **PocStore** offer two functionalities: 
+ * 1. Defines a database **schema** by declaring its containers and commands 
+ * 2. Is a database **client** providing type-safe access to its containers and commands 
  */
 // schema documentation only - not implemented right now
 export interface PocStore {
@@ -52,12 +52,12 @@ export interface PocStore {
 
 /**
  * Some useful class documentation :)
- * Test type reference 'OrderItem'
+ * Test type reference '**OrderItem**'
  */
 export class Order {
     id        : string;
     /**
-     * Some useful field documentation 🙂
+     * Some **useful** field documentation 🙂
      * Check some new lines
      * in documentation
      */

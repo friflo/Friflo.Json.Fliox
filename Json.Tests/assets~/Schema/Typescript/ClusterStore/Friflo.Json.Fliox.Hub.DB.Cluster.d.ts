@@ -2,7 +2,7 @@
 import { int64 } from "./Standard";
 
 /**
- * ClusterStore provide information about databases hosted by the Hub: 
+ * **ClusterStore** provide information about databases hosted by the Hub: 
  * - available containers aka tables per database 
  * - available commands per database 
  * - the schema assigned to each database
