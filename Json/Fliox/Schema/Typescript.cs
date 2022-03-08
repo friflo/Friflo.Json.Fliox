@@ -158,6 +158,8 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param,  context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
+                var docs    = GetDescription(messageDef.docs, "    ");
+                sb.Append(docs);
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result ?? "void"}";
                 sb.AppendLine($"    [\"{messageDef.name}\"]{indent} {signature};");
