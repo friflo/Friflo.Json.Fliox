@@ -110,7 +110,7 @@ $@"    <div class='type'>
             var qualifiedName   = type.Namespace + "." + type.Name;
             var unionType       = type.UnionType;
             var typeName        = type.IsSchema ? "schema": type.IsAbstract ? "abstract class" : "class";
-            var typeDocs        = GetDescription("    <desc>", type.docs, "\n    </desc>");
+            var doc             = GetDoc("    <desc>", type.docs, "\n    </desc>");
 
             sb.AppendLine(
 $@"    <div class='type'>
@@ -124,8 +124,8 @@ $@"    <div class='type'>
                 imports.Add(baseType);
             }
             sb.AppendLine("    </h3>");
-            if (typeDocs != "")
-                sb.AppendLine(typeDocs);
+            if (doc != "")
+                sb.AppendLine(doc);
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (type.IsSchema) {
@@ -175,11 +175,11 @@ $@"        <tr>
                     fieldTag    = "ref";
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
-                var docs = GetDescription("\n            <td><docs>", field.docs, "</docs></td>");
+                var fieldDoc    = GetDoc("\n            <td><docs>", field.docs, "</docs></td>");
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{docs}
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{fieldDoc}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -200,12 +200,12 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param, context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
-                var docs    = GetDescription("\n            <td><docs>", messageDef.docs, "</docs></td>");
+                var doc     = GetDoc("\n            <td><docs>", messageDef.docs, "</docs></td>");
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result}";
                 sb.AppendLine(
 $@"        <tr>
-            <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{docs}
+            <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{doc}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -255,7 +255,7 @@ $@"        <tr>
             return sb.ToString();
         }
         
-        private static string GetDescription(string prefix, string docs, string suffix) {
+        private static string GetDoc(string prefix, string docs, string suffix) {
             if (docs == null)
                 return "";
             return $"{prefix}{docs}{suffix}";

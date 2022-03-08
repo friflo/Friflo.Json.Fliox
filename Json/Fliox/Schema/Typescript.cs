@@ -95,8 +95,8 @@ namespace Friflo.Json.Fliox.Schema
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
-            var docs            = GetDescription(type.docs, "");
-            sb.Append(docs);
+            var doc             = GetDoc(type.docs, "");
+            sb.Append(doc);
             if (baseType != null) {
                 extendsStr = $"extends {baseType.Name} ";
                 dependencies.Add(baseType);
@@ -135,12 +135,12 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                var fieldDocs = GetDescription(field.docs, "    ");
-                sb.Append(fieldDocs);
-                bool required = field.required;
-                var fieldType = GetFieldType(field, context, required);
-                var indent  = Indent(maxFieldName, field.name);
-                var optStr  = required ? " ": "?";
+                var fieldDoc    = GetDoc(field.docs, "    ");
+                sb.Append(fieldDoc);
+                bool required   = field.required;
+                var fieldType   = GetFieldType(field, context, required);
+                var indent      = Indent(maxFieldName, field.name);
+                var optStr      = required ? " ": "?";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
             }
             EmitMessages("commands", type.Commands, context, sb);
@@ -159,8 +159,8 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param,  context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
-                var docs    = GetDescription(messageDef.docs, "    ");
-                sb.Append(docs);
+                var doc     = GetDoc(messageDef.docs, "    ");
+                sb.Append(doc);
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result ?? "void"}";
                 sb.AppendLine($"    [\"{messageDef.name}\"]{indent} {signature};");
@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Schema
             return type.Name;
         }
         
-        private static string GetDescription(string docs, string indent) {
+        private static string GetDoc(string docs, string indent) {
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " *", " */");
         }
         

@@ -105,9 +105,9 @@ namespace Friflo.Json.Fliox.Schema
                     sb.AppendLine($"            \"isStruct\": true,");
                 if (type.IsAbstract)
                     sb.AppendLine($"            \"isAbstract\": true,");
-                var docs = GetDescription("            ", type.docs, ",");
-                if (docs != "")
-                    sb.AppendLine(docs);
+                var doc = GetDoc("            ", type.docs, ",");
+                if (doc != "")
+                    sb.AppendLine(doc);
             } else {
                 sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
                 sb.AppendLine($"            \"oneOf\": [");
@@ -155,8 +155,8 @@ namespace Friflo.Json.Fliox.Schema
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                var docs    = GetDescription(", ", field.docs, "");
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{docs} }}");
+                var doc     = GetDoc(", ", field.docs, "");
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{doc} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");
@@ -190,12 +190,12 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var messageDef in messageDefs) {
                 var param           = GetMessageArg("param",  messageDef.param,  context);
                 var result          = GetMessageArg("result", messageDef.result, context);
-                var description     = GetDescription(",\n                    ", messageDef.docs, "");
+                var doc             = GetDoc(",\n                    ", messageDef.docs, "");
                 var indent          = Indent(maxFieldName, messageDef.name);
                 Delimiter(sb, Next, ref firstField);
                 var argDelimiter    = param.Length > 0 && result.Length > 0 ? ", " : "";
                 var signature       = $"{param}{argDelimiter}{result}";
-                sb.Append($"                \"{messageDef.name}\":{indent} {{ {signature}{description} }}");
+                sb.Append($"                \"{messageDef.name}\":{indent} {{ {signature}{doc} }}");
             }
             sb.Append("\n            }");
         }
@@ -243,7 +243,7 @@ namespace Friflo.Json.Fliox.Schema
             return $", \"relation\": \"{field.relation }\"";
         }
         
-        private static string GetDescription(string prefix, string docs, string suffix) {
+        private static string GetDoc(string prefix, string docs, string suffix) {
             if (docs == null)
                 return "";
             docs = docs.Replace("\n", "\\n");
