@@ -119,8 +119,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         private static string GetNodeText (XNode node) {
-            if (node is XText xtext) {
-                return TrimLines(xtext);
+            if (node is XText text) {
+                return TrimLines(text);
             }
             if (node is XElement element) {
                 var name    = element.Name.LocalName;
@@ -173,8 +173,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         /// <summary>Trim leading tabs and spaces. Normalize new lines</summary>
-        private static string TrimLines (XText node) {
-            string value    = node.Value;
+        private static string TrimLines (XText text) {
+            string value    = text.Value;
             value           = value.Replace("\r\n", "\n");
             var lines       = value.Split("\n");
             if (lines.Length == 1)
