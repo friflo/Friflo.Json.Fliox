@@ -43,21 +43,27 @@ namespace Friflo.Json.Fliox.Mapper.Map
     // ------------------------------------ AssemblyDoc ------------------------------------
     internal sealed class AssemblyDoc
     {
-        private   readonly  string                      name;
-        private   readonly  Dictionary<string, string>  signatures; // is null if no documentation available
+        private   readonly  string                          name;
+        private   readonly  Dictionary<string, XElement>    signatures; // is null if no documentation available
+        private   readonly  StringBuilder                   sb;
         
-        internal            bool                        Available => signatures != null;
+        internal            bool                            Available => signatures != null;
 
-        public override     string                      ToString()   => name;
+        public override     string                          ToString()   => name;
 
-        private AssemblyDoc(string name, Dictionary<string, string>  signatures) {
+        private AssemblyDoc(string name, Dictionary<string, XElement>  signatures) {
             this.name       = name;
             this.signatures = signatures;
+            sb              = new StringBuilder();
         }
         
         internal string GetDocumentation(string signature) {
-            signatures.TryGetValue(signature, out var result);
-            return result;
+            if (!signatures.TryGetValue(signature, out var result))
+                return null;
+            var text    = GetElementText(sb, result);
+            text        = text.Trim();
+            sb.Clear();
+            return text;
         }
 
         internal static AssemblyDoc Load(string name, Assembly assembly) {
@@ -77,7 +83,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             }
         }
         
-        private static Dictionary<string, string> GetSignatures (XDocument documentation) {
+        private static Dictionary<string, XElement> GetSignatures (XDocument documentation) {
             var doc     = documentation.Element("doc");
             if (doc == null)
                 return null;
@@ -85,18 +91,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (members == null)
                 return null;
             var memberElements  = members.Elements();
-            var signatures      = new Dictionary<string, string>();
-            var sb              = new StringBuilder();
+            var signatures      = new Dictionary<string, XElement>();
 
             foreach (XElement element in memberElements) {
                 var signature   = element.Attribute("name");
                 var summary     = element.Element("summary");
                 if (signature == null || summary == null)
                     continue;
-                // if (signature.Value.Contains("envColor")) { int i = 33; }
-                var text = GetElementText(sb, summary);
-                text = text.Trim();
-                signatures[signature.Value] = text;
+                signatures[signature.Value] = summary;
             }
             return signatures;
         }
