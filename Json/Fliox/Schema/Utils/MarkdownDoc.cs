@@ -31,8 +31,10 @@ namespace Friflo.Json.Fliox.Schema.Utils
                         AppendElementText(sb, element);
                         sb.Append("  "); // force new line in markdown
                         return;
-                    case "ul":  AppendElementText(sb, element);    return;
-                    case "li":  AppendLiText(sb, element);         return;
+                    case "a":   AppendElementText(sb, element);     return;
+                    case "p":   AppendElementText(sb, element);     return;
+                    case "ul":  AppendElementText(sb, element);     return;
+                    case "li":  AppendLiText(sb, element);          return;
                     case "b":
                         sb.Append("**");
                         AppendElementText(sb, element);
@@ -43,8 +45,10 @@ namespace Friflo.Json.Fliox.Schema.Utils
                         AppendElementText(sb, element);
                         sb.Append('*');
                         return;
-                    case "code":    AppendCode(sb, element);    return;
+                    case "code":    AppendCode(sb, element);        return;
                     default:
+                        // Note: should not be reached
+                        // dont error but explicit cases are easier to read and debug
                         AppendElementText(sb, element);
                         return;
                 }
