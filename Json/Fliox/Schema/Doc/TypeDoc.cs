@@ -10,20 +10,13 @@ namespace Friflo.Json.Fliox.Schema.Doc
         public static string HtmlToText (string html, string indent, string start, string newLine, string end) {
             if (html == null)
                 return "";
-            var sb = new StringBuilder();
-            // --- convert html to XElement
-            var htmlElement = DocUtils.CreateHtmlElement(sb, html);
-            if (htmlElement == null)
-                return "";
-            
-            // --- convert htmlElement to markdown
-            var markdown = MarkdownDoc.CreateMarkdown(sb, htmlElement);
+            var sb      = new StringBuilder();
+            var lines   = DocUtils.CreateMarkdownLines(sb, html);
             
             // --- format markdown as code (Typescript) documentation
-            var lines = markdown.Split('\n');
-            if (lines.Length == 1) {
-                return $"{indent}{start} {lines[0]}{end}\n";   
-            }
+            if (lines.Length == 1)
+                return $"{indent}{start} {lines[0]}{end}\n";
+
             sb.Clear();
             var firstLine   = true;
             sb.Append(indent);

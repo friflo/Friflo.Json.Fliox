@@ -8,6 +8,16 @@ namespace Friflo.Json.Fliox.Schema.Doc
 {
     public static class DocUtils
     {
+        public static string[] CreateMarkdownLines(StringBuilder sb, string html) {
+            // --- convert html to XElement
+            var htmlElement = CreateHtmlElement(sb, html);
+            
+            // --- convert htmlElement to markdown
+            var markdown    = MarkdownDoc.CreateMarkdown(sb, htmlElement);
+            return markdown.Split('\n');
+        }
+        
+        // ReSharper disable once MemberCanBePrivate.Global
         public static XElement CreateHtmlElement(StringBuilder sb, string html) {
             sb.Clear();
             // --- create valid xml to enable parsing
