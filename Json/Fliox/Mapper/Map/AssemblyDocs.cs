@@ -122,18 +122,18 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (node is XText xtext) {
                 return TrimLines(xtext);
             }
-            if (node is XElement xElement) {
-                var name    = xElement.Name.LocalName;
-                var value   = xElement.Value;
+            if (node is XElement element) {
+                var name    = element.Name.LocalName;
+                var value   = element.Value;
                 switch (name) {
                     case "see":
                     case "seealso":
                     case "paramref":
                     case "typeparamref":
-                        return GetAttributeText(xElement);
-                    case "para":    return GetContainerText(xElement, "p");
-                    case "list":    return GetContainerText(xElement, "ul");
-                    case "item":    return GetContainerText(xElement, "li");
+                        return GetAttributeText(element);
+                    case "para":    return GetContainerText(element, "p");
+                    case "list":    return GetContainerText(element, "ul");
+                    case "item":    return GetContainerText(element, "li");
                     
                     case "br":      return "<br/>";
                     case "b":       return $"<b>{value}</b>";
@@ -147,15 +147,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
             return "";
         }
         
-        private static string GetContainerText (XElement xElement, string tag) {
+        private static string GetContainerText (XElement element, string tag) {
             var sb = new StringBuilder();
-            var value = GetElementText(sb, xElement);
+            var value = GetElementText(sb, element);
             return $"<{tag}>{value}</{tag}>";
         }
         
-        private static string GetAttributeText (XElement xElement) {
-            var attributes = xElement.Attributes();
-            // if (xElement.Value.Contains("TypeValidator")) { int i = 111; }
+        private static string GetAttributeText (XElement element) {
+            var attributes = element.Attributes();
+            // if (element.Value.Contains("TypeValidator")) { int i = 111; }
             foreach (var attribute in attributes) {
                 var attributeName = attribute.Name;
                 if (attributeName == "cref" || attributeName == "name") {

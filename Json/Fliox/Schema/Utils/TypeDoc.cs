@@ -72,15 +72,15 @@ namespace Friflo.Json.Fliox.Schema.Utils
             if (node is XText xtext) {
                 return xtext.Value;
             }
-            if (node is XElement xElement) {
-                var name    = xElement.Name.LocalName;
+            if (node is XElement element) {
+                var name    = element.Name.LocalName;
                 switch (name) {
-                    case "ul":  return XElementToString(xElement);
-                    case "li":  return GetLiText(xElement);
-                    case "b":   return $"**{XElementToString(xElement)}**";
-                    case "i":   return $"*{XElementToString(xElement)}*";
+                    case "ul":  return XElementToString(element);
+                    case "li":  return GetLiText(element);
+                    case "b":   return $"**{XElementToString(element)}**";
+                    case "i":   return $"*{XElementToString(element)}*";
                     default:
-                        return XElementToString(xElement);
+                        return XElementToString(element);
                 }
             }
             return "";
