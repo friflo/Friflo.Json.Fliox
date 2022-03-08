@@ -185,12 +185,9 @@ export class EntityEditor
 
     private createMessagesLink (database: string, category: MessageCategory) : HTMLLIElement {
         const commandLink       = createEl('li');
-        const commandAnchor     = createEl('a');
-        commandAnchor.href      = `./rest/${database}?command=std.Messages`;
-        commandAnchor.target    = "blank";
-        commandAnchor.rel       = "noopener noreferrer";
-        commandAnchor.innerHTML = `<small style="opacity:0.5; margin-left: 10px;" title="open database ${category} in new tab">&nbsp;${category}</small>`;
-        commandLink.append(commandAnchor);
+        commandLink.innerHTML   = app.getSchemaCommand(database, category, category);
+        const anchor            = commandLink.firstElementChild as HTMLAnchorElement;
+        anchor.style.marginLeft = "10px";
         return commandLink;
     }
 
