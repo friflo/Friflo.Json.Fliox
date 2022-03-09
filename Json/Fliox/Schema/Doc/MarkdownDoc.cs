@@ -10,22 +10,28 @@ namespace Friflo.Json.Fliox.Schema.Doc
     {
         public static string CreateMarkdown(StringBuilder sb, XElement element) {
             sb.Clear();
-            AppendElementText(sb, element);
+            AppendElement(sb, element);
             return sb.ToString();
         }
 
-        private static void AppendElementText(StringBuilder sb, XElement element) {
+        private static void AppendElement(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
             // var nodes = element.DescendantsAndSelf();
             // if (element.Value.Contains("Check some new lines")) { int i = 42; }
             foreach (var node in nodes) {
                 if (node.Parent != element)
                     continue;
-                AppendNodeText(sb, node);
+                AppendNode(sb, node);
             }
         }
         
-        private static void AppendNodeText (StringBuilder sb, XNode node) {
+        private static void AppendElement(StringBuilder sb, XElement element, string start, string end) {
+            sb.Append(start);
+            AppendElement(sb, element);
+            sb.Append(end);
+        }
+        
+        private static void AppendNode (StringBuilder sb, XNode node) {
             if (node is XText xtext) {
                 sb.Append(xtext.Value);
                 return;
@@ -33,37 +39,26 @@ namespace Friflo.Json.Fliox.Schema.Doc
             if (node is XElement element) {
                 var name    = element.Name.LocalName;
                 switch (name) {
-                    case "br":
-                        AppendElementText(sb, element);
-                        sb.Append("  "); // force new line in markdown
-                        return;
-                    case "a":   AppendElementText(sb, element);     return;
-                    case "p":   AppendElementText(sb, element);     return;
-                    case "ul":  AppendElementText(sb, element);     return;
-                    case "li":  AppendLiText(sb, element);          return;
-                    case "b":
-                        sb.Append("**");
-                        AppendElementText(sb, element);
-                        sb.Append("**");
-                        return;
-                    case "i":
-                        sb.Append('*');
-                        AppendElementText(sb, element);
-                        sb.Append('*');
-                        return;
-                    case "code":    AppendCode(sb, element);        return;
+                    case "br":      AppendElement(sb, element, "", "  ");       return; // force new line in markdown
+                    case "a":       AppendElement(sb, element);                 return;
+                    case "p":       AppendElement(sb, element);                 return;
+                    case "ul":      AppendElement(sb, element);                 return;
+                    case "li":      AppendLi     (sb, element);                 return;
+                    case "b":       AppendElement(sb, element, "**", "**");     return;
+                    case "i":       AppendElement(sb, element, "*", "*");       return;
+                    case "code":    AppendCode   (sb, element);                 return;
                     default:
                         // Note: should not be reached
                         // dont error but explicit cases are easier to read and debug
-                        AppendElementText(sb, element);
+                        AppendElement(sb, element);
                         return;
                 }
             }
         }
         
-        private static void AppendLiText (StringBuilder sb, XElement element) {
+        private static void AppendLi (StringBuilder sb, XElement element) {
             var localSb = new StringBuilder();
-            AppendElementText(localSb, element);
+            AppendElement(localSb, element);
             var text        = localSb.ToString();
             var lines       = text.Split('\n');
             var firstLine   = true;
@@ -80,7 +75,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
         private static void AppendCode (StringBuilder sb, XElement element) {
             var hasNewLine = TypeDoc.HasNewLine(element); 
             sb.Append(hasNewLine ? "```\n" : "`");
-            AppendElementText(sb, element);
+            AppendElement(sb, element);
             sb.Append(hasNewLine ? "\n```" : "`");
         }
     }
