@@ -70,9 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- commands: database
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>
         public CommandTask<TParam>      Echo<TParam> (TParam param) => SendCommand<TParam,TParam>   (Std.Echo, param);
-        /// <summary>list all containers of the database</summary>
+        /// <summary>list all database containers</summary>
         public CommandTask<DbContainers>Containers()        => SendCommand<DbContainers>            (Std.Containers);
-        /// <summary>list all commands exposed by the database</summary>
+        /// <summary>list all database commands and messages</summary>
         public CommandTask<DbMessages>  Messages()          => SendCommand<DbMessages>              (Std.Messages);
         /// <summary>return the JSON Schema assigned to the database</summary>
         public CommandTask<DbSchema>    Schema()            => SendCommand<DbSchema>                (Std.Schema);
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public CommandTask<DbStats>     Stats(string param) => SendCommand<DbStats>                 (Std.Stats);
         
         // --- commands: host
-        /// <summary>returns descriptive information about the Hub like version, host, project and environment name</summary>
+        /// <summary>returns general information about the Hub like version, host, project and environment name</summary>
         public CommandTask<HostDetails> Details()           => SendCommand<HostDetails>             (Std.HostDetails);
         /// <summary>list all databases and their containers hosted by the Hub</summary>
         public CommandTask<HostCluster> Cluster()           => SendCommand<HostCluster>             (Std.HostCluster);

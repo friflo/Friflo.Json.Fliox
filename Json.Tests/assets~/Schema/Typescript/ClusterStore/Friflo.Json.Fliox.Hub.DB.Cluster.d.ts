@@ -17,15 +17,15 @@ export interface ClusterStore {
     // --- commands
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]           (param: any) : any;
-    /** list all containers of the database */
+    /** list all database containers */
     ["std.Containers"]     () : DbContainers;
-    /** list all commands exposed by the database */
+    /** list all database commands and messages */
     ["std.Messages"]       () : DbMessages;
     /** return the JSON Schema assigned to the database */
     ["std.Schema"]         () : DbSchema;
     /** return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]          (param: string | null) : DbStats;
-    /** returns descriptive information about the Hub like version, host, project and environment name */
+    /** returns general information about the Hub like version, host, project and environment name */
     ["std.Details"]        () : HostDetails;
     /** list all databases and their containers hosted by the Hub */
     ["std.Cluster"]        () : HostCluster;
