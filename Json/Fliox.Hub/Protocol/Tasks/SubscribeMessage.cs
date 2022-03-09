@@ -11,10 +11,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeMessage : SyncRequestTask
     {
         /// <summary>
-        ///   Filter all messages with the given <see cref="name"/>.
-        ///   <para><see cref="name"/> == "*"           => filter all message</para>
-        ///   <para><see cref="name"/> == "std.*"       => filter all message with given prefix: std.</para>
-        ///   <para><see cref="name"/> == "std.Echo"    => filter std.Echo messages</para>
+        ///   Filter all messages with the given <see cref="name"/>. <br/>
+        ///   <see cref="name"/> = "*"           => filter all message <br/>
+        ///   <see cref="name"/> = "std.*"       => filter all message with given prefix: std.<br/>
+        ///   <see cref="name"/> = "std.Echo"    => filter std.Echo messages<br/>
         /// </summary>
         [Fri.Required]  public  string      name;
                         public  bool?       remove;
