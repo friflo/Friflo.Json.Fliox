@@ -135,9 +135,8 @@ $@"    <div class='type'>
             if (unionType != null) {
                 sb.AppendLine(
                     $@"        <tr>
-            <td><br><discUnion>{unionType.discriminator}</discUnion></td>
-            <td colspan='2'><table>
-            <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>");
+            <td><discUnion>{unionType.discriminator}</discUnion></td>
+            <td><keyword>discriminants</keyword></td><td><table>");
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     var name = GetTypeName (polyTypeDef, context);
