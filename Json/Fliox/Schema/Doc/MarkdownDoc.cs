@@ -16,8 +16,6 @@ namespace Friflo.Json.Fliox.Schema.Doc
 
         private static void AppendElement(StringBuilder sb, XElement element) {
             var nodes = element.DescendantNodes();
-            // var nodes = element.DescendantsAndSelf();
-            // if (element.Value.Contains("Check some new lines")) { int i = 42; }
             foreach (var node in nodes) {
                 if (node.Parent != element)
                     continue;
