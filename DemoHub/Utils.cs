@@ -6,7 +6,7 @@ using System.Linq;
 using Bogus;
 using Friflo.Json.Fliox.Hub.Client;
 
-namespace Friflo.Json.Fliox.DemoHub
+namespace Fliox.DemoHub
 {
     /// <summary>
     /// <see cref="Utils"/> is used to create random records in the <see cref="DemoStore"/> containers. <br/>

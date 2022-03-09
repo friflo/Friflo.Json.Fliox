@@ -3,7 +3,7 @@ using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
-namespace Friflo.Json.Fliox.DemoHub
+namespace Fliox.DemoHub
 {
     [Fri.MessagePrefix("demo.")]
     public partial class DemoStore {

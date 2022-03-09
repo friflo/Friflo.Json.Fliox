@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable All
-namespace Friflo.Json.Fliox.DemoHub
+namespace Fliox.DemoHub
 {
     /// <summary>
     /// The <see cref="DemoStore"/> offer two functionalities: <br/>

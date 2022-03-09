@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Friflo.Json.Fliox.DemoHub
+namespace Fliox.DemoHub
 {
     /// <summary>
     /// Bootstrapping of ASP.NET Core and adding the Hub returned by <see cref="Program.CreateHttpHost"/>.

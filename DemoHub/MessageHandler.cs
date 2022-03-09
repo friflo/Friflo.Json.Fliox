@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 
 // ReSharper disable UnusedMember.Local
-namespace Friflo.Json.Fliox.DemoHub
+namespace Fliox.DemoHub
 {
     /// <summary>
     /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands

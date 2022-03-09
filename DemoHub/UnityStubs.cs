@@ -1,6 +1,6 @@
 #if UNITY_2020_1_OR_NEWER
 
-namespace Friflo.Json.Fliox.DemoHub
+namespace Fliox.DemoHub
 {
     public class Startup
     {

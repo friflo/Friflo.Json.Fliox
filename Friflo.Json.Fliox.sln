@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.AspNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Hub.Explorer", "Json\Fliox.Hub.Explorer\Friflo.Json.Fliox.Hub.Explorer.csproj", "{77F2B581-9A0D-40CB-819E-61304ECCE45B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DemoHub", "DemoHub\Friflo.Json.Fliox.DemoHub.csproj", "{EFF712BE-ECC8-453D-863F-6C3FBA03FC36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fliox.DemoHub", "DemoHub\Fliox.DemoHub.csproj", "{EFF712BE-ECC8-453D-863F-6C3FBA03FC36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
