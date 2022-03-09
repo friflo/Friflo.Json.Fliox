@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         private static void AppendTrimLines (StringBuilder sb, XText text) {
             string value    = text.Value;
             value           = value.Replace("\r\n", "\n");
-            var lines       = value.Split("\n");
+            var lines       = value.Split('\n');
             if (lines.Length == 1) {
                 sb.Append(value);
                 return;
