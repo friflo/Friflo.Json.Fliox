@@ -18,12 +18,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     /// <summary>
     /// The <see cref="PocStore"/> offer two functionalities: <br/>
-    /// 1. Defines a database <b>schema</b> by declaring its containers and commands <br/>
-    /// 2. Is a database <b>client</b> providing type-safe access to its containers and commands <br/>
+    /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
+    /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>
     /// </summary>
     /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.<br/>
+    /// Its messages are methods returning a <see cref="MessageTask"/>.
     /// <see cref="PocStore"/> instances can be used on server and client side.
     /// </remarks>
     public class PocStore : FlioxClient

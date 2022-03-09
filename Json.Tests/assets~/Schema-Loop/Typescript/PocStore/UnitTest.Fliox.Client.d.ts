@@ -33,8 +33,8 @@ export class Employee {
 
 /**
  * The **PocStore** offer two functionalities:   
- * 1. Defines a database **schema** by declaring its containers and commands   
- * 2. Is a database **client** providing type-safe access to its containers and commands   
+ * 1. Defines a database **schema** by declaring its containers, commands and messages  
+ * 2. Is a database **client** providing type-safe access to its containers, commands and messages   
  */
 // schema documentation only - not implemented right now
 export interface PocStore {

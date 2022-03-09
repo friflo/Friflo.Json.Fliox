@@ -10,14 +10,15 @@ namespace Friflo.Json.Fliox.DemoHub
 {
     /// <summary>
     /// The <see cref="DemoStore"/> offer two functionalities: <br/>
-    /// 1. Defines a database <b>schema</b> by declaring its containers and commands <br/>
-    /// 2. Is a database <b>client</b> providing type-safe access to its containers and commands <br/>
+    /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
+    /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and message<br/>
     /// <br/>
     /// <i>Info</i>: Use command <b>demo.FakeRecords</b> to create fake records in various containers.
     /// </summary>
     /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs <br/>
+    /// Its messages are methods returning a <see cref="MessageTask"/>.
     /// <see cref="DemoStore"/> instances can be used on server and client side.
     /// </remarks>
     public partial class DemoStore : FlioxClient {
