@@ -127,6 +127,7 @@
         .namespace                          { scroll-margin-top: 5px; }
         .type                               { scroll-margin-top: 5px; scroll-margin-bottom: 100px;  } /* enable scrolling to next type without aligning next element on top */
         div.type table                      { margin-left: 40px; }
+        div.type table td table             { margin-left: 0; } /* discriminants table */
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
         .commands tr                        { vertical-align: top; }
         .fields tr                          { vertical-align: top; }
@@ -573,7 +574,7 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
     <table class='fields'>
         <tr>
             <td><br><discUnion>type</discUnion></td>
-            <td><table>
+            <td colspan='2'><table>
             <tr><td><keyword>discriminants</keyword></td><td><keyword>sub classes</keyword></td></tr>
             <tr>
                 <td><discriminant>"allow"</discriminant></td>
