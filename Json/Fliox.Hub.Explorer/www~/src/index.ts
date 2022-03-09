@@ -526,6 +526,11 @@ export class App {
     public static getDatabaseLink(database: string) : string {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
+    
+    public static getMessagesLink (database: string) : string {
+        const href = `./rest/${database}?command=std.Messages`;
+        return `<a title="open database commands & messages in new tab" href=${href} target="_blank" rel="noopener noreferrer">${database}</a>`;
+    }
 
     public getContainerSchema (database: string, container: string) : JsonType | null{
         const schema = app.databaseSchemas[database];

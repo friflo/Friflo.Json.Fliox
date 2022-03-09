@@ -96,7 +96,7 @@ export class EntityEditor {
         el("databaseLabel").innerHTML = schemaType;
         filterRow.style.visibility = "hidden";
         entityFilter.style.visibility = "hidden";
-        readEntitiesDB.innerHTML = App.getDatabaseLink(database);
+        readEntitiesDB.innerHTML = App.getMessagesLink(database);
         readEntities.innerHTML = "";
         readEntitiesCount.innerHTML = "";
         const ulDatabase = createEl('ul');
@@ -117,7 +117,7 @@ export class EntityEditor {
         ulDatabase.append(databaseLink);
         const messageMap = {};
         // commands link
-        const commandLink = this.createMessagesLink(database, "commands");
+        const commandLink = this.createMessagesDocLink(database, "commands");
         ulDatabase.append(commandLink);
         // commands list
         const messagesLi = this.createMessagesLi(database, "command", dbMessages.commands, messageMap);
@@ -125,7 +125,7 @@ export class EntityEditor {
         const messages = dbMessages.messages;
         if (messages && messages.length > 0) {
             // messages link
-            const commandLink = this.createMessagesLink(database, "messages");
+            const commandLink = this.createMessagesDocLink(database, "messages");
             ulDatabase.append(commandLink);
             // messages list
             const messagesLi = this.createMessagesLi(database, "message", dbMessages.messages, messageMap);
@@ -143,7 +143,7 @@ export class EntityEditor {
             this.selectDatabaseInfo(database);
         }
     }
-    createMessagesLink(database, category) {
+    createMessagesDocLink(database, category) {
         const categoryEl = createEl('li');
         categoryEl.innerHTML = app.getSchemaCommand(database, category, category);
         if (!app.databaseSchemas[database]) {
