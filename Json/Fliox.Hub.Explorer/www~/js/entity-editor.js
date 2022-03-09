@@ -144,11 +144,14 @@ export class EntityEditor {
         }
     }
     createMessagesLink(database, category) {
-        const commandLink = createEl('li');
-        commandLink.innerHTML = app.getSchemaCommand(database, category, category);
-        const anchor = commandLink.firstElementChild;
-        anchor.style.marginLeft = "10px";
-        return commandLink;
+        const categoryEl = createEl('li');
+        categoryEl.innerHTML = app.getSchemaCommand(database, category, category);
+        if (!app.databaseSchemas[database]) {
+            categoryEl.innerHTML = `<span style="opacity: 0.5;">${category}</span>`;
+        }
+        const child = categoryEl.firstElementChild;
+        child.style.marginLeft = "10px";
+        return categoryEl;
     }
     createMessagesLi(database, type, messages, messageMap) {
         const ulCommands = createEl('ul');

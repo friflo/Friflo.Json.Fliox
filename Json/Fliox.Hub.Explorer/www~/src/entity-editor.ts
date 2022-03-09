@@ -185,11 +185,14 @@ export class EntityEditor
     }
 
     private createMessagesLink (database: string, category: MessageCategory) : HTMLLIElement {
-        const commandLink       = createEl('li');
-        commandLink.innerHTML   = app.getSchemaCommand(database, category, category);
-        const anchor            = commandLink.firstElementChild as HTMLAnchorElement;
-        anchor.style.marginLeft = "10px";
-        return commandLink;
+        const categoryEl        = createEl('li');
+        categoryEl.innerHTML    = app.getSchemaCommand(database, category, category);
+        if (!app.databaseSchemas[database]) {
+            categoryEl.innerHTML    = `<span style="opacity: 0.5;">${category}</span>`;
+        }
+        const child             = categoryEl.firstElementChild as HTMLElement;
+        child.style.marginLeft  = "10px";
+        return categoryEl;
     }
 
     private createMessagesLi(database: string, type: MsgType, messages: string[], messageMap: MessageMap) : HTMLLIElement {
