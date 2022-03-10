@@ -13,6 +13,17 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// <summary>
+    /// A <see cref="MemoryDatabase"/> is a non-persistant database used to store records in memory. <br/>
+    /// The intention is having a shared database which can be used in high performance scenarios. <br/>
+    /// E.g. on a 4 Core CPU it is able to achieve more than 500.000 request / second. <br/>
+    /// Following use-cases are suitable for a <see cref="MemoryDatabase"/>
+    /// <list type="bullet">
+    ///   <item>Run a big amount of unit tests fast and efficient as instantiation of <see cref="MemoryDatabase"/> take only some micro seconds. </item>
+    ///   <item>Use as a Game Session database for online multiplayer games as it provide sub millisecond response latency</item>
+    /// </list>
+    /// <see cref="MemoryDatabase"/> has no third party dependencies.
+    /// </summary>
     public sealed class MemoryDatabase : EntityDatabase
     {
         private  readonly   bool                pretty;
