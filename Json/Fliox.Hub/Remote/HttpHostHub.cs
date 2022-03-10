@@ -4,7 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.DB.Monitor;
+using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
@@ -14,6 +17,19 @@ using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    /// <summary>
+    /// A <see cref="HttpHostHub"/> enables remote access to <see cref="EntityDatabase"/> instances hosted
+    /// by a <see cref="FlioxHub"/> <br/>
+    /// The <see cref="HttpHostHub"/> provide a set of Web APIs to access its databases from remote clients
+    /// by using <b>HTTP</b> or <b>WebSockets</b>. <br/>
+    /// A <see cref="HttpHostHub"/> can be integrated by any HTTP server like like <b>ASP.NET Core / Kestrel</b>
+    /// or the <see cref="System.Net.HttpListener"/> part of the .NET Base Class library (BCL). <br/>
+    /// <br/>
+    /// A <see cref="HttpHostHub"/> can be accessed remotely by: <br/>
+    ///   1. HTTP POST via a single path ./ enabling batching multiple tasks in a single request <br/>
+    ///   2. Send batch requests containing multiple tasks via a WebSocket <br/>
+    ///   3. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id <br/>
+    /// </summary>
     public class HttpHostHub : RemoteHostHub
     {
         private  readonly   SchemaHandler           schemaHandler;
