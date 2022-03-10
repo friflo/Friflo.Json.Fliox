@@ -288,9 +288,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>.
-        /// The method can be used directly for rapid prototyping. For production grade encapsulate call by a command method to
-        /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
+        /// Send a command with the given <paramref name="name"/> and <paramref name="param"/> value to the attached <see cref="FlioxHub"/>. <br/>
+        /// The method can be used directly for rapid prototyping. For production grade encapsulate its call by a method added to
+        /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its signature to the <see cref="DatabaseSchema"/>. 
         /// </summary>
         public CommandTask<TResult> SendCommand<TParam, TResult>(string name, TParam param) {
             using (var pooled = ObjectMapper.Get()) {
