@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <summary>
     /// A <see cref="FileDatabase"/> is used to store the entities / records of its containers as <b>JSON</b>
     /// files in the <b>file-system</b>.<br/>
-    /// Each database container / table is a sub folder in the folder passed to the <see cref="FileDatabase"/> constructor.<br/>
+    /// Each database container / table is a sub folder of the path passed to the <see cref="FileDatabase"/> constructor.<br/>
     /// The intention of a <see cref="FileDatabase"/> is providing <b>out of the box</b> persistence without the need of
     /// installation or configuration of a third party database server like: SQLite, Postgres, ...<br/>
     /// This enables the following uses cases
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <item>Creating <b>proof-of-concept</b> database applications without any third party dependencies</item>
     ///   <item>Suitable for <b>TDD</b> as test records are JSON files versioned via Git and providing access to their change history</item>
     ///   <item>Using a database <b>without configuration</b> by using a relative database path within a project</item>
-    ///   <item>Viewing and editing JSON files with <b>text editors</b> like VSCode, vi, web browsers, ...<br/></item>
+    ///   <item>Viewing and editing database records as JSON files with <b>text editors</b> like VSCode, vi, web browsers, ...<br/></item>
     ///   <item>Using a <see cref="FileDatabase"/> as data source to <b>seed</b> other databases with <see cref="EntityDatabase.SeedDatabase"/></item>
     /// </list>
     /// In most uses cases a <see cref="FileDatabase"/> in not suitable for production as its read / write performance
