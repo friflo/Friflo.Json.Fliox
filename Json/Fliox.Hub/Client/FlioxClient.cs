@@ -37,7 +37,24 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.clientId   = clientId;
         }
     }
-    
+
+    /// <summary>
+    /// Application classes extending <see cref="FlioxClient"/> offer two main functionalities:
+    /// <list type="number">
+    ///   <item>
+    ///     Define a <b>database schema</b> by declaring its containers, commands and messages
+    ///   </item>
+    ///   <item>
+    ///     Instances of a class extending <see cref="FlioxClient"/> are <b>database clients</b> providing
+    ///     type-safe access to the database containers, commands and messages
+    ///   </item>
+    /// </list>
+    /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.<br/>
+    /// Its messages are methods returning a <see cref="MessageTask"/>.<br/>
+    /// <br/>
+    /// Instances of a class extending <see cref="FlioxClient"/> can be used on server and client side.
+    /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
