@@ -24,11 +24,12 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// installing any third party database like: SQLite, Postgres, ...<br/>
     /// This enables the following uses cases
     /// <list type="bullet">
-    ///     <item>Creating <b>proof-of-concept</b> database applications without any third party dependencies</item>
-    ///     <item>Suitable for <b>TDD</b> as test records are JSON files which:<br/>
-    ///       - can be viewed and edited with rudimentary editors like VSCode, vi, web browsers, ...<br/>
-    ///       - can be versioned via Git and having access to its change history<br/>
-    ///     </item>
+    ///   <item>Creating <b>proof-of-concept</b> database applications without any third party dependencies</item>
+    ///   <item>Suitable for <b>TDD</b> as test records are JSON files which:<br/>
+    ///     - can be viewed and edited with rudimentary editors like VSCode, vi, web browsers, ...<br/>
+    ///     - can be versioned via Git and having access to its change history<br/>
+    ///   </item>
+    ///   <item>Used as source to seed other databases with <see cref="EntityDatabase.SeedDatabase"/></item>
     /// </list>
     /// In most uses cases a <see cref="FileDatabase"/> in not suitable for production as its read / write performance
     /// cannot compete with databases like: SQLite, Postgres, ... .
