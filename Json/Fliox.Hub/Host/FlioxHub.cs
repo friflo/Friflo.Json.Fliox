@@ -80,9 +80,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         public   readonly   EntityDatabase      database;      
         /// <summary>
-        /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
-        /// events to a client for database changes and messages the client has subscribed.
-        /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
+        /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. <br/>
+        /// If assigned the database send push events to clients for database changes and messages these clients have subscribed. <br/>
+        /// In case of remote database connections <b>WebSockets</b> are used to send Pub-Sub events to clients.   
         /// </summary>
         public              EventBroker         EventBroker     { get; set; }
         

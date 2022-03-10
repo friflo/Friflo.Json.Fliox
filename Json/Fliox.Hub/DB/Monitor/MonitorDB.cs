@@ -15,6 +15,13 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
+    /// <summary>
+    /// <see cref="MonitorDB"/> store access information of the Hub and its databases:<br/>
+    /// - request and task count executed per user <br/>
+    /// - request and task count executed per client. A user can access without, one or multiple client ids. <br/>
+    /// - events sent to (or buffered for) clients subscribed by these clients. <br/>
+    /// - aggregated access counts of the Hub in the last 30 seconds and 30 minutes.
+    /// </summary>
     public class MonitorDB : EntityDatabase
     {
         // --- private / internal

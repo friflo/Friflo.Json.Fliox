@@ -17,6 +17,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         Task<bool>  ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext);
     }
     
+    /// <summary>
+    /// An <see cref="EventBroker"/> is used to enable Pub-Sub. <br/>
+    /// If assigned to <see cref="FlioxHub.EventBroker"/> the <see cref="FlioxHub"/> send
+    /// push events to clients for database changes and messages these clients have subscribed. <br/>
+    /// In case of remote database connections <b>WebSockets</b> are used to send push events to clients.   
+    /// </summary>
     public sealed class EventBroker : IDisposable
     {
         private  readonly   SharedEnv                                       sharedEnv;

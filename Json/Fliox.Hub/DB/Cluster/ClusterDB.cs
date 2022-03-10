@@ -13,6 +13,12 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
+    /// <summary>
+    /// <see cref="ClusterDB"/> store information about databases hosted by the Hub: <br/>
+    /// - available containers aka tables per database <br/>
+    /// - available commands per database <br/>
+    /// - the schema assigned to each database
+    /// </summary>
     public class ClusterDB : EntityDatabase
     {
         // --- private / internal
