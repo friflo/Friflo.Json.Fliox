@@ -11,6 +11,10 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
 {
+    /// <summary>
+    /// <see cref="NativeTypeSchema"/> is used to create an immutable <see cref="TypeSchema"/> instance
+    /// from a C# .NET <see cref="Type"/> passed to its constructor <see cref="NativeTypeSchema(Type)"/>
+    /// </summary>
     public sealed class NativeTypeSchema : TypeSchema, IDisposable
     {
         public   override   IReadOnlyList<TypeDef>  Types           { get; }

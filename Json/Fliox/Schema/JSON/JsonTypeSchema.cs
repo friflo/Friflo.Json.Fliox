@@ -12,7 +12,8 @@ using Friflo.Json.Fliox.Schema.Definition;
 namespace Friflo.Json.Fliox.Schema.JSON
 {
     /// <summary>
-    /// A <see cref="TypeSchema"/> constructed by a set of given <see cref="JsonSchema"/>'s.
+    /// <see cref="JsonTypeSchema"/> is used to create an immutable <see cref="TypeSchema"/> instance
+    /// from a set of given <see cref="JsonSchema"/>'s.<br/>
     /// The utility method <see cref="JsonTypeSchema.ReadSchemas"/> can be used to read a set of
     /// <see cref="JsonSchema"/>'s as files in a folder.
     /// </summary>
