@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// <list type="bullet">
     ///   <item>
     ///     Simplify implementation of code generators as its API is tailored towards retrieving type information by
-    ///     simple getters using <see cref="TypeDef"/>, <see cref="FieldDef"/> and <see cref="UnionType"/>.
+    ///     simple getters using <see cref="TypeDef"/>, <see cref="FieldDef"/>, <see cref="UnionType"/> and <see cref="MessageDef"/>.
     ///   </item>
     ///   <item>
     ///     Write code generators independent from the specific used <see cref="TypeSchema"/> like
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     ///   </item>
     /// </list>  
     /// <br></br>
-    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
+    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>. <br/>
     /// Note: <see cref="TypeSchema"/> instances are immutable.
     /// </summary>
     public abstract class TypeSchema
