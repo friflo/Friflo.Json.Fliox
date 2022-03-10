@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     - can be viewed and edited with rudimentary editors like VSCode, vi, web browsers, ...<br/>
     ///     - can be versioned via Git and having access to its change history<br/>
     ///   </item>
-    ///   <item>Used as source to seed other databases with <see cref="EntityDatabase.SeedDatabase"/></item>
+    ///   <item>Used as data source to seed other databases with <see cref="EntityDatabase.SeedDatabase"/></item>
     /// </list>
     /// In most uses cases a <see cref="FileDatabase"/> in not suitable for production as its read / write performance
     /// cannot compete with databases like: SQLite, Postgres, ... .
