@@ -13,9 +13,9 @@ using Ignore    = Friflo.Json.Fliox.Mapper.Fri.IgnoreAttribute;
 namespace Friflo.Json.Fliox.Schema.JSON
 {
     /// <summary>
-    /// Compatible subset of JSON Schema with some extensions required for code generation.
-    /// JSON Schema specification: https://json-schema.org/specification.html
-    ///
+    /// Compatible subset of JSON Schema with some extensions required for code generation.<br/>
+    /// JSON Schema specification: https://json-schema.org/specification.html<br/>
+    /// <br/>
     /// Following extensions are added to JSON Schema:
     /// <list type="bullet">
     ///     <item><see cref="JsonType.extends"/></item>

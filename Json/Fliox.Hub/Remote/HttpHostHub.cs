@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
+using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Transform;
 
@@ -47,14 +48,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
+            schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
+            //
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
             schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
+            //
             var filterSchema        = new NativeTypeSchema(typeof(FilterOperation));
             var filterRoot          = filterSchema.TypesAsTypeDefs(new [] {typeof(FilterOperation)});
             schemaHandler.AddSchema ("filter", filterSchema, filterRoot);
+            //
+            var jsonSchema          = new NativeTypeSchema(typeof(JsonSchema));
+            var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JsonSchema)});
+            schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
+            //
             restHandler             = new RestHandler(hub);
             customHandlers          = new List<IRequestHandler>();
         }

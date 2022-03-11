@@ -2,9 +2,8 @@
 import { int64 } from "./Standard";
 
 /**
- * Compatible subset of JSON Schema with some extensions required for code generation.
- * JSON Schema specification: https://json-schema.org/specification.html
- * 
+ * Compatible subset of JSON Schema with some extensions required for code generation.  
+ * JSON Schema specification: https://json-schema.org/specification.html    
  * Following extensions are added to JSON Schema:
  * - **extends**
  * - **discriminator**
