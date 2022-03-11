@@ -34,6 +34,8 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # **Features**
 
+# Schema
+
 # JSON Parser/Serializer
 
 ## **`Friflo.Json.Burst`**
