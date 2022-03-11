@@ -19,13 +19,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // Possible solutions may be like:
             // (MIT License) [ninjasource/Ninja.WebSockets: A c# implementation of System.Net.WebSockets.WebSocket for .Net Standard 2.0] https://github.com/ninjasource/Ninja.WebSockets
             // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
+            HttpListenerRequest  req  = ctx.Request;
 #if UNITY_5_3_OR_NEWER
             if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
-                await HandleServerWebSocket(ctx.Response).ConfigureAwait(false);
+                await HandleUnityServerWebSocket(ctx.Response).ConfigureAwait(false);
                 return null;
             }
 #endif
-            HttpListenerRequest  req  = ctx.Request;
             if (req.IsWebSocketRequest) {
                 var wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket   = wsContext.WebSocket;
@@ -67,10 +67,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ReSharper disable once UnusedMember.Local
-        private static async Task HandleServerWebSocket (HttpListenerResponse resp) {
+        private static async Task HandleUnityServerWebSocket (HttpListenerResponse resp) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
             byte[]  resultBytes = Encoding.UTF8.GetBytes(error);
-            HttpListenerUtils.SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length, null);
+            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length, null);
             await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
             resp.Close();
         }
