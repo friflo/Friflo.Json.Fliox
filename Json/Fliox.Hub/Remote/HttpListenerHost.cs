@@ -23,9 +23,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// lifecycle methods:
     /// <list type="bullet">
     ///     <item>Create an instance: <see cref="HttpListenerHost(string, HttpHostHub)"/></item>
-    ///     <item>Start the server: <see cref="Start"/></item>
-    ///     <item>Run the server loop for incoming connections: <see cref="Run"/></item>
-    ///     <item>Stop the server: <see cref="Stop"/></item>
+    ///     <item>Start server: <see cref="Start"/></item>
+    ///     <item>Run server loop for incoming connections: <see cref="Run"/></item>
+    ///     <item>Stop server: <see cref="Stop"/></item>
+    ///     <item>Shutdown server: <see cref="Dispose"/></item>
     /// </list> 
     /// </summary>
     public sealed class HttpListenerHost : IDisposable
