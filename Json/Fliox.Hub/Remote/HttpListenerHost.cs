@@ -26,17 +26,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public sealed class HttpListenerHost : IDisposable
     {
-        private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
         private             bool                runServer;
         private             int                 requestCount;
         private  readonly   HttpHostHub         hostHub;
+        
+        public HttpListenerHost(string endpoint, HttpHostHub hostHub)
+            : this (new []{endpoint}, hostHub)
+        { }
 
-        public HttpListenerHost(string endpoint, HttpHostHub hostHub) {
+        public HttpListenerHost(string[] endpoints, HttpHostHub hostHub) {
             this.hostHub        = hostHub;
-            this.endpoint       = endpoint;
             listener            = new HttpListener();
-            listener.Prefixes.Add(endpoint);
+            foreach (var endpoint in endpoints) {
+                listener.Prefixes.Add(endpoint);
+            }
         }
 
         public void Dispose() {
@@ -112,7 +116,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void Start() {
             // Create a Http server and start listening for incoming connections
             listener.Start();
-            Log($"Listening for connections on {this.endpoint}");
+            var sb = new StringBuilder();
+            sb.Append("Listening for connections on:");
+            foreach (var prefix in listener.Prefixes) {
+                sb.Append(" ");
+                sb.Append(prefix);
+            }
+            Log(sb.ToString());
         }
 
         public void Run() {
