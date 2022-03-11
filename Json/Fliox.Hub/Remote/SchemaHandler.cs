@@ -256,7 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body style='font-family: sans-serif'>");
-            sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json/Fliox/Schema' target='_blank' rel='noopener'><img src='{handler.image}' alt='friflo JSON Fliox' /></a>");
+            sb.AppendLine($"<h2><a href='{Generator.Note}' target='_blank' rel='noopener'><img src='{handler.image}' alt='friflo JSON Fliox' /></a>");
             sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
             sb.AppendLine($"<p>{description}</p>");
         }
