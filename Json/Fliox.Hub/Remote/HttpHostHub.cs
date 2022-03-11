@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Note:
         /// Request matching and execution are seperated to ensure no heap allocation caused by awaited method calls. 
         /// </summary>
-        public async Task<bool> ExecuteHttpRequest(RequestContext request) {
+        public async Task ExecuteHttpRequest(RequestContext request) {
             if (request.method == "POST" && request.path == "/") {
                 var requestContent  = await JsonValue.ReadToEndAsync(request.body).ConfigureAwait(false);
 
@@ -94,23 +94,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 
                 executeContext.Release();
                 request.Write(result.body, 0, "application/json", (int)result.status);
-                return true;
+                request.handled = true;
+                return;
             }
             if (schemaHandler != null && schemaHandler.IsMatch(request)) {
                 await schemaHandler.HandleRequest(request).ConfigureAwait(false);
-                return true;
+                request.handled = true;
+                return;
             }
             if (restHandler.IsMatch(request)) {
                 await restHandler.HandleRequest(request).ConfigureAwait(false);
-                return true;
+                request.handled = true;
+                return;
             }
             foreach (var handler in customHandlers) {
                 if (!handler.IsMatch(request))
                     continue;
                 await handler.HandleRequest(request).ConfigureAwait(false);
-                return true;
+                request.handled = true;
+                return;
             }
-            return false;
         }
     }
 }
