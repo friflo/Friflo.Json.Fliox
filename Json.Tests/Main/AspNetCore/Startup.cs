@@ -38,9 +38,9 @@ namespace Friflo.Json.Tests.Main
                 });
                 
                 endpoints.Map("/{*path}", async context => {
-                    var response = await context.HandleFlioxHostRequest(hostHub).ConfigureAwait(false);
+                    var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false);
                     // response can be logged and additional http headers can be added here
-                    await context.HandleFlioxHostResponse(response).ConfigureAwait(false);
+                    await context.WriteFlioxResponse(response).ConfigureAwait(false);
                 });
             });
         }

@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
     public static class AspNetCoreUtils
     {
-        public static async Task<RequestContext> HandleFlioxHostRequest(this HttpContext context, HttpHostHub hostHub) {
+        public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHostHub hostHub) {
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {
                 WebSocket ws = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             return reqCtx;
         }
         
-        public static async Task HandleFlioxHostResponse(this HttpContext context, RequestContext requestContext) {
+        public static async Task WriteFlioxResponse(this HttpContext context, RequestContext requestContext) {
             if (requestContext == null)
                 return; // request was WebSocket
             var httpResponse            = context.Response;
