@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
@@ -31,16 +32,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             int                 requestCount;
         private  readonly   HttpHostHub         hostHub;
         
+        public HttpListenerHost(HttpListener httpListener, HttpHostHub hostHub) {
+            this.hostHub    = hostHub;
+            listener        = httpListener;
+        }
+        
         public HttpListenerHost(string endpoint, HttpHostHub hostHub)
-            : this (new []{endpoint}, hostHub)
+            : this (CreateHttpListener(new []{endpoint}), hostHub)
         { }
-
-        public HttpListenerHost(string[] endpoints, HttpHostHub hostHub) {
-            this.hostHub        = hostHub;
-            listener            = new HttpListener();
+        
+        private static HttpListener CreateHttpListener(string[] endpoints) {
+            var listener = new HttpListener();
             foreach (var endpoint in endpoints) {
                 listener.Prefixes.Add(endpoint);
             }
+            return listener;
         }
 
         public void Dispose() {
