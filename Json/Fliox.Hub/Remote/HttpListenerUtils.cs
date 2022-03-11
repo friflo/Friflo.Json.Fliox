@@ -12,10 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public static class HttpListenerUtils
     {
-        public static async Task HandleContext (HttpListenerContext ctx, HttpHostHub hostHub) {
-            HttpListenerRequest  req  = ctx.Request;
-            HttpListenerResponse resp = ctx.Response;
-
+        public static async Task<RequestContext> HandleContext (HttpListenerContext ctx, HttpHostHub hostHub) {
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
             // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             //
@@ -24,29 +21,36 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
 #if UNITY_5_3_OR_NEWER
             if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
-                await HandleServerWebSocket(resp).ConfigureAwait(false);
-                return;
+                await HandleServerWebSocket(ctx.Response).ConfigureAwait(false);
+                return null;
             }
 #endif
+            HttpListenerRequest  req  = ctx.Request;
             if (req.IsWebSocketRequest) {
                 var wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket   = wsContext.WebSocket;
                 await WebSocketHost.SendReceiveMessages (websocket, hostHub).ConfigureAwait(false);
+                return null;
+            }
+            var request             = ctx.Request;
+            var url                 = request.Url;
+            var headers             = new HttpListenerHeaders(request.Headers);
+            var cookies             = new HttpListenerCookies(request.Cookies);
+            var requestContext      = new RequestContext(request.HttpMethod, url.LocalPath, url.Query, req.InputStream, headers, cookies);
+            requestContext.handled  = await hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
+            return requestContext;
+        }
+        
+        public static async Task HandleContextResponse(HttpListenerContext ctx, RequestContext requestContext) {
+            if (requestContext == null)
+                return; // request was WebSocket
+            HttpListenerResponse resp = ctx.Response;
+            if (!requestContext.Handled)
                 return;
-            }
-            var request = ctx.Request;
-            var url     = request.Url;
-            var headers = new HttpListenerHeaders(request.Headers);
-            var cookies = new HttpListenerCookies(request.Cookies);
-            var reqCtx  = new RequestContext(request.HttpMethod, url.LocalPath, url.Query, req.InputStream, headers, cookies, false);
-            bool handled = await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
-            
-            if (handled) {
-                var responseBody = reqCtx.Response;
-                SetResponseHeader(resp, reqCtx.ResponseContentType, reqCtx.StatusCode, responseBody.Length, reqCtx.ResponseHeaders);
-                await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);
-                resp.Close();
-            }
+            var responseBody = requestContext.Response;
+            SetResponseHeader(resp, requestContext.ResponseContentType, requestContext.StatusCode, responseBody.Length, requestContext.ResponseHeaders);
+            await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);
+            resp.Close();
         }
         
         public static void SetResponseHeader (HttpListenerResponse resp, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
