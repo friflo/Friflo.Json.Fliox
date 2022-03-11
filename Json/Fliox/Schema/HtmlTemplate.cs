@@ -137,6 +137,7 @@ namespace Friflo.Json.Fliox.Schema
         div.type table                      { margin-left: 40px; }
         div.type table td table             { margin-left: 10px; } /* discriminants table */
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
+        div.type table tr td:nth-child(2)   { width: 150px; }
         .commands tr                        { vertical-align: top; }
         .fields tr                          { vertical-align: top; }
     </style>
