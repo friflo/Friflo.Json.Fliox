@@ -16,13 +16,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
     // See: [Deprecate HttpListener · Issue #88 · dotnet/platform-compat] https://github.com/dotnet/platform-compat/issues/88#issuecomment-592395933
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     /// <summary>
-    /// <see cref="HttpListenerHost"/> is a utility class managing the lifecycle of a <see cref="HttpListener"/>. <br/>
+    /// <see cref="HttpListenerHost"/> is a utility class used to <br/>
+    ///  - handle Fliox requests <br/>
+    ///  - manage the lifecycle of a <see cref="HttpListener"/>. <br/>
+    /// <br/>
+    /// lifecycle methods:
     /// <list type="bullet">
     ///     <item>Create an instance: <see cref="HttpListenerHost(string, HttpHostHub)"/></item>
     ///     <item>Start the server: <see cref="Start"/></item>
     ///     <item>Run the server loop for incoming connections: <see cref="Run"/></item>
     ///     <item>Stop the server: <see cref="Stop"/></item>
-    /// 
     /// </list> 
     /// </summary>
     public sealed class HttpListenerHost : IDisposable
