@@ -47,18 +47,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     // await HandleListenerContext(ctx);            // handle incoming requests serial
                     _ = Task.Run(async () => {
                         try {
-                            await HandleListenerContext(ctx).ConfigureAwait(false); // handle incoming requests parallel
+                            await HandleContext(ctx).ConfigureAwait(false); // handle incoming requests parallel
                         }
                         catch (Exception e) {
-                            var message = $"request failed - {e.GetType().Name}: {e.Message}";
-                            Log(message);
-                            var resp    = ctx.Response;
-                            if (!resp.OutputStream.CanWrite)
-                                return;
-                            byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
-                            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length, null);
-                            await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
-                            resp.Close();
+                            await HandleContextException(ctx, e);
                         }
                     });
                 }
@@ -82,6 +74,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
+        private async Task HandleContextException(HttpListenerContext ctx, Exception e) {
+            var message = $"request failed - {e.GetType().Name}: {e.Message}";
+            Log(message);
+            var resp    = ctx.Response;
+            if (!resp.OutputStream.CanWrite)
+                return;
+            byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
+            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length, null);
+            await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+            resp.Close();
+        }
+        
         // ReSharper disable once UnusedMember.Local
         private static async Task HandleServerWebSocket (HttpListenerResponse resp) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
@@ -91,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             resp.Close();
         }
         
-        private async Task HandleListenerContext (HttpListenerContext ctx) {
+        private async Task HandleContext (HttpListenerContext ctx) {
             HttpListenerRequest  req  = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
 
