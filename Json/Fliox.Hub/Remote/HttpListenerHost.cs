@@ -60,21 +60,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
             while (runServer) {
                 try {
                     // Will wait here until we hear from a connection
-                    HttpListenerContext ctx = await listener.GetContextAsync().ConfigureAwait(false);
-                    // await HandleListenerContext(ctx);            // handle incoming requests serial
+                    HttpListenerContext context = await listener.GetContextAsync().ConfigureAwait(false);
+                    // await HandleListenerContext(context);            // handle incoming requests serial
                     _ = Task.Run(async () => {
                         try {
-                            HttpListenerRequest  req  = ctx.Request;
+                            HttpListenerRequest  req  = context.Request;
                             if (requestCount++ == 0 || requestCount % 10000 == 0) {
                                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                                 Log(reqMsg);
                             }
-                            var response = await HttpListenerUtils.ExecuteFlioxRequest(ctx, hostHub).ConfigureAwait(false); // handle incoming requests parallel
+                            var response = await HttpListenerUtils.ExecuteFlioxRequest(context, hostHub).ConfigureAwait(false); // handle incoming requests parallel
                             
-                            await HttpListenerUtils.WriteFlioxResponse(ctx, response).ConfigureAwait(false);
+                            await HttpListenerUtils.WriteFlioxResponse(context, response).ConfigureAwait(false);
                         }
                         catch (Exception e) {
-                            await HandleContextException(ctx, e);
+                            await HandleContextException(context, e);
                         }
                     });
                 }
@@ -98,10 +98,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private async Task HandleContextException(HttpListenerContext ctx, Exception e) {
+        private async Task HandleContextException(HttpListenerContext context, Exception e) {
             var message = $"request failed - {e.GetType().Name}: {e.Message}";
             Log(message);
-            var resp    = ctx.Response;
+            var resp    = context.Response;
             if (!resp.OutputStream.CanWrite)
                 return;
             byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);

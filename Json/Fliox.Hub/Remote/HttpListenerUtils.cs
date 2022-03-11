@@ -12,27 +12,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public static class HttpListenerUtils
     {
-        public static async Task<RequestContext> ExecuteFlioxRequest (HttpListenerContext ctx, HttpHostHub hostHub) {
+        public static async Task<RequestContext> ExecuteFlioxRequest (HttpListenerContext context, HttpHostHub hostHub) {
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
             // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             //
             // Possible solutions may be like:
             // (MIT License) [ninjasource/Ninja.WebSockets: A c# implementation of System.Net.WebSockets.WebSocket for .Net Standard 2.0] https://github.com/ninjasource/Ninja.WebSockets
             // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
-            HttpListenerRequest  req  = ctx.Request;
+            HttpListenerRequest  req  = context.Request;
 #if UNITY_5_3_OR_NEWER
             if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
-                await HandleUnityServerWebSocket(ctx.Response).ConfigureAwait(false);
+                await HandleUnityServerWebSocket(context.Response).ConfigureAwait(false);
                 return null;
             }
 #endif
             if (req.IsWebSocketRequest) {
-                var wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
+                var wsContext   = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket   = wsContext.WebSocket;
                 await WebSocketHost.SendReceiveMessages (websocket, hostHub).ConfigureAwait(false);
                 return null;
             }
-            var request             = ctx.Request;
+            var request             = context.Request;
             var url                 = request.Url;
             var headers             = new HttpListenerHeaders(request.Headers);
             var cookies             = new HttpListenerCookies(request.Cookies);
@@ -41,10 +41,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return requestContext;
         }
         
-        public static async Task WriteFlioxResponse(HttpListenerContext ctx, RequestContext requestContext) {
+        public static async Task WriteFlioxResponse(HttpListenerContext context, RequestContext requestContext) {
             if (requestContext == null)
                 return; // request was WebSocket
-            HttpListenerResponse resp = ctx.Response;
+            HttpListenerResponse resp = context.Response;
             if (!requestContext.Handled)
                 return;
             var responseBody = requestContext.Response;
@@ -53,26 +53,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
             resp.Close();
         }
         
-        public static void SetResponseHeader (HttpListenerResponse resp, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
-            resp.ContentType        = contentType;
-            resp.ContentEncoding    = Encoding.UTF8;
-            resp.ContentLength64    = len;
-            resp.StatusCode         = statusCode;
+        public static void SetResponseHeader (HttpListenerResponse response, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
+            response.ContentType        = contentType;
+            response.ContentEncoding    = Encoding.UTF8;
+            response.ContentLength64    = len;
+            response.StatusCode         = statusCode;
         //  resp.Headers["link"]    = "rel=\"icon\" href=\"#\""; // not working as expected - expect no additional request of favicon.ico
             if (headers != null) {
                 foreach (var header in headers) {
-                    resp.Headers[header.Key] = header.Value;
+                    response.Headers[header.Key] = header.Value;
                 }
             }
         }
         
         // ReSharper disable once UnusedMember.Local
-        private static async Task HandleUnityServerWebSocket (HttpListenerResponse resp) {
+        private static async Task HandleUnityServerWebSocket (HttpListenerResponse response) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
             byte[]  resultBytes = Encoding.UTF8.GetBytes(error);
-            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length, null);
-            await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
-            resp.Close();
+            SetResponseHeader(response, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length, null);
+            await response.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+            response.Close();
         }
     }
     
