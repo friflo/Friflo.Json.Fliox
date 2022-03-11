@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         public void Dispose() {
+            listener.Close();
         }
 
         private async Task HandleIncomingConnections()
