@@ -36,16 +36,14 @@ namespace Friflo.Json.Fliox.Schema
         public   readonly   string                              label;          // C#,     JSON Schema, ...
         public   readonly   string                              contentType;    // "text/plain", "text/html", ...
         public   readonly   ReadOnlyDictionary<string, string>  files;          // key: file name, value: file content
-        public   readonly   string                              fullSchema;     // set only for JSON Schema
 
         public   override   string                              ToString() => type;
 
-        public SchemaModel (string type, string label, string contentType, Dictionary<string, string> files, string fullSchema = null) {
+        public SchemaModel (string type, string label, string contentType, IDictionary<string, string> files) {
             this.type           = type;
             this.label          = label;
             this.contentType    = contentType;
             this.files          = new ReadOnlyDictionary<string, string>(files);
-            this.fullSchema     = fullSchema;
         }
 
         public static Dictionary<string, SchemaModel> GenerateSchemaModels(
@@ -53,19 +51,7 @@ namespace Friflo.Json.Fliox.Schema
             ICollection<TypeDef>            separateTypes,
             IEnumerable<CustomGenerator>    generators = null)
         {
-            generators = generators ?? Array.Empty<CustomGenerator>();
-            using (var writer = new ObjectWriter(new TypeStore())) {
-                writer.Pretty = true;
-                return GenerateSchemaModels(typeSchema, separateTypes, writer, generators);
-            }
-        }
-        
-        private static Dictionary<string, SchemaModel> GenerateSchemaModels(
-            TypeSchema                      typeSchema,
-            ICollection<TypeDef>            separateTypes,
-            ObjectWriter                    writer,
-            IEnumerable<CustomGenerator>    generators)
-        {
+            generators              = generators ?? Array.Empty<CustomGenerator>();
             var result              = new Dictionary<string, SchemaModel>();
             var options             = new JsonTypeOptions(typeSchema);
 
@@ -75,12 +61,7 @@ namespace Friflo.Json.Fliox.Schema
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonSchemaMap       = new Dictionary<string, JsonValue>();
-            foreach (var pair in jsonGenerator.files) {
-                jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
-            }
-            var fullSchema          = writer.Write(jsonSchemaMap);
-            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
+            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", jsonGenerator.files);
             result.Add(jsonModel.type,  jsonModel);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);

@@ -98,11 +98,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  SchemaModel     schemaModel;
         internal  readonly  string          zipNameSuffix;  // .csharp.zip, json-schema.zip, ...
         private             byte[]          zipArchive;
+        internal  readonly  string          fullSchema;
 
         public    override  string          ToString() => schemaModel.type;
 
-        internal ModelResource(SchemaModel schemaModel) {
+        internal ModelResource(SchemaModel schemaModel, string fullSchema) {
             this.schemaModel    = schemaModel;
+            this.fullSchema     = fullSchema;
             zipNameSuffix       = $".{schemaModel.type}.zip";
         }
         
@@ -133,13 +135,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var storeName = typeSchema.RootType.Name;
             if (modelResources == null) {
-                var generators = handler.Generators;
-                var schemaModels = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
-                modelResources = new Dictionary<string, ModelResource>(schemaModels.Count);
+                var generators      = handler.Generators;
+                var schemaModels    = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
+                modelResources      = new Dictionary<string, ModelResource>(schemaModels.Count);
                 foreach (var pair in schemaModels) {
-                    var type    = pair.Key;
-                    var model   = pair.Value;
-                    var value   = new ModelResource(model);
+                    var type        = pair.Key;
+                    var model       = pair.Value;
+                    var fullSchema  = GetFullJsonSchema(model, context);
+                    var value       = new ModelResource(model, fullSchema);
                     modelResources.Add(type, value);
                 }
             }
@@ -156,8 +159,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Set(sb.ToString(), "text/html");
             }
             if (path == "json-schema.json") {
-                var jsonSchemaModel = modelResources["json-schema"].schemaModel;
-                return result.Set(jsonSchemaModel.fullSchema, jsonSchemaModel.contentType);
+                var jsonSchemaModel = modelResources["json-schema"];
+                return result.Set(jsonSchemaModel.fullSchema, jsonSchemaModel.schemaModel.contentType);
             }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
@@ -196,9 +199,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (fileName == "directory") {
                 var pool = context.Pool;
                 using (var pooled = pool.ObjectMapper.Get()) {
-                    var writer = pooled.instance.writer;
-                    writer.Pretty = true;
-                    var directory = writer.Write(files.Keys.ToList());
+                    var writer      = pooled.instance.writer;
+                    writer.Pretty   = true;
+                    var directory   = writer.Write(files.Keys.ToList());
                     return result.Set(directory, "application/json");
                 }
             }
@@ -209,9 +212,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {
-            var title = string.Join(" · ", titlePath);
-            var titleElements = new List<string>();
-            int n       = titlePath.Length - 1;
+            var title           = string.Join(" · ", titlePath);
+            var titleElements   = new List<string>();
+            int n               = titlePath.Length - 1;
             for (int o = 0; o < titlePath.Length; o++) {
                 var titleSection    = titlePath[o];
                 var indexOffset     = o == 0 ? 1 : 0;
@@ -241,6 +244,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static void HtmlFooter(StringBuilder sb) {
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
+        }
+        
+        private static  string GetFullJsonSchema(SchemaModel schemaModel, RequestContext context) {
+            if (schemaModel.type != "json-schema")
+                return null;
+            var jsonSchemaMap = new Dictionary<string, JsonValue>(schemaModel.files.Count);
+            foreach (var pair in schemaModel.files) {
+                var file = pair.Value;
+                jsonSchemaMap.Add(pair.Key, new JsonValue(file));
+            }
+            using (var pooled = context.Pool.ObjectMapper.Get()) {
+                var writer = pooled.instance.writer;
+                return writer.Write(jsonSchemaMap);
+            }
         }
     }
     
