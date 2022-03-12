@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -67,6 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public void AddHandler(IRequestHandler requestHandler) {
+            if (requestHandler == null) throw new ArgumentNullException(nameof(requestHandler));
             customHandlers.Add(requestHandler);
         }
         
