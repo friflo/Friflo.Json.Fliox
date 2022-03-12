@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             var httpRequest = context.Request;
             var headers     = new HttpContextHeaders(httpRequest.Headers);
             var cookies     = new HttpContextCookies(httpRequest.Cookies);
-            var reqCtx      = new RequestContext(hostHub.LocalHub, httpRequest.Method, httpRequest.Path.Value, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
+            var reqCtx      = new RequestContext(hostHub, httpRequest.Method, httpRequest.Path.Value, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
 
             await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
