@@ -92,11 +92,22 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
+    internal class ModelResource {
+        internal  readonly  SchemaModel     schemaModel;
+
+        public    override  string          ToString() => schemaModel.type;
+
+        internal ModelResource(SchemaModel schemaModel) {
+            this.schemaModel    = schemaModel;
+        }
+    }
+    
     internal sealed class SchemaResource {
-        private  readonly   TypeSchema                      typeSchema;
-        private  readonly   ICollection<TypeDef>            separateTypes;
-        private             Dictionary<string, SchemaModel> schemaModels;
-        private  readonly   string                          schemaName;
+        private  readonly   TypeSchema                          typeSchema;
+        private  readonly   ICollection<TypeDef>                separateTypes;
+        /// key: <see cref="SchemaModel.type"/>  (csharp, typescript, ...)
+        private             Dictionary<string, ModelResource>   modelResources;
+        private  readonly   string                              schemaName;
         
         internal SchemaResource(TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
             this.schemaName     = typeSchema.RootType.Name;
@@ -109,23 +120,31 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Error("no schema attached to database");
             }
             var storeName = typeSchema.RootType.Name;
-            if (schemaModels == null) {
+            if (modelResources == null) {
                 var generators = handler.Generators;
-                schemaModels = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
+                var schemaModels = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
+                modelResources = new Dictionary<string, ModelResource>(schemaModels.Count);
+                foreach (var pair in schemaModels) {
+                    var type    = pair.Key;
+                    var model   = pair.Value;
+                    var value   = new ModelResource(model);
+                    modelResources.Add(type, value);
+                }
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new []{"Hub", schemaName}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
                 sb.AppendLine("<ul>");
-                foreach (var pair in schemaModels) {
-                    sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.label}</a></li>");
+                foreach (var pair in modelResources) {
+                    var model = pair.Value.schemaModel;
+                    sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{model.label}</a></li>");
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
             if (path == "json-schema.json") {
-                var jsonSchemaModel = schemaModels["json-schema"];
+                var jsonSchemaModel = modelResources["json-schema"].schemaModel;
                 return result.Set(jsonSchemaModel.fullSchema, jsonSchemaModel.contentType);
             }
             var schemaTypeEnd = path.IndexOf('/');
@@ -133,10 +152,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Error($"invalid path:  {path}");
             }
             var schemaType = path.Substring(0, schemaTypeEnd);
-            if (!schemaModels.TryGetValue(schemaType, out SchemaModel schemaModel)) {
+            if (!modelResources.TryGetValue(schemaType, out ModelResource modelResource)) {
                 return result.Error($"unknown schema type: {schemaType}");
             }
-            var fileName = path.Substring(schemaTypeEnd + 1);
+            var schemaModel = modelResource.schemaModel;
+            var fileName    = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var zipFile = $"{storeName}{schemaModel.zipNameSuffix}";
                 var sb = new StringBuilder();
