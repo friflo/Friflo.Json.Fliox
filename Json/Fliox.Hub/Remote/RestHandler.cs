@@ -25,16 +25,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public class RestHandler : IRequestHandler
     {
         private     const       string      RestBase = "/rest";
-        private     readonly    FlioxHub    hub;
-        private     readonly    Pool        pool;
-        private     readonly    SharedCache sharedCache;
-        
-        public RestHandler (FlioxHub hub) {
-            var sharedEnv   = hub.sharedEnv;
-            this.hub        = hub;
-            pool            = sharedEnv.Pool;
-            sharedCache     = sharedEnv.sharedCache;
-        }
         
         public bool IsMatch(RequestContext context) {
             return RequestContext.IsBasePath(RestBase, context.path);
@@ -51,6 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "access to root only applicable with GET", 400);
                 return;
             }
+            var pool            = context.Pool;
             var method          = context.method;
             var queryParams     = HttpUtility.ParseQueryString(context.query);
             var command         = queryParams["command"];
@@ -280,6 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 entities.Add(pair.Value.Json);
             }
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
+            var pool = context.Pool;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 var entitiesJson = writer.Write(entities);
@@ -319,6 +311,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 entities.Add(pair.Value.Json);
             }
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
+            var pool = context.Pool;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 var entityArray = writer.WriteAsArray(entities);
@@ -332,7 +325,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private const string InvalidFilter = "invalid filter";
         
         private JsonValue CreateFilterTree(RequestContext context, NameValueCollection queryParams) {
-            var filterValidation = sharedCache.GetValidationType(typeof(FilterOperation));
+            var sharedCache         = context.SharedCache;
+            var filterValidation    = sharedCache.GetValidationType(typeof(FilterOperation));
+            var pool                = context.Pool;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
                 var filter = CreateFilter(context, queryParams, mapper, filterValidation.Type);
@@ -364,6 +359,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (filterTree == null) {
                 return Operation.FilterTrue;
             }
+            var pool = context.Pool;
             using (var pooled = pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
                 var json        = new JsonValue(filterTree);
@@ -449,6 +445,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task PutEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value, TaskType type) {
             if (database == EntityDatabase.MainDB)
                 database = null;
+            var             pool = context.Pool;
             List<JsonValue> entities;
             if (id != null) {
                 entities = new List<JsonValue> {value};
@@ -568,9 +565,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 userId      = new JsonKey(userId),
                 token       = token
             };
-            var sharedEnv       = hub.sharedEnv;
-            var localPool       = new Pool(sharedEnv);
-            var executeContext  = new ExecuteContext(localPool, null, sharedEnv.sharedCache);
+            var hub             = context.hub;
+            var sharedCache     = context.SharedCache;
+            var localPool       = new Pool(hub.sharedEnv);
+            var executeContext  = new ExecuteContext(localPool, null, sharedCache);
             var result = await hub.ExecuteSync(synRequest, executeContext).ConfigureAwait(false);
             
             var error = result.error;

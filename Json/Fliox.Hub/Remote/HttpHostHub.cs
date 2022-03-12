@@ -38,17 +38,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public class HttpHostHub : RemoteHostHub
     {
-        private  readonly   SchemaHandler           schemaHandler;
-        private  readonly   RestHandler             restHandler;
-        private  readonly   List<IRequestHandler>   customHandlers;
+        private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler(ZipUtils.Zip);
+        private  readonly   RestHandler             restHandler     = new RestHandler();
+        private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
-            schemaHandler           = new SchemaHandler(ZipUtils.Zip);
-            //
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
@@ -61,9 +59,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var jsonSchema          = new NativeTypeSchema(typeof(JsonSchema));
             var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JsonSchema)});
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
-            //
-            restHandler             = new RestHandler(hub);
-            customHandlers          = new List<IRequestHandler>();
         }
         
         public HttpHostHub CacheControl(string cacheControl) {

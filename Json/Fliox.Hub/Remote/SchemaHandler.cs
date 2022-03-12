@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -63,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var schemaPath  = path.Substring(firstSlash + 1);
             Result result   = new Result();
-            bool success    = schema.GetSchemaFile(schemaPath, ref result, this, hub);
+            bool success    = schema.GetSchemaFile(schemaPath, ref result, this, context);
             if (!success) {
                 context.WriteError("schema error", result.content, 404);
                 return Task.CompletedTask;
@@ -105,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.separateTypes  = separateTypes;
         }
 
-        internal bool GetSchemaFile(string path, ref Result result, SchemaHandler handler, FlioxHub hub) {
+        internal bool GetSchemaFile(string path, ref Result result, SchemaHandler handler, RequestContext context) {
             if (typeSchema == null) {
                 return result.Error("no schema attached to database");
             }
@@ -162,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             if (fileName == "directory") {
-                var pool = hub.sharedEnv.Pool;
+                var pool = context.Pool;
                 using (var pooled = pool.ObjectMapper.Get()) {
                     var writer = pooled.instance.writer;
                     writer.Pretty = true;
