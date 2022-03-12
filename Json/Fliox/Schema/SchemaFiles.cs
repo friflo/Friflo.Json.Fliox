@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema
 {
-    public delegate SchemaSet   SchemaGenerator(GeneratorOptions options);
+    public delegate SchemaFiles SchemaGenerator(GeneratorOptions options);
     public delegate byte[]      CreateZip(IDictionary<string, string> files);
 
     public sealed class CustomGenerator
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Schema
         }
     }
     
-    public sealed class SchemaSet {
+    public sealed class SchemaFiles {
         public   readonly   string                              type;           // csharp, json-schema, ...
         public   readonly   string                              label;          // C#,     JSON Schema, ...
         public   readonly   string                              contentType;    // "text/plain", "text/html", ...
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Schema
             return zipArchive;
         }
 
-        public SchemaSet (string type, string label, string contentType, Dictionary<string, string> files, string fullSchema = null) {
+        public SchemaFiles (string type, string label, string contentType, Dictionary<string, string> files, string fullSchema = null) {
             this.type           = type;
             this.label          = label;
             this.contentType    = contentType;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Schema
             zipNameSuffix       = $".{type}.zip";
         }
 
-        public static Dictionary<string, SchemaSet> GenerateSchemas(
+        public static Dictionary<string, SchemaFiles> GenerateSchemas(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
             IEnumerable<CustomGenerator>    generators = null)
@@ -66,17 +66,17 @@ namespace Friflo.Json.Fliox.Schema
             }
         }
         
-        private static Dictionary<string, SchemaSet> GenerateSchemas(
+        private static Dictionary<string, SchemaFiles> GenerateSchemas(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
             ObjectWriter                    writer,
             IEnumerable<CustomGenerator>    generators)
         {
-            var result              = new Dictionary<string, SchemaSet>();
+            var result              = new Dictionary<string, SchemaFiles>();
             var options             = new JsonTypeOptions(typeSchema);
 
             var htmlGenerator       = HtmlGenerator.Generate(options);
-            var htmlSchema          = new SchemaSet ("html",        "HTML",        "text/html",        htmlGenerator.files);
+            var htmlSchema          = new SchemaFiles ("html",          "HTML",        "text/html",        htmlGenerator.files);
             result.Add(htmlSchema.type,       htmlSchema);
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
@@ -86,26 +86,26 @@ namespace Friflo.Json.Fliox.Schema
                 jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
             }
             var fullSchema          = writer.Write(jsonSchemaMap);
-            var jsonSchema          = new SchemaSet ("json-schema", "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
+            var jsonSchema          = new SchemaFiles ("json-schema",   "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
             result.Add(jsonSchema.type,  jsonSchema);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet ("typescript",  "Typescript",  "text/plain",       typescriptGenerator.files);
+            var typescriptSchema    = new SchemaFiles ("typescript",    "Typescript",  "text/plain",       typescriptGenerator.files);
             result.Add(typescriptSchema.type,   typescriptSchema);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet ("csharp",      "C#",          "text/plain",       csharpGenerator.files);
+            var csharpSchema        = new SchemaFiles ("csharp",        "C#",          "text/plain",       csharpGenerator.files);
             result.Add(csharpSchema.type,       csharpSchema);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet ("kotlin",      "Kotlin",      "text/plain",       kotlinGenerator.files);
+            var kotlinSchema        = new SchemaFiles ("kotlin",        "Kotlin",      "text/plain",       kotlinGenerator.files);
             result.Add(kotlinSchema.type,       kotlinSchema);
 
             foreach (var generator in generators) {
                 var generatorOpt = new GeneratorOptions(generator.type, generator.name, options.schema, options.replacements, options.separateTypes);
                 try {
-                    var schemaSet = generator.schemaGenerator(generatorOpt);
-                    result.Add(generator.type, schemaSet);
+                    var schemaFiles = generator.schemaGenerator(generatorOpt);
+                    result.Add(generator.type, schemaFiles);
                 } catch (Exception e) {
                     Console.WriteLine($"SchemaSet generation failed for: {generator.name}. error: {e.Message}");
                 }
