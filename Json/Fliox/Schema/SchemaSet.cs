@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -10,7 +11,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 namespace Friflo.Json.Fliox.Schema
 {
     public delegate SchemaSet   SchemaGenerator(GeneratorOptions options);
-    public delegate byte[]      CreateZip(Dictionary<string, string> files);
+    public delegate byte[]      CreateZip(IDictionary<string, string> files);
 
     public sealed class CustomGenerator
     {
@@ -26,15 +27,15 @@ namespace Friflo.Json.Fliox.Schema
     }
     
     public sealed class SchemaSet {
-        public   readonly   string                      type;           // csharp, json-schema, ...
-        public   readonly   string                      label;          // C#,     JSON Schema, ...
-        public   readonly   string                      contentType;
-        public   readonly   Dictionary<string, string>  files;
-        public   readonly   string                      fullSchema;
-        public   readonly   string                      directory;
-        public   readonly   string                      zipName;
-        private             byte[]                      zipArchive;
-
+        public   readonly   string                              type;           // csharp, json-schema, ...
+        public   readonly   string                              label;          // C#,     JSON Schema, ...
+        public   readonly   string                              contentType;
+        public   readonly   ReadOnlyDictionary<string, string>  files;
+        public   readonly   string                              fullSchema;
+        public   readonly   string                              directory;
+        public   readonly   string                              zipName;
+        private             byte[]                              zipArchive;
+        
         public byte[] GetZipArchive (CreateZip zip) {
             if (zipArchive == null && zip != null ) {
                 zipArchive = zip(files);
@@ -46,7 +47,7 @@ namespace Friflo.Json.Fliox.Schema
             this.type           = type;
             this.label          = label;
             this.contentType    = contentType;
-            this.files          = files;
+            this.files          = new ReadOnlyDictionary<string, string>(files);
             this.fullSchema     = fullSchema;
             zipName             = $".{type}.zip";
             directory           = writer.Write(files.Keys.ToList());

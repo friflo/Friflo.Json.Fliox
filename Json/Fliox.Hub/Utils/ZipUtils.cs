@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Utils
     public static class ZipUtils
     {
 // #if !UNITY_2020_1_OR_NEWER
-        public static byte[] Zip (Dictionary<string, string> files) {
+        public static byte[] Zip (IDictionary<string, string> files) {
             using (var memoryStream = new MemoryStream()) {
                 using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true)) {
                     foreach (var pair in files) {
