@@ -22,7 +22,7 @@ using Friflo.Json.Fliox.Transform.Query.Parser;
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class RestHandler : IRequestHandler
+    internal class RestHandler : IRequestHandler
     {
         private     const       string      RestBase = "/rest";
         

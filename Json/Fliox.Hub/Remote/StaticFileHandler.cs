@@ -122,23 +122,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    public readonly struct FileExt {
-        public readonly     string  extension;
-        public readonly     string  mediaType;
+    internal readonly struct FileExt {
+        internal  readonly  string  extension;
+        internal  readonly  string  mediaType;
         
-        public FileExt (string  extension, string  mediaType) {
+        internal  FileExt (string  extension, string  mediaType) {
             this.extension  = extension;
             this.mediaType  = mediaType;
         }
     }
     
-    public readonly struct CacheEntry {
-        public readonly     int                         status;
-        public readonly     string                      mediaType;
-        public readonly     byte[]                      body;
-        public readonly     Dictionary<string, string>  headers;
+    internal readonly struct CacheEntry {
+        internal  readonly  int                         status;
+        internal  readonly  string                      mediaType;
+        internal  readonly  byte[]                      body;
+        internal  readonly  Dictionary<string, string>  headers;
         
-        public CacheEntry (RequestContext context) {
+        internal CacheEntry (RequestContext context) {
             status      = context.StatusCode;
             mediaType   = context.ResponseContentType;
             body        = context.Response.AsByteArray();

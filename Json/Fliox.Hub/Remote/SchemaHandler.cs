@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return schema;
         }
         
-        public void AddGenerator(string type, string name, SchemaGenerator schemaGenerator) {
+        internal void AddGenerator(string type, string name, SchemaGenerator schemaGenerator) {
             if (name == null) throw new NullReferenceException(nameof(name));
             var generator = new CustomGenerator(type, name, schemaGenerator);
             generators.Add(generator);
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             zipNameSuffix       = $".{schemaModel.type}.zip";
         }
         
-        public byte[] GetZipArchive (CreateZip zip) {
+        internal byte[] GetZipArchive (CreateZip zip) {
             if (zipArchive == null && zip != null ) {
                 zipArchive = zip(schemaModel.files);
             }
@@ -261,20 +261,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
     
-    public struct Result {
-        public  string  content;
-        public  string  contentType;
-        public  byte[]  bytes;
-        public  bool    isText;
+    internal struct Result {
+        internal    string  content;
+        internal    string  contentType;
+        internal    byte[]  bytes;
+        internal    bool    isText;
         
-        public bool Set(string  content, string  contentType) {
+        internal  bool Set(string  content, string  contentType) {
             this.content        = content;
             this.contentType    = contentType;
             isText              = true;
             return true;
         }
         
-        public bool Error(string  content) {
+        internal bool Error(string  content) {
             this.content        = content;
             this.contentType    = "text/plain";
             isText              = true;
