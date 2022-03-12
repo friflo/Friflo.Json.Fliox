@@ -18,26 +18,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public sealed class RequestContext
     {
-        public readonly FlioxHub                    hub;
-        public readonly string                      method;
-        public readonly string                      path;
-        public readonly string                      query;
-        public readonly Stream                      body;
-        public readonly IHttpHeaders                headers;
-        public readonly IHttpCookies                cookies;
-        private         Dictionary<string, string>  responseHeaders;
-        internal        bool                        handled;
+        internal  readonly  FlioxHub                    hub;
+        public    readonly  string                      method;
+        public    readonly  string                      path;
+        public    readonly  string                      query;
+        public    readonly  Stream                      body;
+        public    readonly  IHttpHeaders                headers;
+        public    readonly  IHttpCookies                cookies;
+        private             Dictionary<string, string>  responseHeaders;
+        internal            bool                        handled;
         
-        public          string                      ResponseContentType { get; private set; }
-        public          int                         StatusCode          { get; private set; }
-        public          JsonValue                   Response            { get; private set; }
-        public          int                         Offset              { get; private set; }
-        public          Dictionary<string, string>  ResponseHeaders     => responseHeaders;
-        public          bool                        Handled             => handled;
-        public          Pool                        Pool                => hub.sharedEnv.Pool;
-        internal        SharedCache                 SharedCache         => hub.sharedEnv.sharedCache;
+        public              string                      ResponseContentType { get; private set; }
+        public              int                         StatusCode          { get; private set; }
+        public              JsonValue                   Response            { get; private set; }
+        public              int                         Offset              { get; private set; }
+        public              Dictionary<string, string>  ResponseHeaders     => responseHeaders;
+        public              bool                        Handled             => handled;
+        internal            Pool                        Pool                => hub.sharedEnv.Pool;
+        internal            SharedCache                 SharedCache         => hub.sharedEnv.sharedCache;
 
-        public override string          ToString() => $"{method} {path}{query}";
+        public    override  string                      ToString() => $"{method} {path}{query}";
 
         public RequestContext (FlioxHub hub, string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
             this.hub        = hub;
