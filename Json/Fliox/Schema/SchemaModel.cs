@@ -45,6 +45,10 @@ namespace Friflo.Json.Fliox.Schema
             this.files          = new ReadOnlyDictionary<string, string>(files);
         }
 
+        /// <summary>
+        /// Generate schema models for build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
+        /// and languages that are generated via the passed <paramref name="generators"/>
+        /// </summary>
         public static Dictionary<string, SchemaModel> GenerateSchemaModels(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
