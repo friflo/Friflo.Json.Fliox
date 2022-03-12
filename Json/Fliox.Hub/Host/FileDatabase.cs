@@ -31,7 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <item>Using a <see cref="FileDatabase"/> as data source to <b>seed</b> other databases with <see cref="EntityDatabase.SeedDatabase"/></item>
     /// </list>
     /// In most uses cases a <see cref="FileDatabase"/> in not suitable for production as its read / write performance
-    /// cannot compete with databases like: SQLite, Postgres, ... .
+    /// cannot compete with databases like: SQLite, Postgres, ... . <br/>
+    /// <see cref="FileDatabase"/> has no third party dependencies.
     /// </summary>
     public sealed class FileDatabase : EntityDatabase
     {
