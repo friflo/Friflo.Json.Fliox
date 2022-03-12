@@ -87,9 +87,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return schema;
         }
         
-        public void AddGenerator(string type, string name, Func<GeneratorOptions, SchemaSet> generate) {
+        public void AddGenerator(string type, string name, SchemaGenerator schemaGenerator) {
             if (name == null) throw new NullReferenceException(nameof(name));
-            var generator = new CustomGenerator(type, name, generate);
+            var generator = new CustomGenerator(type, name, schemaGenerator);
             generators.Add(generator);
         }
     }
@@ -112,11 +112,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var storeName = typeSchema.RootType.Name;
             if (schemas == null) {
-                using (var writer = new ObjectWriter(new TypeStore())) {
-                    writer.Pretty = true;
-                    var generators = handler.Generators;
-                    schemas = SchemaSet.GenerateSchemas(typeSchema, separateTypes, writer, generators);
-                }
+                var generators = handler.Generators;
+                schemas = SchemaSet.GenerateSchemas(typeSchema, separateTypes, generators);
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();

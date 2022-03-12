@@ -9,18 +9,19 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema
 {
-    public delegate byte[] CreateZip(Dictionary<string, string> files);
+    public delegate SchemaSet   SchemaGenerator(GeneratorOptions options);
+    public delegate byte[]      CreateZip(Dictionary<string, string> files);
 
     public sealed class CustomGenerator
     {
-        internal readonly string                            type;
-        internal readonly string                            name;
-        internal readonly Func<GeneratorOptions, SchemaSet> generateSchemaSet;
+        internal readonly   string          type;
+        internal readonly   string          name;
+        internal readonly   SchemaGenerator schemaGenerator;
         
-        public CustomGenerator (string type, string name, Func<GeneratorOptions, SchemaSet> generateSchemaSet) {
+        public CustomGenerator (string type, string name, SchemaGenerator schemaGenerator) {
             this.type               = type;
             this.name               = name;
-            this.generateSchemaSet  = generateSchemaSet;
+            this.schemaGenerator    = schemaGenerator;
         }
     }
     
@@ -50,8 +51,20 @@ namespace Friflo.Json.Fliox.Schema
             zipName             = $".{type}.zip";
             directory           = writer.Write(files.Keys.ToList());
         }
-        
+
         public static Dictionary<string, SchemaSet> GenerateSchemas(
+            TypeSchema                      typeSchema,
+            ICollection<TypeDef>            separateTypes,
+            IEnumerable<CustomGenerator>    generators = null)
+        {
+            generators = generators ?? Array.Empty<CustomGenerator>();
+            using (var writer = new ObjectWriter(new TypeStore())) {
+                writer.Pretty = true;
+                return GenerateSchemas(typeSchema, separateTypes, writer, generators);
+            }
+        }
+        
+        private static Dictionary<string, SchemaSet> GenerateSchemas(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
             ObjectWriter                    writer,
@@ -89,7 +102,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var generator in generators) {
                 var generatorOpt = new GeneratorOptions(generator.type, generator.name, options.schema, options.replacements, options.separateTypes, writer);
                 try {
-                    var schemaSet = generator.generateSchemaSet(generatorOpt);
+                    var schemaSet = generator.schemaGenerator(generatorOpt);
                     result.Add(generator.type, schemaSet);
                 } catch (Exception e) {
                     Console.WriteLine($"SchemaSet generation failed for: {generator.name}. error: {e.Message}");

@@ -80,8 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             customHandlers.Remove(requestHandler);
         }
         
-        public void AddSchemaGenerator(string type, string name, Func<GeneratorOptions, SchemaSet> generate) {
-            schemaHandler.AddGenerator(type, name, generate);
+        public void AddSchemaGenerator(string type, string name, SchemaGenerator generator) {
+            schemaHandler.AddGenerator(type, name, generator);
         }
         
         /// <summary>
