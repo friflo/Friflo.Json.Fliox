@@ -13,6 +13,8 @@ using Friflo.Json.Fliox.Schema.Definition;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
+    public delegate byte[] CreateZip(IDictionary<string, string> files);
+
     internal sealed class SchemaHandler : IRequestHandler
     {
         private   const     string                              SchemaBase = "/schema";
@@ -94,11 +96,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     internal class ModelResource {
         internal  readonly  SchemaModel     schemaModel;
+        internal  readonly  string          zipNameSuffix;  // .csharp.zip, json-schema.zip, ...
+        private             byte[]          zipArchive;
 
         public    override  string          ToString() => schemaModel.type;
 
         internal ModelResource(SchemaModel schemaModel) {
             this.schemaModel    = schemaModel;
+            zipNameSuffix       = $".{schemaModel.type}.zip";
+        }
+        
+        public byte[] GetZipArchive (CreateZip zip) {
+            if (zipArchive == null && zip != null ) {
+                zipArchive = zip(schemaModel.files);
+            }
+            return zipArchive;
         }
     }
     
@@ -158,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var schemaModel = modelResource.schemaModel;
             var fileName    = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
-                var zipFile = $"{storeName}{schemaModel.zipNameSuffix}";
+                var zipFile = $"{storeName}{modelResource.zipNameSuffix}";
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"Hub", schemaName, schemaModel.label}, $"{schemaModel.label} schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
@@ -172,8 +184,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
-            if (fileName.StartsWith(storeName) && fileName.EndsWith(schemaModel.zipNameSuffix)) {
-                result.bytes        = schemaModel.GetZipArchive(handler.zip);
+            if (fileName.StartsWith(storeName) && fileName.EndsWith(modelResource.zipNameSuffix)) {
+                result.bytes        = modelResource.GetZipArchive(handler.zip);
                 if (result.bytes == null)
                     return result.Error("ZipArchive not supported (Unity)");
                 result.contentType  = "application/zip";

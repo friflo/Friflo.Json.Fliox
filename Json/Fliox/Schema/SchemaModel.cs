@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Schema.Definition;
 namespace Friflo.Json.Fliox.Schema
 {
     public delegate SchemaModel    SchemaGenerator(GeneratorOptions options);
-    public delegate byte[]         CreateZip(IDictionary<string, string> files);
 
     public sealed class CustomGenerator
     {
@@ -38,17 +37,8 @@ namespace Friflo.Json.Fliox.Schema
         public   readonly   string                              contentType;    // "text/plain", "text/html", ...
         public   readonly   ReadOnlyDictionary<string, string>  files;          // key: file name, value: file content
         public   readonly   string                              fullSchema;     // set only for JSON Schema
-        public   readonly   string                              zipNameSuffix;  // .csharp.zip, json-schema.zip, ...
-        private             byte[]                              zipArchive;
 
         public   override   string                              ToString() => type;
-
-        public byte[] GetZipArchive (CreateZip zip) {
-            if (zipArchive == null && zip != null ) {
-                zipArchive = zip(files);
-            }
-            return zipArchive;
-        }
 
         public SchemaModel (string type, string label, string contentType, Dictionary<string, string> files, string fullSchema = null) {
             this.type           = type;
@@ -56,7 +46,6 @@ namespace Friflo.Json.Fliox.Schema
             this.contentType    = contentType;
             this.files          = new ReadOnlyDictionary<string, string>(files);
             this.fullSchema     = fullSchema;
-            zipNameSuffix       = $".{type}.zip";
         }
 
         public static Dictionary<string, SchemaModel> GenerateSchemaModels(
