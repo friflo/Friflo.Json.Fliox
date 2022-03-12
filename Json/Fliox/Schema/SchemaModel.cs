@@ -91,20 +91,20 @@ namespace Friflo.Json.Fliox.Schema
                 jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
             }
             var fullSchema          = writer.Write(jsonSchemaMap);
-            var jsonSchema          = new SchemaModel ("json-schema",   "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
-            result.Add(jsonSchema.type,  jsonSchema);
+            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
+            result.Add(jsonModel.type,  jsonModel);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaModel ("typescript",    "Typescript",  "text/plain",       typescriptGenerator.files);
-            result.Add(typescriptSchema.type,   typescriptSchema);
+            var typescriptModel     = new SchemaModel ("typescript",    "Typescript",  "text/plain",       typescriptGenerator.files);
+            result.Add(typescriptModel.type,   typescriptModel);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaModel ("csharp",        "C#",          "text/plain",       csharpGenerator.files);
-            result.Add(csharpSchema.type,       csharpSchema);
+            var csharpModel         = new SchemaModel ("csharp",        "C#",          "text/plain",       csharpGenerator.files);
+            result.Add(csharpModel.type,       csharpModel);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaModel ("kotlin",        "Kotlin",      "text/plain",       kotlinGenerator.files);
-            result.Add(kotlinSchema.type,       kotlinSchema);
+            var kotlinModel         = new SchemaModel ("kotlin",        "Kotlin",      "text/plain",       kotlinGenerator.files);
+            result.Add(kotlinModel.type,       kotlinModel);
 
             foreach (var generator in generators) {
                 var generatorOpt = new GeneratorOptions(generator.type, generator.name, options.schema, options.replacements, options.separateTypes);
