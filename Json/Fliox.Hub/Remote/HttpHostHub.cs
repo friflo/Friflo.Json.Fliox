@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 request.handled = true;
                 return;
             }
-            if (schemaHandler != null && schemaHandler.IsMatch(request)) {
+            if (schemaHandler.IsMatch(request)) {
                 await schemaHandler.HandleRequest(request).ConfigureAwait(false);
                 request.handled = true;
                 return;
