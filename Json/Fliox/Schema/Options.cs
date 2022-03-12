@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 
@@ -81,15 +80,13 @@ namespace Friflo.Json.Fliox.Schema
         public readonly     TypeSchema              typeSchema;
         public readonly     ICollection<Replace>    replacements;
         public readonly     ICollection<TypeDef>    separateTypes;
-        public readonly     ObjectWriter            writer;
 
-        public GeneratorOptions(string type, string name, TypeSchema typeSchema, ICollection<Replace> replacements, ICollection<TypeDef> separateTypes, ObjectWriter writer) {
+        public GeneratorOptions(string type, string name, TypeSchema typeSchema, ICollection<Replace> replacements, ICollection<TypeDef> separateTypes) {
             this.type           = type;
             this.name           = name;
             this.typeSchema     = typeSchema;
             this.replacements   = replacements;
             this.separateTypes  = separateTypes;
-            this.writer         = writer;
         }
     }
 }

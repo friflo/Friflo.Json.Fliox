@@ -163,7 +163,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             if (fileName == "directory") {
-                return result.Set(schemaSet.directory, "application/json");
+                using (var writer = new ObjectWriter(new TypeStore())) {
+                    writer.Pretty = true;
+                    var directory = writer.Write(schemaSet.files.Keys.ToList());
+                    return result.Set(directory, "application/json");
+                }
             }
             if (!schemaSet.files.TryGetValue(fileName, out string content)) {
                 return result.Error($"file not found: '{fileName}'");
