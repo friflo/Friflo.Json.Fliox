@@ -29,7 +29,8 @@ namespace Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// <see cref="SchemaModel"/> instances are used to represent schemas in various programming languages
-    /// or schema formats like C#, Typescript, Kotlin, JSON Schema and HTML.
+    /// or schema formats like C#, Typescript, Kotlin, JSON Schema and HTML.<br/>
+    /// <see cref="SchemaModel"/> instances are immutable.
     /// </summary>
     public sealed class SchemaModel {
         public   readonly   string                              type;           // csharp, json-schema, ...
