@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var url                 = request.Url;
             var headers             = new HttpListenerHeaders(request.Headers);
             var cookies             = new HttpListenerCookies(request.Cookies);
-            var requestContext      = new RequestContext(request.HttpMethod, url.LocalPath, url.Query, req.InputStream, headers, cookies);
+            var requestContext      = new RequestContext(hostHub, request.HttpMethod, url.LocalPath, url.Query, req.InputStream, headers, cookies);
             await hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             return requestContext;
         }

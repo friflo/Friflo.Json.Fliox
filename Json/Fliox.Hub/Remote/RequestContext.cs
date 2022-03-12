@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
@@ -17,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public sealed class RequestContext
     {
+        public readonly FlioxHub                    hub;
         public readonly string                      method;
         public readonly string                      path;
         public readonly string                      query;
@@ -35,7 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public override string          ToString() => $"{method} {path}{query}";
 
-        public RequestContext (string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
+        public RequestContext (FlioxHub hub, string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
+            this.hub        = hub;
             this.method     = method;
             this.path       = path;
             this.query      = query;

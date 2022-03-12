@@ -17,7 +17,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal sealed class SchemaHandler : IRequestHandler
     {
         private   const     string                              SchemaBase = "/schema";
-        private   readonly  FlioxHub                            hub;
         internal            string                              image = "/img/Json-Fliox-53x43.svg";
         internal  readonly  CreateZip                           zip;
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
@@ -26,8 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal            ICollection<CustomGenerator>        Generators      => generators;
 
-        internal SchemaHandler(FlioxHub hub, CreateZip zip = null) {
-            this.hub            = hub;
+        internal SchemaHandler(CreateZip zip = null) {
             this.zip            = zip;
         }
         
@@ -47,6 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid schema path", "missing database", 400);
                 return Task.CompletedTask;
             }
+            var hub         = context.hub;
             var path        = context.path.Substring(SchemaBase.Length + 1);
             var firstSlash  = path.IndexOf('/');
             var name        = firstSlash == -1 ? path : path.Substring(0, firstSlash);
@@ -64,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var schemaPath  = path.Substring(firstSlash + 1);
             Result result   = new Result();
-            bool success    = schema.GetSchemaFile(schemaPath, ref result, this);
+            bool success    = schema.GetSchemaFile(schemaPath, ref result, this, hub);
             if (!success) {
                 context.WriteError("schema error", result.content, 404);
                 return Task.CompletedTask;
@@ -106,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.separateTypes  = separateTypes;
         }
 
-        internal bool GetSchemaFile(string path, ref Result result, SchemaHandler handler) {
+        internal bool GetSchemaFile(string path, ref Result result, SchemaHandler handler, FlioxHub hub) {
             if (typeSchema == null) {
                 return result.Error("no schema attached to database");
             }
@@ -163,7 +162,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             if (fileName == "directory") {
-                using (var writer = new ObjectWriter(new TypeStore())) {
+                var pool = hub.sharedEnv.Pool;
+                using (var pooled = pool.ObjectMapper.Get()) {
+                    var writer = pooled.instance.writer;
                     writer.Pretty = true;
                     var directory = writer.Write(schemaModel.files.Keys.ToList());
                     return result.Set(directory, "application/json");

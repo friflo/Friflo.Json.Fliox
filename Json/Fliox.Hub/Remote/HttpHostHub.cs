@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -48,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
-            schemaHandler           = new SchemaHandler(hub, ZipUtils.Zip);
+            schemaHandler           = new SchemaHandler(ZipUtils.Zip);
             //
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
