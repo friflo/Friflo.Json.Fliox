@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal sealed class SchemaResource {
         private  readonly   TypeSchema                      typeSchema;
         private  readonly   ICollection<TypeDef>            separateTypes;
-        private             Dictionary<string, SchemaFiles> schemas;
+        private             Dictionary<string, SchemaModel> schemas;
         private  readonly   string                          schemaName;
         
         internal SchemaResource(TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var storeName = typeSchema.RootType.Name;
             if (schemas == null) {
                 var generators = handler.Generators;
-                schemas = SchemaFiles.GenerateSchemas(typeSchema, separateTypes, generators);
+                schemas = SchemaModel.GenerateSchemas(typeSchema, separateTypes, generators);
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
@@ -135,27 +135,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Error($"invalid path:  {path}");
             }
             var schemaType = path.Substring(0, schemaTypeEnd);
-            if (!schemas.TryGetValue(schemaType, out SchemaFiles schemaFiles)) {
+            if (!schemas.TryGetValue(schemaType, out SchemaModel schemaModel)) {
                 return result.Error($"unknown schema type: {schemaType}");
             }
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
-                var zipFile = $"{storeName}{schemaFiles.zipNameSuffix}";
+                var zipFile = $"{storeName}{schemaModel.zipNameSuffix}";
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"Hub", schemaName, schemaFiles.label}, $"{schemaFiles.label} files schema: <b>{storeName}</b>", handler);
+                HtmlHeader(sb, new[]{"Hub", schemaName, schemaModel.label}, $"{schemaModel.label} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
                 sb.AppendLine($"<a href='directory' target='_blank'>files list</a>");
                 sb.AppendLine("<ul>");
-                var target = schemaFiles.contentType == "text/html" ? "" : " target='_blank'";
-                foreach (var file in schemaFiles.files.Keys) {
+                var target = schemaModel.contentType == "text/html" ? "" : " target='_blank'";
+                foreach (var file in schemaModel.files.Keys) {
                     sb.AppendLine($"<li><a href='./{file}'{target}>{file}</a></li>");
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
-            if (fileName.StartsWith(storeName) && fileName.EndsWith(schemaFiles.zipNameSuffix)) {
-                result.bytes        = schemaFiles.GetZipArchive(handler.zip);
+            if (fileName.StartsWith(storeName) && fileName.EndsWith(schemaModel.zipNameSuffix)) {
+                result.bytes        = schemaModel.GetZipArchive(handler.zip);
                 if (result.bytes == null)
                     return result.Error("ZipArchive not supported (Unity)");
                 result.contentType  = "application/zip";
@@ -165,14 +165,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (fileName == "directory") {
                 using (var writer = new ObjectWriter(new TypeStore())) {
                     writer.Pretty = true;
-                    var directory = writer.Write(schemaFiles.files.Keys.ToList());
+                    var directory = writer.Write(schemaModel.files.Keys.ToList());
                     return result.Set(directory, "application/json");
                 }
             }
-            if (!schemaFiles.files.TryGetValue(fileName, out string content)) {
+            if (!schemaModel.files.TryGetValue(fileName, out string content)) {
                 return result.Error($"file not found: '{fileName}'");
             }
-            return result.Set(content, schemaFiles.contentType);
+            return result.Set(content, schemaModel.contentType);
         }
 
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {

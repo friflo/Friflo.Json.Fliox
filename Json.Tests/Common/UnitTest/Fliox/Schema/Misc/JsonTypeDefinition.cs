@@ -210,9 +210,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             return generator;
         }
         
-        public static SchemaFiles GenerateJTD(GeneratorOptions options) {
+        public static SchemaModel GenerateJTD(GeneratorOptions options) {
             var generator = Generate(options);
-            return new SchemaFiles(options.type, options.name, "application/json", generator.files);
+            return new SchemaModel(options.type, options.name, "application/json", generator.files);
         }
     }
 }
