@@ -168,6 +168,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Error($"unknown schema type: {schemaType}");
             }
             var schemaModel = modelResource.schemaModel;
+            var files       = schemaModel.files;
             var fileName    = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var zipFile = $"{storeName}{modelResource.zipNameSuffix}";
@@ -177,7 +178,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 sb.AppendLine($"<a href='directory' target='_blank'>file list</a>");
                 sb.AppendLine("<ul>");
                 var target = schemaModel.contentType == "text/html" ? "" : " target='_blank'";
-                foreach (var file in schemaModel.files.Keys) {
+                foreach (var file in files.Keys) {
                     sb.AppendLine($"<li><a href='./{file}'{target}>{file}</a></li>");
                 }
                 sb.AppendLine("</ul>");
@@ -197,11 +198,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 using (var pooled = pool.ObjectMapper.Get()) {
                     var writer = pooled.instance.writer;
                     writer.Pretty = true;
-                    var directory = writer.Write(schemaModel.files.Keys.ToList());
+                    var directory = writer.Write(files.Keys.ToList());
                     return result.Set(directory, "application/json");
                 }
             }
-            if (!schemaModel.files.TryGetValue(fileName, out string content)) {
+            if (!files.TryGetValue(fileName, out string content)) {
                 return result.Error($"file not found: '{fileName}'");
             }
             return result.Set(content, schemaModel.contentType);
