@@ -14,17 +14,17 @@ using Friflo.Json.Fliox.Schema.Definition;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public delegate byte[] CreateZip(Dictionary<string, string> files);
-    
     internal sealed class SchemaHandler : IRequestHandler
     {
-        private  const      string                              SchemaBase = "/schema";
-        private  readonly   FlioxHub                            hub;
+        private   const     string                              SchemaBase = "/schema";
+        private   readonly  FlioxHub                            hub;
         internal            string                              image = "/img/Json-Fliox-53x43.svg";
-        internal readonly   CreateZip                           zip;
-        private  readonly   Dictionary<string, SchemaResource>  schemas = new Dictionary<string, SchemaResource>();
-        private  readonly   List<CustomGenerator>               generators = new List<CustomGenerator>();
-        private             string                              cacheControl = HttpHostHub.DefaultCacheControl;
+        internal  readonly  CreateZip                           zip;
+        private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
+        private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
+        private             string                              cacheControl    = HttpHostHub.DefaultCacheControl;
+        
+        internal            ICollection<CustomGenerator>        Generators      => generators;
 
         internal SchemaHandler(FlioxHub hub, CreateZip zip = null) {
             this.hub            = hub;
@@ -92,68 +92,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var generator = new CustomGenerator(type, name, generate);
             generators.Add(generator);
         }
-        
-        internal Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema, ICollection<TypeDef> separateTypes, ObjectWriter writer) {
-            var result              = new Dictionary<string, SchemaSet>();
-            var options             = new JsonTypeOptions(typeSchema);
-
-            var htmlGenerator       = HtmlGenerator.Generate(options);
-            var htmlSchema          = new SchemaSet (writer, "html", "HTML",        "text/html",        htmlGenerator.files);
-            result.Add(htmlSchema.type,       htmlSchema);
-            
-            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
-            var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonSchemaMap       = new Dictionary<string, JsonValue>();
-            foreach (var pair in jsonGenerator.files) {
-                jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
-            }
-            var fullSchema          = writer.Write(jsonSchemaMap);
-            var jsonSchema          = new SchemaSet (writer, "json-schema", "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
-            result.Add(jsonSchema.type,  jsonSchema);
-            
-            var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet (writer, "typescript", "Typescript",  "text/plain",       typescriptGenerator.files);
-            result.Add(typescriptSchema.type,   typescriptSchema);
-            
-            var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet (writer, "csharp", "C#",          "text/plain",       csharpGenerator.files);
-            result.Add(csharpSchema.type,       csharpSchema);
-            
-            var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet (writer, "kotlin", "Kotlin",      "text/plain",       kotlinGenerator.files);
-            result.Add(kotlinSchema.type,       kotlinSchema);
-
-            foreach (var generator in generators) {
-                var generatorOpt = new GeneratorOptions(generator.type, generator.name, options.schema, options.replacements, options.separateTypes, writer);
-                try {
-                    var schemaSet = generator.generateSchemaSet(generatorOpt);
-                    result.Add(generator.type, schemaSet);
-                } catch (Exception e) {
-                    Console.WriteLine($"SchemaSet generation failed for: {generator.name}. error: {e.Message}");
-                }
-            }
-            return result;
-        }
     }
     
-    internal sealed class CustomGenerator
-    {
-        internal readonly string                            type;
-        internal readonly string                            name;
-        internal readonly Func<GeneratorOptions, SchemaSet> generateSchemaSet;
-        
-        internal CustomGenerator (string type, string name, Func<GeneratorOptions, SchemaSet> generateSchemaSet) {
-            this.type               = type;
-            this.name               = name;
-            this.generateSchemaSet  = generateSchemaSet;
-        }
-    }
-
-
     internal sealed class SchemaResource {
         private  readonly   TypeSchema                      typeSchema;
         private  readonly   ICollection<TypeDef>            separateTypes;
-
         private             Dictionary<string, SchemaSet>   schemas;
         private  readonly   string                          schemaName;
         
@@ -171,7 +114,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (schemas == null) {
                 using (var writer = new ObjectWriter(new TypeStore())) {
                     writer.Pretty = true;
-                    schemas = handler.GenerateSchemas(typeSchema, separateTypes, writer);
+                    var generators = handler.Generators;
+                    schemas = SchemaSet.GenerateSchemas(typeSchema, separateTypes, writer, generators);
                 }
             }
             if (path == "index.html") {
@@ -229,9 +173,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             return result.Set(content, schemaSet.contentType);
         }
-        
 
-        
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {
             var title = string.Join(" · ", titlePath);
             var titleElements = new List<string>();
@@ -286,34 +228,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.contentType    = "text/plain";
             isText              = true;
             return false;
-        }
-    }
-
-    public sealed class SchemaSet {
-        public   readonly   string                      type;           // csharp, json-schema, ...
-        public   readonly   string                      label;          // C#,     JSON Schema, ...
-        public   readonly   string                      contentType;
-        public   readonly   Dictionary<string, string>  files;
-        public   readonly   string                      fullSchema;
-        public   readonly   string                      directory;
-        internal readonly   string                      zipName;
-        private             byte[]                      zipArchive;
-
-        public byte[] GetZipArchive (CreateZip zip) {
-            if (zipArchive == null && zip != null ) {
-                zipArchive = zip(files);
-            }
-            return zipArchive;
-        }
-
-        public SchemaSet (ObjectWriter writer, string type, string label, string contentType, Dictionary<string, string> files, string fullSchema = null) {
-            this.type           = type;
-            this.label          = label;
-            this.contentType    = contentType;
-            this.files          = files;
-            this.fullSchema     = fullSchema;
-            zipName             = $".{type}.zip";
-            directory           = writer.Write(files.Keys.ToList());
         }
     }
 }
