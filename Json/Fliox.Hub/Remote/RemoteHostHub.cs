@@ -14,10 +14,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class RemoteHostHub : FlioxHub
     {
-        private  readonly   FlioxHub     localHub;
+        private   readonly  FlioxHub    localHub;
         
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
-        public              bool            fakeOpenClosedSockets;
+        public              bool        fakeOpenClosedSockets;
+        
+        public              FlioxHub    LocalHub => localHub;
 
         protected RemoteHostHub(FlioxHub hub, SharedEnv env, string hostName) : base(hub.database, env, hostName) {
             localHub = hub;
