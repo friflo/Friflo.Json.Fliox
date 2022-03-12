@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Schema
             zipNameSuffix       = $".{type}.zip";
         }
 
-        public static Dictionary<string, SchemaModel> GenerateSchemas(
+        public static Dictionary<string, SchemaModel> GenerateSchemaModels(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
             IEnumerable<CustomGenerator>    generators = null)
@@ -66,11 +66,11 @@ namespace Friflo.Json.Fliox.Schema
             generators = generators ?? Array.Empty<CustomGenerator>();
             using (var writer = new ObjectWriter(new TypeStore())) {
                 writer.Pretty = true;
-                return GenerateSchemas(typeSchema, separateTypes, writer, generators);
+                return GenerateSchemaModels(typeSchema, separateTypes, writer, generators);
             }
         }
         
-        private static Dictionary<string, SchemaModel> GenerateSchemas(
+        private static Dictionary<string, SchemaModel> GenerateSchemaModels(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
             ObjectWriter                    writer,

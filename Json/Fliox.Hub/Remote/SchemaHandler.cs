@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal sealed class SchemaResource {
         private  readonly   TypeSchema                      typeSchema;
         private  readonly   ICollection<TypeDef>            separateTypes;
-        private             Dictionary<string, SchemaModel> schemas;
+        private             Dictionary<string, SchemaModel> schemaModels;
         private  readonly   string                          schemaName;
         
         internal SchemaResource(TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
@@ -111,15 +111,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Error("no schema attached to database");
             }
             var storeName = typeSchema.RootType.Name;
-            if (schemas == null) {
+            if (schemaModels == null) {
                 var generators = handler.Generators;
-                schemas = SchemaModel.GenerateSchemas(typeSchema, separateTypes, generators);
+                schemaModels = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new []{"Hub", schemaName}, $"Available schemas / languages for schema <b>{storeName}</b>", handler);
                 sb.AppendLine("<ul>");
-                foreach (var pair in schemas) {
+                foreach (var pair in schemaModels) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.label}</a></li>");
                 }
                 sb.AppendLine("</ul>");
@@ -127,15 +127,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Set(sb.ToString(), "text/html");
             }
             if (path == "json-schema.json") {
-                var jsonSchema = schemas["json-schema"];
-                return result.Set(jsonSchema.fullSchema, jsonSchema.contentType);
+                var jsonSchemaModel = schemaModels["json-schema"];
+                return result.Set(jsonSchemaModel.fullSchema, jsonSchemaModel.contentType);
             }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
                 return result.Error($"invalid path:  {path}");
             }
             var schemaType = path.Substring(0, schemaTypeEnd);
-            if (!schemas.TryGetValue(schemaType, out SchemaModel schemaModel)) {
+            if (!schemaModels.TryGetValue(schemaType, out SchemaModel schemaModel)) {
                 return result.Error($"unknown schema type: {schemaType}");
             }
             var fileName = path.Substring(schemaTypeEnd + 1);
