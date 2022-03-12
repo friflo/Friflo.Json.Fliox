@@ -15,10 +15,12 @@ namespace Friflo.Json.Fliox.Schema
 
     public sealed class CustomGenerator
     {
-        internal readonly   string          type;
-        internal readonly   string          name;
-        internal readonly   SchemaGenerator schemaGenerator;
-        
+        internal  readonly  string          type;   // jtd, ...
+        internal  readonly  string          name;   // JSON Type Definition, ...
+        internal  readonly  SchemaGenerator schemaGenerator;
+
+        public    override  string          ToString() => type;
+
         public CustomGenerator (string type, string name, SchemaGenerator schemaGenerator) {
             this.type               = type;
             this.name               = name;
@@ -29,13 +31,15 @@ namespace Friflo.Json.Fliox.Schema
     public sealed class SchemaSet {
         public   readonly   string                              type;           // csharp, json-schema, ...
         public   readonly   string                              label;          // C#,     JSON Schema, ...
-        public   readonly   string                              contentType;
-        public   readonly   ReadOnlyDictionary<string, string>  files;
-        public   readonly   string                              fullSchema;
+        public   readonly   string                              contentType;    // "text/plain", "text/html", ...
+        public   readonly   ReadOnlyDictionary<string, string>  files;          // key: file name, value: file content
+        public   readonly   string                              fullSchema;     // set only for JSON Schema
         public   readonly   string                              directory;
-        public   readonly   string                              zipName;
+        public   readonly   string                              zipNameSuffix;  // .csharp.zip, json-schema.zip, ...
         private             byte[]                              zipArchive;
-        
+
+        public   override   string                              ToString() => type;
+
         public byte[] GetZipArchive (CreateZip zip) {
             if (zipArchive == null && zip != null ) {
                 zipArchive = zip(files);
@@ -49,7 +53,7 @@ namespace Friflo.Json.Fliox.Schema
             this.contentType    = contentType;
             this.files          = new ReadOnlyDictionary<string, string>(files);
             this.fullSchema     = fullSchema;
-            zipName             = $".{type}.zip";
+            zipNameSuffix       = $".{type}.zip";
             directory           = writer.Write(files.Keys.ToList());
         }
 

@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
-                var zipFile = $"{storeName}{schemaSet.zipName}";
+                var zipFile = $"{storeName}{schemaSet.zipNameSuffix}";
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"Hub", schemaName, schemaSet.label}, $"{schemaSet.label} files schema: <b>{storeName}</b>", handler);
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
-            if (fileName.StartsWith(storeName) && fileName.EndsWith(schemaSet.zipName)) {
+            if (fileName.StartsWith(storeName) && fileName.EndsWith(schemaSet.zipNameSuffix)) {
                 result.bytes        = schemaSet.GetZipArchive(handler.zip);
                 if (result.bytes == null)
                     return result.Error("ZipArchive not supported (Unity)");
