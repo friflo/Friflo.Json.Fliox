@@ -392,7 +392,15 @@ export class App {
                 path[2].classList.toggle("active");
                 return;
             }
-            path[1].classList.add("active");
+            const treeEl = path[1];
+            if (this.selectedTreeEl == databaseElement) {
+                if (treeEl.classList.contains("active"))
+                    treeEl.classList.remove("active");
+                else 
+                    treeEl.classList.add("active");
+                return;
+            }
+            treeEl.classList.add("active");
             this.selectTreeElement(databaseElement);
 
             const databaseName      = databaseElement.childNodes[1].textContent;
