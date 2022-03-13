@@ -14,7 +14,7 @@ var exampleRole: Role = {
             containers:     { "Article": { operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }}
         },
         {
-            type:           "message",
+            type:           "sendMessage",
             names:          ["test-mess*"]
         },
         {
@@ -37,7 +37,7 @@ function usePolymorphType (right: Right_Union) {
     switch (right.type) {
         case "allow":
             break;
-        case "message":
+        case "sendMessage":
             var names: string[] = right.names;
             break;
         case "predicate":
