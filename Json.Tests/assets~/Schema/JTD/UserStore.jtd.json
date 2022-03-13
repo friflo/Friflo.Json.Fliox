@@ -25,7 +25,7 @@
             "mapping": {
                 "allow":            { "ref":  "RightAllow" },
                 "task":             { "ref":  "RightTask" },
-                "message":          { "ref":  "RightMessage" },
+                "message":          { "ref":  "RightSendMessage" },
                 "subscribeMessage": { "ref":  "RightSubscribeMessage" },
                 "operation":        { "ref":  "RightOperation" },
                 "predicate":        { "ref":  "RightPredicate" }
@@ -65,7 +65,7 @@
                 "error"
             ]
         },
-        "RightMessage": {
+        "RightSendMessage": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "names":       { "elements": { "type": "string" } },

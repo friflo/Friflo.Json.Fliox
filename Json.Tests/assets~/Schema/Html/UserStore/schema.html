@@ -278,7 +278,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div>Right<discUnion style='float:right'>type</discUnion></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'><div>RightAllow<disc style='float:right'>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'><div>RightTask<disc style='float:right'>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'><div>RightMessage<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSendMessage'><div>RightSendMessage<disc style='float:right'>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'><div>RightSubscribeMessage<disc style='float:right'>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'><div>RightOperation<disc style='float:right'>type</disc></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'><div>ContainerAccess</div></a></li>
@@ -572,6 +572,11 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a>
         <keyword>abstract class</keyword>
     </h3>
+    <desc>Each <b>Role</b> has a set of <b>rights</b>. <br/>
+Each <b>Right</b> is a rule used to grant or deny a specific database operation or command execution.<br/>
+The database operation or command execution is granted if any of it <b>rights</b>
+grant access.
+    </desc>
     <table class='fields'>
         <tr>
             <td><discUnion>type</discUnion></td>
@@ -586,7 +591,7 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
             </tr>
             <tr>
                 <td><discriminant>"message"</discriminant></td>
-                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>RightMessage</a></td>
+                <td><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSendMessage'>RightSendMessage</a></td>
             </tr>
             <tr>
                 <td><discriminant>"subscribeMessage"</discriminant></td>
@@ -613,6 +618,11 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
+    <desc>Allow full access to the given <b>database</b>.<br/>
+In case <b>database</b> ends with a '*' e.g. 'test*' access to all databases with the prefix 'test'
+is granted.<br/>
+Using <b>database</b>: '*' grant access to all databases.
+    </desc>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"allow"</discriminant></td>
@@ -628,6 +638,8 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
+    <desc><b>RightTask</b> grant <b>database</b> access by a set of task <b>types</b>. <br/>
+    </desc>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"task"</discriminant></td>
@@ -641,11 +653,17 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
     </table>
     </div>
     <div class='type'>
-    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>
-        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightMessage'>RightMessage</a>
+    <h3 id='Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSendMessage'>
+        <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSendMessage'>RightSendMessage</a>
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
+    <desc><b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/>
+Each allowed message can be listed explicit in <b>names</b>. E.g. 'std.Echo' <br/>
+A group of messages can be allowed by using a prefix. E.g. 'std.*' <br/>
+To grant sending every message independent of its name use: '*'<br/><br/>
+Note: commands are messages - so permission of sending commands is same as for messages.
+    </desc>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"message"</discriminant></td>
@@ -664,6 +682,12 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
+    <desc><b>RightSubscribeMessage</b> allows subscribing messages send to a <b>database</b>.<br/>
+Allow subscribing a specific message by using explicit message <b>names</b>. E.g. 'std.Echo' <br/>
+Allow subscribing a group of messages by using a prefix. E.g. 'std.*' <br/>
+Allow subscribing all messages by using: '*'<br/><br/>
+Note: commands are messages - so permission of subscribing commands is same as for messages.
+    </desc>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"subscribeMessage"</discriminant></td>
@@ -682,6 +706,11 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
+    <desc><b>RightOperation</b> grant <b>database</b> access for the given <b>containers</b>
+based on a set of <b>operations</b>. <br/>
+E.g. create, read, upsert, delete, query or aggregate (count)<br/>
+It also allows subscribing database changes by <b>subscribeChanges</b>
+    </desc>
     <table class='fields'>
         <tr>
             <td><disc>type</disc></td>        <td><discriminant>"operation"</discriminant></td>

@@ -11,6 +11,9 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
+    /// <summary>
+    /// <see cref="RightTask"/> grant <see cref="database"/> access by a set of task <see cref="types"/>. <br/> 
+    /// </summary>
     public sealed class RightTask : Right
     {
                         public  string          database;

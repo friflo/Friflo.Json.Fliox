@@ -7,7 +7,7 @@
             "oneOf": [
                 { "$ref": "#/definitions/RightAllow" },
                 { "$ref": "#/definitions/RightTask" },
-                { "$ref": "#/definitions/RightMessage" },
+                { "$ref": "#/definitions/RightSendMessage" },
                 { "$ref": "#/definitions/RightSubscribeMessage" },
                 { "$ref": "#/definitions/RightOperation" },
                 { "$ref": "#/definitions/RightPredicate" }
@@ -24,6 +24,7 @@
         "RightAllow": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
+            "description": "Allow full access to the given <b>database</b>.<br/>\nIn case <b>database</b> ends with a '*' e.g. 'test*' access to all databases with the prefix 'test'\nis granted.<br/>\nUsing <b>database</b>: '*' grant access to all databases.",
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "database":    { "type": ["string", "null"] },
@@ -37,6 +38,7 @@
         "RightTask": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
+            "description": "<b>RightTask</b> grant <b>database</b> access by a set of task <b>types</b>. <br/>",
             "properties": {
                 "type":        { "enum": ["task"] },
                 "database":    { "type": ["string", "null"] },
@@ -49,9 +51,10 @@
             ],
             "additionalProperties": false
         },
-        "RightMessage": {
+        "RightSendMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
+            "description": "<b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/>\nEach allowed message can be listed explicit in <b>names</b>. E.g. 'std.Echo' <br/>\nA group of messages can be allowed by using a prefix. E.g. 'std.*' <br/>\nTo grant sending every message independent of its name use: '*'<br/><br/>\nNote: commands are messages - so permission of sending commands is same as for messages.",
             "properties": {
                 "type":        { "enum": ["message"] },
                 "database":    { "type": ["string", "null"] },
@@ -67,6 +70,7 @@
         "RightSubscribeMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
+            "description": "<b>RightSubscribeMessage</b> allows subscribing messages send to a <b>database</b>.<br/>\nAllow subscribing a specific message by using explicit message <b>names</b>. E.g. 'std.Echo' <br/>\nAllow subscribing a group of messages by using a prefix. E.g. 'std.*' <br/>\nAllow subscribing all messages by using: '*'<br/><br/>\nNote: commands are messages - so permission of subscribing commands is same as for messages.",
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
                 "database":    { "type": ["string", "null"] },
@@ -82,6 +86,7 @@
         "RightOperation": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
+            "description": "<b>RightOperation</b> grant <b>database</b> access for the given <b>containers</b>\nbased on a set of <b>operations</b>. <br/>\nE.g. create, read, upsert, delete, query or aggregate (count)<br/>\nIt also allows subscribing database changes by <b>subscribeChanges</b>",
             "properties": {
                 "type":        { "enum": ["operation"] },
                 "database":    { "type": ["string", "null"] },

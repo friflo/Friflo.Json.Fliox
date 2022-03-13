@@ -28,7 +28,7 @@ data class RightTask (
 
 @Serializable
 @SerialName("message")
-data class RightMessage (
+data class RightSendMessage (
               val database    : String? = null,
               val names       : List<String>,
     override  val description : String? = null,

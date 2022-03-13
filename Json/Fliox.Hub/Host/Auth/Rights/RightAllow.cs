@@ -5,6 +5,12 @@
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
+    /// <summary>
+    /// Allow full access to the given <see cref="database"/>.<br/>
+    /// In case <see cref="database"/> ends with a '*' e.g. 'test*' access to all databases with the prefix 'test'
+    /// is granted.<br/>
+    /// Using <see cref="database"/>: '*' grant access to all databases.
+    /// </summary>
     public sealed class RightAllow : Right
     {
         public              string      database;

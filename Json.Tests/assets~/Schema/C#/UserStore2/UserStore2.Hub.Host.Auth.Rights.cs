@@ -10,7 +10,7 @@ namespace UserStore2.Hub.Host.Auth.Rights {
 [Fri.Discriminator("type")]
 [Fri.Polymorph(typeof(RightAllow),            Discriminant = "allow")]
 [Fri.Polymorph(typeof(RightTask),             Discriminant = "task")]
-[Fri.Polymorph(typeof(RightMessage),          Discriminant = "message")]
+[Fri.Polymorph(typeof(RightSendMessage),      Discriminant = "message")]
 [Fri.Polymorph(typeof(RightSubscribeMessage), Discriminant = "subscribeMessage")]
 [Fri.Polymorph(typeof(RightOperation),        Discriminant = "operation")]
 [Fri.Polymorph(typeof(RightPredicate),        Discriminant = "predicate")]
@@ -28,7 +28,7 @@ public class RightTask : Right {
     List<TaskType>  types;
 }
 
-public class RightMessage : Right {
+public class RightSendMessage : Right {
     string        database;
     [Fri.Required]
     List<string>  names;
