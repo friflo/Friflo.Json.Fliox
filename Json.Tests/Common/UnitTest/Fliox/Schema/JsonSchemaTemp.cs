@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Typescript () {
             var options     = new NativeTypeOptions(JsonFlowSchemaTypes);
             var generator   = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/JsonSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/JsonSchemaTemp");
         }
         
         /// C# -> JSON Schema
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_JSON () {
             var options     = new NativeTypeOptions(typeof(JSONSchema));
             var generator   = JsonSchemaGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/JsonSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/JsonSchemaTemp");
         }
         
         /// C# -> C#
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/JsonSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/JsonSchemaTemp");
         }
     }
 }
