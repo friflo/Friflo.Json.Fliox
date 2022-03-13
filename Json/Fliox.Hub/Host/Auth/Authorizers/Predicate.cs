@@ -7,6 +7,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
+    public delegate bool AuthPredicate (SyncRequestTask task, IPool pool);
+    
     public sealed class AuthorizePredicate : Authorizer {
         private readonly string         name;
         private readonly AuthPredicate  predicate;

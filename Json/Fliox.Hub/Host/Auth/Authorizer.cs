@@ -6,8 +6,6 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public delegate bool AuthPredicate (SyncRequestTask task, IPool pool);
-    
     /// <summary>
     /// Authorize a given task.
     /// <br></br>
