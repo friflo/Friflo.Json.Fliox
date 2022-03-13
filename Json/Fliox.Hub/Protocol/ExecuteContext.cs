@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// <summary>
     /// One <see cref="ExecuteContext"/> is created per <see cref="ProtocolMessage"/> to enable
     /// multi threaded / concurrent request, response and event handling (processing).
-    /// These message types a represented by <see cref="ProtocolRequest"/>, <see cref="ProtocolResponse"/> and
+    /// These message types are represented by <see cref="ProtocolRequest"/>, <see cref="ProtocolResponse"/> and
     /// <see cref="ProtocolEvent"/>.
     /// <br></br>
     /// Note: In case of adding transaction support for <see cref="SyncRequest"/>'s in future transaction data / state
