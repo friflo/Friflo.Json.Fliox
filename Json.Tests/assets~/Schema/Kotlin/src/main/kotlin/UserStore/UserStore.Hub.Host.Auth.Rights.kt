@@ -27,7 +27,7 @@ data class RightTask (
 ) : Right()
 
 @Serializable
-@SerialName("message")
+@SerialName("sendMessage")
 data class RightSendMessage (
               val database    : String? = null,
               val names       : List<String>,

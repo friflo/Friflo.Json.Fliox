@@ -11,7 +11,7 @@
             }
         },
         {
-            "type":     "message",
+            "type":     "sendMessage",
             "database": "user_db",
             "names":    ["std.*"]
         }

@@ -21,7 +21,7 @@ export abstract class Right {
     abstract type:
         | "allow"
         | "task"
-        | "message"
+        | "sendMessage"
         | "subscribeMessage"
         | "operation"
         | "predicate"
@@ -55,7 +55,7 @@ export class RightTask extends Right {
  * Note: commands are messages - so permission of sending commands is same as for messages.
  */
 export class RightSendMessage extends Right {
-    type         : "message";
+    type         : "sendMessage";
     database?    : string | null;
     names        : string[];
 }

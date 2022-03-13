@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(RightAllow),              Discriminant = "allow")]
     [Fri.Polymorph(typeof(RightTask),               Discriminant = "task")]
-    [Fri.Polymorph(typeof(RightSendMessage),        Discriminant = "message")]
+    [Fri.Polymorph(typeof(RightSendMessage),        Discriminant = "sendMessage")]
     [Fri.Polymorph(typeof(RightSubscribeMessage),   Discriminant = "subscribeMessage")]
     [Fri.Polymorph(typeof(RightOperation),          Discriminant = "operation")]
     [Fri.Polymorph(typeof(RightPredicate),          Discriminant = "predicate")]

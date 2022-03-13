@@ -13,7 +13,7 @@
                 { "$ref": "#/definitions/RightPredicate" }
             ],
             "properties": {
-                "type":        { "enum": ["allow", "task", "message", "subscribeMessage", "operation", "predicate"] },
+                "type":        { "enum": ["allow", "task", "sendMessage", "subscribeMessage", "operation", "predicate"] },
                 "description": { "type": ["string", "null"] }
             },
             "required": [
@@ -56,7 +56,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "description": "<b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/>\nEach allowed message can be listed explicit in <b>names</b>. E.g. 'std.Echo' <br/>\nA group of messages can be allowed by using a prefix. E.g. 'std.*' <br/>\nTo grant sending every message independent of its name use: '*'<br/><br/>\nNote: commands are messages - so permission of sending commands is same as for messages.",
             "properties": {
-                "type":        { "enum": ["message"] },
+                "type":        { "enum": ["sendMessage"] },
                 "database":    { "type": ["string", "null"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
                 "description": { "type": ["string", "null"] }
