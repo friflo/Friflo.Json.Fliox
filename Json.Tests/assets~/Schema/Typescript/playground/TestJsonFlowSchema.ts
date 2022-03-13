@@ -1,7 +1,7 @@
-import { JsonSchema } from "../JsonSchema/Friflo.Json.Fliox.Schema.JSON"
+import { JSONSchema } from "../JSONSchema/Friflo.Json.Fliox.Schema.JSON"
 
 // check assignment with using a type compiles successful
-var exampleSync: JsonSchema = {
+var exampleSync: JSONSchema = {
     "definitions": {
         "Entity": {
             "type": "object",

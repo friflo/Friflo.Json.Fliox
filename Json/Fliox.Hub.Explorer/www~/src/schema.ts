@@ -1,4 +1,4 @@
-import { FieldType, JsonType, JsonSchema }  from "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON";
+import { FieldType, JsonType, JSONSchema }  from "../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema }                         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 declare module "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster" {
@@ -8,14 +8,14 @@ declare module "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Fr
     }
 }
 
-declare module "../../../../Json.Tests/assets~/Schema/Typescript/JsonSchema/Friflo.Json.Fliox.Schema.JSON" {
+declare module "../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON" {
     interface JsonType {
         _typeName:      string;
         _namespace:     string;
         _resolvedDef:   JsonType;
     }
 
-    interface JsonSchema {
+    interface JSONSchema {
         oneOf?:         any[],
         _resolvedDef:   JsonType;
     }
@@ -37,9 +37,9 @@ export type MonacoSchema = {
     /**
      * The schema for the given URI.
      */
-    readonly schema?: JsonSchema;
+    readonly schema?: JSONSchema;
 
-    _resolvedDef?: JsonSchema
+    _resolvedDef?: JSONSchema
 }
 
 
@@ -49,7 +49,7 @@ export class Schema
     public static createEntitySchemas (databaseSchemas: { [key: string]: DbSchema}, dbSchemas: DbSchema[]) : {[key: string]: MonacoSchema } {
         const schemaMap: { [key: string]: MonacoSchema } = {};
         for (const dbSchema of dbSchemas) {
-            const jsonSchemas       = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
+            const jsonSchemas       = dbSchema.jsonSchemas as { [key: string] : JSONSchema};
             const database          = dbSchema.id;
             const containerRefs     = {} as { [key: string] : string };
             const rootSchema        = jsonSchemas[dbSchema.schemaPath].definitions[dbSchema.schemaName];
@@ -90,7 +90,7 @@ export class Schema
                     const schemaId      = "." + path;
                     const uri           = "http://" + database + path;
                     const containerName = containerRefs[schemaId];
-                    let schemaRef : JsonSchema = { $ref: schemaId, _resolvedDef: null };
+                    let schemaRef : JSONSchema = { $ref: schemaId, _resolvedDef: null };
                     if (containerName) {
                         dbSchema._containerSchemas[containerName] = definition;
                         // entityEditor type can either be its entity type or an array using this type
@@ -112,7 +112,7 @@ export class Schema
         return schemaMap;
     }
 
-    private static resolveRefs(jsonSchemas: { [key: string] : JsonSchema }) {
+    private static resolveRefs(jsonSchemas: { [key: string] : JSONSchema }) {
         for (const schemaPath in jsonSchemas) {
             // if (schemaPath == "Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json") debugger;
             const schema      = jsonSchemas[schemaPath];
@@ -120,7 +120,7 @@ export class Schema
         }
     }
 
-    private static resolveNodeRefs(jsonSchemas: { [key: string] : JsonSchema }, schema: JsonSchema, node: JsonSchema) {
+    private static resolveNodeRefs(jsonSchemas: { [key: string] : JSONSchema }, schema: JSONSchema, node: JSONSchema) {
         const nodeType = typeof node;
         if (nodeType != "object")
             return;
@@ -145,7 +145,7 @@ export class Schema
             // if (propertyName == "dateTimeNull") debugger;
             const property  = (node as any)[propertyName] as FieldType;
             const fieldType = Schema.getFieldType(property);
-            this.resolveNodeRefs(jsonSchemas, schema, fieldType.type as JsonSchema); // todo fix cast            
+            this.resolveNodeRefs(jsonSchemas, schema, fieldType.type as JSONSchema); // todo fix cast            
         }
     }
 
@@ -167,7 +167,7 @@ export class Schema
 
     // add a "fileMatch" property to all container entity type schemas used for editor validation
     private static addFileMatcher(database: string, dbSchema: DbSchema, schemaMap: { [key: string]: MonacoSchema }) {
-        const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JsonSchema};
+        const jsonSchemas     = dbSchema.jsonSchemas as { [key: string] : JSONSchema};
         const schemaName      = dbSchema.schemaName;
         const schemaPath      = dbSchema.schemaPath;
         const jsonSchema      = jsonSchemas[schemaPath];

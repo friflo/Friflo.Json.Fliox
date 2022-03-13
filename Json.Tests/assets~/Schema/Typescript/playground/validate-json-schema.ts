@@ -12,7 +12,7 @@ export function validateSchemas() {
     const userStoreFiles        = getFiles("../JSON/UserStore/");
     const pocStoreFiles         = getFiles("../JSON/PocStore/");
     const entityIdStoreFiles    = getFiles("../JSON/EntityIdStore/");
-    const jsonFlowSchemaFiles   = getFiles("../JSON/JsonSchema/");
+    const jsonFlowSchemaFiles   = getFiles("../JSON/JSONSchema/");
     const protocolFiles         = getFiles("../JSON/Protocol/");
     const filterFiles           = getFiles("../JSON/Filter/");
 
