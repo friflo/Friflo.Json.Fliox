@@ -14,7 +14,7 @@ import { int64 } from "./Standard";
  * - **key**
  * - **relation**
  * 
- * The restriction of **JSONSchema** are:
+ * The restriction of **JSONSchemaTemp** are:
  * - A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.
  *   The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
  *   This restriction enables generation of code and types for languages without support of anonymous types.
@@ -26,7 +26,7 @@ import { int64 } from "./Standard";
  * - On root level are only "$ref": "..." and "definitions": [...] allowed.
  * 
  */
-export class JSONSchema {
+export class JSONSchemaTemp {
     $ref?        : string | null;
     definitions? : { [key: string]: JsonType } | null;
 }

@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     /// </summary>
     public static class JsonSchemaGen
     {
-        private static readonly Type[] JsonFlowSchemaTypes        = { typeof(JSONSchema) };
+        private static readonly Type[] JsonFlowSchemaTypes        = { typeof(JSONSchemaTemp) };
 
         // -------------------------------------- input: C# --------------------------------------
         
@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
-            var options     = new NativeTypeOptions(typeof(JSONSchema));
+            var options     = new NativeTypeOptions(typeof(JSONSchemaTemp));
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/JsonSchema");
         }
