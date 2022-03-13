@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
@@ -39,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public class HttpHostHub : RemoteHostHub
     {
-        private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler(ZipUtils.Zip);
+        private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         

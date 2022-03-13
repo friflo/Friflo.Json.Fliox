@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -26,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal            ICollection<CustomGenerator>        Generators      => generators;
 
-        internal SchemaHandler(CreateZip zip = null) {
-            this.zip            = zip;
+        internal SchemaHandler() {
+            this.zip = ZipUtils.Zip;
         }
         
         public SchemaHandler CacheControl(string cacheControl) {
