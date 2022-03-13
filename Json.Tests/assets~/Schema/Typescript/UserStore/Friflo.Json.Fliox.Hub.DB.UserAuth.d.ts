@@ -21,6 +21,7 @@ export interface UserStore {
     roles        : { [key: string]: Role };
 
     // --- commands
+    /** authenticate user **Credentials**: **userId** and **token** */
     ["AuthenticateUser"]     (param: Credentials | null) : AuthResult;
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]             (param: any) : any;
@@ -38,28 +39,41 @@ export interface UserStore {
     ["std.Cluster"]          () : HostCluster;
 }
 
+/** contains a **token** assigned to a user used for autentication */
 export class UserCredential {
+    /** user name */
     id     : string;
+    /** user token */
     token? : string | null;
 }
 
+/** Set of **roles** assigned to a user used for authorization */
 export class UserPermission {
+    /** user name */
     id     : string;
+    /** **roles** assigned to a user */
     roles? : string[] | null;
 }
 
+/** Contains a set of **rights** used for task authorization */
 export class Role {
+    /** **Role** name */
     id           : string;
+    /** **rights** is set of rules used for task authorization */
     rights       : Right_Union[];
+    /** optional **description** explaining a **Role** */
     description? : string | null;
 }
 
+/** user **Credentials** used for authentication */
 export class Credentials {
     userId  : string;
     token   : string;
 }
 
+/** Result of **AuthenticateUser()** command */
 export class AuthResult {
+    /** true if authentication was successful */
     isValid  : boolean;
 }
 

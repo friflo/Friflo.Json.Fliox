@@ -5,9 +5,10 @@
     "definitions": {
         "UserPermission": {
             "type": "object",
+            "description": "Set of <b>roles</b> assigned to a user used for authorization",
             "properties": {
-                "id":    { "type": "string" },
-                "roles": { "type": ["array", "null"], "items": { "type": "string" }, "relation": "roles" }
+                "id":    { "type": "string", "description": "user name" },
+                "roles": { "type": ["array", "null"], "items": { "type": "string" }, "relation": "roles", "description": "<b>roles</b> assigned to a user" }
             },
             "required": [
                 "id"

@@ -18,7 +18,8 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "AuthenticateUser": { "param": { "oneOf": [{ "$ref": "#/definitions/Credentials" }, {"type": "null"}] }, "result": { "$ref": "#/definitions/AuthResult" } },
+                "AuthenticateUser": { "param": { "oneOf": [{ "$ref": "#/definitions/Credentials" }, {"type": "null"}] }, "result": { "$ref": "#/definitions/AuthResult" },
+                    "description": "authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b>" },
                 "std.Echo":         { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately." },
                 "std.Containers":   { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
@@ -37,6 +38,7 @@
         },
         "Credentials": {
             "type": "object",
+            "description": "user <b>Credentials</b> used for authentication",
             "properties": {
                 "userId": { "type": "string" },
                 "token":  { "type": "string" }
@@ -49,8 +51,9 @@
         },
         "AuthResult": {
             "type": "object",
+            "description": "Result of <b>AuthenticateUser()</b> command",
             "properties": {
-                "isValid": { "type": "boolean" }
+                "isValid": { "type": "boolean", "description": "true if authentication was successful" }
             },
             "required": [
                 "isValid"

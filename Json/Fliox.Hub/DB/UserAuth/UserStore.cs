@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public UserStore(FlioxHub hub) : base(hub) { }
         
         // --- commands
+        /// <summary>authenticate user <see cref="Credentials"/>: <see cref="Credentials.userId"/> and <see cref="Credentials.token"/></summary>
         public CommandTask<AuthResult> AuthenticateUser(Credentials command) {
             return SendCommand<Credentials, AuthResult>(nameof(AuthenticateUser), command);
         }
@@ -52,30 +53,41 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
 
     // -------------------------------------- models ---------------------------------------
-    public class UserPermission {
+    /// <summary>contains a <see cref="token"/> assigned to a user used for autentication</summary>
+    public class UserCredential {
+                /// <summary>user name</summary>
         [Req]   public  JsonKey         id;
+                /// <summary>user token</summary>
+                public  string          token;
+                        
+        public override string          ToString() => JsonSerializer.Serialize(this);
+    }
+    
+    /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
+    public class UserPermission {
+                /// <summary>user name</summary>
+        [Req]   public  JsonKey         id;
+                /// <summary><see cref="roles"/> assigned to a user</summary>
         [Fri.Relation(nameof(UserStore.roles))]
                 public  List<string>    roles;
 
         public override string          ToString() => JsonSerializer.Serialize(this);
     }
     
-    public class UserCredential {
-        [Req]   public  JsonKey         id;
-                public  string          token;
-                        
-        public override string          ToString() => JsonSerializer.Serialize(this);
-    }
-    
+    /// <summary>Contains a set of <see cref="rights"/> used for task authorization</summary>
     public class Role {
+                /// <summary><see cref="Role"/> name</summary>
         [Req]   public  string          id;
+                /// <summary><see cref="rights"/> is set of rules used for task authorization</summary>
         [Req]   public  List<Right>     rights;
+                /// <summary>optional <see cref="description"/> explaining a <see cref="Role"/></summary>
                 public  string          description;
                         
         public override string          ToString() => JsonSerializer.Serialize(this);
     }
     
     // -------------------------------------- command models -------------------------------------
+    /// <summary>user <see cref="Credentials"/> used for authentication</summary>
     public class Credentials {
         [Req]   public  JsonKey         userId;
         [Req]   public  string          token;
@@ -83,7 +95,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public override string          ToString() => $"userId: {userId}";
     }
     
+    /// <summary>Result of <see cref="UserStore.AuthenticateUser"/> command</summary>
     public class AuthResult {
+                /// <summary>true if authentication was successful</summary>
                 public bool             isValid;
 
         public override string          ToString() => $"isValid: {isValid}";
