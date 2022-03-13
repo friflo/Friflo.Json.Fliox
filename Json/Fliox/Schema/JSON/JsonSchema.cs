@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///     <item><see cref="JsonType.key"/></item>
     ///     <item><see cref="FieldType.relation"/></item>
     /// </list>
-    /// The restriction of <see cref="JsonSchema"/> are:
+    /// The restriction of <see cref="JSONSchema"/> are:
     /// <list type="bullet">
     ///   <item>
     ///     A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.
@@ -46,7 +46,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///   </item>
     /// </list>
     /// </summary>
-    public sealed class JsonSchema
+    // ReSharper disable once InconsistentNaming
+    public sealed class JSONSchema
     {
         [Fri.Property(Name =                               "$ref")]
                 public      string                          rootRef;

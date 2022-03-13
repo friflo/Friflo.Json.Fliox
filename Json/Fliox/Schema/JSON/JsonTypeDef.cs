@@ -36,9 +36,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal            string              discriminator;
         internal            bool                isStruct;
         internal            bool                isAbstract;
-        internal readonly   JsonSchema          schema;
+        internal readonly   JSONSchema          schema;
 
-        public JsonTypeDef (JsonType type, string name, string ns, JsonSchema schema) :
+        public JsonTypeDef (JsonType type, string name, string ns, JSONSchema schema) :
             base (name, ns, type.description)
         {
             this.name   = name;

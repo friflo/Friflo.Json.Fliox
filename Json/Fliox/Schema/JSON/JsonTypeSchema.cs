@@ -13,9 +13,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
 {
     /// <summary>
     /// <see cref="JsonTypeSchema"/> is used to create an immutable <see cref="TypeSchema"/> instance
-    /// from a set of given <see cref="JsonSchema"/>'s.<br/>
+    /// from a set of given <see cref="JSONSchema"/>'s.<br/>
     /// The utility method <see cref="JsonTypeSchema.ReadSchemas"/> can be used to read a set of
-    /// <see cref="JsonSchema"/>'s as files in a folder.
+    /// <see cref="JSONSchema"/>'s as files in a folder.
     /// </summary>
     public sealed class JsonTypeSchema : TypeSchema, IDisposable
     {
@@ -25,9 +25,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
-        public JsonTypeSchema(List<JsonSchema> schemaList, string rootType = null) {
+        public JsonTypeSchema(List<JSONSchema> schemaList, string rootType = null) {
             typeMap = new Dictionary<string, JsonTypeDef>();
-            foreach (JsonSchema schema in schemaList) {
+            foreach (JSONSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     }
                     
                 }
-                foreach (JsonSchema schema in schemaList) {
+                foreach (JSONSchema schema in schemaList) {
                     foreach (var pair in schema.typeDefs) {
                         JsonTypeDef typeDef = pair.Value;
                         if (typeDef.discriminant == null)
@@ -354,7 +354,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             return context.schemas[reference];
         }
         
-        private static string GetNamespace (JsonSchema schema, string typeName) {
+        private static string GetNamespace (JSONSchema schema, string typeName) {
             var name = schema.name;
             var rootRef = schema.rootRef;
             if (rootRef != null) {
@@ -368,17 +368,17 @@ namespace Friflo.Json.Fliox.Schema.JSON
             return name;
         }
 
-        /// <summary>Read a set of <see cref="JsonSchema"/>'s stored as files in the given <paramref name="folder"/>.</summary>
-        public static List<JsonSchema> ReadSchemas(string folder) {
+        /// <summary>Read a set of <see cref="JSONSchema"/>'s stored as files in the given <paramref name="folder"/>.</summary>
+        public static List<JSONSchema> ReadSchemas(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var schemas = new List<JsonSchema>();
+            var schemas = new List<JSONSchema>();
             using (var typeStore    = new TypeStore())
             using (var reader       = new ObjectReader(typeStore)) {
                 foreach (var path in fileNames) {
                     var fileName = path.Substring(folder.Length + 1);
                     var name = fileName.Substring(0, fileName.Length - ".json".Length);
                     var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
-                    var schema = reader.Read<JsonSchema>(jsonSchema);
+                    var schema = reader.Read<JSONSchema>(jsonSchema);
                     schema.fileName = fileName;
                     schema.name = name;
                     schemas.Add(schema);
@@ -413,13 +413,13 @@ namespace Friflo.Json.Fliox.Schema.JSON
     
     internal readonly struct JsonTypeContext
     {
-        internal readonly   JsonSchema                      schema;
+        internal readonly   JSONSchema                      schema;
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
 
         internal JsonTypeContext (
-            JsonSchema                      schema,
+            JSONSchema                      schema,
             Dictionary<string, JsonTypeDef> schemas,
             JsonStandardTypes               standardTypes,
             ObjectReader                    reader)
