@@ -56,8 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filterRoot          = filterSchema.TypesAsTypeDefs(new [] {typeof(FilterOperation)});
             schemaHandler.AddSchema ("filter", filterSchema, filterRoot);
             //
-            var jsonSchema          = new NativeTypeSchema(typeof(JSONSchemaTemp));
-            var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JSONSchemaTemp)});
+            var jsonSchema          = new NativeTypeSchema(typeof(JSONSchema));
+            var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JSONSchema)});
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
         }
         
