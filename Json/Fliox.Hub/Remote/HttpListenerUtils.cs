@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public static class HttpListenerUtils
     {
-        public static async Task<RequestContext> ExecuteFlioxRequest (HttpListenerContext context, HttpHostHub hostHub) {
+        public static async Task<RequestContext> ExecuteFlioxRequest (this HttpListenerContext context, HttpHostHub hostHub) {
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
             // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             //
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return requestContext;
         }
         
-        public static async Task WriteFlioxResponse(HttpListenerContext context, RequestContext requestContext) {
+        public static async Task WriteFlioxResponse(this HttpListenerContext context, RequestContext requestContext) {
             if (requestContext == null)
                 return; // request was WebSocket
             HttpListenerResponse resp = context.Response;

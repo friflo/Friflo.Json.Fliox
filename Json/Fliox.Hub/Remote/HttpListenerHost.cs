@@ -73,9 +73,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                                 Log(reqMsg);
                             }
-                            var response = await HttpListenerUtils.ExecuteFlioxRequest(context, hostHub).ConfigureAwait(false); // handle incoming requests parallel
+                            var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false); // handle incoming requests parallel
                             
-                            await HttpListenerUtils.WriteFlioxResponse(context, response).ConfigureAwait(false);
+                            await context.WriteFlioxResponse(response).ConfigureAwait(false);
                         }
                         catch (Exception e) {
                             await HandleContextException(context, e);
