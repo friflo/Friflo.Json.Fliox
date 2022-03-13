@@ -8,12 +8,14 @@ namespace Fliox.DemoHub
 {
     /// <summary>
     /// <see cref="MessageHandler"/> extends <see cref="TaskHandler"/> to implement custom database commands
-    /// executed at the host and declared by the <see cref="DemoStore"/>.
+    /// executed at the host and declared by the <see cref="DemoStore"/>. <br/>
+    /// Therefore it create <see cref="DemoStore"/> clients in its handler methods to perform database operations
+    /// like query, count and upsert.<br/>
     /// <br/>
     /// A <see cref="TaskHandler"/> instance need to be passed when instantiating an <see cref="EntityDatabase"/>. <br/>
     /// E.g. a <see cref="MemoryDatabase"/>, a <see cref="FileDatabase"/>, ... <br/>
     /// <br/>
-    /// By calling <see cref="TaskHandler.AddMessageHandlers{TClass}"/> every method with the parameters <br/>
+    /// By calling <see cref="TaskHandler.AddMessageHandlers{TClass}"/> every method with the signature <br/>
     /// (<see cref="Param{TParam}"/> param, <see cref="MessageContext"/> context) is added as a command handler. <br/>
     /// Their method names need to match the command methods declared in the <see cref="DemoStore"/>.
     /// </summary>
