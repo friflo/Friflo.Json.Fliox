@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
     
     public interface IUserAuth {
-        Task<AuthenticateUserResult> Authenticate(AuthenticateUser value);
+        Task<AuthResult> Authenticate(Credentials value);
     }
     
     /// <summary>
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 executeContext.AuthenticationSucceed(user, user.authorizer);
                 return;
             }
-            var command = new AuthenticateUser { userId = userId, token = token };
+            var command = new Credentials { userId = userId, token = token };
             
             // Note 1: UserStore could be created in smaller scope
             // Note 2: UserStore could be cached. This requires a FlioxClient.ClearEntities()

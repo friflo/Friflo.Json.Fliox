@@ -40,11 +40,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public UserStore(FlioxHub hub) : base(hub) { }
         
         // --- commands
-        public CommandTask<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
-            return SendCommand<AuthenticateUser, AuthenticateUserResult>(nameof(AuthenticateUser), command);
+        public CommandTask<AuthResult> AuthenticateUser(Credentials command) {
+            return SendCommand<Credentials, AuthResult>(nameof(AuthenticateUser), command);
         }
         
-        public async Task<AuthenticateUserResult> Authenticate(AuthenticateUser command) {
+        public async Task<AuthResult> Authenticate(Credentials command) {
             var commandTask = AuthenticateUser(command);
             await SyncTasks().ConfigureAwait(false);
             return commandTask.Result;
@@ -75,15 +75,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public override string          ToString() => JsonSerializer.Serialize(this);
     }
     
-    // -------------------------------------- commands -------------------------------------
-    public class AuthenticateUser {
+    // -------------------------------------- command models -------------------------------------
+    public class Credentials {
         [Req]   public  JsonKey         userId;
         [Req]   public  string          token;
 
         public override string          ToString() => $"userId: {userId}";
     }
     
-    public class AuthenticateUserResult {
+    public class AuthResult {
                 public bool             isValid;
 
         public override string          ToString() => $"isValid: {isValid}";

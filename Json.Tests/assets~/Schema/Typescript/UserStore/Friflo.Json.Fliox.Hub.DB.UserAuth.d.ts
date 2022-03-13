@@ -21,7 +21,7 @@ export interface UserStore {
     roles        : { [key: string]: Role };
 
     // --- commands
-    ["AuthenticateUser"]     (param: AuthenticateUser | null) : AuthenticateUserResult;
+    ["AuthenticateUser"]     (param: Credentials | null) : AuthResult;
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]             (param: any) : any;
     /** list all database containers */
@@ -54,12 +54,12 @@ export class Role {
     description? : string | null;
 }
 
-export class AuthenticateUser {
+export class Credentials {
     userId  : string;
     token   : string;
 }
 
-export class AuthenticateUserResult {
+export class AuthResult {
     isValid  : boolean;
 }
 

@@ -9,10 +9,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class UserDBHandler : TaskHandler
     {
         public UserDBHandler() {
-            AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult> (nameof(AuthenticateUser), AuthenticateUser);
+            AddCommandHandlerAsync<Credentials, AuthResult> (nameof(AuthenticateUser), AuthenticateUser);
         }
         
-        private async Task<AuthenticateUserResult> AuthenticateUser (Param<AuthenticateUser> param, MessageContext command) {
+        private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command) {
             using(var pooled = command.Pool.Type(() => new UserStore(command.Hub)).Get()) {
                 var store           = pooled.instance;
                 store.UserId        = UserStore.Server;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
                 UserCredential  cred    = findCred.Result;
                 bool            isValid = cred != null && cred.token == authenticate.token;
-                return new AuthenticateUserResult { isValid = isValid };
+                return new AuthResult { isValid = isValid };
             }
         }
     }

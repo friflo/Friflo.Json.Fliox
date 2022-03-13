@@ -18,7 +18,7 @@
             ],
             "additionalProperties": false,
             "commands": {
-                "AuthenticateUser": { "param": { "oneOf": [{ "$ref": "#/definitions/AuthenticateUser" }, {"type": "null"}] }, "result": { "$ref": "#/definitions/AuthenticateUserResult" } },
+                "AuthenticateUser": { "param": { "oneOf": [{ "$ref": "#/definitions/Credentials" }, {"type": "null"}] }, "result": { "$ref": "#/definitions/AuthResult" } },
                 "std.Echo":         { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately." },
                 "std.Containers":   { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
@@ -35,7 +35,7 @@
                     "description": "list all databases and their containers hosted by the Hub" }
             }
         },
-        "AuthenticateUser": {
+        "Credentials": {
             "type": "object",
             "properties": {
                 "userId": { "type": "string" },
@@ -47,7 +47,7 @@
             ],
             "additionalProperties": false
         },
-        "AuthenticateUserResult": {
+        "AuthResult": {
             "type": "object",
             "properties": {
                 "isValid": { "type": "boolean" }
