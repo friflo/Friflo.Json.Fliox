@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
         public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();
         public static readonly    Authorizer   AuthUserRights   = new AuthorizeAny(new Authorizer[] {
-            new AuthorizeMessage(nameof(AuthenticateUser), DbName),
+            new AuthorizeSendMessage(nameof(AuthenticateUser), DbName),
             new AuthorizeContainer(nameof(UserStore.permissions),  new []{OperationType.read}, DbName),
             new AuthorizeContainer(nameof(UserStore.roles),        new []{OperationType.read, OperationType.query}, DbName),
         });

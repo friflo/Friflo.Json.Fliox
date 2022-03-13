@@ -25,11 +25,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {
-                return new AuthorizeMessage(names[0], database);
+                return new AuthorizeSendMessage(names[0], database);
             }
             var list = new List<Authorizer>(names.Count);
             foreach (var message in names) {
-                list.Add(new AuthorizeMessage(message, database));
+                list.Add(new AuthorizeSendMessage(message, database));
             }
             return new AuthorizeAny(list);
         }

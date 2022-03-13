@@ -123,13 +123,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
     }
     
-    public sealed class AuthorizeMessage : AuthorizerDatabase {
+    public sealed class AuthorizeSendMessage : AuthorizerDatabase {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         private  readonly   string      messageLabel;
         public   override   string      ToString() => $"database: {dbLabel}, message: {messageLabel}";
 
-        public AuthorizeMessage (string message, string database) : base (database) {
+        public AuthorizeSendMessage (string message, string database) : base (database) {
             messageLabel = message;
             if (message.EndsWith("*")) {
                 prefix = true;
