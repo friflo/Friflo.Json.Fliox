@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public static class HttpListenerUtils
+    public static class HttpListenerExtensions
     {
         public static async Task<RequestContext> ExecuteFlioxRequest (this HttpListenerContext context, HttpHostHub hostHub) {
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 

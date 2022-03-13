@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 // [NuGet Package Dependency Resolution | Microsoft Docs] https://docs.microsoft.com/en-us/nuget/concepts/dependency-resolution#floating-versions
 namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
-    public static class AspNetCoreUtils
+    public static class AspNetCoreExtensions
     {
         public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHostHub hostHub) {
             var isWebSocket = context.WebSockets.IsWebSocketRequest;

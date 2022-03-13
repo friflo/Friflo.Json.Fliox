@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!resp.OutputStream.CanWrite)
                 return;
             byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
-            HttpListenerUtils.SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length, null);
+            HttpListenerExtensions.SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length, null);
             await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
             resp.Close();
         }
