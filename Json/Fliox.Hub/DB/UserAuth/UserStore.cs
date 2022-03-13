@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class UserPermission {
                 /// <summary>user name</summary>
         [Req]   public  JsonKey         id;
-                /// <summary><see cref="roles"/> assigned to a user</summary>
+                /// <summary>set of <see cref="roles"/> assigned to a user</summary>
         [Fri.Relation(nameof(UserStore.roles))]
                 public  List<string>    roles;
 
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class Role {
                 /// <summary><see cref="Role"/> name</summary>
         [Req]   public  string          id;
-                /// <summary><see cref="rights"/> is set of rules used for task authorization</summary>
+                /// <summary>a set of <see cref="rights"/> used for task authorization</summary>
         [Req]   public  List<Right>     rights;
                 /// <summary>optional <see cref="description"/> explaining a <see cref="Role"/></summary>
                 public  string          description;

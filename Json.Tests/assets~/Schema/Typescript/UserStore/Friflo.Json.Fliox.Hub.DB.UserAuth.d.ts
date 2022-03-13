@@ -51,7 +51,7 @@ export class UserCredential {
 export class UserPermission {
     /** user name */
     id     : string;
-    /** **roles** assigned to a user */
+    /** set of **roles** assigned to a user */
     roles? : string[] | null;
 }
 
@@ -59,7 +59,7 @@ export class UserPermission {
 export class Role {
     /** **Role** name */
     id           : string;
-    /** **rights** is set of rules used for task authorization */
+    /** a set of **rights** used for task authorization */
     rights       : Right_Union[];
     /** optional **description** explaining a **Role** */
     description? : string | null;

@@ -8,7 +8,7 @@
             "description": "Contains a set of <b>rights</b> used for task authorization",
             "properties": {
                 "id":          { "type": "string", "description": "<b>Role</b> name" },
-                "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Host.Auth.Rights.json#/definitions/Right" }, "description": "<b>rights</b> is set of rules used for task authorization" },
+                "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Host.Auth.Rights.json#/definitions/Right" }, "description": "a set of <b>rights</b> used for task authorization" },
                 "description": { "type": ["string", "null"], "description": "optional <b>description</b> explaining a <b>Role</b>" }
             },
             "required": [
