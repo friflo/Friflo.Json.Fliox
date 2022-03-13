@@ -113,7 +113,7 @@ namespace Fliox.DemoHub
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase(c.dbPath, handler, null, false);
+            var fileDb = new FileDatabase(c.dbPath, handler);
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
