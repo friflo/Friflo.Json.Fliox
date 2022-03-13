@@ -448,15 +448,20 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>
         <keyword>class</keyword>
     </h3>
+    <desc><b>containers</b> and <b>storage</b> type of a database
+    </desc>
     <table class='fields'>
         <tr>
             <td><key>id</key></td>         <td><type><predef>string</predef></type></td>
+            <td><docs>database name</docs></td>
         </tr>
         <tr>
             <td><field>storage</field></td>    <td><type><predef>string</predef></type></td>
+            <td><docs><b>storage</b> type. e.g. memory, file-system, ...</docs></td>
         </tr>
         <tr>
             <td><field>containers</field></td> <td><type><predef>string</predef>[]</type></td>
+            <td><docs>container names</docs></td>
         </tr>
     </table>
     </div>
@@ -465,15 +470,20 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a>
         <keyword>class</keyword>
     </h3>
+    <desc><b>commands</b> and <b>messages</b> of a database
+    </desc>
     <table class='fields'>
         <tr>
             <td><key>id</key></td>       <td><type><predef>string</predef></type></td>
+            <td><docs>database name</docs></td>
         </tr>
         <tr>
             <td><field>commands</field></td> <td><type><predef>string</predef>[]</type></td>
+            <td><docs>command names</docs></td>
         </tr>
         <tr>
             <td><field>messages</field></td> <td><type><predef>string</predef>[]</type></td>
+            <td><docs>message names</docs></td>
         </tr>
     </table>
     </div>
@@ -482,18 +492,24 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a>
         <keyword>class</keyword>
     </h3>
+    <desc>schema assigned to a database
+    </desc>
     <table class='fields'>
         <tr>
             <td><key>id</key></td>          <td><type><predef>string</predef></type></td>
+            <td><docs>database name</docs></td>
         </tr>
         <tr>
             <td><field>schemaName</field></td>  <td><type><predef>string</predef></type></td>
+            <td><docs>refer a type definition of the JSON Schema referenced with <b>schemaPath</b></docs></td>
         </tr>
         <tr>
             <td><field>schemaPath</field></td>  <td><type><predef>string</predef></type></td>
+            <td><docs>refer a JSON Schema in <b>jsonSchemas</b></docs></td>
         </tr>
         <tr>
             <td><field>jsonSchemas</field></td> <td><type>key ➞ <predef>any</predef></type></td>
+            <td><docs>map of JSON Schemas and their name</docs></td>
         </tr>
     </table>
     </div>
@@ -502,6 +518,8 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a>
         <keyword>class</keyword>
     </h3>
+    <desc>list of container statistics. E.g. entity <b>count</b> per container
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>containers</field></td> <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>[] | null</type></td>
@@ -513,12 +531,16 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'>ContainerStats</a>
         <keyword>class</keyword>
     </h3>
+    <desc>statistics of a single container. E.g. entity <b>count</b>
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>name</field></td>  <td><type><predef>string</predef></type></td>
+            <td><docs>container <b>name</b></docs></td>
         </tr>
         <tr>
             <td><field>count</field></td> <td><type><a href='#Standard.int64'>int64</a></type></td>
+            <td><docs><b>count</b> of entities / records</docs></td>
         </tr>
     </table>
     </div>
@@ -527,6 +549,8 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'>HostDetails</a>
         <keyword>class</keyword>
     </h3>
+    <desc>general information about a Hub
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>version</field></td>        <td><type><predef>string</predef></type></td>
@@ -536,12 +560,15 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><field>projectName</field></td>    <td><type><predef>string</predef> | null</type></td>
+            <td><docs>project name</docs></td>
         </tr>
         <tr>
             <td><field>projectWebsite</field></td> <td><type><predef>string</predef> | null</type></td>
+            <td><docs>link to a website describing project and Hub</docs></td>
         </tr>
         <tr>
             <td><field>envName</field></td>        <td><type><predef>string</predef> | null</type></td>
+            <td><docs>environment name. e.g. 'dev', 'test', 'staging', 'prod'</docs></td>
         </tr>
         <tr>
             <td><field>envColor</field></td>       <td><type><predef>string</predef> | null</type></td>
@@ -555,6 +582,8 @@ E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"</docs><
         <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a>
         <keyword>class</keyword>
     </h3>
+    <desc>list of all databases of a Hub
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>databases</field></td> <td><type><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a>[]</type></td>

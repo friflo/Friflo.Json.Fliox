@@ -4,10 +4,11 @@
     "definitions": {
         "DbContainers": {
             "type": "object",
+            "description": "<b>containers</b> and <b>storage</b> type of a database",
             "properties": {
-                "id":         { "type": "string" },
-                "storage":    { "type": "string" },
-                "containers": { "type": "array", "items": { "type": "string" } }
+                "id":         { "type": "string", "description": "database name" },
+                "storage":    { "type": "string", "description": "<b>storage</b> type. e.g. memory, file-system, ..." },
+                "containers": { "type": "array", "items": { "type": "string" }, "description": "container names" }
             },
             "required": [
                 "id",
@@ -18,10 +19,11 @@
         },
         "DbMessages": {
             "type": "object",
+            "description": "<b>commands</b> and <b>messages</b> of a database",
             "properties": {
-                "id":       { "type": "string" },
-                "commands": { "type": "array", "items": { "type": "string" } },
-                "messages": { "type": "array", "items": { "type": "string" } }
+                "id":       { "type": "string", "description": "database name" },
+                "commands": { "type": "array", "items": { "type": "string" }, "description": "command names" },
+                "messages": { "type": "array", "items": { "type": "string" }, "description": "message names" }
             },
             "required": [
                 "id",
@@ -32,11 +34,12 @@
         },
         "DbSchema": {
             "type": "object",
+            "description": "schema assigned to a database",
             "properties": {
-                "id":          { "type": "string" },
-                "schemaName":  { "type": "string" },
-                "schemaPath":  { "type": "string" },
-                "jsonSchemas": { "additionalProperties": {  }, "type": "object" }
+                "id":          { "type": "string", "description": "database name" },
+                "schemaName":  { "type": "string", "description": "refer a type definition of the JSON Schema referenced with <b>schemaPath</b>" },
+                "schemaPath":  { "type": "string", "description": "refer a JSON Schema in <b>jsonSchemas</b>" },
+                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of JSON Schemas and their name" }
             },
             "required": [
                 "id",
@@ -48,6 +51,7 @@
         },
         "DbStats": {
             "type": "object",
+            "description": "list of container statistics. E.g. entity <b>count</b> per container",
             "properties": {
                 "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerStats" } }
             },
@@ -55,9 +59,10 @@
         },
         "ContainerStats": {
             "type": "object",
+            "description": "statistics of a single container. E.g. entity <b>count</b>",
             "properties": {
-                "name":  { "type": "string" },
-                "count": { "$ref": "./Standard.json#/definitions/int64" }
+                "name":  { "type": "string", "description": "container <b>name</b>" },
+                "count": { "$ref": "./Standard.json#/definitions/int64", "description": "<b>count</b> of entities / records" }
             },
             "required": [
                 "name",
@@ -67,12 +72,13 @@
         },
         "HostDetails": {
             "type": "object",
+            "description": "general information about a Hub",
             "properties": {
                 "version":        { "type": "string" },
                 "hostName":       { "type": ["string", "null"] },
-                "projectName":    { "type": ["string", "null"] },
-                "projectWebsite": { "type": ["string", "null"] },
-                "envName":        { "type": ["string", "null"] },
+                "projectName":    { "type": ["string", "null"], "description": "project name" },
+                "projectWebsite": { "type": ["string", "null"], "description": "link to a website describing project and Hub" },
+                "envName":        { "type": ["string", "null"], "description": "environment name. e.g. 'dev', 'test', 'staging', 'prod'" },
                 "envColor":       { "type": ["string", "null"], "description": "the color used to display the environment name in GUI's using CSS color format.<br/>\nE.g. using red for a production environment: '#ff0000' or 'rgb(255 0 0)'" }
             },
             "required": [
@@ -82,6 +88,7 @@
         },
         "HostCluster": {
             "type": "object",
+            "description": "list of all databases of a Hub",
             "properties": {
                 "databases": { "type": "array", "items": { "$ref": "#/definitions/DbContainers" } }
             },
