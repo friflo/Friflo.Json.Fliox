@@ -13,7 +13,10 @@ namespace Fliox.DemoHub
     /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
     /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>
     /// <br/>
-    /// <i>Info</i>: Use command <b>demo.FakeRecords</b> to create fake records in various containers.
+    /// The <see cref="MessageHandler"/> demonstates how to use a <see cref="DemoStore"/> client to execute
+    /// common database operations like: Upsert, Count and Query. <br/>
+    /// <br/>
+    /// <i>Info</i>: Use command <b>demo.FakeRecords</b> to create fake records in various containers. <br/>
     /// </summary>
     /// <remarks>
     /// Its containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
