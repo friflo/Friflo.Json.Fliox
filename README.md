@@ -11,14 +11,14 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 ## Content
 - **Fliox Hub**
-    - [Hub Client](#hub-client)            [README.md](Json/Fliox.Hub/Client/)
-    - [Hub Host](#hub-host)              [README.md](Json/Fliox.Hub/Host/)
-    - [Hub Explorer](#hub-explorer)        [README.md](Json/Fliox.Hub.Explorer/)
+    - [Client](#client)                [README.md](Json/Fliox.Hub/Client/)
+    - [Host](#host)                   [README.md](Json/Fliox.Hub/Host/)
+    - [Explorer](#explorer)             [README.md](Json/Fliox.Hub.Explorer/)
 - **Fliox**
-    - [Schema](#schema)                [README.md](Json/Fliox/Schema/)
-    - [Mapper](#mapper)                [README.md](Json/Fliox/Mapper/)
-- **Test**
-    - [Unit Tests](#unit-tests)              [README.md](Json.Tests/)
+    - [Schema](#schema)              [README.md](Json/Fliox/Schema/)
+    - [Mapper](#mapper)              [README.md](Json/Fliox/Mapper/)
+- **Testing**
+    - [Unit Tests](#unit-tests)           [README.md](Json.Tests/)
 
 
 
@@ -27,15 +27,15 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 # **Fliox Hub**
 
-## **Hub Client**
+## **Client**
 **`Friflo.Json.Fliox.Hub.Client`**        [README.md](Json/Fliox.Hub/Client/)
 
 
-## **Hub Host**
+## **Host**
 **`Friflo.Json.Fliox.Hub.Host`**        [README.md](Json/Fliox.Hub/Host/)
 
 
-## **Hub Explorer**
+## **Explorer**
 **`Friflo.Json.Fliox.Hub.Explorer`**        [README.md](Json/Fliox.Hub.Explorer/)
 
 
@@ -57,7 +57,9 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 ![section](docs/images/new-section.png)
 
-# **Unit Tests**
+# **Testing**
+
+## **Unit Tests**
 **`Friflo.Json.Tests.Main`**        [README.md](Json.Tests/)
 
 
