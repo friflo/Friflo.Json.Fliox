@@ -6,8 +6,6 @@
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Fliox)
 
 
-__`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
-
 A JSON parser/serializer and object mapper trimmed towards performance.  
 The implementation strives towards maximizing CPU utilization and minimizing memory footprint.  
 An **unique feature** is to enable the JSON parsing / serializing in 
@@ -33,8 +31,6 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 
 # **Features**
-
-# Schema
 
 # JSON Parser/Serializer
 
@@ -314,14 +310,3 @@ of `native container`s. Throughput: **25-88 MB/sec**.
 - With **JSON_BURST** in a Unity Build  
 When building a game as a binary for deployment the numbers are okay. There is mainly no difference between
 the `Scripting Backend` `Mono 2x` and `IL2CPP` which can be used for builds. Throughput: **56-116 MB/sec**
-
-
-
-## License
-
-This project is licensed under AGPLv3.
-
-Project not publish nor released yet. 2021-04-18
-
-friflo JSON Fliox  
-Copyright © 2022 Ullrich Praetz
