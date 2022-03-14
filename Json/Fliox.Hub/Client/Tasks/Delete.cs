@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
 #if !UNITY_5_3_OR_NEWER

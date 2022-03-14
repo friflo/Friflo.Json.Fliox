@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class ReserveKeysTask<TKey, T> : SyncTask where T : class

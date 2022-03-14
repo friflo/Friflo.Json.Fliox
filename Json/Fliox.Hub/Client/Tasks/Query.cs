@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Transform;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // ----------------------------------------- QueryTask -----------------------------------------
