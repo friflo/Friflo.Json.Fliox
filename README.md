@@ -10,34 +10,36 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 
 ## Content
-- [Schema](#schema)
-- [Mapper](#mapper)
-- [Hub Explorer](#hub-explorer)
+- Fliox
+    - [Schema](#schema)
+    - [Mapper](#mapper)
+- Fliox Hub
+    - [Hub Explorer](#hub-explorer)
 - [Unit Tests](#unit-tests)
 
 # **Features**
 
 
 # Schema
-## **`Friflo.Json.Fliox.Schema`**
+**`Friflo.Json.Fliox.Schema`**
 
 Details at [Schema README.md](Json/Fliox/Schema/)
 
 
 # Mapper
-## **`Friflo.Json.Fliox.Mapper`**
+**`Friflo.Json.Fliox.Mapper`**
 
 Details at [Mapper README.md](Json/Fliox/Mapper/)
 
 
 # Hub Explorer
-## **`Friflo.Json.Fliox.Hub.Explorer`**
+**`Friflo.Json.Fliox.Hub.Explorer`**
 
 Details at [Hub Explorer README.md](Json/Fliox.Hub.Explorer/)
 
 
 # Unit Tests
-## **`Friflo.Json.Tests.Main`**
+**`Friflo.Json.Tests.Main`**
 
 Details at [Unit Tests README.md](Json.Tests/)
 
