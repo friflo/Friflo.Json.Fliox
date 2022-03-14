@@ -480,7 +480,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><field>containers</field></td> <td><type><predef>string</predef>[]</type></td>
-            <td><docs>container names</docs></td>
+            <td><docs>collection of database <b>containers</b></docs></td>
         </tr>
     </table>
     </div>
@@ -498,11 +498,11 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><field>commands</field></td> <td><type><predef>string</predef>[]</type></td>
-            <td><docs>command names</docs></td>
+            <td><docs>list of <b>commands</b> exposed by the database</docs></td>
         </tr>
         <tr>
             <td><field>messages</field></td> <td><type><predef>string</predef>[]</type></td>
-            <td><docs>message names</docs></td>
+            <td><docs>list of <b>messages</b> exposed by the database</docs></td>
         </tr>
     </table>
     </div>
@@ -528,7 +528,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><field>jsonSchemas</field></td> <td><type>key ➞ <predef>any</predef></type></td>
-            <td><docs>map of JSON Schemas and their name</docs></td>
+            <td><docs>map of JSON Schemas. Each JSON Schema is identified by its unique path</docs></td>
         </tr>
     </table>
     </div>

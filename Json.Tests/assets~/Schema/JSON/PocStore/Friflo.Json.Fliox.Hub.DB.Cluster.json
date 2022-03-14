@@ -8,7 +8,7 @@
             "properties": {
                 "id":         { "type": "string", "description": "database name" },
                 "storage":    { "type": "string", "description": "<b>storage</b> type. e.g. memory, file-system, ..." },
-                "containers": { "type": "array", "items": { "type": "string" }, "description": "container names" }
+                "containers": { "type": "array", "items": { "type": "string" }, "description": "collection of database <b>containers</b>" }
             },
             "required": [
                 "id",
@@ -22,8 +22,8 @@
             "description": "<b>commands</b> and <b>messages</b> of a database",
             "properties": {
                 "id":       { "type": "string", "description": "database name" },
-                "commands": { "type": "array", "items": { "type": "string" }, "description": "command names" },
-                "messages": { "type": "array", "items": { "type": "string" }, "description": "message names" }
+                "commands": { "type": "array", "items": { "type": "string" }, "description": "list of <b>commands</b> exposed by the database" },
+                "messages": { "type": "array", "items": { "type": "string" }, "description": "list of <b>messages</b> exposed by the database" }
             },
             "required": [
                 "id",
@@ -39,7 +39,7 @@
                 "id":          { "type": "string", "description": "database name" },
                 "schemaName":  { "type": "string", "description": "refer a type definition of the JSON Schema referenced with <b>schemaPath</b>" },
                 "schemaPath":  { "type": "string", "description": "refer a JSON Schema in <b>jsonSchemas</b>" },
-                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of JSON Schemas and their name" }
+                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of JSON Schemas. Each JSON Schema is identified by its unique path" }
             },
             "required": [
                 "id",

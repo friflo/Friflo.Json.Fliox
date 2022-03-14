@@ -37,7 +37,7 @@ export class DbContainers {
     id          : string;
     /** **storage** type. e.g. memory, file-system, ... */
     storage     : string;
-    /** container names */
+    /** collection of database **containers** */
     containers  : string[];
 }
 
@@ -45,9 +45,9 @@ export class DbContainers {
 export class DbMessages {
     /** database name */
     id        : string;
-    /** command names */
+    /** list of **commands** exposed by the database */
     commands  : string[];
-    /** message names */
+    /** list of **messages** exposed by the database */
     messages  : string[];
 }
 
@@ -59,7 +59,7 @@ export class DbSchema {
     schemaName   : string;
     /** refer a JSON Schema in **jsonSchemas** */
     schemaPath   : string;
-    /** map of JSON Schemas and their name */
+    /** map of JSON Schemas. Each JSON Schema is identified by its unique path */
     jsonSchemas  : { [key: string]: any };
 }
 

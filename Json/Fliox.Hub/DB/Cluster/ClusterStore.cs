@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Req]   public  string                          id;
         /// <summary><see cref="storage"/> type. e.g. memory, file-system, ...</summary>
         [Req]   public  string                          storage;
-        /// <summary>container names</summary>
+        /// <summary>collection of database <see cref="containers"/> </summary>
         [Req]   public  string[]                        containers;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class DbMessages {
         /// <summary>database name</summary>
         [Req]   public  string                          id;
-        /// <summary>command names</summary>
+        /// <summary>list of <see cref="commands"/> exposed by the database</summary>
         [Req]   public  string[]                        commands;
-        /// <summary>message names</summary>
+        /// <summary>list of <see cref="messages"/> exposed by the database</summary>
         [Req]   public  string[]                        messages;
                         
         public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Req]   public  string                          schemaName;
         /// <summary>refer a JSON Schema in <see cref="jsonSchemas"/></summary>
         [Req]   public  string                          schemaPath;
-        /// <summary>map of JSON Schemas and their name</summary>
+        /// <summary>map of JSON Schemas. Each JSON Schema is identified by its unique path</summary>
         [Req]   public  Dictionary<string, JsonValue>   jsonSchemas;
                         
         public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
