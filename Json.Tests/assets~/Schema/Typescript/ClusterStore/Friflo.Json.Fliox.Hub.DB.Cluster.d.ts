@@ -37,7 +37,7 @@ export class DbContainers {
     id          : string;
     /** **storage** type. e.g. memory, file-system, ... */
     storage     : string;
-    /** collection of database **containers** */
+    /** list of database **containers** */
     containers  : string[];
 }
 
@@ -45,9 +45,9 @@ export class DbContainers {
 export class DbMessages {
     /** database name */
     id        : string;
-    /** list of **commands** exposed by the database */
+    /** list of database **commands** */
     commands  : string[];
-    /** list of **messages** exposed by the database */
+    /** list of database **messages** */
     messages  : string[];
 }
 
@@ -70,15 +70,20 @@ export class DbStats {
 
 /** statistics of a single container. E.g. entity **count** */
 export class ContainerStats {
-    /** container **name** */
+    /** container name */
     name   : string;
-    /** **count** of entities / records */
+    /** **count** of entities / records within a container */
     count  : int64;
 }
 
 /** general information about a Hub */
 export class HostDetails {
+    /** host version */
     version         : string;
+    /**
+     * host name. Used as **id** in
+     * **hosts** of database **monitor**
+     */
     hostName?       : string | null;
     /** project name */
     projectName?    : string | null;

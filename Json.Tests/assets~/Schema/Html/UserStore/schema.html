@@ -480,7 +480,7 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><field>containers</field></td> <td><type><predef>string</predef>[]</type></td>
-            <td><docs>collection of database <b>containers</b></docs></td>
+            <td><docs>list of database <b>containers</b></docs></td>
         </tr>
     </table>
     </div>
@@ -498,11 +498,11 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
         </tr>
         <tr>
             <td><field>commands</field></td> <td><type><predef>string</predef>[]</type></td>
-            <td><docs>list of <b>commands</b> exposed by the database</docs></td>
+            <td><docs>list of database <b>commands</b></docs></td>
         </tr>
         <tr>
             <td><field>messages</field></td> <td><type><predef>string</predef>[]</type></td>
-            <td><docs>list of <b>messages</b> exposed by the database</docs></td>
+            <td><docs>list of database <b>messages</b></docs></td>
         </tr>
     </table>
     </div>
@@ -555,11 +555,11 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
     <table class='fields'>
         <tr>
             <td><field>name</field></td>  <td><type><predef>string</predef></type></td>
-            <td><docs>container <b>name</b></docs></td>
+            <td><docs>container name</docs></td>
         </tr>
         <tr>
             <td><field>count</field></td> <td><type><a href='#Standard.int64'>int64</a></type></td>
-            <td><docs><b>count</b> of entities / records</docs></td>
+            <td><docs><b>count</b> of entities / records within a container</docs></td>
         </tr>
     </table>
     </div>
@@ -573,9 +573,12 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
     <table class='fields'>
         <tr>
             <td><field>version</field></td>        <td><type><predef>string</predef></type></td>
+            <td><docs>host version</docs></td>
         </tr>
         <tr>
             <td><field>hostName</field></td>       <td><type><predef>string</predef> | null</type></td>
+            <td><docs>host name. Used as <b>id</b> in
+<b>hosts</b> of database <b>monitor</b></docs></td>
         </tr>
         <tr>
             <td><field>projectName</field></td>    <td><type><predef>string</predef> | null</type></td>

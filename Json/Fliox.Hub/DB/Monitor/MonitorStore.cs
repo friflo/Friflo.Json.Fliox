@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public CommandTask<ClearStatsResult> ClearStats(ClearStats value = null) => SendCommand<ClearStats, ClearStatsResult>(nameof(ClearStats), value);
     }
     
-    /// <summary>number of requests and tasks executed by the host. Contains always a single record</summary>
+    /// <summary>number of requests and tasks executed by the host. Container contains always a single record</summary>
     public class HostHits {
                 /// <summary>host name</summary>
         [Req]   public  JsonKey                         id;

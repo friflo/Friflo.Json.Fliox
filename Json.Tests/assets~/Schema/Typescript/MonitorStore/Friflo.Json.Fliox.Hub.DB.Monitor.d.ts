@@ -42,7 +42,7 @@ export interface MonitorStore {
     ["std.Cluster"]        () : HostCluster;
 }
 
-/** number of requests and tasks executed by the host. Contains always a single record */
+/** number of requests and tasks executed by the host. Container contains always a single record */
 export class HostHits {
     /** host name */
     id      : string;

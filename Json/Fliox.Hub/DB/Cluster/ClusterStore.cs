@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Req]   public  string                          id;
         /// <summary><see cref="storage"/> type. e.g. memory, file-system, ...</summary>
         [Req]   public  string                          storage;
-        /// <summary>collection of database <see cref="containers"/> </summary>
+        /// <summary>list of database <see cref="containers"/></summary>
         [Req]   public  string[]                        containers;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     public class DbMessages {
         /// <summary>database name</summary>
         [Req]   public  string                          id;
-        /// <summary>list of <see cref="commands"/> exposed by the database</summary>
+        /// <summary>list of database <see cref="commands"/></summary>
         [Req]   public  string[]                        commands;
-        /// <summary>list of <see cref="messages"/> exposed by the database</summary>
+        /// <summary>list of database <see cref="messages"/></summary>
         [Req]   public  string[]                        messages;
                         
         public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
@@ -73,9 +73,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     /// <summary>statistics of a single container. E.g. entity <see cref="ContainerStats.count"/></summary>
     public class ContainerStats {
-        /// <summary>container <see cref="name"/></summary>
+        /// <summary>container name</summary>
         [Req]   public  string                          name;
-        /// <summary><see cref="count"/> of entities / records</summary>
+        /// <summary><see cref="count"/> of entities / records within a container</summary>
                 public  long                            count;
             
         public override string                          ToString() => $"{name} - count: {count}";
@@ -83,7 +83,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     /// <summary>general information about a Hub</summary>
     public class HostDetails {
+                /// <summary>host version</summary>
         [Req]   public  string                          version;
+                /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in
+                /// <see cref="DB.Monitor.MonitorStore.hosts"/> of database <b>monitor</b></summary>
                 public  string                          hostName;
                 /// <summary>project name</summary>
                 public  string                          projectName;
