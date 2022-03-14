@@ -11,50 +11,45 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 ## Content
 - Fliox
-    - [Schema](#schema)
-    - [Mapper](#mapper)
+    - [Schema](#schema)                [README.md](Json/Fliox/Schema/)
+    - [Mapper](#mapper)                [README.md](Json/Fliox/Mapper/)
 - Fliox Hub
-    - [Hub Client](#hub-client)
-    - [Hub Host](#hub-host)
-    - [Hub Explorer](#hub-explorer)
-- [Unit Tests](#unit-tests)
+    - [Hub Client](#hub-client)            [README.md](Json/Fliox.Hub/Client/)
+    - [Hub Host](#hub-host)              [README.md](Json/Fliox.Hub/Host/)
+    - [Hub Explorer](#hub-explorer)        [README.md](Json/Fliox.Hub.Explorer/)
+- [Unit Tests](#unit-tests)                        [README.md](Json.Tests/)
 
 # **Features**
 
 
 # Schema
-**`Friflo.Json.Fliox.Schema`**
+**`Friflo.Json.Fliox.Schema`**        [README.md](Json/Fliox/Schema/)
 
-Details at [Schema README.md](Json/Fliox/Schema/)
 
 
 # Mapper
-**`Friflo.Json.Fliox.Mapper`**
+**`Friflo.Json.Fliox.Mapper`**        [README.md](Json/Fliox/Mapper/)
 
-Details at [Mapper README.md](Json/Fliox/Mapper/)
+
 
 # Hub Client
-**`Friflo.Json.Fliox.Hub.Client`**
+**`Friflo.Json.Fliox.Hub.Client`**        [README.md](Json/Fliox.Hub/Client/)
 
-Details at [Hub Client README.md](Json/Fliox.Hub/Client/)
+
 
 # Hub Host
-**`Friflo.Json.Fliox.Hub.Host`**
-
-Details at [Hub Host README.md](Json/Fliox.Hub/Host/)
+**`Friflo.Json.Fliox.Hub.Host`**        [README.md](Json/Fliox.Hub/Host/)
 
 
 
 # Hub Explorer
-**`Friflo.Json.Fliox.Hub.Explorer`**
+**`Friflo.Json.Fliox.Hub.Explorer`**        [README.md](Json/Fliox.Hub.Explorer/)
 
-Details at [Hub Explorer README.md](Json/Fliox.Hub.Explorer/)
 
 
 # Unit Tests
-**`Friflo.Json.Tests.Main`**
+**`Friflo.Json.Tests.Main`**        [README.md](Json.Tests/)
 
-Details at [Unit Tests README.md](Json.Tests/)
 
 
 
