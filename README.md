@@ -32,7 +32,7 @@ Details at [Schema README.md](Json/Fliox/Mapper/)
 
 This project is licensed under AGPLv3.
 
-Project not publish nor released yet.
+Project not published nor released yet.
 
 friflo JSON Fliox  
 Copyright © 2022 Ullrich Praetz
