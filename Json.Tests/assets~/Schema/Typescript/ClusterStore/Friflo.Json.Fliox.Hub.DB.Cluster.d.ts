@@ -63,16 +63,16 @@ export class DbSchema {
     jsonSchemas  : { [key: string]: any };
 }
 
-/** list of container statistics. E.g. entity **count** per container */
+/** list of container statistics. E.g. the number of entities per container */
 export class DbStats {
     containers? : ContainerStats[] | null;
 }
 
-/** statistics of a single container. E.g. entity **count** */
+/** statistics of a single container. E.g. the number of entities in a container */
 export class ContainerStats {
     /** container name */
     name   : string;
-    /** **count** of entities / records within a container */
+    /** number of entities / records within a container */
     count  : int64;
 }
 

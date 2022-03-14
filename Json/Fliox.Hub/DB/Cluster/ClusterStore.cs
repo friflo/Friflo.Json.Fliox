@@ -66,16 +66,16 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     // --- commands
-    /// <summary>list of container statistics. E.g. entity <see cref="ContainerStats.count"/> per container</summary>
+    /// <summary>list of container statistics. E.g. the number of entities per container</summary>
     public class DbStats {
                 public  ContainerStats[]                containers;
     }
     
-    /// <summary>statistics of a single container. E.g. entity <see cref="ContainerStats.count"/></summary>
+    /// <summary>statistics of a single container. E.g. the number of entities in a container</summary>
     public class ContainerStats {
         /// <summary>container name</summary>
         [Req]   public  string                          name;
-        /// <summary><see cref="count"/> of entities / records within a container</summary>
+        /// <summary>number of entities / records within a container</summary>
                 public  long                            count;
             
         public override string                          ToString() => $"{name} - count: {count}";

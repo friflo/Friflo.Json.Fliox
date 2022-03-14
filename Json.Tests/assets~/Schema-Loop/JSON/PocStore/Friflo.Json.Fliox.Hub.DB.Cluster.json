@@ -51,7 +51,7 @@
         },
         "DbStats": {
             "type": "object",
-            "description": "list of container statistics. E.g. entity <b>count</b> per container",
+            "description": "list of container statistics. E.g. the number of entities per container",
             "properties": {
                 "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerStats" } }
             },
@@ -59,10 +59,10 @@
         },
         "ContainerStats": {
             "type": "object",
-            "description": "statistics of a single container. E.g. entity <b>count</b>",
+            "description": "statistics of a single container. E.g. the number of entities in a container",
             "properties": {
                 "name":  { "type": "string", "description": "container name" },
-                "count": { "$ref": "./Standard.json#/definitions/int64", "description": "<b>count</b> of entities / records within a container" }
+                "count": { "$ref": "./Standard.json#/definitions/int64", "description": "number of entities / records within a container" }
             },
             "required": [
                 "name",
