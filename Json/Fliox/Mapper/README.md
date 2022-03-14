@@ -1,6 +1,6 @@
 
 
-# ![logo](docs/images/Json-Fliox.svg)     **JSON Fliox**      ![SPLASH](docs/images/paint-splatter.svg)
+# ![logo](../../../docs/images/Json-Fliox.svg)     **JSON Fliox**      ![SPLASH](../../../docs/images/paint-splatter.svg)
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Fliox)
@@ -18,7 +18,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 
 ## Content
-- [Features](#Features)
+- [Features](#features)
     - [JSON Parser/Serializer](#json-parserserializer)
     - [Object Mapper Reader/Writer](#object-mapper-readerwriter)
     - [General Features](#general-features)
@@ -134,7 +134,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
     - Primitive types, `Nullable`', enums, `BigInteger` & `DateTime`
 
-    - Support for adding custom types as shown at [CustomTypeMapper](Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
+    - Support for adding custom types as shown at [CustomTypeMapper](../../../Json.Tests/Common/Examples/Mapper/CustomTypeMapper.cs)
 
 - Uses internally the JSON parser mentioned above
 
@@ -212,7 +212,7 @@ with additional assertions:
 The unit test also contain a folder explaining single file (self contained) examples illustrating usage and
 anti patterns how to use (and how not to use) the `JsonParser` and `JsonSerializer`.
 
-The examples can be found at [Json.Tests/Common/Examples/](Json.Tests/Common/Examples)
+The examples can be found at [Json.Tests/Common/Examples/](../../../Json.Tests/Common/Examples)
 
 ## **Parser & Serializer**
 
@@ -294,7 +294,7 @@ The parser returns the JSON tree structure via an iterator. The keys and the JSO
 values (strings, numbers, booleans are nulls) are ready to be consumed at this stage.
 
 To reduce side effects in measurement by NUnit of throughput increase `impliedThroughput`
-at [TestParserPerformance.cs](Json.Tests/Common/UnitTest/Burst/TestParserPerformance.cs)
+at [TestParserPerformance.cs](../../../Json.Tests/Common/UnitTest/Burst/TestParserPerformance.cs)
 
 On the used development system (Intel Core i7-4790k 4Ghz, Windows 10) the throughput of the example JSON files
 within the CLR are at **200-550 MB/sec**. All tests are measured on one core.
