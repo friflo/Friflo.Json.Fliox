@@ -1,13 +1,13 @@
 
 
-# ![logo](../../docs/images/Json-Fliox.svg)        **Fliox Hub - Explorer**
+# ![logo](../../docs/images/Json-Fliox.svg)        **Fliox Hub Explorer**
 
 
 
 ## **`Friflo.Json.Fliox.Hub.Explorer`**
 
 This package contains an SPA - single page web application - intended for development
-and administration of databases hosted by a **JSON Fliox Hub**.
+and administration of databases hosted by a **Fliox Hub**.
 
 The **Hub Explorer** enables:
 
