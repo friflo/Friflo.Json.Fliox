@@ -11,7 +11,7 @@ namespace Fliox.DemoHub
     /// <summary>
     /// The <see cref="DemoStore"/> offer two functionalities: <br/>
     /// 1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>
-    /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages<br/>
+    /// 2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>
     /// <br/>
     /// <i>Info</i>: Use command <b>demo.FakeRecords</b> to create fake records in various containers.
     /// </summary>

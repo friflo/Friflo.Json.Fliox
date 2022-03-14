@@ -42,46 +42,75 @@ export interface MonitorStore {
     ["std.Cluster"]        () : HostCluster;
 }
 
+/** number of requests and tasks executed by the host. Contains always a single record */
 export class HostHits {
+    /** host name */
     id      : string;
+    /** number of executed requests and tasks per database */
     counts  : RequestCount;
 }
 
+/** all user clients and number of executed user requests and tasks */
 export class UserHits {
+    /** user id */
     id       : string;
+    /** list of clients owned by a user */
     clients  : string[];
+    /** number executed requests and tasks per database */
     counts?  : RequestCount[] | null;
 }
 
+/** information about requests, tasks, events and subscriptions of a client */
 export class ClientHits {
+    /** client id */
     id      : string;
+    /** user owning the client */
     user    : string;
+    /** number executed requests and tasks per database */
     counts? : RequestCount[] | null;
+    /** number of sent or queued client events and its message and change subscriptions */
     event?  : EventDelivery | null;
 }
 
+/** aggregated counts of latest requests. Each record uses a specific aggregation interval. */
 export class HistoryHits {
+    /** time in seconds for an aggregation interval */
     id          : int32;
+    /** number of requests executed in each interval */
     counters    : int32[];
+    /** last update of the **HistoryHits** record */
     lastUpdate  : int32;
 }
 
+/** number of requests and tasks executed per database */
 export class RequestCount {
+    /** database name */
     db?       : string | null;
+    /** number of executed requests */
     requests  : int32;
+    /** number of executed tasks */
     tasks     : int32;
 }
 
+/** number of sent or queued client events and its message and change subscriptions */
 export class EventDelivery {
+    /** number of events sent to a client */
     seq          : int32;
+    /** number of queued events not acknowledged by a client */
     queued       : int32;
+    /** message / command subscriptions of a client */
     messageSubs? : string[] | null;
-    changeSubs?  : ChangeSubscriptions[] | null;
+    /** change subscriptions of a client */
+    changeSubs?  : ChangeSubscription[] | null;
 }
 
-export class ChangeSubscriptions {
+/** change subscription for a specific container */
+export class ChangeSubscription {
+    /** name of subscribed container */
     container  : string;
+    /** type of subscribed changes like create, upsert, delete and patch */
     changes    : Change[];
+    /** filter to narrow the amount of change events */
     filter?    : string | null;
 }
 

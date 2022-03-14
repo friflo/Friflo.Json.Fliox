@@ -51,15 +51,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                     SentEventsCount => sentEvents.Count;
         internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHost;
         
-        internal List<ChangeSubscriptions> GetChangeSubscriptions (List<ChangeSubscriptions> subs) {
+        internal List<ChangeSubscription> GetChangeSubscriptions (List<ChangeSubscription> subs) {
             if (changeSubscriptions.Count == 0)
                 return null;
-            if (subs == null) subs = new List<ChangeSubscriptions>(changeSubscriptions.Count);
+            if (subs == null) subs = new List<ChangeSubscription>(changeSubscriptions.Count);
             subs.Clear();
             subs.Capacity = changeSubscriptions.Count;
             foreach (var pair in changeSubscriptions) {
                 SubscribeChanges sub = pair.Value;
-                var changeSubscription = new ChangeSubscriptions {
+                var changeSubscription = new ChangeSubscription {
                     container   = sub.container,
                     changes     = sub.changes,
                     filter      = sub.filterOp?.Linq
