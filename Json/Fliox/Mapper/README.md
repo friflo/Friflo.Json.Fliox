@@ -149,8 +149,6 @@ CPU/memory resources to the main thread being the critical path in game loops.
   C#, C++/CLI, Eiffel, F#, IronPython, IronRuby, PowerBuilder, Visual Basic, Visual COBOL, and Windows PowerShell. See more at:
   [Common Language Specification](https://docs.microsoft.com/en-us/dotnet/standard/language-independence-and-language-independent-components)
 
-- **No unsafe code** in CLR library
-
 - **No global mutable** state like `static` variables to avoid side effects. A typical candidate would by the `TypeStore` class.
   Avoiding this ensures an application to control its live time and guarantees that unit tests are free from side effect.
   `TypeStore` is thread safe and could be used as a `static` among multiple threads in an application if wanted.

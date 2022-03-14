@@ -12,6 +12,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## Content
 - [Schema](#schema)
 - [Mapper](#mapper)
+- [Hub Explorer](#hub-explorer)
 
 
 # **Features**
@@ -25,6 +26,11 @@ Details at [Schema README.md](Json/Fliox/Schema/)
 ## **`Friflo.Json.Fliox.Mapper`**
 
 Details at [Mapper README.md](Json/Fliox/Mapper/)
+
+# Hub Explorer
+## **`Friflo.Json.Fliox.Hub.Explorer`**
+
+Details at [Hub Explorer README.md](Json/Fliox.Hub.Explorer/)
 
 
 
