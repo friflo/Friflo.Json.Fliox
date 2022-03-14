@@ -24,7 +24,7 @@ Details at [Schema README.md](Json/Fliox/Schema/)
 # Mapper
 ## **`Friflo.Json.Fliox.Mapper`**
 
-Details at [Schema README.md](Json/Fliox/Mapper/)
+Details at [Mapper README.md](Json/Fliox/Mapper/)
 
 
 
