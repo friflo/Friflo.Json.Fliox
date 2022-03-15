@@ -17,8 +17,9 @@ There are two general ways to access a database using a [`FlioxClient`](../../..
   Remote access support **HTTP** and **WebSockets**.
 
 ```
-    direct:   FlioxClient        ->         FlioxHub : database
-    remote:   FlioxClient -> HTTPHostHub -> FlioxHub : database
+    direct:   FlioxClient          ->         FlioxHub : database
+    remote:   FlioxClient  ->  HTTPHostHub -> FlioxHub : database
+                          HTTP
 ```
 
 
