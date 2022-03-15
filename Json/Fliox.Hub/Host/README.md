@@ -4,10 +4,29 @@
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
+
+## General
+There are two general ways to access a database using a [`FlioxClient`](../../../Json/Fliox.Hub/Client/)
+
+- **direct** access a database by using a specific `EntityDatabase` implementation like
+  `FileDatabase`, `MemoryDatabase` or other implementations using a `FlioxHub`.  
+  This approach is very similar to [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
+  or [Dapper](https://github.com/DapperLib/Dapper)
+
+- **remote** access a database via `HTTPHostHub` which by itself access a specific `EntityDatabase` directly.  
+  Remote access support **HTTP** and **WebSockets**.
+
+```
+    direct:   FlioxClient        ->         FlioxHub : database
+    remote:   FlioxClient -> HTTPHostHub -> FlioxHub : database
+```
+
+
+
 ## `FlioxHub`
 
 A `FlioxHub` instance is the single entry point used to handle **all** requests send by a client.  
-E.g. direct/remote via a [`FlioxClient`](../../../Json/Fliox.Hub/Client//) or remote-only via an HTTP client - typically a web browser.  
+E.g. direct/remote via a [`FlioxClient`](../../../Json/Fliox.Hub/Client/) or remote-only via an HTTP client - typically a web browser.  
 When instantiating a `FlioxHub` an `EntityDatabase` need to be assigned used to execute all
 **database operations**, **commands** and **messages** send by a client targeting this database.
 
