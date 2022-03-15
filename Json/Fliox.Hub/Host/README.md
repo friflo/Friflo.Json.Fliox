@@ -28,8 +28,8 @@ The ownership of this setup looks like this:
 ## `HTTPHostHub`
 
 A `HTTPHostHub` extends `FlioxHub` by two main features:
+- provide access to its databases via HTTP
 - enables hosting multiple databases
-- provide access to its database via HTTP
 
 
 A `HTTPHostHub` can be integrated by two different HTTP servers:
@@ -37,13 +37,21 @@ A `HTTPHostHub` can be integrated by two different HTTP servers:
 - `HttpListener` - part of the **.NET** Base Class Library - BCL
 
 
-### **HTTP** features
+### **HTTP features**
+
+The HTTP Web API is designed to be used by arbitrary HTTP clients.
+
+A generic Web client utilizing all HTTP features is the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/).  
+The Explorer is a set of static web files - an SPA - which can be hosted by an `HTTPHostHub`.
+
+
+HTTP features in detail:
 
 - Provide all **common database operations** to query, read, create, update, delete and patch records
 
 - Support of various database types: **memory**, **file-system**, **remote** and **NoSQL** aka key-value or document databases
 
-- Expose access to the service in three ways:
+- Access the HTTP server in three ways:
     1. HTTP **POST** via a single path ./ enabling batching multiple tasks in a single request
 
     2. Send batch requests containing multiple tasks via a **WebSocket**
@@ -54,27 +62,27 @@ A `HTTPHostHub` can be integrated by two different HTTP servers:
 
 - Support query **cursors** to fetch container records iteratively
 
-- Enable user **authentication** and **authorization** of tasks requested by a user
+- Enable **user authentication** and **authorization of tasks** send by a user
 
-- Access and change user **permissions** and **roles** required for authorization via the extension database: user_db
+- Access and change user **permissions** and **roles** required for authorization via the extension database: `user_db`
 
 - Expose server **Monitoring** as an extension database to get statistics about requests and tasks executed by users and clients
 
-- Adding a database **schema** to:
+- Assign a **schema** to a database to:
     1. **validate** records written to the database by its schema definition
 
-    2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema and Html
+    2. create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **Html**
 
     3. display entities as **table** in Hub Explorer
 
     4. enable JSON **auto completion**, **validation** and reference **links** in Hub Explorer editor
 
 - Add the Hub Explorer to:
-    1. browse databases, containers and entities
+    1. **browse** databases, containers and entities
 
     2. execute container queries using a **LINQ** filter expression
 
-    3. execute standard or custom database commands. E.g. std.Echo
+    3. execute standard or custom database **commands**. E.g. std.Echo
     
     4. send **batch** requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
 
