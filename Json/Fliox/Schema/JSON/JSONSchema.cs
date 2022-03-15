@@ -30,9 +30,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// The restriction of <see cref="JSONSchema"/> are:
     /// <list type="bullet">
     ///   <item>
-    ///     A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.
-    ///     The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
-    ///     This restriction enables generation of code and types for languages without support of anonymous types.
+    ///     A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }. <br/>
+    ///     The property type needs to be a known type like "string", ... or a referenced ("$ref") type.  <br/>
+    ///     This restriction enables generation of code and types for languages without support of anonymous types. <br/>
     ///     It also enables concise error messages for validation errors when using <see cref="Validation.TypeValidator"/>.
     ///   </item>
     ///   <item>
