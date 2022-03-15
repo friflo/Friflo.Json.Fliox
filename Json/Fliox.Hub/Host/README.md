@@ -70,12 +70,10 @@ HTTP features in detail:
 
 - Assign a **schema** to a database to:
     1. **validate** records written to the database by its schema definition
-
     2. create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **Html**
-
     3. display entities as **table** in Hub Explorer
-
     4. enable JSON **auto completion**, **validation** and reference **links** in Hub Explorer editor
+
 
 - Add the Hub Explorer to:
     1. **browse** databases, containers and entities
