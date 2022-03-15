@@ -26,16 +26,36 @@ namespace Fliox.DemoHub
     /// </remarks>
     public partial class DemoStore : FlioxClient {
         // --- containers
-        public readonly EntitySet <long, Order>       orders;
-        public readonly EntitySet <long, Customer>    customers;
         public readonly EntitySet <long, Article>     articles;
-        public readonly EntitySet <long, Producer>    producers;
+        public readonly EntitySet <long, Customer>    customers;
         public readonly EntitySet <long, Employee>    employees;
+        public readonly EntitySet <long, Order>       orders;
+        public readonly EntitySet <long, Producer>    producers;
 
         public DemoStore(FlioxHub hub) : base (hub) { }
     }
     
     // ------------------------------ entity models ------------------------------
+    public class Article {
+        [Req]   public  long                id { get; set; }
+        [Req]   public  string              name;
+        public  Ref<long, Producer> producer;
+        public  DateTime?           created;
+    }
+
+    public class Customer {
+        [Req]   public  long                id { get; set; }
+        [Req]   public  string              name;
+        public  DateTime?           created;
+    }
+    
+    public class Employee {
+        [Req]   public  long                id { get; set; }
+        [Req]   public  string              firstName;
+        public  string              lastName;
+        public  DateTime?           created;
+    }
+
     public class Order {
         [Req]   public  long                id { get; set; }
                 public  Ref<long, Customer> customer;
@@ -49,30 +69,10 @@ namespace Fliox.DemoHub
                 public  string              name;
     }
 
-    public class Article {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              name;
-                public  Ref<long, Producer> producer;
-                public  DateTime?           created;
-    }
-
-    public class Customer {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              name;
-                public  DateTime?           created;
-    }
-    
     public class Producer {
         [Req]   public  long                        id { get; set; }
         [Req]   public  string                      name;
                 public  List<Ref<long, Employee>>   employees;
                 public  DateTime?                   created;
-    }
-    
-    public class Employee {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              firstName;
-                public  string              lastName;
-                public  DateTime?           created;
     }
 }
