@@ -315,22 +315,22 @@ $@"    <li><a href='#{ns}'>{ns}</a>
                     var key         = type.KeyField;
                     string tag      = "";
                     if (key != null) {
-                        tag         = $"<key style='float:right'>{key}</key>";
+                        tag         = $"<key>{key}</key>";
                     }
                     if (type.IsSchema) {
-                        tag         = $"<keyword style='float:right'>schema</keyword>";
+                        tag         = $"<keyword>schema</keyword>";
                     }
                     if (type.IsEnum) {
-                        tag         = $"<keyword style='float:right'>enum</keyword>";
+                        tag         = $"<keyword>enum</keyword>";
                     }
                     var disc        = type.Discriminator;
-                    var discTag     = disc != null ? $"<disc style='float:right'>{disc}</disc>" : "";
+                    var discTag     = disc != null ? $"<disc>{disc}</disc>" : "";
                     var union       = type.UnionType; 
                     if (union != null) {
-                        discTag     = $"<discUnion style='float:right'>{union.discriminator}</discUnion>";
+                        discTag     = $"<discUnion>{union.discriminator}</discUnion>";
                     }
                     sbNav.Append(
-$@"            <li><a href='#{ns}.{typeName}'><div>{typeName}{discTag}{tag}</div></a></li>
+$@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discTag}{tag}</div></a></li>
 ");
                     sb.Append(result.content);
                 }

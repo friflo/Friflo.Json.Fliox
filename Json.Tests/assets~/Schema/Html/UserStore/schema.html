@@ -60,7 +60,7 @@
                         'body-head  body-head'
                         'body-nav   body-docs-border'
                         'body-nav   body-docs';
-                    grid-template-columns:  300px 1fr;
+                    grid-template-columns:  max-content 1fr;
                     grid-template-rows:     40px  10px 1fr;
                     grid-gap:   0px;
                     margin:     0;
@@ -69,7 +69,8 @@
                     font-family: sans-serif
                 }
         .head       { overflow: hidden; }
-        .nav        { overflow: auto; background: var(--bg2); }
+        .nav        { overflow-x: hidden; background: var(--bg2); overflow-y: visisble; scrollbar-width: thin; }
+    /*  .nav::-webkit-scrollbar { width: 6px; display: visible; } no effect */
         .docs-border{ overflow: auto; background: var(--bg2); }
         .docs       { overflow: auto; background: var(--bg2);  padding-left: 5px; }
 
@@ -104,13 +105,15 @@
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
+        div.nav ul li ul li a div                  { display: flex; align-items: center; }
+        div.nav ul li ul li a div *:nth-child(1)   { flex-grow:  1; }
 
         h2      { margin-right: 30px; font-size: 20px; }
         h3      { margin-right: 20px; margin-left: 20px;  margin-bottom: 5px; }
         h2.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
         h3.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
 
-        a.highlight, a.highlight div    { background: var(--bg-highlight) !important; color: var(--highlight) !important; }
+        a.highlight, a.highlight div    { background-color: var(--bg-highlight) !important; color: var(--highlight) !important; }
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
 
@@ -254,47 +257,47 @@
 <ul>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth'>Friflo.Json.Fliox.Hub.DB.UserAuth</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore'><div>UserStore<keyword style='float:right'>schema</keyword></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'><div>UserCredential<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'><div>UserPermission<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'><div>Role<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'><div>Credentials</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'><div>AuthResult</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserStore'><div><span>UserStore</span><keyword>schema</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'><div><span>UserCredential</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'><div><span>UserPermission</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'><div><span>Role</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'><div><span>Credentials</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'><div><span>AuthResult</span></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div>DbContainers<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'><div>DbMessages<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div>DbSchema<key style='float:right'>id</key></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'><div>DbStats</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div>ContainerStats</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'><div>HostDetails</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div>HostCluster</div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'><div><span>DbContainers</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'><div><span>DbMessages</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'><div><span>DbSchema</span><key>id</key></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'><div><span>DbStats</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.ContainerStats'><div><span>ContainerStats</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'><div><span>HostDetails</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'><div><span>HostCluster</span></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights'>Friflo.Json.Fliox.Hub.Host.Auth.Rights</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div>Right<discUnion style='float:right'>type</discUnion></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'><div>RightAllow<disc style='float:right'>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'><div>RightTask<disc style='float:right'>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSendMessage'><div>RightSendMessage<disc style='float:right'>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'><div>RightSubscribeMessage<disc style='float:right'>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'><div>RightOperation<disc style='float:right'>type</disc></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'><div>ContainerAccess</div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'><div>OperationType<keyword style='float:right'>enum</keyword></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'><div>RightPredicate<disc style='float:right'>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'><div><span>Right</span><discUnion>type</discUnion></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightAllow'><div><span>RightAllow</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightTask'><div><span>RightTask</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSendMessage'><div><span>RightSendMessage</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightSubscribeMessage'><div><span>RightSubscribeMessage</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightOperation'><div><span>RightOperation</span><disc>type</disc></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'><div><span>ContainerAccess</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'><div><span>OperationType</span><keyword>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.RightPredicate'><div><span>RightPredicate</span><disc>type</disc></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks'>Friflo.Json.Fliox.Hub.Protocol.Tasks</a>
         <ul>
-            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'><div>TaskType<keyword style='float:right'>enum</keyword></div></a></li>
-            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'><div>Change<keyword style='float:right'>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'><div><span>TaskType</span><keyword>enum</keyword></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'><div><span>Change</span><keyword>enum</keyword></div></a></li>
         </ul>
     </li>
     <li><a href='#Standard'>Standard</a>
         <ul>
-            <li><a href='#Standard.int64'><div>int64</div></a></li>
+            <li><a href='#Standard.int64'><div><span>int64</span></div></a></li>
         </ul>
     </li>
 </ul>

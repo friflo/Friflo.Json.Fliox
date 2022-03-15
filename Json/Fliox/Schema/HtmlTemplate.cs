@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Schema
                         'body-head  body-head'
                         'body-nav   body-docs-border'
                         'body-nav   body-docs';
-                    grid-template-columns:  300px 1fr;
+                    grid-template-columns:  max-content 1fr;
                     grid-template-rows:     40px  10px 1fr;
                     grid-gap:   0px;
                     margin:     0;
@@ -77,7 +77,8 @@ namespace Friflo.Json.Fliox.Schema
                     font-family: sans-serif
                 }
         .head       { overflow: hidden; }
-        .nav        { overflow: auto; background: var(--bg2); }
+        .nav        { overflow-x: hidden; background: var(--bg2); overflow-y: visisble; scrollbar-width: thin; }
+    /*  .nav::-webkit-scrollbar { width: 6px; display: visible; } no effect */
         .docs-border{ overflow: auto; background: var(--bg2); }
         .docs       { overflow: auto; background: var(--bg2);  padding-left: 5px; }
 
@@ -112,13 +113,15 @@ namespace Friflo.Json.Fliox.Schema
         .namespace  { margin-bottom: 100px; }
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
+        div.nav ul li ul li a div                  { display: flex; align-items: center; }
+        div.nav ul li ul li a div *:nth-child(1)   { flex-grow:  1; }
 
         h2      { margin-right: 30px; font-size: 20px; }
         h3      { margin-right: 20px; margin-left: 20px;  margin-bottom: 5px; }
         h2.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
         h3.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
 
-        a.highlight, a.highlight div    { background: var(--bg-highlight) !important; color: var(--highlight) !important; }
+        a.highlight, a.highlight div    { background-color: var(--bg-highlight) !important; color: var(--highlight) !important; }
         a                               { text-decoration:  none; }
         ul                              { margin: 5px; padding-left: 8px; list-style-type: none; }
 
