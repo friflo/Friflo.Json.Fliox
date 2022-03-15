@@ -52,11 +52,11 @@ HTTP features in detail:
 - Support of various database types: **memory**, **file-system**, **remote** and **NoSQL** aka key-value or document databases
 
 - Access the HTTP server in three ways:
-    1. HTTP **POST** via a single path ./ enabling batching multiple tasks in a single request
+    - HTTP **POST** via a single path ./ enabling batching multiple tasks in a single request
 
-    2. Send batch requests containing multiple tasks via a **WebSocket**
+    - Send batch requests containing multiple tasks via a **WebSocket**
 
-    3. Common **REST** API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id
+    - Common **REST** API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id
 
 - Enable **Messaging** and **Pub-Sub** to send messages or commands and setup subscriptions by multiple clients
 
@@ -69,18 +69,21 @@ HTTP features in detail:
 - Expose server **Monitoring** as an extension database to get statistics about requests and tasks executed by users and clients
 
 - Assign a **schema** to a database to:
-    1. **validate** records written to the database by its schema definition
-    2. create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **Html**
-    3. display entities as **table** in Hub Explorer
-    4. enable JSON **auto completion**, **validation** and reference **links** in Hub Explorer editor
+    - **validate** records written to the database by its schema definition
+    
+    - create type definitions for various languages: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **Html**
+
+    - display entities as **table** in Hub Explorer
+
+    - enable JSON **auto completion**, **validation** and reference **links** in Hub Explorer editor
 
 
 - Add the Hub Explorer to:
-    1. **browse** databases, containers and entities
+    - **browse** databases, containers and entities
 
-    2. execute container queries using a **LINQ** filter expression
+    - execute container queries using a **LINQ** filter expression
 
-    3. execute standard or custom database **commands**. E.g. std.Echo
+    - execute standard or custom database **commands**. E.g. std.Echo
     
-    4. send **batch** requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
+    - send **batch** requests via HTTP or WebSocket to the Fliox.Hub server using the **Playground**
 
