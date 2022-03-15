@@ -1,6 +1,6 @@
 
 
-# ![logo](../../../docs/images/Json-Fliox.svg)        **JSON Fliox - Schema**
+# ![logo](../../../docs/images/Json-Fliox.svg)        **Fliox Schema**
 
 
 
