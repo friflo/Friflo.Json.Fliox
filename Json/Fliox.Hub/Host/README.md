@@ -25,6 +25,7 @@ There are two general ways to access a database using a [`FlioxClient`](../../..
 
 
 ## `FlioxHub`
+namespace **`Friflo.Json.Fliox.Hub.Host`**
 
 A `FlioxHub` instance is the single entry point used to handle **all** requests send by a client.  
 E.g. direct/remote via a [`FlioxClient`](../../../Json/Fliox.Hub/Client/) or remote-only via an HTTP client - typically a web browser.  
@@ -46,6 +47,7 @@ The ownership of this setup looks like this:
 
 
 ## `HTTPHostHub`
+namespace **`Friflo.Json.Fliox.Hub.Remote`**
 
 A `HTTPHostHub` extends `FlioxHub` by two main features:
 - provide access to its databases via **HTTP**

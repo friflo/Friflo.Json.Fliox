@@ -28,15 +28,15 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Fliox Hub**
 
 ### **Client**
-**`Friflo.Json.Fliox.Hub.Client`**        [README.md](Json/Fliox.Hub/Client/)
+namespace **`Friflo.Json.Fliox.Hub.Client`**          [README.md](Json/Fliox.Hub/Client/)
 
 
 ### **Host**
-**`Friflo.Json.Fliox.Hub.Host`**        [README.md](Json/Fliox.Hub/Host/)
+namespace **`Friflo.Json.Fliox.Hub.Host`**              [README.md](Json/Fliox.Hub/Host/)
 
 
 ### **Explorer**
-**`Friflo.Json.Fliox.Hub.Explorer`**        [README.md](Json/Fliox.Hub.Explorer/)
+namespace **`Friflo.Json.Fliox.Hub.Explorer`**       [README.md](Json/Fliox.Hub.Explorer/)
 
 
 
@@ -46,11 +46,11 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Fliox**
 
 ### **Schema**
-**`Friflo.Json.Fliox.Schema`**        [README.md](Json/Fliox/Schema/)
+namespace **`Friflo.Json.Fliox.Schema`**                  [README.md](Json/Fliox/Schema/)
 
 
 ### **Mapper**
-**`Friflo.Json.Fliox.Mapper`**        [README.md](Json/Fliox/Mapper/)
+namespace **`Friflo.Json.Fliox.Mapper`**                  [README.md](Json/Fliox/Mapper/)
 
 
 
@@ -60,7 +60,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Testing**
 
 ### **Unit Tests**
-**`Friflo.Json.Tests.Main`**        [README.md](Json.Tests/)
+namespace **`Friflo.Json.Tests.Main`**                      [README.md](Json.Tests/)
 
 
 

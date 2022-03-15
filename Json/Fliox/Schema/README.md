@@ -4,7 +4,7 @@
 
 
 
-## **`Friflo.Json.Fliox.Schema`**
+namespace **`Friflo.Json.Fliox.Schema`**
 
 This namespace contains classes and methods to transform / generate Type Schemas.  
 For example to generate a **JSON Schema** from given **C#** model classes or vice vera.  

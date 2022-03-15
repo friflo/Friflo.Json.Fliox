@@ -4,3 +4,6 @@
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
+
+## `FlioxClient`
+namespace **`Friflo.Json.Fliox.Hub.Client`**

@@ -8,6 +8,9 @@
 
 # **Unit tests**
 
+namespace **`Friflo.Json.Tests`**
+
+
 The current result of the unit test are available as **CI tests** at
 [Github actions](https://github.com/friflo/Friflo.Json.Fliox/actions).
 
