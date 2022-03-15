@@ -36,42 +36,8 @@ namespace Friflo.Json.Tests.Main
         }
         
         /// <summary>
-        /// This method is a blueprint showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
-        /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
-        /// <list type="bullet">
-        ///   <item> By <b>HttpListener</b> see <see cref="FlioxServer"/> </item>
-        ///   <item> By <b>ASP.NET Core / Kestrel</b> see <see cref="Startup.Configure"/></item>
-        /// </list>
-        /// <br/>
-        /// The features of a <see cref="HttpHostHub"/> instance are:
-        /// <list type="bullet">
-        ///   <item> Providing all common database operations to query, read, create, update, delete and patch records </item>
-        ///   <item> Support of various database types: memory, file-system, remote and NoSQL aka key-value or document databases </item>
-        ///   <item> Expose access to the service in three ways:<br/>
-        ///     1. HTTP POST via a single path ./ enabling batching multiple tasks in a single request <br/>
-        ///     2. Send batch requests containing multiple tasks via a WebSocket <br/>
-        ///     3. Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id <br/>
-        ///   </item>
-        ///   <item> Enable Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
-        ///   <item> Support query cursors to fetch container records iteratively </item>
-        ///   <item> Enable user authentication and authorization of tasks requested by a user </item>
-        ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db </item>
-        ///   <item> Expose server Monitoring as an extension database to get statistics about requests and tasks executed by users and clients </item>
-        ///   <item> Adding a database schema to: <br/>
-        ///     1. validate records written to the database by its schema definition <br/>
-        ///     2. create type definitions for various languages: Typescript, C#, Kotlin, JSON Schema and Html <br/>
-        ///     3. display entities as table in Hub Explorer <br/>
-        ///     4. enable JSON auto completion, validation and reference links in Hub Explorer editor <br/>
-        ///   </item>
-        ///   <item> Add the Hub Explorer to: <br/>
-        ///     1. browse databases, containers and entities <br/>
-        ///     2. execute container queries using a LINQ filter expression <br/>
-        ///     3. execute standard or custom database commands. E.g. std.Echo <br/>
-        ///     4. send batch requests via HTTP or WebSocket to the Fliox.Hub server using the Playground <br/>
-        ///   </item>
-        /// </list>
-        ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
-        /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
+        /// Blueprint method showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
+        /// via HTTP and WebSockets.
         /// </summary>
         public static HttpHostHub CreateHttpHost() {
             var c                   = new Config();
