@@ -33,7 +33,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # JSON Parser/Serializer
 
-## **`Friflo.Json.Burst`**
+namespace **`Friflo.Json.Burst`**
 
 - **Clear/Compact API** `Iterator API` for parser - `Appender API` for serializer.
 
@@ -84,7 +84,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # Object Mapper Reader/Writer
 
-## **`Friflo.Json.Fliox`**
+namespace **`Friflo.Json.Fliox.Mapper`**
 
 - Support deserialization in two ways:
 
