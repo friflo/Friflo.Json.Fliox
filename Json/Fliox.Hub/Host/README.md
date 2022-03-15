@@ -6,8 +6,8 @@
 
 ## `FlioxHub`
 
-A `FlioxHub` instance is the single entry point used to handle **all** requests send by a client -
-e.g. via `FlioxClient` or remotely via a web browser.
+A `FlioxHub` instance is the single entry point used to handle **all** requests send by a client.  
+E.g. direct/remote via a [`FlioxClient`](../../../Json/Fliox.Hub/Client//) or remote-only via an HTTP client - typically a web browser.  
 When instantiating a `FlioxHub` an `EntityDatabase` need to be assigned used to execute all
 **database operations**, **commands** and **messages** send by a client targeting this database.
 
