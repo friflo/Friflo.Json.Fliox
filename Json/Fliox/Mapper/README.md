@@ -20,8 +20,6 @@ CPU/memory resources to the main thread being the critical path in game loops.
     - [Object Mapper Reader/Writer](#object-mapper-readerwriter)
     - [General Features](#general-features)
 
-- [Unit tests](#unit-tests)
-
 - [Examples](#examples)
 
 - [Performance](#performance)
