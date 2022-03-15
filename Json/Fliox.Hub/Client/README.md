@@ -21,7 +21,7 @@ The intention of `FlioxClient` is extending it by a domain specific class.
 
 By doing this the `AppClient` offer two main functionalities:
 -   Define a **database schema** by declaring its containers, commands and messages
--   Instances of `AppClient' are **database clients** providing
+-   Instances of `AppClient` are **database clients** providing
     type-safe access to the database containers, commands and messages  
 
 In detail:
