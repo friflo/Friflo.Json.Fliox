@@ -1,6 +1,6 @@
 
 
-# ![logo](../../../docs/images/Json-Fliox.svg)     **JSON Fliox**      ![SPLASH](../../../docs/images/paint-splatter.svg)
+# ![logo](../../../docs/images/Json-Fliox.svg)     **Fliox Mapper**      ![SPLASH](../../../docs/images/paint-splatter.svg)
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
 
