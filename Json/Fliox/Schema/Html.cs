@@ -301,7 +301,7 @@ $@"        <tr>
 $@"
 <div class='namespace'>
     <h2 id='{ns}'>
-        <a href='#{ns}'>{ns}</a>
+        <a href='#{ns}'>{ns}</a> <keyword>namespace</keyword>
     </h2>
 ");
                 // sb.AppendLine(emitFile.header);

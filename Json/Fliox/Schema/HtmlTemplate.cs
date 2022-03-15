@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Schema
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
 
-        h2      { margin-right: 30px;  }
+        h2      { margin-right: 30px; font-size: 20px; }
         h3      { margin-right: 20px; margin-left: 20px;  margin-bottom: 5px; }
         h2.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
         h3.selected     { background: var(--selected); box-shadow: var(--selected-offset) var(--selected-offset) var(--selected-radius) var(--selected-radius) var(--selected-shadow); border-radius: 2px; }
