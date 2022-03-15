@@ -16,10 +16,10 @@ There are two general ways to access a database using a [`FlioxClient`](../../..
 - **remote** access a database via `HTTPHostHub` which by itself access a specific `EntityDatabase` directly.  
   Remote access support **HTTP** and **WebSockets**.
 
-``` css
-    direct:   FlioxClient          ->         FlioxHub : database
-    remote:   FlioxClient  ->  HTTPHostHub -> FlioxHub : database
-                          HTTP
+``` dsconfig
+    direct -   FlioxClient                  -> FlioxHub : database
+    remote -   FlioxClient  ->  HTTPHostHub -> FlioxHub : database
+                           HTTP
 ```
 
 
