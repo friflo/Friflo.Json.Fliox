@@ -28,8 +28,8 @@ The ownership of this setup looks like this:
 ## `HTTPHostHub`
 
 A `HTTPHostHub` extends `FlioxHub` by two main features:
-- provide access to its databases via HTTP
-- enables hosting multiple databases
+- provide access to its databases via **HTTP**
+- enables hosting **multiple** databases
 
 
 A `HTTPHostHub` can be integrated by two different HTTP servers:
