@@ -28,29 +28,29 @@ namespace Fliox.DemoHub
     }
     
     public class Fake {
-        public  int?        orders;
-        public  int?        customers;
-        public  int?        articles;
-        public  int?        producers;
-        public  int?        employees;
         public  bool?       addResults;
+        public  int?        articles;
+        public  int?        customers;
+        public  int?        employees;
+        public  int?        orders;
+        public  int?        producers;
     }
     
     public class Counts {
-        public  int         orders;
-        public  int         customers;
         public  int         articles;
-        public  int         producers;
+        public  int         customers;
         public  int         employees;
+        public  int         orders;
+        public  int         producers;
     }
     
     public class Records {
         public  string      info;
         public  Counts      counts;
-        public  Order[]     orders;
-        public  Customer[]  customers;
         public  Article[]   articles;
-        public  Producer[]  producers;
+        public  Customer[]  customers;
         public  Employee[]  employees;
+        public  Order[]     orders;
+        public  Producer[]  producers;
     }
 }

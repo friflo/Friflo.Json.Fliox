@@ -15,11 +15,11 @@ namespace Fliox.DemoHub
     /// </summary>
     internal class Utils
     {
-        private long employeeCounter = 10;
-        private long producerCounter = 10;
         private long articleCounter  = 10;
         private long customerCounter = 10;
+        private long employeeCounter = 10;
         private long orderCounter    = 10;
+        private long producerCounter = 10;
 
         internal Utils() {
             Randomizer.Seed = new Random(1337);
@@ -28,19 +28,19 @@ namespace Fliox.DemoHub
         internal Records CreateFakes(Fake fake)
         {
             var result      = new Records();
-            var orders      = fake?.orders      ?? 0; 
             var articles    = fake?.articles    ?? 0;
-            var producers   = fake?.producers   ?? 0;
             var customers   = fake?.customers   ?? 0;
             var employees   = fake?.employees   ?? 0;
+            var orders      = fake?.orders      ?? 0; 
+            var producers   = fake?.producers   ?? 0;
             
             // set default counts if all counts == 0
-            if (orders == 0 && articles == 0 && producers == 0 && customers == 0 && employees == 0) {
-                orders      = 1;
+            if (articles == 0 && customers == 0 && employees == 0 && orders == 0 && producers == 0) {
                 articles    = 2;
-                producers   = 1;
                 customers   = 1;
                 employees   = 1;
+                orders      = 1;
+                producers   = 1;
             }
             
             var now = DateTime.Now;
@@ -125,11 +125,11 @@ namespace Fliox.DemoHub
             }
             
             var counts = new Counts {
-                orders      = result.orders?    .Length ?? 0,
-                customers   = result.customers? .Length ?? 0,
                 articles    = result.articles?  .Length ?? 0,
-                producers   = result.producers? .Length ?? 0,
+                customers   = result.customers? .Length ?? 0,
                 employees   = result.employees? .Length ?? 0,
+                orders      = result.orders?    .Length ?? 0,
+                producers   = result.producers? .Length ?? 0,
             };
             var nowStr      = now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             result.info     = $"use container filter: o.created == '{nowStr}'";

@@ -42,21 +42,21 @@ namespace Fliox.DemoHub
             
             var result = FakeUtils.CreateFakes(fake);
             
-            if (result.orders       != null)    demoStore.orders    .UpsertRange(result.orders);
-            if (result.customers    != null)    demoStore.customers .UpsertRange(result.customers);
             if (result.articles     != null)    demoStore.articles  .UpsertRange(result.articles);
-            if (result.producers    != null)    demoStore.producers .UpsertRange(result.producers);
+            if (result.customers    != null)    demoStore.customers .UpsertRange(result.customers);
             if (result.employees    != null)    demoStore.employees .UpsertRange(result.employees);
+            if (result.orders       != null)    demoStore.orders    .UpsertRange(result.orders);
+            if (result.producers    != null)    demoStore.producers .UpsertRange(result.producers);
             
             await demoStore.SyncTasks();
             
             var addResults  = fake?.addResults;
             if (addResults.HasValue && addResults.Value == false) {
-                result.orders       = null;
-                result.customers    = null;
                 result.articles     = null;
-                result.producers    = null;
+                result.customers    = null;
                 result.employees    = null;
+                result.orders       = null;
+                result.producers    = null;
             }
             return result;
         }
@@ -71,20 +71,20 @@ namespace Fliox.DemoHub
             var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
 
-            var orderCount      = demoStore.orders.     Count(o => o.created >= from);
-            var customerCount   = demoStore.customers.  Count(o => o.created >= from);
             var articleCount    = demoStore.articles.   Count(o => o.created >= from);
-            var producerCount   = demoStore.producers.  Count(o => o.created >= from);
+            var customerCount   = demoStore.customers.  Count(o => o.created >= from);
             var employeeCount   = demoStore.employees.  Count(o => o.created >= from);
+            var orderCount      = demoStore.orders.     Count(o => o.created >= from);
+            var producerCount   = demoStore.producers.  Count(o => o.created >= from);
             
             await demoStore.SyncTasks();
             
             var result = new Counts {
-                orders      = orderCount.     Result,
-                customers   = customerCount.  Result,
                 articles    = articleCount.   Result,
-                producers   = producerCount.  Result,
+                customers   = customerCount.  Result,
                 employees   = employeeCount.  Result,
+                orders      = orderCount.     Result,
+                producers   = producerCount.  Result,
             };
             return result;
         }
@@ -99,28 +99,28 @@ namespace Fliox.DemoHub
             var seconds         = duration ?? 60;
             var from            = DateTime.Now.AddSeconds(-seconds);
 
-            var orderCount      = demoStore.orders.     Query(o => o.created >= from);
-            var customerCount   = demoStore.customers.  Query(o => o.created >= from);
             var articleCount    = demoStore.articles.   Query(o => o.created >= from);
-            var producerCount   = demoStore.producers.  Query(o => o.created >= from);
+            var customerCount   = demoStore.customers.  Query(o => o.created >= from);
             var employeeCount   = demoStore.employees.  Query(o => o.created >= from);
+            var orderCount      = demoStore.orders.     Query(o => o.created >= from);
+            var producerCount   = demoStore.producers.  Query(o => o.created >= from);
             
             await demoStore.SyncTasks();
             
             var counts = new Counts {
-                orders      = orderCount.   Result.Count,
-                customers   = customerCount.Result.Count,
                 articles    = articleCount. Result.Count,
-                producers   = producerCount.Result.Count,
+                customers   = customerCount.Result.Count,
                 employees   = employeeCount.Result.Count,
+                orders      = orderCount.   Result.Count,
+                producers   = producerCount.Result.Count,
             };
             var result = new Records {
                 counts      = counts,
-                orders      = orderCount.   Result.Values.ToArray(),
-                customers   = customerCount.Result.Values.ToArray(),
                 articles    = articleCount. Result.Values.ToArray(),
-                producers   = producerCount.Result.Values.ToArray(),
+                customers   = customerCount.Result.Values.ToArray(),
                 employees   = employeeCount.Result.Values.ToArray(),
+                orders      = orderCount.   Result.Values.ToArray(),
+                producers   = producerCount.Result.Values.ToArray(),
             };
             return result;
         }
