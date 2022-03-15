@@ -37,7 +37,7 @@ A `HTTPHostHub` can be integrated by two different HTTP servers:
 - `HttpListener` - part of the **.NET** Base Class Library - BCL
 
 
-### `HTTPHostHub` features
+### **HTTP** features
 
 - Provide all **common database operations** to query, read, create, update, delete and patch records
 
