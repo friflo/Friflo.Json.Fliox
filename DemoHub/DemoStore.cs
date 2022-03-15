@@ -39,21 +39,21 @@ namespace Fliox.DemoHub
     public class Article {
         [Req]   public  long                id { get; set; }
         [Req]   public  string              name;
-        public  Ref<long, Producer> producer;
-        public  DateTime?           created;
+                public  Ref<long, Producer> producer;
+                public  DateTime?           created;
     }
 
     public class Customer {
         [Req]   public  long                id { get; set; }
         [Req]   public  string              name;
-        public  DateTime?           created;
+                public  DateTime?           created;
     }
     
     public class Employee {
         [Req]   public  long                id { get; set; }
         [Req]   public  string              firstName;
-        public  string              lastName;
-        public  DateTime?           created;
+                public  string              lastName;
+                public  DateTime?           created;
     }
 
     public class Order {
