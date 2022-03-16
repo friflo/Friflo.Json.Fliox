@@ -46,9 +46,9 @@ In detail:
 - **commands**   - are methods returning a `CommandTask<TResult>`
 - **messages**   - are methods returning a `MessageTask`
 
-## Containers
-Containers are declared as fields or properties of `EntitySet<TKey,T>`.  
-Methods of `EntitySet<TKey,T>` provide all **common operations** to access or mutate the
+## container operations
+Containers are declared as fields or properties of type `EntitySet<TKey,T>`.  
+`EntitySet<TKey,T>` methods provide all **common operations** to access or mutate the
 entities / records stored in a container / table. These operations are:
 - **Create** entities
 - **Read** entities by id - primary key
@@ -60,6 +60,17 @@ entities / records stored in a container / table. These operations are:
 - **Aggregate** / **Count** entities using a **LINQ filter**
 - **Subscribe** to entity changes - **create**, **upsert**, **delete** & **patch** - made by other clients
 
+
+## database commands & messages
+
+A client also offer the possibility to send commands and messages.  
+Both accept **none** or a **single** parameter - commonly called `param`.  
+The difference between the two is:
+- a command return a **result** 
+- a message return **void** aka nothing.
+
+
+## client usage
 
 Instances of `ShopStore` can be used on server and client side.
 
