@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 var name    = element.Name.LocalName;
                 var value   = element.Value;
                 switch (name) {
+                    case "a":
                     case "see":
                     case "seealso":
                     case "paramref":
@@ -79,9 +80,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
                     return;
                 }
                 if (attributeName == "href") {
+                    var text    = element.Value;
                     var link    = attribute.Value;
-                    var a       = $"<a href='{link}'>";
-                    AppendTag(sb, a, "</a>", link);
+                    var a       = $"<a href='{link}'>{text}</a>";
+                    sb.Append(a);
+                    // AppendTag(sb, a, "</a>", link);
                     return;
                 }
             }

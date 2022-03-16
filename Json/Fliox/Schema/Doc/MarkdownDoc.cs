@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
                 var name    = element.Name.LocalName;
                 switch (name) {
                     case "br":      AppendElement(sb, element, "", "  ");       return; // force new line in markdown
-                    case "a":       AppendElement(sb, element);                 return;
+                    case "a":       AppendAnchor (sb, element);                 return;
                     case "p":       AppendElement(sb, element);                 return;
                     case "ul":      AppendElement(sb, element);                 return;
                     case "li":      AppendLi     (sb, element);                 return;
@@ -52,6 +52,20 @@ namespace Friflo.Json.Fliox.Schema.Doc
                         return;
                 }
             }
+        }
+        
+        private static void AppendAnchor (StringBuilder sb, XElement element) {
+            var nodes = element.DescendantNodes();
+            sb.Append("[");
+            foreach (var node in nodes) {
+                if (node is XText xtext) {
+                    sb.Append(xtext.Value);
+                }
+            }
+            sb.Append("](");
+            var href = element.Attribute("href");
+            if (href != null) sb.Append(href.Value);
+            sb.Append(")");
         }
         
         private static void AppendLi (StringBuilder sb, XElement element) {
