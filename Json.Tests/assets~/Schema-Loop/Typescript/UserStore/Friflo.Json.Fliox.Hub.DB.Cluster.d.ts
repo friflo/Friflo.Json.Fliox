@@ -34,7 +34,10 @@ export class DbSchema {
     schemaName   : string;
     /** refer a JSON Schema in **jsonSchemas** */
     schemaPath   : string;
-    /** map of **JSON Schemas**. Each JSON Schema is identified by its unique path */
+    /**
+     * map of **JSON Schemas** each containing a set of type definitions.  
+     * Each JSON Schema is identified by its unique path
+     */
     jsonSchemas  : { [key: string]: any };
 }
 

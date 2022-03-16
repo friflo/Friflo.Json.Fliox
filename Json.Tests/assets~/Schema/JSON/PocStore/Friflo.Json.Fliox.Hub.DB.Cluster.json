@@ -39,7 +39,7 @@
                 "id":          { "type": "string", "description": "database name" },
                 "schemaName":  { "type": "string", "description": "refer a type definition of the JSON Schema referenced with <b>schemaPath</b>" },
                 "schemaPath":  { "type": "string", "description": "refer a JSON Schema in <b>jsonSchemas</b>" },
-                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of <b>JSON Schemas</b>. Each JSON Schema is identified by its unique path" }
+                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of <b>JSON Schemas</b> each containing a set of type definitions.<br/>\nEach JSON Schema is identified by its unique path" }
             },
             "required": [
                 "id",

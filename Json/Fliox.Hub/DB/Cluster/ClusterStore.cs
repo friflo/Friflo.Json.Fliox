@@ -64,7 +64,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Req]   public  string                          schemaName;
         /// <summary>refer a JSON Schema in <see cref="jsonSchemas"/></summary>
         [Req]   public  string                          schemaPath;
-        /// <summary>map of <b>JSON Schemas</b>. Each JSON Schema is identified by its unique path</summary>
+        /// <summary>map of <b>JSON Schemas</b> each containing a set of type definitions.<br/>
+        /// Each JSON Schema is identified by its unique path</summary>
         [Req]   public  Dictionary<string, JsonValue>   jsonSchemas;
                         
         public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
