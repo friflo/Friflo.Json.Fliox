@@ -114,6 +114,7 @@ namespace Friflo.Json.Fliox.Schema
         ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
         div.nav ul li ul li a div                  { display: flex; align-items: center; }
+        div.nav ul li ul li a div span             { margin-right: 10px; }
         div.nav ul li ul li a div *:nth-child(1)   { flex-grow:  1; }
 
         h2      { margin-right: 30px; font-size: 20px; }
