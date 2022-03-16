@@ -18,14 +18,14 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// An EntitySet represents a collection (table) of entities (records).
+    /// An EntitySet represents a collection (table) of entities (records). <br/>
     /// <br/>
-    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities.
-    /// It also allows to subscribe to entity changes made by other database clients.<br/>
-    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>.
+    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities. <br/>
+    /// It also allows to subscribe to entity changes made by other database clients. <br/>
     /// <br/>
+    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>. <br/>
     /// The type <typeparamref name="T"/> of a container entity need to be a class containing a field or property used as its key
-    /// usually named <b>id</b>.
+    /// usually named <b>id</b>. <br/>
     /// Supported <typeparamref name="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/>
     /// and <see cref="Guid"/>.
