@@ -1,13 +1,15 @@
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 
+// ReSharper disable All
 namespace Friflo.Json.Tests.Common.Examples.Hub
 {
-    public class MyStore : FlioxClient
+    public class TestStore : FlioxClient
     {
+        // --- commands
         public MyCommands test;
         
-        public MyStore(FlioxHub hub) : base(hub) {
+        public TestStore(FlioxHub hub) : base(hub) {
             test = new MyCommands(this);
         }
     }

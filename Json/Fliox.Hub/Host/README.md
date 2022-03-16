@@ -82,7 +82,7 @@ HTTP features in detail:
 
     - Common **REST** API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id
 
-- Enable **Messaging** and **Pub-Sub** to send messages or commands and setup subscriptions by multiple clients
+- Enable sub-millisecond **Messaging** and **Pub-Sub** to send messages or commands and setup subscriptions by multiple clients
 
 - Support query **cursors** to fetch container records iteratively
 

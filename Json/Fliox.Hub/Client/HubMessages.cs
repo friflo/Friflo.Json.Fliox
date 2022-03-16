@@ -16,22 +16,23 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// The intention is to use a sub class of <see cref="HubMessages"/> as a field in a class extending <see cref="FlioxClient"/>.
     /// This establish differentiation between <see cref="FlioxClient"/> own methods and message/command methods added
     /// to a <see cref="FlioxClient"/> sub class.
-    /// <code>
-    ///     public class MyStore : FlioxClient
-    ///     {
-    ///         public MyCommands test;
-    ///    
-    ///         public MyStore(FlioxHub hub) : base(hub) {
-    ///             test = new MyCommands(this);
-    ///         }
+    /// <code >
+    /// public class TestStore : FlioxClient
+    /// {
+    ///     // --- commands
+    ///     public MyCommands test;
+    ///     
+    ///     public TestStore(FlioxHub hub) : base(hub) {
+    ///         test = new MyCommands(this);
     ///     }
-    ///
-    ///     public class MyCommands : HubMessages
-    ///     {
-    ///         public MyCommands(FlioxClient client) : base(client) { }
-    ///    
-    ///         public CommandTask &lt;string&gt; Cmd (string param) => SendCommand &lt;string, string&gt;("test.Cmd", param);
-    ///     } 
+    /// }
+    /// 
+    /// public class MyCommands : HubMessages
+    /// {
+    ///     public MyCommands(FlioxClient client) : base(client) { }
+    ///     
+    ///     public CommandTask &lt;string&gt; Cmd (string param) => SendCommand &lt;string, string&gt;("test.Cmd", param);
+    /// }
     /// </code>
     /// </summary>
     public class HubMessages
