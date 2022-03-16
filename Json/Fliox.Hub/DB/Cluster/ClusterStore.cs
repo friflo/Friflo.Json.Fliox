@@ -51,7 +51,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
-    /// <summary>schema assigned to a database</summary>
+    /// <summary>
+    /// A <see cref="DbSchema"/> can be assigned to a database to specify its <b>containers</b>, <b>commands</b> and <b>messages</b>.<br/>
+    /// The types used by the Schema are declared within <see cref="jsonSchemas"/>.<br/>
+    /// The type referenced by the tuple <see cref="schemaName"/> / <see cref="schemaPath"/> specify the
+    /// database containers, commands and messages. 
+    /// </summary>
     public class DbSchema {
         /// <summary>database name</summary>
         [Req]   public  string                          id;
@@ -59,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         [Req]   public  string                          schemaName;
         /// <summary>refer a JSON Schema in <see cref="jsonSchemas"/></summary>
         [Req]   public  string                          schemaPath;
-        /// <summary>map of JSON Schemas. Each JSON Schema is identified by its unique path</summary>
+        /// <summary>map of <b>JSON Schemas</b>. Each JSON Schema is identified by its unique path</summary>
         [Req]   public  Dictionary<string, JsonValue>   jsonSchemas;
                         
         public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");

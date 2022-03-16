@@ -32,7 +32,7 @@ export interface MonitorStore {
     ["std.Containers"]     () : DbContainers;
     /** list all database commands and messages */
     ["std.Messages"]       () : DbMessages;
-    /** return the JSON Schema assigned to the database */
+    /** return the Schema assigned to the database */
     ["std.Schema"]         () : DbSchema;
     /** return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]          (param: string | null) : DbStats;

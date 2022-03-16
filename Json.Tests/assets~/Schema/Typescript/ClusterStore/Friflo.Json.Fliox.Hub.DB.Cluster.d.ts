@@ -21,7 +21,7 @@ export interface ClusterStore {
     ["std.Containers"]     () : DbContainers;
     /** list all database commands and messages */
     ["std.Messages"]       () : DbMessages;
-    /** return the JSON Schema assigned to the database */
+    /** return the Schema assigned to the database */
     ["std.Schema"]         () : DbSchema;
     /** return the number of entities of all containers (or the given container) of the database */
     ["std.Stats"]          (param: string | null) : DbStats;
@@ -51,7 +51,12 @@ export class DbMessages {
     messages  : string[];
 }
 
-/** schema assigned to a database */
+/**
+ * A **DbSchema** can be assigned to a database to specify its **containers**, **commands** and **messages**.  
+ * The types used by the Schema are declared within **jsonSchemas**.  
+ * The type referenced by the tuple **schemaName** / **schemaPath** specify the
+ * database containers, commands and messages.
+ */
 export class DbSchema {
     /** database name */
     id           : string;
@@ -59,7 +64,7 @@ export class DbSchema {
     schemaName   : string;
     /** refer a JSON Schema in **jsonSchemas** */
     schemaPath   : string;
-    /** map of JSON Schemas. Each JSON Schema is identified by its unique path */
+    /** map of **JSON Schemas**. Each JSON Schema is identified by its unique path */
     jsonSchemas  : { [key: string]: any };
 }
 

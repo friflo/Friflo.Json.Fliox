@@ -34,12 +34,12 @@
         },
         "DbSchema": {
             "type": "object",
-            "description": "schema assigned to a database",
+            "description": "A <b>DbSchema</b> can be assigned to a database to specify its <b>containers</b>, <b>commands</b> and <b>messages</b>.<br/>\nThe types used by the Schema are declared within <b>jsonSchemas</b>.<br/>\nThe type referenced by the tuple <b>schemaName</b> / <b>schemaPath</b> specify the\ndatabase containers, commands and messages.",
             "properties": {
                 "id":          { "type": "string", "description": "database name" },
                 "schemaName":  { "type": "string", "description": "refer a type definition of the JSON Schema referenced with <b>schemaPath</b>" },
                 "schemaPath":  { "type": "string", "description": "refer a JSON Schema in <b>jsonSchemas</b>" },
-                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of JSON Schemas. Each JSON Schema is identified by its unique path" }
+                "jsonSchemas": { "additionalProperties": {  }, "type": "object", "description": "map of <b>JSON Schemas</b>. Each JSON Schema is identified by its unique path" }
             },
             "required": [
                 "id",
