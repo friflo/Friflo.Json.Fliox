@@ -49,13 +49,14 @@ In detail:
 ## container operations
 Containers are declared as fields or properties of type `EntitySet<TKey,T>`.  
 `EntitySet<TKey,T>` methods provide all **common operations** to access or mutate the
-entities / records stored in a container / table. These operations are:
+entities / records stored in a container / table.  
+These container operations are:
 - **Create** entities
 - **Read** entities by id - primary key
 - **Upsert** entities
 - **Delete** entities
 - **Query** entities using a LINQ filter - optionally using a cursor to iterate large datasets
-- Return entities **referenced by entities** returned in a Read or Query request.  
+- Return entities **referenced by entities** returned by a **Read** or **Query** task.  
   This is the analog method to a **JOIN** in **SQL**.
 - **Aggregate** / **Count** entities using a **LINQ filter**
 - **Subscribe** to entity changes - **create**, **upsert**, **delete** & **patch** - made by other clients
