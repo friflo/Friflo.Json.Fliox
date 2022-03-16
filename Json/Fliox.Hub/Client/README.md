@@ -13,12 +13,11 @@ Instances of this class are acting as **database clients** to access database **
 and execute database **commands**.
 
 Additional to using class instances as database clients it also defines a **database schema**.  
-Therefore it can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
+It can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
 - **JSON Validation** of entities / records written to a container
 - **Code generation** of various programming languages.  
   Built-In supported languages are: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **HTML**.
 - Support of generic database clients like the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/)
-
 
 
 ``` csharp
@@ -37,7 +36,7 @@ Therefore it can be assigned as a `DatabaseSchema` to an `EntityDatabase` instan
     }
 ```
 
-With this the `ShopStore` offer two main functionalities:
+Using this setup the `ShopStore` offer two main functionalities:
 -   Define a **database schema** by declaring its containers, commands and messages
 -   Instances of `ShopStore` are **database clients** providing
     type-safe access to the database containers, commands and messages  
@@ -46,6 +45,21 @@ In detail:
 - **containers** - are fields or properties of type `EntitySet<TKey,T>`
 - **commands**   - are methods returning a `CommandTask<TResult>`
 - **messages**   - are methods returning a `MessageTask`
+
+## Containers
+Containers are declared as fields or properties of `EntitySet<TKey,T>`.  
+Methods of `EntitySet<TKey,T>` provide all **common operations** to access or mutate the
+entities / records stored in a container / table. These operations are:
+- **Create** entities
+- **Read** entities by id - primary key
+- **Upsert** entities
+- **Delete** entities
+- **Query** entities using a LINQ filter - optionally using a cursor to iterate large datasets
+- Return entities **referenced by entities** returned in a Read or Query request.  
+  This is the analog method to a **JOIN** in **SQL**.
+- **Aggregate** / **Count** entities using a **LINQ filter**
+- **Subscribe** to entity changes - **create**, **upsert**, **delete** & **patch** - made by other clients
+
 
 Instances of `ShopStore` can be used on server and client side.
 
