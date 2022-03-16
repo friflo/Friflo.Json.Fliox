@@ -138,14 +138,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
-        
-    /*  public AggregateTask<TKey, T> CountByFilter(EntityFilter<T> filter) {
+
+        // ReSharper disable once UnusedMember.Local - may be public in future 
+        private CountTask<T> CountByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.AggregateByFilter() filter must not be null. EntitySet: {name}");
-            var task = GetSyncSet().AggregateFilter(AggregateType.count, filter.op);
+            var task = GetSyncSet().CountFilter(filter.op);
             intern.store.AddTask(task);
             return task;
-        } */
+        }
         
         public CountTask<T> CountAll() {
             var all = Operation.FilterTrue;
