@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Schema
     /// <summary>
     /// A context class required to be used for all code / schema generators.<br></br>
     /// Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
-    /// <br></br>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
+    /// <br/>
     /// 
     /// It contains the configuration for schema generation and the result after schema generation was executed.
     /// The main configuration consists of the types to be generated and the file extension for generated files.

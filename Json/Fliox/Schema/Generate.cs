@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Schema
 {
     /// <summary>
     /// Generate Typescript from the given options. Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
     /// </summary>
     public sealed partial class TypescriptGenerator
     {
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// Generate HTML from the given options. Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
     /// </summary>
     public sealed partial class HtmlGenerator
     {
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// Generate JSON Schema from the given options. Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
     /// </summary>
     public sealed partial class JsonSchemaGenerator
     {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// Generate C# from the given options. Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
     /// </summary>
     public sealed partial class CSharpGenerator
     {
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// Generate Kotlin from the given options. Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
     /// </summary>
     public partial class KotlinGenerator
     {

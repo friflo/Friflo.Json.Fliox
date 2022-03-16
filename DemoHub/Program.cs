@@ -47,8 +47,8 @@ namespace Fliox.DemoHub
         /// This method is a blueprint showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
-        ///   <item> By <b>HttpListener</b> see <see cref="RunHttpListener"/> </item>
-        ///   <item> By <b>ASP.NET Core / Kestrel</b> see <see cref="Startup.Configure"/></item>
+        ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="RunHttpListener"/> </item>
+        ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core / Kestrel</a> see <see cref="Startup.Configure"/></item>
         /// </list>
         /// <br/>
         /// The features of a <see cref="HttpHostHub"/> instance are:
