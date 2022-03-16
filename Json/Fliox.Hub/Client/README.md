@@ -8,7 +8,18 @@
 ## `FlioxClient`
 namespace **`Friflo.Json.Fliox.Hub.Client`**
 
-The intention of `FlioxClient` is extending it by a domain specific class.
+The intention of `FlioxClient` is extending it by a domain specific class. See example below.  
+Instances of this class are acting as **database clients** to access database **containers**
+and execute database **commands**.
+
+Additional to using class instances as database clients it also defines a **database schema**.  
+Therefore it can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
+- **JSON Validation** of entities / records written to a container
+- **Code generation** of various programming languages.  
+  Built-In supported languages are: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **HTML**.
+- Support of generic database clients like the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/)
+
+
 
 ``` csharp
     public class ShopStore : FlioxClient
@@ -26,7 +37,7 @@ The intention of `FlioxClient` is extending it by a domain specific class.
     }
 ```
 
-By doing this the `ShopStore` offer two main functionalities:
+With this the `ShopStore` offer two main functionalities:
 -   Define a **database schema** by declaring its containers, commands and messages
 -   Instances of `ShopStore` are **database clients** providing
     type-safe access to the database containers, commands and messages  
