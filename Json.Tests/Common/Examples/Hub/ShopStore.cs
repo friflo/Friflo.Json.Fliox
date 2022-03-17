@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -13,6 +14,10 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         // --- containers
         public readonly EntitySet <long, Article>     articles;
         
+        // --- commands
+        /// <summary>return 'hello ...!' with the given <paramref name="param"/></summary>
+        public CommandTask<string>  Hello (string param)    => SendCommand<string, string> ("Hello", param);
+        
         public ShopStore(FlioxHub hub) : base(hub) { }
     }
     
@@ -22,17 +27,34 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         public  string      name;
     }
     
+    public class MessageHandler : TaskHandler
+    {
+        internal MessageHandler() {
+            AddMessageHandlers(this, null);
+        }
+        
+        private static string Hello(Param<string> param, MessageContext command) {
+            if (!param.GetValidate(out string value, out string error))
+                return command.Error<string>(error);
+            return $"hello {value}!";
+        } 
+    }
+    
     public static class TestShopStore
     {
         [Test]
         public static async Task AccessDatabase() {
-            var database    = new MemoryDatabase(); // or other database like: file-system, SQLite, Postgres, ...
+            var database    = new MemoryDatabase(new MessageHandler()); // or other database like: file-system, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
             var store       = new ShopStore(hub);
             
-            store.articles.Create(new Article() { id = 1, name = "Bread" });
+            var hello           = store.Hello("World");
+            var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
             
             await store.SyncTasks();
+            
+            Console.WriteLine(hello.Result); // Output: hello World!
+            Console.WriteLine($"createArticle.Success: {createArticle.Success}");
         }
         
         /// <summary>
