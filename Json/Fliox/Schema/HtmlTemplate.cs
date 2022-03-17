@@ -76,6 +76,15 @@ namespace Friflo.Json.Fliox.Schema
                     width:      100vw;
                     font-family: sans-serif
                 }
+        @media print {
+            div.docs  { display: inline-table !important; }
+            body {
+                    display: grid;
+                    grid-template-areas:  'body-docs';
+                    font-family: sans-serif
+            }
+        }
+
         .head       { overflow: hidden; }
         .nav        { overflow-x: hidden; background: var(--bg2); overflow-y: visisble; scrollbar-width: thin; }
     /*  .nav::-webkit-scrollbar { width: 6px; display: visible; } no effect */
