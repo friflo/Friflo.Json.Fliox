@@ -40,11 +40,16 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         } 
     }
     
+    // -------------------------------- run examples as unit tests --------------------------------
     public static class TestShopStore
     {
+        /// <summary>
+        /// Execute database commands: Hello and std.Stats <br/>
+        /// Execute container operation: Upsert
+        /// </summary>
         [Test]
         public static async Task AccessDatabase() {
-            var database    = new MemoryDatabase(new MessageHandler()); // or other database like: file-system, SQLite, Postgres, ...
+            var database    = new FileDatabase("shop", new MessageHandler()); // or other database like: file-system, SQLite, Postgres, ...
             var hub         = new FlioxHub(database);
             var store       = new ShopStore(hub);
             
