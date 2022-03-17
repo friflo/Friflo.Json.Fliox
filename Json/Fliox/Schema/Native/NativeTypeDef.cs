@@ -35,6 +35,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   UnionType                   UnionType       => unionType;
         public   override   bool                        IsAbstract      => isAbstract;
         public   override   IReadOnlyList<string>       EnumValues      { get; }
+        public   override   IReadOnlyDictionary<string, string> EnumValueDocs { get; } 
         
         public   override   string                      ToString()      => $"{Namespace} {Name}";
         
@@ -48,6 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             IsStruct        = mapper.type.IsValueType && mapper.type != typeof(JsonKey); // JsonKey is "nullable"
             Discriminant    = mapper.Discriminant;
             EnumValues      = mapper.GetEnumValues();
+            EnumValueDocs   = mapper.GetEnumValueDocs();
         }
         
         public override bool Equals(object obj) {

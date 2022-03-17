@@ -115,6 +115,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             }
             return enumValues;
         }
+        
+        public override  IReadOnlyDictionary<string, string> GetEnumValueDocs() => stringToDoc;
 
         public override void InitTypeMapper(TypeStore typeStore) {
         }

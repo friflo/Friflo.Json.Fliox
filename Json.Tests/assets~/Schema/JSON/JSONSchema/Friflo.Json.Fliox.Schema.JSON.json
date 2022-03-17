@@ -27,6 +27,7 @@
                 "required":             { "type": ["array", "null"], "items": { "type": "string" } },
                 "additionalProperties": { "type": "boolean" },
                 "enum":                 { "type": ["array", "null"], "items": { "type": "string" } },
+                "descriptions":         { "additionalProperties": { "type": "string" }, "type": "object" },
                 "description":          { "type": ["string", "null"] }
             },
             "required": [

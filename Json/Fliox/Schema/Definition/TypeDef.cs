@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public   abstract   bool                        IsEnum          { get; }
         public   abstract   IReadOnlyList<string>       EnumValues      { get; }
+        public   abstract   IReadOnlyDictionary<string, string> EnumValueDocs { get; } 
         internal readonly   string                      fullName;
         internal            string                      keyField;
         public   readonly   string                      doc;

@@ -45,6 +45,7 @@ export class JsonType {
     required?             : string[] | null;
     additionalProperties  : boolean;
     enum?                 : string[] | null;
+    descriptions?         : { [key: string]: string } | null;
     description?          : string | null;
 }
 

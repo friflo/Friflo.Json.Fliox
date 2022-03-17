@@ -83,6 +83,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         //
         [Fri.Property(Name =                           "enum")]
                 public  List<string>                    enums;
+        [Fri.Property(Name =                           "descriptions")]
+                public  Dictionary<string,string>       enumDescriptions;
 
         [Ignore]public  string                          name;
 
