@@ -6,6 +6,7 @@ using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
+using Friflo.Json.Fliox.Mapper.Map.Val;
 using Friflo.Json.Fliox.Mapper.MapIL.Obj;
 using Friflo.Json.Fliox.Mapper.Utils;
 
@@ -29,6 +30,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
         private   readonly  Type                                    underlyingEnumType;
         private   readonly  Dictionary<BytesString, EnumIntegral>   stringToIntegral = new Dictionary<BytesString,  EnumIntegral>();
         private   readonly  Dictionary<long,        EnumString>     integralToString = new Dictionary<long,         EnumString>();
+        private   readonly  Dictionary<string,      string>         stringToDoc;
 
         
         public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
@@ -37,7 +39,8 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
             base(config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)
         {
             Type enumType = isNullable ? nullableUnderlyingType : type;
-            underlyingEnumType = Enum.GetUnderlyingType(enumType);
+            underlyingEnumType  = Enum.GetUnderlyingType(enumType);
+            var  enumContext    = new EnumContext(underlyingEnumType, config.assemblyDocs);
             // ReSharper disable once PossibleNullReferenceException
             FieldInfo[] fields = enumType.GetFields();
             for (int n = 0; n < fields.Length; n++) {
@@ -52,6 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
                     stringToIntegral.Add    (name, enumIntegralValue);
                     var enumString = new EnumString {name = name, value = enumValue};
                     integralToString.TryAdd (enumIntegral, enumString);
+                    enumContext.AddEnumValueDoc(ref stringToDoc, enumName);
                 }
             }
         }

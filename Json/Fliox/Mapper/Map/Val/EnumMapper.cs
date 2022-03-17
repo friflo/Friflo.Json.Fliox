@@ -60,13 +60,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         private     readonly Dictionary<object, BytesString> enumToString   = new Dictionary<object, BytesString>();
         //
         private     readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
+        private     readonly Dictionary<string, string>      stringToDoc;
         
         public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
         
         public EnumMapper(StoreConfig config, Type type) :
             base (config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
         {
-            Type enumType = isNullable ? nullableUnderlyingType : type;
+            Type enumType       = isNullable ? nullableUnderlyingType : type;
+            var  enumContext    = new EnumContext(enumType, config.assemblyDocs);
             // ReSharper disable once PossibleNullReferenceException
             FieldInfo[] fields = enumType.GetFields();
             for (int n = 0; n < fields.Length; n++) {
@@ -80,6 +82,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     stringToEnum.Add(name, enumValue);
                     enumToString.  TryAdd(enumValue, name);
                     integralToEnum.TryAdd(enumIntegral, enumValue);
+                    enumContext.AddEnumValueDoc(ref stringToDoc, enumName);
                 }
             }
             /*
@@ -97,7 +100,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 // integralToEnum.TryAdd(underlyingValue, enumValue);
             } */
         }
-
+        
         public override void Dispose() {
             foreach (var key in stringToEnum.Keys)
                 key.value.Dispose();
@@ -145,6 +148,32 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
             }
             return reader.HandleEvent(this, out success);
+        }        
+    }
+    
+    internal readonly struct EnumContext
+    {
+        private     readonly    Assembly        assembly;
+        private     readonly    AssemblyDocs    assemblyDocs;
+        private     readonly    string          @namespace;
+        
+        internal EnumContext(Type enumType, AssemblyDocs assemblyDocs) {
+            assembly            = enumType.Assembly;
+            this.assemblyDocs   = assemblyDocs;
+            @namespace          = enumType.FullName;
+        }
+        
+        public void AddEnumValueDoc(ref Dictionary<string, string> stringToDoc, string enumName) {
+            if (assembly == null || assemblyDocs == null)
+                return;
+            var signature           = $"F:{@namespace}.{enumName}";
+            var valueDoc            = assemblyDocs.GetDocs(assembly, signature);
+            if (valueDoc == null)
+                return;
+            if (stringToDoc == null) {
+                stringToDoc = new Dictionary<string, string>();
+            }
+            stringToDoc.Add(enumName, valueDoc);
         }
     }
 }

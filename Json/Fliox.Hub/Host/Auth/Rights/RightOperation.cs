@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     // ReSharper disable InconsistentNaming
     /// <summary>container operation type</summary>
     public enum OperationType {
+        /// <summary>XXX</summary>
         create,
         upsert,
         delete,
