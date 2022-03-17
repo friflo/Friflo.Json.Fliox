@@ -3,7 +3,7 @@
 # ![logo](docs/images/Json-Fliox.svg)     **JSON Fliox**      ![SPLASH](docs/images/paint-splatter.svg)
 
 [![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Fliox)
+
 
 
 __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
@@ -11,14 +11,14 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 ## Content
 - **Fliox Hub**
-    - [Client](#client)                 [README.md](Json/Fliox.Hub/Client/)
-    - [Host](#host)                   [README.md](Json/Fliox.Hub/Host/)
-    - [Explorer](#explorer)             [README.md](Json/Fliox.Hub.Explorer/)
+    - [Client](#client)                 [README.md](Json/Fliox.Hub/Client/README.md)
+    - [Host](#host)                   [README.md](Json/Fliox.Hub/Host/README.md)
+    - [Explorer](#explorer)             [README.md](Json/Fliox.Hub.Explorer/README.md)
 - **Fliox**
-    - [Schema](#schema)              [README.md](Json/Fliox/Schema/)
-    - [Mapper](#mapper)              [README.md](Json/Fliox/Mapper/)
+    - [Schema](#schema)              [README.md](Json/Fliox/Schema/README.md)
+    - [Mapper](#mapper)              [README.md](Json/Fliox/Mapper/README.md)
 - **Testing**
-    - [Unit Tests](#unit-tests)           [README.md](Json.Tests/)
+    - [Unit Tests](#unit-tests)           [README.md](Json.Tests/README.md)
 
 
 
@@ -28,15 +28,15 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Fliox Hub**
 
 ### **Client**
-namespace **`Friflo.Json.Fliox.Hub.Client`**          [README.md](Json/Fliox.Hub/Client/)
+namespace **`Friflo.Json.Fliox.Hub.Client`**          [README.md](Json/Fliox.Hub/Client/README.md)
 
 
 ### **Host**
-namespace **`Friflo.Json.Fliox.Hub.Host`**              [README.md](Json/Fliox.Hub/Host/)
+namespace **`Friflo.Json.Fliox.Hub.Host`**              [README.md](Json/Fliox.Hub/Host/README.md)
 
 
 ### **Explorer**
-namespace **`Friflo.Json.Fliox.Hub.Explorer`**       [README.md](Json/Fliox.Hub.Explorer/)
+namespace **`Friflo.Json.Fliox.Hub.Explorer`**       [README.md](Json/Fliox.Hub.Explorer/README.md)
 
 
 
@@ -46,11 +46,11 @@ namespace **`Friflo.Json.Fliox.Hub.Explorer`**       [README.md](Json/Fli
 ## **Fliox**
 
 ### **Schema**
-namespace **`Friflo.Json.Fliox.Schema`**                  [README.md](Json/Fliox/Schema/)
+namespace **`Friflo.Json.Fliox.Schema`**                  [README.md](Json/Fliox/Schema/README.md)
 
 
 ### **Mapper**
-namespace **`Friflo.Json.Fliox.Mapper`**                  [README.md](Json/Fliox/Mapper/)
+namespace **`Friflo.Json.Fliox.Mapper`**                  [README.md](Json/Fliox/Mapper/README.md)
 
 
 
@@ -60,7 +60,7 @@ namespace **`Friflo.Json.Fliox.Mapper`**                  [REA
 ## **Testing**
 
 ### **Unit Tests**
-namespace **`Friflo.Json.Tests.Main`**                      [README.md](Json.Tests/)
+namespace **`Friflo.Json.Tests.Main`**                      [README.md](Json.Tests/README.md)
 
 
 

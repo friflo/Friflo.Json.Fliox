@@ -17,7 +17,7 @@ It can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
 - **JSON Validation** of entities / records written to a container
 - **Code generation** of various programming languages.  
   Built-In supported languages are: **Typescript**, **C#**, **Kotlin**, **JSON Schema** and **HTML**.
-- Support of generic database clients like the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/)
+- Support of generic database clients like the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/README.md)
 
 
 ``` csharp
