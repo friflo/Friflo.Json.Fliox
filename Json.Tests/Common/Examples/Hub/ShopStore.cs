@@ -1,6 +1,8 @@
+using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Schema;
 using NUnit.Framework;
 
 // ReSharper disable All
@@ -31,6 +33,23 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
             store.articles.Create(new Article() { id = 1, name = "Bread" });
             
             await store.SyncTasks();
+        }
+        
+        /// <summary>
+        /// Generate schema model files (HTML, JSON Schema, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
+        /// in the working directory.
+        /// </summary>
+        [Test]
+        public static void GenerateSchemaModels() {
+            var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
+            foreach (var (language, schemaModel) in schemaModels) {
+                var folder = $"./schema/{language}";
+                Directory.CreateDirectory(folder);
+                foreach (var (file, content) in schemaModel.files) {
+                    var path = $"{folder}/{file}";
+                    File.WriteAllText(path, content);
+                }
+            }
         }
     }
 }

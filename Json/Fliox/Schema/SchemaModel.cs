@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Schema
 {
@@ -43,6 +44,18 @@ namespace Friflo.Json.Fliox.Schema
             this.label          = label;
             this.contentType    = contentType;
             this.files          = new ReadOnlyDictionary<string, string>(files);
+        }
+        
+        /// <summary>
+        /// Generate schema models for the given <paramref name="rootType"/>. <br/>
+        /// The generated languages are the build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
+        /// and languages that are generated via the passed <paramref name="generators"/>
+        /// </summary>
+        public static Dictionary<string, SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null) {
+            var typeSchema      = new NativeTypeSchema(rootType);
+            var entityTypeMap   = typeSchema.GetEntityTypes();
+            var entityTypes     = entityTypeMap.Values;
+            return GenerateSchemaModels(typeSchema, entityTypes, generators);
         }
 
         /// <summary>
