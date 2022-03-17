@@ -44,6 +44,7 @@ export class RightAllow extends Right {
 export class RightTask extends Right {
     type         : "task";
     database?    : string | null;
+    /** set fo task types like: create, read, upsert, delete, query, ... */
     types        : TaskType[];
 }
 

@@ -42,7 +42,7 @@
             "properties": {
                 "type":        { "enum": ["task"] },
                 "database":    { "type": ["string", "null"] },
-                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/TaskType" } },
+                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/TaskType" }, "description": "set fo task types like: create, read, upsert, delete, query, ..." },
                 "description": { "type": ["string", "null"] }
             },
             "required": [

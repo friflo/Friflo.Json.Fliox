@@ -719,6 +719,7 @@ Using <b>database</b>: '*' grant access to all databases.
         </tr>
         <tr>
             <td><field>types</field></td>       <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a>[]</type></td>
+            <td><docs>set fo task types like: create, read, upsert, delete, query, ...</docs></td>
         </tr>
     </table>
     </div>
@@ -812,6 +813,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>
         <keyword>enum</keyword>
     </h3>
+    <desc>container operation type</desc>
     <ul class='enum'>
         <li>create</li>
         <li>upsert</li>
@@ -851,6 +853,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a>
         <keyword>enum</keyword>
     </h3>
+    <desc>Type of a task that operates on the database or a container</desc>
     <ul class='enum'>
         <li>read</li>
         <li>query</li>
@@ -873,6 +876,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>Change</a>
         <keyword>enum</keyword>
     </h3>
+    <desc>Filter type used to specify the type of a database change.<br/></desc>
     <ul class='enum'>
         <li>create</li>
         <li>upsert</li>

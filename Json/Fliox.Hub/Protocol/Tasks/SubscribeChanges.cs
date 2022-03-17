@@ -68,9 +68,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     /// <summary>
-    /// Filters used to specify the type of a database change.
-    /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
+    /// Filter type used to specify the type of a database change.<br/>
     /// </summary>
+    /// <remarks>
+    /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
+    /// </remarks>
     // ReSharper disable InconsistentNaming
     public enum Change
     {

@@ -81,12 +81,13 @@ $@"    <div class='type'>
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
                 var qualifiedName = type.Namespace + "." + type.Name;
+                var doc     = GetDoc("\n    <desc>", type.doc, "</desc>");
                 sb.AppendLine(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>enum</keyword>
-    </h3>
+    </h3>{doc}
     <ul class='enum'>");
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"        <li>{enumValue}</li>");

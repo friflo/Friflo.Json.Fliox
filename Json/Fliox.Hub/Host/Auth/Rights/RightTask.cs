@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class RightTask : Right
     {
                         public  string          database;
+                        /// <summary>set fo task types like: create, read, upsert, delete, query, ...</summary>
         [Fri.Required]  public  List<TaskType>  types;
         
         public  override        RightType       RightType => RightType.task;
