@@ -84,20 +84,20 @@ namespace Friflo.Json.Fliox.Schema
                 }
                 sb.AppendLine();
                 sb.Append("            ]");
-            /*  var valueDocs = type.EnumValueDocs;
+                var valueDocs = type.EnumValueDocs;
                 if (valueDocs != null ) {
                     sb.AppendLine($",\n            \"descriptions\": {{");
                     firstValue = true;
                     foreach (var pair in valueDocs) {
                         var doc = GetDoc("", pair.Value, "");
-                        if (doc == null)
+                        if (doc == "")
                             continue;
                         Delimiter(sb, Next, ref firstValue);
                         sb.Append($"                \"{pair.Key}\": {doc}");
                     }
                     sb.AppendLine();
                     sb.AppendLine("            }");
-                } */
+                }
                 sb.AppendLine();
                 sb.Append    ("        }");
                 return new EmitType(type, sb);
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Schema
                     sb.AppendLine($"            \"isStruct\": true,");
                 if (type.IsAbstract)
                     sb.AppendLine($"            \"isAbstract\": true,");
-                var doc = GetDoc("            ", type.doc, ",");
+                var doc = GetDoc("            \"description\": ", type.doc, ",");
                 if (doc != "")
                     sb.AppendLine(doc);
             } else {
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Schema
                 var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                var doc     = GetDoc(", ", field.doc, "");
+                var doc     = GetDoc(", \"description\": ", field.doc, "");
                 sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{doc} }}");
             }
             sb.AppendLine();
@@ -205,7 +205,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var messageDef in messageDefs) {
                 var param           = GetMessageArg("param",  messageDef.param,  context);
                 var result          = GetMessageArg("result", messageDef.result, context);
-                var doc             = GetDoc(",\n                    ", messageDef.doc, "");
+                var doc             = GetDoc(",\n                    \"description\": ", messageDef.doc, "");
                 var indent          = Indent(maxFieldName, messageDef.name);
                 Delimiter(sb, Next, ref firstField);
                 var argDelimiter    = param.Length > 0 && result.Length > 0 ? ", " : "";
@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Schema
                 return "";
             docs = docs.Replace("\n", "\\n");
             docs = docs.Replace("\"", "'");
-            return $"{prefix}\"description\": \"{docs}\"{suffix}";
+            return $"{prefix}\"{docs}\"{suffix}";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

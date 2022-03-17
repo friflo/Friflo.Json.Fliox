@@ -79,9 +79,10 @@ $@"    <div class='type'>
                 return EmitClassType(type, sb);
             }
             if (type.IsEnum) {
-                var enumValues = type.EnumValues;
-                var qualifiedName = type.Namespace + "." + type.Name;
-                var doc     = GetDoc("\n    <desc>", type.doc, "</desc>");
+                var enumValues      = type.EnumValues;
+                var enumValueDocs   = type.EnumValueDocs;
+                var qualifiedName   = type.Namespace + "." + type.Name;
+                var doc             = GetDoc("\n    <desc>", type.doc, "</desc>");
                 sb.AppendLine(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
@@ -90,6 +91,7 @@ $@"    <div class='type'>
     </h3>{doc}
     <ul class='enum'>");
                 foreach (var enumValue in enumValues) {
+                    // var enumDoc = enumValueDocs == null ? "" : GetDoc("<doc>", enumValueDocs[enumValue], "</doc>");  
                     sb.AppendLine($"        <li>{enumValue}</li>");
                 }
                 sb.AppendLine(

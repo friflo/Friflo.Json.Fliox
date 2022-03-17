@@ -251,7 +251,14 @@
                 "upsert",
                 "patch",
                 "delete"
-            ]
+            ],
+            "descriptions": {
+                "create": "Filter database change events of new created entities.",
+                "upsert": "Filter database change events of upserted entities.",
+                "patch": "Filter database change events used to patch entities.",
+                "delete": "Filter database change events used to delete entities."
+            }
+
         },
         "SubscribeMessage": {
             "type": "object",
@@ -518,7 +525,12 @@
                 "NotImplemented",
                 "PermissionDenied",
                 "SyncError"
-            ]
+            ],
+            "descriptions": {
+                "UnhandledException": "HTTP status: 500\nInform about an unhandled exception in a <b>EntityContainer</b> implementation which need to be fixed.\nMore information at <b>ExecuteSync()</b>.",
+                "DatabaseError": "HTTP status: 500\nInform about an error when accessing a database.\nE.g. the access is currently not available or accessing a missing table."
+            }
+
         }
     }
 }
