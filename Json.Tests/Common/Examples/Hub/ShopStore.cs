@@ -50,11 +50,15 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
             
             var hello           = store.Hello("World");
             var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
-            
+            var stats           = store.std.Stats(null);
+
             await store.SyncTasks();
             
             Console.WriteLine(hello.Result); // Output: hello World!
             Console.WriteLine($"createArticle.Success: {createArticle.Success}");
+            foreach (var container in stats.Result.containers) {
+                Console.WriteLine($"{container.name}: {container.count}");
+            }
         }
         
         /// <summary>

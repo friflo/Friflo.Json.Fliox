@@ -299,16 +299,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<SyncRequestTask> tasks, ObjectMapper mapper) {
+            CloseCursors        (tasks);
             ReserveKeys         (tasks);
+            // --- mutate tasks
             CreateEntities      (tasks, mapper);
             UpsertEntities      (tasks, mapper);
-            ReadEntities        (tasks);
-            QueryEntities       (tasks);
-            AggregateEntities   (tasks);
-            CloseCursors        (tasks);
             PatchEntities       (tasks, mapper);
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
+            // --- read tasks
+            ReadEntities        (tasks);
+            QueryEntities       (tasks);
+            AggregateEntities   (tasks);
             SubscribeChanges    (tasks);
         }
 
