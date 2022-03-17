@@ -28,9 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ReSharper disable InconsistentNaming
-    /// <summary>
-    /// Type of a task that operates on the database or a container 
-    /// </summary>
+    /// <summary>Type of a task that operates on the database or a container</summary>
     public enum TaskType
     {
         read,

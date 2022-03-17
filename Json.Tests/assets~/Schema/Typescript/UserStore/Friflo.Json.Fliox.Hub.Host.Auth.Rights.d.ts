@@ -91,6 +91,7 @@ export class ContainerAccess {
     subscribeChanges? : Change[] | null;
 }
 
+/** container operation type */
 export type OperationType =
     | "create"
     | "upsert"

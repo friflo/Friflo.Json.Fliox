@@ -67,9 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public static readonly ReadOnlyCollection<Change> None = new List<Change>().AsReadOnly();
     }
     
-    /// <summary>
-    /// Filter type used to specify the type of a database change.<br/>
-    /// </summary>
+    /// <summary>Filter type used to specify the type of a database change.</summary>
     /// <remarks>
     /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
     /// </remarks>

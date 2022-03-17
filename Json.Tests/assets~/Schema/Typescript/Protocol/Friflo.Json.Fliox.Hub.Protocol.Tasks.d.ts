@@ -137,6 +137,7 @@ export class SubscribeChanges extends SyncRequestTask {
     filter?    : any | null;
 }
 
+/** Filter type used to specify the type of a database change. */
 export type Change =
     | "create"
     | "upsert"
@@ -282,6 +283,7 @@ export class TaskErrorResult extends SyncTaskResult {
     stacktrace? : string | null;
 }
 
+/** Describe the type of a **TaskErrorResult** */
 export type TaskErrorResultType =
     | "None"
     | "UnhandledException"

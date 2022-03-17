@@ -75,8 +75,9 @@ namespace Friflo.Json.Fliox.Schema
                 return EmitClassType(type, sb);
             }
             if (type.IsEnum) {
-                var enumValues = type.EnumValues;
-                sb.AppendLine($"export type {type.Name} =");
+                var enumValues  = type.EnumValues;
+                var doc         = GetDoc(type.doc, "");
+                sb.AppendLine($"{doc}export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"    | \"{enumValue}\"");
                 }
