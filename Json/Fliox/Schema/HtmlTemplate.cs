@@ -78,6 +78,8 @@ namespace Friflo.Json.Fliox.Schema
                 }
         @media print {
             div.docs  { display: inline-table !important; }
+            div.namespace,
+            div.type  { page-break-inside: avoid; }
             body {
                     display: grid;
                     grid-template-areas:  'body-docs';
