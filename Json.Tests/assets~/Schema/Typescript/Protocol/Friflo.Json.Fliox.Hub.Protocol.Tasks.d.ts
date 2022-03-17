@@ -139,10 +139,10 @@ export class SubscribeChanges extends SyncRequestTask {
 
 /** Filter type used to specify the type of a database change. */
 export type Change =
-    | "create"
-    | "upsert"
-    | "patch"
-    | "delete"
+    | "create"      /** Filter database change events of new created entities. */
+    | "upsert"      /** Filter database change events of upserted entities. */
+    | "patch"      /** Filter database change events used to patch entities. */
+    | "delete"      /** Filter database change events used to delete entities. */
 ;
 
 export class SubscribeMessage extends SyncRequestTask {
@@ -286,8 +286,16 @@ export class TaskErrorResult extends SyncTaskResult {
 /** Describe the type of a **TaskErrorResult** */
 export type TaskErrorResultType =
     | "None"
-    | "UnhandledException"
-    | "DatabaseError"
+    | "UnhandledException"      /**
+       * HTTP status: 500
+       * Inform about an unhandled exception in a **EntityContainer** implementation which need to be fixed.
+       * More information at **ExecuteSync()**.
+       */
+    | "DatabaseError"      /**
+       * HTTP status: 500
+       * Inform about an error when accessing a database.
+       * E.g. the access is currently not available or accessing a missing table.
+       */
     | "FilterError"
     | "ValidationError"
     | "CommandError"

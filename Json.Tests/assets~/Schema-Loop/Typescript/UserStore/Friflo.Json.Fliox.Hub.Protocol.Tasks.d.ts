@@ -18,9 +18,9 @@ export type TaskType =
 ;
 
 export type Change =
-    | "create"
-    | "upsert"
-    | "patch"
-    | "delete"
+    | "create"      /** Filter database change events of new created entities. */
+    | "upsert"      /** Filter database change events of upserted entities. */
+    | "patch"      /** Filter database change events used to patch entities. */
+    | "delete"      /** Filter database change events used to delete entities. */
 ;
 

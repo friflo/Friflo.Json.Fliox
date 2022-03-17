@@ -76,10 +76,16 @@ namespace Friflo.Json.Fliox.Schema
             }
             if (type.IsEnum) {
                 var enumValues  = type.EnumValues;
+                var valueDocs   = type.EnumValueDocs;
                 var doc         = GetDoc(type.doc, "");
                 sb.AppendLine($"{doc}export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    | \"{enumValue}\"");
+                    sb.Append($"    | \"{enumValue}\"");
+                    if (valueDocs != null && valueDocs.TryGetValue(enumValue, out string enumDoc)) {
+                        sb.Append(GetDoc(enumDoc, "      "));
+                        continue;
+                    }
+                    sb.AppendLine();
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
