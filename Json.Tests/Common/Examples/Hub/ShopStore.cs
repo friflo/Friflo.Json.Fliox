@@ -60,11 +60,14 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
 
             await store.SyncTasks();
             
-            Console.WriteLine(hello.Result); // Output: hello World!
+            Console.WriteLine(hello.Result);
+            // output:  hello World!
             Console.WriteLine($"createArticle.Success: {createArticle.Success}");
+            // output:  createArticle.Success: True
             foreach (var container in stats.Result.containers) {
                 Console.WriteLine($"{container.name}: {container.count}");
             }
+            // output:  articles: 1
         }
         
         /// <summary>

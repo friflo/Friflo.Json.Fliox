@@ -93,11 +93,14 @@ public static async Task AccessDatabase() {
 
     await store.SyncTasks();
     
-    Console.WriteLine(hello.Result); // Output: hello World!
+    Console.WriteLine(hello.Result);
+    // output:  hello World!
     Console.WriteLine($"createArticle.Success: {createArticle.Success}");
+    // output:  createArticle.Success: True
     foreach (var container in stats.Result.containers) {
         Console.WriteLine($"{container.name}: {container.count}");
     }
+    // output:  articles: 1
 }
 ```
 
@@ -110,7 +113,7 @@ All declarations as expressed as types in a schema. This principle enables code 
 for other programming languages.
 
 The following example generate the types for Typescript, C#, Kotlin, JSON Schema and HTML based on the
-passed schema type `ShopStore`.
+passed schema type `ShopStore`. The generated code is written to folder `./schema/`
 
 ``` csharp
 public static void GenerateSchemaModels() {
