@@ -18,14 +18,15 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// <br/>
     /// Following extensions are added to JSON Schema:
     /// <list type="bullet">
-    ///     <item><see cref="JsonType.extends"/></item>
-    ///     <item><see cref="JsonType.discriminator"/></item>
-    ///     <item><see cref="JsonType.isStruct"/></item>
-    ///     <item><see cref="JsonType.isAbstract"/></item>
-    ///     <item><see cref="JsonType.messages"/></item>
-    ///     <item><see cref="JsonType.commands"/></item>
-    ///     <item><see cref="JsonType.key"/></item>
-    ///     <item><see cref="FieldType.relation"/></item>
+    ///     <item><see cref="JsonType.extends"/> - used to declare that a typ definition extends the given one</item>
+    ///     <item><see cref="JsonType.discriminator"/> - declare the property name used as discriminator</item>
+    ///     <item><see cref="JsonType.isStruct"/> - type should be generated as struct</item>
+    ///     <item><see cref="JsonType.isAbstract"/> - type definition is an abstract type</item>
+    ///     <item><see cref="JsonType.messages"/> - list of all schema messages</item>
+    ///     <item><see cref="JsonType.commands"/> - list of all schema commands</item>
+    ///     <item><see cref="JsonType.key"/> - the property used as primary key</item>
+    ///     <item><see cref="JsonType.descriptions"/> - a map storing the descriptions for enum values</item>
+    ///     <item><see cref="FieldType.relation"/> - mark the property as a relation (aka reference or aka secondary key) to entities in the given container</item>
     /// </list>
     /// The restriction of <see cref="JSONSchema"/> are:
     /// <list type="bullet">
@@ -83,8 +84,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         //
         [Fri.Property(Name =                           "enum")]
                 public  List<string>                    enums;
-        [Fri.Property(Name =                           "descriptions")]
-                public  Dictionary<string,string>       enumDescriptions;
+                public  Dictionary<string,string>       descriptions;
 
         [Ignore]public  string                          name;
 

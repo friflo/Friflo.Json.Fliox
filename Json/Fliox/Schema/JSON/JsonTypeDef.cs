@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             this.name   = name;
             this.type   = type;
             this.schema = schema;
-            EnumValues  = EnumValue.CreateEnumValues(type.enums, type.enumDescriptions);
+            EnumValues  = EnumValue.CreateEnumValues(type.enums, type.descriptions);
         }
         
         public JsonTypeDef (string name) :

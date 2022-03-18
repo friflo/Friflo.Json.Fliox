@@ -5,14 +5,15 @@ import { int64 } from "./Standard";
  * Compatible subset of JSON Schema with some extensions required for code generation.  
  * JSON Schema specification: https://json-schema.org/specification.html    
  * Following extensions are added to JSON Schema:
- * - **extends**
- * - **discriminator**
- * - **isStruct**
- * - **isAbstract**
- * - **messages**
- * - **commands**
- * - **key**
- * - **relation**
+ * - **extends** - used to declare that a typ definition extends the given one
+ * - **discriminator** - declare the property name used as discriminator
+ * - **isStruct** - type should be generated as struct
+ * - **isAbstract** - type definition is an abstract type
+ * - **messages** - list of all schema messages
+ * - **commands** - list of all schema commands
+ * - **key** - the property used as primary key
+ * - **descriptions** - a map storing the descriptions for enum values
+ * - **relation** - mark the property as a relation (aka reference or aka secondary key) to entities in the given container
  * 
  * The restriction of **JSONSchema** are:
  * - A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.   
