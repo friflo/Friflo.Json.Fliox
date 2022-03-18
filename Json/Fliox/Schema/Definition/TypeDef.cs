@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public   abstract   bool                        IsEnum          { get; }
-        public   abstract   IReadOnlyList<string>       EnumValues      { get; }
+        public   abstract   IReadOnlyList<EnumValue>    EnumValues      { get; }
         public   abstract   IReadOnlyDictionary<string, string> EnumValueDocs { get; } 
         internal readonly   string                      fullName;
         internal            string                      keyField;
@@ -150,6 +150,31 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 }
                 parent = parent.BaseType;
             }
+        }
+    }
+    
+    public readonly struct EnumValue
+    {
+        public   readonly   string      name;
+        public   readonly   string      doc;
+
+        public   override   string      ToString() => name;
+
+        private EnumValue (string name, string doc) {
+            this.name   = name;
+            this.doc    = doc;
+        }
+        
+        internal static List<EnumValue> CreateEnumValues(ICollection<string> enumNames, IReadOnlyDictionary<string,string> enumDocs) {
+            if (enumNames == null)
+                return null;
+            var enumValues  = new List<EnumValue>(enumNames.Count);
+            foreach (var name in enumNames) {
+                string doc = null; 
+                enumDocs?.TryGetValue(name, out doc);
+                enumValues.Add(new EnumValue(name, doc));
+            }
+            return enumValues;
         }
     }
     

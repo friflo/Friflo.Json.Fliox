@@ -92,7 +92,7 @@ $@"    <div class='type'>
     <ul class='enum'>");
                 foreach (var enumValue in enumValues) {
                     // var enumDoc = enumValueDocs == null ? "" : GetDoc("<doc>", enumValueDocs[enumValue], "</doc>");  
-                    sb.AppendLine($"        <li>{enumValue}</li>");
+                    sb.AppendLine($"        <li>{enumValue.name}</li>");
                 }
                 sb.AppendLine(
 @"    </ul>

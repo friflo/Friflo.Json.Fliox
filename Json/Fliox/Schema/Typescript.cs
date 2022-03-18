@@ -80,8 +80,8 @@ namespace Friflo.Json.Fliox.Schema
                 var doc         = GetDoc(type.doc, "");
                 sb.AppendLine($"{doc}export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
-                    sb.Append($"    | \"{enumValue}\"");
-                    if (valueDocs != null && valueDocs.TryGetValue(enumValue, out string enumDoc)) {
+                    sb.Append($"    | \"{enumValue.name}\"");
+                    if (valueDocs != null && valueDocs.TryGetValue(enumValue.name, out string enumDoc)) {
                         sb.Append(GetDoc(enumDoc, "      "));
                         continue;
                     }

@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
                 bool firstValue = true;
                 foreach (var enumValue in enumValues) {
                     Delimiter(sb, Next, ref firstValue);
-                    sb.Append($"                \"{enumValue}\"");
+                    sb.Append($"                \"{enumValue.name}\"");
                 }
                 sb.AppendLine();
                 sb.AppendLine("            ]");

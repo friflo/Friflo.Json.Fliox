@@ -96,11 +96,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return bytes;
         }
         
-        private ValidationType (TypeDef typeDef, IReadOnlyList<string> typeEnums) : this (TypeId.Enum, typeDef.Name, typeDef) {
+        private ValidationType (TypeDef typeDef, IReadOnlyList<EnumValue> typeEnums) : this (TypeId.Enum, typeDef.Name, typeDef) {
             enumValues = new byte[typeEnums.Count][];
             int n = 0;
             foreach (var enumValue in typeEnums) {
-                enumValues[n++] = GetUtf8Bytes(enumValue);
+                enumValues[n++] = GetUtf8Bytes(enumValue.name);
             }
         }
 

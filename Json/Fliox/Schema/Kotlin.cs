@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Schema
                 var enumValues = type.EnumValues;
                 sb.AppendLine($"enum class {type.Name} {{");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    {enumValue},");
+                    sb.AppendLine($"    {enumValue.name},");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
