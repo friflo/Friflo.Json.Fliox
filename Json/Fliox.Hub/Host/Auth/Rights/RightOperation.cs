@@ -41,24 +41,37 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         }
     }
     
+    /// <summary>Grant specific container operations and subscriptions</summary>
     public sealed class ContainerAccess
     {
+        /// <summary>Set of granted operation types</summary>
         public          List<OperationType>     operations;
+        /// <summary>Set of granted change subscriptions</summary>
         public          List<Change>            subscribeChanges;
     }
     
     // ReSharper disable InconsistentNaming
-    /// <summary>container operation type</summary>
+    /// <summary>Use to allow specific container operations in <see cref="ContainerAccess"/></summary>
     public enum OperationType {
+        /// <summary>allow to create entities in a container</summary>
         create,
+        /// <summary>allow to upsert entities in a container</summary>
         upsert,
+        /// <summary>allow to delete entities in a container</summary>
         delete,
+        /// <summary>allow to delete all container entities</summary>
         deleteAll,
-        patch, 
-        read,  
-        query, 
+        /// <summary>allow to patch entities in a container</summary>
+        patch,
+        /// <summary>allow to read entities in a container</summary>
+        read,
+        /// <summary>allow to query entities in a container</summary>
+        query,
+        /// <summary>allow to aggregate - count - entities in a container</summary>
         aggregate,
+        /// <summary>allow to mutate - create, upsert, delete and patch - entities in a container</summary>
         mutate,
+        /// <summary>allow all operation types in a container</summary>
         full
     }
 }

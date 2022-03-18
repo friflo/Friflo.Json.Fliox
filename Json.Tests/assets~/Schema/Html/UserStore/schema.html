@@ -682,6 +682,7 @@ grant access.
         </tr>
         <tr>
             <td><field>description</field></td> <td><type><predef>string</predef> | null</type></td>
+            <td><docs>optional description explaining the Right</docs></td>
         </tr>
     </table>
     </div>
@@ -802,12 +803,16 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a>
         <keyword>class</keyword>
     </h3>
+    <desc>Grant specific container operations and subscriptions
+    </desc>
     <table class='fields'>
         <tr>
             <td><field>operations</field></td>       <td><type><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>[] | null</type></td>
+            <td><docs>Set of granted operation types</docs></td>
         </tr>
         <tr>
             <td><field>subscribeChanges</field></td> <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.Change'>Change</a>[] | null</type></td>
+            <td><docs>Set of granted change subscriptions</docs></td>
         </tr>
     </table>
     </div>
@@ -816,18 +821,18 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.OperationType'>OperationType</a>
         <keyword>enum</keyword>
     </h3>
-    <desc>container operation type</desc>
+    <desc>Use to allow specific container operations in <b>ContainerAccess</b></desc>
     <table>
-        <tr><td>create</td><td></td></tr>
-        <tr><td>upsert</td><td></td></tr>
-        <tr><td>delete</td><td></td></tr>
-        <tr><td>deleteAll</td><td></td></tr>
-        <tr><td>patch</td><td></td></tr>
-        <tr><td>read</td><td></td></tr>
-        <tr><td>query</td><td></td></tr>
-        <tr><td>aggregate</td><td></td></tr>
-        <tr><td>mutate</td><td></td></tr>
-        <tr><td>full</td><td></td></tr>
+        <tr><td>create</td><td><docs>allow to create entities in a container</docs></td></tr>
+        <tr><td>upsert</td><td><docs>allow to upsert entities in a container</docs></td></tr>
+        <tr><td>delete</td><td><docs>allow to delete entities in a container</docs></td></tr>
+        <tr><td>deleteAll</td><td><docs>allow to delete all container entities</docs></td></tr>
+        <tr><td>patch</td><td><docs>allow to patch entities in a container</docs></td></tr>
+        <tr><td>read</td><td><docs>allow to read entities in a container</docs></td></tr>
+        <tr><td>query</td><td><docs>allow to query entities in a container</docs></td></tr>
+        <tr><td>aggregate</td><td><docs>allow to aggregate - count - entities in a container</docs></td></tr>
+        <tr><td>mutate</td><td><docs>allow to mutate - create, upsert, delete and patch - entities in a container</docs></td></tr>
+        <tr><td>full</td><td><docs>allow all operation types in a container</docs></td></tr>
     </table>
     </div>
     <div class='type'>
@@ -858,20 +863,20 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     </h3>
     <desc>Type of a task that operates on the database or a container</desc>
     <table>
-        <tr><td>read</td><td></td></tr>
-        <tr><td>query</td><td></td></tr>
-        <tr><td>create</td><td></td></tr>
-        <tr><td>upsert</td><td></td></tr>
-        <tr><td>patch</td><td></td></tr>
-        <tr><td>delete</td><td></td></tr>
-        <tr><td>aggregate</td><td></td></tr>
-        <tr><td>message</td><td></td></tr>
-        <tr><td>command</td><td></td></tr>
-        <tr><td>closeCursors</td><td></td></tr>
-        <tr><td>subscribeChanges</td><td></td></tr>
-        <tr><td>subscribeMessage</td><td></td></tr>
-        <tr><td>reserveKeys</td><td></td></tr>
-        <tr><td>error</td><td></td></tr>
+        <tr><td>read</td><td><docs>read container entities by id</docs></td></tr>
+        <tr><td>query</td><td><docs>query container entities</docs></td></tr>
+        <tr><td>create</td><td><docs>create container entities</docs></td></tr>
+        <tr><td>upsert</td><td><docs>upsert container entities</docs></td></tr>
+        <tr><td>patch</td><td><docs>patch container entities</docs></td></tr>
+        <tr><td>delete</td><td><docs>delete container entities</docs></td></tr>
+        <tr><td>aggregate</td><td><docs>aggregate - count - container entities</docs></td></tr>
+        <tr><td>message</td><td><docs>send a database message</docs></td></tr>
+        <tr><td>command</td><td><docs>send a database command</docs></td></tr>
+        <tr><td>closeCursors</td><td><docs>close cursors of a container</docs></td></tr>
+        <tr><td>subscribeChanges</td><td><docs>subscribe to entity changes of a container</docs></td></tr>
+        <tr><td>subscribeMessage</td><td><docs>subscribe to messages and command send to a database</docs></td></tr>
+        <tr><td>reserveKeys</td><td><docs>wip</docs></td></tr>
+        <tr><td>error</td><td><docs>indicate an error when task was executed</docs></td></tr>
     </table>
     </div>
     <div class='type enum'>
@@ -881,10 +886,10 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     </h3>
     <desc>Filter type used to specify the type of a database change.</desc>
     <table>
-        <tr><td>create</td><td><docs>Filter database change events of new created entities.</docs></td></tr>
-        <tr><td>upsert</td><td><docs>Filter database change events of upserted entities.</docs></td></tr>
-        <tr><td>patch</td><td><docs>Filter database change events used to patch entities.</docs></td></tr>
-        <tr><td>delete</td><td><docs>Filter database change events used to delete entities.</docs></td></tr>
+        <tr><td>create</td><td><docs>filter change events of created entities.</docs></td></tr>
+        <tr><td>upsert</td><td><docs>filter change events of upserted entities.</docs></td></tr>
+        <tr><td>patch</td><td><docs>filter change events of entity patches.</docs></td></tr>
+        <tr><td>delete</td><td><docs>filter change events of deleted entities.</docs></td></tr>
     </table>
     </div>
 </div>

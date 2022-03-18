@@ -139,10 +139,10 @@ export class SubscribeChanges extends SyncRequestTask {
 
 /** Filter type used to specify the type of a database change. */
 export type Change =
-    | "create"      /** Filter database change events of new created entities. */
-    | "upsert"      /** Filter database change events of upserted entities. */
-    | "patch"      /** Filter database change events used to patch entities. */
-    | "delete"      /** Filter database change events used to delete entities. */
+    | "create"      /** filter change events of created entities. */
+    | "upsert"      /** filter change events of upserted entities. */
+    | "patch"      /** filter change events of entity patches. */
+    | "delete"      /** filter change events of deleted entities. */
 ;
 
 export class SubscribeMessage extends SyncRequestTask {

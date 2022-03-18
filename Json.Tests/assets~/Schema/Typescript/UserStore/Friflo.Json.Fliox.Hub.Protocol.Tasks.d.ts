@@ -2,27 +2,27 @@
 
 /** Type of a task that operates on the database or a container */
 export type TaskType =
-    | "read"
-    | "query"
-    | "create"
-    | "upsert"
-    | "patch"
-    | "delete"
-    | "aggregate"
-    | "message"
-    | "command"
-    | "closeCursors"
-    | "subscribeChanges"
-    | "subscribeMessage"
-    | "reserveKeys"
-    | "error"
+    | "read"      /** read container entities by id */
+    | "query"      /** query container entities */
+    | "create"      /** create container entities */
+    | "upsert"      /** upsert container entities */
+    | "patch"      /** patch container entities */
+    | "delete"      /** delete container entities */
+    | "aggregate"      /** aggregate - count - container entities */
+    | "message"      /** send a database message */
+    | "command"      /** send a database command */
+    | "closeCursors"      /** close cursors of a container */
+    | "subscribeChanges"      /** subscribe to entity changes of a container */
+    | "subscribeMessage"      /** subscribe to messages and command send to a database */
+    | "reserveKeys"      /** wip */
+    | "error"      /** indicate an error when task was executed */
 ;
 
 /** Filter type used to specify the type of a database change. */
 export type Change =
-    | "create"      /** Filter database change events of new created entities. */
-    | "upsert"      /** Filter database change events of upserted entities. */
-    | "patch"      /** Filter database change events used to patch entities. */
-    | "delete"      /** Filter database change events used to delete entities. */
+    | "create"      /** filter change events of created entities. */
+    | "upsert"      /** filter change events of upserted entities. */
+    | "patch"      /** filter change events of entity patches. */
+    | "delete"      /** filter change events of deleted entities. */
 ;
 

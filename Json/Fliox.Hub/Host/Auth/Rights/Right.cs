@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     [Fri.Polymorph(typeof(RightOperation),          Discriminant = "operation")]
     [Fri.Polymorph(typeof(RightPredicate),          Discriminant = "predicate")]
     public abstract class Right {
+        /// <summary>optional description explaining the Right</summary>
         public              string      description;
         public  abstract    RightType   RightType { get; }
 

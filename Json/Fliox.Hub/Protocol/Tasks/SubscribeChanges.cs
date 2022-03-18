@@ -74,13 +74,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ReSharper disable InconsistentNaming
     public enum Change
     {
-        /// <summary>Filter database change events of new created entities.</summary>
+        /// <summary>filter change events of created entities.</summary>
         create,
-        /// <summary>Filter database change events of upserted entities.</summary>
+        /// <summary>filter change events of upserted entities.</summary>
         upsert,
-        /// <summary>Filter database change events used to patch entities.</summary>
+        /// <summary>filter change events of entity patches.</summary>
         patch,
-        /// <summary>Filter database change events used to delete entities.</summary>
+        /// <summary>filter change events of deleted entities.</summary>
         delete
     }
 }

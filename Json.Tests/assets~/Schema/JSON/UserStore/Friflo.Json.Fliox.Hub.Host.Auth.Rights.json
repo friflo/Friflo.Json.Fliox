@@ -14,7 +14,7 @@
             ],
             "properties": {
                 "type":        { "enum": ["allow", "task", "sendMessage", "subscribeMessage", "operation", "predicate"] },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type"
@@ -28,7 +28,7 @@
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "database":    { "type": ["string", "null"] },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type"
@@ -43,7 +43,7 @@
                 "type":        { "enum": ["task"] },
                 "database":    { "type": ["string", "null"] },
                 "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/TaskType" }, "description": "set fo task types like: create, read, upsert, delete, query, ..." },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type",
@@ -59,7 +59,7 @@
                 "type":        { "enum": ["sendMessage"] },
                 "database":    { "type": ["string", "null"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type",
@@ -75,7 +75,7 @@
                 "type":        { "enum": ["subscribeMessage"] },
                 "database":    { "type": ["string", "null"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type",
@@ -91,7 +91,7 @@
                 "type":        { "enum": ["operation"] },
                 "database":    { "type": ["string", "null"] },
                 "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object" },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type",
@@ -101,9 +101,10 @@
         },
         "ContainerAccess": {
             "type": "object",
+            "description": "Grant specific container operations and subscriptions",
             "properties": {
-                "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" } },
-                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/Change" } }
+                "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" }, "description": "Set of granted operation types" },
+                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/Change" }, "description": "Set of granted change subscriptions" }
             },
             "additionalProperties": false
         },
@@ -119,7 +120,20 @@
                 "aggregate",
                 "mutate",
                 "full"
-            ]
+            ],
+            "descriptions": {
+                "create": "allow to create entities in a container",
+                "upsert": "allow to upsert entities in a container",
+                "delete": "allow to delete entities in a container",
+                "deleteAll": "allow to delete all container entities",
+                "patch": "allow to patch entities in a container",
+                "read": "allow to read entities in a container",
+                "query": "allow to query entities in a container",
+                "aggregate": "allow to aggregate - count - entities in a container",
+                "mutate": "allow to mutate - create, upsert, delete and patch - entities in a container",
+                "full": "allow all operation types in a container"
+            }
+
         },
         "RightPredicate": {
             "type": "object",
@@ -127,7 +141,7 @@
             "properties": {
                 "type":        { "enum": ["predicate"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
                 "type",

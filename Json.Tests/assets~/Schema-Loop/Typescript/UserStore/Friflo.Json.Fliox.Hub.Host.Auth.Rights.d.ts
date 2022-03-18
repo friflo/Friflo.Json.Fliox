@@ -20,6 +20,7 @@ export abstract class Right {
         | "operation"
         | "predicate"
     ;
+    /** optional description explaining the Right */
     description? : string | null;
 }
 
@@ -80,22 +81,25 @@ export class RightOperation extends Right {
     containers   : { [key: string]: ContainerAccess };
 }
 
+/** Grant specific container operations and subscriptions */
 export class ContainerAccess {
+    /** Set of granted operation types */
     operations?       : OperationType[] | null;
+    /** Set of granted change subscriptions */
     subscribeChanges? : Change[] | null;
 }
 
 export type OperationType =
-    | "create"
-    | "upsert"
-    | "delete"
-    | "deleteAll"
-    | "patch"
-    | "read"
-    | "query"
-    | "aggregate"
-    | "mutate"
-    | "full"
+    | "create"      /** allow to create entities in a container */
+    | "upsert"      /** allow to upsert entities in a container */
+    | "delete"      /** allow to delete entities in a container */
+    | "deleteAll"      /** allow to delete all container entities */
+    | "patch"      /** allow to patch entities in a container */
+    | "read"      /** allow to read entities in a container */
+    | "query"      /** allow to query entities in a container */
+    | "aggregate"      /** allow to aggregate - count - entities in a container */
+    | "mutate"      /** allow to mutate - create, upsert, delete and patch - entities in a container */
+    | "full"      /** allow all operation types in a container */
 ;
 
 export class RightPredicate extends Right {
