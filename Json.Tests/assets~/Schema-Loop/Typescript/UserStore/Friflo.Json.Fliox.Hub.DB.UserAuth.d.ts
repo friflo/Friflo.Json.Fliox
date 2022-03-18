@@ -61,7 +61,7 @@ export class Role {
     description? : string | null;
 }
 
-/** contains a **token** assigned to a user used for autentication */
+/** contains a **token** assigned to a user used for authentication */
 export class UserCredential {
     /** user name */
     id     : string;

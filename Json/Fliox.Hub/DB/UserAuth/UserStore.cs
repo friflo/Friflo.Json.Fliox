@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
 
     // -------------------------------------- models ---------------------------------------
-    /// <summary>contains a <see cref="token"/> assigned to a user used for autentication</summary>
+    /// <summary>contains a <see cref="token"/> assigned to a user used for authentication</summary>
     public class UserCredential {
                 /// <summary>user name</summary>
         [Req]   public  JsonKey         id;
