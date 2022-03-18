@@ -112,7 +112,7 @@ A database schema is the declaration of database **containers**, **commands** an
 All declarations as expressed as types in a schema. This principle enables code generation as types
 for other programming languages.
 
-Schema generation is integral part of the [HTTP Hub](../Host/README.md).  
+Schema generation is integral part of the [HTTP Hub](../Host/README.md#HTTPHostHub).  
 So all generated files and their zip archives are available via urls.
 
 Alternatively code can be generated with C# using `SchemaModel.GenerateSchemaModels()`
