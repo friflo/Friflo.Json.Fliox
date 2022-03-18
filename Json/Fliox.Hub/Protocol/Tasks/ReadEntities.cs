@@ -12,7 +12,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task -----------------------------------
     /// <summary>
     /// Read entities by id from the specified <see cref="container"/> using read <see cref="sets"/><br/>
-    /// Each <see cref="ReadEntitiesSet"/> contains a list of <see cref="ReadEntitiesSet.ids"/>
+    /// Each <see cref="ReadEntitiesSet"/> contains a list of <see cref="ReadEntitiesSet.ids"/><br/>
+    /// To return also entities referenced by entities listed in <see cref="ReadEntitiesSet.ids"/> use
+    /// <see cref="ReadEntitiesSet.references"/> in <see cref="sets"/>. <br/>
+    /// This mimic the functionality of a <b>JOIN</b> in <b>SQL</b>
     /// </summary>
     public sealed class ReadEntities : SyncRequestTask
     {

@@ -68,7 +68,7 @@
         "ReadEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
-            "description": "Read entities by id from the specified <b>container</b> using read <b>sets</b><br/>\nEach <b>ReadEntitiesSet</b> contains a list of <b>ids</b>",
+            "description": "Read entities by id from the specified <b>container</b> using read <b>sets</b><br/>\nEach <b>ReadEntitiesSet</b> contains a list of <b>ids</b><br/>\nTo return also entities referenced by entities listed in <b>ids</b> use\n<b>references</b> in <b>sets</b>. <br/>\nThis mimic the functionality of a <b>JOIN</b> in <b>SQL</b>",
             "properties": {
                 "task":      { "enum": ["read"] },
                 "container": { "type": "string" },
@@ -87,7 +87,7 @@
         "QueryEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
-            "description": "Query entities from the given <b>container</b> using a <b>filter</b><br/>",
+            "description": "Query entities from the given <b>container</b> using a <b>filter</b><br/>\nTo return entities referenced by fields of the query result use <b>references</b>",
             "properties": {
                 "task":       { "enum": ["query"] },
                 "container":  { "type": "string" },

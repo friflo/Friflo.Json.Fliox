@@ -9,6 +9,10 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
     // ----------------------------------- sub task -----------------------------------
+    /// <summary>
+    /// Specify the <see cref="ids"/> requested by a <see cref="Tasks.ReadEntities"/> task.<br/>
+    /// To return entities referenced by fields of the read result use <see cref="references"/>
+    /// </summary>
     public sealed class ReadEntitiesSet
     {
         [Fri.Ignore]    public  string                  keyName;

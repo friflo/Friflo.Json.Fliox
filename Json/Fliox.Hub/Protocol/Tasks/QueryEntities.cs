@@ -14,7 +14,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     /// <summary>
-    /// Query entities from the given <see cref="container"/> using a <see cref="filter"/><br/> 
+    /// Query entities from the given <see cref="container"/> using a <see cref="filter"/><br/>
+    /// To return entities referenced by fields of the query result use <see cref="references"/>
     /// </summary>
     public sealed class QueryEntities : SyncRequestTask
     {

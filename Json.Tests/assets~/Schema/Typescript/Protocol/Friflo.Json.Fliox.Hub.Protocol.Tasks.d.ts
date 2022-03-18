@@ -68,7 +68,10 @@ export class UpsertEntities extends SyncRequestTask {
 
 /**
  * Read entities by id from the specified **container** using read **sets**  
- * Each **ReadEntitiesSet** contains a list of **ids**
+ * Each **ReadEntitiesSet** contains a list of **ids**  
+ * To return also entities referenced by entities listed in **ids** use
+ * **references** in **sets**.   
+ * This mimic the functionality of a **JOIN** in **SQL**
  */
 export class ReadEntities extends SyncRequestTask {
     task       : "read";
@@ -78,7 +81,10 @@ export class ReadEntities extends SyncRequestTask {
     sets       : ReadEntitiesSet[];
 }
 
-/** Query entities from the given **container** using a **filter**   */
+/**
+ * Query entities from the given **container** using a **filter**  
+ * To return entities referenced by fields of the query result use **references**
+ */
 export class QueryEntities extends SyncRequestTask {
     task        : "query";
     container   : string;
