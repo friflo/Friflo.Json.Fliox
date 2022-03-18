@@ -51,7 +51,10 @@ From these input schemas the following output schemas can be generate:
   and follow the link **Typescript, C#, Kotlin, JSON Schema** on the top of the schema page.
 
 
-## Usage
+## Examples
+
+- An code example showing code generation based on a C# Type is shown at [FlioxClient](../../../Json/Fliox.Hub/Client/README.md#schema-generation)
+
 - Examples for code generation and JSON type validation at:  
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)
 

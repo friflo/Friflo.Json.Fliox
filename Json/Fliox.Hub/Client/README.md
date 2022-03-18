@@ -21,19 +21,22 @@ It can be assigned as a `DatabaseSchema` to an `EntityDatabase` instance for
 
 
 ``` csharp
-    public class ShopStore : FlioxClient
-    {
-        // --- containers
-        public readonly EntitySet <long, Article>     articles;
-        
-        public ShopStore(FlioxHub hub) : base(hub) { }
-    }
+public class ShopStore : FlioxClient
+{
+    // --- containers
+    public readonly EntitySet <long, Article>     articles;
+
+    // --- commands
+    public CommandTask<string> Hello (string param) => SendCommand<string, string> ("Hello", param);
     
-    public class Article
-    {
-        public  long        id { get; set; }
-        public  string      name;
-    }
+    public ShopStore(FlioxHub hub) : base(hub) { }
+}
+
+public class Article
+{
+    public  long        id { get; set; }
+    public  string      name;
+}
 ```
 
 Using this setup the `ShopStore` offer two main functionalities:
@@ -71,20 +74,58 @@ The difference between the two is:
 - a message return **void** aka nothing.
 
 
-## client usage
+## Client usage
 
 Instances of `ShopStore` can be used on server and client side.
 
 To access a database using the `ShopStore` a `FlioxHub` is required.
 
 ``` csharp
-    public static async Task AccessDatabase() {
-        var database    = new MemoryDatabase(); // or other database like: file-system, SQLite, Postgres, ...
-        var hub         = new FlioxHub(database);
-        var store       = new ShopStore(hub);
-        
-        store.articles.Create(new Article() { id = 1, name = "Bread" });
-        
-        await store.SyncTasks();
+public static async Task AccessDatabase() {
+    var database    = new FileDatabase("shop", new MessageHandler());
+    // or other database implementations like: MemoryDatabase, SQLite, Postgres, ...
+    var hub         = new FlioxHub(database);
+    var store       = new ShopStore(hub);
+    
+    var hello           = store.Hello("World");
+    var createArticle   = store.articles.Upsert(new Article() { id = 1, name = "Bread" });
+    var stats           = store.std.Stats(null);
+
+    await store.SyncTasks();
+    
+    Console.WriteLine(hello.Result); // Output: hello World!
+    Console.WriteLine($"createArticle.Success: {createArticle.Success}");
+    foreach (var container in stats.Result.containers) {
+        Console.WriteLine($"{container.name}: {container.count}");
     }
+}
 ```
+
+## Schema generation
+
+As mentioned above `ShopStore` also defines a database schema.  
+A database schema is the declaration of database **containers**, **commands** and **messages**.  
+
+All declarations as expressed as types in a schema. This principle enables code generation as types
+for other programming languages.
+
+The following example generate the types for Typescript, C#, Kotlin, JSON Schema and HTML based on the
+passed schema type `ShopStore`.
+
+``` csharp
+public static void GenerateSchemaModels() {
+    var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
+    foreach (var (language, schemaModel) in schemaModels) {
+        var folder = $"./schema/{language}";
+        Directory.CreateDirectory(folder);
+        foreach (var (file, content) in schemaModel.files) {
+            var path = $"{folder}/{file}";
+            File.WriteAllText(path, content);
+        }
+    }
+}
+```
+
+
+
+
