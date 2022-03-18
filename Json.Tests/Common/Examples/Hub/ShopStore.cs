@@ -77,11 +77,13 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         [Test]
         public static void GenerateSchemaModels() {
             var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
-            foreach (var (language, schemaModel) in schemaModels) {
-                var folder = $"./schema/{language}";
+            foreach (var modelPair in schemaModels) {
+                var schemaModel = modelPair.Value;
+                var folder      = $"./schema/{modelPair.Key}";
                 Directory.CreateDirectory(folder);
-                foreach (var (file, content) in schemaModel.files) {
-                    var path = $"{folder}/{file}";
+                foreach (var filePair in schemaModel.files) {
+                    var path    = $"{folder}/{filePair.Key}";
+                    var content = filePair.Value;
                     File.WriteAllText(path, content);
                 }
             }
