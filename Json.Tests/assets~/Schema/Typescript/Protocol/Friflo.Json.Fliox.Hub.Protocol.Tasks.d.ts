@@ -153,7 +153,7 @@ export class CloseCursors extends SyncRequestTask {
     cursors?   : string[] | null;
 }
 
-/** Subscribe to specific **container****changes** using the given **filter** */
+/** Subscribe to specific **changes** of the specified **container** using the given **filter** */
 export class SubscribeChanges extends SyncRequestTask {
     task       : "subscribeChanges";
     container  : string;
@@ -316,42 +316,20 @@ export class TaskErrorResult extends SyncTaskResult {
 export type TaskErrorResultType =
     | "None"
     | "UnhandledException"      /**
+       * Unhandled exception while executing a task.  
        * maps to HTTP status: 500
-       * Inform about an unhandled exception in a **EntityContainer** implementation which need to be fixed.
-       * More information at **ExecuteSync()**.
        */
     | "DatabaseError"           /**
-       * maps to HTTP status: 500  
-       * Inform about an error when accessing a database.  
-       * E.g. the access is currently not available or accessing a missing table.
+       * General database error while task execution.  
+       * E.g. the access is currently not available or accessing a missing table.  
+       * maps to HTTP status: 500
        */
-    | "FilterError"             /**
-       * maps to HTTP status: 400  
-       * Invalid query filter
-       */
-    | "ValidationError"         /**
-       * maps to HTTP status: 400  
-       * Schema validation of an entity failed
-       */
-    | "CommandError"            /**
-       * maps to HTTP status: 400  
-       * Execution of message / command failed caused by invalid input
-       */
-    | "InvalidTask"             /**
-       * maps to HTTP status: 400  
-       * Invalid task. E.g. by using an invalid task parameter
-       */
-    | "NotImplemented"          /**
-       * maps to HTTP status: 501  
-       * database message / command not implemented
-       */
-    | "PermissionDenied"        /**
-       * maps to HTTP status: 403  
-       * execution of container operation or database message / command not authorized
-       */
-    | "SyncError"               /**
-       * maps to HTTP status: 500  
-       * The entire **SyncRequest** containing a task failed
-       */
+    | "FilterError"             /** Invalid query filter      maps to HTTP status: 400 */
+    | "ValidationError"         /** Schema validation of an entity failed     maps to HTTP status: 400 */
+    | "CommandError"            /** Execution of message / command failed caused by invalid input    maps to HTTP status: 400 */
+    | "InvalidTask"             /** Invalid task. E.g. by using an invalid task parameter    maps to HTTP status: 400 */
+    | "NotImplemented"          /** database message / command not implemented       maps to HTTP status: 501 */
+    | "PermissionDenied"        /** task execution not authorized    maps to HTTP status: 403 */
+    | "SyncError"               /** The entire **SyncRequest** containing a task failed    maps to HTTP status: 500 */
 ;
 

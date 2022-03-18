@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     /// <summary>
-    /// Subscribe to specific <see cref="container"/> <see cref="changes"/> using the given <see cref="filter"/> 
+    /// Subscribe to specific <see cref="changes"/> of the specified <see cref="container"/> using the given <see cref="filter"/> 
     /// </summary>
     public sealed class SubscribeChanges : SyncRequestTask
     {

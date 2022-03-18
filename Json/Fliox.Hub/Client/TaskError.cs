@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         UnhandledException,
         
         /// <summary>
-        /// Inform about an error when accessing a database.
+        /// Inform about a general database error.<br/>
         /// E.g. the access is currently not available or accessing a missing table.
         /// maps to <see cref="TaskErrorResultType.DatabaseError"/>
         /// </summary>

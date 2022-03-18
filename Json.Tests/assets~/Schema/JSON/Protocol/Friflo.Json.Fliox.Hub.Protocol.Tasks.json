@@ -241,7 +241,7 @@
         "SubscribeChanges": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
-            "description": "Subscribe to specific <b>container</b><b>changes</b> using the given <b>filter</b>",
+            "description": "Subscribe to specific <b>changes</b> of the specified <b>container</b> using the given <b>filter</b>",
             "properties": {
                 "task":      { "enum": ["subscribeChanges"] },
                 "container": { "type": "string" },
@@ -540,15 +540,15 @@
                 "SyncError"
             ],
             "descriptions": {
-                "UnhandledException": "maps to HTTP status: 500\nInform about an unhandled exception in a <b>EntityContainer</b> implementation which need to be fixed.\nMore information at <b>ExecuteSync()</b>.",
-                "DatabaseError":      "maps to HTTP status: 500<br/>\nInform about an error when accessing a database.<br/>\nE.g. the access is currently not available or accessing a missing table.",
-                "FilterError":        "maps to HTTP status: 400<br/>\nInvalid query filter",
-                "ValidationError":    "maps to HTTP status: 400<br/>\nSchema validation of an entity failed",
-                "CommandError":       "maps to HTTP status: 400<br/>\nExecution of message / command failed caused by invalid input",
-                "InvalidTask":        "maps to HTTP status: 400<br/>\nInvalid task. E.g. by using an invalid task parameter",
-                "NotImplemented":     "maps to HTTP status: 501<br/>\ndatabase message / command not implemented",
-                "PermissionDenied":   "maps to HTTP status: 403<br/>\nexecution of container operation or database message / command not authorized",
-                "SyncError":          "maps to HTTP status: 500<br/>\nThe entire <b>SyncRequest</b> containing a task failed"
+                "UnhandledException": "Unhandled exception while executing a task.<br/>\nmaps to HTTP status: 500",
+                "DatabaseError":      "General database error while task execution.<br/>\nE.g. the access is currently not available or accessing a missing table.<br/>\nmaps to HTTP status: 500",
+                "FilterError":        "Invalid query filter   <br/> maps to HTTP status: 400",
+                "ValidationError":    "Schema validation of an entity failed  <br/> maps to HTTP status: 400",
+                "CommandError":       "Execution of message / command failed caused by invalid input  <br/>maps to HTTP status: 400",
+                "InvalidTask":        "Invalid task. E.g. by using an invalid task parameter  <br/>maps to HTTP status: 400",
+                "NotImplemented":     "database message / command not implemented     <br/>maps to HTTP status: 501",
+                "PermissionDenied":   "task execution not authorized  <br/>maps to HTTP status: 403",
+                "SyncError":          "The entire <b>SyncRequest</b> containing a task failed  <br/>maps to HTTP status: 500"
             }
 
         }
