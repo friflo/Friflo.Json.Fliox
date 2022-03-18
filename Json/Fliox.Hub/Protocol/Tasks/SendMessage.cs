@@ -17,6 +17,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override       string          TaskName => $"name: '{name}'";
     }
     
+    /// <summary>
+    /// Send a database message with the given <see cref="SyncMessageTask.param"/><br/> 
+    /// </summary>
     public sealed class SendMessage : SyncMessageTask
     {
         internal override       TaskType        TaskType => TaskType.message;

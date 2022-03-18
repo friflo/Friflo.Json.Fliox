@@ -8,6 +8,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Send a database command with the given <see cref="SyncMessageTask.param"/><br/> 
+    /// </summary>
     public sealed class SendCommand : SyncMessageTask
     {
         internal override   TaskType        TaskType => TaskType.command;

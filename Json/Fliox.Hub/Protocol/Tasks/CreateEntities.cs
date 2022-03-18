@@ -13,6 +13,9 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Create the given <see cref="entities"/> in the specified <see cref="container"/>
+    /// </summary>
     public sealed class CreateEntities : SyncRequestTask
     {
         [Fri.Required]  public  string          container;

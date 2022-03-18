@@ -13,6 +13,9 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Query entities from the given <see cref="container"/> using a <see cref="filter"/><br/> 
+    /// </summary>
     public sealed class QueryEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;

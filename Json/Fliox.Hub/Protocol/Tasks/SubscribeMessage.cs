@@ -8,6 +8,10 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Subscribe to commands and messages sent to a database by their <see cref="name"/><br/>
+    /// Unsubscribe by setting <see cref="remove"/> to true 
+    /// </summary>
     public sealed class SubscribeMessage : SyncRequestTask
     {
         /// <summary>

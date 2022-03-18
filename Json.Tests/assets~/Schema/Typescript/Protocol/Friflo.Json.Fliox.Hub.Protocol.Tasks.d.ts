@@ -10,6 +10,10 @@ import { ReferencesResult }      from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { double }                from "./Standard";
 import { int64 }                 from "./Standard";
 
+/**
+ * Polymorphic base type for all tasks.  
+ * All tasks fall into two categories:  **container operations** like: create, read, upsert, delete, query, ...  **database operation** like sending commands or messages
+ */
 export type SyncRequestTask_Union =
     | CreateEntities
     | UpsertEntities
@@ -45,6 +49,7 @@ export abstract class SyncRequestTask {
     info? : any | null;
 }
 
+/** Create the given **entities** in the specified **container** */
 export class CreateEntities extends SyncRequestTask {
     task           : "create";
     container      : string;
@@ -53,6 +58,7 @@ export class CreateEntities extends SyncRequestTask {
     entities       : any[];
 }
 
+/** Upsert the given **entities** in the specified **container** */
 export class UpsertEntities extends SyncRequestTask {
     task       : "upsert";
     container  : string;
@@ -60,6 +66,10 @@ export class UpsertEntities extends SyncRequestTask {
     entities   : any[];
 }
 
+/**
+ * Read entities by id from the specified **container** using read **sets**  
+ * Each **ReadEntitiesSet** contains a list of **ids**
+ */
 export class ReadEntities extends SyncRequestTask {
     task       : "read";
     container  : string;
@@ -68,6 +78,7 @@ export class ReadEntities extends SyncRequestTask {
     sets       : ReadEntitiesSet[];
 }
 
+/** Query entities from the given **container** using a **filter**   */
 export class QueryEntities extends SyncRequestTask {
     task        : "query";
     container   : string;
@@ -81,6 +92,7 @@ export class QueryEntities extends SyncRequestTask {
     cursor?     : string | null;
 }
 
+/** Aggregate - count - entities from the given **container** using a **filter**   */
 export class AggregateEntities extends SyncRequestTask {
     task        : "aggregate";
     container   : string;
@@ -93,6 +105,10 @@ export type AggregateType =
     | "count"
 ;
 
+/**
+ * Patch entities by id in the given **container**  
+ * Each **EntityPatch** in **patches** contains a set of **patches** for each entity.
+ */
 export class PatchEntities extends SyncRequestTask {
     task       : "patch";
     container  : string;
@@ -104,6 +120,10 @@ export class EntityPatch {
     patches  : JsonPatch_Union[];
 }
 
+/**
+ * Delete entities by id in the given **container**  
+ * The entities which will be deleted are listed in **ids**
+ */
 export class DeleteEntities extends SyncRequestTask {
     task       : "delete";
     container  : string;
@@ -116,20 +136,24 @@ export abstract class SyncMessageTask extends SyncRequestTask {
     param? : any | null;
 }
 
+/** Send a database message with the given **param**   */
 export class SendMessage extends SyncMessageTask {
     task   : "message";
 }
 
+/** Send a database command with the given **param**   */
 export class SendCommand extends SyncMessageTask {
     task   : "command";
 }
 
+/** Close the **cursors** of the given **container** */
 export class CloseCursors extends SyncRequestTask {
     task       : "closeCursors";
     container  : string;
     cursors?   : string[] | null;
 }
 
+/** Subscribe to specific **container****changes** using the given **filter** */
 export class SubscribeChanges extends SyncRequestTask {
     task       : "subscribeChanges";
     container  : string;
@@ -145,6 +169,10 @@ export type Change =
     | "delete"      /** filter change events of deleted entities. */
 ;
 
+/**
+ * Subscribe to commands and messages sent to a database by their **name**  
+ * Unsubscribe by setting **remove** to true
+ */
 export class SubscribeMessage extends SyncRequestTask {
     task    : "subscribeMessage";
     /**
@@ -157,6 +185,7 @@ export class SubscribeMessage extends SyncRequestTask {
     remove? : boolean | null;
 }
 
+/** WIP */
 export class ReserveKeys extends SyncRequestTask {
     task       : "reserveKeys";
     container  : string;
@@ -283,25 +312,46 @@ export class TaskErrorResult extends SyncTaskResult {
     stacktrace? : string | null;
 }
 
-/** Describe the type of a **TaskErrorResult** */
+/** Type of a task error used in **TaskErrorResult** */
 export type TaskErrorResultType =
     | "None"
     | "UnhandledException"      /**
-       * HTTP status: 500
+       * maps to HTTP status: 500
        * Inform about an unhandled exception in a **EntityContainer** implementation which need to be fixed.
        * More information at **ExecuteSync()**.
        */
     | "DatabaseError"           /**
-       * HTTP status: 500
-       * Inform about an error when accessing a database.
+       * maps to HTTP status: 500  
+       * Inform about an error when accessing a database.  
        * E.g. the access is currently not available or accessing a missing table.
        */
-    | "FilterError"
-    | "ValidationError"
-    | "CommandError"
-    | "InvalidTask"
-    | "NotImplemented"
-    | "PermissionDenied"
-    | "SyncError"
+    | "FilterError"             /**
+       * maps to HTTP status: 400  
+       * Invalid query filter
+       */
+    | "ValidationError"         /**
+       * maps to HTTP status: 400  
+       * Schema validation of an entity failed
+       */
+    | "CommandError"            /**
+       * maps to HTTP status: 400  
+       * Execution of message / command failed caused by invalid input
+       */
+    | "InvalidTask"             /**
+       * maps to HTTP status: 400  
+       * Invalid task. E.g. by using an invalid task parameter
+       */
+    | "NotImplemented"          /**
+       * maps to HTTP status: 501  
+       * database message / command not implemented
+       */
+    | "PermissionDenied"        /**
+       * maps to HTTP status: 403  
+       * execution of container operation or database message / command not authorized
+       */
+    | "SyncError"               /**
+       * maps to HTTP status: 500  
+       * The entire **SyncRequest** containing a task failed
+       */
 ;
 

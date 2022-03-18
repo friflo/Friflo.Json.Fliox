@@ -10,6 +10,10 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Read entities by id from the specified <see cref="container"/> using read <see cref="sets"/><br/>
+    /// Each <see cref="ReadEntitiesSet"/> contains a list of <see cref="ReadEntitiesSet.ids"/>
+    /// </summary>
     public sealed class ReadEntities : SyncRequestTask
     {
         [Fri.Required]  public  string                  container;

@@ -10,6 +10,12 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Polymorphic base type for all tasks.<br/>
+    /// All tasks fall into two categories:<br/>
+    /// <b>container operations</b> like: create, read, upsert, delete, query, ...<br/>
+    /// <b>database operation</b> like sending commands or messages
+    /// </summary>
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(UpsertEntities),          Discriminant = "upsert")]

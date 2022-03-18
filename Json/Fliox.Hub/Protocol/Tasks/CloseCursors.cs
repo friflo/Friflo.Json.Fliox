@@ -10,6 +10,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Close the <see cref="cursors"/> of the given <see cref="container"/>
+    /// </summary>
     public sealed class CloseCursors : SyncRequestTask
     {
         [Fri.Required]  public  string          container;

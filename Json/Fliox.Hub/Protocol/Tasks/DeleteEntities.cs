@@ -10,6 +10,10 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Delete entities by id in the given <see cref="container"/><br/>
+    /// The entities which will be deleted are listed in <see cref="ids"/>
+    /// </summary>
     public sealed class DeleteEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;

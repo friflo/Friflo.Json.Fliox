@@ -11,6 +11,9 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
+    /// <summary>
+    /// WIP
+    /// </summary>
     public sealed class ReserveKeys  : SyncRequestTask {
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  int             count;

@@ -11,6 +11,10 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Patch entities by id in the given <see cref="container"/><br/>
+    /// Each <see cref="EntityPatch"/> in <see cref="patches"/> contains a set of <see cref="patches"/> for each entity. 
+    /// </summary>
     public sealed class PatchEntities : SyncRequestTask
     {
         [Fri.Required]  public  string                              container;

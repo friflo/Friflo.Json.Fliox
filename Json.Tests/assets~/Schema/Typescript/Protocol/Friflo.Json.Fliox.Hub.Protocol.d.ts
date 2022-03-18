@@ -152,9 +152,9 @@ export class ErrorResponse extends ProtocolResponse {
 }
 
 export type ErrorResponseType =
-    | "BadRequest"
-    | "Exception"
-    | "BadResponse"
+    | "BadRequest"       /** Invalid JSON request or invalid request parameters. Maps to HTTP status code 400 (Bad Request) */
+    | "Exception"        /** Internal exception. Maps to HTTP status code 500 (Internal Server Error) */
+    | "BadResponse"      /** Invalid JSON response. Maps to HTTP status code 500 (Internal Server Error) */
 ;
 
 export type ProtocolEvent_Union =

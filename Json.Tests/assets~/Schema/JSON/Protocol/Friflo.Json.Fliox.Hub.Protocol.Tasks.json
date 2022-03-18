@@ -31,6 +31,7 @@
         "CreateEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Create the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
                 "task":          { "enum": ["create"] },
                 "container":     { "type": "string" },
@@ -49,6 +50,7 @@
         "UpsertEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Upsert the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
                 "task":      { "enum": ["upsert"] },
                 "container": { "type": "string" },
@@ -66,6 +68,7 @@
         "ReadEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Read entities by id from the specified <b>container</b> using read <b>sets</b><br/>\nEach <b>ReadEntitiesSet</b> contains a list of <b>ids</b>",
             "properties": {
                 "task":      { "enum": ["read"] },
                 "container": { "type": "string" },
@@ -84,6 +87,7 @@
         "QueryEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Query entities from the given <b>container</b> using a <b>filter</b><br/>",
             "properties": {
                 "task":       { "enum": ["query"] },
                 "container":  { "type": "string" },
@@ -106,6 +110,7 @@
         "AggregateEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Aggregate - count - entities from the given <b>container</b> using a <b>filter</b><br/>",
             "properties": {
                 "task":       { "enum": ["aggregate"] },
                 "container":  { "type": "string" },
@@ -129,6 +134,7 @@
         "PatchEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Patch entities by id in the given <b>container</b><br/>\nEach <b>EntityPatch</b> in <b>patches</b> contains a set of <b>patches</b> for each entity.",
             "properties": {
                 "task":      { "enum": ["patch"] },
                 "container": { "type": "string" },
@@ -156,6 +162,7 @@
         "DeleteEntities": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Delete entities by id in the given <b>container</b><br/>\nThe entities which will be deleted are listed in <b>ids</b>",
             "properties": {
                 "task":      { "enum": ["delete"] },
                 "container": { "type": "string" },
@@ -172,6 +179,7 @@
         "SendMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
+            "description": "Send a database message with the given <b>param</b><br/>",
             "properties": {
                 "task":  { "enum": ["message"] },
                 "name":  { "type": "string" },
@@ -201,6 +209,7 @@
         "SendCommand": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageTask" },
+            "description": "Send a database command with the given <b>param</b><br/>",
             "properties": {
                 "task":  { "enum": ["command"] },
                 "name":  { "type": "string" },
@@ -216,6 +225,7 @@
         "CloseCursors": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Close the <b>cursors</b> of the given <b>container</b>",
             "properties": {
                 "task":      { "enum": ["closeCursors"] },
                 "container": { "type": "string" },
@@ -231,6 +241,7 @@
         "SubscribeChanges": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Subscribe to specific <b>container</b><b>changes</b> using the given <b>filter</b>",
             "properties": {
                 "task":      { "enum": ["subscribeChanges"] },
                 "container": { "type": "string" },
@@ -263,6 +274,7 @@
         "SubscribeMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "Subscribe to commands and messages sent to a database by their <b>name</b><br/>\nUnsubscribe by setting <b>remove</b> to true",
             "properties": {
                 "task":   { "enum": ["subscribeMessage"] },
                 "name":   { "type": "string", "description": "Subscribe all messages with the given <b>name</b>. <br/>\nSubscribe all messages         <b>name</b> = '*'<br/>\nSubscribe messages with prefix <b>name</b> = 'std.*' <br/>\nSubscribe a specific message   <b>name</b> = 'std.Echo'" },
@@ -278,6 +290,7 @@
         "ReserveKeys": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "description": "WIP",
             "properties": {
                 "task":      { "enum": ["reserveKeys"] },
                 "container": { "type": "string" },
@@ -527,8 +540,15 @@
                 "SyncError"
             ],
             "descriptions": {
-                "UnhandledException": "HTTP status: 500\nInform about an unhandled exception in a <b>EntityContainer</b> implementation which need to be fixed.\nMore information at <b>ExecuteSync()</b>.",
-                "DatabaseError":      "HTTP status: 500\nInform about an error when accessing a database.\nE.g. the access is currently not available or accessing a missing table."
+                "UnhandledException": "maps to HTTP status: 500\nInform about an unhandled exception in a <b>EntityContainer</b> implementation which need to be fixed.\nMore information at <b>ExecuteSync()</b>.",
+                "DatabaseError":      "maps to HTTP status: 500<br/>\nInform about an error when accessing a database.<br/>\nE.g. the access is currently not available or accessing a missing table.",
+                "FilterError":        "maps to HTTP status: 400<br/>\nInvalid query filter",
+                "ValidationError":    "maps to HTTP status: 400<br/>\nSchema validation of an entity failed",
+                "CommandError":       "maps to HTTP status: 400<br/>\nExecution of message / command failed caused by invalid input",
+                "InvalidTask":        "maps to HTTP status: 400<br/>\nInvalid task. E.g. by using an invalid task parameter",
+                "NotImplemented":     "maps to HTTP status: 501<br/>\ndatabase message / command not implemented",
+                "PermissionDenied":   "maps to HTTP status: 403<br/>\nexecution of container operation or database message / command not authorized",
+                "SyncError":          "maps to HTTP status: 500<br/>\nThe entire <b>SyncRequest</b> containing a task failed"
             }
 
         }

@@ -11,6 +11,9 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Subscribe to specific <see cref="container"/> <see cref="changes"/> using the given <see cref="filter"/> 
+    /// </summary>
     public sealed class SubscribeChanges : SyncRequestTask
     {
         [Fri.Required]  public      string          container;

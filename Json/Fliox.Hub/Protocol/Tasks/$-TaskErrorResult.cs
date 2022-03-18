@@ -25,35 +25,43 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
     }
     
-    /// <summary>Describe the type of a <see cref="TaskErrorResult"/></summary>
+    /// <summary>Type of a task error used in <see cref="TaskErrorResult"/></summary>
     public enum TaskErrorResultType {
         /// HTTP status: 500
         None,
         /// <summary>
-        /// HTTP status: 500
+        /// maps to HTTP status: 500
         /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
         /// More information at <see cref="FlioxHub.ExecuteSync"/>.
         /// </summary>
         UnhandledException,
         /// <summary>
-        /// HTTP status: 500
-        /// Inform about an error when accessing a database.
+        /// maps to HTTP status: 500<br/>
+        /// Inform about an error when accessing a database.<br/>
         /// E.g. the access is currently not available or accessing a missing table.
         /// </summary>
         DatabaseError,
-        /// HTTP status: 400
+        /// <summary>maps to HTTP status: 400<br/>
+        /// Invalid query filter</summary>
         FilterError,
-        /// HTTP status: 400
+        /// <summary>maps to HTTP status: 400<br/>
+        /// Schema validation of an entity failed</summary>
         ValidationError,
-        /// HTTP status: 400
+        /// <summary>maps to HTTP status: 400<br/>
+        /// Execution of message / command failed caused by invalid input</summary>
         CommandError,
-        /// HTTP status: 400
+        /// <summary>maps to HTTP status: 400<br/>
+        /// Invalid task. E.g. by using an invalid task parameter</summary>
         InvalidTask,
-        /// HTTP status: 501
+        /// <summary>maps to HTTP status: 501<br/>
+        /// database message / command not implemented</summary>
         NotImplemented,
-        /// HTTP status: 403
+        /// <summary>maps to HTTP status: 403<br/>
+        /// execution of container operation or database message / command not authorized</summary>
         PermissionDenied,
-        /// HTTP status: 500
+        /// <summary>maps to HTTP status: 500<br/>
+        /// The entire <see cref="SyncRequest"/> containing a task failed 
+        /// </summary>
         SyncError
     }
 }
