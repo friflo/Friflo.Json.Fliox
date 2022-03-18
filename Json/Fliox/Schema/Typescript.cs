@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
@@ -77,11 +78,13 @@ namespace Friflo.Json.Fliox.Schema
             if (type.IsEnum) {
                 var enumValues  = type.EnumValues;
                 var doc         = GetDoc(type.doc, "");
+                var maxNameLen  = enumValues.Max(e => e.name.Length);
                 sb.AppendLine($"{doc}export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.Append($"    | \"{enumValue.name}\"");
                     var enumDoc = enumValue.doc;
                     if (enumDoc != null) {
+                        sb.Append(Indent(maxNameLen, enumValue.name));
                         sb.Append(GetDoc(enumDoc, "      "));
                         continue;
                     }

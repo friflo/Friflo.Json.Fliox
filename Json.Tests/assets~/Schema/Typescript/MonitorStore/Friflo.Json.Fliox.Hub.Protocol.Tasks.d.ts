@@ -4,7 +4,7 @@
 export type Change =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
-    | "patch"      /** filter change events of entity patches. */
+    | "patch"       /** filter change events of entity patches. */
     | "delete"      /** filter change events of deleted entities. */
 ;
 

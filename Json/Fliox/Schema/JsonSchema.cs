@@ -78,7 +78,9 @@ namespace Friflo.Json.Fliox.Schema
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 sb.AppendLine($"            \"enum\": [");
                 bool firstValue = true;
+                var maxNameLen     = 0;
                 foreach (var enumValue in enumValues) {
+                    maxNameLen = Math.Max(maxNameLen, enumValue.name.Length);
                     Delimiter(sb, Next, ref firstValue);
                     sb.Append($"                \"{enumValue.name}\"");
                 }
@@ -93,7 +95,8 @@ namespace Friflo.Json.Fliox.Schema
                         if (doc == "")
                             continue;
                         Delimiter(sb, Next, ref firstValue);
-                        sb.Append($"                \"{enumValue.name}\": {doc}");
+                        var indent      = Indent(maxNameLen, enumValue.name);
+                        sb.Append($"                \"{enumValue.name}\": {indent}{doc}");
                     }
                     sb.AppendLine();
                     sb.AppendLine("            }");

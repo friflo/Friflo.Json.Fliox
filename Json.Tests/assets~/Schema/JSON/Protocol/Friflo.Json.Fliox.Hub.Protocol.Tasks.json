@@ -255,7 +255,7 @@
             "descriptions": {
                 "create": "filter change events of created entities.",
                 "upsert": "filter change events of upserted entities.",
-                "patch": "filter change events of entity patches.",
+                "patch":  "filter change events of entity patches.",
                 "delete": "filter change events of deleted entities."
             }
 
@@ -528,7 +528,7 @@
             ],
             "descriptions": {
                 "UnhandledException": "HTTP status: 500\nInform about an unhandled exception in a <b>EntityContainer</b> implementation which need to be fixed.\nMore information at <b>ExecuteSync()</b>.",
-                "DatabaseError": "HTTP status: 500\nInform about an error when accessing a database.\nE.g. the access is currently not available or accessing a missing table."
+                "DatabaseError":      "HTTP status: 500\nInform about an error when accessing a database.\nE.g. the access is currently not available or accessing a missing table."
             }
 
         }

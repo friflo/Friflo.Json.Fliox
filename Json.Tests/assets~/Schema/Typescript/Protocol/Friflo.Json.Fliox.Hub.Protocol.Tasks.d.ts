@@ -141,7 +141,7 @@ export class SubscribeChanges extends SyncRequestTask {
 export type Change =
     | "create"      /** filter change events of created entities. */
     | "upsert"      /** filter change events of upserted entities. */
-    | "patch"      /** filter change events of entity patches. */
+    | "patch"       /** filter change events of entity patches. */
     | "delete"      /** filter change events of deleted entities. */
 ;
 
@@ -291,7 +291,7 @@ export type TaskErrorResultType =
        * Inform about an unhandled exception in a **EntityContainer** implementation which need to be fixed.
        * More information at **ExecuteSync()**.
        */
-    | "DatabaseError"      /**
+    | "DatabaseError"           /**
        * HTTP status: 500
        * Inform about an error when accessing a database.
        * E.g. the access is currently not available or accessing a missing table.
