@@ -24,12 +24,14 @@ From these input schemas the following output schemas can be generate:
 - Kotlin
 
 ## Features:
-- Code generators and JSON Validator support all common C#/.NET types like:
-    - classes, structs, primitives and enums
-    - Nullable structs, primitives and enums
-    - container types like: arrays, List<>, Dictionary<>, Queue<>, Stack<>, ...
-    - polymorphic classes with discriminator and discriminants.
-    - namespace support
+- Code generators and JSON Validator support the C#/.NET language features:
+    - general language types like `class`, `struct` and `enum`
+    - primitives types like `long`, `int`, `short`, `byte`, `bool`, `DateTime` and `BigInteger`
+    - `Nullable<>` structs, primitives and enums
+    - container types like: arrays, `List<>`, `Dictionary<,>`, `Queue<>`, `Stack<>`, ...
+    - polymorphic classes with **discriminator** and **discriminants**.
+    - namespaces
+    - C# **documentation** comments
 
 - Create clear and concise messages for validation errors. E.g.  
     `Missing required fields: [id, name] at Article > (root), pos: 2`
@@ -38,7 +40,7 @@ From these input schemas the following output schemas can be generate:
   aiming for high memory locality.  
   In case of small JSON payloads validation reaches 1.000.000 validations / second.
 
-- Code generators are designed to be small and easy to maintain ~ 200 LOC / generator.  
+- Code generators are designed to be small and easy to maintain ~ 300 LOC / language.  
   Also their performance reaches 10.000 schema transformations / second for smaller schemas.
 
 - The generated JSON Schema files are compatible to the specification
@@ -53,7 +55,7 @@ From these input schemas the following output schemas can be generate:
 
 ## Examples
 
-- An code example showing code generation based on a C# Type is shown at [FlioxClient](../../../Json/Fliox.Hub/Client/README.md#schema-generation)
+- A code example showing code generation based on a C# `Type` is shown at [FlioxClient](../../../Json/Fliox.Hub/Client/README.md#schema-generation)
 
 - Examples for code generation and JSON type validation at:  
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)
