@@ -122,7 +122,6 @@ namespace Friflo.Json.Fliox.Schema
         code        { white-space: pre; display: block; padding-left: 3px;  padding-right: 3px; font-size: 16px; }
 
         .namespace  { margin-bottom: 100px; }
-        ul.enum li  { margin-left: 50px; font-family: var(--mono-font); color: var(--value) }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
         div.nav ul li ul li a div                  { display: flex; align-items: center; }
         div.nav ul li ul li a div span             { margin-right: 10px; }
@@ -153,6 +152,10 @@ namespace Friflo.Json.Fliox.Schema
         div.type table td table             { margin-left: 10px; } /* discriminants table */
         div.type table tr td:nth-child(1)   { width: 150px; vertical-align: baseline; }
         div.type table tr td:nth-child(2)   { width: 150px; }
+
+        div.enum table tr td:nth-child(1)   { font-family: var(--mono-font); color: var(--value) }
+        div.enum table tr td:nth-child(2)   { width: auto; }
+
         .commands tr                        { vertical-align: top; }
         .fields tr                          { vertical-align: top; }
     </style>

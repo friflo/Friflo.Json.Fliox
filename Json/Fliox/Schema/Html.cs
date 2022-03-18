@@ -83,18 +83,18 @@ $@"    <div class='type'>
                 var qualifiedName   = type.Namespace + "." + type.Name;
                 var doc             = GetDoc("\n    <desc>", type.doc, "</desc>");
                 sb.AppendLine(
-$@"    <div class='type'>
+$@"    <div class='type enum'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
         <keyword>enum</keyword>
     </h3>{doc}
-    <ul class='enum'>");
+    <table>");
                 foreach (var enumValue in enumValues) {
-                    // var enumDoc = enumValueDocs == null ? "" : GetDoc("<doc>", enumValueDocs[enumValue], "</doc>");  
-                    sb.AppendLine($"        <li>{enumValue.name}</li>");
+                    var enumDoc = GetDoc("<docs>", enumValue.doc, "</docs>");  
+                    sb.AppendLine($"        <tr><td>{enumValue.name}</td><td>{enumDoc}</td></tr>");
                 }
                 sb.AppendLine(
-@"    </ul>
+@"    </table>
     </div>");
                 return new EmitType(type, sb);
             }
