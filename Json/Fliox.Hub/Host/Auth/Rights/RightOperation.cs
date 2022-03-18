@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         }
     }
     
-    /// <summary>Grant specific container operations and subscriptions</summary>
+    /// <summary>Grant execution of specific container operations and subscriptions</summary>
     public sealed class ContainerAccess
     {
         /// <summary>Set of granted operation types</summary>

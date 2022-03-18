@@ -2,17 +2,17 @@
 
 export type TaskType =
     | "read"                  /** read container entities by id */
-    | "query"                 /** query container entities */
+    | "query"                 /** query container entities using a filter */
     | "create"                /** create container entities */
     | "upsert"                /** upsert container entities */
-    | "patch"                 /** patch container entities */
-    | "delete"                /** delete container entities */
-    | "aggregate"             /** aggregate - count - container entities */
+    | "patch"                 /** patch container entities by id */
+    | "delete"                /** delete container entities by id */
+    | "aggregate"             /** aggregate - count - container entities using a filter */
     | "message"               /** send a database message */
     | "command"               /** send a database command */
     | "closeCursors"          /** close cursors of a container */
     | "subscribeChanges"      /** subscribe to entity changes of a container */
-    | "subscribeMessage"      /** subscribe to messages and command send to a database */
+    | "subscribeMessage"      /** subscribe to messages and commands send to a database */
     | "reserveKeys"           /** wip */
     | "error"                 /** indicate an error when task was executed */
 ;

@@ -101,7 +101,7 @@
         },
         "ContainerAccess": {
             "type": "object",
-            "description": "Grant specific container operations and subscriptions",
+            "description": "Grant execution of specific container operations and subscriptions",
             "properties": {
                 "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" }, "description": "Set of granted operation types" },
                 "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/Change" }, "description": "Set of granted change subscriptions" }

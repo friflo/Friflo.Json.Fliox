@@ -33,17 +33,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>read container entities by id</summary>
         read,
-        /// <summary>query container entities</summary>
+        /// <summary>query container entities using a filter</summary>
         query,
         /// <summary>create container entities</summary>
         create,
         /// <summary>upsert container entities</summary>
         upsert,
-        /// <summary>patch container entities</summary>
+        /// <summary>patch container entities by id</summary>
         patch,
-        /// <summary>delete container entities</summary>
+        /// <summary>delete container entities by id</summary>
         delete,
-        /// <summary>aggregate - count - container entities</summary>
+        /// <summary>aggregate - count - container entities using a filter</summary>
         aggregate,
         /// <summary>send a database message</summary>
         message,
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         closeCursors,
         /// <summary>subscribe to entity changes of a container</summary>
         subscribeChanges,
-        /// <summary>subscribe to messages and command send to a database</summary>
+        /// <summary>subscribe to messages and commands send to a database</summary>
         subscribeMessage,
         /// <summary>wip</summary>
         reserveKeys,

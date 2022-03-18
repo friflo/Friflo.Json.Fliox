@@ -803,7 +803,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a>
         <keyword>class</keyword>
     </h3>
-    <desc>Grant specific container operations and subscriptions
+    <desc>Grant execution of specific container operations and subscriptions
     </desc>
     <table class='fields'>
         <tr>
@@ -864,17 +864,17 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     <desc>Type of a task that operates on the database or a container</desc>
     <table>
         <tr><td>read</td><td><docs>read container entities by id</docs></td></tr>
-        <tr><td>query</td><td><docs>query container entities</docs></td></tr>
+        <tr><td>query</td><td><docs>query container entities using a filter</docs></td></tr>
         <tr><td>create</td><td><docs>create container entities</docs></td></tr>
         <tr><td>upsert</td><td><docs>upsert container entities</docs></td></tr>
-        <tr><td>patch</td><td><docs>patch container entities</docs></td></tr>
-        <tr><td>delete</td><td><docs>delete container entities</docs></td></tr>
-        <tr><td>aggregate</td><td><docs>aggregate - count - container entities</docs></td></tr>
+        <tr><td>patch</td><td><docs>patch container entities by id</docs></td></tr>
+        <tr><td>delete</td><td><docs>delete container entities by id</docs></td></tr>
+        <tr><td>aggregate</td><td><docs>aggregate - count - container entities using a filter</docs></td></tr>
         <tr><td>message</td><td><docs>send a database message</docs></td></tr>
         <tr><td>command</td><td><docs>send a database command</docs></td></tr>
         <tr><td>closeCursors</td><td><docs>close cursors of a container</docs></td></tr>
         <tr><td>subscribeChanges</td><td><docs>subscribe to entity changes of a container</docs></td></tr>
-        <tr><td>subscribeMessage</td><td><docs>subscribe to messages and command send to a database</docs></td></tr>
+        <tr><td>subscribeMessage</td><td><docs>subscribe to messages and commands send to a database</docs></td></tr>
         <tr><td>reserveKeys</td><td><docs>wip</docs></td></tr>
         <tr><td>error</td><td><docs>indicate an error when task was executed</docs></td></tr>
     </table>

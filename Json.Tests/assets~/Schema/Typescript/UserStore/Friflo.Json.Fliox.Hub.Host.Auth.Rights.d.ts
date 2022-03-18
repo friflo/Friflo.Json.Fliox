@@ -87,7 +87,7 @@ export class RightOperation extends Right {
     containers   : { [key: string]: ContainerAccess };
 }
 
-/** Grant specific container operations and subscriptions */
+/** Grant execution of specific container operations and subscriptions */
 export class ContainerAccess {
     /** Set of granted operation types */
     operations?       : OperationType[] | null;
