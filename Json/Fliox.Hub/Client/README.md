@@ -112,6 +112,11 @@ A database schema is the declaration of database **containers**, **commands** an
 All declarations as expressed as types in a schema. This principle enables code generation as types
 for other programming languages.
 
+Schema generation is integral part of the [HTTP Hub](../Host/README.md).  
+So all generated files and their zip archives are available via urls.
+
+Alternatively code can be generated with C# using `SchemaModel.GenerateSchemaModels()`
+
 The following example generate the types for Typescript, C#, Kotlin, JSON Schema and HTML based on the
 passed schema type `ShopStore`. The generated code is written to folder `./schema/`
 
