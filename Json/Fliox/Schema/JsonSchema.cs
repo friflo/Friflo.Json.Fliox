@@ -84,16 +84,16 @@ namespace Friflo.Json.Fliox.Schema
                 }
                 sb.AppendLine();
                 sb.Append("            ]");
-                var valueDocs = type.EnumValueDocs;
-                if (valueDocs != null ) {
+                var docCount = enumValues.Count(e => e.doc != null);
+                if (docCount > 0 ) {
                     sb.AppendLine($",\n            \"descriptions\": {{");
                     firstValue = true;
-                    foreach (var pair in valueDocs) {
-                        var doc = GetDoc("", pair.Value, "");
+                    foreach (var enumValue in enumValues) {
+                        var doc = GetDoc("", enumValue.doc, "");
                         if (doc == "")
                             continue;
                         Delimiter(sb, Next, ref firstValue);
-                        sb.Append($"                \"{pair.Key}\": {doc}");
+                        sb.Append($"                \"{enumValue.name}\": {doc}");
                     }
                     sb.AppendLine();
                     sb.AppendLine("            }");

@@ -80,7 +80,6 @@ $@"    <div class='type'>
             }
             if (type.IsEnum) {
                 var enumValues      = type.EnumValues;
-                var enumValueDocs   = type.EnumValueDocs;
                 var qualifiedName   = type.Namespace + "." + type.Name;
                 var doc             = GetDoc("\n    <desc>", type.doc, "</desc>");
                 sb.AppendLine(

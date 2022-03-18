@@ -23,7 +23,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   string                      Discriminator   => discriminator;
         public   override   bool                        IsEnum          => EnumValues != null;
         public   override   IReadOnlyList<EnumValue>    EnumValues      { get; }
-        public   override   IReadOnlyDictionary<string, string> EnumValueDocs { get; } 
 
         public   override   string              ToString()      => name; 
 
@@ -45,10 +44,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             this.name   = name;
             this.type   = type;
             this.schema = schema;
-            if (type.enums != null) {
-                EnumValues      = EnumValue.CreateEnumValues(type.enums, type.enumDescriptions);
-                EnumValueDocs   = type.enumDescriptions;
-            }
+            EnumValues  = EnumValue.CreateEnumValues(type.enums, type.enumDescriptions);
         }
         
         public JsonTypeDef (string name) :
