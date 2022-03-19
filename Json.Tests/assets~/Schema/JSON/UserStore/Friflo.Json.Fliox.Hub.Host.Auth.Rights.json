@@ -13,7 +13,7 @@
                 { "$ref": "#/definitions/RightPredicate" }
             ],
             "properties": {
-                "type":        { "enum": ["allow", "task", "sendMessage", "subscribeMessage", "operation", "predicate"] },
+                "type":        { "enum": ["allow", "task", "sendMessage", "subscribeMessage", "operation", "predicate"], "description": "right type: allow, task, sendMessage, subscribeMessage, operation or predicate" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
