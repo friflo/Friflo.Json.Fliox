@@ -18,7 +18,7 @@ export type Right_Union =
 ;
 
 export abstract class Right {
-    /** right type: allow, task, sendMessage, subscribeMessage, operation or predicate */
+    /** right type */
     abstract type:
         | "allow"
         | "task"

@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// The database operation or command execution is granted if any of it <see cref="DB.UserAuth.Role.rights"/>
     /// grant access.
     /// </summary>
-    [Fri.Discriminator("type", Description = "right type: allow, task, sendMessage, subscribeMessage, operation or predicate")]
+    [Fri.Discriminator("type", Description = "right type")]
     [Fri.Polymorph(typeof(RightAllow),              Discriminant = "allow")]
     [Fri.Polymorph(typeof(RightTask),               Discriminant = "task")]
     [Fri.Polymorph(typeof(RightSendMessage),        Discriminant = "sendMessage")]
