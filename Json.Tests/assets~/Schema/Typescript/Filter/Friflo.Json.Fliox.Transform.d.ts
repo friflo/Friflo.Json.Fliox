@@ -92,6 +92,7 @@ export type Operation_Union =
 ;
 
 export abstract class Operation {
+    /** operation type */
     abstract op:
         | "field"
         | "string"
@@ -161,6 +162,7 @@ export type FilterOperation_Union =
 ;
 
 export abstract class FilterOperation extends Operation {
+    /** filter type */
     abstract op:
         | "equal"
         | "notEqual"

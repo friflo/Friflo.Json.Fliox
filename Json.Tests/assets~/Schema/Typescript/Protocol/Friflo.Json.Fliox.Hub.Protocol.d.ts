@@ -36,6 +36,7 @@ export type ProtocolMessage_Union =
 ;
 
 export abstract class ProtocolMessage {
+    /** message type: sync (request), resp / error (response), ev (event) */
     abstract msg:
         | "sync"
         | "resp"
@@ -49,6 +50,7 @@ export type ProtocolRequest_Union =
 ;
 
 export abstract class ProtocolRequest extends ProtocolMessage {
+    /** request type: sync */
     abstract msg:
         | "sync"
     ;
@@ -109,6 +111,7 @@ export type ProtocolResponse_Union =
 ;
 
 export abstract class ProtocolResponse extends ProtocolMessage {
+    /** response type: resp / error */
     abstract msg:
         | "resp"
         | "error"
@@ -191,6 +194,7 @@ export type ProtocolEvent_Union =
 ;
 
 export abstract class ProtocolEvent extends ProtocolMessage {
+    /** event type: ev */
     abstract msg:
         | "ev"
     ;

@@ -31,6 +31,7 @@ export type SyncRequestTask_Union =
 ;
 
 export abstract class SyncRequestTask {
+    /** task type: create, read, upsert, delete, query, aggregate, patch, command, message, subscribeChanges, subscribeMessage */
     abstract task:
         | "create"
         | "upsert"
@@ -273,6 +274,7 @@ export type SyncTaskResult_Union =
 ;
 
 export abstract class SyncTaskResult {
+    /** task result type */
     abstract task:
         | "create"
         | "upsert"

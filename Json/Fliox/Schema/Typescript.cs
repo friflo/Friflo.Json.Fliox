@@ -126,9 +126,11 @@ namespace Friflo.Json.Fliox.Schema
                     sb.AppendLine($"    | {polyTypeDef.Name}");
                     imports.Add(polyTypeDef);
                 }
+                var fieldDoc    = GetDoc(unionType.doc, "    ");
                 sb.AppendLine($";");
                 sb.AppendLine();
                 sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
+                sb.Append(fieldDoc);
                 sb.AppendLine($"    abstract {unionType.discriminator}:");
                 foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.discriminant}\"");
@@ -140,6 +142,7 @@ namespace Friflo.Json.Fliox.Schema
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
+
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
             }
             foreach (var field in fields) {
