@@ -12,7 +12,7 @@
                 "user":     { "type": ["string", "null"], "description": "Identify the user performing a sync request.\nIn case using of using <b>UserAuthenticator</b> the <b>userId</b> and <b>token</b>\nare use for user authentication." },
                 "token":    { "type": ["string", "null"] },
                 "ack":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "<b>eventAck</b> is used to ensure (change) events are delivered reliable.\nA client set <b>eventAck</b> to the last received <b>seq</b> in case\nit has subscribed to database changes by a <b>SubscribeChanges</b> task.\nOtherwise <b>eventAck</b> is null." },
-                "tasks":    { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "list of container operations and database commands / messages" },
+                "tasks":    { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "list of tasks either container operations or database commands / messages" },
                 "database": { "type": ["string", "null"], "description": "database name the <b>tasks</b> apply to. null to access the default database" },
                 "info":     { "description": "optional JSON value - can be used to describe a request" }
             },
@@ -31,8 +31,8 @@
                 "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
                 "clt":          { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null. <br/>\nCalling <b>EnsureValidClientId()</b> when <b>clientId</b> == null a\nnew unique client id will be assigned. <br/>\nFor tasks which require a <b>clientId</b> a client need to set <b>clientId</b>\nto <b>clientId</b>. <br/>\nThis enables tasks like <b>SubscribeMessage</b> or <b>SubscribeChanges</b> identifying the\n<b>EventMessage</b> target." },
                 "database":     { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
-                "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of results after executing the <b>tasks</b> in a <b>SyncRequest</b>" },
-                "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "the entities which are results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
+                "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
+                "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
                 "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>CreateEntities</b> tasks grouped by container" },
                 "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>UpsertEntities</b> tasks grouped by container" },
                 "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>PatchEntities</b> tasks grouped by container" },
@@ -46,12 +46,13 @@
         },
         "ContainerEntities": {
             "type": "object",
+            "description": "Used by <b>SyncResponse</b> to return the <b>entities</b> as results\nfrom <b>tasks</b> of a <b>SyncRequest</b>",
             "properties": {
-                "container": { "type": "string" },
-                "count":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Is only set when using a <b>RemoteHostHub</b> to show the number of <b>entities</b>\nin a serialized protocol message to avoid counting them by hand when debugging.\nIt is not used by the library as it is redundant information." },
-                "entities":  { "type": "array", "items": {  } },
-                "notFound":  { "type": ["array", "null"], "items": { "type": "string" } },
-                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object" }
+                "container": { "type": "string", "description": "container name the of the returned <b>entities</b>" },
+                "count":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>entities</b> - not utilized by Protocol" },
+                "entities":  { "type": "array", "items": {  }, "description": "all <b>entities</b> as results from <b>tasks</b> of a <b>SyncRequest</b>" },
+                "notFound":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of entities not found by <b>ReadEntities</b> tasks" },
+                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object", "description": "list of errors when accessing entities from a database" }
             },
             "required": [
                 "container",

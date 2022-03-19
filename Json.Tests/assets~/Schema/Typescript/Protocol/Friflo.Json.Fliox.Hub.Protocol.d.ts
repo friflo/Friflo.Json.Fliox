@@ -91,7 +91,7 @@ export class SyncRequest extends ProtocolRequest {
      * Otherwise **eventAck** is null.
      */
     ack?      : int32 | null;
-    /** list of container operations and database commands / messages */
+    /** list of tasks either container operations or database commands / messages */
     tasks     : SyncRequestTask_Union[];
     /** database name the **tasks** apply to. null to access the default database */
     database? : string | null;
@@ -133,10 +133,10 @@ export class SyncResponse extends ProtocolResponse {
     msg           : "resp";
     /** for debugging - not used by Protocol */
     database?     : string | null;
-    /** list of results after executing the **tasks** in a **SyncRequest** */
+    /** list of task results corresponding to the **tasks** in a **SyncRequest** */
     tasks?        : SyncTaskResult_Union[] | null;
     /**
-     * the entities which are results from the **tasks** in a **SyncRequest**
+     * entities as results from the **tasks** in a **SyncRequest**
      * grouped by container
      */
     containers?   : ContainerEntities[] | null;
@@ -152,16 +152,20 @@ export class SyncResponse extends ProtocolResponse {
     info?         : any | null;
 }
 
+/**
+ * Used by **SyncResponse** to return the **entities** as results
+ * from **tasks** of a **SyncRequest**
+ */
 export class ContainerEntities {
+    /** container name the of the returned **entities** */
     container  : string;
-    /**
-     * Is only set when using a **RemoteHostHub** to show the number of **entities**
-     * in a serialized protocol message to avoid counting them by hand when debugging.
-     * It is not used by the library as it is redundant information.
-     */
+    /** number of **entities** - not utilized by Protocol */
     count?     : int32 | null;
+    /** all **entities** as results from **tasks** of a **SyncRequest** */
     entities   : any[];
+    /** list of entities not found by **ReadEntities** tasks */
     notFound?  : string[] | null;
+    /** list of errors when accessing entities from a database */
     errors?    : { [key: string]: EntityError } | null;
 }
 

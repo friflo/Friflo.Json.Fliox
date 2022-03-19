@@ -28,11 +28,7 @@ export class ReadEntitiesSetResult {
 export class ReferencesResult {
     error?      : string | null;
     container?  : string | null;
-    /**
-     * Is used only to show the number of **ids** in a serialized protocol message
-     * to avoid counting them by hand when debugging.
-     * It is not used by the library as it is redundant information.
-     */
+    /** number of **ids** - not utilized by Protocol */
     count?      : int32 | null;
     ids         : string[];
     references? : ReferencesResult[] | null;

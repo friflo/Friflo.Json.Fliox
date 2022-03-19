@@ -251,11 +251,7 @@ export class QueryEntitiesResult extends SyncTaskResult {
     task        : "query";
     container?  : string | null;
     cursor?     : string | null;
-    /**
-     * Is used only to show the number of **ids** in a serialized protocol message
-     * to avoid counting them by hand when debugging.
-     * It is not used by the library as it is redundant information.
-     */
+    /** number of **ids** - not utilized by Protocol */
     count?      : int32 | null;
     ids         : string[];
     references? : ReferencesResult[] | null;

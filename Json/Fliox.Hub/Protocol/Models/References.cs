@@ -32,9 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     {
                         public  string                  error;
         [DebugInfo]     public  string                  container;
-        /// <summary> Is used only to show the number of <see cref="ids"/> in a serialized protocol message
-        /// to avoid counting them by hand when debugging.
-        /// It is not used by the library as it is redundant information. </summary>
+        /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                    count;
         [Fri.Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>  references;

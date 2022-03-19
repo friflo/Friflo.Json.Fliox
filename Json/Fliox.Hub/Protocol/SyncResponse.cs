@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>for debugging - not used by Protocol</summary>
                         public  string                                  database;
-        /// <summary>list of results after executing the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
+        /// <summary>list of task results corresponding to the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
                         public  List<SyncTaskResult>                    tasks;
-        /// <summary>the entities which are results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
+        /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
         /// grouped by container</summary>
                         public  List<ContainerEntities>                 containers;
         // key of all Dictionary's is the container name
@@ -73,18 +73,24 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     }
     
     // ----------------------------------- sync results -----------------------------------
+    /// <summary>
+    /// Used by <see cref="SyncResponse"/> to return the <see cref="entities"/> as results
+    /// from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>
+    /// </summary>
     public sealed class ContainerEntities
     {
+        /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
         [Fri.Required]  public  string                              container;
-        /// <summary> Is only set when using a <see cref="RemoteHostHub"/> to show the number of <see cref="entities"/>
-        /// in a serialized protocol message to avoid counting them by hand when debugging.
-        /// It is not used by the library as it is redundant information. </summary>
+        /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                                count;
+        /// <summary>all <see cref="entities"/> as results from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/></summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
         [Fri.Required]  public  List<JsonValue>                     entities;
+        /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  List<JsonKey>                       notFound;
+        /// <summary>list of errors when accessing entities from a database</summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality); // todo should be instantiated only if required
         

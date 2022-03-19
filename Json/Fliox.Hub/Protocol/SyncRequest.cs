@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                    eventAck;
-        /// <summary>list of container operations and database commands / messages</summary>
+        /// <summary>list of tasks either container operations or database commands / messages</summary>
         [Fri.Required]                  public  List<SyncRequestTask>   tasks;
         /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>
                                         public  string                  database;

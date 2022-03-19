@@ -372,7 +372,7 @@
                 "task":       { "enum": ["query"] },
                 "container":  { "type": ["string", "null"] },
                 "cursor":     { "type": ["string", "null"] },
-                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Is used only to show the number of <b>ids</b> in a serialized protocol message\nto avoid counting them by hand when debugging.\nIt is not used by the library as it is redundant information." },
+                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReferencesResult" } }
             },
