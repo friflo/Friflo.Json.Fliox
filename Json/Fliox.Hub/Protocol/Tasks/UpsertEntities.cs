@@ -17,8 +17,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class UpsertEntities : SyncRequestTask
     {
+        /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
         [Fri.Required]  public  string          container;
+        /// <summary>name of the primary key property in <see cref="entities"/></summary>
                         public  string          keyName;
+        /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
         [Fri.Required]  public  List<JsonValue> entities;
         
         [Fri.Ignore]    public  List<JsonKey>   entityKeys;

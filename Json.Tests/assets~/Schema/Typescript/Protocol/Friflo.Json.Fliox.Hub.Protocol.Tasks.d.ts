@@ -52,17 +52,23 @@ export abstract class SyncRequestTask {
 /** Create the given **entities** in the specified **container** */
 export class CreateEntities extends SyncRequestTask {
     task           : "create";
+    /** container name the **entities** are created */
     container      : string;
     reservedToken? : Guid | null;
+    /** name of the primary key property in **entities** */
     keyName?       : string | null;
+    /** the **entities** which are created in the specified **container** */
     entities       : any[];
 }
 
 /** Upsert the given **entities** in the specified **container** */
 export class UpsertEntities extends SyncRequestTask {
     task       : "upsert";
+    /** container name the **entities** are upserted - created or updated */
     container  : string;
+    /** name of the primary key property in **entities** */
     keyName?   : string | null;
+    /** the **entities** which are upserted in the specified **container** */
     entities   : any[];
 }
 
@@ -75,9 +81,12 @@ export class UpsertEntities extends SyncRequestTask {
  */
 export class ReadEntities extends SyncRequestTask {
     task       : "read";
+    /** container name */
     container  : string;
+    /** name of the primary key property of the returned entities */
     keyName?   : string | null;
     isIntKey?  : boolean | null;
+    /** contains the **ids** of requested entities */
     sets       : ReadEntitiesSet[];
 }
 

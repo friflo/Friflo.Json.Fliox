@@ -19,9 +19,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntities : SyncRequestTask
     {
+        /// <summary>container name</summary>
         [Fri.Required]  public  string                  container;
+        /// <summary>name of the primary key property of the returned entities</summary>
                         public  string                  keyName;
                         public  bool?                   isIntKey;
+        /// <summary>contains the <see cref="ReadEntitiesSet.ids"/> of requested entities</summary>               
         [Fri.Required]  public  List<ReadEntitiesSet>   sets;
         
         internal override       TaskType                TaskType => TaskType.read;

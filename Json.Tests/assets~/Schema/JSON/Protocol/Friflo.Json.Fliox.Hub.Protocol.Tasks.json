@@ -34,10 +34,10 @@
             "description": "Create the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
                 "task":          { "enum": ["create"] },
-                "container":     { "type": "string" },
+                "container":     { "type": "string", "description": "container name the <b>entities</b> are created" },
                 "reservedToken": { "oneOf": [{ "$ref": "./Standard.json#/definitions/Guid" }, {"type": "null"}] },
-                "keyName":       { "type": ["string", "null"] },
-                "entities":      { "type": "array", "items": {  } },
+                "keyName":       { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
+                "entities":      { "type": "array", "items": {  }, "description": "the <b>entities</b> which are created in the specified <b>container</b>" },
                 "info":          {  }
             },
             "required": [
@@ -53,9 +53,9 @@
             "description": "Upsert the given <b>entities</b> in the specified <b>container</b>",
             "properties": {
                 "task":      { "enum": ["upsert"] },
-                "container": { "type": "string" },
-                "keyName":   { "type": ["string", "null"] },
-                "entities":  { "type": "array", "items": {  } },
+                "container": { "type": "string", "description": "container name the <b>entities</b> are upserted - created or updated" },
+                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property in <b>entities</b>" },
+                "entities":  { "type": "array", "items": {  }, "description": "the <b>entities</b> which are upserted in the specified <b>container</b>" },
                 "info":      {  }
             },
             "required": [
@@ -71,10 +71,10 @@
             "description": "Read entities by id from the specified <b>container</b> using read <b>sets</b><br/>\nEach <b>ReadEntitiesSet</b> contains a list of <b>ids</b><br/>\nTo return also entities referenced by entities listed in <b>ids</b> use\n<b>references</b> in <b>sets</b>. <br/>\nThis mimic the functionality of a <b>JOIN</b> in <b>SQL</b>",
             "properties": {
                 "task":      { "enum": ["read"] },
-                "container": { "type": "string" },
-                "keyName":   { "type": ["string", "null"] },
+                "container": { "type": "string", "description": "container name" },
+                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":  { "type": ["boolean", "null"] },
-                "sets":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSet" } },
+                "sets":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSet" }, "description": "contains the <b>ids</b> of requested entities" },
                 "info":      {  }
             },
             "required": [
