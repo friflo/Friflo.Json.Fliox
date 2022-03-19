@@ -106,7 +106,10 @@ export class QueryEntities extends SyncRequestTask {
      * Is used in favour of **filter** as its serialization is more performant
      */
     filterTree? : any | null;
-    /** query filter as infix notation. E.g. o.name == 'Smartphone'  **filterTree** has priority if given */
+    /**
+     * query filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
+     * returning a boolean value. E.g. o.name == 'Smartphone'  **filterTree** has priority if given
+     */
     filter?     : string | null;
     /** used to request the entities referenced by properties of the query task result */
     references? : References[] | null;
@@ -121,9 +124,19 @@ export class QueryEntities extends SyncRequestTask {
 /** Aggregate - count - entities from the given **container** using a **filter**   */
 export class AggregateEntities extends SyncRequestTask {
     task        : "aggregate";
+    /** container name */
     container   : string;
+    /** aggregation type - e.g. count */
     type        : AggregateType;
+    /**
+     * aggregation filter as JSON tree.   
+     * Is used in favour of **filter** as its serialization is more performant
+     */
     filterTree? : any | null;
+    /**
+     * aggregation filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
+     * returning a boolean value. E.g. o.name == 'Smartphone'  
+     */
     filter?     : string | null;
 }
 
@@ -137,12 +150,17 @@ export type AggregateType =
  */
 export class PatchEntities extends SyncRequestTask {
     task       : "patch";
+    /** container name */
     container  : string;
+    /** name of the primary key property of the entity **patches** */
     keyName?   : string | null;
+    /** set of patches for each entity identified by its primary key */
     patches    : { [key: string]: EntityPatch };
 }
 
+/** Contains the **patches** applied to an entity. Used by **PatchEntities** */
 export class EntityPatch {
+    /** list of patches applied to an entity */
     patches  : JsonPatch_Union[];
 }
 
@@ -152,13 +170,22 @@ export class EntityPatch {
  */
 export class DeleteEntities extends SyncRequestTask {
     task       : "delete";
+    /** container name */
     container  : string;
+    /** list of **ids** requested for deletion */
     ids?       : string[] | null;
+    /** if true all entities in the specified **container** are deleted */
     all?       : boolean | null;
 }
 
+/**
+ * Used as base type for **SendMessage** or **SendCommand** to specify the command / message
+ * **name** and **param**
+ */
 export abstract class SyncMessageTask extends SyncRequestTask {
+    /** command / message name */
     name   : string;
+    /** command / message parameter. Can be null or absent */
     param? : any | null;
 }
 

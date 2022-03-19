@@ -9,9 +9,15 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
+    /// <summary>
+    /// Used as base type for <see cref="SendMessage"/> or <see cref="SendCommand"/> to specify the command / message
+    /// <see cref="name"/> and <see cref="param"/>
+    /// </summary>
     public abstract class SyncMessageTask : SyncRequestTask
     {
+        /// <summary>command / message name</summary>
         [Fri.Required]  public  string          name;
+        /// <summary>command / message parameter. Can be null or absent</summary>
                         public  JsonValue       param;
                         
         public   override       string          TaskName => $"name: '{name}'";

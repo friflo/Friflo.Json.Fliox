@@ -17,8 +17,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class PatchEntities : SyncRequestTask
     {
+        /// <summary>container name</summary>
         [Fri.Required]  public  string                              container;
+        /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                         public  string                              keyName;
+        /// <summary>set of patches for each entity identified by its primary key</summary>
         [Fri.Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
         internal override       TaskType                            TaskType => TaskType.patch;
@@ -42,8 +45,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         }
     }
 
+    /// <summary>
+    /// Contains the <see cref="patches"/> applied to an entity. Used by <see cref="PatchEntities"/>
+    /// </summary>
     public class EntityPatch
     {
+        /// <summary>list of patches applied to an entity</summary>
         [Fri.Required]  public  List<JsonPatch>             patches;
     }
 

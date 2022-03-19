@@ -27,7 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>query filter as JSON tree. <br/>
         /// Is used in favour of <see cref="filter"/> as its serialization is more performant</summary>
                         public  JsonValue           filterTree;
-        /// <summary>query filter as infix notation. E.g. <c>o.name == 'Smartphone'</c><br/>
+        /// <summary>query filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
+        /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>
         /// <see cref="filterTree"/> has priority if given</summary>
                         public  string              filter;
         /// <summary>used to request the entities referenced by properties of the query task result</summary>

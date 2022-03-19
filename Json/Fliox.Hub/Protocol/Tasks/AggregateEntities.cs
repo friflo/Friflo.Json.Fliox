@@ -17,9 +17,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class AggregateEntities : SyncRequestTask
     {
+        /// <summary>container name</summary>
         [Fri.Required]  public      string              container;
+        /// <summary>aggregation type - e.g. count </summary>
                         public      AggregateType       type;
+        /// <summary>aggregation filter as JSON tree. <br/>
+        /// Is used in favour of <see cref="filter"/> as its serialization is more performant</summary>
                         public      JsonValue           filterTree;
+        /// <summary>aggregation filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
+        /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>
+        /// </summary>
                         public      string              filter;
                         
         [Fri.Ignore]    private     FilterOperation     filterLambda;

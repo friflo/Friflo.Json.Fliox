@@ -94,7 +94,7 @@
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "filterTree": { "description": "query filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
-                "filter":     { "type": ["string", "null"], "description": "query filter as infix notation. E.g. <c>o.name == 'Smartphone'</c><br/><b>filterTree</b> has priority if given" },
+                "filter":     { "type": ["string", "null"], "description": "query filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/><b>filterTree</b> has priority if given" },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of the query task result" },
                 "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "limit the result set to the given number" },
                 "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "execute a cursor request with the specified <b>maxCount</b> number of entities in the result." },
@@ -113,10 +113,10 @@
             "description": "Aggregate - count - entities from the given <b>container</b> using a <b>filter</b><br/>",
             "properties": {
                 "task":       { "enum": ["aggregate"] },
-                "container":  { "type": "string" },
-                "type":       { "$ref": "#/definitions/AggregateType" },
-                "filterTree": {  },
-                "filter":     { "type": ["string", "null"] },
+                "container":  { "type": "string", "description": "container name" },
+                "type":       { "$ref": "#/definitions/AggregateType", "description": "aggregation type - e.g. count" },
+                "filterTree": { "description": "aggregation filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
+                "filter":     { "type": ["string", "null"], "description": "aggregation filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>" },
                 "info":       {  }
             },
             "required": [
@@ -137,9 +137,9 @@
             "description": "Patch entities by id in the given <b>container</b><br/>\nEach <b>EntityPatch</b> in <b>patches</b> contains a set of <b>patches</b> for each entity.",
             "properties": {
                 "task":      { "enum": ["patch"] },
-                "container": { "type": "string" },
-                "keyName":   { "type": ["string", "null"] },
-                "patches":   { "additionalProperties": { "$ref": "#/definitions/EntityPatch" }, "type": "object" },
+                "container": { "type": "string", "description": "container name" },
+                "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the entity <b>patches</b>" },
+                "patches":   { "additionalProperties": { "$ref": "#/definitions/EntityPatch" }, "type": "object", "description": "set of patches for each entity identified by its primary key" },
                 "info":      {  }
             },
             "required": [
@@ -151,8 +151,9 @@
         },
         "EntityPatch": {
             "type": "object",
+            "description": "Contains the <b>patches</b> applied to an entity. Used by <b>PatchEntities</b>",
             "properties": {
-                "patches": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/JsonPatch" } }
+                "patches": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/JsonPatch" }, "description": "list of patches applied to an entity" }
             },
             "required": [
                 "patches"
@@ -165,9 +166,9 @@
             "description": "Delete entities by id in the given <b>container</b><br/>\nThe entities which will be deleted are listed in <b>ids</b>",
             "properties": {
                 "task":      { "enum": ["delete"] },
-                "container": { "type": "string" },
-                "ids":       { "type": ["array", "null"], "items": { "type": "string" } },
-                "all":       { "type": ["boolean", "null"] },
+                "container": { "type": "string", "description": "container name" },
+                "ids":       { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>ids</b> requested for deletion" },
+                "all":       { "type": ["boolean", "null"], "description": "if true all entities in the specified <b>container</b> are deleted" },
                 "info":      {  }
             },
             "required": [
@@ -182,8 +183,8 @@
             "description": "Send a database message with the given <b>param</b><br/>",
             "properties": {
                 "task":  { "enum": ["message"] },
-                "name":  { "type": "string" },
-                "param": {  },
+                "name":  { "type": "string", "description": "command / message name" },
+                "param": { "description": "command / message parameter. Can be null or absent" },
                 "info":  {  }
             },
             "required": [
@@ -196,9 +197,10 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "isAbstract": true,
+            "description": "Used as base type for <b>SendMessage</b> or <b>SendCommand</b> to specify the command / message\n<b>name</b> and <b>param</b>",
             "properties": {
-                "name":  { "type": "string" },
-                "param": {  },
+                "name":  { "type": "string", "description": "command / message name" },
+                "param": { "description": "command / message parameter. Can be null or absent" },
                 "info":  {  }
             },
             "required": [
@@ -212,8 +214,8 @@
             "description": "Send a database command with the given <b>param</b><br/>",
             "properties": {
                 "task":  { "enum": ["command"] },
-                "name":  { "type": "string" },
-                "param": {  },
+                "name":  { "type": "string", "description": "command / message name" },
+                "param": { "description": "command / message parameter. Can be null or absent" },
                 "info":  {  }
             },
             "required": [
