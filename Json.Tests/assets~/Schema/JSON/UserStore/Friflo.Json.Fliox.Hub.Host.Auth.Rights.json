@@ -24,10 +24,10 @@
         "RightAllow": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
-            "description": "Allow full access to the given <b>database</b>.<br/>\nIn case <b>database</b> ends with a '*' e.g. 'test*' access to all databases with the prefix 'test'\nis granted.<br/>\nUsing <b>database</b>: '*' grant access to all databases.",
+            "description": "Allow full access to the given <b>database</b>.<br/>",
             "properties": {
                 "type":        { "enum": ["allow"] },
-                "database":    { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"], "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -41,7 +41,7 @@
             "description": "<b>RightTask</b> grant <b>database</b> access by a set of task <b>types</b>. <br/>",
             "properties": {
                 "type":        { "enum": ["task"] },
-                "database":    { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"], "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" },
                 "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/TaskType" }, "description": "set fo task types like: create, read, upsert, delete, query, ..." },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
@@ -54,11 +54,11 @@
         "RightSendMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
-            "description": "<b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/>\nEach allowed message can be listed explicit in <b>names</b>. E.g. 'std.Echo' <br/>\nA group of messages can be allowed by using a prefix. E.g. 'std.*' <br/>\nTo grant sending every message independent of its name use: '*'<br/><br/>\nNote: commands are messages - so permission of sending commands is same as for messages.",
+            "description": "<b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/><br/>\nNote: commands are messages - so permission of sending commands is same as for messages.",
             "properties": {
                 "type":        { "enum": ["sendMessage"] },
-                "database":    { "type": ["string", "null"] },
-                "names":       { "type": "array", "items": { "type": "string" } },
+                "database":    { "type": ["string", "null"], "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" },
+                "names":       { "type": "array", "items": { "type": "string" }, "description": "a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -70,11 +70,11 @@
         "RightSubscribeMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
-            "description": "<b>RightSubscribeMessage</b> allows subscribing messages send to a <b>database</b>.<br/>\nAllow subscribing a specific message by using explicit message <b>names</b>. E.g. 'std.Echo' <br/>\nAllow subscribing a group of messages by using a prefix. E.g. 'std.*' <br/>\nAllow subscribing all messages by using: '*'<br/><br/>\nNote: commands are messages - so permission of subscribing commands is same as for messages.",
+            "description": "<b>RightSubscribeMessage</b> allows subscribing messages send to a <b>database</b>.<br/><br/>\nNote: commands are messages - so permission of subscribing commands is same as for messages.",
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
-                "database":    { "type": ["string", "null"] },
-                "names":       { "type": "array", "items": { "type": "string" } },
+                "database":    { "type": ["string", "null"], "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" },
+                "names":       { "type": "array", "items": { "type": "string" }, "description": "a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -89,8 +89,8 @@
             "description": "<b>RightOperation</b> grant <b>database</b> access for the given <b>containers</b>\nbased on a set of <b>operations</b>. <br/>\nE.g. create, read, upsert, delete, query or aggregate (count)<br/>\nIt also allows subscribing database changes by <b>subscribeChanges</b>",
             "properties": {
                 "type":        { "enum": ["operation"] },
-                "database":    { "type": ["string", "null"] },
-                "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object" },
+                "database":    { "type": ["string", "null"], "description": "a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'" },
+                "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object", "description": "grant execution of operations and subscriptions on listed <b>containers</b>" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [
@@ -140,7 +140,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["predicate"] },
-                "names":       { "type": "array", "items": { "type": "string" } },
+                "names":       { "type": "array", "items": { "type": "string" }, "description": "a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'" },
                 "description": { "type": ["string", "null"], "description": "optional description explaining the Right" }
             },
             "required": [

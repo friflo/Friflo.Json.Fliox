@@ -11,15 +11,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
     /// <see cref="RightSendMessage"/> allows sending messages to a <see cref="database"/> by a set of <see cref="names"/>.<br/>
-    /// Each allowed message can be listed explicit in <see cref="names"/>. E.g. 'std.Echo' <br/>
-    /// A group of messages can be allowed by using a prefix. E.g. 'std.*' <br/>
-    /// To grant sending every message independent of its name use: '*'<br/>
     /// <br/>
     /// Note: commands are messages - so permission of sending commands is same as for messages.
     /// </summary>
     public sealed class RightSendMessage : Right
     {
+        /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
                         public  string          database;
+        /// <summary>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
         [Fri.Required]  public  List<string>    names;
         public  override        RightType       RightType => RightType.message;
         

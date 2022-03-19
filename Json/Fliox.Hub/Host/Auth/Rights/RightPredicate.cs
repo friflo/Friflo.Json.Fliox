@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     public sealed class RightPredicate : Right
     {
+        /// <summary>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</summary>
         [Fri.Required]  public  List<string>    names;
         
         public  override        RightType       RightType => RightType.predicate;

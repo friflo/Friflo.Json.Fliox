@@ -693,9 +693,6 @@ grant access.
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
     <desc>Allow full access to the given <b>database</b>.<br/>
-In case <b>database</b> ends with a '*' e.g. 'test*' access to all databases with the prefix 'test'
-is granted.<br/>
-Using <b>database</b>: '*' grant access to all databases.
     </desc>
     <table class='fields'>
         <tr>
@@ -703,6 +700,7 @@ Using <b>database</b>: '*' grant access to all databases.
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
         </tr>
     </table>
     </div>
@@ -720,6 +718,7 @@ Using <b>database</b>: '*' grant access to all databases.
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
         </tr>
         <tr>
             <td><field>types</field></td>       <td><type><a href='#Friflo.Json.Fliox.Hub.Protocol.Tasks.TaskType'>TaskType</a>[]</type></td>
@@ -733,10 +732,7 @@ Using <b>database</b>: '*' grant access to all databases.
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <desc><b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/>
-Each allowed message can be listed explicit in <b>names</b>. E.g. 'std.Echo' <br/>
-A group of messages can be allowed by using a prefix. E.g. 'std.*' <br/>
-To grant sending every message independent of its name use: '*'<br/><br/>
+    <desc><b>RightSendMessage</b> allows sending messages to a <b>database</b> by a set of <b>names</b>.<br/><br/>
 Note: commands are messages - so permission of sending commands is same as for messages.
     </desc>
     <table class='fields'>
@@ -745,9 +741,11 @@ Note: commands are messages - so permission of sending commands is same as for m
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
         </tr>
         <tr>
             <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>
+            <td><docs>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</docs></td>
         </tr>
     </table>
     </div>
@@ -757,10 +755,7 @@ Note: commands are messages - so permission of sending commands is same as for m
         <keyword>class</keyword>
         <keyword>extends</keyword> <extends><a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.Right'>Right</a></extends>
     </h3>
-    <desc><b>RightSubscribeMessage</b> allows subscribing messages send to a <b>database</b>.<br/>
-Allow subscribing a specific message by using explicit message <b>names</b>. E.g. 'std.Echo' <br/>
-Allow subscribing a group of messages by using a prefix. E.g. 'std.*' <br/>
-Allow subscribing all messages by using: '*'<br/><br/>
+    <desc><b>RightSubscribeMessage</b> allows subscribing messages send to a <b>database</b>.<br/><br/>
 Note: commands are messages - so permission of subscribing commands is same as for messages.
     </desc>
     <table class='fields'>
@@ -769,9 +764,11 @@ Note: commands are messages - so permission of subscribing commands is same as f
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
         </tr>
         <tr>
             <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>
+            <td><docs>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</docs></td>
         </tr>
     </table>
     </div>
@@ -792,9 +789,11 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
+            <td><docs>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</docs></td>
         </tr>
         <tr>
             <td><field>containers</field></td>  <td><type>key ➞ <a href='#Friflo.Json.Fliox.Hub.Host.Auth.Rights.ContainerAccess'>ContainerAccess</a></type></td>
+            <td><docs>grant execution of operations and subscriptions on listed <b>containers</b></docs></td>
         </tr>
     </table>
     </div>
@@ -847,6 +846,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
         </tr>
         <tr>
             <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>
+            <td><docs>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</docs></td>
         </tr>
     </table>
     </div>

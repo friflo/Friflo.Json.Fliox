@@ -19,7 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// </summary>
     public sealed class RightOperation : Right
     {
+        /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
                         public  string                              database;
+        /// <summary>grant execution of operations and subscriptions on listed <see cref="containers"/> </summary>
         [Fri.Required]  public  Dictionary<string, ContainerAccess> containers;
         public  override        RightType                           RightType => RightType.operation;
         

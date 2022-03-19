@@ -25,15 +25,11 @@ export abstract class Right {
     description? : string | null;
 }
 
-/**
- * Allow full access to the given **database**.  
- * In case **database** ends with a '*' e.g. 'test*' access to all databases with the prefix 'test'
- * is granted.  
- * Using **database**: '*' grant access to all databases.
- */
+/** Allow full access to the given **database**.   */
 export class RightAllow extends Right {
     /** right type */
     type         : "allow";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database?    : string | null;
 }
 
@@ -41,36 +37,35 @@ export class RightAllow extends Right {
 export class RightTask extends Right {
     /** right type */
     type         : "task";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database?    : string | null;
     /** set fo task types like: create, read, upsert, delete, query, ... */
     types        : TaskType[];
 }
 
 /**
- * **RightSendMessage** allows sending messages to a **database** by a set of **names**.  
- * Each allowed message can be listed explicit in **names**. E.g. 'std.Echo'   
- * A group of messages can be allowed by using a prefix. E.g. 'std.*'   
- * To grant sending every message independent of its name use: '*'    
+ * **RightSendMessage** allows sending messages to a **database** by a set of **names**.    
  * Note: commands are messages - so permission of sending commands is same as for messages.
  */
 export class RightSendMessage extends Right {
     /** right type */
     type         : "sendMessage";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database?    : string | null;
+    /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
     names        : string[];
 }
 
 /**
- * **RightSubscribeMessage** allows subscribing messages send to a **database**.  
- * Allow subscribing a specific message by using explicit message **names**. E.g. 'std.Echo'   
- * Allow subscribing a group of messages by using a prefix. E.g. 'std.*'   
- * Allow subscribing all messages by using: '*'    
+ * **RightSubscribeMessage** allows subscribing messages send to a **database**.    
  * Note: commands are messages - so permission of subscribing commands is same as for messages.
  */
 export class RightSubscribeMessage extends Right {
     /** right type */
     type         : "subscribeMessage";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database?    : string | null;
+    /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
     names        : string[];
 }
 
@@ -83,7 +78,9 @@ export class RightSubscribeMessage extends Right {
 export class RightOperation extends Right {
     /** right type */
     type         : "operation";
+    /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database?    : string | null;
+    /** grant execution of operations and subscriptions on listed **containers** */
     containers   : { [key: string]: ContainerAccess };
 }
 
@@ -111,6 +108,7 @@ export type OperationType =
 export class RightPredicate extends Right {
     /** right type */
     type         : "predicate";
+    /** a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*' */
     names        : string[];
 }
 

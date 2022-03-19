@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// </summary>
     public sealed class RightTask : Right
     {
+        /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
                         public  string          database;
                         /// <summary>set fo task types like: create, read, upsert, delete, query, ...</summary>
         [Fri.Required]  public  List<TaskType>  types;
