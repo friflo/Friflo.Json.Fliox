@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task result -----------------------------------
-    [Fri.Discriminator("task")]
+    [Fri.Discriminator("task", Description = "task result type")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
     [Fri.Polymorph(typeof(UpsertEntitiesResult),    Discriminant = "upsert")]
     [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]

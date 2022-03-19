@@ -13,7 +13,7 @@ using Friflo.Json.Fliox.Transform.Query.Parser;
 
 namespace Friflo.Json.Fliox.Transform
 {
-    [Fri.Discriminator("op")]
+    [Fri.Discriminator("op", Description = "operation type")]
     //
     [Fri.Polymorph(typeof(Field),               Discriminant = "field")]
     //  
@@ -232,7 +232,7 @@ namespace Friflo.Json.Fliox.Transform
         }
     }
     
-    [Fri.Discriminator("op")]
+    [Fri.Discriminator("op", Description = "filter type")]
     // --- FilterOperation
     [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
     [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]

@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.
     /// </para>
     /// </summary>
-    [Fri.Discriminator("msg")] 
+    [Fri.Discriminator("msg", Description = "message type: sync (request), resp / error (response), ev (event)")] 
     [Fri.Polymorph(typeof(SyncRequest),    Discriminant = "sync")]
     [Fri.Polymorph(typeof(SyncResponse),   Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),  Discriminant = "error")]
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     }
     
     // ----------------------------------- request -----------------------------------
-    [Fri.Discriminator("msg")] 
+    [Fri.Discriminator("msg", Description = "request type: sync")] 
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
         /// <summary>Used only for <see cref="RemoteClientHub"/> to enable:
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// Base type for response messages send from a host to a client in reply of <see cref="SyncRequest"/><br/>
     /// A response is either a <see cref="SyncResponse"/> or a <see cref="ErrorResponse"/> in case of a general error. 
     /// </summary>
-    [Fri.Discriminator("msg")] 
+    [Fri.Discriminator("msg", Description = "response type: resp / error")] 
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     }
     
     // ----------------------------------- event -----------------------------------
-    [Fri.Discriminator("msg")] 
+    [Fri.Discriminator("msg", Description = "event type: ev")] 
     [Fri.Polymorph(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolEvent     : ProtocolMessage {
         // note for all fields

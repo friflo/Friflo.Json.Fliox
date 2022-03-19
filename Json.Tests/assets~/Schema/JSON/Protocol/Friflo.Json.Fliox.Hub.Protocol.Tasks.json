@@ -329,7 +329,7 @@
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"], "description": "task result type" }
             },
             "required": [
                 "task"
