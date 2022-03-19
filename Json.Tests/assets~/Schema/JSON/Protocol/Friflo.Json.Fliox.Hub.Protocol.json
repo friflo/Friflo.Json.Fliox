@@ -14,7 +14,7 @@
                 "ack":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "<b>eventAck</b> is used to ensure (change) events are delivered reliable.\nA client set <b>eventAck</b> to the last received <b>seq</b> in case\nit has subscribed to database changes by a <b>SubscribeChanges</b> task.\nOtherwise <b>eventAck</b> is null." },
                 "tasks":    { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "list of container operations and database commands / messages" },
                 "database": { "type": ["string", "null"], "description": "database name the <b>tasks</b> apply to. null to access the default database" },
-                "info":     { , "description": "optional JSON value - can be used to describe a request" }
+                "info":     { "description": "optional JSON value - can be used to describe a request" }
             },
             "required": [
                 "msg",
@@ -37,7 +37,7 @@
                 "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>UpsertEntities</b> tasks grouped by container" },
                 "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>PatchEntities</b> tasks grouped by container" },
                 "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>DeleteEntities</b> tasks grouped by container" },
-                "info":         { , "description": "optional JSON value to return debug / development data - e.g. execution times or resource usage." }
+                "info":         { "description": "optional JSON value to return debug / development data - e.g. execution times or resource usage." }
             },
             "required": [
                 "msg"

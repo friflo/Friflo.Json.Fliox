@@ -170,11 +170,12 @@ namespace Friflo.Json.Fliox.Schema
                 var indent = Indent(maxFieldName, field.name);
                 if (required)
                     requiredFields.Add(field.name);
-                var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
+                var autoStr = field.isAutoIncrement ? "\"isAutoIncrement\": true" : "";
                 var relStr  = GetRelation(field, context);
                 Delimiter(sb, Next, ref firstField);
-                var doc     = GetDoc(", \"description\": ", field.doc, "");
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{autoStr}{relStr}{doc} }}");
+                var doc     = GetDoc("\"description\": ", field.doc, "");
+                var values  = JoinValues(new [] { fieldType, autoStr, relStr, doc });
+                sb.Append($"                \"{field.name}\":{indent} {{ {values} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");
@@ -258,7 +259,7 @@ namespace Friflo.Json.Fliox.Schema
         private static string GetRelation(FieldDef field, TypeContext context) {
             if (field.relation == null)
                 return "";
-            return $", \"relation\": \"{field.relation }\"";
+            return $"\"relation\": \"{field.relation }\"";
         }
         
         private static string GetDoc(string prefix, string docs, string suffix) {
@@ -317,5 +318,22 @@ namespace Friflo.Json.Fliox.Schema
                 return $"\"{name}\"";
             return $"[\"{name}\", \"null\"]";
         }
+        
+        private static string JoinValues (IEnumerable<string> values ) {
+            var sb = new StringBuilder();
+            bool first = true;
+            foreach (var value in values) {
+                if (string.IsNullOrEmpty(value))
+                    continue;
+                if (first) {
+                    first = false;
+                } else {
+                    sb.Append(", ");
+                }
+                sb.Append(value);
+            }
+            return sb.ToString();
+        }
+
     }
 }
