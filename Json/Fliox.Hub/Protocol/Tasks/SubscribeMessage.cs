@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// Subscribe a specific message   <see cref="name"/> = 'std.Echo'
         /// </summary>
         [Fri.Required]  public  string      name;
+        /// <summary>if true a previous added subscription is removed. Otherwise added</summary>
                         public  bool?       remove;
         
         internal override       TaskType    TaskType    => TaskType.subscribeMessage;

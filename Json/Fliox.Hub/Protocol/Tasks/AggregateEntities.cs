@@ -72,7 +72,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override   string              ToString() => $"(container: {container})";
     }
     
+    /// <summary>
+    /// Aggregation type used in <see cref="AggregateEntities"/>
+    /// </summary>
     public enum AggregateType {
+        /// <summary>count entities</summary>
         count
     }
 }

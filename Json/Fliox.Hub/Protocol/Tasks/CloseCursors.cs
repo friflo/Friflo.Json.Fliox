@@ -15,7 +15,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class CloseCursors : SyncRequestTask
     {
+        /// <summary>container name</summary>
         [Fri.Required]  public  string          container;
+        /// <summary>list of <see cref="cursors"/></summary>
                         public  List<string>    cursors;
         internal override       TaskType        TaskType => TaskType.closeCursors;
         

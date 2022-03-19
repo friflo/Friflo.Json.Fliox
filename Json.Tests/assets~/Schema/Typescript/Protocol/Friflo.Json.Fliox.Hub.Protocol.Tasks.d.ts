@@ -140,8 +140,9 @@ export class AggregateEntities extends SyncRequestTask {
     filter?     : string | null;
 }
 
+/** Aggregation type used in **AggregateEntities** */
 export type AggregateType =
-    | "count"
+    | "count"      /** count entities */
 ;
 
 /**
@@ -202,15 +203,23 @@ export class SendCommand extends SyncMessageTask {
 /** Close the **cursors** of the given **container** */
 export class CloseCursors extends SyncRequestTask {
     task       : "closeCursors";
+    /** container name */
     container  : string;
+    /** list of **cursors** */
     cursors?   : string[] | null;
 }
 
 /** Subscribe to specific **changes** of the specified **container** using the given **filter** */
 export class SubscribeChanges extends SyncRequestTask {
     task       : "subscribeChanges";
+    /** container name */
     container  : string;
+    /** type of entity **changes** to be subscribed */
     changes    : Change[];
+    /**
+     * subscription filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
+     * returning a boolean value. E.g. o.name == 'Smartphone'
+     */
     filter?    : any | null;
 }
 
@@ -235,6 +244,7 @@ export class SubscribeMessage extends SyncRequestTask {
      * Subscribe a specific message   **name** = 'std.Echo'
      */
     name    : string;
+    /** if true a previous added subscription is removed. Otherwise added */
     remove? : boolean | null;
 }
 

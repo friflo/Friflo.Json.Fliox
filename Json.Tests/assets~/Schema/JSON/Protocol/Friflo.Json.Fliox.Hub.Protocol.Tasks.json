@@ -129,7 +129,11 @@
         "AggregateType": {
             "enum": [
                 "count"
-            ]
+            ],
+            "descriptions": {
+                "count": "count entities"
+            }
+
         },
         "PatchEntities": {
             "type": "object",
@@ -230,8 +234,8 @@
             "description": "Close the <b>cursors</b> of the given <b>container</b>",
             "properties": {
                 "task":      { "enum": ["closeCursors"] },
-                "container": { "type": "string" },
-                "cursors":   { "type": ["array", "null"], "items": { "type": "string" } },
+                "container": { "type": "string", "description": "container name" },
+                "cursors":   { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>cursors</b>" },
                 "info":      {  }
             },
             "required": [
@@ -246,9 +250,9 @@
             "description": "Subscribe to specific <b>changes</b> of the specified <b>container</b> using the given <b>filter</b>",
             "properties": {
                 "task":      { "enum": ["subscribeChanges"] },
-                "container": { "type": "string" },
-                "changes":   { "type": "array", "items": { "$ref": "#/definitions/Change" } },
-                "filter":    {  },
+                "container": { "type": "string", "description": "container name" },
+                "changes":   { "type": "array", "items": { "$ref": "#/definitions/Change" }, "description": "type of entity <b>changes</b> to be subscribed" },
+                "filter":    { "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" },
                 "info":      {  }
             },
             "required": [
@@ -280,7 +284,7 @@
             "properties": {
                 "task":   { "enum": ["subscribeMessage"] },
                 "name":   { "type": "string", "description": "Subscribe all messages with the given <b>name</b>. <br/>\nSubscribe all messages         <b>name</b> = '*'<br/>\nSubscribe messages with prefix <b>name</b> = 'std.*' <br/>\nSubscribe a specific message   <b>name</b> = 'std.Echo'" },
-                "remove": { "type": ["boolean", "null"] },
+                "remove": { "type": ["boolean", "null"], "description": "if true a previous added subscription is removed. Otherwise added" },
                 "info":   {  }
             },
             "required": [

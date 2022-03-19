@@ -16,8 +16,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class SubscribeChanges : SyncRequestTask
     {
+        /// <summary>container name</summary>
         [Fri.Required]  public      string          container;
+        /// <summary>type of entity <see cref="changes"/> to be subscribed</summary>
         [Fri.Required]  public      List<Change>    changes;
+        /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
+        /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                         public      JsonValue       filter;
                         
         [Fri.Ignore]    internal    FilterOperation filterOp;
