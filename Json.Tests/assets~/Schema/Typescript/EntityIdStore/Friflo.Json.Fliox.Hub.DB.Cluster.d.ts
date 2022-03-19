@@ -76,8 +76,9 @@ export class HostDetails {
     envColor?       : string | null;
 }
 
-/** list of all databases of a Hub */
+/** All **databases** hosted by Hub */
 export class HostCluster {
+    /** list of **databases** hosted by Hub */
     databases  : DbContainers[];
 }
 

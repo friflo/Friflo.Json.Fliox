@@ -39,9 +39,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     
     /// <summary>number of requests and tasks executed by the host. Container contains always a single record</summary>
     public class HostHits {
-                /// <summary>host name</summary>
+        /// <summary>host name</summary>
         [Req]   public  JsonKey                         id;
-                /// <summary>number of executed requests and tasks per database</summary>
+        /// <summary>number of executed requests and tasks per database</summary>
                 public  RequestCount                    counts;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
@@ -49,11 +49,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     
     /// <summary>all user clients and number of executed user requests and tasks</summary>
     public class UserHits {
-                /// <summary>user id </summary>
+        /// <summary>user id </summary>
         [Req]   public  JsonKey                         id;
-                /// <summary>list of clients owned by a user</summary>
+        /// <summary>list of clients owned by a user</summary>
         [Req]   public  List<Ref<JsonKey, ClientHits>>  clients;
-                /// <summary>number executed requests and tasks per database</summary>
+        /// <summary>number executed requests and tasks per database</summary>
         public  List<RequestCount>                      counts = new List<RequestCount>();
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
@@ -61,13 +61,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     
     /// <summary>information about requests, tasks, events and subscriptions of a client</summary>
     public class ClientHits {
-                /// <summary>client id </summary>
+        /// <summary>client id </summary>
         [Req]   public  JsonKey                         id;
-                /// <summary>user owning the client</summary>
+        /// <summary>user owning the client</summary>
         [Req]   public  Ref<JsonKey, UserHits>          user;
-                /// <summary>number executed requests and tasks per database</summary>
+        /// <summary>number executed requests and tasks per database</summary>
                 public  List<RequestCount>              counts = new List<RequestCount>();
-                /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
+        /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
         [Fri.Property (Name =                          "event")]
                 public  EventDelivery?                  ev;
                         
@@ -76,34 +76,34 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     
     /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
     public struct EventDelivery {
-                /// <summary>number of events sent to a client</summary>
+        /// <summary>number of events sent to a client</summary>
                 public  int                             seq;
-                /// <summary>number of queued events not acknowledged by a client</summary>
+        /// <summary>number of queued events not acknowledged by a client</summary>
                 public  int                             queued;
-                /// <summary>message / command subscriptions of a client</summary>
+        /// <summary>message / command subscriptions of a client</summary>
                 public  List<string>                    messageSubs;
-                /// <summary>change subscriptions of a client</summary>
+        /// <summary>change subscriptions of a client</summary>
                 public  List<ChangeSubscription>        changeSubs;
     }
     
     /// <summary>change subscription for a specific container</summary>
     public sealed class ChangeSubscription
     {
-                /// <summary>name of subscribed container</summary>
+        /// <summary>name of subscribed container</summary>
         [Req]   public  string                          container;
-                /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
+        /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
         [Req]   public  List<Change>                    changes;
-                /// <summary>filter to narrow the amount of change events</summary>
+        /// <summary>filter to narrow the amount of change events</summary>
                 public  string                          filter;
     }
     
     /// <summary>aggregated counts of latest requests. Each record uses a specific aggregation interval.</summary>
     public class HistoryHits {
-                /// <summary>time in seconds for an aggregation interval</summary>
+        /// <summary>time in seconds for an aggregation interval</summary>
         [Req]   public  int                             id;
-                /// <summary>number of requests executed in each interval</summary>
+        /// <summary>number of requests executed in each interval</summary>
         [Req]   public  int[]                           counters;
-                /// <summary>last update of the <see cref="HistoryHits"/> record</summary>
+        /// <summary>last update of the <see cref="HistoryHits"/> record</summary>
                 public  int                             lastUpdate;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");

@@ -88,9 +88,9 @@
         },
         "HostCluster": {
             "type": "object",
-            "description": "list of all databases of a Hub",
+            "description": "All <b>databases</b> hosted by Hub",
             "properties": {
-                "databases": { "type": "array", "items": { "$ref": "#/definitions/DbContainers" } }
+                "databases": { "type": "array", "items": { "$ref": "#/definitions/DbContainers" }, "description": "list of <b>databases</b> hosted by Hub" }
             },
             "required": [
                 "databases"

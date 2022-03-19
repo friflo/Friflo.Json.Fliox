@@ -89,26 +89,27 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     /// <summary>general information about a Hub</summary>
     public class HostDetails {
-                /// <summary>host version</summary>
+        /// <summary>host version</summary>
         [Req]   public  string                          version;
-                /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in
-                /// <see cref="DB.Monitor.MonitorStore.hosts"/> of database <b>monitor</b></summary>
+        /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in
+        /// <see cref="DB.Monitor.MonitorStore.hosts"/> of database <b>monitor</b></summary>
                 public  string                          hostName;
-                /// <summary>project name</summary>
+        /// <summary>project name</summary>
                 public  string                          projectName;
-                /// <summary>link to a website describing project and Hub</summary>
+        /// <summary>link to a website describing project and Hub</summary>
                 public  string                          projectWebsite;
-                /// <summary>environment name. e.g. 'dev', 'test', 'staging', 'prod'</summary>
+        /// <summary>environment name. e.g. 'dev', 'test', 'staging', 'prod'</summary>
                 public  string                          envName;
-                /// <summary>
-                /// the color used to display the environment name in GUI's using CSS color format.<br/>
-                /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
-                /// </summary>
+        /// <summary>
+        /// the color used to display the environment name in GUI's using CSS color format.<br/>
+        /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
+        /// </summary>
                 public  string                          envColor;
     }
     
-    /// <summary>list of all databases of a Hub</summary>
+    /// <summary>All <see cref="databases"/> hosted by Hub</summary>
     public class HostCluster {
+        /// <summary>list of <see cref="databases"/> hosted by Hub</summary>
         [Req]   public  List<DbContainers>              databases;
     }
 }
