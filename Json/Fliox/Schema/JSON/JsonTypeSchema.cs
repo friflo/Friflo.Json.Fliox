@@ -93,9 +93,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
                             unionTypes.Add(unionItem);
                         }
                         typeDef.isAbstract = true;
-                        typeDef.unionType  = new UnionType (type.discriminator, unionTypes);
+                        typeDef.unionType  = new UnionType (type.discriminator, type.description, unionTypes);
                     }
-                    
                 }
                 foreach (JSONSchema schema in schemaList) {
                     foreach (var pair in schema.typeDefs) {

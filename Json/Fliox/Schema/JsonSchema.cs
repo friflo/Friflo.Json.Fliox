@@ -154,11 +154,12 @@ namespace Friflo.Json.Fliox.Schema
                 requiredFields.Add(discriminator);
             }
             if (unionType != null ) {
-                var disc = unionType.discriminator;
+                var disc        = unionType.discriminator;
+                var doc         = GetDoc(", \"description\": ", unionType.doc, "");
                 maxFieldName    = Math.Max(maxFieldName, disc.Length);
                 var indent      = Indent(maxFieldName, disc);
                 var discriminators = string.Join(", ", unionType.types.Select(polyType => $"\"{polyType.discriminant}\""));
-                sb.Append($"                \"{disc}\":{indent} {{ \"enum\": [{discriminators}] }}");
+                sb.Append($"                \"{disc}\":{indent} {{ \"enum\": [{discriminators}]{doc} }}");
                 firstField = false;
                 requiredFields.Add(disc);
             }

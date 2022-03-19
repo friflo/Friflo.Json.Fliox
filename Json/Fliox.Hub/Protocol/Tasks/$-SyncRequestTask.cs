@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <b>container operations</b> like: create, read, upsert, delete, query, ...<br/>
     /// <b>database operation</b> like sending commands or messages
     /// </summary>
-    [Fri.Discriminator("task")]
+    [Fri.Discriminator("task",
+     Description = "task type: create, read, upsert, delete, query, aggregate, patch, command, message, subscribeChanges, subscribeMessage")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(UpsertEntities),          Discriminant = "upsert")]
     [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]

@@ -141,19 +141,19 @@ namespace Friflo.Json.Fliox.Schema.Native
                         throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
                 }
                 // set the unionType if a class is a discriminated union
-                var instanceFactory = mapper.instanceFactory;
-                if (instanceFactory != null) {
+                var factory = mapper.instanceFactory;
+                if (factory != null) {
                     typeDef.isAbstract = true;
                     // expect polyTypes if not abstract
-                    if (!instanceFactory.isAbstract) {
-                        var polyTypes   = instanceFactory.polyTypes;
+                    if (!factory.isAbstract) {
+                        var polyTypes   = factory.polyTypes;
                         var unionTypes  = new List<UnionItem>(polyTypes.Length);
                         foreach (var polyType in polyTypes) {
                             TypeDef element = nativeTypes[polyType.type];
                             var item = new UnionItem (element, polyType.name);
                             unionTypes.Add(item);
                         }
-                        typeDef.unionType  = new UnionType (instanceFactory.discriminator, unionTypes);
+                        typeDef.unionType  = new UnionType (factory.discriminator, factory.description, unionTypes);
                     }
                 }
             }

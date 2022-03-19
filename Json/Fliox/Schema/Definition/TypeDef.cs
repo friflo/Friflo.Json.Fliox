@@ -204,12 +204,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
     public sealed class UnionType {
         public   readonly   string                      discriminator;
+        public   readonly   string                      doc;
         public   readonly   IReadOnlyList<UnionItem>    types;
         
         public   override   string                      ToString() => discriminator;
         
-        public UnionType(string discriminator, List<UnionItem> types) {
+        public UnionType(string discriminator, string doc, List<UnionItem> types) {
             this.discriminator  = discriminator;
+            this.doc            = doc;
             this.types          = types;
         }
     }

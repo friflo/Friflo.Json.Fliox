@@ -20,7 +20,7 @@
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
+                "task": { "enum": ["create", "upsert", "read", "query", "aggregate", "patch", "delete", "message", "command", "closeCursors", "subscribeChanges", "subscribeMessage", "reserveKeys"], "description": "task type: create, read, upsert, delete, query, aggregate, patch, command, message, subscribeChanges, subscribeMessage" },
                 "info": {  }
             },
             "required": [

@@ -21,16 +21,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
     // Is public to support external schema / code generators
     public sealed class InstanceFactory {
         public   readonly   string                          discriminator;
+        public   readonly   string                          description;
         private  readonly   Type                            instanceType;
         public   readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
         private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
         public   readonly   bool                            isAbstract;
 
-        private InstanceFactory(string discriminator, Type instanceType, PolyType[] polyTypes) {
-            this.discriminator = discriminator;
-            this.instanceType = instanceType;
-            this.polyTypes = polyTypes;
+        private InstanceFactory(string discriminator, string description, Type instanceType, PolyType[] polyTypes) {
+            this.discriminator  = discriminator;
+            this.description    = description;
+            this.instanceType   = instanceType;
+            this.polyTypes      = polyTypes;
         }
         
         public InstanceFactory() {
@@ -64,9 +66,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         
         internal static InstanceFactory GetInstanceFactory(Type type) {
-            Type            instanceType = null;
-            string          discriminator = null;
-            List<PolyType>  typeList = new List<PolyType>();
+            Type            instanceType    = null;
+            string          discriminator   = null;
+            string          discDescription = null;
+            List<PolyType>  typeList        = new List<PolyType>();
             foreach (var attr in type.CustomAttributes) {
                 if (attr.AttributeType == typeof(Fri.PolymorphAttribute)) {
                     string name = null;
@@ -96,6 +99,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     if (attr.NamedArguments != null) {
                         var arg = attr.ConstructorArguments;
                         discriminator = (string) arg[0].Value;
+                        foreach (var args in attr.NamedArguments) {
+                            if (args.MemberName == nameof(Fri.DiscriminatorAttribute.Description)) {
+                                if (args.TypedValue.Value != null)
+                                    discDescription = (string) args.TypedValue.Value;
+                            }
+                        }
                     }
                 }
             }
@@ -105,7 +114,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 throw new InvalidOperationException($"specified [Fri.Polymorph] attribute require [Fri.Discriminator] on: {type.Name}");
 
             if (instanceType != null || typeList.Count > 0)
-                return new InstanceFactory(discriminator, instanceType, typeList.ToArray());
+                return new InstanceFactory(discriminator, discDescription, instanceType, typeList.ToArray());
             if (type.IsAbstract)
                 return new InstanceFactory();
             return null;

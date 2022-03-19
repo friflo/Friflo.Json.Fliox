@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Mapper
         [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
         public sealed class DiscriminatorAttribute : Attribute {
             public DiscriminatorAttribute (string discriminator) {}
+            public string     Description    { get; set; }
         }
 
         [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
