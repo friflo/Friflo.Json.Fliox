@@ -6,7 +6,9 @@ import { int32 } from "./Standard";
  * To return entities referenced by fields of the read result use **references**
  */
 export class ReadEntitiesSet {
+    /** list of entity **ids** requested by a **ReadEntities** task */
     ids         : string[];
+    /** used to request the entities referenced by properties of a read task result */
     references? : References[] | null;
 }
 

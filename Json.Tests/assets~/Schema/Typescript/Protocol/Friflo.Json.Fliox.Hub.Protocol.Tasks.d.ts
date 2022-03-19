@@ -96,14 +96,25 @@ export class ReadEntities extends SyncRequestTask {
  */
 export class QueryEntities extends SyncRequestTask {
     task        : "query";
+    /** container name */
     container   : string;
+    /** name of the primary key property of the returned entities */
     keyName?    : string | null;
     isIntKey?   : boolean | null;
+    /**
+     * query filter as JSON tree.   
+     * Is used in favour of **filter** as its serialization is more performant
+     */
     filterTree? : any | null;
+    /** query filter as infix notation. E.g. o.name == 'Smartphone'  **filterTree** has priority if given */
     filter?     : string | null;
+    /** used to request the entities referenced by properties of the query task result */
     references? : References[] | null;
+    /** limit the result set to the given number */
     limit?      : int32 | null;
+    /** execute a cursor request with the specified **maxCount** number of entities in the result. */
     maxCount?   : int32 | null;
+    /** specify the **cursor** of a previous cursor request */
     cursor?     : string | null;
 }
 

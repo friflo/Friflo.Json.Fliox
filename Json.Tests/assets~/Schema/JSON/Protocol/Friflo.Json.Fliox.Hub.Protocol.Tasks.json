@@ -90,15 +90,15 @@
             "description": "Query entities from the given <b>container</b> using a <b>filter</b><br/>\nTo return entities referenced by fields of the query result use <b>references</b>",
             "properties": {
                 "task":       { "enum": ["query"] },
-                "container":  { "type": "string" },
-                "keyName":    { "type": ["string", "null"] },
+                "container":  { "type": "string", "description": "container name" },
+                "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
-                "filterTree": {  },
-                "filter":     { "type": ["string", "null"] },
-                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" } },
-                "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}] },
-                "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}] },
-                "cursor":     { "type": ["string", "null"] },
+                "filterTree": { "description": "query filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
+                "filter":     { "type": ["string", "null"], "description": "query filter as infix notation. E.g. <c>o.name == 'Smartphone'</c><br/><b>filterTree</b> has priority if given" },
+                "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of the query task result" },
+                "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "limit the result set to the given number" },
+                "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "execute a cursor request with the specified <b>maxCount</b> number of entities in the result." },
+                "cursor":     { "type": ["string", "null"], "description": "specify the <b>cursor</b> of a previous cursor request" },
                 "info":       {  }
             },
             "required": [

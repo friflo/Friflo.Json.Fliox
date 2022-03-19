@@ -6,8 +6,8 @@
             "type": "object",
             "description": "Specify the <b>ids</b> requested by a <b>ReadEntities</b> task.<br/>\nTo return entities referenced by fields of the read result use <b>references</b>",
             "properties": {
-                "ids":        { "type": "array", "items": { "type": "string" } },
-                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/References" } }
+                "ids":        { "type": "array", "items": { "type": "string" }, "description": "list of entity <b>ids</b> requested by a <b>ReadEntities</b> task" },
+                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/References" }, "description": "used to request the entities referenced by properties of a read task result" }
             },
             "required": [
                 "ids"

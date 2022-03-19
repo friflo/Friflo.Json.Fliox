@@ -19,14 +19,24 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class QueryEntities : SyncRequestTask
     {
+        /// <summary>container name</summary>
         [Fri.Required]  public  string              container;
+        /// <summary>name of the primary key property of the returned entities</summary>
                         public  string              keyName;
                         public  bool?               isIntKey;
+        /// <summary>query filter as JSON tree. <br/>
+        /// Is used in favour of <see cref="filter"/> as its serialization is more performant</summary>
                         public  JsonValue           filterTree;
+        /// <summary>query filter as infix notation. E.g. <c>o.name == 'Smartphone'</c><br/>
+        /// <see cref="filterTree"/> has priority if given</summary>
                         public  string              filter;
+        /// <summary>used to request the entities referenced by properties of the query task result</summary>
                         public  List<References>    references;
+        /// <summary>limit the result set to the given number</summary>
                         public  int?                limit;
+        /// <summary>execute a cursor request with the specified <see cref="maxCount"/> number of entities in the result.</summary>
                         public  int?                maxCount;
+        /// <summary>specify the <see cref="cursor"/> of a previous cursor request</summary>
                         public  string              cursor;
                         
         [Fri.Ignore]    private FilterOperation     filterLambda;

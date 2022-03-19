@@ -17,7 +17,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     {
         [Fri.Ignore]    public  string                  keyName;
         [Fri.Ignore]    public  bool?                   isIntKey;
+        /// <summary>list of entity <see cref="ids"/> requested by a <see cref="Tasks.ReadEntities"/> task</summary>
         [Fri.Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        /// <summary>used to request the entities referenced by properties of a read task result</summary>
                         public  List<References>        references;
     }
     
