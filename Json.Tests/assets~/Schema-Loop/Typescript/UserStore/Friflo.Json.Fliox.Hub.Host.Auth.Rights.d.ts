@@ -32,12 +32,14 @@ export abstract class Right {
  * Using **database**: '*' grant access to all databases.
  */
 export class RightAllow extends Right {
+    /** right type */
     type         : "allow";
     database?    : string | null;
 }
 
 /** **RightTask** grant **database** access by a set of task **types**.    */
 export class RightTask extends Right {
+    /** right type */
     type         : "task";
     database?    : string | null;
     /** set fo task types like: create, read, upsert, delete, query, ... */
@@ -52,6 +54,7 @@ export class RightTask extends Right {
  * Note: commands are messages - so permission of sending commands is same as for messages.
  */
 export class RightSendMessage extends Right {
+    /** right type */
     type         : "sendMessage";
     database?    : string | null;
     names        : string[];
@@ -65,6 +68,7 @@ export class RightSendMessage extends Right {
  * Note: commands are messages - so permission of subscribing commands is same as for messages.
  */
 export class RightSubscribeMessage extends Right {
+    /** right type */
     type         : "subscribeMessage";
     database?    : string | null;
     names        : string[];
@@ -77,6 +81,7 @@ export class RightSubscribeMessage extends Right {
  * It also allows subscribing database changes by **subscribeChanges**
  */
 export class RightOperation extends Right {
+    /** right type */
     type         : "operation";
     database?    : string | null;
     containers   : { [key: string]: ContainerAccess };
@@ -104,6 +109,7 @@ export type OperationType =
 ;
 
 export class RightPredicate extends Right {
+    /** right type */
     type         : "predicate";
     names        : string[];
 }

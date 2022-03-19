@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         internal            List<MessageDef>            commands;
         internal            UnionType                   unionType;
         internal            string                      discriminator;
+        internal            string                      discriminatorDoc;
         internal            bool                        isAbstract;
         
         // --- TypeDef
@@ -32,6 +33,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         public   override   IReadOnlyList<MessageDef>   Commands        => commands;
         public   override   string                      Discriminant    { get; }
         public   override   string                      Discriminator   => discriminator;
+        public   override   string                      DiscriminatorDoc=> discriminatorDoc;
         public   override   UnionType                   UnionType       => unionType;
         public   override   bool                        IsAbstract      => isAbstract;
         public   override   IReadOnlyList<EnumValue>    EnumValues      { get; }

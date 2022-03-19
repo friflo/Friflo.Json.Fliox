@@ -12,10 +12,12 @@ export abstract class BinaryBoolOp extends FilterOperation {
 }
 
 export class Equal extends BinaryBoolOp {
+    /** filter type */
     op     : "equal";
 }
 
 export class Field extends Operation {
+    /** operation type */
     op    : "field";
     name  : string;
 }
@@ -24,33 +26,40 @@ export abstract class Literal extends Operation {
 }
 
 export class StringLiteral extends Literal {
+    /** operation type */
     op     : "string";
     value  : string;
 }
 
 export class DoubleLiteral extends Literal {
+    /** operation type */
     op     : "double";
     value  : double;
 }
 
 export class LongLiteral extends Literal {
+    /** operation type */
     op     : "int64";
     value  : int64;
 }
 
 export class NullLiteral extends Literal {
+    /** operation type */
     op  : "null";
 }
 
 export class PiLiteral extends Literal {
+    /** operation type */
     op  : "PI";
 }
 
 export class EulerLiteral extends Literal {
+    /** operation type */
     op  : "E";
 }
 
 export class TauLiteral extends Literal {
+    /** operation type */
     op  : "Tau";
 }
 
@@ -59,30 +68,37 @@ export abstract class UnaryArithmeticOp extends Operation {
 }
 
 export class Abs extends UnaryArithmeticOp {
+    /** operation type */
     op     : "abs";
 }
 
 export class Ceiling extends UnaryArithmeticOp {
+    /** operation type */
     op     : "ceiling";
 }
 
 export class Floor extends UnaryArithmeticOp {
+    /** operation type */
     op     : "floor";
 }
 
 export class Exp extends UnaryArithmeticOp {
+    /** operation type */
     op     : "exp";
 }
 
 export class Log extends UnaryArithmeticOp {
+    /** operation type */
     op     : "log";
 }
 
 export class Sqrt extends UnaryArithmeticOp {
+    /** operation type */
     op     : "sqrt";
 }
 
 export class Negate extends UnaryArithmeticOp {
+    /** operation type */
     op     : "negate";
 }
 
@@ -92,22 +108,27 @@ export abstract class BinaryArithmeticOp extends Operation {
 }
 
 export class Add extends BinaryArithmeticOp {
+    /** operation type */
     op     : "add";
 }
 
 export class Subtract extends BinaryArithmeticOp {
+    /** operation type */
     op     : "subtract";
 }
 
 export class Multiply extends BinaryArithmeticOp {
+    /** operation type */
     op     : "multiply";
 }
 
 export class Divide extends BinaryArithmeticOp {
+    /** operation type */
     op     : "divide";
 }
 
 export class Modulo extends BinaryArithmeticOp {
+    /** operation type */
     op     : "modulo";
 }
 
@@ -118,18 +139,22 @@ export abstract class BinaryAggregateOp extends Operation {
 }
 
 export class Min extends BinaryAggregateOp {
+    /** operation type */
     op     : "min";
 }
 
 export class Max extends BinaryAggregateOp {
+    /** operation type */
     op     : "max";
 }
 
 export class Sum extends BinaryAggregateOp {
+    /** operation type */
     op     : "sum";
 }
 
 export class Average extends BinaryAggregateOp {
+    /** operation type */
     op     : "average";
 }
 
@@ -138,26 +163,32 @@ export abstract class UnaryAggregateOp extends Operation {
 }
 
 export class Count extends UnaryAggregateOp {
+    /** operation type */
     op     : "count";
 }
 
 export class NotEqual extends BinaryBoolOp {
+    /** filter type */
     op     : "notEqual";
 }
 
 export class Less extends BinaryBoolOp {
+    /** filter type */
     op     : "less";
 }
 
 export class LessOrEqual extends BinaryBoolOp {
+    /** filter type */
     op     : "lessOrEqual";
 }
 
 export class Greater extends BinaryBoolOp {
+    /** filter type */
     op     : "greater";
 }
 
 export class GreaterOrEqual extends BinaryBoolOp {
+    /** filter type */
     op     : "greaterOrEqual";
 }
 
@@ -166,18 +197,22 @@ export abstract class BinaryLogicalOp extends FilterOperation {
 }
 
 export class And extends BinaryLogicalOp {
+    /** filter type */
     op        : "and";
 }
 
 export class Or extends BinaryLogicalOp {
+    /** filter type */
     op        : "or";
 }
 
 export class TrueLiteral extends FilterOperation {
+    /** filter type */
     op  : "true";
 }
 
 export class FalseLiteral extends FilterOperation {
+    /** filter type */
     op  : "false";
 }
 
@@ -186,16 +221,19 @@ export abstract class UnaryLogicalOp extends FilterOperation {
 }
 
 export class Not extends UnaryLogicalOp {
+    /** filter type */
     op       : "not";
 }
 
 export class Lambda extends Operation {
+    /** operation type */
     op    : "lambda";
     arg   : string;
     body  : Operation_Union;
 }
 
 export class Filter extends FilterOperation {
+    /** filter type */
     op    : "filter";
     arg   : string;
     body  : FilterOperation_Union;
@@ -208,14 +246,17 @@ export abstract class BinaryQuantifyOp extends FilterOperation {
 }
 
 export class Any extends BinaryQuantifyOp {
+    /** filter type */
     op         : "any";
 }
 
 export class All extends BinaryQuantifyOp {
+    /** filter type */
     op         : "all";
 }
 
 export class CountWhere extends Operation {
+    /** operation type */
     op         : "countWhere";
     field      : Field;
     arg        : string;
@@ -223,14 +264,17 @@ export class CountWhere extends Operation {
 }
 
 export class Contains extends BinaryBoolOp {
+    /** filter type */
     op     : "contains";
 }
 
 export class StartsWith extends BinaryBoolOp {
+    /** filter type */
     op     : "startsWith";
 }
 
 export class EndsWith extends BinaryBoolOp {
+    /** filter type */
     op     : "endsWith";
 }
 

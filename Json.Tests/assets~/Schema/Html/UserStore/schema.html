@@ -699,7 +699,7 @@ Using <b>database</b>: '*' grant access to all databases.
     </desc>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>        <td><discriminant>"allow"</discriminant></td>
+            <td><disc>type</disc></td>        <td><discriminant>"allow"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
@@ -716,7 +716,7 @@ Using <b>database</b>: '*' grant access to all databases.
     </desc>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>        <td><discriminant>"task"</discriminant></td>
+            <td><disc>type</disc></td>        <td><discriminant>"task"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
@@ -741,7 +741,7 @@ Note: commands are messages - so permission of sending commands is same as for m
     </desc>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>        <td><discriminant>"sendMessage"</discriminant></td>
+            <td><disc>type</disc></td>        <td><discriminant>"sendMessage"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
@@ -765,7 +765,7 @@ Note: commands are messages - so permission of subscribing commands is same as f
     </desc>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>        <td><discriminant>"subscribeMessage"</discriminant></td>
+            <td><disc>type</disc></td>        <td><discriminant>"subscribeMessage"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
@@ -788,7 +788,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     </desc>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>        <td><discriminant>"operation"</discriminant></td>
+            <td><disc>type</disc></td>        <td><discriminant>"operation"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>database</field></td>    <td><type><predef>string</predef> | null</type></td>
@@ -843,7 +843,7 @@ It also allows subscribing database changes by <b>subscribeChanges</b>
     </h3>
     <table class='fields'>
         <tr>
-            <td><disc>type</disc></td>        <td><discriminant>"predicate"</discriminant></td>
+            <td><disc>type</disc></td>        <td><discriminant>"predicate"</discriminant></td><td><docs>right type</docs></td>
         </tr>
         <tr>
             <td><field>names</field></td>       <td><type><predef>string</predef>[]</type></td>

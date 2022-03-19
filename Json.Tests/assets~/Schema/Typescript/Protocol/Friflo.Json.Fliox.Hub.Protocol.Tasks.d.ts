@@ -52,6 +52,7 @@ export abstract class SyncRequestTask {
 
 /** Create the given **entities** in the specified **container** */
 export class CreateEntities extends SyncRequestTask {
+    /** task type */
     task           : "create";
     /** container name the **entities** are created */
     container      : string;
@@ -64,6 +65,7 @@ export class CreateEntities extends SyncRequestTask {
 
 /** Upsert the given **entities** in the specified **container** */
 export class UpsertEntities extends SyncRequestTask {
+    /** task type */
     task       : "upsert";
     /** container name the **entities** are upserted - created or updated */
     container  : string;
@@ -81,6 +83,7 @@ export class UpsertEntities extends SyncRequestTask {
  * This mimic the functionality of a **JOIN** in **SQL**
  */
 export class ReadEntities extends SyncRequestTask {
+    /** task type */
     task       : "read";
     /** container name */
     container  : string;
@@ -96,6 +99,7 @@ export class ReadEntities extends SyncRequestTask {
  * To return entities referenced by fields of the query result use **references**
  */
 export class QueryEntities extends SyncRequestTask {
+    /** task type */
     task        : "query";
     /** container name */
     container   : string;
@@ -124,6 +128,7 @@ export class QueryEntities extends SyncRequestTask {
 
 /** Aggregate - count - entities from the given **container** using a **filter**   */
 export class AggregateEntities extends SyncRequestTask {
+    /** task type */
     task        : "aggregate";
     /** container name */
     container   : string;
@@ -151,6 +156,7 @@ export type AggregateType =
  * Each **EntityPatch** in **patches** contains a set of **patches** for each entity.
  */
 export class PatchEntities extends SyncRequestTask {
+    /** task type */
     task       : "patch";
     /** container name */
     container  : string;
@@ -171,6 +177,7 @@ export class EntityPatch {
  * The entities which will be deleted are listed in **ids**
  */
 export class DeleteEntities extends SyncRequestTask {
+    /** task type */
     task       : "delete";
     /** container name */
     container  : string;
@@ -193,16 +200,19 @@ export abstract class SyncMessageTask extends SyncRequestTask {
 
 /** Send a database message with the given **param**   */
 export class SendMessage extends SyncMessageTask {
+    /** task type */
     task   : "message";
 }
 
 /** Send a database command with the given **param**   */
 export class SendCommand extends SyncMessageTask {
+    /** task type */
     task   : "command";
 }
 
 /** Close the **cursors** of the given **container** */
 export class CloseCursors extends SyncRequestTask {
+    /** task type */
     task       : "closeCursors";
     /** container name */
     container  : string;
@@ -212,6 +222,7 @@ export class CloseCursors extends SyncRequestTask {
 
 /** Subscribe to specific **changes** of the specified **container** using the given **filter** */
 export class SubscribeChanges extends SyncRequestTask {
+    /** task type */
     task       : "subscribeChanges";
     /** container name */
     container  : string;
@@ -237,6 +248,7 @@ export type Change =
  * Unsubscribe by setting **remove** to true
  */
 export class SubscribeMessage extends SyncRequestTask {
+    /** task type */
     task    : "subscribeMessage";
     /**
      * Subscribe all messages with the given **name**.   
@@ -251,6 +263,7 @@ export class SubscribeMessage extends SyncRequestTask {
 
 /** WIP */
 export class ReserveKeys extends SyncRequestTask {
+    /** task type */
     task       : "reserveKeys";
     container  : string;
     count      : int32;
@@ -294,19 +307,23 @@ export abstract class SyncTaskResult {
 }
 
 export class CreateEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task  : "create";
 }
 
 export class UpsertEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task  : "upsert";
 }
 
 export class ReadEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task  : "read";
     sets  : ReadEntitiesSetResult[];
 }
 
 export class QueryEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task        : "query";
     container?  : string | null;
     cursor?     : string | null;
@@ -317,16 +334,19 @@ export class QueryEntitiesResult extends SyncTaskResult {
 }
 
 export class AggregateEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task       : "aggregate";
     container? : string | null;
     value?     : double | null;
 }
 
 export class PatchEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task  : "patch";
 }
 
 export class DeleteEntitiesResult extends SyncTaskResult {
+    /** task result type */
     task  : "delete";
 }
 
@@ -334,28 +354,34 @@ export abstract class SyncMessageResult extends SyncTaskResult {
 }
 
 export class SendMessageResult extends SyncMessageResult {
+    /** task result type */
     task  : "message";
 }
 
 export class SendCommandResult extends SyncMessageResult {
+    /** task result type */
     task    : "command";
     result? : any | null;
 }
 
 export class CloseCursorsResult extends SyncTaskResult {
+    /** task result type */
     task   : "closeCursors";
     count  : int32;
 }
 
 export class SubscribeChangesResult extends SyncTaskResult {
+    /** task result type */
     task  : "subscribeChanges";
 }
 
 export class SubscribeMessageResult extends SyncTaskResult {
+    /** task result type */
     task  : "subscribeMessage";
 }
 
 export class ReserveKeysResult extends SyncTaskResult {
+    /** task result type */
     task  : "reserveKeys";
     keys? : ReservedKeys | null;
 }
@@ -367,6 +393,7 @@ export class ReservedKeys {
 }
 
 export class TaskErrorResult extends SyncTaskResult {
+    /** task result type */
     task        : "error";
     type        : TaskErrorResultType;
     message?    : string | null;

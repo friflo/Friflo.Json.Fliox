@@ -21,6 +21,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   bool                        IsAbstract      => isAbstract; 
         public   override   string                      Discriminant    => discriminant;
         public   override   string                      Discriminator   => discriminator;
+        public   override   string                      DiscriminatorDoc=> discriminatorDoc;
         public   override   bool                        IsEnum          => EnumValues != null;
         public   override   IReadOnlyList<EnumValue>    EnumValues      { get; }
 
@@ -34,6 +35,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal            UnionType           unionType;
         internal            string              discriminant;
         internal            string              discriminator;
+        internal            string              discriminatorDoc;
         internal            bool                isStruct;
         internal            bool                isAbstract;
         internal readonly   JSONSchema          schema;

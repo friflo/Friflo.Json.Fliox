@@ -78,6 +78,7 @@ export abstract class ProtocolRequest extends ProtocolMessage {
 }
 
 export class SyncRequest extends ProtocolRequest {
+    /** message type */
     msg       : "sync";
     /**
      * Identify the user performing a sync request.
@@ -133,6 +134,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 
 /** The response send back from a host in reply of a **SyncRequest** */
 export class SyncResponse extends ProtocolResponse {
+    /** message type */
     msg           : "resp";
     /** for debugging - not used by Protocol */
     database?     : string | null;
@@ -178,6 +180,7 @@ export class EntityErrors {
 }
 
 export class ErrorResponse extends ProtocolResponse {
+    /** response type */
     msg      : "error";
     message? : string | null;
     type     : ErrorResponseType;
@@ -204,6 +207,7 @@ export abstract class ProtocolEvent extends ProtocolMessage {
 }
 
 export class EventMessage extends ProtocolEvent {
+    /** message type */
     msg    : "ev";
     /**
      * Contains the events an application subscribed. These are:

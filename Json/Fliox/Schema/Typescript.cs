@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Schema
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
-
+                sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
             }
             foreach (var field in fields) {

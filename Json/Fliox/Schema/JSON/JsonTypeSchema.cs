@@ -106,7 +106,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
                         while (baseType != null) {
                             var unionType = baseType.unionType;
                             if (unionType != null) {
-                                typeDef.discriminator = unionType.discriminator;
+                                typeDef.discriminator       = unionType.discriminator;
+                                typeDef.discriminatorDoc    = unionType.doc;
                                 break;
                             }
                             baseType = baseType.baseType;

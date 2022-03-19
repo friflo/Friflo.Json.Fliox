@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// Either both <see cref="Discriminant"/> and <see cref="Discriminator"/> are not null or both are null</summary>
         public   abstract   string                      Discriminant    { get; }
         public   abstract   string                      Discriminator   { get; }
+        public   abstract   string                      DiscriminatorDoc{ get; }
         
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public   abstract   bool                        IsEnum          { get; }

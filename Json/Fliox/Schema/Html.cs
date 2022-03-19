@@ -156,9 +156,10 @@ $@"    <div class='type'>
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
+                var discDoc     = GetDoc("<td><docs>", type.DiscriminatorDoc, "</docs></td>");
                 sb.AppendLine(
 $@"        <tr>
-            <td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>
+            <td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>{discDoc}
         </tr>");
             }
             foreach (var field in fields) {
