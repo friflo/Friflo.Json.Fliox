@@ -24,8 +24,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                    eventAck;
+        /// <summary>list of container operations and database commands / messages</summary>
         [Fri.Required]                  public  List<SyncRequestTask>   tasks;
+        /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>
                                         public  string                  database;
+        /// <summary>optional JSON value - can be used to describe a request</summary>
                                         public  JsonValue               info;
         
         internal override                       MessageType             MessageType => MessageType.sync;

@@ -67,20 +67,25 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// </summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
-        /// As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
-        /// enables identifying each client individually.
+        /// <summary>As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
+        /// enables identifying each client individually. <br/>
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
         /// to enable sending <see cref="EventMessage"/>'s to the desired subscriber.
+        /// </summary>
         [Fri.Property(Name =               "clt")]
                         public  JsonKey     clientId    { get; set; }
     }
     
     // ----------------------------------- response -----------------------------------
+    /// <summary>
+    /// Base type for response messages send from a host to a client in reply of <see cref="SyncRequest"/><br/>
+    /// A response is either a <see cref="SyncResponse"/> or a <see cref="ErrorResponse"/> in case of a general error. 
+    /// </summary>
     [Fri.Discriminator("msg")] 
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
-        /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
+        /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/> of a <see cref="ProtocolRequest"/></summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
         /// <summary>
@@ -118,11 +123,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Fri.Required]  public  JsonKey     dstClientId { get; set; }
     }
     
+    /// <summary>
+    /// The general message types used in the Protocol
+    /// </summary>
     public enum MessageType
     {
-        sub,
+        /// <summary>event message - send from host to clients with subscriptions</summary>
+        ev,
+        /// <summary>request - send from a client to a host</summary>
         sync,
+        /// <summary>response - send from a host to a client in reply of a request</summary>
         resp,
+        /// <summary>response error - send from a host to a client in reply of a request</summary>
         error
     }
     

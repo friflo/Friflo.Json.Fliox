@@ -8,13 +8,13 @@
             "properties": {
                 "msg":      { "enum": ["sync"] },
                 "req":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Used only for <b>RemoteClientHub</b> to enable:\n<p>\n1. Out of order response handling for their corresponding requests.\n</p><p>\n2. Multiplexing of requests and their responses for multiple clients e.g. <b>FlioxClient</b>\nusing the same connection.\nThis is not a common scenario but it enables using a single <b>WebSocketClientHub</b>\nused by multiple clients.\n</p>\nThe host itself only echos the <b>reqId</b> to <b>reqId</b> and\ndoes <b>not</b> utilize it internally." },
-                "clt":      { "type": ["string", "null"] },
+                "clt":      { "type": ["string", "null"], "description": "As a user can access a <b>FlioxHub</b> by multiple clients the <b>clientId</b>\nenables identifying each client individually. <br/>\nThe <b>clientId</b> is used for <b>SubscribeMessage</b> and <b>SubscribeChanges</b>\nto enable sending <b>EventMessage</b>'s to the desired subscriber." },
                 "user":     { "type": ["string", "null"], "description": "Identify the user performing a sync request.\nIn case using of using <b>UserAuthenticator</b> the <b>userId</b> and <b>token</b>\nare use for user authentication." },
                 "token":    { "type": ["string", "null"] },
                 "ack":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "<b>eventAck</b> is used to ensure (change) events are delivered reliable.\nA client set <b>eventAck</b> to the last received <b>seq</b> in case\nit has subscribed to database changes by a <b>SubscribeChanges</b> task.\nOtherwise <b>eventAck</b> is null." },
-                "tasks":    { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" } },
-                "database": { "type": ["string", "null"] },
-                "info":     {  }
+                "tasks":    { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "list of container operations and database commands / messages" },
+                "database": { "type": ["string", "null"], "description": "database name the <b>tasks</b> apply to. null to access the default database" },
+                "info":     { , "description": "optional JSON value - can be used to describe a request" }
             },
             "required": [
                 "msg",
@@ -25,18 +25,19 @@
         "SyncResponse": {
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
+            "description": "The response send back from a host in reply of a <b>SyncRequest</b>",
             "properties": {
                 "msg":          { "enum": ["resp"] },
-                "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b>" },
+                "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
                 "clt":          { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null. <br/>\nCalling <b>EnsureValidClientId()</b> when <b>clientId</b> == null a\nnew unique client id will be assigned. <br/>\nFor tasks which require a <b>clientId</b> a client need to set <b>clientId</b>\nto <b>clientId</b>. <br/>\nThis enables tasks like <b>SubscribeMessage</b> or <b>SubscribeChanges</b> identifying the\n<b>EventMessage</b> target." },
-                "database":     { "type": ["string", "null"] },
-                "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" } },
-                "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
-                "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
-                "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
-                "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
-                "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
-                "info":         {  }
+                "database":     { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
+                "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of results after executing the <b>tasks</b> in a <b>SyncRequest</b>" },
+                "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "the entities which are results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
+                "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>CreateEntities</b> tasks grouped by container" },
+                "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>UpsertEntities</b> tasks grouped by container" },
+                "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>PatchEntities</b> tasks grouped by container" },
+                "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>DeleteEntities</b> tasks grouped by container" },
+                "info":         { , "description": "optional JSON value to return debug / development data - e.g. execution times or resource usage." }
             },
             "required": [
                 "msg"
@@ -74,7 +75,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
                 "msg":     { "enum": ["error"] },
-                "req":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b>" },
+                "req":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
                 "clt":     { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null. <br/>\nCalling <b>EnsureValidClientId()</b> when <b>clientId</b> == null a\nnew unique client id will be assigned. <br/>\nFor tasks which require a <b>clientId</b> a client need to set <b>clientId</b>\nto <b>clientId</b>. <br/>\nThis enables tasks like <b>SubscribeMessage</b> or <b>SubscribeChanges</b> identifying the\n<b>EventMessage</b> target." },
                 "message": { "type": ["string", "null"] },
                 "type":    { "$ref": "#/definitions/ErrorResponseType" }

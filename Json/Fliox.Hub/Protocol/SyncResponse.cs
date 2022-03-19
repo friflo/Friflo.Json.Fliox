@@ -12,18 +12,29 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- response -----------------------------------
+    /// <summary>
+    /// The response send back from a host in reply of a <see cref="SyncRequest"/>
+    /// </summary>
     public sealed class SyncResponse : ProtocolResponse
     {
-                        public  string                                  database; // not used - only for debugging
+        /// <summary>for debugging - not used by Protocol</summary>
+                        public  string                                  database;
+        /// <summary>list of results after executing the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
                         public  List<SyncTaskResult>                    tasks;
+        /// <summary>the entities which are results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
+        /// grouped by container</summary>
                         public  List<ContainerEntities>                 containers;
         // key of all Dictionary's is the container name
         [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
+        /// <summary>errors caused by <see cref="CreateEntities"/> tasks grouped by container</summary>
                         public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
+        /// <summary>errors caused by <see cref="UpsertEntities"/> tasks grouped by container</summary>
                         public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
+        /// <summary>errors caused by <see cref="PatchEntities"/> tasks grouped by container</summary>
                         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
+        /// <summary>errors caused by <see cref="DeleteEntities"/> tasks grouped by container</summary>
                         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
-        /// Can be utilized to return debug / development data - e.g. execution times or resource usage. 
+        /// <summary>optional JSON value to return debug / development data - e.g. execution times or resource usage.</summary> 
                         public  JsonValue                               info;
                         
         internal override       MessageType                             MessageType => MessageType.resp;

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
         [Fri.Ignore]    internal    JsonValue[]         tasksJson;
         
-        internal override   MessageType                 MessageType => MessageType.sub;
+        internal override   MessageType                 MessageType => MessageType.ev;
         public   override   string                      ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {

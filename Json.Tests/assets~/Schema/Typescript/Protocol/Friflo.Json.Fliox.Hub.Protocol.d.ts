@@ -66,6 +66,12 @@ export abstract class ProtocolRequest extends ProtocolMessage {
      * does **not** utilize it internally.
      */
     req? : int32 | null;
+    /**
+     * As a user can access a **FlioxHub** by multiple clients the **clientId**
+     * enables identifying each client individually.   
+     * The **clientId** is used for **SubscribeMessage** and **SubscribeChanges**
+     * to enable sending **EventMessage**'s to the desired subscriber.
+     */
     clt? : string | null;
 }
 
@@ -85,11 +91,18 @@ export class SyncRequest extends ProtocolRequest {
      * Otherwise **eventAck** is null.
      */
     ack?      : int32 | null;
+    /** list of container operations and database commands / messages */
     tasks     : SyncRequestTask_Union[];
+    /** database name the **tasks** apply to. null to access the default database */
     database? : string | null;
+    /** optional JSON value - can be used to describe a request */
     info?     : any | null;
 }
 
+/**
+ * Base type for response messages send from a host to a client in reply of **SyncRequest**  
+ * A response is either a **SyncResponse** or a **ErrorResponse** in case of a general error.
+ */
 export type ProtocolResponse_Union =
     | SyncResponse
     | ErrorResponse
@@ -100,7 +113,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
         | "resp"
         | "error"
     ;
-    /** Set to the value of the corresponding **reqId** */
+    /** Set to the value of the corresponding **reqId** of a **ProtocolRequest** */
     req? : int32 | null;
     /**
      * Set to **clientId** of a **SyncRequest** in case the given
@@ -115,15 +128,27 @@ export abstract class ProtocolResponse extends ProtocolMessage {
     clt? : string | null;
 }
 
+/** The response send back from a host in reply of a **SyncRequest** */
 export class SyncResponse extends ProtocolResponse {
     msg           : "resp";
+    /** for debugging - not used by Protocol */
     database?     : string | null;
+    /** list of results after executing the **tasks** in a **SyncRequest** */
     tasks?        : SyncTaskResult_Union[] | null;
+    /**
+     * the entities which are results from the **tasks** in a **SyncRequest**
+     * grouped by container
+     */
     containers?   : ContainerEntities[] | null;
+    /** errors caused by **CreateEntities** tasks grouped by container */
     createErrors? : { [key: string]: EntityErrors } | null;
+    /** errors caused by **UpsertEntities** tasks grouped by container */
     upsertErrors? : { [key: string]: EntityErrors } | null;
+    /** errors caused by **PatchEntities** tasks grouped by container */
     patchErrors?  : { [key: string]: EntityErrors } | null;
+    /** errors caused by **DeleteEntities** tasks grouped by container */
     deleteErrors? : { [key: string]: EntityErrors } | null;
+    /** optional JSON value to return debug / development data - e.g. execution times or resource usage. */
     info?         : any | null;
 }
 
