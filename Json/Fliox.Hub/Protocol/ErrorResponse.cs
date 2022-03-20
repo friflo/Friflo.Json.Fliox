@@ -6,9 +6,14 @@ using System.Text;
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- response -----------------------------------
+    /// <summary>
+    /// <see cref="ErrorResponse"/> is returned for a <see cref="SyncRequest"/> in case the whole requests failed
+    /// </summary>
     public sealed class ErrorResponse : ProtocolResponse
     {
+        /// <summary>error message</summary>
         public              string              message;
+        /// <summary>error type: invalid request or execution exception</summary>
         public              ErrorResponseType   type;
         
         internal override   MessageType         MessageType => MessageType.error;

@@ -145,13 +145,13 @@ export class SyncResponse extends ProtocolResponse {
      * grouped by container
      */
     containers?   : ContainerEntities[] | null;
-    /** errors caused by **CreateEntities** tasks grouped by container */
+    /** entity errors caused by **CreateEntities** tasks per container */
     createErrors? : { [key: string]: EntityErrors } | null;
-    /** errors caused by **UpsertEntities** tasks grouped by container */
+    /** entity errors caused by **UpsertEntities** tasks per container */
     upsertErrors? : { [key: string]: EntityErrors } | null;
-    /** errors caused by **PatchEntities** tasks grouped by container */
+    /** entity errors caused by **PatchEntities** tasks per container */
     patchErrors?  : { [key: string]: EntityErrors } | null;
-    /** errors caused by **DeleteEntities** tasks grouped by container */
+    /** entity errors caused by **DeleteEntities** tasks per container */
     deleteErrors? : { [key: string]: EntityErrors } | null;
     /** optional JSON value to return debug / development data - e.g. execution times or resource usage. */
     info?         : any | null;
@@ -170,19 +170,25 @@ export class ContainerEntities {
     entities   : any[];
     /** list of entities not found by **ReadEntities** tasks */
     notFound?  : string[] | null;
-    /** list of errors when accessing entities from a database */
+    /** list of entity errors when accessing the database */
     errors?    : { [key: string]: EntityError } | null;
 }
 
+/** entity errors per container when accessing the database */
 export class EntityErrors {
+    /** container name */
     container? : string | null;
+    /** map of entity errors when accessing the **container** */
     errors     : { [key: string]: EntityError };
 }
 
+/** **ErrorResponse** is returned for a **SyncRequest** in case the whole requests failed */
 export class ErrorResponse extends ProtocolResponse {
     /** response type */
     msg      : "error";
+    /** error message */
     message? : string | null;
+    /** error type: invalid request or execution exception */
     type     : ErrorResponseType;
 }
 
@@ -201,8 +207,20 @@ export abstract class ProtocolEvent extends ProtocolMessage {
     abstract msg:
         | "ev"
     ;
+    /**
+     * Increasing event sequence number starting with 1 for a specific target client **dstClientId**.
+     * Each target client (subscriber) has its own sequence.
+     */
     seq  : int32;
+    /**
+     * The user which caused the event. Specifically the user which made a database change or sent a message / command.
+     * The user client is not preserved by en extra property as a use case for this is not obvious.
+     */
     src  : string;
+    /**
+     * The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.
+     * In many scenarios this property is redundant as every client uses a WebSocket exclusively.
+     */
     clt  : string;
 }
 

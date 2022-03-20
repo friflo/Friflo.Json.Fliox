@@ -26,13 +26,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                         public  List<ContainerEntities>                 containers;
         // key of all Dictionary's is the container name
         [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
-        /// <summary>errors caused by <see cref="CreateEntities"/> tasks grouped by container</summary>
+        /// <summary>entity errors caused by <see cref="CreateEntities"/> tasks per container</summary>
                         public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
-        /// <summary>errors caused by <see cref="UpsertEntities"/> tasks grouped by container</summary>
+        /// <summary>entity errors caused by <see cref="UpsertEntities"/> tasks per container</summary>
                         public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
-        /// <summary>errors caused by <see cref="PatchEntities"/> tasks grouped by container</summary>
+        /// <summary>entity errors caused by <see cref="PatchEntities"/> tasks per container</summary>
                         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
-        /// <summary>errors caused by <see cref="DeleteEntities"/> tasks grouped by container</summary>
+        /// <summary>entity errors caused by <see cref="DeleteEntities"/> tasks per container</summary>
                         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
         /// <summary>optional JSON value to return debug / development data - e.g. execution times or resource usage.</summary> 
                         public  JsonValue                               info;
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  List<JsonKey>                       notFound;
-        /// <summary>list of errors when accessing entities from a database</summary>
+        /// <summary>list of entity errors when accessing the database</summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality); // todo should be instantiated only if required
         
@@ -106,9 +106,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         }
     }
     
+    /// <summary>
+    /// entity errors per container when accessing the database
+    /// </summary>
     public sealed class EntityErrors
     {
+        /// <summary>container name</summary>
         [DebugInfo]     public  string                              container;
+        /// <summary>map of entity errors when accessing the <see cref="container"/></summary>
         [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         
         public EntityErrors() {} // required for TypeMapper

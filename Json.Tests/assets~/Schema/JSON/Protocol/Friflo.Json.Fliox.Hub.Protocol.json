@@ -33,10 +33,10 @@
                 "database":     { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
                 "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
-                "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>CreateEntities</b> tasks grouped by container" },
-                "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>UpsertEntities</b> tasks grouped by container" },
-                "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>PatchEntities</b> tasks grouped by container" },
-                "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "errors caused by <b>DeleteEntities</b> tasks grouped by container" },
+                "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>CreateEntities</b> tasks per container" },
+                "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>UpsertEntities</b> tasks per container" },
+                "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>PatchEntities</b> tasks per container" },
+                "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>DeleteEntities</b> tasks per container" },
                 "info":         { "description": "optional JSON value to return debug / development data - e.g. execution times or resource usage." }
             },
             "required": [
@@ -52,7 +52,7 @@
                 "count":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>entities</b> - not utilized by Protocol" },
                 "entities":  { "type": "array", "items": {  }, "description": "all <b>entities</b> as results from <b>tasks</b> of a <b>SyncRequest</b>" },
                 "notFound":  { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of entities not found by <b>ReadEntities</b> tasks" },
-                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object", "description": "list of errors when accessing entities from a database" }
+                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object", "description": "list of entity errors when accessing the database" }
             },
             "required": [
                 "container",
@@ -62,9 +62,10 @@
         },
         "EntityErrors": {
             "type": "object",
+            "description": "entity errors per container when accessing the database",
             "properties": {
-                "container": { "type": ["string", "null"] },
-                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object" }
+                "container": { "type": ["string", "null"], "description": "container name" },
+                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object", "description": "map of entity errors when accessing the <b>container</b>" }
             },
             "required": [
                 "errors"
@@ -74,12 +75,13 @@
         "ErrorResponse": {
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
+            "description": "<b>ErrorResponse</b> is returned for a <b>SyncRequest</b> in case the whole requests failed",
             "properties": {
                 "msg":     { "enum": ["error"] },
                 "req":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
                 "clt":     { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null. <br/>\nCalling <b>EnsureValidClientId()</b> when <b>clientId</b> == null a\nnew unique client id will be assigned. <br/>\nFor tasks which require a <b>clientId</b> a client need to set <b>clientId</b>\nto <b>clientId</b>. <br/>\nThis enables tasks like <b>SubscribeMessage</b> or <b>SubscribeChanges</b> identifying the\n<b>EventMessage</b> target." },
-                "message": { "type": ["string", "null"] },
-                "type":    { "$ref": "#/definitions/ErrorResponseType" }
+                "message": { "type": ["string", "null"], "description": "error message" },
+                "type":    { "$ref": "#/definitions/ErrorResponseType", "description": "error type: invalid request or execution exception" }
             },
             "required": [
                 "msg",
@@ -105,9 +107,9 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolEvent.json#/definitions/ProtocolEvent" },
             "properties": {
                 "msg":   { "enum": ["ev"] },
-                "seq":   { "$ref": "./Standard.json#/definitions/int32" },
-                "src":   { "type": "string" },
-                "clt":   { "type": "string" },
+                "seq":   { "$ref": "./Standard.json#/definitions/int32", "description": "Increasing event sequence number starting with 1 for a specific target client <b>dstClientId</b>.\nEach target client (subscriber) has its own sequence." },
+                "src":   { "type": "string", "description": "The user which caused the event. Specifically the user which made a database change or sent a message / command.\nThe user client is not preserved by en extra property as a use case for this is not obvious." },
+                "clt":   { "type": "string", "description": "The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.\nIn many scenarios this property is redundant as every client uses a WebSocket exclusively." },
                 "tasks": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncRequestTask" }, "description": "Contains the events an application subscribed. These are:\n<ul><li><b>CreateEntities</b></li><li><b>UpsertEntities</b></li><li><b>DeleteEntities</b></li><li><b>PatchEntities</b></li><li><b>SendMessage</b></li><li><b>SendCommand</b></li></ul>" }
             },
             "required": [
