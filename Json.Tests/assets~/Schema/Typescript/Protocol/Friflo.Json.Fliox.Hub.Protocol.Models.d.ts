@@ -14,7 +14,7 @@ export class ReadEntitiesSet {
 
 /** **References** are used to return entities referenced by fields of entities returned by read and query tasks.  **References** can be nested to return referenced entities of referenced entities. */
 export class References {
-    /** the path to field used as a reference to an entity in the specified **container** */
+    /** the field path used as a reference to an entity in the specified **container** */
     selector    : string;
     /** the **container** storing the entities referenced by the specified **selector** */
     container   : string;

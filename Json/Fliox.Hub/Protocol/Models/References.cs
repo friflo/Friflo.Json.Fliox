@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// Path to a <see cref="Client.Ref{TKey,T}"/> field referencing an entity.
         /// These referenced entities are also loaded via the next <see cref="FlioxClient.SyncTasks"/> request.
         /// </remarks>
-        /// <summary>the path to field used as a reference to an entity in the specified <see cref="container"/></summary>
+        /// <summary>the field path used as a reference to an entity in the specified <see cref="container"/></summary>
         [Fri.Required]  public  string              selector; // e.g. ".items[*].article"
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
         [Fri.Required]  public  string              container;

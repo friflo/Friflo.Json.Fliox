@@ -77,6 +77,11 @@ export abstract class ProtocolRequest extends ProtocolMessage {
     clt? : string | null;
 }
 
+/**
+ * A **SyncRequest** is sent to a **FlioxHub** targeting a specific **database**.  
+ * It contains a list of **tasks** used to execute container operations or database commands.  
+ * The **FlioxHub** returns a **SyncResponse** containing the results for each task.
+ */
 export class SyncRequest extends ProtocolRequest {
     /** message type */
     msg       : "sync";

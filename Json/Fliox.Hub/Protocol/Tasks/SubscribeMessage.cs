@@ -14,12 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class SubscribeMessage : SyncRequestTask
     {
-        /// <summary>
-        /// Subscribe all messages with the given <see cref="name"/>. <br/>
-        /// Subscribe all messages         <see cref="name"/> = '*'<br/>
-        /// Subscribe messages with prefix <see cref="name"/> = 'std.*' <br/>
-        /// Subscribe a specific message   <see cref="name"/> = 'std.Echo'
-        /// </summary>
+        /// <summary>subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
         [Fri.Required]  public  string      name;
         /// <summary>if true a previous added subscription is removed. Otherwise added</summary>
                         public  bool?       remove;

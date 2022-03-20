@@ -8,6 +8,11 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- request -----------------------------------
+    /// <summary>
+    /// A <see cref="SyncRequest"/> is sent to a <see cref="Host.FlioxHub"/> targeting a specific <see cref="database"/>.<br/>
+    /// It contains a list of <see cref="tasks"/> used to execute container operations or database commands.<br/>
+    /// The <see cref="Host.FlioxHub"/> returns a <see cref="SyncResponse"/> containing the results for each task.
+    /// </summary>
     public sealed class SyncRequest : ProtocolRequest
     {
         /// <summary>

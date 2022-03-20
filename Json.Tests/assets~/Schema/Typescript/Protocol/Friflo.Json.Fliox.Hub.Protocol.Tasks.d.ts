@@ -113,7 +113,8 @@ export class QueryEntities extends SyncRequestTask {
     filterTree? : any | null;
     /**
      * query filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
-     * returning a boolean value. E.g. o.name == 'Smartphone'  **filterTree** has priority if given
+     * returning a boolean value. E.g. o.name == 'Smartphone'  
+     * if **filterTree** is assigned it has priority
      */
     filter?     : string | null;
     /** used to request the entities referenced by properties of the query task result */
@@ -226,7 +227,7 @@ export class SubscribeChanges extends SyncRequestTask {
     task       : "subscribeChanges";
     /** container name */
     container  : string;
-    /** type of entity **changes** to be subscribed */
+    /** subscribe to entity **changes** of the given **container** */
     changes    : Change[];
     /**
      * subscription filter as a [Lambda expression](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) (infix notation)
@@ -250,12 +251,7 @@ export type Change =
 export class SubscribeMessage extends SyncRequestTask {
     /** task type */
     task    : "subscribeMessage";
-    /**
-     * Subscribe all messages with the given **name**.   
-     * Subscribe all messages         **name** = '*'  
-     * Subscribe messages with prefix **name** = 'std.*'   
-     * Subscribe a specific message   **name** = 'std.Echo'
-     */
+    /** subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
     name    : string;
     /** if true a previous added subscription is removed. Otherwise added */
     remove? : boolean | null;

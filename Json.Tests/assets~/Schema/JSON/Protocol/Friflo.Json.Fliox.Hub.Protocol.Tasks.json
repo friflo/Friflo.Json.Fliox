@@ -94,7 +94,7 @@
                 "keyName":    { "type": ["string", "null"], "description": "name of the primary key property of the returned entities" },
                 "isIntKey":   { "type": ["boolean", "null"] },
                 "filterTree": { "description": "query filter as JSON tree. <br/>\nIs used in favour of <b>filter</b> as its serialization is more performant" },
-                "filter":     { "type": ["string", "null"], "description": "query filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/><b>filterTree</b> has priority if given" },
+                "filter":     { "type": ["string", "null"], "description": "query filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>\nif <b>filterTree</b> is assigned it has priority" },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/References" }, "description": "used to request the entities referenced by properties of the query task result" },
                 "limit":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "limit the result set to the given number" },
                 "maxCount":   { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "execute a cursor request with the specified <b>maxCount</b> number of entities in the result." },
@@ -251,7 +251,7 @@
             "properties": {
                 "task":      { "enum": ["subscribeChanges"] },
                 "container": { "type": "string", "description": "container name" },
-                "changes":   { "type": "array", "items": { "$ref": "#/definitions/Change" }, "description": "type of entity <b>changes</b> to be subscribed" },
+                "changes":   { "type": "array", "items": { "$ref": "#/definitions/Change" }, "description": "subscribe to entity <b>changes</b> of the given <b>container</b>" },
                 "filter":    { "description": "subscription filter as a <a href='https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions'>Lambda expression</a> (infix notation)\nreturning a boolean value. E.g. <c>o.name == 'Smartphone'</c>" },
                 "info":      {  }
             },
@@ -283,7 +283,7 @@
             "description": "Subscribe to commands and messages sent to a database by their <b>name</b><br/>\nUnsubscribe by setting <b>remove</b> to true",
             "properties": {
                 "task":   { "enum": ["subscribeMessage"] },
-                "name":   { "type": "string", "description": "Subscribe all messages with the given <b>name</b>. <br/>\nSubscribe all messages         <b>name</b> = '*'<br/>\nSubscribe messages with prefix <b>name</b> = 'std.*' <br/>\nSubscribe a specific message   <b>name</b> = 'std.Echo'" },
+                "name":   { "type": "string", "description": "subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'" },
                 "remove": { "type": ["boolean", "null"], "description": "if true a previous added subscription is removed. Otherwise added" },
                 "info":   {  }
             },

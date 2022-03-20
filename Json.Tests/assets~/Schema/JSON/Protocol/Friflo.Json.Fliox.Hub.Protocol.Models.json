@@ -18,7 +18,7 @@
             "type": "object",
             "description": "<b>References</b> are used to return entities referenced by fields of entities returned by read and query tasks.<br/><b>References</b> can be nested to return referenced entities of referenced entities.",
             "properties": {
-                "selector":   { "type": "string", "description": "the path to field used as a reference to an entity in the specified <b>container</b>" },
+                "selector":   { "type": "string", "description": "the field path used as a reference to an entity in the specified <b>container</b>" },
                 "container":  { "type": "string", "description": "the <b>container</b> storing the entities referenced by the specified <b>selector</b>" },
                 "keyName":    { "type": ["string", "null"] },
                 "isIntKey":   { "type": ["boolean", "null"] },
