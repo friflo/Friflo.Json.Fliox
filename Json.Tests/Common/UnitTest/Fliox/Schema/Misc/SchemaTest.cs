@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Friflo.Json.Fliox.Schema;
+using Friflo.Json.Fliox.Schema.Lang;
 using Friflo.Json.Fliox.Schema.Utils;
 using NUnit.Framework;
 

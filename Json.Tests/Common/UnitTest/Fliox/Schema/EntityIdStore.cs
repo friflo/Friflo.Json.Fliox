@@ -3,8 +3,8 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
+using Friflo.Json.Fliox.Schema.Lang;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;

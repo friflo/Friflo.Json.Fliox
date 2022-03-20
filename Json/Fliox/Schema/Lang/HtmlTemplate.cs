@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-namespace Friflo.Json.Fliox.Schema
+namespace Friflo.Json.Fliox.Schema.Lang
 {
     public sealed partial class HtmlGenerator
     {

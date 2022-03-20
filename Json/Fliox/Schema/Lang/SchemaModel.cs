@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 
-namespace Friflo.Json.Fliox.Schema
+namespace Friflo.Json.Fliox.Schema.Lang
 {
     public delegate SchemaModel    SchemaGenerator(GeneratorOptions options);
 

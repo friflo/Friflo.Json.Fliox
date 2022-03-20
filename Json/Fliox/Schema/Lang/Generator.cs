@@ -8,7 +8,7 @@ using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Utils;
 
-namespace Friflo.Json.Fliox.Schema
+namespace Friflo.Json.Fliox.Schema.Lang
 {
     /// <summary>
     /// A context class required to be used for all code / schema generators.<br></br>

@@ -4,11 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Schema;
+
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Lang;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Utils;
-using static Friflo.Json.Fliox.Schema.Generator;
+using static Friflo.Json.Fliox.Schema.Lang.Generator;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
 {
