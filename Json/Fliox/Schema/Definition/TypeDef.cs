@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// </list> 
         /// </summary>
         public              string                      Namespace       { get; }
-        /// <summary>The path of the file containing the generated type. It is set by <see cref="Generator"/>.
+        /// <summary>The path of the file containing the generated type. It is set by <see cref="Language.Generator"/>.
         /// <br></br>
         /// In Typescript or JSON Schema a file can contain multiple types.
         /// These types have the same file <see cref="Path"/> and the same <see cref="Namespace"/>.
