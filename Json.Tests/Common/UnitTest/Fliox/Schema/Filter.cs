@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.Schema.Lang;
+using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

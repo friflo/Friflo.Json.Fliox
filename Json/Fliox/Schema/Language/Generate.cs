@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Schema.Native;
 
-namespace Friflo.Json.Fliox.Schema.Lang
+namespace Friflo.Json.Fliox.Schema.Language
 {
     /// <summary>
     /// Generate Typescript from the given options. Examples available at:

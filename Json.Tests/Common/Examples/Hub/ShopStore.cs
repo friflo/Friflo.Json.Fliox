@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Schema.Lang;
+using Friflo.Json.Fliox.Schema.Language;
 using NUnit.Framework;
 
 // ReSharper disable All

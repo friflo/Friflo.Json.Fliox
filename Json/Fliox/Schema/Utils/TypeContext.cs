@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
-using Friflo.Json.Fliox.Schema.Lang;
+using Friflo.Json.Fliox.Schema.Language;
 
 namespace Friflo.Json.Fliox.Schema.Utils
 {

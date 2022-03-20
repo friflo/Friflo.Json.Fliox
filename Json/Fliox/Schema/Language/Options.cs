@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 
-namespace Friflo.Json.Fliox.Schema.Lang
+namespace Friflo.Json.Fliox.Schema.Language
 {
     /// <summary>
     /// <see cref="JsonTypeOptions"/> contains the configuration used by schema and code generators using a

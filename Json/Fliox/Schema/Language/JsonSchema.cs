@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Utils;
-using static Friflo.Json.Fliox.Schema.Lang.Generator;
+using static Friflo.Json.Fliox.Schema.Language.Generator;
 // Must not have other dependencies to Friflo.Json.Fliox.* except .Schema.Definition & .Schema.Utils
 
-namespace Friflo.Json.Fliox.Schema.Lang
+namespace Friflo.Json.Fliox.Schema.Language
 {
     public sealed partial class JsonSchemaGenerator
     {
