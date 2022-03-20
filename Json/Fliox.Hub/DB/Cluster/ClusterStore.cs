@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     // --- commands
     /// <summary>list of container statistics. E.g. the number of entities per container</summary>
     public class DbStats {
+        /// <summary>list of container statistics - number of entities per container</summary>
                 public  ContainerStats[]                containers;
     }
     

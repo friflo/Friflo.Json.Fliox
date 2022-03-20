@@ -53,7 +53,7 @@
             "type": "object",
             "description": "list of container statistics. E.g. the number of entities per container",
             "properties": {
-                "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerStats" } }
+                "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerStats" }, "description": "list of container statistics - number of entities per container" }
             },
             "additionalProperties": false
         },

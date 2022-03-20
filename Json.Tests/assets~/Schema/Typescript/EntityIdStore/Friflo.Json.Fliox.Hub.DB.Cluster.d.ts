@@ -43,6 +43,7 @@ export class DbSchema {
 
 /** list of container statistics. E.g. the number of entities per container */
 export class DbStats {
+    /** list of container statistics - number of entities per container */
     containers? : ContainerStats[] | null;
 }
 
