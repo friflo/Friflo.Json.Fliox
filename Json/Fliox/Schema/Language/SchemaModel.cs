@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     var schemaModel = generator.schemaGenerator(generatorOpt);
                     result.Add(generator.type, schemaModel);
                 } catch (Exception e) {
-                    Console.WriteLine($"SchemaSet generation failed for: {generator.name}. error: {e.Message}");
+                    Console.Error.WriteLine($"SchemaModel generation failed for: {generator.name}. error: {e.Message}");
                 }
             }
             return result;
