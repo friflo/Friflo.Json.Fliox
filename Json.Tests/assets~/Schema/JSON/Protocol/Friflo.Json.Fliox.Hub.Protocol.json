@@ -30,7 +30,7 @@
             "properties": {
                 "msg":          { "enum": ["resp"] },
                 "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
-                "clt":          { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null. <br/>\nCalling <b>EnsureValidClientId()</b> when <b>clientId</b> == null a\nnew unique client id will be assigned. <br/>\nFor tasks which require a <b>clientId</b> a client need to set <b>clientId</b>\nto <b>clientId</b>. <br/>\nThis enables tasks like <b>SubscribeMessage</b> or <b>SubscribeChanges</b> identifying the\n<b>EventMessage</b> target." },
+                "clt":          { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
                 "database":     { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
                 "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
@@ -80,7 +80,7 @@
             "properties": {
                 "msg":     { "enum": ["error"] },
                 "req":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
-                "clt":     { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null. <br/>\nCalling <b>EnsureValidClientId()</b> when <b>clientId</b> == null a\nnew unique client id will be assigned. <br/>\nFor tasks which require a <b>clientId</b> a client need to set <b>clientId</b>\nto <b>clientId</b>. <br/>\nThis enables tasks like <b>SubscribeMessage</b> or <b>SubscribeChanges</b> identifying the\n<b>EventMessage</b> target." },
+                "clt":     { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
                 "message": { "type": ["string", "null"], "description": "error message" },
                 "type":    { "$ref": "#/definitions/ErrorResponseType", "description": "error type: invalid request or execution exception" }
             },
