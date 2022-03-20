@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
 {
     // ----------------------------------- response -----------------------------------
     /// <summary>
-    /// The response send back from a host in reply of a <see cref="SyncRequest"/>
+    /// A <see cref="SyncResponse"/> is the response of <see cref="SyncRequest"/> executed by a <see cref="Host.FlioxHub"/>
     /// </summary>
     public sealed class SyncResponse : ProtocolResponse
     {
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </summary>
     public sealed class EntityErrors
     {
-        /// <summary>container name</summary>
+        /// <summary>container name - not utilized by Protocol</summary>
         [DebugInfo]     public  string                              container;
         /// <summary>map of entity errors when accessing the <see cref="container"/></summary>
         [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);

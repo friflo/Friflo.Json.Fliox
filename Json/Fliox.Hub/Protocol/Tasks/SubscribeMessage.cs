@@ -46,6 +46,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// Result of a <see cref="SubscribeMessage"/> task
+    /// </summary>
     public sealed class SubscribeMessageResult : SyncTaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribeMessage;

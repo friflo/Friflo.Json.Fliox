@@ -26,7 +26,7 @@
         "SyncResponse": {
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
-            "description": "The response send back from a host in reply of a <b>SyncRequest</b>",
+            "description": "A <b>SyncResponse</b> is the response of <b>SyncRequest</b> executed by a <b>FlioxHub</b>",
             "properties": {
                 "msg":          { "enum": ["resp"] },
                 "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
@@ -65,7 +65,7 @@
             "type": "object",
             "description": "entity errors per container when accessing the database",
             "properties": {
-                "container": { "type": ["string", "null"], "description": "container name" },
+                "container": { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object", "description": "map of entity errors when accessing the <b>container</b>" }
             },
             "required": [

@@ -29,6 +29,7 @@ export class ReadEntitiesSetResult {
 
 export class ReferencesResult {
     error?      : string | null;
+    /** container name - not utilized by Protocol */
     container?  : string | null;
     /** number of **ids** - not utilized by Protocol */
     count?      : int32 | null;

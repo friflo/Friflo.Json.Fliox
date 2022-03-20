@@ -49,6 +49,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Ignore] public CommandError    Error { get; set; }
     }
     
+    /// <summary>
+    /// Result of a <see cref="SendMessage"/> task
+    /// </summary>
     public sealed class SendMessageResult : SyncMessageResult
     {
         internal override   TaskType        TaskType => TaskType.message;

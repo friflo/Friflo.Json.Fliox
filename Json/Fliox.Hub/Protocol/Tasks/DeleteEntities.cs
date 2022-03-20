@@ -54,6 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// Result of a <see cref="DeleteEntities"/> task
+    /// </summary>
     public sealed class DeleteEntitiesResult : SyncTaskResult, ICommandResult
     {
         [Fri.Ignore] public CommandError                        Error { get; set; }

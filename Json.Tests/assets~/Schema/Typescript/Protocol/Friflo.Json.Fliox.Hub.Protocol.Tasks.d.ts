@@ -302,25 +302,30 @@ export abstract class SyncTaskResult {
     ;
 }
 
+/** Result of a **CreateEntities** task */
 export class CreateEntitiesResult extends SyncTaskResult {
     /** task result type */
     task  : "create";
 }
 
+/** Result of a **UpsertEntities** task */
 export class UpsertEntitiesResult extends SyncTaskResult {
     /** task result type */
     task  : "upsert";
 }
 
+/** Result of a **ReadEntities** task */
 export class ReadEntitiesResult extends SyncTaskResult {
     /** task result type */
     task  : "read";
     sets  : ReadEntitiesSetResult[];
 }
 
+/** Result of a **QueryEntities** task */
 export class QueryEntitiesResult extends SyncTaskResult {
     /** task result type */
     task        : "query";
+    /** container name - not utilized by Protocol */
     container?  : string | null;
     cursor?     : string | null;
     /** number of **ids** - not utilized by Protocol */
@@ -329,18 +334,22 @@ export class QueryEntitiesResult extends SyncTaskResult {
     references? : ReferencesResult[] | null;
 }
 
+/** Result of a **AggregateEntities** task */
 export class AggregateEntitiesResult extends SyncTaskResult {
     /** task result type */
     task       : "aggregate";
+    /** container name - not utilized by Protocol */
     container? : string | null;
     value?     : double | null;
 }
 
+/** Result of a **PatchEntities** task */
 export class PatchEntitiesResult extends SyncTaskResult {
     /** task result type */
     task  : "patch";
 }
 
+/** Result of a **DeleteEntities** task */
 export class DeleteEntitiesResult extends SyncTaskResult {
     /** task result type */
     task  : "delete";
@@ -349,28 +358,33 @@ export class DeleteEntitiesResult extends SyncTaskResult {
 export abstract class SyncMessageResult extends SyncTaskResult {
 }
 
+/** Result of a **SendMessage** task */
 export class SendMessageResult extends SyncMessageResult {
     /** task result type */
     task  : "message";
 }
 
+/** Result of a **SendCommand** task */
 export class SendCommandResult extends SyncMessageResult {
     /** task result type */
     task    : "command";
     result? : any | null;
 }
 
+/** Result of a **CloseCursors** task */
 export class CloseCursorsResult extends SyncTaskResult {
     /** task result type */
     task   : "closeCursors";
     count  : int32;
 }
 
+/** Result of a **SubscribeChanges** task */
 export class SubscribeChangesResult extends SyncTaskResult {
     /** task result type */
     task  : "subscribeChanges";
 }
 
+/** Result of a **SubscribeMessage** task */
 export class SubscribeMessageResult extends SyncTaskResult {
     /** task result type */
     task  : "subscribeMessage";
@@ -388,6 +402,7 @@ export class ReservedKeys {
     token  : Guid;
 }
 
+/** A **TaskErrorResult** is returned in case execution of a **SyncRequestTask** failed */
 export class TaskErrorResult extends SyncTaskResult {
     /** task result type */
     task        : "error";

@@ -137,7 +137,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
     clt? : string | null;
 }
 
-/** The response send back from a host in reply of a **SyncRequest** */
+/** A **SyncResponse** is the response of **SyncRequest** executed by a **FlioxHub** */
 export class SyncResponse extends ProtocolResponse {
     /** message type */
     msg           : "resp";
@@ -181,7 +181,7 @@ export class ContainerEntities {
 
 /** entity errors per container when accessing the database */
 export class EntityErrors {
-    /** container name */
+    /** container name - not utilized by Protocol */
     container? : string | null;
     /** map of entity errors when accessing the **container** */
     errors     : { [key: string]: EntityError };

@@ -93,6 +93,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// Result of a <see cref="ReadEntities"/> task
+    /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
         [Fri.Required]  public  List<ReadEntitiesSetResult> sets;

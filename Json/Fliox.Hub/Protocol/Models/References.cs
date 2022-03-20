@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class ReferencesResult
     {
                         public  string                  error;
+        /// <summary>container name - not utilized by Protocol</summary>
         [DebugInfo]     public  string                  container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                    count;

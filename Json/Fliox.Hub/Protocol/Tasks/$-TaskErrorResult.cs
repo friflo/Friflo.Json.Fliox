@@ -8,6 +8,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// A <see cref="TaskErrorResult"/> is returned in case execution of a <see cref="SyncRequestTask"/> failed
+    /// </summary>
     public sealed class TaskErrorResult : SyncTaskResult
     {
         [Fri.Required]  public  TaskErrorResultType type;

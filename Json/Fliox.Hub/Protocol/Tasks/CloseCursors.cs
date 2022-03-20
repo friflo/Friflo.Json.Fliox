@@ -60,6 +60,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// Result of a <see cref="CloseCursors"/> task
+    /// </summary>
     public sealed class CloseCursorsResult : SyncTaskResult
     {
         public              int             count;

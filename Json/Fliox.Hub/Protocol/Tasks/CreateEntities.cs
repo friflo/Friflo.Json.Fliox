@@ -70,6 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
 
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// Result of a <see cref="CreateEntities"/> task
+    /// </summary>
     public sealed class CreateEntitiesResult : SyncTaskResult, ICommandResult
     {
         [Fri.Ignore] public CommandError                        Error { get; set; }

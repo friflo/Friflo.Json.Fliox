@@ -31,6 +31,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
+    /// <summary>
+    /// Result of a <see cref="SendCommand"/> task
+    /// </summary>
     public sealed class SendCommandResult : SyncMessageResult
     {
         public              JsonValue       result;

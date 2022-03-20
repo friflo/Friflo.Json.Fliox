@@ -339,6 +339,7 @@
         "CreateEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>CreateEntities</b> task",
             "properties": {
                 "task": { "enum": ["create"] }
             },
@@ -350,6 +351,7 @@
         "UpsertEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>UpsertEntities</b> task",
             "properties": {
                 "task": { "enum": ["upsert"] }
             },
@@ -361,6 +363,7 @@
         "ReadEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>ReadEntities</b> task",
             "properties": {
                 "task": { "enum": ["read"] },
                 "sets": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSetResult" } }
@@ -374,9 +377,10 @@
         "QueryEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>QueryEntities</b> task",
             "properties": {
                 "task":       { "enum": ["query"] },
-                "container":  { "type": ["string", "null"] },
+                "container":  { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "cursor":     { "type": ["string", "null"] },
                 "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
                 "ids":        { "type": "array", "items": { "type": "string" } },
@@ -391,9 +395,10 @@
         "AggregateEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>AggregateEntities</b> task",
             "properties": {
                 "task":      { "enum": ["aggregate"] },
-                "container": { "type": ["string", "null"] },
+                "container": { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
                 "value":     { "oneOf": [{ "$ref": "./Standard.json#/definitions/double" }, {"type": "null"}] }
             },
             "required": [
@@ -404,6 +409,7 @@
         "PatchEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>PatchEntities</b> task",
             "properties": {
                 "task": { "enum": ["patch"] }
             },
@@ -415,6 +421,7 @@
         "DeleteEntitiesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>DeleteEntities</b> task",
             "properties": {
                 "task": { "enum": ["delete"] }
             },
@@ -426,6 +433,7 @@
         "SendMessageResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageResult" },
+            "description": "Result of a <b>SendMessage</b> task",
             "properties": {
                 "task": { "enum": ["message"] }
             },
@@ -446,6 +454,7 @@
         "SendCommandResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncMessageResult" },
+            "description": "Result of a <b>SendCommand</b> task",
             "properties": {
                 "task":   { "enum": ["command"] },
                 "result": {  }
@@ -458,6 +467,7 @@
         "CloseCursorsResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>CloseCursors</b> task",
             "properties": {
                 "task":  { "enum": ["closeCursors"] },
                 "count": { "$ref": "./Standard.json#/definitions/int32" }
@@ -471,6 +481,7 @@
         "SubscribeChangesResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>SubscribeChanges</b> task",
             "properties": {
                 "task": { "enum": ["subscribeChanges"] }
             },
@@ -482,6 +493,7 @@
         "SubscribeMessageResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "Result of a <b>SubscribeMessage</b> task",
             "properties": {
                 "task": { "enum": ["subscribeMessage"] }
             },
@@ -520,6 +532,7 @@
         "TaskErrorResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "A <b>TaskErrorResult</b> is returned in case execution of a <b>SyncRequestTask</b> failed",
             "properties": {
                 "task":       { "enum": ["error"] },
                 "type":       { "$ref": "#/definitions/TaskErrorResultType" },
