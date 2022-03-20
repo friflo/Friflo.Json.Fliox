@@ -505,6 +505,7 @@
         "ReserveKeysResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "description": "WIP",
             "properties": {
                 "task": { "enum": ["reserveKeys"] },
                 "keys": { "oneOf": [{ "$ref": "#/definitions/ReservedKeys" }, {"type": "null"}] }
@@ -517,6 +518,7 @@
         "ReservedKeys": {
             "type": "object",
             "isStruct": true,
+            "description": "WIP",
             "properties": {
                 "start": { "$ref": "./Standard.json#/definitions/int64" },
                 "count": { "$ref": "./Standard.json#/definitions/int32" },
@@ -535,9 +537,9 @@
             "description": "A <b>TaskErrorResult</b> is returned in case execution of a <b>SyncRequestTask</b> failed",
             "properties": {
                 "task":       { "enum": ["error"] },
-                "type":       { "$ref": "#/definitions/TaskErrorResultType" },
-                "message":    { "type": ["string", "null"] },
-                "stacktrace": { "type": ["string", "null"] }
+                "type":       { "$ref": "#/definitions/TaskErrorResultType", "description": "task error type" },
+                "message":    { "type": ["string", "null"], "description": "task error details" },
+                "stacktrace": { "type": ["string", "null"], "description": "stacktrace in case the error <b>type</b> is a <b>UnhandledException</b>" }
             },
             "required": [
                 "task",

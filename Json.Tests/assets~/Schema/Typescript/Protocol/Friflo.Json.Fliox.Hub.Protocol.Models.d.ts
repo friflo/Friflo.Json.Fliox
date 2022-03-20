@@ -37,8 +37,11 @@ export class ReferencesResult {
     references? : ReferencesResult[] | null;
 }
 
+/** Used by **SyncResponse** to return errors when mutating an entity by: create, upsert, patch and delete */
 export class EntityError {
+    /** error type when accessing an entity in a database */
     type     : EntityErrorType;
+    /** error details when accessing an entity */
     message? : string | null;
 }
 

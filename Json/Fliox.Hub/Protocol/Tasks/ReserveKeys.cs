@@ -67,6 +67,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override       string          TaskName => $"container: '{container}'";
     }
     
+    /// <summary>
+    /// WIP
+    /// </summary>
     public sealed class ReserveKeysResult : SyncTaskResult {
                         public  ReservedKeys?   keys;
         
@@ -74,6 +77,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override       TaskType        TaskType => TaskType.reserveKeys;
     }
     
+    /// <summary>
+    /// WIP
+    /// </summary>
     public struct ReservedKeys
     {
         [Fri.Required]  public  long    start;

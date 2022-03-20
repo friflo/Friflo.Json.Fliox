@@ -53,9 +53,10 @@
         },
         "EntityError": {
             "type": "object",
+            "description": "Used by <b>SyncResponse</b> to return errors when mutating an entity by: create, upsert, patch and delete",
             "properties": {
-                "type":    { "$ref": "#/definitions/EntityErrorType" },
-                "message": { "type": ["string", "null"] }
+                "type":    { "$ref": "#/definitions/EntityErrorType", "description": "error type when accessing an entity in a database" },
+                "message": { "type": ["string", "null"], "description": "error details when accessing an entity" }
             },
             "required": [
                 "type"

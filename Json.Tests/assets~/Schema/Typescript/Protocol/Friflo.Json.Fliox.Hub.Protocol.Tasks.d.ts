@@ -390,12 +390,14 @@ export class SubscribeMessageResult extends SyncTaskResult {
     task  : "subscribeMessage";
 }
 
+/** WIP */
 export class ReserveKeysResult extends SyncTaskResult {
     /** task result type */
     task  : "reserveKeys";
     keys? : ReservedKeys | null;
 }
 
+/** WIP */
 export class ReservedKeys {
     start  : int64;
     count  : int32;
@@ -406,8 +408,11 @@ export class ReservedKeys {
 export class TaskErrorResult extends SyncTaskResult {
     /** task result type */
     task        : "error";
+    /** task error type */
     type        : TaskErrorResultType;
+    /** task error details */
     message?    : string | null;
+    /** stacktrace in case the error **type** is a **UnhandledException** */
     stacktrace? : string | null;
 }
 

@@ -9,13 +9,20 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
+    /// <summary>
+    /// Used by <see cref="SyncResponse"/> to return errors when mutating an entity by: create, upsert, patch and delete
+    /// </summary>
+    /// <remarks> 
     /// An <see cref="EntityError"/> needs to be set only, if the access to <see cref="EntityValue"/>'s
     /// returned by a previous call to <see cref="EntityContainer.ReadEntitiesSet"/> or
     /// <see cref="EntityContainer.QueryEntities"/> fails.
-    /// This implies that the previous read or query call was successful. 
+    /// This implies that the previous read or query call was successful.
+    /// </remarks> 
     public sealed class EntityError
     {
+        /// <summary>error type when accessing an entity in a database</summary>
         [Fri.Required]      public  EntityErrorType     type;
+        /// <summary>error details when accessing an entity</summary>
         [Fri.Property]      public  string              message;
             
         [Fri.Ignore]        public  JsonKey             id;
