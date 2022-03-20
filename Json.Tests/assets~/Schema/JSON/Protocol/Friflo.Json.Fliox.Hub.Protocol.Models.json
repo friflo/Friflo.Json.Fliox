@@ -70,7 +70,15 @@
                 "WriteError",
                 "DeleteError",
                 "PatchError"
-            ]
+            ],
+            "descriptions": {
+                "ParseError":  "Invalid JSON when reading an entity from database<br/>\ncan happen with key-value databases - e.g. file-system - as their values are not restricted to JSON",
+                "ReadError":   "Reading an entity from database failed<br/>\ne.g. a corrupt file when using the file-system as database",
+                "WriteError":  "Writing an entity to database failed<br/>\ne.g. the file is already in use by another process when using the file-system as database",
+                "DeleteError": "Deleting an entity in database failed<br/>\ne.g. the file is already in use by another process when using the file-system as database",
+                "PatchError":  "Patching an entity failed"
+            }
+
         }
     }
 }

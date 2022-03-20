@@ -42,12 +42,25 @@ export class EntityError {
     message? : string | null;
 }
 
+/** Error type when accessing an entity from a database container */
 export type EntityErrorType =
     | "Undefined"
-    | "ParseError"
-    | "ReadError"
-    | "WriteError"
-    | "DeleteError"
-    | "PatchError"
+    | "ParseError"       /**
+       * Invalid JSON when reading an entity from database  
+       * can happen with key-value databases - e.g. file-system - as their values are not restricted to JSON
+       */
+    | "ReadError"        /**
+       * Reading an entity from database failed  
+       * e.g. a corrupt file when using the file-system as database
+       */
+    | "WriteError"       /**
+       * Writing an entity to database failed  
+       * e.g. the file is already in use by another process when using the file-system as database
+       */
+    | "DeleteError"      /**
+       * Deleting an entity in database failed  
+       * e.g. the file is already in use by another process when using the file-system as database
+       */
+    | "PatchError"       /** Patching an entity failed */
 ;
 
