@@ -42,6 +42,8 @@ namespace Friflo.Json.Fliox.Schema.Language
     ///     to ensure the resulting generator can be compared to their originals with tools like WinMerge.
     ///     In particular the methods and their order:
     ///     <list type="bullet">
+    ///       <item>private constructor using <see cref="Generator"/> as parameter</item>
+    ///       <item><see cref="TypescriptGenerator.Generate(Generator)"/></item>
     ///       <item><see cref="TypescriptGenerator.GetStandardTypes"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitStandardType"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitType"/></item>
