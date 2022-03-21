@@ -46,7 +46,9 @@ namespace Fliox.DemoHub
     }
     
     public class Records {
+        /// <summary>contains a filter that can be used to filter the generated entities in a container</summary>
         public  string      info;
+        /// <summary>number of entities generated in each container</summary>
         public  Counts      counts;
         public  Article[]   articles;
         public  Customer[]  customers;
