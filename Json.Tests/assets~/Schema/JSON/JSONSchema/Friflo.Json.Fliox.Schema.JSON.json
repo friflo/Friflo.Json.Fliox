@@ -69,7 +69,7 @@
         },
         "MessageType": {
             "type": "object",
-            "description": "Defines the input <b>param</b> and <b>result</b> of a command or message",
+            "description": "Defines the signature of a command or message:<br/>\n- the command / message parameter type <b>param</b><br/>\n- the command <b>result</b> type",
             "properties": {
                 "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "type of the command / message <b>param</b> - <i>JSON Schema extension</i>" },
                 "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "type of the command <b>result</b> - <i>JSON Schema extension</i><br/>\nmessages return no <b>result</b>" },

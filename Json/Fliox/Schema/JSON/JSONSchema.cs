@@ -176,7 +176,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
     }
 
     /// <summary>
-    /// Defines the input <see cref="param"/> and <see cref="result"/> of a command or message
+    /// Defines the signature of a command or message:<br/>
+    /// - the command / message parameter type <see cref="param"/><br/>
+    /// - the command <see cref="result"/> type
     /// </summary>
     public sealed class MessageType
     {

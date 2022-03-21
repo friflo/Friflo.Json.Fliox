@@ -128,7 +128,11 @@ export class FieldType {
     description?          : string | null;
 }
 
-/** Defines the input **param** and **result** of a command or message */
+/**
+ * Defines the signature of a command or message:  
+ * - the command / message parameter type **param**  
+ * - the command **result** type
+ */
 export class MessageType {
     /** type of the command / message **param** - *JSON Schema extension* */
     param?       : FieldType | null;
