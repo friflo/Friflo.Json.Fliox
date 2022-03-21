@@ -139,12 +139,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var generators      = handler.Generators;
                 var schemaModels    = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
                 modelResources      = new Dictionary<string, ModelResource>(schemaModels.Count);
-                foreach (var pair in schemaModels) {
-                    var type        = pair.Key;
-                    var model       = pair.Value;
+                foreach (var model in schemaModels) {
                     var fullSchema  = GetFullJsonSchema(model, context);
                     var value       = new ModelResource(model, fullSchema);
-                    modelResources.Add(type, value);
+                    modelResources.Add(model.type, value);
                 }
             }
             if (path == "index.html") {

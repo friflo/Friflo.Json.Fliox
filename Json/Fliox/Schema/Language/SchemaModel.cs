@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Schema.Language
 {
     public delegate SchemaModel    SchemaGenerator(GeneratorOptions options);
@@ -32,17 +34,19 @@ namespace Friflo.Json.Fliox.Schema.Language
     /// <see cref="SchemaModel"/> instances are immutable.
     /// </summary>
     public sealed class SchemaModel {
-        public   readonly   string                              type;           // csharp, json-schema, ...
-        public   readonly   string                              label;          // C#,     JSON Schema, ...
-        public   readonly   string                              contentType;    // "text/plain", "text/html", ...
+        public   readonly   string                              type;           // csharp,          json-schema, ...
+        public   readonly   string                              label;          // C#,              JSON Schema, ...
+        public   readonly   string                              contentType;    // "text/plain",    "text/html", ...
+        public   readonly   string                              fileExt;        // .cs,             .json, ...
         public   readonly   ReadOnlyDictionary<string, string>  files;          // key: file name, value: file content
 
         public   override   string                              ToString() => type;
 
-        public SchemaModel (string type, string label, string contentType, IDictionary<string, string> files) {
+        public SchemaModel (string type, string label, string contentType, string fileExt, IDictionary<string, string> files) {
             this.type           = type;
             this.label          = label;
             this.contentType    = contentType;
+            this.fileExt        = fileExt;
             this.files          = new ReadOnlyDictionary<string, string>(files);
         }
         
@@ -51,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         /// The generated languages are the build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
         /// and languages that are generated via the passed <paramref name="generators"/>
         /// </summary>
-        public static Dictionary<string, SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null) {
+        public static List<SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null) {
             var typeSchema      = new NativeTypeSchema(rootType);
             var entityTypeMap   = typeSchema.GetEntityTypes();
             var entityTypes     = entityTypeMap.Values;
@@ -62,7 +66,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         /// Generate schema models for build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
         /// and languages that are generated via the passed <paramref name="generators"/>
         /// </summary>
-        public static Dictionary<string, SchemaModel> GenerateSchemaModels(
+        public static List<SchemaModel> GenerateSchemaModels(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
             IEnumerable<CustomGenerator>    generators = null)
@@ -72,24 +76,24 @@ namespace Friflo.Json.Fliox.Schema.Language
             var options             = new JsonTypeOptions(typeSchema);
 
             var htmlGenerator       = HtmlGenerator.Generate(options);
-            var htmlSchema          = new SchemaModel ("html",          "HTML",        "text/html",        htmlGenerator.files);
+            var htmlSchema          = new SchemaModel ("html",          "HTML",        "text/html",        ".html", htmlGenerator.files);
             result.Add(htmlSchema.type,       htmlSchema);
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", jsonGenerator.files);
+            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", ".json", jsonGenerator.files);
             result.Add(jsonModel.type,  jsonModel);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptModel     = new SchemaModel ("typescript",    "Typescript",  "text/plain",       typescriptGenerator.files);
+            var typescriptModel     = new SchemaModel ("typescript",    "Typescript",  "text/plain",       ".d.ts", typescriptGenerator.files);
             result.Add(typescriptModel.type,   typescriptModel);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpModel         = new SchemaModel ("csharp",        "C#",          "text/plain",       csharpGenerator.files);
+            var csharpModel         = new SchemaModel ("csharp",        "C#",          "text/plain",       ".cs",   csharpGenerator.files);
             result.Add(csharpModel.type,       csharpModel);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinModel         = new SchemaModel ("kotlin",        "Kotlin",      "text/plain",       kotlinGenerator.files);
+            var kotlinModel         = new SchemaModel ("kotlin",        "Kotlin",      "text/plain",       ".kt",   kotlinGenerator.files);
             result.Add(kotlinModel.type,       kotlinModel);
 
             foreach (var generator in generators) {
@@ -101,7 +105,14 @@ namespace Friflo.Json.Fliox.Schema.Language
                     Console.Error.WriteLine($"SchemaModel generation failed for: {generator.name}. error: {e.Message}");
                 }
             }
-            return result;
+            return result.Values.ToList();
+        }
+        
+        /// <summary>
+        /// Write the generated file to the given folder and remove all others file with the used <see cref="fileExt"/>
+        /// </summary>
+        public void WriteFiles(string folder, bool cleanFolder = true) {
+            Generator.WriteFilesInternal(folder, files, fileExt, cleanFolder);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -77,15 +76,9 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
         [Test]
         public static void GenerateSchemaModels() {
             var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
-            foreach (var modelPair in schemaModels) {
-                var schemaModel = modelPair.Value;
-                var folder      = $"./schema/{modelPair.Key}";
-                Directory.CreateDirectory(folder);
-                foreach (var filePair in schemaModel.files) {
-                    var path    = $"{folder}/{filePair.Key}";
-                    var content = filePair.Value;
-                    File.WriteAllText(path, content);
-                }
+            foreach (var schemaModel in schemaModels) {
+                var folder = $"./schema/{schemaModel.type}";
+                schemaModel.WriteFiles(folder);
             }
         }
     }

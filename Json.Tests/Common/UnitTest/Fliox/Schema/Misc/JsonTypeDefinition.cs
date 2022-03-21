@@ -213,7 +213,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
         
         public static SchemaModel GenerateJTD(GeneratorOptions options) {
             var generator = Generate(options);
-            return new SchemaModel(options.type, options.name, "application/json", generator.files);
+            return new SchemaModel(options.type, options.name, "application/json", ".jtd", generator.files);
         }
     }
 }

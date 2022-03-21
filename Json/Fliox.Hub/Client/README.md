@@ -123,13 +123,9 @@ passed schema type `ShopStore`. The generated code is written to folder `./schem
 ``` csharp
 public static void GenerateSchemaModels() {
     var schemaModels = SchemaModel.GenerateSchemaModels(typeof(ShopStore));
-    foreach (var (language, schemaModel) in schemaModels) {
-        var folder = $"./schema/{language}";
-        Directory.CreateDirectory(folder);
-        foreach (var (file, content) in schemaModel.files) {
-            var path = $"{folder}/{file}";
-            File.WriteAllText(path, content);
-        }
+    foreach (var schemaModel in schemaModels) {
+        var folder = $"./schema/{schemaModel.type}";
+        schemaModel.WriteFiles(folder);
     }
 }
 ```

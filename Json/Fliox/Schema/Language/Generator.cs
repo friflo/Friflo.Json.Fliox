@@ -249,6 +249,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         /// Write the generated file to the given folder and remove all others file with the used <see cref="fileExt"/>
         /// </summary>
         public void WriteFiles(string folder, bool cleanFolder = true) {
+            WriteFilesInternal(folder, files, fileExt, cleanFolder);
+        }
+        
+        internal static void WriteFilesInternal(string folder, IReadOnlyDictionary<string, string> files, string fileExt, bool cleanFolder = true) {
             // folder = Path.GetFullPath (folder);
             folder = folder.Replace('\\', '/');
             Directory.CreateDirectory(folder);
