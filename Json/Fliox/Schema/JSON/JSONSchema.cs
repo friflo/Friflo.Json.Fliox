@@ -84,17 +84,23 @@ namespace Friflo.Json.Fliox.Schema.JSON
         /// <summary>declare type as an abstract type - <i>JSON Schema extension</i></summary>
                 public  bool?                           isAbstract;
         //
-        /// <summary>'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'</summary>
+        /// <summary>a basic JSON Schema type: 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'</summary>
                 public  string                          type; // null or SchemaType
              // public  SchemaType?                     type; // todo use this
         /// <summary>name of the property used as primary <see cref="key"/> for entities - <i>JSON Schema extension</i></summary>
                 public  string                          key;  // if null a property named "id" must exist
-        /// <summary>map of all <see cref="properties"/> declared by the type definition. The map keys are the property names.<br/>
+        /// <summary>map of all <see cref="properties"/> declared by the type definition:<br/>
+        /// - its keys are the property names<br/>
+        /// - its values are property types.<br/>
         /// in case of a database schema the <see cref="properties"/> declare the database <b>containers</b></summary>
                 public  Dictionary<string, FieldType>   properties;
-        /// <summary>database <see cref="commands"/>. The map keys are the command names - <i>JSON Schema extension</i></summary>
+        /// <summary>map of database <see cref="commands"/> - <i>JSON Schema extension</i><br/>
+        /// - its keys are the command names<br/>
+        /// - its values the command signatures</summary>
                 public  Dictionary<string, MessageType> commands;
-        /// <summary>database <see cref="messages"/>. The map keys are the message names - <i>JSON Schema extension</i></summary>
+        /// <summary>map of database database <see cref="messages"/> - <i>JSON Schema extension</i><br/>
+        /// - its keys are the message names<br/>
+        /// - its values the message signatures</summary>
                 public  Dictionary<string, MessageType> messages;
         /// <summary>true if type should be generated as a value type (struct) - <i>JSON Schema extension</i></summary>
                 public  bool?                           isStruct;
@@ -132,8 +138,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// </summary>
     public sealed class FieldType
     {
-        /// <summary>'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'<br/>
-        /// or array of these values used to declare <b>nullable</b> properties when using a basic JSON Schema type</summary>
+        /// <summary>a basic JSON Schema type: 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'<br/>
+        /// or an array of these types used to declare <b>nullable</b> properties when using a basic JSON Schema type</summary>
                 public  JsonValue       type;           // SchemaType or SchemaType[]
         /// <summary>discriminant of a specific polymorphic type. Always an array with one string element</summary>
         [Fri.Property(Name =           "enum")]

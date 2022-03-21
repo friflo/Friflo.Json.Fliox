@@ -49,18 +49,28 @@ export class JsonType {
     oneOf?                : FieldType[] | null;
     /** declare type as an abstract type - *JSON Schema extension* */
     isAbstract?           : boolean | null;
-    /** 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array' */
+    /** a basic JSON Schema type: 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array' */
     type?                 : string | null;
     /** name of the property used as primary **key** for entities - *JSON Schema extension* */
     key?                  : string | null;
     /**
-     * map of all **properties** declared by the type definition. The map keys are the property names.  
+     * map of all **properties** declared by the type definition:  
+     * - its keys are the property names  
+     * - its values are property types.  
      * in case of a database schema the **properties** declare the database **containers**
      */
     properties?           : { [key: string]: FieldType } | null;
-    /** database **commands**. The map keys are the command names - *JSON Schema extension* */
+    /**
+     * map of database **commands** - *JSON Schema extension*  
+     * - its keys are the command names  
+     * - its values the command signatures
+     */
     commands?             : { [key: string]: MessageType } | null;
-    /** database **messages**. The map keys are the message names - *JSON Schema extension* */
+    /**
+     * map of database database **messages** - *JSON Schema extension*  
+     * - its keys are the message names  
+     * - its values the message signatures
+     */
     messages?             : { [key: string]: MessageType } | null;
     /** true if type should be generated as a value type (struct) - *JSON Schema extension* */
     isStruct?             : boolean | null;
@@ -85,8 +95,8 @@ export class TypeRef {
 /** Defines the type of property */
 export class FieldType {
     /**
-     * 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'  
-     * or array of these values used to declare **nullable** properties when using a basic JSON Schema type
+     * a basic JSON Schema type: 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'  
+     * or an array of these types used to declare **nullable** properties when using a basic JSON Schema type
      */
     type?                 : any | null;
     /** discriminant of a specific polymorphic type. Always an array with one string element */
