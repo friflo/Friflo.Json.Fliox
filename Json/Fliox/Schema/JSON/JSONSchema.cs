@@ -13,26 +13,29 @@ using Ignore    = Friflo.Json.Fliox.Mapper.Fri.IgnoreAttribute;
 namespace Friflo.Json.Fliox.Schema.JSON
 {
     /// <summary>
-    /// Compatible subset of JSON Schema with some extensions required for code generation.<br/>
-    /// JSON Schema specification: https://json-schema.org/specification.html<br/>
-    /// <br/>
-    /// Following extensions are added to JSON Schema:
+    /// Compatible subset of the <a href="https://json-schema.org/specification.html">JSON Schema specification</a> with some extensions to
     /// <list type="bullet">
-    ///     <item><see cref="JsonType.extends"/> - used to declare that a typ definition extends the given one</item>
-    ///     <item><see cref="JsonType.discriminator"/> - declare the property name used as discriminator</item>
-    ///     <item><see cref="JsonType.isStruct"/> - type should be generated as struct</item>
-    ///     <item><see cref="JsonType.isAbstract"/> - type definition is an abstract type</item>
-    ///     <item><see cref="JsonType.messages"/> - list of all schema messages</item>
-    ///     <item><see cref="JsonType.commands"/> - list of all schema commands</item>
-    ///     <item><see cref="JsonType.key"/> - the property used as primary key</item>
-    ///     <item><see cref="JsonType.descriptions"/> - a map storing the descriptions for enum values</item>
-    ///     <item><see cref="FieldType.relation"/> - mark the property as a relation (aka reference or aka secondary key) to entities in the given container</item>
+    ///   <item>enable <b>code generation</b> for various languages</item>
+    ///   <item>define <b>database schemas</b> declaring its <b>containers</b>, <b>commands</b> and <b>messages</b></item>
+    /// </list>
+    /// <br/>
+    /// Following extensions are added to the specification:
+    /// <list type="bullet">
+    ///   <item><see cref="JsonType.extends"/> - used to declare that a type definition extends the given one</item>
+    ///   <item><see cref="JsonType.discriminator"/> - declare the property name used as discriminator</item>
+    ///   <item><see cref="JsonType.isStruct"/> - type should be generated as struct - value type</item>
+    ///   <item><see cref="JsonType.isAbstract"/> - type definition is an abstract type</item>
+    ///   <item><see cref="JsonType.messages"/> - list of all database messages</item>
+    ///   <item><see cref="JsonType.commands"/> - list of all database commands</item>
+    ///   <item><see cref="JsonType.key"/> - name of the property used as primary key</item>
+    ///   <item><see cref="JsonType.descriptions"/> - a map storing the descriptions for enum values</item>
+    ///   <item><see cref="FieldType.relation"/> - mark the property as a relation (aka reference or aka secondary key) to entities in the container named relation</item>
     /// </list>
     /// The restriction of <see cref="JSONSchema"/> are:
     /// <list type="bullet">
     ///   <item>
     ///     A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }. <br/>
-    ///     The property type needs to be a known type like "string", ... or a referenced ("$ref") type.  <br/>
+    ///     The property type needs to be a known type like "string", ... or a referenced <b>"$ref"</b> type.  <br/>
     ///     This restriction enables generation of code and types for languages without support of anonymous types. <br/>
     ///     It also enables concise error messages for validation errors when using <see cref="Validation.TypeValidator"/>.
     ///   </item>
@@ -40,7 +43,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///     Note: Arrays and dictionaries are also valid schema properties. E.g. <br></br>
     ///     A valid array property like: <code>{ "type": ["array", "null"], "items": { "type": "string" } }</code><br></br>
     ///     A valid dictionary property like:  <code>{ "type": "object", "additionalProperties": { "type": "string" } }</code><br></br>
-    ///     These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
+    ///     These element / value types needs to be a known type like "string", ... or a referenced <b>"$ref"</b> type.
     ///   </item>
     ///   <item>
     ///     On root level are only "$ref": "..." and "definitions": [...] allowed.

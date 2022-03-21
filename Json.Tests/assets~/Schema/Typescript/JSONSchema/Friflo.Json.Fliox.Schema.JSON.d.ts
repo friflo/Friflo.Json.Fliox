@@ -2,28 +2,30 @@
 import { int64 } from "./Standard";
 
 /**
- * Compatible subset of JSON Schema with some extensions required for code generation.  
- * JSON Schema specification: https://json-schema.org/specification.html    
- * Following extensions are added to JSON Schema:
- * - **extends** - used to declare that a typ definition extends the given one
+ * Compatible subset of the [JSON Schema specification](https://json-schema.org/specification.html) with some extensions to
+ * - enable **code generation** for various languages
+ * - define **database schemas** declaring its **containers**, **commands** and **messages**
+ *   
+ * Following extensions are added to the specification:
+ * - **extends** - used to declare that a type definition extends the given one
  * - **discriminator** - declare the property name used as discriminator
- * - **isStruct** - type should be generated as struct
+ * - **isStruct** - type should be generated as struct - value type
  * - **isAbstract** - type definition is an abstract type
- * - **messages** - list of all schema messages
- * - **commands** - list of all schema commands
- * - **key** - the property used as primary key
+ * - **messages** - list of all database messages
+ * - **commands** - list of all database commands
+ * - **key** - name of the property used as primary key
  * - **descriptions** - a map storing the descriptions for enum values
- * - **relation** - mark the property as a relation (aka reference or aka secondary key) to entities in the given container
+ * - **relation** - mark the property as a relation (aka reference or aka secondary key) to entities in the container named relation
  * 
  * The restriction of **JSONSchema** are:
  * - A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.   
- *   The property type needs to be a known type like "string", ... or a referenced ("$ref") type.    
+ *   The property type needs to be a known type like "string", ... or a referenced **"$ref"** type.    
  *   This restriction enables generation of code and types for languages without support of anonymous types.   
  *   It also enables concise error messages for validation errors when using **TypeValidator**.
  * - Note: Arrays and dictionaries are also valid schema properties. E.g.   
  *   A valid array property like: `{ "type": ["array", "null"], "items": { "type": "string" } }`  
  *   A valid dictionary property like:  `{ "type": "object", "additionalProperties": { "type": "string" } }`  
- *   These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
+ *   These element / value types needs to be a known type like "string", ... or a referenced **"$ref"** type.
  * - On root level are only "$ref": "..." and "definitions": [...] allowed.
  * 
  */
