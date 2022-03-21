@@ -6,29 +6,29 @@
             "type": "object",
             "description": "Compatible subset of JSON Schema with some extensions required for code generation.<br/>\nJSON Schema specification: https://json-schema.org/specification.html<br/><br/>\nFollowing extensions are added to JSON Schema:\n<ul><li><b>extends</b> - used to declare that a typ definition extends the given one</li><li><b>discriminator</b> - declare the property name used as discriminator</li><li><b>isStruct</b> - type should be generated as struct</li><li><b>isAbstract</b> - type definition is an abstract type</li><li><b>messages</b> - list of all schema messages</li><li><b>commands</b> - list of all schema commands</li><li><b>key</b> - the property used as primary key</li><li><b>descriptions</b> - a map storing the descriptions for enum values</li><li><b>relation</b> - mark the property as a relation (aka reference or aka secondary key) to entities in the given container</li></ul>\nThe restriction of <b>JSONSchema</b> are:\n<ul><li>\nA schema property cannot nest anonymous types by 'type': 'object' with 'properties': { ... }. <br/>\nThe property type needs to be a known type like 'string', ... or a referenced ('$ref') type.  <br/>\nThis restriction enables generation of code and types for languages without support of anonymous types. <br/>\nIt also enables concise error messages for validation errors when using <b>TypeValidator</b>.\n</li><li>\nNote: Arrays and dictionaries are also valid schema properties. E.g. <br/>\nA valid array property like: <code>{ 'type': ['array', 'null'], 'items': { 'type': 'string' } }</code><br/>\nA valid dictionary property like:  <code>{ 'type': 'object', 'additionalProperties': { 'type': 'string' } }</code><br/>\nThese element / value types needs to be a known type like 'string', ... or a referenced ('$ref') type.\n</li><li>\nOn root level are only '$ref': '...' and 'definitions': [...] allowed.\n</li></ul>",
             "properties": {
-                "$ref":        { "type": ["string", "null"] },
-                "definitions": { "additionalProperties": { "$ref": "#/definitions/JsonType" }, "type": "object" }
+                "$ref":        { "type": ["string", "null"], "description": "reference to 'main' type definition in <b>definitions</b> to<br/>\nenable schema urls without fragment suffix like: <c>#/definitions/SomeType</c>" },
+                "definitions": { "additionalProperties": { "$ref": "#/definitions/JsonType" }, "type": "object", "description": "map of type <b>definitions</b> contained by the JSON Schema." }
             },
             "additionalProperties": false
         },
         "JsonType": {
             "type": "object",
             "properties": {
-                "extends":              { "oneOf": [{ "$ref": "#/definitions/TypeRef" }, {"type": "null"}] },
-                "discriminator":        { "type": ["string", "null"] },
-                "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
-                "isAbstract":           { "type": ["boolean", "null"] },
-                "type":                 { "type": ["string", "null"] },
-                "key":                  { "type": ["string", "null"] },
-                "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object" },
-                "commands":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object" },
-                "messages":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object" },
-                "isStruct":             { "type": ["boolean", "null"] },
-                "required":             { "type": ["array", "null"], "items": { "type": "string" } },
-                "additionalProperties": { "type": "boolean" },
-                "enum":                 { "type": ["array", "null"], "items": { "type": "string" } },
-                "descriptions":         { "additionalProperties": { "type": "string" }, "type": "object" },
-                "description":          { "type": ["string", "null"] }
+                "extends":              { "oneOf": [{ "$ref": "#/definitions/TypeRef" }, {"type": "null"}], "description": "reference to type definition which <b>extends</b> this type - <i>JSON Schema extension</i>" },
+                "discriminator":        { "type": ["string", "null"], "description": "<b>discriminator</b> declares the name of the property used for polymorphic types - <i>JSON Schema extension</i>" },
+                "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" }, "description": "list of all specific types a polymorphic type can be. Is required if <b>discriminator</b> is assigned" },
+                "isAbstract":           { "type": ["boolean", "null"], "description": "declare type as an abstract type - <i>JSON Schema extension</i>" },
+                "type":                 { "type": ["string", "null"], "description": "'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'" },
+                "key":                  { "type": ["string", "null"], "description": "name of the property used as primary <b>key</b> for entities - <i>JSON Schema extension</i>" },
+                "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object", "description": "map of all <b>properties</b> declared by the type definition. The map keys are the property names" },
+                "commands":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object", "description": "database <b>commands</b>. The map keys are the command names - <i>JSON Schema extension</i>" },
+                "messages":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object", "description": "database <b>messages</b>. The map keys are the message names - <i>JSON Schema extension</i>" },
+                "isStruct":             { "type": ["boolean", "null"], "description": "true if type should be generated as a value type (struct) - <i>JSON Schema extension</i>" },
+                "required":             { "type": ["array", "null"], "items": { "type": "string" }, "description": "list of <b>required</b> properties" },
+                "additionalProperties": { "type": "boolean", "description": "true if <b>additionalProperties</b> are allowed" },
+                "enum":                 { "type": ["array", "null"], "items": { "type": "string" }, "description": "all values that can be used for an enumeration type" },
+                "descriptions":         { "additionalProperties": { "type": "string" }, "type": "object", "description": "map of optional <b>descriptions</b> for <b>enum</b> values - <i>JSON Schema extension</i>" },
+                "description":          { "type": ["string", "null"], "description": "optional type description" }
             },
             "required": [
                 "additionalProperties"
@@ -38,8 +38,7 @@
         "TypeRef": {
             "type": "object",
             "properties": {
-                "$ref": { "type": "string" },
-                "type": { "type": ["string", "null"] }
+                "$ref": { "type": "string", "description": "reference to a type definition" }
             },
             "required": [
                 "$ref"
@@ -49,28 +48,28 @@
         "FieldType": {
             "type": "object",
             "properties": {
-                "type":                 {  },
-                "enum":                 { "type": ["array", "null"], "items": { "type": "string" } },
-                "items":                { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
-                "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
-                "minimum":              { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}] },
-                "maximum":              { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}] },
-                "pattern":              { "type": ["string", "null"] },
-                "format":               { "type": ["string", "null"] },
-                "$ref":                 { "type": ["string", "null"] },
-                "additionalProperties": { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
-                "isAutoIncrement":      { "type": ["boolean", "null"] },
-                "relation":             { "type": ["string", "null"] },
-                "description":          { "type": ["string", "null"] }
+                "type":                 { "description": "'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'<br/>\nor array of these values used to declare <b>nullable</b> properties when using a basic JSON Schema type" },
+                "enum":                 { "type": ["array", "null"], "items": { "type": "string" }, "description": "discriminant of a specific polymorphic type. Always an array with one string element" },
+                "items":                { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "if set the property is an array - it declares the type of its <b>items</b>" },
+                "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" }, "description": "list of valid property types - used to declare <b>nullable</b> properties when using a <b>$ref</b> type" },
+                "minimum":              { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}], "description": "<b>minimum</b> valid number" },
+                "maximum":              { "oneOf": [{ "$ref": "./Standard.json#/definitions/int64" }, {"type": "null"}], "description": "<b>maximum</b> valid number" },
+                "pattern":              { "type": ["string", "null"], "description": "regular expression <b>pattern</b> to constrain string values" },
+                "format":               { "type": ["string", "null"], "description": "set to <b>'date-time'</b> if the property is a timestamp formatted as RFC 3339 + milliseconds" },
+                "$ref":                 { "type": ["string", "null"], "description": "reference to type definition used as property type" },
+                "additionalProperties": { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "if set the property is a map (Dictionary) using the key type <b>string</b> and the value type\nspecified by <b>additionalProperties</b>" },
+                "isAutoIncrement":      { "type": ["boolean", "null"], "description": "WIP" },
+                "relation":             { "type": ["string", "null"], "description": "if set the property is used as reference to entities in the container named <b>relation</b> - <i>JSON Schema extension</i>" },
+                "description":          { "type": ["string", "null"], "description": "optional property description" }
             },
             "additionalProperties": false
         },
         "MessageType": {
             "type": "object",
             "properties": {
-                "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
-                "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}] },
-                "description": { "type": ["string", "null"] }
+                "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "type of the command / message <b>param</b> - <i>JSON Schema extension</i>" },
+                "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "type of the command <b>result</b> - <i>JSON Schema extension</i><br/>\nmessages return no <b>result</b>" },
+                "description": { "type": ["string", "null"], "description": "optional command / message description" }
             },
             "additionalProperties": false
         }

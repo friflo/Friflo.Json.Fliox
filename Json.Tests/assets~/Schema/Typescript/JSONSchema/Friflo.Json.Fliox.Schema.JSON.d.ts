@@ -28,52 +28,97 @@ import { int64 } from "./Standard";
  * 
  */
 export class JSONSchema {
+    /**
+     * reference to 'main' type definition in **definitions** to  
+     * enable schema urls without fragment suffix like: #/definitions/SomeType
+     */
     $ref?        : string | null;
+    /** map of type **definitions** contained by the JSON Schema. */
     definitions? : { [key: string]: JsonType } | null;
 }
 
 export class JsonType {
+    /** reference to type definition which **extends** this type - *JSON Schema extension* */
     extends?              : TypeRef | null;
+    /** **discriminator** declares the name of the property used for polymorphic types - *JSON Schema extension* */
     discriminator?        : string | null;
+    /** list of all specific types a polymorphic type can be. Is required if **discriminator** is assigned */
     oneOf?                : FieldType[] | null;
+    /** declare type as an abstract type - *JSON Schema extension* */
     isAbstract?           : boolean | null;
+    /** 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array' */
     type?                 : string | null;
+    /** name of the property used as primary **key** for entities - *JSON Schema extension* */
     key?                  : string | null;
+    /** map of all **properties** declared by the type definition. The map keys are the property names */
     properties?           : { [key: string]: FieldType } | null;
+    /** database **commands**. The map keys are the command names - *JSON Schema extension* */
     commands?             : { [key: string]: MessageType } | null;
+    /** database **messages**. The map keys are the message names - *JSON Schema extension* */
     messages?             : { [key: string]: MessageType } | null;
+    /** true if type should be generated as a value type (struct) - *JSON Schema extension* */
     isStruct?             : boolean | null;
+    /** list of **required** properties */
     required?             : string[] | null;
+    /** true if **additionalProperties** are allowed */
     additionalProperties  : boolean;
+    /** all values that can be used for an enumeration type */
     enum?                 : string[] | null;
+    /** map of optional **descriptions** for **enum** values - *JSON Schema extension* */
     descriptions?         : { [key: string]: string } | null;
+    /** optional type description */
     description?          : string | null;
 }
 
 export class TypeRef {
+    /** reference to a type definition */
     $ref  : string;
-    type? : string | null;
 }
 
 export class FieldType {
+    /**
+     * 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'  
+     * or array of these values used to declare **nullable** properties when using a basic JSON Schema type
+     */
     type?                 : any | null;
+    /** discriminant of a specific polymorphic type. Always an array with one string element */
     enum?                 : string[] | null;
+    /** if set the property is an array - it declares the type of its **items** */
     items?                : FieldType | null;
+    /** list of valid property types - used to declare **nullable** properties when using a **$ref** type */
     oneOf?                : FieldType[] | null;
+    /** **minimum** valid number */
     minimum?              : int64 | null;
+    /** **maximum** valid number */
     maximum?              : int64 | null;
+    /** regular expression **pattern** to constrain string values */
     pattern?              : string | null;
+    /** set to **'date-time'** if the property is a timestamp formatted as RFC 3339 + milliseconds */
     format?               : string | null;
+    /** reference to type definition used as property type */
     $ref?                 : string | null;
+    /**
+     * if set the property is a map (Dictionary) using the key type **string** and the value type
+     * specified by **additionalProperties**
+     */
     additionalProperties? : FieldType | null;
+    /** WIP */
     isAutoIncrement?      : boolean | null;
+    /** if set the property is used as reference to entities in the container named **relation** - *JSON Schema extension* */
     relation?             : string | null;
+    /** optional property description */
     description?          : string | null;
 }
 
 export class MessageType {
+    /** type of the command / message **param** - *JSON Schema extension* */
     param?       : FieldType | null;
+    /**
+     * type of the command **result** - *JSON Schema extension*  
+     * messages return no **result**
+     */
     result?      : FieldType | null;
+    /** optional command / message description */
     description? : string | null;
 }
 
