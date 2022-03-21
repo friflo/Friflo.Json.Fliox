@@ -13,7 +13,7 @@
                 { "$ref": "#/definitions/PatchTest" }
             ],
             "properties": {
-                "op": { "enum": ["replace", "add", "remove", "copy", "move", "test"] }
+                "op": { "enum": ["replace", "add", "remove", "copy", "move", "test"], "description": "patch type" }
             },
             "required": [
                 "op"

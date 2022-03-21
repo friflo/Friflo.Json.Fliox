@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Transform
     /// Implement models of RFC 6902<br/>
     /// <a href="https://tools.ietf.org/html/rfc6902">JavaScript Object Notation (JSON) Patch</a>
     /// </summary>
-    [Fri.Discriminator("op")]
+    [Fri.Discriminator("op", Description = "patch type")]
     [Fri.Polymorph(typeof(PatchReplace),    Discriminant = "replace")]
     [Fri.Polymorph(typeof(PatchAdd),        Discriminant = "add")]
     [Fri.Polymorph(typeof(PatchRemove),     Discriminant = "remove")]

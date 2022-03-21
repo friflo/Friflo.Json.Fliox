@@ -11,6 +11,7 @@ export type JsonPatch_Union =
 ;
 
 export abstract class JsonPatch {
+    /** patch type */
     abstract op:
         | "replace"
         | "add"
@@ -22,35 +23,41 @@ export abstract class JsonPatch {
 }
 
 export class PatchReplace extends JsonPatch {
+    /** patch type */
     op     : "replace";
     path   : string;
     value  : any;
 }
 
 export class PatchAdd extends JsonPatch {
+    /** patch type */
     op     : "add";
     path   : string;
     value  : any;
 }
 
 export class PatchRemove extends JsonPatch {
+    /** patch type */
     op    : "remove";
     path  : string;
 }
 
 export class PatchCopy extends JsonPatch {
+    /** patch type */
     op    : "copy";
     path  : string;
     from? : string | null;
 }
 
 export class PatchMove extends JsonPatch {
+    /** patch type */
     op    : "move";
     path  : string;
     from? : string | null;
 }
 
 export class PatchTest extends JsonPatch {
+    /** patch type */
     op     : "test";
     path   : string;
     value? : any | null;
