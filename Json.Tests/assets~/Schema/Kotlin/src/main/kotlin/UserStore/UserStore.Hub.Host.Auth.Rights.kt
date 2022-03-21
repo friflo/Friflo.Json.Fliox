@@ -13,14 +13,14 @@ abstract class Right  {
 
 @Serializable
 @SerialName("allow")
-data class RightAllow (
+data class AllowRight (
               val database    : String? = null,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
 @SerialName("task")
-data class RightTask (
+data class TaskRight (
               val database    : String? = null,
               val types       : List<TaskType>,
     override  val description : String? = null,
@@ -28,7 +28,7 @@ data class RightTask (
 
 @Serializable
 @SerialName("sendMessage")
-data class RightSendMessage (
+data class SendMessageRight (
               val database    : String? = null,
               val names       : List<String>,
     override  val description : String? = null,
@@ -36,7 +36,7 @@ data class RightSendMessage (
 
 @Serializable
 @SerialName("subscribeMessage")
-data class RightSubscribeMessage (
+data class SubscribeMessageRight (
               val database    : String? = null,
               val names       : List<String>,
     override  val description : String? = null,
@@ -44,7 +44,7 @@ data class RightSubscribeMessage (
 
 @Serializable
 @SerialName("operation")
-data class RightOperation (
+data class OperationRight (
               val database    : String? = null,
               val containers  : HashMap<String, ContainerAccess>,
     override  val description : String? = null,
@@ -71,7 +71,7 @@ enum class OperationType {
 
 @Serializable
 @SerialName("predicate")
-data class RightPredicate (
+data class PredicateRight (
               val names       : List<String>,
     override  val description : String? = null,
 ) : Right()

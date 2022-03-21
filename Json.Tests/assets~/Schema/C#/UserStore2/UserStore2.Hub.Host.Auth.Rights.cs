@@ -8,39 +8,39 @@ using UserStore2.Hub.Protocol.Tasks;
 namespace UserStore2.Hub.Host.Auth.Rights {
 
 [Fri.Discriminator("type")]
-[Fri.Polymorph(typeof(RightAllow),            Discriminant = "allow")]
-[Fri.Polymorph(typeof(RightTask),             Discriminant = "task")]
-[Fri.Polymorph(typeof(RightSendMessage),      Discriminant = "sendMessage")]
-[Fri.Polymorph(typeof(RightSubscribeMessage), Discriminant = "subscribeMessage")]
-[Fri.Polymorph(typeof(RightOperation),        Discriminant = "operation")]
-[Fri.Polymorph(typeof(RightPredicate),        Discriminant = "predicate")]
+[Fri.Polymorph(typeof(AllowRight),            Discriminant = "allow")]
+[Fri.Polymorph(typeof(TaskRight),             Discriminant = "task")]
+[Fri.Polymorph(typeof(SendMessageRight),      Discriminant = "sendMessage")]
+[Fri.Polymorph(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
+[Fri.Polymorph(typeof(OperationRight),        Discriminant = "operation")]
+[Fri.Polymorph(typeof(PredicateRight),        Discriminant = "predicate")]
 public abstract class Right {
     string  description;
 }
 
-public class RightAllow : Right {
+public class AllowRight : Right {
     string  database;
 }
 
-public class RightTask : Right {
+public class TaskRight : Right {
     string          database;
     [Fri.Required]
     List<TaskType>  types;
 }
 
-public class RightSendMessage : Right {
+public class SendMessageRight : Right {
     string        database;
     [Fri.Required]
     List<string>  names;
 }
 
-public class RightSubscribeMessage : Right {
+public class SubscribeMessageRight : Right {
     string        database;
     [Fri.Required]
     List<string>  names;
 }
 
-public class RightOperation : Right {
+public class OperationRight : Right {
     string                               database;
     [Fri.Required]
     Dictionary<string, ContainerAccess>  containers;
@@ -64,7 +64,7 @@ public enum OperationType {
     full,
 }
 
-public class RightPredicate : Right {
+public class PredicateRight : Right {
     [Fri.Required]
     List<string>  names;
 }

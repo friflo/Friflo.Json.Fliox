@@ -23,24 +23,24 @@
         "Right": {
             "discriminator": "type",
             "mapping": {
-                "allow":            { "ref":  "RightAllow" },
-                "task":             { "ref":  "RightTask" },
-                "sendMessage":      { "ref":  "RightSendMessage" },
-                "subscribeMessage": { "ref":  "RightSubscribeMessage" },
-                "operation":        { "ref":  "RightOperation" },
-                "predicate":        { "ref":  "RightPredicate" }
+                "allow":            { "ref":  "AllowRight" },
+                "task":             { "ref":  "TaskRight" },
+                "sendMessage":      { "ref":  "SendMessageRight" },
+                "subscribeMessage": { "ref":  "SubscribeMessageRight" },
+                "operation":        { "ref":  "OperationRight" },
+                "predicate":        { "ref":  "PredicateRight" }
             },
             "properties": {
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "RightAllow": {
+        "AllowRight": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "RightTask": {
+        "TaskRight": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "types":       { "elements": { "ref":  "TaskType" } },
@@ -65,21 +65,21 @@
                 "error"
             ]
         },
-        "RightSendMessage": {
+        "SendMessageRight": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "RightSubscribeMessage": {
+        "SubscribeMessageRight": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "RightOperation": {
+        "OperationRight": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "containers":  { "values": { "ref":  "ContainerAccess" } },
@@ -114,7 +114,7 @@
                 "delete"
             ]
         },
-        "RightPredicate": {
+        "PredicateRight": {
             "properties": {
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }

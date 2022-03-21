@@ -3,12 +3,12 @@ import { TaskType } from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 import { Change }   from "./Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 export type Right_Union =
-    | RightAllow
-    | RightTask
-    | RightSendMessage
-    | RightSubscribeMessage
-    | RightOperation
-    | RightPredicate
+    | AllowRight
+    | TaskRight
+    | SendMessageRight
+    | SubscribeMessageRight
+    | OperationRight
+    | PredicateRight
 ;
 
 export abstract class Right {
@@ -26,15 +26,15 @@ export abstract class Right {
 }
 
 /** Allow full access to the given **database**.   */
-export class RightAllow extends Right {
+export class AllowRight extends Right {
     /** right type */
     type         : "allow";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
     database?    : string | null;
 }
 
-/** **RightTask** grant **database** access by a set of task **types**.    */
-export class RightTask extends Right {
+/** **TaskRight** grant **database** access by a set of task **types**.    */
+export class TaskRight extends Right {
     /** right type */
     type         : "task";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -44,10 +44,10 @@ export class RightTask extends Right {
 }
 
 /**
- * **RightSendMessage** allows sending messages to a **database** by a set of **names**.    
+ * **SendMessageRight** allows sending messages to a **database** by a set of **names**.    
  * Note: commands are messages - so permission of sending commands is same as for messages.
  */
-export class RightSendMessage extends Right {
+export class SendMessageRight extends Right {
     /** right type */
     type         : "sendMessage";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -57,10 +57,10 @@ export class RightSendMessage extends Right {
 }
 
 /**
- * **RightSubscribeMessage** allows subscribing messages send to a **database**.    
+ * **SubscribeMessageRight** allows subscribing messages send to a **database**.    
  * Note: commands are messages - so permission of subscribing commands is same as for messages.
  */
-export class RightSubscribeMessage extends Right {
+export class SubscribeMessageRight extends Right {
     /** right type */
     type         : "subscribeMessage";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -70,12 +70,12 @@ export class RightSubscribeMessage extends Right {
 }
 
 /**
- * **RightOperation** grant **database** access for the given **containers**
+ * **OperationRight** grant **database** access for the given **containers**
  * based on a set of **operations**.   
  * E.g. create, read, upsert, delete, query or aggregate (count)  
  * It also allows subscribing database changes by **subscribeChanges**
  */
-export class RightOperation extends Right {
+export class OperationRight extends Right {
     /** right type */
     type         : "operation";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
@@ -105,7 +105,7 @@ export type OperationType =
     | "full"           /** allow all operation types in a container */
 ;
 
-export class RightPredicate extends Right {
+export class PredicateRight extends Right {
     /** right type */
     type         : "predicate";
     /** a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*' */

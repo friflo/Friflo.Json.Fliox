@@ -114,69 +114,69 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 'zzz', expect: TaskType[] at RightTask > rights[0].types, pos: 44", error);
+            AreEqual("Incorrect type. was: 'zzz', expect: TaskType[] at TaskRight > rights[0].types, pos: 44", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Invalid enum value. was: 'yyy', expect: TaskType at RightTask > rights[0].types[0], pos: 45", error);
+            AreEqual("Invalid enum value. was: 'yyy', expect: TaskType at TaskRight > rights[0].types[0], pos: 45", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': {} ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: TaskType[] at RightTask > rights[0].types, pos: 40", error);
+            AreEqual("Incorrect type. was: object, expect: TaskType[] at TaskRight > rights[0].types, pos: 40", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ {} ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: object, expect: TaskType at RightTask > rights[0].types[0], pos: 42", error);
+            AreEqual("Incorrect type. was: object, expect: TaskType at TaskRight > rights[0].types[0], pos: 42", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': true ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: TaskType[] at RightTask > rights[0].types, pos: 43", error);
+            AreEqual("Incorrect type. was: true, expect: TaskType[] at TaskRight > rights[0].types, pos: 43", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ false ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: false, expect: TaskType at RightTask > rights[0].types[0], pos: 46", error);
+            AreEqual("Incorrect type. was: false, expect: TaskType at TaskRight > rights[0].types[0], pos: 46", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 123 ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 123, expect: TaskType[] at RightTask > rights[0].types, pos: 42", error);
+            AreEqual("Incorrect type. was: 123, expect: TaskType[] at TaskRight > rights[0].types, pos: 42", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ 456 ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 456, expect: TaskType at RightTask > rights[0].types[0], pos: 44", error);
+            AreEqual("Incorrect type. was: 456, expect: TaskType at TaskRight > rights[0].types[0], pos: 44", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': null ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Required property must not be null. at RightTask > rights[0].types, pos: 43", error);
+            AreEqual("Required property must not be null. at TaskRight > rights[0].types, pos: 43", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ null ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Element must not be null. at RightTask > rights[0].types[0], pos: 45", error);
+            AreEqual("Element must not be null. at TaskRight > rights[0].types[0], pos: 45", error);
             
             
             // ----------------------------- test dictionary elements (values) -----------------------------
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': true } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess at RightOperation > rights[0].containers, pos: 54", error);
+            AreEqual("Incorrect type. was: true, expect: ContainerAccess at OperationRight > rights[0].containers, pos: 54", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': true } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess at RightOperation > rights[0].containers.key, pos: 63", error);
+            AreEqual("Incorrect type. was: true, expect: ContainerAccess at OperationRight > rights[0].containers.key, pos: 63", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 123, expect: ContainerAccess at RightOperation > rights[0].containers, pos: 53", error);
+            AreEqual("Incorrect type. was: 123, expect: ContainerAccess at OperationRight > rights[0].containers, pos: 53", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': 456 } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 456, expect: ContainerAccess at RightOperation > rights[0].containers.key, pos: 62", error);
+            AreEqual("Incorrect type. was: 456, expect: ContainerAccess at OperationRight > rights[0].containers.key, pos: 62", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: array, expect: ContainerAccess at RightOperation > rights[0].containers[], pos: 51", error);
+            AreEqual("Incorrect type. was: array, expect: ContainerAccess at OperationRight > rights[0].containers[], pos: 51", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': [] } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Found array as array item. expect: ContainerAccess at RightOperation > rights[0].containers.key[], pos: 60", error); // todo
+            AreEqual("Found array as array item. expect: ContainerAccess at OperationRight > rights[0].containers.key[], pos: 60", error); // todo
 
         }
         
