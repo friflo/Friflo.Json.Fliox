@@ -67,6 +67,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string                          ToString() => fileName;
     }
 
+    /// <summary>
+    /// Use by <see cref="JSONSchema.definitions"/> in <see cref="JSONSchema"/> to declare a type definition
+    /// </summary>
     public sealed class JsonType
     {
         /// <summary>reference to type definition which <see cref="extends"/> this type - <i>JSON Schema extension</i></summary>
@@ -108,6 +111,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string                          ToString() => name;
     }
 
+    /// <summary>
+    /// A reference to a type definition in a JSON Schema
+    /// </summary>
     public sealed class TypeRef {
         /// <summary>reference to a type definition</summary>
         [Fri.Property (Name =          "$ref")]
@@ -117,6 +123,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string          ToString() => reference;
     }
 
+    /// <summary>
+    /// Defines the type of property
+    /// </summary>
     public sealed class FieldType
     {
         /// <summary>'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'<br/>
@@ -156,6 +165,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string          ToString() => name;
     }
 
+    /// <summary>
+    /// Defines the input <see cref="param"/> and <see cref="result"/> of a command or message
+    /// </summary>
     public sealed class MessageType
     {
         [Ignore]public  string          name;

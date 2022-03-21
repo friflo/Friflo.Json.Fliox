@@ -13,6 +13,7 @@
         },
         "JsonType": {
             "type": "object",
+            "description": "Use by <b>definitions</b> in <b>JSONSchema</b> to declare a type definition",
             "properties": {
                 "extends":              { "oneOf": [{ "$ref": "#/definitions/TypeRef" }, {"type": "null"}], "description": "reference to type definition which <b>extends</b> this type - <i>JSON Schema extension</i>" },
                 "discriminator":        { "type": ["string", "null"], "description": "<b>discriminator</b> declares the name of the property used for polymorphic types - <i>JSON Schema extension</i>" },
@@ -37,6 +38,7 @@
         },
         "TypeRef": {
             "type": "object",
+            "description": "A reference to a type definition in a JSON Schema",
             "properties": {
                 "$ref": { "type": "string", "description": "reference to a type definition" }
             },
@@ -47,6 +49,7 @@
         },
         "FieldType": {
             "type": "object",
+            "description": "Defines the type of property",
             "properties": {
                 "type":                 { "description": "'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'<br/>\nor array of these values used to declare <b>nullable</b> properties when using a basic JSON Schema type" },
                 "enum":                 { "type": ["array", "null"], "items": { "type": "string" }, "description": "discriminant of a specific polymorphic type. Always an array with one string element" },
@@ -66,6 +69,7 @@
         },
         "MessageType": {
             "type": "object",
+            "description": "Defines the input <b>param</b> and <b>result</b> of a command or message",
             "properties": {
                 "param":       { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "type of the command / message <b>param</b> - <i>JSON Schema extension</i>" },
                 "result":      { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "type of the command <b>result</b> - <i>JSON Schema extension</i><br/>\nmessages return no <b>result</b>" },

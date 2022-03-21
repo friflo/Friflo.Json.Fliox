@@ -37,6 +37,7 @@ export class JSONSchema {
     definitions? : { [key: string]: JsonType } | null;
 }
 
+/** Use by **definitions** in **JSONSchema** to declare a type definition */
 export class JsonType {
     /** reference to type definition which **extends** this type - *JSON Schema extension* */
     extends?              : TypeRef | null;
@@ -70,11 +71,13 @@ export class JsonType {
     description?          : string | null;
 }
 
+/** A reference to a type definition in a JSON Schema */
 export class TypeRef {
     /** reference to a type definition */
     $ref  : string;
 }
 
+/** Defines the type of property */
 export class FieldType {
     /**
      * 'null', 'object', 'string', 'boolean', 'number', 'integer' or 'array'  
@@ -110,6 +113,7 @@ export class FieldType {
     description?          : string | null;
 }
 
+/** Defines the input **param** and **result** of a command or message */
 export class MessageType {
     /** type of the command / message **param** - *JSON Schema extension* */
     param?       : FieldType | null;
