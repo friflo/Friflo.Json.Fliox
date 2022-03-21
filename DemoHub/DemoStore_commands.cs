@@ -28,6 +28,7 @@ namespace Fliox.DemoHub
     }
     
     public class Fake {
+        /// <summary>if false generated entities are nor added to the <see cref="Records"/> result</summary>
         public  bool?       addResults;
         public  int?        articles;
         public  int?        customers;
