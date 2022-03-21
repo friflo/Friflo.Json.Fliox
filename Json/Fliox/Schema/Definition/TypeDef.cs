@@ -7,9 +7,9 @@ using System.Collections.Generic;
 namespace Friflo.Json.Fliox.Schema.Definition
 {
     /// <summary>
-    /// Contains the all required data to generate code for a type.
-    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
-    /// Note: Instances of <see cref="TypeDef"/> including the child object are immutable.
+    /// Contains the all required data to generate code for a type.<br/>
+    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.<br/>
+    /// Note: Instances of <see cref="TypeDef"/> including its fields are immutable.
     /// </summary>
     public abstract class TypeDef {
         public              string                      Name            { get; }
