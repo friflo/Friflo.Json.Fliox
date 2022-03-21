@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 
@@ -72,40 +71,40 @@ namespace Friflo.Json.Fliox.Schema.Language
             IEnumerable<CustomGenerator>    generators = null)
         {
             generators              = generators ?? Array.Empty<CustomGenerator>();
-            var result              = new Dictionary<string, SchemaModel>();
+            var result              = new List<SchemaModel>();
             var options             = new JsonTypeOptions(typeSchema);
 
             var htmlGenerator       = HtmlGenerator.Generate(options);
             var htmlSchema          = new SchemaModel ("html",          "HTML",        "text/html",        ".html", htmlGenerator.files);
-            result.Add(htmlSchema.type,       htmlSchema);
+            result.Add(htmlSchema);
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
             var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", ".json", jsonGenerator.files);
-            result.Add(jsonModel.type,  jsonModel);
+            result.Add(jsonModel);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
             var typescriptModel     = new SchemaModel ("typescript",    "Typescript",  "text/plain",       ".d.ts", typescriptGenerator.files);
-            result.Add(typescriptModel.type,   typescriptModel);
+            result.Add(typescriptModel);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
             var csharpModel         = new SchemaModel ("csharp",        "C#",          "text/plain",       ".cs",   csharpGenerator.files);
-            result.Add(csharpModel.type,       csharpModel);
+            result.Add(csharpModel);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
             var kotlinModel         = new SchemaModel ("kotlin",        "Kotlin",      "text/plain",       ".kt",   kotlinGenerator.files);
-            result.Add(kotlinModel.type,       kotlinModel);
+            result.Add(kotlinModel);
 
             foreach (var generator in generators) {
                 var generatorOpt = new GeneratorOptions(generator.type, generator.name, options.schema, options.replacements, options.separateTypes);
                 try {
                     var schemaModel = generator.schemaGenerator(generatorOpt);
-                    result.Add(generator.type, schemaModel);
+                    result.Add(schemaModel);
                 } catch (Exception e) {
                     Console.Error.WriteLine($"SchemaModel generation failed for: {generator.name}. error: {e.Message}");
                 }
             }
-            return result.Values.ToList();
+            return result;
         }
         
         /// <summary>
