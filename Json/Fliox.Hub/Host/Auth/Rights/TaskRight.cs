@@ -12,9 +12,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
-    /// <see cref="RightTask"/> grant <see cref="database"/> access by a set of task <see cref="types"/>. <br/> 
+    /// <see cref="TaskRight"/> grant <see cref="database"/> access by a set of task <see cref="types"/>. <br/> 
     /// </summary>
-    public sealed class RightTask : Right
+    public sealed class TaskRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
                         public  string          database;

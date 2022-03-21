@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// <summary>
     /// Allow full access to the given <see cref="database"/>.<br/>
     /// </summary>
-    public sealed class RightAllow : Right
+    public sealed class AllowRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
         public              string      database;

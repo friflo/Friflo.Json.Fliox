@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 foreach (var pair in roles) {
                     var role = pair.Value;
                     foreach (var right in role.rights) {
-                        if (!(right is RightPredicate rightPredicates))
+                        if (!(right is PredicateRight rightPredicates))
                             break;
                         foreach (var predicateName in rightPredicates.names) {
                             if (!registeredPredicates.ContainsKey(predicateName)) {
@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var authorizers = new List<Authorizer>(newRole.rights.Count);
                 foreach (var right in newRole.rights) {
                     Authorizer authorizer;
-                    if (right is RightPredicate predicates) {
+                    if (right is PredicateRight predicates) {
                         authorizer = GetPredicatesAuthorizer(predicates);
                     } else {
                         authorizer = right.ToAuthorizer();
@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private Authorizer GetPredicatesAuthorizer(RightPredicate right) {
+        private Authorizer GetPredicatesAuthorizer(PredicateRight right) {
             var authorizers = new List<Authorizer>(right.names.Count);
             foreach (var predicateName in right.names) {
                 if (!registeredPredicates.TryGetValue(predicateName, out var predicate)) {

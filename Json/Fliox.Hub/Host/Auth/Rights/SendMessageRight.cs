@@ -10,26 +10,25 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
-    /// <see cref="RightSubscribeMessage"/> allows subscribing messages send to a <see cref="database"/>.<br/>
+    /// <see cref="SendMessageRight"/> allows sending messages to a <see cref="database"/> by a set of <see cref="names"/>.<br/>
     /// <br/>
-    /// Note: commands are messages - so permission of subscribing commands is same as for messages.  
+    /// Note: commands are messages - so permission of sending commands is same as for messages.
     /// </summary>
-    public sealed class RightSubscribeMessage : Right
+    public sealed class SendMessageRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
                         public  string          database;
         /// <summary>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
         [Fri.Required]  public  List<string>    names;
-        
-        public  override        RightType       RightType => RightType.subscribeMessage;
+        public  override        RightType       RightType => RightType.message;
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {
-                return new AuthorizeSubscribeMessage(names[0], database);
+                return new AuthorizeSendMessage(names[0], database);
             }
             var list = new List<Authorizer>(names.Count);
             foreach (var message in names) {
-                list.Add(new AuthorizeSubscribeMessage(message, database));
+                list.Add(new AuthorizeSendMessage(message, database));
             }
             return new AuthorizeAny(list);
         }

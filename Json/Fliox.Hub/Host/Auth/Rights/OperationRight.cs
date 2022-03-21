@@ -12,12 +12,12 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     /// <summary>
-    /// <see cref="RightOperation"/> grant <see cref="database"/> access for the given <see cref="containers"/>
+    /// <see cref="OperationRight"/> grant <see cref="database"/> access for the given <see cref="containers"/>
     /// based on a set of <see cref="ContainerAccess.operations"/>. <br/>
     /// E.g. create, read, upsert, delete, query or aggregate (count)<br/>
     /// It also allows subscribing database changes by <see cref="ContainerAccess.subscribeChanges"/>
     /// </summary>
-    public sealed class RightOperation : Right
+    public sealed class OperationRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
                         public  string                              database;
