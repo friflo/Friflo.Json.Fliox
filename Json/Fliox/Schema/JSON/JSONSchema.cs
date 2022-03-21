@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Ignore]public  bool?           isKey;
         /// <summary>WIP</summary>
                 public  bool?           isAutoIncrement;
-        /// <summary>if set the property is used as reference to entities in the container named <see cref="relation"/> - <i>JSON Schema extension</i></summary>
+        /// <summary>if set the property is used as reference to entities in a database <b>container</b> named <see cref="relation"/> - <i>JSON Schema extension</i></summary>
                 public  string          relation;
         /// <summary>optional property description</summary>
                 public  string          description;

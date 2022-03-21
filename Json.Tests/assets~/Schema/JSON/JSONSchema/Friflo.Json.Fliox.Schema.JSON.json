@@ -62,7 +62,7 @@
                 "$ref":                 { "type": ["string", "null"], "description": "reference to type definition used as property type" },
                 "additionalProperties": { "oneOf": [{ "$ref": "#/definitions/FieldType" }, {"type": "null"}], "description": "if set the property is a map (Dictionary) using the key type <b>string</b> and the value type\nspecified by <b>additionalProperties</b>" },
                 "isAutoIncrement":      { "type": ["boolean", "null"], "description": "WIP" },
-                "relation":             { "type": ["string", "null"], "description": "if set the property is used as reference to entities in the container named <b>relation</b> - <i>JSON Schema extension</i>" },
+                "relation":             { "type": ["string", "null"], "description": "if set the property is used as reference to entities in a database <b>container</b> named <b>relation</b> - <i>JSON Schema extension</i>" },
                 "description":          { "type": ["string", "null"], "description": "optional property description" }
             },
             "additionalProperties": false

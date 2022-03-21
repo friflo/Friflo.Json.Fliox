@@ -107,7 +107,7 @@ export class FieldType {
     additionalProperties? : FieldType | null;
     /** WIP */
     isAutoIncrement?      : boolean | null;
-    /** if set the property is used as reference to entities in the container named **relation** - *JSON Schema extension* */
+    /** if set the property is used as reference to entities in a database **container** named **relation** - *JSON Schema extension* */
     relation?             : string | null;
     /** optional property description */
     description?          : string | null;
