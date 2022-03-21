@@ -51,7 +51,10 @@ export class JsonType {
     type?                 : string | null;
     /** name of the property used as primary **key** for entities - *JSON Schema extension* */
     key?                  : string | null;
-    /** map of all **properties** declared by the type definition. The map keys are the property names */
+    /**
+     * map of all **properties** declared by the type definition. The map keys are the property names  
+     * in case of a database schema the **properties** declare the database **containers**
+     */
     properties?           : { [key: string]: FieldType } | null;
     /** database **commands**. The map keys are the command names - *JSON Schema extension* */
     commands?             : { [key: string]: MessageType } | null;

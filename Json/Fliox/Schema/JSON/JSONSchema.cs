@@ -86,7 +86,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
              // public  SchemaType?                     type; // todo use this
         /// <summary>name of the property used as primary <see cref="key"/> for entities - <i>JSON Schema extension</i></summary>
                 public  string                          key;  // if null a property named "id" must exist
-        /// <summary>map of all <see cref="properties"/> declared by the type definition. The map keys are the property names</summary>
+        /// <summary>map of all <see cref="properties"/> declared by the type definition. The map keys are the property names<br/>
+        /// in case of a database schema the <see cref="properties"/> declare the database <b>containers</b></summary>
                 public  Dictionary<string, FieldType>   properties;
         /// <summary>database <see cref="commands"/>. The map keys are the command names - <i>JSON Schema extension</i></summary>
                 public  Dictionary<string, MessageType> commands;
