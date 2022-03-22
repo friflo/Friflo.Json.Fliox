@@ -6,20 +6,23 @@ using Friflo.Json.Fliox.Hub.Protocol;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public abstract class AuthorizerDatabase : Authorizer
+    public readonly struct AuthorizeDatabase
     {
         private    readonly     string  database;
         private    readonly     bool    isPrefix;
-        protected  readonly     string  dbLabel;
+        internal   readonly     string  dbLabel;
         
-        protected AuthorizerDatabase () {
+        /* protected DatabaseAuthorizer () {
             isPrefix    = true;
             database    = "";
             dbLabel     = "*";
-        }
-        protected AuthorizerDatabase (string database) {
+        } */
+        
+        internal AuthorizeDatabase (string database) {
             if (database == null) {
-                dbLabel = EntityDatabase.MainDB;
+                isPrefix        = true;
+                this.database   = "";
+                dbLabel         = EntityDatabase.MainDB;
                 return;
             }
             dbLabel     = database;
@@ -31,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        protected bool AuthorizeDatabase(ExecuteContext executeContext) {
+        internal bool Authorize(ExecuteContext executeContext) {
             var db = executeContext.DatabaseName;
             if (isPrefix) {
                 if (db != null) 

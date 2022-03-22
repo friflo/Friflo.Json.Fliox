@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         // --- public
         public   readonly   JsonKey     userId;
         public   readonly   string      token;
-        public   readonly   Authorizer  authorizer;
+        public   readonly   IAuthorizer authorizer;
         
         public   override   string      ToString() => userId.AsString();
         
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
 
 
-        internal User (in JsonKey userId, string token, Authorizer authorizer) {
+        internal User (in JsonKey userId, string token, IAuthorizer authorizer) {
             clients         = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
             requestCounts   = new ConcurrentDictionary<string, RequestCount>();
             this.userId     = userId;

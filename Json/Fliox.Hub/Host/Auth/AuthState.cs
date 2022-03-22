@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     internal struct AuthState {
         internal            string      error;  
         internal            bool        authenticated;
-        internal            Authorizer  authorizer;
+        internal            IAuthorizer authorizer;
         /// <summary><see cref="user"/> is never null after calling <see cref="ExecuteContext.AuthenticationFailed"/>
         /// or <see cref="ExecuteContext.AuthenticationSucceed"/></summary>
         internal            User        user;

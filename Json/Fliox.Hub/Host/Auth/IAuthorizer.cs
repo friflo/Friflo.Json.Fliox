@@ -9,12 +9,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <summary>
     /// Authorize a given task.
     /// <br></br>
-    /// This <see cref="Authorizer"/> it stored at <see cref="AuthState.authorizer"/>.
+    /// This <see cref="IAuthorizer"/> it stored at <see cref="AuthState.authorizer"/>.
     /// The <see cref="AuthState.authorizer"/> is set via <see cref="Authenticator.Authenticate"/> for
     /// <see cref="AuthState.authenticated"/> and for not <see cref="AuthState.authenticated"/> users.  
     /// </summary>
-    public abstract class Authorizer
+    public interface IAuthorizer
     {
-        public abstract bool Authorize(SyncRequestTask task, ExecuteContext executeContext);
+        bool Authorize(SyncRequestTask task, ExecuteContext executeContext);
     }
 }

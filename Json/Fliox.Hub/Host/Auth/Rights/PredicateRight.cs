@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         [Fri.Required]  public  List<string>    names;
         
         public  override        RightType       RightType => RightType.predicate;
-        public  override        Authorizer      ToAuthorizer() => throw new NotImplementedException();
+        public  override        IAuthorizer     ToAuthorizer() => throw new NotImplementedException();
         
     }
     

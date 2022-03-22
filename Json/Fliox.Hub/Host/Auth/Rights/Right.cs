@@ -23,6 +23,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         public              string      description;
         public  abstract    RightType   RightType { get; }
 
-        public  abstract    Authorizer  ToAuthorizer();
+        public  abstract    IAuthorizer ToAuthorizer();
     }
 }

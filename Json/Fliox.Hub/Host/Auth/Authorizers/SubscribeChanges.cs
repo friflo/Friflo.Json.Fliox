@@ -8,20 +8,21 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeSubscribeChanges : AuthorizerDatabase {
-        private  readonly   string  container;
+    public sealed class AuthorizeSubscribeChanges : IAuthorizer {
+        private  readonly   AuthorizeDatabase   authorizeDatabase;
+        private  readonly   string              container;
         
-        private  readonly   bool    create;
-        private  readonly   bool    upsert;
-        private  readonly   bool    delete;
-        private  readonly   bool    patch;
+        private  readonly   bool                create;
+        private  readonly   bool                upsert;
+        private  readonly   bool                delete;
+        private  readonly   bool                patch;
         
-        public   override   string  ToString() => $"database: {dbLabel}, container: {container}";
+        public   override   string  ToString() => $"database: {authorizeDatabase.dbLabel}, container: {container}";
         
         public AuthorizeSubscribeChanges (string container, ICollection<Change> changes, string database)
-            : base (database)
         {
-            this.container = container;
+            authorizeDatabase   = new AuthorizeDatabase(database);
+            this.container      = container;
             foreach (var change in changes) {
                 switch (change) {
                     case Change.create: create = true; break;
@@ -32,7 +33,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            if (!authorizeDatabase.Authorize(executeContext))
+                return false;
             if (!(task is SubscribeChanges subscribe))
                 return false;
             if (subscribe.container != container)

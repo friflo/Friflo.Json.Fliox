@@ -9,10 +9,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthenticateNone : Authenticator
     {
-        private readonly Authorizer anonymousAuthorizer;
+        private readonly IAuthorizer anonymousAuthorizer;
         
 
-        public AuthenticateNone(Authorizer anonymousAuthorizer)
+        public AuthenticateNone(IAuthorizer anonymousAuthorizer)
             : base (anonymousAuthorizer)
         {
             this.anonymousAuthorizer = anonymousAuthorizer ?? throw new NullReferenceException(nameof(anonymousAuthorizer));

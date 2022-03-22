@@ -10,7 +10,9 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeContainer : AuthorizerDatabase {
+    public sealed class AuthorizeContainer : IAuthorizer {
+        private  readonly   AuthorizeDatabase authorizeDatabase;
+        
         private  readonly   string  container;
         
         private  readonly   bool    create;
@@ -23,12 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         private  readonly   bool    query;
         private  readonly   bool    aggregate;
 
-        public   override   string  ToString() => $"database: {dbLabel}, container: {container}";
+        public   override   string  ToString() => $"database: {authorizeDatabase.dbLabel}, container: {container}";
         
         public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
-            : base (database)
         {
-            this.container  = container;
+            authorizeDatabase   = new AuthorizeDatabase(database);
+            this.container      = container;
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query, ref aggregate);
         }
         
@@ -60,8 +62,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
-            if (!AuthorizeDatabase(executeContext))
+        public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+            if (!authorizeDatabase.Authorize(executeContext))
                 return false;
             switch (task.TaskType) {
                 case TaskType.create:       return create       && ((CreateEntities)    task).container == container;

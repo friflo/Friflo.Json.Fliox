@@ -23,11 +23,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         
         public  override        RightType       RightType => RightType.subscribeMessage;
         
-        public override Authorizer ToAuthorizer() {
+        public override IAuthorizer ToAuthorizer() {
             if (names.Count == 1) {
                 return new AuthorizeSubscribeMessage(names[0], database);
             }
-            var list = new List<Authorizer>(names.Count);
+            var list = new List<IAuthorizer>(names.Count);
             foreach (var message in names) {
                 list.Add(new AuthorizeSubscribeMessage(message, database));
             }
