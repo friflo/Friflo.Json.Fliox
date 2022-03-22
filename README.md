@@ -8,7 +8,7 @@
 
 __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
-*Info*: Pronunciation of **io** in **Fliox** is same as in [Riot Games](https://en.wikipedia.org/wiki/Riot_Games)
+*Info*: Pronunciation of **io** in **Fliox** is same as in **Riot**
 
 
 ## Content
