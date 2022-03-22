@@ -26,4 +26,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --framework netcoreapp3.1
     - name: Test
-      run: dotnet test --no-build --verbosity normal --filter FullyQualifiedName~Friflo.Json.Tests.Common
+      run: dotnet test --no-build --verbosity normal
