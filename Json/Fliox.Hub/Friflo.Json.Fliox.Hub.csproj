@@ -4,7 +4,7 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>7.3</LangVersion>
-        <Title>friflo Json.EntityGraph</Title>
+        <Title>JSON Fliox Hub</Title>
         <Authors>Ullrich Praetz</Authors>
         <Description>Fliox.Hub is an ORM (Object-relational Mapper) for NoSQL databases used to map objects represented as .NET types to entities in a NoSQL database.
 Fliox.Hub strives to overcome the "Object-relational impedance mismatch" inherent to Object–relational mapping by relaxing constraints.
@@ -15,10 +15,10 @@ The Fliox.Hub client &amp; host implementations are 100% asynchronous to be resp
 A Fliox.Hub host requires no database schema to enable running as a microservice in distributed environments and avoiding database migrations.
 Compatible to .NET &amp; Unity.</Description>
         <Copyright>Ullrich Praetz</Copyright>
-        <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Burst</PackageProjectUrl>
-        <RepositoryUrl>git@github.com:friflo/Friflo.Json.Burst.git</RepositoryUrl>
-        <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Burst/blob/main/LICENSE</PackageLicenseUrl>
-        <PackageIconUrl>https://github.com/friflo/Friflo.Json.Burst/blob/main/docs/images/Friflo.Json.Burst-128.png?raw=true</PackageIconUrl>
+        <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
+        <RepositoryUrl>git@github.com:friflo/Friflo.Json.Fliox.git</RepositoryUrl>
+        <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageIconUrl></PackageIconUrl>
         <PackageVersion>0.1.0</PackageVersion>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
