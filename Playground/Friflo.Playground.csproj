@@ -8,6 +8,7 @@
         <LangVersion>7.3</LangVersion>
 		<GenerateProgramFile>false</GenerateProgramFile>
 		<OutputType>Exe</OutputType>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -26,6 +27,10 @@
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
+      <None Include="..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@ Compatible to .NET &amp; Unity.</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
-        <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
         <PackageIconUrl></PackageIconUrl>
         <PackageVersion>0.1.0</PackageVersion>
         <RepositoryType>git</RepositoryType>
@@ -36,10 +36,15 @@ Compatible to .NET &amp; Unity.</Description>
     <PropertyGroup>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <NoWarn>1591</NoWarn>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
+      <None Include="..\..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 	
     <ItemGroup>

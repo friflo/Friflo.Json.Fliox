@@ -10,10 +10,11 @@
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
-        <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
         <PackageIconUrl></PackageIconUrl>
         <PackageVersion>0.1.0</PackageVersion>
         <RepositoryType>git</RepositoryType>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -28,6 +29,10 @@
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
+      <None Include="..\..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
 </Project>

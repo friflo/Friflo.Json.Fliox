@@ -3,12 +3,13 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE</PackageLicenseUrl>
+        <PackageLicenseUrl></PackageLicenseUrl>
         <Copyright>Ullrich Praetz</Copyright>
         <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Title>Fliox Hub ASP.NET Core Adapter</Title>
         <Authors>Ullrich Praetz</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -25,6 +26,10 @@
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
+      <None Include="..\..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

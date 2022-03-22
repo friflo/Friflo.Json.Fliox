@@ -22,6 +22,7 @@
     <PropertyGroup>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <NoWarn>1591</NoWarn>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -46,6 +47,10 @@
       <None Remove="**/*.meta" />
       <!-- exclude folders: assets~ & www~ from build; keep them in IDEs -->
       <Content Remove="assets~\**;www~\**" />
+      <None Include="..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
 </Project>
