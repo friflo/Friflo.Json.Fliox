@@ -308,7 +308,7 @@ namespace Friflo.Json.Burst
         }
         
         /// <summary>
-        /// Add the current JSON path to the given <see cref="str"/> buffer. E.g. "map.key1"
+        /// Add the current JSON path to the given <paramref name="str"/> buffer. E.g. "map.key1"
         /// </summary>
         /// <param name="str">The destination the current JSON path is added to</param>
         private void AppendPath(ref Bytes str) {

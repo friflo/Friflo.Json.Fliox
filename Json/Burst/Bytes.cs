@@ -191,7 +191,7 @@ namespace Friflo.Json.Burst
         public const int MinGuidLength = 36; // 12345678-1234-1234-1234-123456789abc
         public const int MaxGuidLength = 68; // {0x12345678,0x1234,0x1234,{0x12,0x34,0x12,0x34,0x56,0x78,0x9a,0xbc}}
 
-        /// In case of Unity <see cref="str"/> is not null. Otherwise null.
+        /// In case of Unity <paramref name="str"/> is not null. Otherwise null.
         public bool TryParseGuid(out Guid guid, out string str) {
             if (Len < MinGuidLength || MaxGuidLength < Len) {
                 str = null;

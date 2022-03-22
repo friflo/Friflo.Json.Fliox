@@ -14,7 +14,6 @@
         <PackageIconUrl></PackageIconUrl>
         <PackageVersion>0.1.0</PackageVersion>
         <RepositoryType>git</RepositoryType>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -25,6 +24,12 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <OutputPath>.bin\Release\</OutputPath>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 	
     <ItemGroup>
