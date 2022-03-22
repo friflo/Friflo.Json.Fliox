@@ -9,7 +9,7 @@
         <Description>JSON Parser/Serializer - C#. Compatible to .NET Standard, Unity &amp; Unity Burst Jobs</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
-        <RepositoryUrl>git@github.com:friflo/Friflo.Json.Fliox.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
         <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE</PackageLicenseUrl>
         <PackageIconUrl></PackageIconUrl>
         <PackageVersion>0.1.0</PackageVersion>

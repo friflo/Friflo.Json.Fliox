@@ -5,7 +5,7 @@
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/friflo/Friflo.Json.Fliox/blob/main/LICENSE</PackageLicenseUrl>
         <Copyright>Ullrich Praetz</Copyright>
-        <RepositoryUrl>git@github.com:friflo/Friflo.Json.Fliox.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/friflo/Friflo.Json.Fliox</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Title>Fliox Hub ASP.NET Core Adapter</Title>
         <Authors>Ullrich Praetz</Authors>
