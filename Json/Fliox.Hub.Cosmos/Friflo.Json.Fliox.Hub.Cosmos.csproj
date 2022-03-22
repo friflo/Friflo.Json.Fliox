@@ -10,7 +10,6 @@
         <RepositoryType>git</RepositoryType>
         <Title>Fliox Hub CosmosDB Adpater</Title>
         <Authors>Ullrich Praetz</Authors>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -19,6 +18,12 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <OutputPath>.bin\Release\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>

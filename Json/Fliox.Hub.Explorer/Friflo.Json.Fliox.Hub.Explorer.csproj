@@ -19,7 +19,6 @@
         <ContentTargetFolders>contentFiles</ContentTargetFolders>
         <!-- IncludeBuildOutput true ensures <Content> files are copied to output in project importing the nuget package -->
         <IncludeBuildOutput>true</IncludeBuildOutput>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -30,6 +29,12 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <OutputPath>.bin\Release\</OutputPath>
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <NoWarn>1591</NoWarn>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 		
     <ItemGroup>
