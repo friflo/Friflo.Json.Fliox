@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
         <PackageVersion>0.0.0</PackageVersion>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Fliox</PackageProjectUrl>
         <PackageLicenseUrl></PackageLicenseUrl>
