@@ -23,7 +23,7 @@
     <PropertyGroup>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <NoWarn>1591</NoWarn>
-      <PackageLicenseFile>LICENSE</PackageLicenseFile>
+      <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,10 +32,6 @@
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
-      <None Include="..\..\LICENSE">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
     </ItemGroup>
 
     <ItemGroup>
