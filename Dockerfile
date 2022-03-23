@@ -10,17 +10,17 @@ COPY Json/Fliox/*.csproj                ./Json/Fliox/
 COPY Json/Fliox.Hub/*.csproj            ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/*.csproj ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/*.csproj   ./Json/Fliox.Hub.Explorer/
-COPY DemoHub/*.csproj ./DemoHub/
+COPY DemoHub/*.csproj                   ./DemoHub/
 #
 RUN dotnet restore DemoHub/Fliox.DemoHub.csproj
 #
 # copy everything else and build app
-COPY Json/Burst/.                   ./Json/Burst/
-COPY Json/Fliox/.                   ./Json/Fliox/
-COPY Json/Fliox.Hub/.               ./Json/Fliox.Hub/
-COPY Json/Fliox.Hub.AspNetCore/.    ./Json/Fliox.Hub.AspNetCore/
-COPY Json/Fliox.Hub.Explorer/.      ./Json/Fliox.Hub.Explorer/
-COPY DemoHub/. ./DemoHub/
+COPY Json/Burst/.                       ./Json/Burst/
+COPY Json/Fliox/.                       ./Json/Fliox/
+COPY Json/Fliox.Hub/.                   ./Json/Fliox.Hub/
+COPY Json/Fliox.Hub.AspNetCore/.        ./Json/Fliox.Hub.AspNetCore/
+COPY Json/Fliox.Hub.Explorer/.          ./Json/Fliox.Hub.Explorer/
+COPY DemoHub/.                          ./DemoHub/
 #
 WORKDIR /app/DemoHub
 RUN dotnet publish Fliox.DemoHub.csproj -c Release -o out
