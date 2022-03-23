@@ -39,7 +39,7 @@ ENTRYPOINT ["dotnet", "Fliox.DemoHub.dll"]
 
 # --- usage
 # docker build -t test-aspnetcore:v1 .
-# docker run -it --rm -p 8010:8010
+# docker run -it --rm -p 8010:8010 test-aspnetcore:v1
 
 
  
