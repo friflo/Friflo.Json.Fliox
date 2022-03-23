@@ -80,8 +80,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 entry = new CacheEntry(context);
                 cache.Add(context.path, entry);
             }
-            catch (Exception ) {
-                var response = $"method: {context.method}, url: {context.path}";
+            catch (Exception e) {
+                var response = $"method: {context.method}, url: {context.path}\n{e.Message}";
                 context.WriteError("request exception", response, 500);
             }
         }

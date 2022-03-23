@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /app
+# EXPOSE 8010
+# ENV ASPNETCORE_URLS=http://+:8010
 #
 # copy csproj and restore as distinct layers
 COPY *.sln .
@@ -38,8 +40,8 @@ COPY --from=build /app/DemoHub/out ./
 ENTRYPOINT ["dotnet", "Fliox.DemoHub.dll"]
 
 # --- usage
-# docker build -t test-aspnetcore:v1 .
-# docker run -it --rm -p 8010:8010 test-aspnetcore:v1
+# docker build -t demo-hub:v1 .
+# docker run -it --rm -p 80:8010 demo-hub:v1
 
 
  

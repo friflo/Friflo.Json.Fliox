@@ -107,7 +107,7 @@ namespace Fliox.DemoHub
         private class Config {
             internal readonly string  dbPath              = "./DB~/DemoStore";
             internal readonly string  userDbPath          = "./DB~/UserStore";
-            internal readonly string  www                 = "../Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            internal readonly string  www                 = HubExplorer.Path; // "../Json/Fliox.Hub.Explorer/www~";
             internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly bool    useMemoryDbClone    = true;
         }

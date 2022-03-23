@@ -23,7 +23,9 @@ namespace Fliox.DemoHub
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => 
                         webBuilder.UseStartup<Startup>()
-                            .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
+                            // .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
+                            .UseKestrel()
+                            .UseUrls("http://*:8010") // required for Docker
                 );
         }
         
