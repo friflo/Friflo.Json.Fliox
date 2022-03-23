@@ -32,8 +32,8 @@ COPY --from=build /app/DemoHub/out ./
 ENTRYPOINT ["dotnet", "Fliox.DemoHub.dll"]
 
 # --- usage
-# docker build -t demo-hub:v1 .
-# docker run -it --rm -p 80:8010 demo-hub:v1
+# docker build -t demo-hub:latest .
+# docker run -it --rm -p 80:8010 demo-hub:latest
 
 
  
