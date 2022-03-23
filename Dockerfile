@@ -24,14 +24,22 @@ COPY Json/Fliox.Hub.AspNetCore/. ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/. ./Json/Fliox.Hub.Explorer/
 COPY DemoHub/. ./DemoHub/
 #
+COPY Json/Fliox.Hub.Cosmos/. ./Json/Fliox.Hub.Cosmos/
+COPY Json.Tests/. ./Json.Tests/
+COPY Playground/. ./Playground/
+#
 WORKDIR /app/DemoHub
 RUN dotnet publish -c Release -o out
 #
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
 WORKDIR /app 
 #
 COPY --from=build /app/DemoHub/out ./
 ENTRYPOINT ["dotnet", "Fliox.DemoHub.dll"]
+
+# --- usage
+# docker build -t test-aspnetcore:v1 .
+# docker run -it --rm -p 8010:8010
 
 
  
