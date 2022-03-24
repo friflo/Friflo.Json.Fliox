@@ -86,11 +86,15 @@ HTTP features in detail:
 
 - Support query **cursors** to fetch container records iteratively
 
+- Expose administrative data as extension databases:
+
+    - Expose information about hosted databases their containers and commands as the extension database **`cluster`**
+
+    - Expose server **Monitoring** as the extension database **`monitor`** to get statistics about requests and tasks executed by users and clients
+    
+    - Access and change user **permissions** and **roles** required for authorization as the extension database: **`user_db`**
+
 - Enable **user authentication** and **authorization of tasks** send by a user
-
-- Access and change user **permissions** and **roles** required for authorization via the extension database: `user_db`
-
-- Expose server **Monitoring** as an extension database to get statistics about requests and tasks executed by users and clients
 
 - Assign a **schema** to a database to:
     - **validate** records written to the database by its schema definition
