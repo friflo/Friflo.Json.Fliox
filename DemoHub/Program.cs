@@ -10,9 +10,7 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Fliox.DemoHub
 {
-    /// <summary>
-    /// Bootstrapping of databases hosted by <see cref="HttpHostHub"/>
-    /// </summary> 
+    /// <summary>Bootstrapping of databases hosted by <see cref="HttpHostHub"/></summary> 
     internal  static class  Program
     {
         public static void Main(string[] args) {
@@ -31,7 +29,6 @@ namespace Fliox.DemoHub
         // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
         private static void RunHttpListener(string endpoint) {
             var hostHub = CreateHttpHost();
-        //  var hostHub = CreateMiniHost();
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
             server.Run();

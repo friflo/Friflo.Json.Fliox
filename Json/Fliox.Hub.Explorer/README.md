@@ -29,7 +29,7 @@ For integration to a **HTTP Fliox Hub** server call:
 ```csharp
      HttpHostHub hostHub;
      ...
-     hostHub.AddHandler(new StaticFileHandler(HubExplorer.Path);
+     hostHub.AddHandler(new StaticFileHandler(HubExplorer.Path));
 ```
 
 ![Fliox Hub Explorer - screenshot](../../docs/images/Fliox-Hub-Explorer.png)
