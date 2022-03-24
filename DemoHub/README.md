@@ -28,7 +28,7 @@ The key features of a host using [**JSON Fliox Hub**](https://github.com/friflo/
 |-----------------------------------------------|-----------------------------------------------
 |[DemoStore.cs](DemoStore.cs)                   | is the database client <br/> declares database containers
 |[DemoStore_commands.cs](DemoStore_commands.cs) | declares database commands
-|[MessageHandler.cs](MessageHandler.cs)         | implement custom database commands
+|[MessageHandler.cs](MessageHandler.cs)         | implement custom database commands by utilizing **DemoStore** clients
 |[Program.cs](Program.cs)                       | bootstrapping & configuration of host
 |[Startup.cs](Startup.cs)                       | **ASP.NET Core** configuration and host integration
 |[Utils.cs](Utils.cs)                           | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records to 
