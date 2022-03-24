@@ -51,7 +51,7 @@ namespace Fliox.DemoHub
         ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core / Kestrel</a> see <see cref="Startup.Configure"/></item>
         /// </list>
         /// The features of a <see cref="HttpHostHub"/> instance utilized by this blueprint method are listed at
-        /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub">Host/README.md</a><br/>
+        /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub">Host README.md</a><br/>
         /// <i>Note</i>: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> instance only accessible from Intranet as they contains sensitive data.
         /// </summary>
