@@ -23,18 +23,12 @@ namespace Fliox.DemoHub
             Startup.RunAspNetCore(args);
         }
 
-        // Example requests for server at: /Json.Tests/www~/example-requests/
-        //
-        //   Note:
-        // Http server may require a permission to listen to the given host/port.
+        // Note: Http server may require a permission to listen to the given host/port on Windows.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
         // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
         //     netsh http add urlacl url=http://+:8010/ user=<DOMAIN>\<USER> listen=yes
         //     netsh http delete urlacl http://+:8010/
-        // 
-        // Get DOMAIN\USER via  PowerShell
-        //     $env:UserName
-        //     $env:UserDomain 
+        // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
         private static void RunHttpListener(string endpoint) {
             var hostHub = CreateHttpHost();
         //  var hostHub = CreateMiniHost();
