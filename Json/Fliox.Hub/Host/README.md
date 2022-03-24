@@ -88,11 +88,11 @@ HTTP features in detail:
 
 - Expose administrative data as extension databases:
 
-    - Expose information about hosted databases their containers and commands as the extension database **`cluster`**
+    - **`cluster`** - Expose information about hosted databases their containers, commands and schema
 
-    - Expose server **Monitoring** as the extension database **`monitor`** to get statistics about requests and tasks executed by users and clients
+    - **`monitor`** - Expose server **Monitoring** to get statistics about requests and tasks executed by users and clients
     
-    - Access and change user **permissions** and **roles** required for authorization as the extension database: **`user_db`**
+    - **`user_db`** - Access and change user **permissions** and **roles** required for authorization
 
 - Enable **user authentication** and **authorization of tasks** send by a user
 
