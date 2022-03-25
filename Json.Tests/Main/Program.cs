@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Main
             hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(34 140 0)";                               // optional
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info of hosted databases. Required by Hub Explorer
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
-            hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
+            hub.EventBroker         = new EventBroker(true);            // optional - enables sending events for subscriptions
             
             var userDB              = new FileDatabase(c.userDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
