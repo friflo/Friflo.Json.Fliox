@@ -12,9 +12,8 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 
 ## Content
-- **Demo**
-    - [DemoHub](#demohub)         [README.md](DemoHub/README.md)
 - **Fliox Hub**
+    - [DemoHub](#demohub)          [README.md](DemoHub/README.md)
     - [Client](#client)                 [README.md](Json/Fliox.Hub/Client/README.md)
     - [Host](#host)                   [README.md](Json/Fliox.Hub/Host/README.md)
     - [Explorer](#explorer)             [README.md](Json/Fliox.Hub.Explorer/README.md)
@@ -25,18 +24,14 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
     - [Unit Tests](#unit-tests)           [README.md](Json.Tests/README.md)
 
 
-![section](docs/images/new-section.png)
-
-## **Demo**
-
-### **DemoHub**
-namespace **`Fliox.DemoHub`**           [README.md](DemoHub/README.md)
-
-
 
 ![section](docs/images/new-section.png)
 
 ## **Fliox Hub**
+
+### **DemoHub**
+namespace **`Fliox.DemoHub`**                                         [README.md](DemoHub/README.md)
+
 
 ### **Client**
 namespace **`Friflo.Json.Fliox.Hub.Client`**          [README.md](Json/Fliox.Hub/Client/README.md)
