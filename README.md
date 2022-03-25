@@ -30,7 +30,7 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Fliox Hub**
 
 ### **DemoHub**
-namespace **`Fliox.DemoHub`**                                      [README.md](DemoHub/README.md)
+namespace **`Fliox.DemoHub`**                                   [README.md](DemoHub/README.md)
 
 
 ### **Client**
