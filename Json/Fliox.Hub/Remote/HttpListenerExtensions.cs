@@ -16,8 +16,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var request = context.Request;
             var url     = request.Url;
             var path    = url.LocalPath;
-            if (!hostHub.GetRoute(path, out string route))
-                return null;
+            if (!hostHub.GetRoute(path, out string route)) {
+                return hostHub.GetRequestContext(path, request.HttpMethod);
+            }
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
             // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             //

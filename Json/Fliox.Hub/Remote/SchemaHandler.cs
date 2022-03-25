@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.AddHeader("Cache-Control", cacheControl); // seconds
             }
             if (result.isText) {
-                context.WriteString(result.content, result.contentType);
+                context.WriteString(result.content, result.contentType, 200);
                 return Task.CompletedTask;
             }
             context.Write(new JsonValue(result.bytes), 0, result.contentType, 200);

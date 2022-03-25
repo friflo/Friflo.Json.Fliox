@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var options = new SerializerOptions{ Pretty = true };
             var jsonList = JsonSerializer.Serialize(fileNames, options);
-            context.WriteString(jsonList, "application/json");
+            context.WriteString(jsonList, "application/json", 200);
         }
         
         private string ContentTypeFromPath(string path) {

@@ -42,6 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 
+        public   readonly   string                  endpointRoot;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
@@ -53,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             if (endpoint != null && !endpoint.EndsWith("/")) throw new ArgumentException("endpoint requires '/' as last character");
             this.endpoint           = endpoint ?? "/";
+            endpointRoot            = this.endpoint.Substring(0, this.endpoint.Length - 1);
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
@@ -67,6 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
         }
         
+        public bool IsMatch (string path) {
+            if (path.StartsWith(endpoint)) {
+                return true;
+            }
+            return path == endpointRoot;
+        }
+        
         public bool GetRoute(string path, out string route) {
             if (path.StartsWith(endpoint)) {
                 route = path.Substring(endpoint.Length - 1);
@@ -76,6 +85,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return false;
         }
         
+        public RequestContext GetRequestContext(string path, string method) {
+            if (path == endpointRoot && method == "GET") {
+                var context = new RequestContext(this, "GET", "/", null, null, null, null);
+                context.AddHeader("Location", endpoint);
+                context.WriteString($"redirect -> {endpoint}", "text/plain", 302);
+                context.handled = true;
+                return context;
+            }
+            return null;
+        }
+
         public HttpHostHub CacheControl(string cacheControl) {
             schemaHandler.CacheControl(cacheControl);
             return this;

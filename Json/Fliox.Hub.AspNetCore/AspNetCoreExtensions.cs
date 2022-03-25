@@ -18,9 +18,9 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHostHub hostHub) {
             var httpRequest = context.Request;
             var path        = httpRequest.Path.Value;
-            if (!hostHub.GetRoute(path, out string route))
-                return null;
-            
+            if (!hostHub.GetRoute(path, out string route)) {
+                return hostHub.GetRequestContext(path, httpRequest.Method);
+            }
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {
                 WebSocket ws = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);

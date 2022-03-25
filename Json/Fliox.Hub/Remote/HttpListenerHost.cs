@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 Log(reqMsg);
                             }
                             var path = context.Request.Url.LocalPath;
-                            if (path.StartsWith(endpoint)) {
+                            if (hostHub.IsMatch(path)) {
                                 var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false); // handle incoming requests parallel
                                 
                                 await context.WriteFlioxResponse(response).ConfigureAwait(false);

@@ -439,7 +439,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("DELETE errors", sb.ToString(), 400);
                 return;
             }
-            context.WriteString("deleted successful", "text/plain");
+            context.WriteString("deleted successful", "text/plain", 200);
         }
         
         private async Task PutEntities(RequestContext context, string database, string container, string id, string keyName, JsonValue value, TaskType type) {
@@ -504,7 +504,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("PUT errors", sb.ToString(), 400);
                 return;
             }
-            context.WriteString("PUT successful", "text/plain");
+            context.WriteString("PUT successful", "text/plain", 200);
         }
         
         private static void FormatEntityErrors(Dictionary<string, EntityErrors> entityErrors, StringBuilder sb) {
@@ -550,7 +550,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("message error", resultError.message, 500);
                 return;
             }
-            context.WriteString("\"received\"", "application/json");
+            context.WriteString("\"received\"", "application/json", 200);
         }
 
 
