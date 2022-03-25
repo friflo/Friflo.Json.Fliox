@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase, TestGlobals.Shared))
-            using (var hostHub      = new HttpHostHub(testHub))
+            using (var hostHub      = new HttpHostHub(testHub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) {
                 await Happy.TestHappy.RunServer(server, async () => {
                     using (var remoteDatabase   = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared))

@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
-        public HttpHostHub(FlioxHub hub, string endpoint = null, SharedEnv env = null, string hostName = null)
+        public HttpHostHub(FlioxHub hub, string endpoint = "/fliox/", SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
             if (endpoint != null && !endpoint.EndsWith("/")) throw new ArgumentException("endpoint requires '/' as last character");

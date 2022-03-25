@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Main
         public static async Task WebsocketDbThroughput() {
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database))
-            using (var hostHub          = new HttpHostHub(hub))
+            using (var hostHub          = new HttpHostHub(hub, "/"))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
             using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/")) {
                 await TestHappy.RunServer(server, async () => {
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Main
         public static async Task HttpDbThroughput() {
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database))
-            using (var hostHub          = new HttpHostHub(hub))
+            using (var hostHub          = new HttpHostHub(hub, "/"))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
             using (var remoteDatabase   = new HttpClientHub("ws://localhost:8080/")) {
                 await TestHappy.RunServer(server, async () => {

@@ -64,7 +64,7 @@ namespace Fliox.DemoHub
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var hostHub             = new HttpHostHub(hub, "/fliox/").CacheControl(c.cache);
+            var hostHub             = new HttpHostHub(hub).CacheControl(c.cache);
             hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             return hostHub;
         }
