@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,7 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private async Task HandleIncomingConnections()
         {
-            runServer = true;
+            runServer       = true;
+            var endpoint    = hostHub.endpoint;
 
             while (runServer) {
                 try {
@@ -72,6 +74,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             if (requestCount++ == 0 || requestCount % 10000 == 0) {
                                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                                 Log(reqMsg);
+                            }
+                            if (endpoint != null && context.Request.Url.LocalPath == "/") {
+                                var headers = new Dictionary<string, string> { { "Location", endpoint }};
+                                await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 302, $"redirect -> {endpoint}", headers).ConfigureAwait(false);
+                                return;
                             }
                             var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false); // handle incoming requests parallel
                             
@@ -108,9 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var resp    = context.Response;
             if (!resp.OutputStream.CanWrite)
                 return;
-            byte[]  responseBytes   = Encoding.UTF8.GetBytes(message);
-            HttpListenerExtensions.SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length, null);
-            await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+            await HttpListenerExtensions.WriteResponseString(resp, "text/plain", (int)HttpStatusCode.BadRequest, message, null);
             resp.Close();
         }
         

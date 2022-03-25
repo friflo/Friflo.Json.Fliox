@@ -50,7 +50,10 @@ namespace Fliox.DemoHub
                 endpoints.MapGet("hello/", async context => {
                     await context.Response.WriteAsync("Hello World!");
                 });
-                
+                endpoints.Map("/", async context => {
+                    context.Response.Redirect(hostHub.endpoint, false);
+                    await context.Response.WriteAsync($"redirect -> {hostHub.endpoint}");
+                });
                 endpoints.Map("/{*path}", async context => {
                     var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false);
                     // response can be logged and additional http headers can be added here

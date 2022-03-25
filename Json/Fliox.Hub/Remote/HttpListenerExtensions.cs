@@ -57,7 +57,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             resp.Close();
         }
         
-        public static void SetResponseHeader (HttpListenerResponse response, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
+        public static async Task WriteResponseString (HttpListenerResponse response, string contentType, int statusCode, string value, Dictionary<string, string> headers) {
+            byte[]  resultBytes = Encoding.UTF8.GetBytes(value);
+            
+            SetResponseHeader(response, contentType, statusCode, resultBytes.Length, headers);
+            await response.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+        }
+        
+        private static void SetResponseHeader (HttpListenerResponse response, string contentType, int statusCode, int len, Dictionary<string, string> headers) {
             response.ContentType        = contentType;
             response.ContentEncoding    = Encoding.UTF8;
             response.ContentLength64    = len;
@@ -73,9 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // ReSharper disable once UnusedMember.Local
         private static async Task HandleUnityServerWebSocket (HttpListenerResponse response) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
-            byte[]  resultBytes = Encoding.UTF8.GetBytes(error);
-            SetResponseHeader(response, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length, null);
-            await response.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+            await WriteResponseString(response, "text/plain", (int)HttpStatusCode.NotImplemented, error, null);
             response.Close();
         }
     }
