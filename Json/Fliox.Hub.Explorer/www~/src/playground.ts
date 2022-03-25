@@ -33,9 +33,10 @@ export class Playground
             this.connection.close();
             this.connection = null;
         }
-        const loc     = window.location;
-        const nr      = ("" + (++this.websocketCount)).padStart(3, "0");
-        const uri     = `ws://${loc.host}${loc.pathname}ws-${nr}`;
+        const loc   = window.location;
+        const nr    = ("" + (++this.websocketCount)).padStart(3, "0");
+        const path  = loc.pathname.substring(0, loc.pathname.lastIndexOf("/") + 1);
+        const uri   = `ws://${loc.host}${path}ws-${nr}`;
         // const uri  = `ws://google.com:8080/`; // test connection timeout
         socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
         try {
