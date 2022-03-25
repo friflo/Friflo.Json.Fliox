@@ -27,12 +27,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private     const       string      RestBase = "/rest";
         
         public bool IsMatch(RequestContext context) {
-            return RequestContext.IsBasePath(RestBase, context.path);
+            return RequestContext.IsBasePath(RestBase, context.route);
         }
             
         public async Task HandleRequest(RequestContext context) {
-            var path    = context.path;
-            if (path.Length == RestBase.Length) {
+            var route = context.route;
+            if (route.Length == RestBase.Length) {
                 // --------------    GET            /rest
                 if (context.method == "GET") { 
                     await Command(context, ClusterDB.Name, Std.HostCluster, new JsonValue()).ConfigureAwait(false); 
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var message         = queryParams["message"];
             var isGet           = method == "GET";
             var isPost          = method == "POST";
-            var resourcePath    = path.Substring(RestBase.Length + 1);
+            var resourcePath    = route.Substring(RestBase.Length + 1);
             
             // ------------------    GET            /rest/database?command=...   /database?message=...
             //                       POST           /rest/database?command=...   /database?message=...
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await PutEntities(context, resource[0], resource[1], resource2, keyName, value, type).ConfigureAwait(false);
                 return;
             }
-            context.WriteError("invalid path/method", path, 400);
+            context.WriteError("invalid path/method", route, 400);
         }
         
         

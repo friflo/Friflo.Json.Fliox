@@ -32,11 +32,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await WebSocketHost.SendReceiveMessages (websocket, hostHub).ConfigureAwait(false);
                 return null;
             }
-            var request         = context.Request;
-            var url             = request.Url;
+            var request = context.Request;
+            var url     = request.Url;
+            var path    = url.LocalPath;
+            if (!hostHub.GetRoute(path, out string route))
+                return null;
+
             var headers         = new HttpListenerHeaders(request.Headers);
             var cookies         = new HttpListenerCookies(request.Cookies);
-            var requestContext  = new RequestContext(hostHub, request.HttpMethod, url.LocalPath, url.Query, req.InputStream, headers, cookies);
+            var requestContext  = new RequestContext(hostHub, request.HttpMethod, route, url.Query, req.InputStream, headers, cookies);
             await hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             return requestContext;
         }

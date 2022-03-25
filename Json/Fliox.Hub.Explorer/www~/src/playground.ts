@@ -192,13 +192,13 @@ export class Playground
         for (const example of exampleRequests) {
             if (!example.endsWith(".json"))
                 continue;
-            const name = example.substring(folder.length).replace(".sync.json", "");
+            const name = example.replace(".sync.json", "");
             if (groupPrefix != name[0]) {
                 groupPrefix = name[0];
                 groupCount++;
             }
             option = createEl("option");
-            option.value                    = example;
+            option.value                    = folder + "/" + example;
             option.text                     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
             option.style.backgroundColor    = groupCount % 2 ? "#ffffff" : "#eeeeff";
             selectExample.add(option);

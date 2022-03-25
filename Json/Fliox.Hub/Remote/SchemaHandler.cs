@@ -39,18 +39,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public bool IsMatch(RequestContext context) {
             if (context.method != "GET")
                 return false;
-            return RequestContext.IsBasePath(SchemaBase, context.path);
+            return RequestContext.IsBasePath(SchemaBase, context.route);
         }
         
         public Task HandleRequest(RequestContext context) {
-            if (context.path.Length == SchemaBase.Length) {
+            if (context.route.Length == SchemaBase.Length) {
                 context.WriteError("invalid schema path", "missing database", 400);
                 return Task.CompletedTask;
             }
             var hub         = context.hub;
-            var path        = context.path.Substring(SchemaBase.Length + 1);
-            var firstSlash  = path.IndexOf('/');
-            var name        = firstSlash == -1 ? path : path.Substring(0, firstSlash);
+            var route       = context.route.Substring(SchemaBase.Length + 1);
+            var firstSlash  = route.IndexOf('/');
+            var name        = firstSlash == -1 ? route : route.Substring(0, firstSlash);
             if (!schemas.TryGetValue(name, out var schema)) {
                 if (!hub.TryGetDatabase(name, out var database)) {
                     context.WriteError("schema not found", name, 404);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 schema = AddSchema(name, database.Schema.typeSchema);
             }
-            var schemaPath  = path.Substring(firstSlash + 1);
+            var schemaPath  = route.Substring(firstSlash + 1);
             Result result   = new Result();
             bool success    = schema.GetSchemaFile(schemaPath, ref result, this, context);
             if (!success) {

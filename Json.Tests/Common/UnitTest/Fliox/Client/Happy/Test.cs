@@ -157,7 +157,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker      = new EventBroker(false))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
-            using (var hostHub          = new HttpHostHub(hub, TestGlobals.Shared))
+            using (var hostHub          = new HttpHostHub(hub, null, TestGlobals.Shared))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
             using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {

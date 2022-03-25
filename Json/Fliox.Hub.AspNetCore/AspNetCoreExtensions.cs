@@ -23,9 +23,13 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 return null;
             }
             var httpRequest = context.Request;
+            var path        = httpRequest.Path.Value;
+            if (!hostHub.GetRoute(path, out string route))
+                return null;
+            
             var headers     = new HttpContextHeaders(httpRequest.Headers);
             var cookies     = new HttpContextCookies(httpRequest.Cookies);
-            var reqCtx      = new RequestContext(hostHub, httpRequest.Method, httpRequest.Path.Value, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
+            var reqCtx      = new RequestContext(hostHub, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
 
             await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     

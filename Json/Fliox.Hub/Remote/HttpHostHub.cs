@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// In detail:
     /// <list type="bullet">
     ///   <item>hosted databases are given by the <see cref="FlioxHub"/> passed via its constructor
-    ///     <see cref="HttpHostHub(FlioxHub, SharedEnv, string)"/>
+    ///     <see cref="HttpHostHub(FlioxHub, string, SharedEnv, string)"/>
     ///   </item>
     ///   <item>exposed schemas are retrieved from the hosted databases</item>
     ///   <item>static web files are exposed by adding a <see cref="StaticFileHandler"/> using <see cref="AddHandler"/></item>
@@ -40,15 +40,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public class HttpHostHub : RemoteHostHub
     {
+        private  readonly   string                  endpoint;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
-        public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
+        public HttpHostHub(FlioxHub hub, string endpoint = null, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
+            this.endpoint           = endpoint;
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
@@ -61,6 +63,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var jsonSchema          = new NativeTypeSchema(typeof(JSONSchema));
             var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JSONSchema)});
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
+        }
+        
+        public bool GetRoute(string path, out string route) {
+            if (endpoint == null) {
+                route = path;
+                return true;
+            }
+            if (path.StartsWith(endpoint)) {
+                route = path.Substring(endpoint.Length);
+                return true;
+            }
+            route = null;
+            return false;
         }
         
         public HttpHostHub CacheControl(string cacheControl) {
@@ -89,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Request matching and execution are seperated to ensure no heap allocation caused by awaited method calls. 
         /// </summary>
         public async Task ExecuteHttpRequest(RequestContext request) {
-            if (request.method == "POST" && request.path == "/") {
+            if (request.method == "POST" && request.route == "/") {
                 var requestContent  = await JsonValue.ReadToEndAsync(request.body).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.

@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     await GetHandler(context).ConfigureAwait(false);
                     return;                    
                 }
-                if (cache.TryGetValue(context.path, out CacheEntry entry)) {
+                if (cache.TryGetValue(context.route, out CacheEntry entry)) {
                     var body = new JsonValue(entry.body);
                     context.Write(body, 0, entry.mediaType, entry.status);
                     context.SetHeaders(entry.headers);
@@ -78,16 +78,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (context.StatusCode != 200)
                     return;
                 entry = new CacheEntry(context);
-                cache.Add(context.path, entry);
+                cache.Add(context.route, entry);
             }
             catch (Exception e) {
-                var response = $"method: {context.method}, url: {context.path}\n{e.Message}";
+                var response = $"method: {context.method}, url: {context.route}\n{e.Message}";
                 context.WriteError("request exception", response, 500);
             }
         }
         
         private async Task GetHandler (RequestContext context) {
-            var path = context.path;
+            var path = context.route;
             if (path.EndsWith("/"))
                 path += "index.html";
             string ext = Path.GetExtension (path);
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private void ListDirectory (RequestContext context) {
-            var folder = context.path;
+            var folder = context.route;
             string[] fileNames = fileHandler.GetFiles(folder);
             if (fileNames == null) {
                 var msg = $"folder not found: {folder}";

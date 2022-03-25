@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Utils
             }
             string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
             for (int n = 0; n < fileNames.Length; n++) {
-                fileNames[n] = fileNames[n].Substring(rootFolder.Length).Replace('\\', '/');
+                fileNames[n] = fileNames[n].Substring(path.Length + 1);
             }
             return fileNames;
         }

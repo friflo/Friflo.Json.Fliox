@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal  readonly  FlioxHub                    hub;
         public    readonly  string                      method;
-        public    readonly  string                      path;
+        public    readonly  string                      route;
         public    readonly  string                      query;
         public    readonly  Stream                      body;
         public    readonly  IHttpHeaders                headers;
@@ -37,12 +37,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal            Pool                        Pool                => hub.sharedEnv.Pool;
         internal            SharedCache                 SharedCache         => hub.sharedEnv.sharedCache;
 
-        public    override  string                      ToString() => $"{method} {path}{query}";
+        public    override  string                      ToString() => $"{method} {route}{query}";
 
-        public RequestContext (RemoteHostHub hostHub, string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
+        public RequestContext (RemoteHostHub hostHub, string  method, string route, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
             this.hub        = hostHub.LocalHub;
             this.method     = method;
-            this.path       = path;
+            this.route      = route;
             this.query      = query;
             this.body       = body;
             this.headers    = headers;
@@ -82,12 +82,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             responseHeaders = headers;
         }
         
-        public static bool IsBasePath(string basePath, string path) {
-            if (!path.StartsWith(basePath))
+        public static bool IsBasePath(string basePath, string route) {
+            if (!route.StartsWith(basePath))
                 return false;
-            if (path.Length == basePath.Length)
+            if (route.Length == basePath.Length)
                 return true;
-            return path[basePath.Length] == '/';
+            return route[basePath.Length] == '/';
         }
     }
     
