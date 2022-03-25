@@ -18,7 +18,7 @@ This class provide two fundamental functionalities:
 
 
 ## Features
-The main features of a host using [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) are:
+The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub) are:
 - provide **JSON based Web API**s to access **key-value** or **document** databases.
 - add a **database schema** to these databases as they typically don't have a build-in solution for schemas
 - aim for near optimal request performance regarding **low latency** and **high throughput**
