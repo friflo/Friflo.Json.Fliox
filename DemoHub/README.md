@@ -11,9 +11,14 @@ The **Fliox DemoHub** is used to demonstrate the features of [**JSON Fliox Hub**
 **TL;DR**  
 [**Fliox DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) running on **AWS** using **t2-micro** instance
 
+The key class when running a HTTP server using **JSON Fliox Hub** is [**DemoStore.cs**](DemoStore.cs).  
+This class provide two fundamental functionalities:
+- It defines a database schema by declaring its containers, commands and messages
+- It is a database client providing type-safe access to its containers, commands and messages
+
 
 ## Features
-The key features of a host using [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) are:
+The main features of a host using [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) are:
 - provide **JSON based Web API**s to access **key-value** or **document** databases.
 - add a **database schema** to these databases as they typically don't have a build-in solution for schemas
 - aim for near optimal request performance regarding **low latency** and **high throughput**
