@@ -57,7 +57,7 @@ A `HTTPHostHub` extends `FlioxHub` by two main features:
 A `HTTPHostHub` can be integrated by two different HTTP servers:
 - [**ASP.NET Core**](https://docs.microsoft.com/en-us/aspnet/core/) /
   [**Kestrel**](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel)
-- `HttpListener` - part of the
+- [`HttpListener`](https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener) - part of the
   [**.NET Base class library**](https://docs.microsoft.com/en-us/dotnet/standard/framework-libraries#base-class-library)
 
 
