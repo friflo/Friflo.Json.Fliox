@@ -16,17 +16,17 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
     public static class AspNetCoreExtensions
     {
         public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHostHub hostHub) {
+            var httpRequest = context.Request;
+            var path        = httpRequest.Path.Value;
+            if (!hostHub.GetRoute(path, out string route))
+                return null;
+            
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {
                 WebSocket ws = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
                 await WebSocketHost.SendReceiveMessages(ws, hostHub).ConfigureAwait(false);
                 return null;
             }
-            var httpRequest = context.Request;
-            var path        = httpRequest.Path.Value;
-            if (!hostHub.GetRoute(path, out string route))
-                return null;
-            
             var headers     = new HttpContextHeaders(httpRequest.Headers);
             var cookies     = new HttpContextCookies(httpRequest.Cookies);
             var reqCtx      = new RequestContext(hostHub, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
