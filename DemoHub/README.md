@@ -11,6 +11,9 @@ The **Fliox DemoHub** is used to demonstrate the features of [**JSON Fliox Hub**
 **TL;DR**  
 [**Fliox DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) running on **AWS** using **t2-micro** instance
 
+
+## DemoStore
+
 The key class when running a HTTP server using **JSON Fliox Hub** is [**DemoStore.cs**](DemoStore.cs).  
 This class provide two fundamental functionalities:
 1. It is a **database client** providing type-safe access to its containers, commands and messages
