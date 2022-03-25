@@ -21,7 +21,7 @@ namespace Fliox.DemoHub
     /// Its messages are methods returning a <see cref="MessageTask"/>. <br/>
     /// <br/>
     /// <see cref="DemoStore"/> instances can be used on client and server side. <br/>
-    /// The <see cref="MessageHandler"/> demonstates how to use a <see cref="DemoStore"/> client to execute
+    /// The <see cref="MessageHandler"/> demonstates how to use a <see cref="DemoStore"/> instances as client to execute
     /// common database operations like: Upsert, Count and Query. <br/>
     /// </remarks>
     public partial class DemoStore : FlioxClient {
