@@ -13,8 +13,9 @@ The **Fliox DemoHub** is used to demonstrate the features of [**JSON Fliox Hub**
 
 The key class when running a HTTP server using **JSON Fliox Hub** is [**DemoStore.cs**](DemoStore.cs).  
 This class provide two fundamental functionalities:
-- It defines a database schema by declaring its containers, commands and messages
-- It is a database client providing type-safe access to its containers, commands and messages
+1. It is a **database client** providing type-safe access to its containers, commands and messages
+2. It defines a **database schema** by declaring its containers, commands and messages.  
+  The schema is used by host for **record validation** and serving it as **JSON Schema** and other various formats.
 
 
 ## Features
