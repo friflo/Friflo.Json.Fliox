@@ -75,14 +75,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                                 Log(reqMsg);
                             }
-                            if (endpoint != null && context.Request.Url.LocalPath == "/") {
+                            var path = context.Request.Url.LocalPath;
+                            if (path.StartsWith(endpoint)) {
+                                var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false); // handle incoming requests parallel
+                                
+                                await context.WriteFlioxResponse(response).ConfigureAwait(false);
+                                return;
+                            }
+                            if (path == "/" && endpoint != "/") {
                                 var headers = new Dictionary<string, string> { { "Location", endpoint }};
                                 await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 302, $"redirect -> {endpoint}", headers).ConfigureAwait(false);
                                 return;
                             }
-                            var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false); // handle incoming requests parallel
-                            
-                            await context.WriteFlioxResponse(response).ConfigureAwait(false);
+                            await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);
                         }
                         catch (Exception e) {
                             await HandleContextException(context, e);

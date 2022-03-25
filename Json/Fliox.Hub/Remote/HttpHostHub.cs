@@ -40,7 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// </summary>
     public class HttpHostHub : RemoteHostHub
     {
-        public   readonly   string                  endpoint;
+        /// <summary>never null, ends with '/'</summary>
+        public   readonly   string                  endpoint; 
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   RestHandler             restHandler     = new RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
@@ -51,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             : base(hub, env, hostName)
         {
             if (endpoint != null && !endpoint.EndsWith("/")) throw new ArgumentException("endpoint requires '/' as last character");
-            this.endpoint           = endpoint;
+            this.endpoint           = endpoint ?? "/";
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
@@ -67,10 +68,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public bool GetRoute(string path, out string route) {
-            if (endpoint == null) {
-                route = path;
-                return true;
-            }
             if (path.StartsWith(endpoint)) {
                 route = path.Substring(endpoint.Length - 1);
                 return true;
