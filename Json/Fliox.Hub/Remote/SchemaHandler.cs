@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal sealed class SchemaHandler : IRequestHandler
     {
         private   const     string                              SchemaBase = "/schema";
-        internal            string                              image = "/img/Json-Fliox-53x43.svg";
+        internal            string                              image = "img/Json-Fliox-53x43.svg";
         internal  readonly  CreateZip                           zip;
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
         private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
@@ -220,6 +220,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var link            = string.Join("", Enumerable.Repeat("../", indexOffset + n--));
                 titleElements.Add($"<a href='{link}index.html'>{titleSection}</a>");
             }
+            var relativeBase    = string.Join("", Enumerable.Repeat("../", titlePath.Length));
+            var imageUrl        = relativeBase + handler.image;
+            
             var titleLinks = string.Join(" · ", titleElements);
             
             sb.AppendLine("<!DOCTYPE html>");
@@ -229,12 +232,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             sb.AppendLine($"<meta name='description' content='{description}'>");
             sb.AppendLine("<meta name='color-scheme' content='dark light'>");
-            sb.AppendLine($"<link rel='icon' href='{handler.image}' width='53' height='43' type='image/x-icon'>");
+            sb.AppendLine($"<link rel='icon' href='{imageUrl}' width='53' height='43' type='image/x-icon'>");
             sb.AppendLine($"<title>{title}</title>");
             sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body style='font-family: sans-serif'>");
-            sb.AppendLine($"<h2><a href='{Generator.Link}' target='_blank' rel='noopener'><img src='{handler.image}' alt='friflo JSON Fliox' /></a>");
+            sb.AppendLine($"<h2><a href='{Generator.Link}' target='_blank' rel='noopener'><img src='{imageUrl}' alt='friflo JSON Fliox' /></a>");
             sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
             sb.AppendLine($"<p>{description}</p>");
         }
