@@ -217,8 +217,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             for (int o = 0; o < titlePath.Length; o++) {
                 var titleSection    = titlePath[o];
                 var indexOffset     = o == 0 ? 1 : 0;
+                var target          = o == 0 ? "target='_blank' rel='noopener' " : "";
+                var path            = o == 0 ? "" : "index.html";
                 var link            = string.Join("", Enumerable.Repeat("../", indexOffset + n--));
-                titleElements.Add($"<a href='{link}index.html'>{titleSection}</a>");
+                titleElements.Add($"<a {target}href='{link}{path}'>{titleSection}</a>");
             }
             var relativeBase    = string.Join("", Enumerable.Repeat("../", titlePath.Length));
             var imageUrl        = relativeBase + handler.image;
