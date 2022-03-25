@@ -51,7 +51,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>.<br/>
     /// Its messages are methods returning a <see cref="MessageTask"/>.<br/>
     /// <br/>
-    /// Instances of a class extending <see cref="FlioxClient"/> can be used on server and client side.
+    /// Instances of a class extending <see cref="FlioxClient"/> can be used on server and client side.<br/>
+    /// The <see cref="FlioxClient"/> features and utilization available at
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Client/README.md">Client README.md</a>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

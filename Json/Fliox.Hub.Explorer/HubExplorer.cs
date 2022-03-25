@@ -5,6 +5,11 @@ using System;
 
 namespace Friflo.Json.Fliox.Hub.Explorer
 {
+    /// <summary>
+    /// <see cref="HubExplorer"/> provide the path to the static Web files for the <b>Hub Explorer</b>.<br/>
+    /// The explorer features are listed at:
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub.Explorer/README.md">Explorer README.md</a>
+    /// </summary>
     public static class HubExplorer
     {
         public static string FolderName => "www~";

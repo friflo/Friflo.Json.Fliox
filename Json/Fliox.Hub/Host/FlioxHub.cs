@@ -38,22 +38,26 @@ namespace Friflo.Json.Fliox.Hub.Host
         
     /// <summary>
     /// A <see cref="FlioxHub"/> instance is the single entry point used to handle <b>all</b> requests send by a client -
-    /// e.g. a <see cref="Client.FlioxClient"/> or a web browser. When instantiating a <see cref="FlioxHub"/> a default
+    /// e.g. a <see cref="Client.FlioxClient"/> or a web browser. <br/>
+    /// The <see cref="FlioxHub"/> features and utilization is available at
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#flioxhub">Host README.md</a><br/>
+    /// <br/>
+    /// When instantiating a <see cref="FlioxHub"/> a default
     /// <see cref="EntityDatabase"/> is assigned to the instance and all operations / tasks requested by a client
     /// are applied to this <see cref="database"/>.
     /// <br/>
-    /// A <see cref="FlioxHub"/> instance handle client requests by its <see cref="ExecuteSync"/> method.
+    /// A <see cref="FlioxHub"/> instance handle client requests by its <see cref="ExecuteSync"/> method. <br/>
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
-    /// on the given <see cref="SyncRequest.database"/>.
+    /// on the given <see cref="SyncRequest.database"/>. <br/>
     /// If database == null the default <see cref="database"/> of <see cref="FlioxHub"/> is used.
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
-    /// and all messages / commands send by a client. 
+    /// and all messages / commands send by a client. <br/>
     /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.handler"/> of the
-    /// specified <see cref="database"/>.
+    /// specified <see cref="database"/>.<br/>
     /// <br/>
     /// Instances of <see cref="FlioxHub"/> and all its implementation are designed to be thread safe enabling multiple
-    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="FlioxHub"/> instance.
+    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="FlioxHub"/> instance. <br/>
     /// To maintain thread safety <see cref="FlioxHub"/> implementations must not have any mutable state.
     /// <br/>
     /// The <see cref="FlioxHub"/> can be configured to support.
