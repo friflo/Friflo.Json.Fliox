@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // ReSharper disable once UnusedMember.Local
         private static async Task HandleUnityServerWebSocket (HttpListenerResponse response) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
-            await WriteResponseString(response, "text/plain", (int)HttpStatusCode.NotImplemented, error, null);
+            await WriteResponseString(response, "text/plain", (int)HttpStatusCode.NotImplemented, error, null).ConfigureAwait(false);
             response.Close();
         }
     }

@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 404, $"{path} not found", null).ConfigureAwait(false);
                         }
                         catch (Exception e) {
-                            await HandleContextException(context, e);
+                            await HandleContextException(context, e).ConfigureAwait(false);
                         }
                     });
                 }
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var resp    = context.Response;
             if (!resp.OutputStream.CanWrite)
                 return;
-            await HttpListenerExtensions.WriteResponseString(resp, "text/plain", (int)HttpStatusCode.BadRequest, message, null);
+            await HttpListenerExtensions.WriteResponseString(resp, "text/plain", (int)HttpStatusCode.BadRequest, message, null).ConfigureAwait(false);
             resp.Close();
         }
         
