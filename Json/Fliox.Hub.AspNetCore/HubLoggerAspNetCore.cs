@@ -1,3 +1,8 @@
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
+#if !UNITY_2020_1_OR_NEWER
+
 using System;
 using Microsoft.Extensions.Logging;
 
@@ -25,3 +30,5 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
         }
     }
 }
+
+#endif

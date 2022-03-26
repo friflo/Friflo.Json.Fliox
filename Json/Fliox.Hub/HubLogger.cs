@@ -43,4 +43,22 @@ namespace Friflo.Json.Fliox.Hub
             }
         }
     }
+    
+#if UNITY_5_3_OR_NEWER
+    // -------------------------------- HubLoggerUnity --------------------------------
+    internal class HubLoggerUnity : IHubLogger
+    {
+        public void Log(HubLog hubLog, string message, Exception exception) {
+            var fullMessage     = exception == null ? message : $"{message}, exception: {exception}";
+            switch (hubLog) {
+                case HubLog.Error:
+                    UnityEngine.Debug.LogError(fullMessage);
+                    break;                    
+                case HubLog.Info:
+                    UnityEngine.Debug.Log(fullMessage);
+                    break;
+            }
+        }
+    }
+#endif
 }

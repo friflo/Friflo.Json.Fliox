@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                             HttpListenerRequest  req  = context.Request;
                             if (requestCount++ == 0 || requestCount % 10000 == 0) {
                                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
-                                Log(reqMsg);
+                                LogInfo(reqMsg);
                             }
                             var path = context.Request.Url.LocalPath;
                             if (hostHub.IsMatch(path)) {
@@ -111,18 +111,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
 #if UNITY_5_3_OR_NEWER
                 catch (ObjectDisposedException  e) {
                     if (runServer)
-                        Log($"RemoteHost error: {e}");
+                        LogException("HttpListenerHost - ObjectDisposedException", e);
                     return;
                 }
 #endif
                 catch (HttpListenerException  e) {
                     bool serverStopped = e.ErrorCode == 995 && runServer == false;
                     if (!serverStopped) 
-                        Log($"RemoteHost error: {e}");
+                        LogException("HttpListenerHost - HttpListenerException", e);
                     return;
                 }
                 catch (Exception e) {
-                     Log($"RemoteHost error: {e}");
+                     LogException("HttpListenerHost - Exception", e);
                      return;
                 }
             }
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private async Task HandleContextException(HttpListenerContext context, Exception e) {
             var message = $"request failed - {e.GetType().Name}: {e.Message}";
-            Log(message);
+            LogException(message, e);
             var resp    = context.Response;
             if (!resp.OutputStream.CanWrite)
                 return;
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 sb.Append(" ");
                 sb.Append(prefix);
             }
-            Log(sb.ToString());
+            LogInfo(sb.ToString());
         }
         
         public void Run() {
@@ -172,13 +172,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             listener.Stop();
         }
 
+        private void LogException(string msg, Exception exception) {
+            hubLogger.Log(HubLog.Error, msg, exception);
+        }
 
-        private void Log(string msg) {
-#if UNITY_5_3_OR_NEWER
-            UnityEngine.Debug.Log(msg);
-#else
+        private void LogInfo(string msg) {
             hubLogger.Log(HubLog.Info, msg);
-#endif
         }
     }
 }
