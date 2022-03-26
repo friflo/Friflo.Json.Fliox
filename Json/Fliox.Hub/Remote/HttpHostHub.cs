@@ -49,12 +49,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
-        public HttpHostHub(FlioxHub hub, string endpoint = "/fliox/", SharedEnv env = null, string hostName = null)
+        public HttpHostHub(FlioxHub hub, string endpoint, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
-            if (endpoint != null && !endpoint.StartsWith("/")) throw new ArgumentException("endpoint requires '/' as first character");
-            if (endpoint != null && !endpoint.EndsWith("/"))   throw new ArgumentException("endpoint requires '/' as last character");
-            this.endpoint           = endpoint ?? "/";
+            if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
+            if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
+            if (!endpoint.EndsWith("/"))    throw new ArgumentException("endpoint requires '/' as last character");
+            this.endpoint           = endpoint;
             endpointRoot            = this.endpoint.Substring(0, this.endpoint.Length - 1);
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;

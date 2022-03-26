@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Main
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var hostHub             = new HttpHostHub(hub).CacheControl(c.cache);
+            var hostHub             = new HttpHostHub(hub, "/fliox/").CacheControl(c.cache);
             hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Main
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
             var database            = CreateDatabase(c, null, new PocHandler());
             var hub          	    = new FlioxHub(database);
-            var hostHub             = new HttpHostHub(hub);
+            var hostHub             = new HttpHostHub(hub, "/fliox/");
             hostHub.AddHandler       (new StaticFileHandler(c.www, c.cache));   // optional - serve static web files of Hub Explorer
             return hostHub;
         }
