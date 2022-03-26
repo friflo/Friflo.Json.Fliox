@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub
     }
     
     // ----------------------------------- HubLogger -----------------------------------
-    public class HubLogger : IHubLogger
+    public sealed class HubLogger : IHubLogger
     {
         internal    IHubLogger  instance = ConsoleLogger;
 
