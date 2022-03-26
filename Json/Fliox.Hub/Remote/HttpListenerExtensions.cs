@@ -33,9 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
 #endif
             if (req.IsWebSocketRequest) {
-                var wsContext   = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
-                var websocket   = wsContext.WebSocket;
-                await WebSocketHost.SendReceiveMessages (websocket, hostHub).ConfigureAwait(false);
+                var wsContext       = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
+                var websocket       = wsContext.WebSocket;
+                var remoteEndPoint  = request.RemoteEndPoint;
+                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, hostHub).ConfigureAwait(false);
                 return null;
             }
             var headers         = new HttpListenerHeaders(request.Headers);

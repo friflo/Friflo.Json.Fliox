@@ -2,11 +2,13 @@
 // See LICENSE file in the project root for full license information.
 #if !UNITY_2020_1_OR_NEWER
 
+using System.Net;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 
 // Assembly "Fliox.Hub.AspNetCore" uses the 'floating version dependency':
 //      <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
@@ -25,8 +27,10 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             }
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {
-                WebSocket ws = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
-                await WebSocketHost.SendReceiveMessages(ws, hostHub).ConfigureAwait(false);
+                WebSocket ws        = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
+                var httpConnection  = context.Features.Get<IHttpConnectionFeature>();
+                var remoteEndPoint  = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
+                await WebSocketHost.SendReceiveMessages(ws, remoteEndPoint, hostHub).ConfigureAwait(false);
                 return null;
             }
             var headers     = new HttpContextHeaders(httpRequest.Headers);

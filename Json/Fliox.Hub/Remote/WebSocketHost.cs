@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,12 +28,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
         private  readonly   HubLogger                               hubLogger;
+        private  readonly   IPEndPoint                              remoteEndPoint;
         
-        private WebSocketHost (SharedEnv env, WebSocket webSocket, bool fakeOpenClosedSocket) {
+        private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
             pool                        = new Pool(env.Pool);
             sharedCache                 = env.sharedCache;
             hubLogger                   = env.hubLogger;
             this.webSocket              = webSocket;
+            this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
             var channel         = DataChannel<ArraySegment<byte>>.CreateUnbounded(true, false);
@@ -103,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                     continue;
                 }
-                hubLogger.Log(HubLog.Info, $"ReceiveLoop() returns. WebSocket state: {state}");
+                hubLogger.Log(HubLog.Info, $"ReceiveLoop() returns. WebSocket state: {state}, remote: {remoteEndPoint}");
                 if (state == WebSocketState.CloseReceived) {
                     await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);    
                 }
@@ -111,8 +114,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static async Task SendReceiveMessages(WebSocket websocket, RemoteHostHub remoteHost) {
-            var target = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteHost.fakeOpenClosedSockets);
+        public static async Task SendReceiveMessages(WebSocket websocket, IPEndPoint remoteEndPoint, RemoteHostHub remoteHost) {
+            var target = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteEndPoint, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {
                     await target.ReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
