@@ -19,7 +19,16 @@ namespace Friflo.Json.Fliox.Hub
     internal class HubLoggerConsole : IHubLogger
     {
         public void Log(HubLog hubLog, string message) {
-            Console.Error.WriteLine($"error: {message}");
+            var prefix = GetLogPrefix(hubLog);
+            Console.WriteLine($"{prefix}{message}");
+        }
+        
+        private static string GetLogPrefix(HubLog hubLog) {
+            switch (hubLog) {
+                case HubLog.Error:  return "error: ";
+                case HubLog.Info:   return "info:  ";
+                default:            return "error: ";
+            }
         }
     }
     
@@ -32,5 +41,5 @@ namespace Friflo.Json.Fliox.Hub
         public void Log(HubLog hubLog, string message) {
             instance.Log(hubLog, message);
         }
-    } 
+    }
 }
