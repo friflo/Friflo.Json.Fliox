@@ -52,7 +52,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public HttpHostHub(FlioxHub hub, string endpoint = "/fliox/", SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
-            if (endpoint != null && !endpoint.EndsWith("/")) throw new ArgumentException("endpoint requires '/' as last character");
+            if (endpoint != null && !endpoint.StartsWith("/")) throw new ArgumentException("endpoint requires '/' as first character");
+            if (endpoint != null && !endpoint.EndsWith("/"))   throw new ArgumentException("endpoint requires '/' as last character");
             this.endpoint           = endpoint ?? "/";
             endpointRoot            = this.endpoint.Substring(0, this.endpoint.Length - 1);
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
