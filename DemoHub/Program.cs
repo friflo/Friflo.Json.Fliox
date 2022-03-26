@@ -15,30 +15,18 @@ namespace Fliox.DemoHub
     {
         public static void Main(string[] args) {
             if (args.Contains("HttpListener")) {
-                RunHttpListener("http://+:8010/");
+                var hostHub = CreateHttpHost();
+                HttpListenerHost.RunHost("http://+:8010/", hostHub);
                 return;
             }
             Startup.RunAspNetCore(args);
         }
 
-        // Note: Http server may require a permission to listen to the given host/port on Windows.
-        // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
-        // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
-        //     netsh http add urlacl url=http://+:8010/ user=<DOMAIN>\<USER> listen=yes
-        //     netsh http delete urlacl http://+:8010/
-        // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
-        private static void RunHttpListener(string endpoint) {
-            var hostHub = CreateHttpHost();
-            var server = new HttpListenerHost(endpoint, hostHub);
-            server.Start();
-            server.Run();
-        }
-        
         /// <summary>
         /// This method is a blueprint showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
-        ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="RunHttpListener"/> </item>
+        ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="HttpListenerHost.RunHost"/> </item>
         ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core / Kestrel</a> see <see cref="Startup.Configure"/></item>
         /// </list>
         /// The features of a <see cref="HttpHostHub"/> instance utilized by this blueprint method are listed at

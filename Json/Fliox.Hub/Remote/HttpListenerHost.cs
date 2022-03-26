@@ -46,6 +46,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             : this (CreateHttpListener(new []{endpoint}), hostHub)
         { }
         
+        // Note: Http server may require a permission to listen to the given host/port on Windows.
+        // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
+        // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
+        //     netsh http add urlacl url=http://+:8010/ user=<DOMAIN>\<USER> listen=yes
+        //     netsh http delete urlacl http://+:8010/
+        // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
+        public static void RunHost(string endpoint, HttpHostHub hostHub) {
+            var server = new HttpListenerHost(endpoint, hostHub);
+            server.Start();
+            server.Run();
+        }
+        
         private static HttpListener CreateHttpListener(string[] endpoints) {
             var listener = new HttpListener();
             foreach (var endpoint in endpoints) {
@@ -145,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             Log(sb.ToString());
         }
-
+        
         public void Run() {
             // Handle requests
             var listenTask = HandleIncomingConnections();
