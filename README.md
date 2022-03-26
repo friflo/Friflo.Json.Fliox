@@ -13,15 +13,15 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 ## Content
 - **Fliox Hub**
-    - [DemoHub](#demohub)          [README.md](DemoHub/README.md)
-    - [Client](#client)                 [README.md](Json/Fliox.Hub/Client/README.md)
-    - [Host](#host)                   [README.md](Json/Fliox.Hub/Host/README.md)
-    - [Explorer](#explorer)             [README.md](Json/Fliox.Hub.Explorer/README.md)
+    - [DemoHub](#demohub)          ❯  [README.md](DemoHub/README.md)
+    - [Client](#client)                 ❯  [README.md](Json/Fliox.Hub/Client/README.md)
+    - [Host](#host)                   ❯  [README.md](Json/Fliox.Hub/Host/README.md)
+    - [Explorer](#explorer)             ❯  [README.md](Json/Fliox.Hub.Explorer/README.md)
 - **Fliox**
-    - [Schema](#schema)              [README.md](Json/Fliox/Schema/README.md)
-    - [Mapper](#mapper)              [README.md](Json/Fliox/Mapper/README.md)
+    - [Schema](#schema)              ❯  [README.md](Json/Fliox/Schema/README.md)
+    - [Mapper](#mapper)              ❯  [README.md](Json/Fliox/Mapper/README.md)
 - **Testing**
-    - [Unit Tests](#unit-tests)           [README.md](Json.Tests/README.md)
+    - [Unit Tests](#unit-tests)           ❯  [README.md](Json.Tests/README.md)
 
 
 
@@ -30,19 +30,20 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Fliox Hub**
 
 ### **DemoHub**
-namespace **`Fliox.DemoHub`**                                   [README.md](DemoHub/README.md)
+
+📄   [README.md](DemoHub/README.md)
 
 
 ### **Client**
-namespace **`Friflo.Json.Fliox.Hub.Client`**          [README.md](Json/Fliox.Hub/Client/README.md)
+📄   [README.md](Json/Fliox.Hub/Client/README.md)
 
 
 ### **Host**
-namespace **`Friflo.Json.Fliox.Hub.Host`**              [README.md](Json/Fliox.Hub/Host/README.md)
+📄   [README.md](Json/Fliox.Hub/Host/README.md)
 
 
 ### **Explorer**
-namespace **`Friflo.Json.Fliox.Hub.Explorer`**       [README.md](Json/Fliox.Hub.Explorer/README.md)
+📄   [README.md](Json/Fliox.Hub.Explorer/README.md)
 
 
 
@@ -52,11 +53,11 @@ namespace **`Friflo.Json.Fliox.Hub.Explorer`**       [README.md](Json/Fli
 ## **Fliox**
 
 ### **Schema**
-namespace **`Friflo.Json.Fliox.Schema`**                  [README.md](Json/Fliox/Schema/README.md)
+📄   [README.md](Json/Fliox/Schema/README.md)
 
 
 ### **Mapper**
-namespace **`Friflo.Json.Fliox.Mapper`**                  [README.md](Json/Fliox/Mapper/README.md)
+📄   [README.md](Json/Fliox/Mapper/README.md)
 
 
 
