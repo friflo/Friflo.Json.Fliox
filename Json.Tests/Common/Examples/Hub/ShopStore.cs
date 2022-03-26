@@ -42,6 +42,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
     // -------------------------------- run examples as unit tests --------------------------------
     public static class TestShopStore
     {
+#if !UNITY_5_3_OR_NEWER
         /// <summary>
         /// Execute database commands: Hello and std.Stats <br/>
         /// Execute container operation: Upsert
@@ -68,6 +69,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
             }
             // output:  articles: 1
         }
+#endif
         
         /// <summary>
         /// Generate schema model files (HTML, JSON Schema, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
