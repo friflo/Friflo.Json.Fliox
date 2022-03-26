@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
@@ -19,13 +20,14 @@ namespace Friflo.Json.Tests.Main
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             var hostHub = Program.CreateHttpHost();
+            hostHub.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
 
             app.UseRouting();
             app.UseWebSockets();
