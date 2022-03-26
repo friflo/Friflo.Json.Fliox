@@ -120,9 +120,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
             }
             catch (Exception e) {
-                var error = $"OnReceive failed processing WebSocket message. Exception: {e}";
-                hubLogger.Log(HubLog.Error, error);
-                Debug.Fail(error);
+                var message = "OnReceive failed processing WebSocket message";
+                hubLogger.Log(HubLog.Error, message, e);
+                Debug.Fail($"{message}, exception: {e}");
             }
         }
         

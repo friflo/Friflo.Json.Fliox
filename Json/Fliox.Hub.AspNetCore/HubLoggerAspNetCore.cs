@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Logging;
 
 namespace Friflo.Json.Fliox.Hub.AspNetCore
@@ -10,9 +11,9 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
             logger = loggerFactory.CreateLogger<HubLoggerAspNetCore>();
         }
         
-        public void Log(HubLog hubLog, string message) {
+        public void Log(HubLog hubLog, string message, Exception exception) {
             var logLevel = GetLogLevel(hubLog);
-            logger.Log(logLevel, message);
+            logger.Log(logLevel, exception, message);
         }
         
         private static LogLevel GetLogLevel(HubLog hubLog) {

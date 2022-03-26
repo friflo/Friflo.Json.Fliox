@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub
     }
 
     public interface IHubLogger {
-        void Log  (HubLog hubLog, string message);
+        void Log  (HubLog hubLog, string message, Exception exception);
     }
     
     // ----------------------------------- HubLogger -----------------------------------
@@ -21,17 +21,18 @@ namespace Friflo.Json.Fliox.Hub
 
         private static readonly HubLoggerConsole ConsoleLogger = new HubLoggerConsole();
 
-        public void Log(HubLog hubLog, string message) {
-            instance.Log(hubLog, message);
+        public void Log(HubLog hubLog, string message, Exception exception = null) {
+            instance.Log(hubLog, message, exception);
         }
     }
     
     // -------------------------------- HubLoggerConsole --------------------------------
     internal class HubLoggerConsole : IHubLogger
     {
-        public void Log(HubLog hubLog, string message) {
-            var prefix = GetLogPrefix(hubLog);
-            Console.WriteLine($"{prefix}{message}");
+        public void Log(HubLog hubLog, string message, Exception exception) {
+            var prefix          = GetLogPrefix(hubLog);
+            var exceptionStr    = exception == null ? "" : exception.ToString(); 
+            Console.WriteLine($"{prefix}{message}{exceptionStr}");
         }
         
         private static string GetLogPrefix(HubLog hubLog) {

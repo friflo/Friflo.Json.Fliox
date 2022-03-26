@@ -160,9 +160,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     executeContext.Release();
                 }
                 catch (Exception e) {
-                    var error = e.ToString();
-                    hubLogger.Log(HubLog.Error, error);
-                    Debug.Fail(error);
+                    var message = "SendEvents failed";
+                    hubLogger.Log(HubLog.Error, message, e);
+                    Debug.Fail($"{message}, exception: {e}");
                 }
             }
         }
@@ -181,8 +181,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         return;
                     }
                 } catch (Exception e) {
-                    hubLogger.Log(HubLog.Error, e.Message);
-                    Debug.Fail("TriggerLoop() failed", e.Message);
+                    var message = "TriggerLoop() failed";
+                    hubLogger.Log(HubLog.Error, message, e);
+                    Debug.Fail(message, e.Message);
                 }
             });
             return loopTask;

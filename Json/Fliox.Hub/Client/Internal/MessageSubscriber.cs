@@ -34,9 +34,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
-                    var msg = $"{type} failed. name: {callbackHandler.name}, exception: {e}";
-                    invokeContext.hubLogger.Log(HubLog.Error, msg);
-                    Debug.Fail(msg);
+                    var msg = $"{type} failed. name: {callbackHandler.name}";
+                    invokeContext.hubLogger.Log(HubLog.Error, msg, e);
+                    Debug.Fail($"{msg}, exception {e}");
                 }
             }
         }
