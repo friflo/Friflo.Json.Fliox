@@ -5,17 +5,28 @@ using System;
 
 namespace Friflo.Json.Fliox.Hub
 {
-    public interface IHubLogger
-    {
-        void Log  (HubLog hubLog, string message);
-    }
-    
-    public enum HubLog
-    {
+    public enum HubLog {
         Error,
         Info
     }
+
+    public interface IHubLogger {
+        void Log  (HubLog hubLog, string message);
+    }
     
+    // ----------------------------------- HubLogger -----------------------------------
+    public class HubLogger : IHubLogger
+    {
+        internal    IHubLogger  instance = ConsoleLogger;
+
+        private static readonly HubLoggerConsole ConsoleLogger = new HubLoggerConsole();
+
+        public void Log(HubLog hubLog, string message) {
+            instance.Log(hubLog, message);
+        }
+    }
+    
+    // -------------------------------- HubLoggerConsole --------------------------------
     internal class HubLoggerConsole : IHubLogger
     {
         public void Log(HubLog hubLog, string message) {
@@ -29,17 +40,6 @@ namespace Friflo.Json.Fliox.Hub
                 case HubLog.Info:   return "info:  ";
                 default:            return "error: ";
             }
-        }
-    }
-    
-    public class HubLogger : IHubLogger
-    {
-        internal    IHubLogger  instance = ConsoleLogger;
-
-        private static readonly HubLoggerConsole ConsoleLogger = new HubLoggerConsole();
-
-        public void Log(HubLog hubLog, string message) {
-            instance.Log(hubLog, message);
         }
     }
 }
