@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
-    public class HubLoggerAspNetCore : IHubLogger
+    public sealed class HubLoggerAspNetCore : IHubLogger
     {
         private readonly ILogger logger;
         

@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub
     }
     
     // -------------------------------- HubLoggerConsole --------------------------------
-    internal class HubLoggerConsole : IHubLogger
+    internal sealed class HubLoggerConsole : IHubLogger
     {
         public void Log(HubLog hubLog, string message, Exception exception) {
             var prefix          = GetLogPrefix(hubLog);
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub
     
 #if UNITY_5_3_OR_NEWER
     // -------------------------------- HubLoggerUnity --------------------------------
-    internal class HubLoggerUnity : IHubLogger
+    internal sealed class HubLoggerUnity : IHubLogger
     {
         public void Log(HubLog hubLog, string message, Exception exception) {
             var fullMessage     = exception == null ? message : $"{message}, exception: {exception}";
