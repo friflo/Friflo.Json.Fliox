@@ -36,10 +36,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             bool                runServer;
         private             int                 requestCount;
         private  readonly   HttpHostHub         hostHub;
+        private  readonly   HubLogger           hubLogger;
         
         public HttpListenerHost(HttpListener httpListener, HttpHostHub hostHub) {
             this.hostHub    = hostHub;
             listener        = httpListener;
+            hubLogger       = hostHub.sharedEnv.hubLogger;
         }
         
         public HttpListenerHost(string endpoint, HttpHostHub hostHub)
@@ -175,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 #if UNITY_5_3_OR_NEWER
             UnityEngine.Debug.Log(msg);
 #else
-            Console.WriteLine(msg);
+            hubLogger.Log(HubLog.Info, msg);
 #endif
         }
     }

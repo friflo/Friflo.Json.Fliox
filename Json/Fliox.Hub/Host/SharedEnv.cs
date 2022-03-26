@@ -32,6 +32,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal readonly   SharedCache     sharedCache;
         public   virtual    TypeStore       TypeStore   => typeStore;
         public              Pool            Pool        { get; }
+        internal readonly   HubLogger       hubLogger = new HubLogger();
+        public              IHubLogger      Logger {
+            get => hubLogger.instance;
+            set => hubLogger.instance = value ?? throw new NullReferenceException (nameof(Logger));
+        }
         
         public static readonly SharedEnv Default = new DefaultSharedEnv();
 

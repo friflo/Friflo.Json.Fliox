@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   TypeStore                                   typeStore;
         internal readonly   Pool                                        pool;
         internal readonly   SharedCache                                 sharedCache;
+        internal readonly   HubLogger                                   hubLogger;
         internal readonly   FlioxHub                                    hub;
         internal readonly   string                                      database;
         internal readonly   EventTarget                                 eventTarget;
@@ -53,6 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal EntityProcessor    EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
         internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
+
         
         static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
 
@@ -86,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             typeStore                   = sharedEnv.TypeStore;
             this.pool                   = sharedEnv.Pool;
             this.sharedCache            = sharedEnv.sharedCache;
+            this.hubLogger              = sharedEnv.hubLogger;
             this.hub                    = hub;
             this.database               = database;
             this.eventTarget            = eventTarget;

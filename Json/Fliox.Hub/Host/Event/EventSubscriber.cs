@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
+        private  readonly   HubLogger                               hubLogger;
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
         
@@ -72,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
             pool                = new Pool(env.Pool);
             sharedCache         = env.sharedCache;
+            hubLogger           = env.hubLogger;
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;
@@ -99,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (this.eventTarget == null) throw new NullReferenceException(nameof(eventTarget));
             if (this.eventTarget == eventTarget)
                 return;
-            Console.WriteLine($"EventSubscriber: eventTarget changed. dstId: {clientId}");
+            hubLogger.Log(HubLog.Info, $"EventSubscriber: eventTarget changed. dstId: {clientId}");
             this.eventTarget = eventTarget;
         }
         
@@ -159,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 catch (Exception e) {
                     var error = e.ToString();
-                    Console.WriteLine(error);
+                    hubLogger.Log(HubLog.Error, error);
                     Debug.Fail(error);
                 }
             }
@@ -175,10 +177,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                             await SendEvents().ConfigureAwait(false);
                             continue;
                         }
-                        Console.WriteLine($"TriggerLoop() returns. {trigger}");
+                        hubLogger.Log(HubLog.Info, $"TriggerLoop() returns. {trigger}");
                         return;
                     }
                 } catch (Exception e) {
+                    hubLogger.Log(HubLog.Error, e.Message);
                     Debug.Fail("TriggerLoop() failed", e.Message);
                 }
             });

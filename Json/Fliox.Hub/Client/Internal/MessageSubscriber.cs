@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
                     var msg = $"{type} failed. name: {callbackHandler.name}, exception: {e}";
-                    Console.WriteLine(msg);
+                    invokeContext.hubLogger.Log(HubLog.Error, msg);
                     Debug.Fail(msg);
                 }
             }
@@ -47,13 +47,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  readonly  string          name;
         internal  readonly  JsonValue       param;
         internal  readonly  ObjectReader    reader;
+        internal  readonly  HubLogger       hubLogger;
 
         public    override  string          ToString() => $"{name}(param: {param.AsString()})";
 
-        internal InvokeContext(string name, in JsonValue param, ObjectReader reader) {
-            this.name   = name;
-            this.param  = param;
-            this.reader = reader;
+        internal InvokeContext(string name, in JsonValue param, ObjectReader reader, HubLogger hubLogger) {
+            this.name       = name;
+            this.param      = param;
+            this.reader     = reader;
+            this.hubLogger  = hubLogger;
         }
     }
     

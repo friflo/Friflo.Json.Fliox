@@ -26,10 +26,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Task                                    sendLoop;
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
+        private  readonly   HubLogger                               hubLogger;
         
         private WebSocketHost (SharedEnv env, WebSocket webSocket, bool fakeOpenClosedSocket) {
             pool                        = new Pool(env.Pool);
             sharedCache                 = env.sharedCache;
+            hubLogger                   = env.hubLogger;
             this.webSocket              = webSocket;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
@@ -101,7 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                     continue;
                 }
-                Console.WriteLine($"ReceiveLoop() returns. WebSocket state: {state}");
+                hubLogger.Log(HubLog.Info, $"ReceiveLoop() returns. WebSocket state: {state}");
                 if (state == WebSocketState.CloseReceived) {
                     await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);    
                 }

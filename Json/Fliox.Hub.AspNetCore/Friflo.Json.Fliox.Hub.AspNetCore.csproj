@@ -36,6 +36,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="*" />
     </ItemGroup>
 
 </Project>

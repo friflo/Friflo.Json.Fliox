@@ -73,8 +73,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                         GetSyncCount()  => _intern.syncCount;
         
-        [DebuggerBrowsable(Never)]
-        internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
+        [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
+        [DebuggerBrowsable(Never)]  internal    HubLogger                   HubLogger       => _intern.hubLogger;
 
         // --- commands
         /// standard commands

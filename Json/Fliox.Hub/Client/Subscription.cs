@@ -27,6 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     public class SubscriptionProcessor : IDisposable
     {
         private readonly    FlioxClient                         client;
+        private readonly    HubLogger                           hubLogger;
+
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
         
@@ -35,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    ConcurrentQueue <EventMessage>      eventQueue;
         
-        public              int                                 EventSequence { get; private set ;}
+        public              int                                 EventSequence { get; private set ; }
 
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
@@ -55,6 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public SubscriptionProcessor (FlioxClient client, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.client                 = client;
+            this.hubLogger              = client.HubLogger;
             this.synchronizationContext = synchronizationContext;
         }
         
@@ -67,6 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public SubscriptionProcessor (FlioxClient client, SubscriptionHandling _) {
             this.client                 = client;
+            this.hubLogger              = client.HubLogger;
             this.eventQueue             = new ConcurrentQueue <EventMessage> ();
         }
 
@@ -163,7 +167,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                             // and ProcessEvent() can be called concurrently from the 'main' thread.
-                            var invokeContext = new InvokeContext(name, message.param, mapper.reader);
+                            var invokeContext = new InvokeContext(name, message.param, mapper.reader, hubLogger);
                             if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
                                 subscriber.InvokeCallbacks(invokeContext);    
                             }
@@ -223,7 +227,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 foreach (var task in eventMessage.tasks) {
                     if (!(task is SyncMessageTask messageTask)) 
                         continue;
-                    var invokeContext   = new InvokeContext(messageTask.name, messageTask.param, reader);
+                    var invokeContext   = new InvokeContext(messageTask.name, messageTask.param, reader, hubLogger);
                     var message         = new Message(invokeContext);
                     messages.Add(message);
                 }
