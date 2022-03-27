@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             emitter.EmitFileHeaders(sb);
             emitter.EmitFileFooters(sb);
             generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}", Next);
-            OpenApi3.Generate(generator);
+            OpenAPI.Generate(generator);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {

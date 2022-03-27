@@ -15,7 +15,7 @@
   "paths": {
     "/credentials": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container credentials",
         "tags":       ["credentials"],
         "responses": {
           "200": {             
@@ -30,8 +30,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container credentials",
+        "tags":       ["credentials"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container credentials by id",
         "tags":       ["credentials"],
         "parameters": [
           {
@@ -53,7 +76,7 @@
     },
     "/permissions": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container permissions",
         "tags":       ["permissions"],
         "responses": {
           "200": {             
@@ -68,8 +91,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container permissions",
+        "tags":       ["permissions"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container permissions by id",
         "tags":       ["permissions"],
         "parameters": [
           {
@@ -91,7 +137,7 @@
     },
     "/roles": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container roles",
         "tags":       ["roles"],
         "responses": {
           "200": {             
@@ -106,8 +152,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container roles",
+        "tags":       ["roles"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container roles by id",
         "tags":       ["roles"],
         "parameters": [
           {

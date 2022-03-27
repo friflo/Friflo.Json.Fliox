@@ -8,16 +8,16 @@ using Friflo.Json.Fliox.Schema.Definition;
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 namespace Friflo.Json.Fliox.Schema.Language
 {
-    public sealed class OpenApi3
+    public sealed class OpenAPI
     {
         private  readonly   Generator                   generator;
         
-        private OpenApi3 (Generator generator) {
+        private OpenAPI (Generator generator) {
             this.generator  = generator;
         }
         
         public static void Generate(Generator generator) {
-            var emitter = new OpenApi3(generator);
+            var emitter = new OpenAPI(generator);
             var paths = "";
             foreach (var type in generator.types) {
                 if (!type.IsSchema)
@@ -60,11 +60,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             EmitPath(name, $"/{name}", typeRef, sb);
         }
         
-        private static void EmitPath(string tag, string path, string typeRef, StringBuilder sb) {
+        private static void EmitPath(string container, string path, string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
-            EmitMethod(tag, "get",    null,   new ContentRef(typeRef), null, methodSb);
-        //  EmitMethod(tag, "put",   new ContentRef(typeRef), new ContentText(), null, methodSb);
-            EmitMethod(tag, "delete", null,   new ContentText(), new [] { new QueryParam("ids", "string")}, methodSb);
+            EmitMethod(container, "get",    $"return all records in container {container}", null, new ContentRef(typeRef, false), null, methodSb);
+            EmitMethod(container, "put",    $"create or update records in container {container}", new ContentRef(typeRef, true), new ContentText(), null, methodSb);
+            EmitMethod(container, "delete", $"delete records in container {container} by id", null, new ContentText(), new [] { new QueryParam("ids", "string")}, methodSb);
             sb.Append($@"
     ""{path}"": {{");
             sb.Append(methodSb.ToString());
@@ -72,7 +72,15 @@ namespace Friflo.Json.Fliox.Schema.Language
     }}");
         }
         
-        private static void EmitMethod(string tag, string method, Content request, Content response, ICollection<QueryParam> queryParams, StringBuilder sb) {
+        private static void EmitMethod(
+            string                  tag,
+            string                  method,
+            string                  summary,
+            Content                 request,
+            Content                 response,
+            ICollection<QueryParam> queryParams,
+            StringBuilder sb)
+        {
             if (sb.Length > 0)
                 sb.Append(",");
             var querySb = new StringBuilder();
@@ -108,7 +116,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var responseStr = response.Get();
             var methodStr = $@"
       ""{method}"": {{
-        ""summary"":    ""return all records in articles"",
+        ""summary"":    ""{summary}"",
         ""tags"":       [""{tag}""],{queryStr}{requestStr}
         ""responses"": {{
           ""200"": {{             
@@ -162,17 +170,21 @@ namespace Friflo.Json.Fliox.Schema.Language
     }
 
     internal class ContentRef : Content {
-        private    readonly    string  type;
+        private    readonly    string   type;
+        private    readonly    bool     isArray;
         
-        internal ContentRef(string type) : base ("application/json") {
-            this.type   = type;
+        internal ContentRef(string type, bool isArray) : base ("application/json") {
+            this.type       = type;
+            this.isArray    = isArray;
         }
         
         internal override string Get() {
+            var typeStr = isArray ? $@"""type"": ""array"",
+                  ""items"": {{ {type} }}" : type;
             return $@"{{
               ""application/json"": {{
                 ""schema"": {{
-                  {type}
+                  {typeStr}
                 }}
               }}
             }}";

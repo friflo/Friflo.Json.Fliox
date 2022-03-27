@@ -15,7 +15,7 @@
   "paths": {
     "/guidEntities": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container guidEntities",
         "tags":       ["guidEntities"],
         "responses": {
           "200": {             
@@ -30,8 +30,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container guidEntities",
+        "tags":       ["guidEntities"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.GuidEntity.json#/definitions/GuidEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container guidEntities by id",
         "tags":       ["guidEntities"],
         "parameters": [
           {
@@ -53,7 +76,7 @@
     },
     "/intEntities": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container intEntities",
         "tags":       ["intEntities"],
         "responses": {
           "200": {             
@@ -68,8 +91,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container intEntities",
+        "tags":       ["intEntities"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container intEntities by id",
         "tags":       ["intEntities"],
         "parameters": [
           {
@@ -91,7 +137,7 @@
     },
     "/intEntitiesAuto": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
         "responses": {
           "200": {             
@@ -106,8 +152,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container intEntitiesAuto",
+        "tags":       ["intEntitiesAuto"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.AutoIntEntity.json#/definitions/AutoIntEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container intEntitiesAuto by id",
         "tags":       ["intEntitiesAuto"],
         "parameters": [
           {
@@ -129,7 +198,7 @@
     },
     "/longEntities": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container longEntities",
         "tags":       ["longEntities"],
         "responses": {
           "200": {             
@@ -144,8 +213,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container longEntities",
+        "tags":       ["longEntities"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container longEntities by id",
         "tags":       ["longEntities"],
         "parameters": [
           {
@@ -167,7 +259,7 @@
     },
     "/shortEntities": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container shortEntities",
         "tags":       ["shortEntities"],
         "responses": {
           "200": {             
@@ -182,8 +274,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container shortEntities",
+        "tags":       ["shortEntities"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.ShortEntity.json#/definitions/ShortEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container shortEntities by id",
         "tags":       ["shortEntities"],
         "parameters": [
           {
@@ -205,7 +320,7 @@
     },
     "/byteEntities": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container byteEntities",
         "tags":       ["byteEntities"],
         "responses": {
           "200": {             
@@ -220,8 +335,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container byteEntities",
+        "tags":       ["byteEntities"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container byteEntities by id",
         "tags":       ["byteEntities"],
         "parameters": [
           {
@@ -243,7 +381,7 @@
     },
     "/customIdEntities": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container customIdEntities",
         "tags":       ["customIdEntities"],
         "responses": {
           "200": {             
@@ -258,8 +396,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container customIdEntities",
+        "tags":       ["customIdEntities"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container customIdEntities by id",
         "tags":       ["customIdEntities"],
         "parameters": [
           {
@@ -281,7 +442,7 @@
     },
     "/entityRefs": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container entityRefs",
         "tags":       ["entityRefs"],
         "responses": {
           "200": {             
@@ -296,8 +457,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container entityRefs",
+        "tags":       ["entityRefs"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container entityRefs by id",
         "tags":       ["entityRefs"],
         "parameters": [
           {
@@ -319,7 +503,7 @@
     },
     "/customIdEntities2": {
       "get": {
-        "summary":    "return all records in articles",
+        "summary":    "return all records in container customIdEntities2",
         "tags":       ["customIdEntities2"],
         "responses": {
           "200": {             
@@ -334,8 +518,31 @@
           }
         }
       },
+      "put": {
+        "summary":    "create or update records in container customIdEntities2",
+        "tags":       ["customIdEntities2"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
-        "summary":    "return all records in articles",
+        "summary":    "delete records in container customIdEntities2 by id",
         "tags":       ["customIdEntities2"],
         "parameters": [
           {
