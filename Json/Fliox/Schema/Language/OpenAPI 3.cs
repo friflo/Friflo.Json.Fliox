@@ -60,10 +60,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             EmitPath(name, $"/{name}", typeRef, sb);
         }
         
-        private void EmitPath(string tag, string path, string typeRef, StringBuilder sb) {
+        private static void EmitPath(string tag, string path, string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
-            EmitMethod(tag, "get",       new ContentRef(typeRef), null, methodSb);
-            EmitMethod(tag, "delete",    new ContentText(), new [] { new QueryParam("ids", "string")}, methodSb);
+            EmitMethod(tag, "get",    null,   new ContentRef(typeRef), null, methodSb);
+        //  EmitMethod(tag, "put",   new ContentRef(typeRef), new ContentText(), null, methodSb);
+            EmitMethod(tag, "delete", null,   new ContentText(), new [] { new QueryParam("ids", "string")}, methodSb);
             sb.Append($@"
     ""{path}"": {{");
             sb.Append(methodSb.ToString());
@@ -71,7 +72,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     }}");
         }
         
-        private void EmitMethod(string tag, string method, Content content, ICollection<QueryParam> queryParams, StringBuilder sb) {
+        private static void EmitMethod(string tag, string method, Content request, Content response, ICollection<QueryParam> queryParams, StringBuilder sb) {
             if (sb.Length > 0)
                 sb.Append(",");
             var querySb = new StringBuilder();
@@ -99,15 +100,20 @@ namespace Friflo.Json.Fliox.Schema.Language
           }}
         ],";    
             }
-            var contentStr = content.Get();
+            var requestStr = request == null ? "" : $@"
+        ""requestBody"": {{          
+          ""description"": ""---"",
+          ""content"": {request.Get()}
+        }},";
+            var responseStr = response.Get();
             var methodStr = $@"
       ""{method}"": {{
         ""summary"":    ""return all records in articles"",
-        ""tags"":       [""{tag}""],{queryStr}
+        ""tags"":       [""{tag}""],{queryStr}{requestStr}
         ""responses"": {{
           ""200"": {{             
             ""description"": ""OK"",
-            ""content"": {contentStr}
+            ""content"": {responseStr}
           }}
         }}
       }}";
