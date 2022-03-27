@@ -29,6 +29,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["orders"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/customers": {
@@ -44,6 +64,26 @@
                   "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["customers"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -65,6 +105,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["articles"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/producers": {
@@ -80,6 +140,26 @@
                   "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["producers"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -101,6 +181,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["employees"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/types": {
@@ -116,6 +216,26 @@
                   "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["types"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }

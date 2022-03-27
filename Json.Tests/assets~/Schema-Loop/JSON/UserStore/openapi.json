@@ -29,6 +29,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["credentials"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/permissions": {
@@ -47,6 +67,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["permissions"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/roles": {
@@ -62,6 +102,26 @@
                   "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["roles"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }

@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 
@@ -56,30 +57,61 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (sb.Length > 0)
                 sb.Append(",");
             var typeRef = Ref (container.type, true, generator);
-            EmitPath(name, $"/{name}", "get", typeRef, sb);
+            EmitPath(name, $"/{name}", typeRef, sb);
         }
         
-        private void EmitPath(string tag, string path, string method, string typeRef, StringBuilder sb) {
-            var spec = $@"
-    ""{path}"": {{
+        private void EmitPath(string tag, string path, string typeRef, StringBuilder sb) {
+            var methodSb = new StringBuilder();
+            EmitMethod(tag, "get",       new ContentRef(typeRef), null, methodSb);
+            EmitMethod(tag, "delete",    new ContentText(), new [] { new QueryParam("ids", "string")}, methodSb);
+            sb.Append($@"
+    ""{path}"": {{");
+            sb.Append(methodSb.ToString());
+            sb.Append($@"
+    }}");
+        }
+        
+        private void EmitMethod(string tag, string method, Content content, ICollection<QueryParam> queryParams, StringBuilder sb) {
+            if (sb.Length > 0)
+                sb.Append(",");
+            var querySb = new StringBuilder();
+            var queryStr = "";
+            if (queryParams != null) {
+                foreach (var queryParam in queryParams) {
+                    if (querySb.Length > 0)
+                        querySb.Append(",");
+                    querySb.Append(
+    $@"            {{
+                  ""in"":       ""query"",
+                  ""name"":     ""{queryParam.name}"",
+                  ""schema"":   {{ ""type"": ""{queryParam.type}"" }},
+                  ""description"": ""---""
+                }}
+    ");
+                }
+                queryStr = $@"
+        ""parameters"": [
+          {{
+            ""in"":       ""query"",
+            ""name"":     ""ids"",
+            ""schema"":   {{ ""type"": ""string"" }},
+            ""description"": ""---""
+          }}
+        ],";    
+            }
+            var contentStr = content.Get();
+            var methodStr = $@"
       ""{method}"": {{
         ""summary"":    ""return all records in articles"",
-        ""tags"":       [""{tag}""],
+        ""tags"":       [""{tag}""],{queryStr}
         ""responses"": {{
           ""200"": {{             
             ""description"": ""OK"",
-            ""content"": {{
-              ""application/json"": {{
-                ""schema"": {{
-                  {typeRef}
-                }}
-              }}
-            }}
+            ""content"": {contentStr}
           }}
         }}
-      }}
-    }}";
-            sb.Append(spec);
+      }}";
+            sb.Append(methodStr);
         }
         
         private static string Ref(TypeDef type, bool required, Generator generator) {
@@ -92,4 +124,53 @@ namespace Friflo.Json.Fliox.Schema.Language
             return refType;
         }
     }
+    
+    internal class QueryParam {
+        internal    readonly    string  name;
+        internal    readonly    string  type;
+        
+        internal QueryParam(string name, string type) {
+            this.name   = name;
+            this.type   = type;
+        }
+    }
+    
+    internal abstract class Content {
+        internal    readonly    string  mimeType;
+        
+        internal Content(string mimeType) {
+            this.mimeType   = mimeType;
+        }
+        
+        internal abstract string Get(); 
+    }
+    
+    internal class ContentText : Content {
+        internal ContentText() : base ("text/plain") { }
+        
+        internal override string Get() {
+            return @"{
+              ""text/plain"": { }
+            }";
+        } 
+    }
+
+    internal class ContentRef : Content {
+        private    readonly    string  type;
+        
+        internal ContentRef(string type) : base ("application/json") {
+            this.type   = type;
+        }
+        
+        internal override string Get() {
+            return $@"{{
+              ""application/json"": {{
+                ""schema"": {{
+                  {type}
+                }}
+              }}
+            }}";
+        }
+    }
+
 }

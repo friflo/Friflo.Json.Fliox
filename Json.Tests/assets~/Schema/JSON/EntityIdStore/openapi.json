@@ -29,6 +29,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["guidEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/intEntities": {
@@ -44,6 +64,26 @@
                   "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["intEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -65,6 +105,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["intEntitiesAuto"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/longEntities": {
@@ -80,6 +140,26 @@
                   "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["longEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -101,6 +181,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["shortEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/byteEntities": {
@@ -116,6 +216,26 @@
                   "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["byteEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -137,6 +257,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["customIdEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/entityRefs": {
@@ -155,6 +295,26 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["entityRefs"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
       }
     },
     "/customIdEntities2": {
@@ -170,6 +330,26 @@
                   "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "return all records in articles",
+        "tags":       ["customIdEntities2"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "ids",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
