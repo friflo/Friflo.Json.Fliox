@@ -61,6 +61,7 @@
             "in":       "query",
             "name":     "ids",
             "schema":   { "type": "string" },
+            "required": true,
             "description": "---"
           }
         ],
@@ -122,6 +123,7 @@
             "in":       "query",
             "name":     "ids",
             "schema":   { "type": "string" },
+            "required": true,
             "description": "---"
           }
         ],
@@ -183,6 +185,7 @@
             "in":       "query",
             "name":     "ids",
             "schema":   { "type": "string" },
+            "required": true,
             "description": "---"
           }
         ],

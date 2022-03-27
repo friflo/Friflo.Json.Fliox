@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var methodSb = new StringBuilder();
             EmitMethod(container, "get",    $"return all records in container {container}", null, new ContentRef(typeRef, false), null, methodSb);
             EmitMethod(container, "put",    $"create or update records in container {container}", new ContentRef(typeRef, true), new ContentText(), null, methodSb);
-            EmitMethod(container, "delete", $"delete records in container {container} by id", null, new ContentText(), new [] { new QueryParam("ids", "string")}, methodSb);
+            EmitMethod(container, "delete", $"delete records in container {container} by id", null, new ContentText(), new [] { new QueryParam("ids", "string", true)}, methodSb);
             sb.Append($@"
     ""{path}"": {{");
             sb.Append(methodSb.ToString());
@@ -89,23 +89,18 @@ namespace Friflo.Json.Fliox.Schema.Language
                 foreach (var queryParam in queryParams) {
                     if (querySb.Length > 0)
                         querySb.Append(",");
-                    querySb.Append(
-    $@"            {{
-                  ""in"":       ""query"",
-                  ""name"":     ""{queryParam.name}"",
-                  ""schema"":   {{ ""type"": ""{queryParam.type}"" }},
-                  ""description"": ""---""
-                }}
-    ");
-                }
-                queryStr = $@"
-        ""parameters"": [
+                    var required = queryParam.required ? @"
+            ""required"": true," : "";
+                    querySb.Append($@"
           {{
             ""in"":       ""query"",
-            ""name"":     ""ids"",
-            ""schema"":   {{ ""type"": ""string"" }},
+            ""name"":     ""{queryParam.name}"",
+            ""schema"":   {{ ""type"": ""{queryParam.type}"" }},{required}
             ""description"": ""---""
-          }}
+          }}");
+                }
+                queryStr = $@"
+        ""parameters"": [{querySb}
         ],";    
             }
             var requestStr = request == null ? "" : $@"
@@ -142,15 +137,17 @@ namespace Friflo.Json.Fliox.Schema.Language
     internal class QueryParam {
         internal    readonly    string  name;
         internal    readonly    string  type;
+        internal    readonly    bool    required;
         
-        internal QueryParam(string name, string type) {
-            this.name   = name;
-            this.type   = type;
+        internal QueryParam(string name, string type, bool required) {
+            this.name       = name;
+            this.type       = type;
+            this.required   = required;
         }
     }
     
     internal abstract class Content {
-        internal    readonly    string  mimeType;
+        private     readonly    string  mimeType;
         
         internal Content(string mimeType) {
             this.mimeType   = mimeType;
