@@ -377,6 +377,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
             using (var reader       = new ObjectReader(typeStore)) {
                 foreach (var path in fileNames) {
                     var fileName = path.Substring(folder.Length + 1);
+                    if (fileName == "openapi.json")
+                        continue;
                     var name = fileName.Substring(0, fileName.Length - ".json".Length);
                     var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
                     var schema = reader.Read<JSONSchema>(jsonSchema);

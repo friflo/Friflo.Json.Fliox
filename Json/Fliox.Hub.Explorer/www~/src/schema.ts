@@ -47,6 +47,10 @@ export type MonacoSchema = {
 export class Schema
 {
     public static createEntitySchemas (databaseSchemas: { [key: string]: DbSchema}, dbSchemas: DbSchema[]) : {[key: string]: MonacoSchema } {
+        for (const dbSchema of dbSchemas) {
+            const jsonSchemas = dbSchema.jsonSchemas as { [key: string] : JSONSchema};
+            delete jsonSchemas["openapi.json"];
+        }
         const schemaMap: { [key: string]: MonacoSchema } = {};
         for (const dbSchema of dbSchemas) {
             const jsonSchemas       = dbSchema.jsonSchemas as { [key: string] : JSONSchema};

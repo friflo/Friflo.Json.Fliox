@@ -1,0 +1,71 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title":        "example API",
+    "description":  "example description",
+    "version":      "0.0.0"
+  },
+  "servers": [
+    {
+      "url":          "http://localhost:8010/fliox/rest/main_db/",
+      "description":  "server description"
+    }
+  ],
+  "paths": {
+    "/credentials": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["credentials"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/permissions": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["permissions"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/roles": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["roles"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }   
+}

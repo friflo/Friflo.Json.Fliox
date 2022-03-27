@@ -1,0 +1,125 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title":        "example API",
+    "description":  "example description",
+    "version":      "0.0.0"
+  },
+  "servers": [
+    {
+      "url":          "http://localhost:8010/fliox/rest/main_db/",
+      "description":  "server description"
+    }
+  ],
+  "paths": {
+    "/orders": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["orders"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Order.json#/definitions/Order"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["customers"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["articles"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/producers": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["producers"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["employees"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Employee.json#/definitions/Employee"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/types": {
+      "get": {
+        "summary":    "return all records in articles",
+        "tags":       ["types"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }   
+}
