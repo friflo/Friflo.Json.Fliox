@@ -1,10 +1,10 @@
 // ----------------------------------------------- Schema -----------------------------------------------
 export class Schema {
     static createEntitySchemas(databaseSchemas, dbSchemas) {
-        for (const dbSchema of dbSchemas) {
-            const jsonSchemas = dbSchema.jsonSchemas;
+        /* for (const dbSchema of dbSchemas) {
+            const jsonSchemas = dbSchema.jsonSchemas as { [key: string] : JSONSchema};
             delete jsonSchemas["openapi.json"];
-        }
+        } */
         const schemaMap = {};
         for (const dbSchema of dbSchemas) {
             const jsonSchemas = dbSchema.jsonSchemas;

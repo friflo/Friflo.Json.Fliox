@@ -107,6 +107,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             if (databaseSchema == null)
                 return null;
             var jsonSchemas = databaseSchema.GetJsonSchemas();
+            jsonSchemas.Remove("openapi.json");
             var schema = new DbSchema {
                 id          = databaseName,
                 schemaName  = databaseSchema.Name,
