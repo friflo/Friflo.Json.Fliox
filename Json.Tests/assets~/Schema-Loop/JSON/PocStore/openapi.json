@@ -23,6 +23,12 @@
             "name":     "filter",
             "schema":   { "type": "string" },
             "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
+            "description": "---"
           }
         ],
         "responses": {
@@ -92,6 +98,12 @@
             "in":       "query",
             "name":     "filter",
             "schema":   { "type": "string" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
             "description": "---"
           }
         ],
@@ -163,6 +175,12 @@
             "name":     "filter",
             "schema":   { "type": "string" },
             "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
+            "description": "---"
           }
         ],
         "responses": {
@@ -232,6 +250,12 @@
             "in":       "query",
             "name":     "filter",
             "schema":   { "type": "string" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
             "description": "---"
           }
         ],
@@ -303,6 +327,12 @@
             "name":     "filter",
             "schema":   { "type": "string" },
             "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
+            "description": "---"
           }
         ],
         "responses": {
@@ -372,6 +402,12 @@
             "in":       "query",
             "name":     "filter",
             "schema":   { "type": "string" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "limit",
+            "schema":   { "type": "integer" },
             "description": "---"
           }
         ],

@@ -47,6 +47,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private void EmitPaths(TypeDef type, StringBuilder sb) {
+            // var dbContainersType = @"""type"": ""string""";
+            // EmitPathDatabase(dbContainersType, sb);
             foreach (var container in type.Fields) {
                 EmitContainerApi(container, sb);
             }
@@ -57,22 +59,37 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (sb.Length > 0)
                 sb.Append(",");
             var typeRef = Ref (container.type, true, generator);
-            EmitPath(name, $"/{name}", typeRef, sb);
+            EmitPathContainer(name, $"/{name}", typeRef, sb);
         }
         
-        private static void EmitPath(string container, string path, string typeRef, StringBuilder sb) {
+        private static void AppendPath(string path, string methods, StringBuilder sb) {
+            sb.Append($@"
+    ""{path}"": {{");
+            sb.Append(methods);
+            sb.Append($@"
+    }}");
+        }
+        
+        private static void EmitPathDatabase(string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
+            EmitMethod("database", "get",    "return all database in containers",
+                null, new ContentRef(typeRef, false), null, methodSb);
+            AppendPath("", methodSb.ToString(), sb);
+        }
+        
+        private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
+            var methodSb = new StringBuilder();
+            var getParams = new [] {
+                new QueryParam("filter", "string",  false),
+                new QueryParam("limit",  "integer", false)
+            };
             EmitMethod(container, "get",    $"return all records in container {container}",
-                null, new ContentRef(typeRef, false), new [] { new QueryParam("filter", "string", false)}, methodSb);
+                null, new ContentRef(typeRef, false), getParams, methodSb);
             EmitMethod(container, "put",    $"create or update records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
             EmitMethod(container, "delete", $"delete records in container {container} by id",
                 null, new ContentText(), new [] { new QueryParam("ids", "string", true)}, methodSb);
-            sb.Append($@"
-    ""{path}"": {{");
-            sb.Append(methodSb.ToString());
-            sb.Append($@"
-    }}");
+            AppendPath(path, methodSb.ToString(), sb);
         }
         
         private static void EmitMethod(
