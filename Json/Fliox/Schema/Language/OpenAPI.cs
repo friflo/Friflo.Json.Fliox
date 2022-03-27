@@ -62,9 +62,12 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static void EmitPath(string container, string path, string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
-            EmitMethod(container, "get",    $"return all records in container {container}", null, new ContentRef(typeRef, false), null, methodSb);
-            EmitMethod(container, "put",    $"create or update records in container {container}", new ContentRef(typeRef, true), new ContentText(), null, methodSb);
-            EmitMethod(container, "delete", $"delete records in container {container} by id", null, new ContentText(), new [] { new QueryParam("ids", "string", true)}, methodSb);
+            EmitMethod(container, "get",    $"return all records in container {container}",
+                null, new ContentRef(typeRef, false), new [] { new QueryParam("filter", "string", false)}, methodSb);
+            EmitMethod(container, "put",    $"create or update records in container {container}",
+                new ContentRef(typeRef, true), new ContentText(), null, methodSb);
+            EmitMethod(container, "delete", $"delete records in container {container} by id",
+                null, new ContentText(), new [] { new QueryParam("ids", "string", true)}, methodSb);
             sb.Append($@"
     ""{path}"": {{");
             sb.Append(methodSb.ToString());

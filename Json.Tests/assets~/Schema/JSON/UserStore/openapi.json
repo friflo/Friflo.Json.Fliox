@@ -17,6 +17,14 @@
       "get": {
         "summary":    "return all records in container credentials",
         "tags":       ["credentials"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -79,6 +87,14 @@
       "get": {
         "summary":    "return all records in container permissions",
         "tags":       ["permissions"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -141,6 +157,14 @@
       "get": {
         "summary":    "return all records in container roles",
         "tags":       ["roles"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",

@@ -17,6 +17,14 @@
       "get": {
         "summary":    "return all records in container orders",
         "tags":       ["orders"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -79,6 +87,14 @@
       "get": {
         "summary":    "return all records in container customers",
         "tags":       ["customers"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -141,6 +157,14 @@
       "get": {
         "summary":    "return all records in container articles",
         "tags":       ["articles"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -203,6 +227,14 @@
       "get": {
         "summary":    "return all records in container producers",
         "tags":       ["producers"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -265,6 +297,14 @@
       "get": {
         "summary":    "return all records in container employees",
         "tags":       ["employees"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -327,6 +367,14 @@
       "get": {
         "summary":    "return all records in container types",
         "tags":       ["types"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "filter",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
         "responses": {
           "200": {             
             "description": "OK",
