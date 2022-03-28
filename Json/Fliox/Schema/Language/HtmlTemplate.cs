@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <meta name='description' content='Schema - {{schemaName}}'>
     <meta name='color-scheme' content='dark light'>
+    <link rel='icon' href='../../../img/Json-Fliox-53x43.svg' type='image/x-icon'>
     <title>{{schemaName}} - schema</title>
     <style>
         :root {
