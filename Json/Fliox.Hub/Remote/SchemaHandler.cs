@@ -161,6 +161,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var jsonSchemaModel = modelResources["json-schema"];
                 return result.Set(jsonSchemaModel.fullSchema, jsonSchemaModel.schemaModel.contentType);
             }
+            if (path == "open-api.html") {
+                var swaggerIndex = GetSwaggerIndex(storeName);
+                return result.Set(swaggerIndex, "text/html");
+            }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
                 return result.Error($"invalid path:  {path}");
@@ -262,6 +266,46 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var writer = pooled.instance.writer;
                 return writer.Write(jsonSchemaMap);
             }
+        }
+        
+        private static string GetSwaggerIndex(string storeName) {
+            var relBase = "../../swagger";
+            var swaggerInitializer = $@"
+window.onload = function() {{
+  window.ui = SwaggerUIBundle({{
+    url: 'json-schema/openapi.json',
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: 'StandaloneLayout'
+  }});
+}};
+";
+            return $@"<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8'>
+    <title>{storeName} - Swagger UI</title>
+    <link rel='stylesheet' type='text/css' href='{relBase}/swagger-ui.css' />
+    <link rel='stylesheet' type='text/css' href='{relBase}/index.css' />
+    <link rel='icon' type='image/png' href='{relBase}/favicon-32x32.png' sizes='32x32' />
+    <link rel='icon' type='image/png' href='{relBase}/favicon-16x16.png' sizes='16x16' />
+  </head>
+
+  <body>
+    <div id='swagger-ui'></div>
+    <script src='{relBase}/swagger-ui-bundle.js' charset='UTF-8'> </script>
+    <script src='{relBase}/swagger-ui-standalone-preset.js' charset='UTF-8'> </script>
+<!--<script src='{relBase}/swagger-initializer.js' charset='UTF-8'> </script> -->
+    <script>{swaggerInitializer}</script>
+  </body>
+</html>";
         }
     }
     
