@@ -180,10 +180,11 @@ $@"        <tr>
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
                 var fieldDoc    = GetDoc("\n            <td><docs>", field.doc, "</docs></td>");
+                var oasLink     = type.IsSchema ? $"<td>{GetOasLink("/", field.name)}</td>" : "";
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{fieldDoc}
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{oasLink}{fieldDoc}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -207,9 +208,10 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
                 var doc     = GetDoc("\n            <td><docs>", messageDef.doc, "</docs></td>");
                 var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result}";
+                var oasLink = GetOasLink("/commands/get__command_", messageDef.name);
                 sb.AppendLine(
 $@"        <tr>
-            <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td>{doc}
+            <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td><td>{oasLink}</td>{doc}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -263,6 +265,11 @@ $@"        <tr>
             if (docs == null)
                 return "";
             return $"{prefix}{docs}{suffix}";
+        }
+
+        private static string GetOasLink(string tag, string local) {
+            local = local.Replace(".", "_");
+            return $"<oas><a href='../open-api.html#{tag}{local}' target='_blank'>OAS</a></oas>";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

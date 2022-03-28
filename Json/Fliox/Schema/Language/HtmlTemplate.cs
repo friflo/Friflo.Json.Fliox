@@ -120,6 +120,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         desc        { margin-left: 40px; margin-bottom: 10px; display: block; opacity: 0.7; }
         docs        { margin-left: 10px; display: block; opacity: 0.7; }
         code        { white-space: pre; display: block; padding-left: 3px;  padding-right: 3px; font-size: 16px; }
+        oas         { background: #55cf42; font-size: 12px; font-weight: bold; border-radius: 6px; padding: 0px 3px; }
+        oas a:visited,
+        oas a:link  { color: white; }
 
         .namespace  { margin-bottom: 100px; }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
@@ -221,7 +224,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         window.addEventListener('click', function(event) {
             const path      = event.composedPath();
             const anchor    = path.find(el => el.tagName == 'A');
-            if (anchor && anchor.hash != undefined && anchor.hash.startsWith('#')) {
+            if (!anchor || anchor.target)
+                return;
+            const hash = anchor.hash;
+            if (hash != undefined && hash.startsWith('#')) {
                 event.preventDefault();
                 const id = anchor.hash.substring(1);
                 scrollTo(id);
@@ -237,6 +243,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             const path      = event.composedPath();
             const anchor    = path.find(el => el.tagName == 'A');
             if (anchor) {
+                if (anchor.target)
+                    return;
                 if (hoveredLinkHash == anchor.hash)
                     return;
                 hoveredLinkHash = anchor.hash;

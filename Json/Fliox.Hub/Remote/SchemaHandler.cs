@@ -270,6 +270,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private static string GetSwaggerIndex(string storeName) {
             var relBase = "../../swagger";
+            // --------------- swagger-initializer.js ---------------
             var swaggerInitializer = $@"
 const loc       = window.location;
 const path      = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
@@ -290,6 +291,7 @@ window.onload = function() {{
     layout:         'StandaloneLayout'
   }});
 }};";
+            // --------------- index.html ---------------
             return $@"<!DOCTYPE html>
 <html lang='en'>
   <head>

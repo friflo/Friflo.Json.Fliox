@@ -112,6 +112,9 @@
         desc        { margin-left: 40px; margin-bottom: 10px; display: block; opacity: 0.7; }
         docs        { margin-left: 10px; display: block; opacity: 0.7; }
         code        { white-space: pre; display: block; padding-left: 3px;  padding-right: 3px; font-size: 16px; }
+        oas         { background: #55cf42; font-size: 12px; font-weight: bold; border-radius: 6px; padding: 0px 3px; }
+        oas a:visited,
+        oas a:link  { color: white; }
 
         .namespace  { margin-bottom: 100px; }
         div.nav > ul > li > a { color: var(--keyword); font-size: 13px; }
@@ -213,7 +216,10 @@
         window.addEventListener('click', function(event) {
             const path      = event.composedPath();
             const anchor    = path.find(el => el.tagName == 'A');
-            if (anchor && anchor.hash != undefined && anchor.hash.startsWith('#')) {
+            if (!anchor || anchor.target)
+                return;
+            const hash = anchor.hash;
+            if (hash != undefined && hash.startsWith('#')) {
                 event.preventDefault();
                 const id = anchor.hash.substring(1);
                 scrollTo(id);
@@ -229,6 +235,8 @@
             const path      = event.composedPath();
             const anchor    = path.find(el => el.tagName == 'A');
             if (anchor) {
+                if (anchor.target)
+                    return;
                 if (hoveredLinkHash == anchor.hash)
                     return;
                 hoveredLinkHash = anchor.hash;
@@ -341,47 +349,47 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
     <chapter id='containers'><a href='#containers'>containers</a></chapter>
     <table class='fields'>
         <tr>
-            <td><field>credentials</field></td> <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></type></td>
+            <td><field>credentials</field></td> <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a></type></td><td><oas><a href='../open-api.html#/credentials' target='_blank'>OAS</a></oas></td>
         </tr>
         <tr>
-            <td><field>permissions</field></td> <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a></type></td>
+            <td><field>permissions</field></td> <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a></type></td><td><oas><a href='../open-api.html#/permissions' target='_blank'>OAS</a></oas></td>
         </tr>
         <tr>
-            <td><field>roles</field></td>       <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></type></td>
+            <td><field>roles</field></td>       <td><type><key>id</key> ➞ <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a></type></td><td><oas><a href='../open-api.html#/roles' target='_blank'>OAS</a></oas></td>
         </tr>
     </table>
     <chapter id='commands'><a href='#commands'>commands</a></chapter>
     <table class='commands'>
         <tr>
-            <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'>Credentials</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'>AuthResult</a></sig></td>
+            <td><cmd>AuthenticateUser</cmd></td><td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'>Credentials</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'>AuthResult</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_AuthenticateUser' target='_blank'>OAS</a></oas></td>
             <td><docs>authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b></docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Echo</cmd></td>        <td><sig>(<keyword>param</keyword>: <predef>any</predef>) : <predef>any</predef></sig></td>
+            <td><cmd>std.Echo</cmd></td>        <td><sig>(<keyword>param</keyword>: <predef>any</predef>) : <predef>any</predef></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Echo' target='_blank'>OAS</a></oas></td>
             <td><docs>echos the given parameter to assure the database is working appropriately.</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Containers</cmd></td>  <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></sig></td>
+            <td><cmd>std.Containers</cmd></td>  <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbContainers'>DbContainers</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Containers' target='_blank'>OAS</a></oas></td>
             <td><docs>list all database containers</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Messages</cmd></td>    <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a></sig></td>
+            <td><cmd>std.Messages</cmd></td>    <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbMessages'>DbMessages</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Messages' target='_blank'>OAS</a></oas></td>
             <td><docs>list all database commands and messages</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Schema</cmd></td>      <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></sig></td>
+            <td><cmd>std.Schema</cmd></td>      <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbSchema'>DbSchema</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Schema' target='_blank'>OAS</a></oas></td>
             <td><docs>return the Schema assigned to the database</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td>
+            <td><cmd>std.Stats</cmd></td>       <td><sig>(<keyword>param</keyword>: <predef>string</predef> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.DbStats'>DbStats</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Stats' target='_blank'>OAS</a></oas></td>
             <td><docs>return the number of entities of all containers (or the given container) of the database</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Details</cmd></td>     <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'>HostDetails</a></sig></td>
+            <td><cmd>std.Details</cmd></td>     <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostDetails'>HostDetails</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Details' target='_blank'>OAS</a></oas></td>
             <td><docs>returns general information about the Hub like version, host, project and environment name</docs></td>
         </tr>
         <tr>
-            <td><cmd>std.Cluster</cmd></td>     <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></sig></td>
+            <td><cmd>std.Cluster</cmd></td>     <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.Cluster.HostCluster'>HostCluster</a></sig></td><td><oas><a href='../open-api.html#/commands/get__command_std_Cluster' target='_blank'>OAS</a></oas></td>
             <td><docs>list all databases and their containers hosted by the Hub</docs></td>
         </tr>
     </table>

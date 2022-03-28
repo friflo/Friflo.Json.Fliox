@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 queryParams.Add(new Parameter("query", "param", paramRef, false));
             }
             var doc = type.doc ?? "";
-            var tag = messageType == "command" ? type.name.StartsWith("std.") ? "standard-commands": "commands" : "messages";
+            var tag = messageType == "command" ? "commands" : "messages";
             EmitPathRoot(tag, $"/?{messageType}={type.name}",  doc, "" , queryParams, sb);
         }
         

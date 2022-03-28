@@ -59,7 +59,7 @@
     "/?command=std.Echo": {
       "get": {
         "summary":    "echos the given parameter to assure the database is working appropriately.",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
           {
             "in":       "query",
@@ -85,7 +85,7 @@
     "/?command=std.Containers": {
       "get": {
         "summary":    "list all database containers",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
         ],
         "responses": {
@@ -105,7 +105,7 @@
     "/?command=std.Messages": {
       "get": {
         "summary":    "list all database commands and messages",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
         ],
         "responses": {
@@ -125,7 +125,7 @@
     "/?command=std.Schema": {
       "get": {
         "summary":    "return the Schema assigned to the database",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
         ],
         "responses": {
@@ -145,7 +145,7 @@
     "/?command=std.Stats": {
       "get": {
         "summary":    "return the number of entities of all containers (or the given container) of the database",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
           {
             "in":       "query",
@@ -171,7 +171,7 @@
     "/?command=std.Details": {
       "get": {
         "summary":    "returns general information about the Hub like version, host, project and environment name",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
         ],
         "responses": {
@@ -191,7 +191,7 @@
     "/?command=std.Cluster": {
       "get": {
         "summary":    "list all databases and their containers hosted by the Hub",
-        "tags":       ["standard-commands"],
+        "tags":       ["commands"],
         "parameters": [
         ],
         "responses": {
