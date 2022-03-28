@@ -74,10 +74,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private void EmitPaths(TypeDef type, StringBuilder sb) {
             var dbContainers     = GetTypeRef("Friflo.Json.Fliox.Hub.DB.Cluster", "DbContainers");
-            EmitPathRoot("database", "/",                   "return all database containers", dbContainers, null, sb);
+            EmitPathRoot("database", "/",   "return all database containers", dbContainers, null, sb);
 
-        //  EmitMessages("command", type.Commands, sb);
-        //  EmitMessages("message", type.Messages, sb);
+            EmitMessages("command", type.Commands, sb);
+            EmitMessages("message", type.Messages, sb);
             foreach (var container in type.Fields) {
                 EmitContainerApi(container, sb);
             }
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
-            var tag = $"{container}";
+            var tag = $"container: {container}";
             var methodSb = new StringBuilder();
             var getParams = new [] {
                 new Parameter("query", "filter", StringType,  false),
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitPathContainerEntity(string container, string path, string typeRef, StringBuilder sb) {
-            var tag = $"{container}";
+            var tag = $"container: {container}";
             var methodSb = new StringBuilder();
             EmitMethod(tag, "get",    $"return a single record from container {container}",
                 null, new ContentRef(typeRef, false), new [] { new Parameter("path", "id", StringType, true)}, methodSb);
@@ -240,18 +240,12 @@ namespace Friflo.Json.Fliox.Schema.Language
     }
     
     internal abstract class Content {
-        private     readonly    string  mimeType;
-        
-        internal Content(string mimeType) {
-            this.mimeType   = mimeType;
-        }
         
         internal abstract string Get(); 
     }
     
     internal class ContentText : Content {
-        internal ContentText() : base ("text/plain") { }
-        
+      
         internal override string Get() {
             return @"{
               ""text/plain"": { }
@@ -263,7 +257,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private    readonly    string   type;
         private    readonly    bool     isArray;
         
-        internal ContentRef(string type, bool isArray) : base ("application/json") {
+        internal ContentRef(string type, bool isArray) {
             this.type       = type;
             this.isArray    = isArray;
         }

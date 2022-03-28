@@ -31,10 +31,188 @@
         }
       }
     },
+    "/?command=AuthenticateUser": {
+      "get": {
+        "summary":    "authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b>",
+        "tags":       ["commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.json#/definitions/Credentials" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Echo": {
+      "get": {
+        "summary":    "echos the given parameter to assure the database is working appropriately.",
+        "tags":       ["standard commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   {   },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Containers": {
+      "get": {
+        "summary":    "list all database containers",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Messages": {
+      "get": {
+        "summary":    "list all database commands and messages",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Schema": {
+      "get": {
+        "summary":    "return the Schema assigned to the database",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Stats": {
+      "get": {
+        "summary":    "return the number of entities of all containers (or the given container) of the database",
+        "tags":       ["standard commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Details": {
+      "get": {
+        "summary":    "returns general information about the Hub like version, host, project and environment name",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Cluster": {
+      "get": {
+        "summary":    "list all databases and their containers hosted by the Hub",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/credentials": {
       "get": {
         "summary":    "return all records in container credentials",
-        "tags":       ["credentials"],
+        "tags":       ["container: credentials"],
         "parameters": [
           {
             "in":       "query",
@@ -64,7 +242,7 @@
       },
       "put": {
         "summary":    "create or update records in container credentials",
-        "tags":       ["credentials"],
+        "tags":       ["container: credentials"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -87,7 +265,7 @@
       },
       "delete": {
         "summary":    "delete records in container credentials by id",
-        "tags":       ["credentials"],
+        "tags":       ["container: credentials"],
         "parameters": [
           {
             "in":       "query",
@@ -110,7 +288,7 @@
     "/credentials/{id}": {
       "get": {
         "summary":    "return a single record from container credentials",
-        "tags":       ["credentials"],
+        "tags":       ["container: credentials"],
         "parameters": [
           {
             "in":       "path",
@@ -137,7 +315,7 @@
     "/permissions": {
       "get": {
         "summary":    "return all records in container permissions",
-        "tags":       ["permissions"],
+        "tags":       ["container: permissions"],
         "parameters": [
           {
             "in":       "query",
@@ -167,7 +345,7 @@
       },
       "put": {
         "summary":    "create or update records in container permissions",
-        "tags":       ["permissions"],
+        "tags":       ["container: permissions"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -190,7 +368,7 @@
       },
       "delete": {
         "summary":    "delete records in container permissions by id",
-        "tags":       ["permissions"],
+        "tags":       ["container: permissions"],
         "parameters": [
           {
             "in":       "query",
@@ -213,7 +391,7 @@
     "/permissions/{id}": {
       "get": {
         "summary":    "return a single record from container permissions",
-        "tags":       ["permissions"],
+        "tags":       ["container: permissions"],
         "parameters": [
           {
             "in":       "path",
@@ -240,7 +418,7 @@
     "/roles": {
       "get": {
         "summary":    "return all records in container roles",
-        "tags":       ["roles"],
+        "tags":       ["container: roles"],
         "parameters": [
           {
             "in":       "query",
@@ -270,7 +448,7 @@
       },
       "put": {
         "summary":    "create or update records in container roles",
-        "tags":       ["roles"],
+        "tags":       ["container: roles"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -293,7 +471,7 @@
       },
       "delete": {
         "summary":    "delete records in container roles by id",
-        "tags":       ["roles"],
+        "tags":       ["container: roles"],
         "parameters": [
           {
             "in":       "query",
@@ -316,7 +494,7 @@
     "/roles/{id}": {
       "get": {
         "summary":    "return a single record from container roles",
-        "tags":       ["roles"],
+        "tags":       ["container: roles"],
         "parameters": [
           {
             "in":       "path",

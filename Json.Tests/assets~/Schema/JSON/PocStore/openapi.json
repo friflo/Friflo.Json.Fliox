@@ -31,10 +31,384 @@
         }
       }
     },
+    "/?command=TestCommand": {
+      "get": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "$ref": "UnitTest.Fliox.Client.json#/definitions/TestCommand" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=SyncCommand": {
+      "get": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=AsyncCommand": {
+      "get": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=Command1": {
+      "get": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=test.Command2": {
+      "get": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=test.CommandHello": {
+      "get": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Echo": {
+      "get": {
+        "summary":    "echos the given parameter to assure the database is working appropriately.",
+        "tags":       ["standard commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   {   },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Containers": {
+      "get": {
+        "summary":    "list all database containers",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Messages": {
+      "get": {
+        "summary":    "list all database commands and messages",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Schema": {
+      "get": {
+        "summary":    "return the Schema assigned to the database",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Stats": {
+      "get": {
+        "summary":    "return the number of entities of all containers (or the given container) of the database",
+        "tags":       ["standard commands"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Details": {
+      "get": {
+        "summary":    "returns general information about the Hub like version, host, project and environment name",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?command=std.Cluster": {
+      "get": {
+        "summary":    "list all databases and their containers hosted by the Hub",
+        "tags":       ["standard commands"],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?message=Message1": {
+      "get": {
+        "summary":    "",
+        "tags":       ["messages"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?message=AsyncMessage": {
+      "get": {
+        "summary":    "",
+        "tags":       ["messages"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/?message=test.Message2": {
+      "get": {
+        "summary":    "",
+        "tags":       ["messages"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "param",
+            "schema":   { "type": "string" },
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/orders": {
       "get": {
         "summary":    "return all records in container orders",
-        "tags":       ["orders"],
+        "tags":       ["container: orders"],
         "parameters": [
           {
             "in":       "query",
@@ -64,7 +438,7 @@
       },
       "put": {
         "summary":    "create or update records in container orders",
-        "tags":       ["orders"],
+        "tags":       ["container: orders"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -87,7 +461,7 @@
       },
       "delete": {
         "summary":    "delete records in container orders by id",
-        "tags":       ["orders"],
+        "tags":       ["container: orders"],
         "parameters": [
           {
             "in":       "query",
@@ -110,7 +484,7 @@
     "/orders/{id}": {
       "get": {
         "summary":    "return a single record from container orders",
-        "tags":       ["orders"],
+        "tags":       ["container: orders"],
         "parameters": [
           {
             "in":       "path",
@@ -137,7 +511,7 @@
     "/customers": {
       "get": {
         "summary":    "return all records in container customers",
-        "tags":       ["customers"],
+        "tags":       ["container: customers"],
         "parameters": [
           {
             "in":       "query",
@@ -167,7 +541,7 @@
       },
       "put": {
         "summary":    "create or update records in container customers",
-        "tags":       ["customers"],
+        "tags":       ["container: customers"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -190,7 +564,7 @@
       },
       "delete": {
         "summary":    "delete records in container customers by id",
-        "tags":       ["customers"],
+        "tags":       ["container: customers"],
         "parameters": [
           {
             "in":       "query",
@@ -213,7 +587,7 @@
     "/customers/{id}": {
       "get": {
         "summary":    "return a single record from container customers",
-        "tags":       ["customers"],
+        "tags":       ["container: customers"],
         "parameters": [
           {
             "in":       "path",
@@ -240,7 +614,7 @@
     "/articles": {
       "get": {
         "summary":    "return all records in container articles",
-        "tags":       ["articles"],
+        "tags":       ["container: articles"],
         "parameters": [
           {
             "in":       "query",
@@ -270,7 +644,7 @@
       },
       "put": {
         "summary":    "create or update records in container articles",
-        "tags":       ["articles"],
+        "tags":       ["container: articles"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -293,7 +667,7 @@
       },
       "delete": {
         "summary":    "delete records in container articles by id",
-        "tags":       ["articles"],
+        "tags":       ["container: articles"],
         "parameters": [
           {
             "in":       "query",
@@ -316,7 +690,7 @@
     "/articles/{id}": {
       "get": {
         "summary":    "return a single record from container articles",
-        "tags":       ["articles"],
+        "tags":       ["container: articles"],
         "parameters": [
           {
             "in":       "path",
@@ -343,7 +717,7 @@
     "/producers": {
       "get": {
         "summary":    "return all records in container producers",
-        "tags":       ["producers"],
+        "tags":       ["container: producers"],
         "parameters": [
           {
             "in":       "query",
@@ -373,7 +747,7 @@
       },
       "put": {
         "summary":    "create or update records in container producers",
-        "tags":       ["producers"],
+        "tags":       ["container: producers"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -396,7 +770,7 @@
       },
       "delete": {
         "summary":    "delete records in container producers by id",
-        "tags":       ["producers"],
+        "tags":       ["container: producers"],
         "parameters": [
           {
             "in":       "query",
@@ -419,7 +793,7 @@
     "/producers/{id}": {
       "get": {
         "summary":    "return a single record from container producers",
-        "tags":       ["producers"],
+        "tags":       ["container: producers"],
         "parameters": [
           {
             "in":       "path",
@@ -446,7 +820,7 @@
     "/employees": {
       "get": {
         "summary":    "return all records in container employees",
-        "tags":       ["employees"],
+        "tags":       ["container: employees"],
         "parameters": [
           {
             "in":       "query",
@@ -476,7 +850,7 @@
       },
       "put": {
         "summary":    "create or update records in container employees",
-        "tags":       ["employees"],
+        "tags":       ["container: employees"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -499,7 +873,7 @@
       },
       "delete": {
         "summary":    "delete records in container employees by id",
-        "tags":       ["employees"],
+        "tags":       ["container: employees"],
         "parameters": [
           {
             "in":       "query",
@@ -522,7 +896,7 @@
     "/employees/{id}": {
       "get": {
         "summary":    "return a single record from container employees",
-        "tags":       ["employees"],
+        "tags":       ["container: employees"],
         "parameters": [
           {
             "in":       "path",
@@ -549,7 +923,7 @@
     "/types": {
       "get": {
         "summary":    "return all records in container types",
-        "tags":       ["types"],
+        "tags":       ["container: types"],
         "parameters": [
           {
             "in":       "query",
@@ -579,7 +953,7 @@
       },
       "put": {
         "summary":    "create or update records in container types",
-        "tags":       ["types"],
+        "tags":       ["container: types"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -602,7 +976,7 @@
       },
       "delete": {
         "summary":    "delete records in container types by id",
-        "tags":       ["types"],
+        "tags":       ["container: types"],
         "parameters": [
           {
             "in":       "query",
@@ -625,7 +999,7 @@
     "/types/{id}": {
       "get": {
         "summary":    "return a single record from container types",
-        "tags":       ["types"],
+        "tags":       ["container: types"],
         "parameters": [
           {
             "in":       "path",
