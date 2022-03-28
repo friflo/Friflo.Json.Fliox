@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 queryParams.Add(new Parameter("query", "param", paramRef, false));
             }
             var doc = type.doc ?? "";
-            var tag = messageType == "command" ? type.name.StartsWith("std.") ? "standard commands": "commands" : "messages";
+            var tag = messageType == "command" ? type.name.StartsWith("std.") ? "standard-commands": "commands" : "messages";
             EmitPathRoot(tag, $"/?{messageType}={type.name}",  doc, "" , queryParams, sb);
         }
         
@@ -141,25 +141,23 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
-            var tag = $"container: {container}";
             var methodSb = new StringBuilder();
             var getParams = new [] {
                 new Parameter("query", "filter", StringType,  false),
                 new Parameter("query", "limit",  IntegerType, false)
             };
-            EmitMethod(tag, "get",    $"return all records in container {container}",
+            EmitMethod(container, "get",    $"return all records in container {container}",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
-            EmitMethod(tag, "put",    $"create or update records in container {container}",
+            EmitMethod(container, "put",    $"create or update records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
-            EmitMethod(tag, "delete", $"delete records in container {container} by id",
+            EmitMethod(container, "delete", $"delete records in container {container} by id",
                 null, new ContentText(), new [] { new Parameter("query", "ids", StringType, true)}, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
         private static void EmitPathContainerEntity(string container, string path, string typeRef, StringBuilder sb) {
-            var tag = $"container: {container}";
             var methodSb = new StringBuilder();
-            EmitMethod(tag, "get",    $"return a single record from container {container}",
+            EmitMethod(container, "get",    $"return a single record from container {container}",
                 null, new ContentRef(typeRef, false), new [] { new Parameter("path", "id", StringType, true)}, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }

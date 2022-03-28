@@ -177,7 +177,7 @@
     "/?command=std.Echo": {
       "get": {
         "summary":    "echos the given parameter to assure the database is working appropriately.",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
           {
             "in":       "query",
@@ -203,7 +203,7 @@
     "/?command=std.Containers": {
       "get": {
         "summary":    "list all database containers",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
         ],
         "responses": {
@@ -223,7 +223,7 @@
     "/?command=std.Messages": {
       "get": {
         "summary":    "list all database commands and messages",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
         ],
         "responses": {
@@ -243,7 +243,7 @@
     "/?command=std.Schema": {
       "get": {
         "summary":    "return the Schema assigned to the database",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
         ],
         "responses": {
@@ -263,7 +263,7 @@
     "/?command=std.Stats": {
       "get": {
         "summary":    "return the number of entities of all containers (or the given container) of the database",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
           {
             "in":       "query",
@@ -289,7 +289,7 @@
     "/?command=std.Details": {
       "get": {
         "summary":    "returns general information about the Hub like version, host, project and environment name",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
         ],
         "responses": {
@@ -309,7 +309,7 @@
     "/?command=std.Cluster": {
       "get": {
         "summary":    "list all databases and their containers hosted by the Hub",
-        "tags":       ["standard commands"],
+        "tags":       ["standard-commands"],
         "parameters": [
         ],
         "responses": {
@@ -407,7 +407,7 @@
     "/orders": {
       "get": {
         "summary":    "return all records in container orders",
-        "tags":       ["container: orders"],
+        "tags":       ["orders"],
         "parameters": [
           {
             "in":       "query",
@@ -437,7 +437,7 @@
       },
       "put": {
         "summary":    "create or update records in container orders",
-        "tags":       ["container: orders"],
+        "tags":       ["orders"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -460,7 +460,7 @@
       },
       "delete": {
         "summary":    "delete records in container orders by id",
-        "tags":       ["container: orders"],
+        "tags":       ["orders"],
         "parameters": [
           {
             "in":       "query",
@@ -483,7 +483,7 @@
     "/orders/{id}": {
       "get": {
         "summary":    "return a single record from container orders",
-        "tags":       ["container: orders"],
+        "tags":       ["orders"],
         "parameters": [
           {
             "in":       "path",
@@ -510,7 +510,7 @@
     "/customers": {
       "get": {
         "summary":    "return all records in container customers",
-        "tags":       ["container: customers"],
+        "tags":       ["customers"],
         "parameters": [
           {
             "in":       "query",
@@ -540,7 +540,7 @@
       },
       "put": {
         "summary":    "create or update records in container customers",
-        "tags":       ["container: customers"],
+        "tags":       ["customers"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -563,7 +563,7 @@
       },
       "delete": {
         "summary":    "delete records in container customers by id",
-        "tags":       ["container: customers"],
+        "tags":       ["customers"],
         "parameters": [
           {
             "in":       "query",
@@ -586,7 +586,7 @@
     "/customers/{id}": {
       "get": {
         "summary":    "return a single record from container customers",
-        "tags":       ["container: customers"],
+        "tags":       ["customers"],
         "parameters": [
           {
             "in":       "path",
@@ -613,7 +613,7 @@
     "/articles": {
       "get": {
         "summary":    "return all records in container articles",
-        "tags":       ["container: articles"],
+        "tags":       ["articles"],
         "parameters": [
           {
             "in":       "query",
@@ -643,7 +643,7 @@
       },
       "put": {
         "summary":    "create or update records in container articles",
-        "tags":       ["container: articles"],
+        "tags":       ["articles"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -666,7 +666,7 @@
       },
       "delete": {
         "summary":    "delete records in container articles by id",
-        "tags":       ["container: articles"],
+        "tags":       ["articles"],
         "parameters": [
           {
             "in":       "query",
@@ -689,7 +689,7 @@
     "/articles/{id}": {
       "get": {
         "summary":    "return a single record from container articles",
-        "tags":       ["container: articles"],
+        "tags":       ["articles"],
         "parameters": [
           {
             "in":       "path",
@@ -716,7 +716,7 @@
     "/producers": {
       "get": {
         "summary":    "return all records in container producers",
-        "tags":       ["container: producers"],
+        "tags":       ["producers"],
         "parameters": [
           {
             "in":       "query",
@@ -746,7 +746,7 @@
       },
       "put": {
         "summary":    "create or update records in container producers",
-        "tags":       ["container: producers"],
+        "tags":       ["producers"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -769,7 +769,7 @@
       },
       "delete": {
         "summary":    "delete records in container producers by id",
-        "tags":       ["container: producers"],
+        "tags":       ["producers"],
         "parameters": [
           {
             "in":       "query",
@@ -792,7 +792,7 @@
     "/producers/{id}": {
       "get": {
         "summary":    "return a single record from container producers",
-        "tags":       ["container: producers"],
+        "tags":       ["producers"],
         "parameters": [
           {
             "in":       "path",
@@ -819,7 +819,7 @@
     "/employees": {
       "get": {
         "summary":    "return all records in container employees",
-        "tags":       ["container: employees"],
+        "tags":       ["employees"],
         "parameters": [
           {
             "in":       "query",
@@ -849,7 +849,7 @@
       },
       "put": {
         "summary":    "create or update records in container employees",
-        "tags":       ["container: employees"],
+        "tags":       ["employees"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -872,7 +872,7 @@
       },
       "delete": {
         "summary":    "delete records in container employees by id",
-        "tags":       ["container: employees"],
+        "tags":       ["employees"],
         "parameters": [
           {
             "in":       "query",
@@ -895,7 +895,7 @@
     "/employees/{id}": {
       "get": {
         "summary":    "return a single record from container employees",
-        "tags":       ["container: employees"],
+        "tags":       ["employees"],
         "parameters": [
           {
             "in":       "path",
@@ -922,7 +922,7 @@
     "/types": {
       "get": {
         "summary":    "return all records in container types",
-        "tags":       ["container: types"],
+        "tags":       ["types"],
         "parameters": [
           {
             "in":       "query",
@@ -952,7 +952,7 @@
       },
       "put": {
         "summary":    "create or update records in container types",
-        "tags":       ["container: types"],
+        "tags":       ["types"],
         "requestBody": {          
           "description": "---",
           "content": {
@@ -975,7 +975,7 @@
       },
       "delete": {
         "summary":    "delete records in container types by id",
-        "tags":       ["container: types"],
+        "tags":       ["types"],
         "parameters": [
           {
             "in":       "query",
@@ -998,7 +998,7 @@
     "/types/{id}": {
       "get": {
         "summary":    "return a single record from container types",
-        "tags":       ["container: types"],
+        "tags":       ["types"],
         "parameters": [
           {
             "in":       "path",
