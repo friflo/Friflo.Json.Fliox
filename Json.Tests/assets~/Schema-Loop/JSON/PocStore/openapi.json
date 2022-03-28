@@ -2,14 +2,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title":        "example API",
-    "description":  "example description",
+    "title":        "PocStore",
+    "description":  "The <b>PocStore</b> offer two functionalities: <br/>\n1. Defines a database <b>schema</b> by declaring its containers, commands and messages<br/>\n2. Is a database <b>client</b> providing type-safe access to its containers, commands and messages <br/>",
     "version":      "0.0.0"
   },
   "servers": [
     {
-      "url":          "http://localhost:8010/fliox/rest/main_db/",
-      "description":  "server description"
+      "url":          "http://localhost:8010/fliox/rest/main_db/"
     }
   ],
   "paths": {

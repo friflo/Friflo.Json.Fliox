@@ -2,14 +2,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title":        "example API",
-    "description":  "example description",
+    "title":        "UserStore",
+    "description":  "Control individual user access to database containers and commands. <br/>\nEach <b>user</b> has a set of <b>roles</b> stored in container <b>permissions</b>. <br/>\nEach <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which grant or deny container access or command execution.",
     "version":      "0.0.0"
   },
   "servers": [
     {
-      "url":          "http://localhost:8010/fliox/rest/main_db/",
-      "description":  "server description"
+      "url":          "http://localhost:8010/fliox/rest/main_db/"
     }
   ],
   "paths": {

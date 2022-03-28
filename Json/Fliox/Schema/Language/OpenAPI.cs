@@ -18,28 +18,34 @@ namespace Friflo.Json.Fliox.Schema.Language
             standardTypes   = generator.standardTypes;
         }
         
-        public static void Generate(Generator generator) {
-            var emitter = new OpenAPI(generator);
-            var paths = "";
+        private TypeDef FindSchemaType() {
             foreach (var type in generator.types) {
-                if (!type.IsSchema)
-                    continue;
-                var sb = new StringBuilder();
-                emitter.EmitPaths(type, sb);
-                paths = sb.ToString();
+                if (type.IsSchema)
+                    return type;
             }
-            var api = $@"
+            return null;
+        }
+        
+        public static void Generate(Generator generator) {
+            var emitter     = new OpenAPI(generator);
+            var schemaType  = emitter.FindSchemaType();
+            if (schemaType == null)
+                return;
+            var sb = new StringBuilder();
+            emitter.EmitPaths(schemaType, sb);
+            var paths       = sb.ToString();
+            var description = schemaType.doc == null ? "" : JsonSchemaGenerator.GetDoc($@"
+    ""description"":  ", schemaType.doc, ",");
+            var api     = $@"
 {{
   ""openapi"": ""3.0.0"",
   ""info"": {{
-    ""title"":        ""example API"",
-    ""description"":  ""example description"",
+    ""title"":        ""{schemaType.Name}"",{description}
     ""version"":      ""0.0.0""
   }},
   ""servers"": [
     {{
-      ""url"":          ""http://localhost:8010/fliox/rest/main_db/"",
-      ""description"":  ""server description""
+      ""url"":          ""http://localhost:8010/fliox/rest/main_db/""
     }}
   ],
   ""paths"": {{{paths}

@@ -264,7 +264,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return $"\"relation\": \"{field.relation }\"";
         }
         
-        private static string GetDoc(string prefix, string docs, string suffix) {
+        internal static string GetDoc(string prefix, string docs, string suffix) {
             if (docs == null)
                 return "";
             docs = docs.Replace("\n", "\\n");
