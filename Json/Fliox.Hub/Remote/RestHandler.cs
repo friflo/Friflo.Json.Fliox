@@ -78,16 +78,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await Message(context, database, message, param).ConfigureAwait(false);
                 return;
             }
-            var resource = resourcePath.Split('/');
-            var resourceError = GetResourceError(resource);
-            if (resourceError != null) {
-                context.WriteError("invalid path /database/container/id", resourceError, 400);
+            var res = new Resource(resourcePath);
+            if (res.error != null) {
+                context.WriteError("invalid path /database/container/id", res.error, 400);
                 return;
             }
             
             // ------------------    POST           /rest/database/container?get-entities
             //                       POST           /rest/database/container?delete-entities
-            if (isPost && resource.Length == 2) {
+            if (isPost && res.length == 2) {
                 bool getEntities    = HasQueryKey(queryParams, "get-entities");
                 bool deleteEntities = HasQueryKey(queryParams, "delete-entities");
                 JsonKey[] keys      = null;
@@ -102,36 +101,36 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                 }
                 if (getEntities) {
-                    await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
+                    await GetEntitiesById (context, res.database, res.container, keys).ConfigureAwait(false);
                     return;
                 }
                 if (deleteEntities) {
-                    await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
+                    await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
                     return;
                 }
             }
             
             if (isGet) {
                 // --------------    GET            /rest/database
-                if (resource.Length == 1) {
-                    await Command(context, resource[0], Std.Containers, new JsonValue()).ConfigureAwait(false); 
+                if (res.length == 1) {
+                    await Command(context, res.database, Std.Containers, new JsonValue()).ConfigureAwait(false); 
                     return;
                 }
                 // --------------    GET            /rest/database/container
-                if (resource.Length == 2) {
+                if (res.length == 2) {
                     var idsParam = queryParams["ids"];
                     if (idsParam != null) {
                         var ids     = idsParam == "" ? Array.Empty<string>() : idsParam.Split(',');
                         var keys    = GetKeysFromIds(ids);
-                        await GetEntitiesById (context, resource[0], resource[1], keys).ConfigureAwait(false);
+                        await GetEntitiesById (context, res.database, res.container, keys).ConfigureAwait(false);
                         return;
                     }
-                    await QueryEntities(context, resource[0], resource[1], queryParams).ConfigureAwait(false);
+                    await QueryEntities(context, res.database, res.container, queryParams).ConfigureAwait(false);
                     return;
                 }
                 // --------------    GET            /rest/database/container/id
-                if (resource.Length == 3) {
-                    await GetEntity(context, resource[0], resource[1], resource[2]).ConfigureAwait(false);    
+                if (res.length == 3) {
+                    await GetEntity(context, res.database, res.container, res.id).ConfigureAwait(false);    
                     return;
                 }
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
@@ -141,17 +140,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var isDelete = method == "DELETE";
             if (isDelete) {
                 // --------------    DELETE         /rest/database/container/id
-                if (resource.Length == 3) {
-                    var keys = new [] { new JsonKey(resource[2]) };
-                    await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
+                if (res.length == 3) {
+                    var keys = new [] { new JsonKey(res.id) };
+                    await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
                     return;
                 }
                 // --------------    DELETE         /rest/database/container?ids=id1,id2,...
-                if (resource.Length == 2) {
+                if (res.length == 2) {
                     var idsParam    = queryParams["ids"];
                     var ids         = idsParam.Split(',');
                     var keys        = GetKeysFromIds(ids);
-                    await DeleteEntities(context, resource[0], resource[1], keys).ConfigureAwait(false);
+                    await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
                     return;
                 }
                 context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
@@ -160,7 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // ------------------    PUT            /rest/database/container        ?create
             //                       PUT            /rest/database/container/id     ?create
             if (method == "PUT") {
-                int len = resource.Length; 
+                int len = res.length; 
                 if (len != 2 && len != 3) {
                     context.WriteError("invalid PUT", "expect: /database/container or /database/container/id", 400);
                     return;
@@ -171,9 +170,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 var keyName     = queryParams["keyName"];
-                var resource2   = len == 3 ? resource[2] : null;
+                var resource2   = len == 3 ? res.id : null;
                 var type        = HasQueryKey(queryParams, "create") ? TaskType.create : TaskType.upsert;
-                await PutEntities(context, resource[0], resource[1], resource2, keyName, value, type).ConfigureAwait(false);
+                await PutEntities(context, res.database, res.container, resource2, keyName, value, type).ConfigureAwait(false);
                 return;
             }
             context.WriteError("invalid path/method", route, 400);
@@ -187,16 +186,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 keys[n] = new JsonKey(ids[n]);
             }
             return keys;
-        }
-        
-        private static string GetResourceError(string[] resource) {
-            if (resource[0] == "")
-                return "missing database path";
-            if (resource.Length == 2 && resource[1] == "")
-                return "missing container path";
-            if (resource.Length == 3 && resource[2] == "")
-                return "missing id path";
-            return null;
         }
         
         private static bool IsValidJson (Pool pool, JsonValue value, out string error) {
@@ -609,4 +598,35 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal    SyncResponse    syncResponse;
         internal    SyncTaskResult  taskResult;
     } 
+
+    internal readonly struct Resource {
+        internal  readonly  string  database;
+        internal  readonly  string  container;
+        internal  readonly  string  id;
+
+        internal  readonly  int     length;
+        internal  readonly  string  error;
+
+        internal Resource (string resourcePath) {
+            var resources   = resourcePath.Split('/');
+            length          = resources.Length;
+            if (resources[length - 1] == "")
+                length--;
+            database    = length > 0 ? resources[0] : null;
+            container   = length > 1 ? resources[1] : null;
+            id          = length > 2 ? resources[2] : null;
+            if (database == "") { 
+                error = "empty database path";
+                return;
+            }
+            if (container == "") { 
+                error = "empty container path";
+                return;
+            }
+            if (id == "") { 
+                error = "empty id path";
+            }
+            error = null;
+        }
+    }
 }
