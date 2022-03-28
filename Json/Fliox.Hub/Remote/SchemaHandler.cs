@@ -271,11 +271,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static string GetSwaggerIndex(string storeName) {
             var relBase = "../../swagger";
             var swaggerInitializer = $@"
+const loc       = window.location;
+const path      = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+const apiPath   = loc.origin + path + 'json-schema/openapi.json';
+
 window.onload = function() {{
   window.ui = SwaggerUIBundle({{
-    url: 'json-schema/openapi.json',
-    dom_id: '#swagger-ui',
-    deepLinking: true,
+    url:            apiPath,
+    dom_id:         '#swagger-ui',
+    deepLinking:    true,
     presets: [
       SwaggerUIBundle.presets.apis,
       SwaggerUIStandalonePreset
@@ -283,27 +287,27 @@ window.onload = function() {{
     plugins: [
       SwaggerUIBundle.plugins.DownloadUrl
     ],
-    layout: 'StandaloneLayout'
+    layout:         'StandaloneLayout'
   }});
-}};
-";
+}};";
             return $@"<!DOCTYPE html>
 <html lang='en'>
   <head>
     <meta charset='UTF-8'>
     <title>{storeName} - Swagger UI</title>
-    <link rel='stylesheet' type='text/css' href='{relBase}/swagger-ui.css' />
-    <link rel='stylesheet' type='text/css' href='{relBase}/index.css' />
-    <link rel='icon' type='image/png' href='{relBase}/favicon-32x32.png' sizes='32x32' />
-    <link rel='icon' type='image/png' href='{relBase}/favicon-16x16.png' sizes='16x16' />
+    <link rel='stylesheet'  type='text/css'     href='{relBase}/swagger-ui.css' />
+    <link rel='stylesheet'  type='text/css'     href='{relBase}/index.css' />
+    <link rel='icon'        type='image/png'    href='{relBase}/favicon-32x32.png' sizes='32x32' />
+    <link rel='icon'        type='image/png'    href='{relBase}/favicon-16x16.png' sizes='16x16' />
   </head>
 
   <body>
     <div id='swagger-ui'></div>
-    <script src='{relBase}/swagger-ui-bundle.js' charset='UTF-8'> </script>
+    <script src='{relBase}/swagger-ui-bundle.js'            charset='UTF-8'> </script>
     <script src='{relBase}/swagger-ui-standalone-preset.js' charset='UTF-8'> </script>
-<!--<script src='{relBase}/swagger-initializer.js' charset='UTF-8'> </script> -->
-    <script>{swaggerInitializer}</script>
+<!--<script src='{relBase}/swagger-initializer.js'          charset='UTF-8'> </script> -->
+    <script>{swaggerInitializer}
+    </script>
   </body>
 </html>";
         }
