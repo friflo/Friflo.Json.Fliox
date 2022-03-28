@@ -13,6 +13,24 @@
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "summary":    "return all database containers",
+        "tags":       ["database"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/guidEntities": {
       "get": {
         "summary":    "return all records in container guidEntities",

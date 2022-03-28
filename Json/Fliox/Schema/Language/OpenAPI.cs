@@ -47,8 +47,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private void EmitPaths(TypeDef type, StringBuilder sb) {
-            // var dbContainersType = @"""type"": ""string""";
-            // EmitPathDatabase(dbContainersType, sb);
+            var dbContainers = generator.FindTypeDef("Friflo.Json.Fliox.Hub.DB.Cluster", "DbContainers");
+            var dbContainersType = Ref (dbContainers, true, generator);
+            EmitPathDatabase(dbContainersType, sb);
             foreach (var container in type.Fields) {
                 EmitContainerApi(container, sb);
             }
@@ -72,9 +73,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static void EmitPathDatabase(string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
-            EmitMethod("database", "get",    "return all database in containers",
+            EmitMethod("database", "get",    "return all database containers",
                 null, new ContentRef(typeRef, false), null, methodSb);
-            AppendPath("", methodSb.ToString(), sb);
+            AppendPath("/", methodSb.ToString(), sb);
         }
         
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
