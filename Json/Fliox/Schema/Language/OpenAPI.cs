@@ -10,10 +10,12 @@ namespace Friflo.Json.Fliox.Schema.Language
 {
     public sealed class OpenAPI
     {
-        private  readonly   Generator                   generator;
+        private  readonly   Generator       generator;
+        private  readonly   StandardTypes   standardTypes;
         
         private OpenAPI (Generator generator) {
             this.generator  = generator;
+            standardTypes   = generator.standardTypes;
         }
         
         public static void Generate(Generator generator) {
@@ -46,6 +48,25 @@ namespace Friflo.Json.Fliox.Schema.Language
             generator.files.Add("openapi.json", api);
         }
         
+        private const string StringType     = @"""type"": ""string""";
+        private const string IntegerType    = @"""type"": ""integer""";
+        private const string BooleanType    = @"""type"": ""boolean""";
+        private const string JsonValueType  = @" ";
+        private const string JsonKeyType    = @"""type"": ""string""";
+        
+        private string GetType (TypeDef typeDef) {
+            if (typeDef == standardTypes.String)
+                return StringType;
+            if (typeDef == standardTypes.Boolean)
+                return BooleanType;
+            if (typeDef == standardTypes.JsonValue)
+                return JsonValueType;
+            if (typeDef == standardTypes.JsonKey)
+                return JsonKeyType;
+
+            return Ref (typeDef, true, generator);
+        }
+        
         private string GetTypeRef (string @namespace, string name) {
             var typeDef = generator.FindTypeDef(@namespace, name);
             return Ref (typeDef, true, generator);
@@ -71,7 +92,12 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private void EmitMessage(MessageDef type, string messageType, StringBuilder sb) {
-            var queryParams= new [] { new Parameter("query", "param", "string", false) };
+            var queryParams = new List<Parameter>();
+            var paramType   = type.param?.type;
+            if (paramType != null) {
+                var paramRef    = GetType(paramType);
+                queryParams.Add(new Parameter("query", "param", paramRef, false));
+            }
             var doc = type.doc ?? "";
             var tag = messageType == "command" ? type.name.StartsWith("std.") ? "standard commands": "commands" : "messages";
             EmitPathRoot(tag, $"/?{messageType}={type.name}",  doc, "" , queryParams, sb);
@@ -109,24 +135,26 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
+            var tag = $"{container}";
             var methodSb = new StringBuilder();
             var getParams = new [] {
-                new Parameter("query", "filter", "string",  false),
-                new Parameter("query", "limit",  "integer", false)
+                new Parameter("query", "filter", StringType,  false),
+                new Parameter("query", "limit",  IntegerType, false)
             };
-            EmitMethod(container, "get",    $"return all records in container {container}",
+            EmitMethod(tag, "get",    $"return all records in container {container}",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
-            EmitMethod(container, "put",    $"create or update records in container {container}",
+            EmitMethod(tag, "put",    $"create or update records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
-            EmitMethod(container, "delete", $"delete records in container {container} by id",
-                null, new ContentText(), new [] { new Parameter("query", "ids", "string", true)}, methodSb);
+            EmitMethod(tag, "delete", $"delete records in container {container} by id",
+                null, new ContentText(), new [] { new Parameter("query", "ids", StringType, true)}, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
         private static void EmitPathContainerEntity(string container, string path, string typeRef, StringBuilder sb) {
+            var tag = $"{container}";
             var methodSb = new StringBuilder();
-            EmitMethod(container, "get",    $"return a single record from container {container}",
-                null, new ContentRef(typeRef, false), new [] { new Parameter("path", "id", "string", true)}, methodSb);
+            EmitMethod(tag, "get",    $"return a single record from container {container}",
+                null, new ContentRef(typeRef, false), new [] { new Parameter("path", "id", StringType, true)}, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
@@ -205,7 +233,7 @@ namespace Friflo.Json.Fliox.Schema.Language
           {{
             ""in"":       ""{paramType}"",
             ""name"":     ""{name}"",
-            ""schema"":   {{ ""type"": ""{type}"" }},{requiredStr}
+            ""schema"":   {{ {type} }},{requiredStr}
             ""description"": ""---""
           }}";
         }
