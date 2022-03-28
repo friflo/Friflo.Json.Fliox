@@ -49,15 +49,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var isGet           = method == "GET";
             var isPost          = method == "POST";
             var resourcePath    = route.Substring(RestBase.Length + 1);
+            var res             = new Resource(resourcePath);
             
             // ------------------    GET            /rest/database?command=...   /database?message=...
             //                       POST           /rest/database?command=...   /database?message=...
             if ((command != null || message != null) && (isGet || isPost)) {
-                var database = resourcePath;
-                if (database.IndexOf('/') != -1) {
-                    context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {database}", 400);
+                if (res.length != 1) {
+                    context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {resourcePath}", 400);
                     return;
                 }
+                var database = res.database;
                 if (database == EntityDatabase.MainDB)
                     database = null;
                 JsonValue param;
@@ -78,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await Message(context, database, message, param).ConfigureAwait(false);
                 return;
             }
-            var res = new Resource(resourcePath);
+
             if (res.error != null) {
                 context.WriteError("invalid path /database/container/id", res.error, 400);
                 return;

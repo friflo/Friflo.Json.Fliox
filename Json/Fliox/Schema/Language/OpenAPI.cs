@@ -53,11 +53,28 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private void EmitPaths(TypeDef type, StringBuilder sb) {
             var dbContainers     = GetTypeRef("Friflo.Json.Fliox.Hub.DB.Cluster", "DbContainers");
-            EmitPathRoot("/",                   dbContainers, sb);
-        //  EmitPathRoot("/?command=std.Echo",  "", sb);
+            EmitPathRoot("database", "/",                   "return all database containers", dbContainers, null, sb);
+
+        //  EmitMessages("command", type.Commands, sb);
+        //  EmitMessages("message", type.Messages, sb);
             foreach (var container in type.Fields) {
                 EmitContainerApi(container, sb);
             }
+        }
+        
+        private void EmitMessages(string messageType, IReadOnlyList<MessageDef> messages, StringBuilder sb) {
+            if (messages == null)
+                return;
+            foreach (var message in messages) {
+                EmitMessage(message, messageType, sb);
+            }
+        }
+        
+        private void EmitMessage(MessageDef type, string messageType, StringBuilder sb) {
+            var queryParams= new [] { new Parameter("query", "param", "string", false) };
+            var doc = type.doc ?? "";
+            var tag = messageType == "command" ? type.name.StartsWith("std.") ? "standard commands": "commands" : "messages";
+            EmitPathRoot(tag, $"/?{messageType}={type.name}",  doc, "" , queryParams, sb);
         }
         
         private void EmitContainerApi(FieldDef container, StringBuilder sb) {
@@ -77,10 +94,17 @@ namespace Friflo.Json.Fliox.Schema.Language
     }}");
         }
         
-        private static void EmitPathRoot(string path, string typeRef, StringBuilder sb) {
+        private static void EmitPathRoot(
+            string                  tag,
+            string                  path,
+            string                  summary,
+            string                  typeRef,
+            ICollection<Parameter>  queryParams,
+            StringBuilder           sb)
+        {
             var methodSb = new StringBuilder();
-            EmitMethod("database", "get",    "return all database containers",
-                null, new ContentRef(typeRef, false), null, methodSb);
+            EmitMethod(tag, "get",    summary,
+                null, new ContentRef(typeRef, false), queryParams, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
@@ -112,7 +136,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             string                  summary,
             Content                 request,
             Content                 response,
-            ICollection<Parameter> queryParams,
+            ICollection<Parameter>  queryParams,
             StringBuilder sb)
         {
             if (sb.Length > 0)
