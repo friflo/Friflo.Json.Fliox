@@ -56,14 +56,15 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private void EmitContainerApi(FieldDef container, StringBuilder sb) {
-            var name = container.name;
-            if (sb.Length > 0)
-                sb.Append(",");
+            var name    = container.name;
             var typeRef = Ref (container.type, true, generator);
-            EmitPathContainer(name, $"/{name}", typeRef, sb);
+            EmitPathContainer       (name, $"/{name}",          typeRef, sb);
+            EmitPathContainerEntity (name, $"/{name}/{{id}}",   typeRef, sb);
         }
         
         private static void AppendPath(string path, string methods, StringBuilder sb) {
+            if (sb.Length > 0)
+                sb.Append(",");
             sb.Append($@"
     ""{path}"": {{");
             sb.Append(methods);
@@ -81,15 +82,22 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
             var getParams = new [] {
-                new QueryParam("filter", "string",  false),
-                new QueryParam("limit",  "integer", false)
+                new Parameter("query", "filter", "string",  false),
+                new Parameter("query", "limit",  "integer", false)
             };
             EmitMethod(container, "get",    $"return all records in container {container}",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
             EmitMethod(container, "put",    $"create or update records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
             EmitMethod(container, "delete", $"delete records in container {container} by id",
-                null, new ContentText(), new [] { new QueryParam("ids", "string", true)}, methodSb);
+                null, new ContentText(), new [] { new Parameter("query", "ids", "string", true)}, methodSb);
+            AppendPath(path, methodSb.ToString(), sb);
+        }
+        
+        private static void EmitPathContainerEntity(string container, string path, string typeRef, StringBuilder sb) {
+            var methodSb = new StringBuilder();
+            EmitMethod(container, "get",    $"return a single record from container {container}",
+                null, new ContentRef(typeRef, false), new [] { new Parameter("path", "id", "string", true)}, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
@@ -99,7 +107,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             string                  summary,
             Content                 request,
             Content                 response,
-            ICollection<QueryParam> queryParams,
+            ICollection<Parameter> queryParams,
             StringBuilder sb)
         {
             if (sb.Length > 0)
@@ -110,15 +118,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 foreach (var queryParam in queryParams) {
                     if (querySb.Length > 0)
                         querySb.Append(",");
-                    var required = queryParam.required ? @"
-            ""required"": true," : "";
-                    querySb.Append($@"
-          {{
-            ""in"":       ""query"",
-            ""name"":     ""{queryParam.name}"",
-            ""schema"":   {{ ""type"": ""{queryParam.type}"" }},{required}
-            ""description"": ""---""
-          }}");
+                    var param = queryParam.Get();
+                    querySb.Append(param);
                 }
                 queryStr = $@"
         ""parameters"": [{querySb}
@@ -155,15 +156,29 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
     }
     
-    internal class QueryParam {
-        internal    readonly    string  name;
-        internal    readonly    string  type;
-        internal    readonly    bool    required;
+    internal class Parameter {
+        private     readonly    string  paramType;
+        private     readonly    string  name;
+        private     readonly    string  type;
+        private     readonly    bool    required;
         
-        internal QueryParam(string name, string type, bool required) {
+        internal Parameter(string paramType, string name, string type, bool required) {
+            this.paramType  = paramType;
             this.name       = name;
             this.type       = type;
             this.required   = required;
+        }
+        
+        internal string Get() {
+            var requiredStr = required ? @"
+            ""required"": true," : "";
+            return $@"
+          {{
+            ""in"":       ""{paramType}"",
+            ""name"":     ""{name}"",
+            ""schema"":   {{ ""type"": ""{type}"" }},{requiredStr}
+            ""description"": ""---""
+          }}";
         }
     }
     

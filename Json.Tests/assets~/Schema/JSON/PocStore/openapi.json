@@ -107,6 +107,33 @@
         }
       }
     },
+    "/orders/{id}": {
+      "get": {
+        "summary":    "return a single record from container orders",
+        "tags":       ["orders"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Order.json#/definitions/Order"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/customers": {
       "get": {
         "summary":    "return all records in container customers",
@@ -178,6 +205,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "summary":    "return a single record from container customers",
+        "tags":       ["customers"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer"
+                }
+              }
             }
           }
         }
@@ -259,6 +313,33 @@
         }
       }
     },
+    "/articles/{id}": {
+      "get": {
+        "summary":    "return a single record from container articles",
+        "tags":       ["articles"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/producers": {
       "get": {
         "summary":    "return all records in container producers",
@@ -330,6 +411,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/producers/{id}": {
+      "get": {
+        "summary":    "return a single record from container producers",
+        "tags":       ["producers"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer"
+                }
+              }
             }
           }
         }
@@ -411,6 +519,33 @@
         }
       }
     },
+    "/employees/{id}": {
+      "get": {
+        "summary":    "return a single record from container employees",
+        "tags":       ["employees"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.Employee.json#/definitions/Employee"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/types": {
       "get": {
         "summary":    "return all records in container types",
@@ -482,6 +617,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/types/{id}": {
+      "get": {
+        "summary":    "return a single record from container types",
+        "tags":       ["types"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
+                }
+              }
             }
           }
         }

@@ -107,6 +107,33 @@
         }
       }
     },
+    "/credentials/{id}": {
+      "get": {
+        "summary":    "return a single record from container credentials",
+        "tags":       ["credentials"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/permissions": {
       "get": {
         "summary":    "return all records in container permissions",
@@ -183,6 +210,33 @@
         }
       }
     },
+    "/permissions/{id}": {
+      "get": {
+        "summary":    "return a single record from container permissions",
+        "tags":       ["permissions"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/roles": {
       "get": {
         "summary":    "return all records in container roles",
@@ -254,6 +308,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "summary":    "return a single record from container roles",
+        "tags":       ["roles"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role"
+                }
+              }
             }
           }
         }

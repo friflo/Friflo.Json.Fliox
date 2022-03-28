@@ -107,6 +107,33 @@
         }
       }
     },
+    "/guidEntities/{id}": {
+      "get": {
+        "summary":    "return a single record from container guidEntities",
+        "tags":       ["guidEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.GuidEntity.json#/definitions/GuidEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/intEntities": {
       "get": {
         "summary":    "return all records in container intEntities",
@@ -178,6 +205,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/intEntities/{id}": {
+      "get": {
+        "summary":    "return a single record from container intEntities",
+        "tags":       ["intEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity"
+                }
+              }
             }
           }
         }
@@ -259,6 +313,33 @@
         }
       }
     },
+    "/intEntitiesAuto/{id}": {
+      "get": {
+        "summary":    "return a single record from container intEntitiesAuto",
+        "tags":       ["intEntitiesAuto"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.AutoIntEntity.json#/definitions/AutoIntEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/longEntities": {
       "get": {
         "summary":    "return all records in container longEntities",
@@ -330,6 +411,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/longEntities/{id}": {
+      "get": {
+        "summary":    "return a single record from container longEntities",
+        "tags":       ["longEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity"
+                }
+              }
             }
           }
         }
@@ -411,6 +519,33 @@
         }
       }
     },
+    "/shortEntities/{id}": {
+      "get": {
+        "summary":    "return a single record from container shortEntities",
+        "tags":       ["shortEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.ShortEntity.json#/definitions/ShortEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/byteEntities": {
       "get": {
         "summary":    "return all records in container byteEntities",
@@ -482,6 +617,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/byteEntities/{id}": {
+      "get": {
+        "summary":    "return a single record from container byteEntities",
+        "tags":       ["byteEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity"
+                }
+              }
             }
           }
         }
@@ -563,6 +725,33 @@
         }
       }
     },
+    "/customIdEntities/{id}": {
+      "get": {
+        "summary":    "return a single record from container customIdEntities",
+        "tags":       ["customIdEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/entityRefs": {
       "get": {
         "summary":    "return all records in container entityRefs",
@@ -639,6 +828,33 @@
         }
       }
     },
+    "/entityRefs/{id}": {
+      "get": {
+        "summary":    "return a single record from container entityRefs",
+        "tags":       ["entityRefs"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/customIdEntities2": {
       "get": {
         "summary":    "return all records in container customIdEntities2",
@@ -710,6 +926,33 @@
             "description": "OK",
             "content": {
               "text/plain": { }
+            }
+          }
+        }
+      }
+    },
+    "/customIdEntities2/{id}": {
+      "get": {
+        "summary":    "return a single record from container customIdEntities2",
+        "tags":       ["customIdEntities2"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2"
+                }
+              }
             }
           }
         }
