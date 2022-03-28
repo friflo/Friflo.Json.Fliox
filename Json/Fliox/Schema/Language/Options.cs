@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         /// <summary><see cref="getPath"/> allow customization of generated file names</summary>
         public              Func<TypeDef, string>   getPath;
         
+        public              string                  databaseUrl;
+        
         public JsonTypeOptions (TypeSchema schema) {
             this.schema     = schema ?? throw new ArgumentException("schema must not be null");
         }
@@ -52,6 +54,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         public              ICollection<Type>       separateTypes;
         /// <summary><see cref="getPath"/> allow customization of generated file names</summary>
         public              Func<TypeDef, string>   getPath;
+        
+        public              string                  databaseUrl;
         
         
         public NativeTypeOptions (Type rootType) : this (new List<Type> { rootType }, rootType) { }
@@ -81,7 +85,13 @@ namespace Friflo.Json.Fliox.Schema.Language
         public readonly     ICollection<Replace>    replacements;
         public readonly     ICollection<TypeDef>    separateTypes;
 
-        public GeneratorOptions(string type, string name, TypeSchema typeSchema, ICollection<Replace> replacements, ICollection<TypeDef> separateTypes) {
+        public GeneratorOptions(
+            string                  type,
+            string                  name,
+            TypeSchema              typeSchema,
+            ICollection<Replace>    replacements,
+            ICollection<TypeDef>    separateTypes)
+        {
             this.type           = type;
             this.name           = name;
             this.typeSchema     = typeSchema;

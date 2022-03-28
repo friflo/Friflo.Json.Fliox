@@ -36,6 +36,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var paths       = sb.ToString();
             var description = schemaType.doc == null ? "" : JsonSchemaGenerator.GetDoc($@"
     ""description"":  ", schemaType.doc, ",");
+            var serverUrl   = generator.databaseUrl ?? "";
             var api     = $@"
 {{
   ""openapi"": ""3.0.0"",
@@ -45,7 +46,7 @@ namespace Friflo.Json.Fliox.Schema.Language
   }},
   ""servers"": [
     {{
-      ""url"":          ""http://localhost:8010/fliox/rest/main_db/""
+      ""url"":          ""{serverUrl}""
     }}
   ],
   ""paths"": {{{paths}

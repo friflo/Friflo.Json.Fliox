@@ -54,11 +54,11 @@ namespace Friflo.Json.Fliox.Schema.Language
         /// The generated languages are the build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
         /// and languages that are generated via the passed <paramref name="generators"/>
         /// </summary>
-        public static List<SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null) {
+        public static List<SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null, string databaseUrl = null) {
             var typeSchema      = new NativeTypeSchema(rootType);
             var entityTypeMap   = typeSchema.GetEntityTypes();
             var entityTypes     = entityTypeMap.Values;
-            return GenerateSchemaModels(typeSchema, entityTypes, generators);
+            return GenerateSchemaModels(typeSchema, entityTypes, generators, databaseUrl);
         }
 
         /// <summary>
@@ -68,7 +68,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         public static List<SchemaModel> GenerateSchemaModels(
             TypeSchema                      typeSchema,
             ICollection<TypeDef>            separateTypes,
-            IEnumerable<CustomGenerator>    generators = null)
+            IEnumerable<CustomGenerator>    generators = null,
+            string                          databaseUrl = null)
         {
             generators              = generators ?? Array.Empty<CustomGenerator>();
             var result              = new List<SchemaModel>();
@@ -78,7 +79,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var htmlSchema          = new SchemaModel ("html",          "HTML",        "text/html",        ".html", htmlGenerator.files);
             result.Add(htmlSchema);
             
-            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
+            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes, databaseUrl = databaseUrl};
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
             var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", ".json", jsonGenerator.files);
             result.Add(jsonModel);

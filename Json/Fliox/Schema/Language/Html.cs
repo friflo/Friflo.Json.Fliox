@@ -269,7 +269,7 @@ $@"        <tr>
 
         private static string GetOasLink(string tag, string local) {
             local = local.Replace(".", "_");
-            return $"<oas><a href='../open-api.html#{tag}{local}' target='_blank'>OAS</a></oas>";
+            return $"<oas><a href='../open-api.html#{tag}{local}' target='_blank' title='open Swagger UI in new tab'>OAS</a></oas>";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {

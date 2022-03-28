@@ -53,16 +53,16 @@ namespace Friflo.Json.Fliox.Schema.Language
     /// </summary>
     public sealed partial class JsonSchemaGenerator
     {
-        public static Generator Generate (NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.types, options.rootType);
-            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".json", options.replacements, sepTypes, options.getPath);
+        public static Generator Generate (NativeTypeOptions o) {
+            var schema      = new NativeTypeSchema(o.types, o.rootType);
+            var sepTypes    = schema.TypesAsTypeDefs(o.separateTypes);
+            var generator   = new Generator(schema, o.fileExt ?? ".json", o.replacements, sepTypes, o.getPath, o.databaseUrl);
             Generate(generator);
             return generator;
         }
         
-        public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.replacements, options.separateTypes, options.getPath);
+        public static Generator Generate(JsonTypeOptions o) {
+            var generator   = new Generator(o.schema, o.fileExt ?? ".json", o.replacements, o.separateTypes, o.getPath, o.databaseUrl);
             Generate(generator);
             return generator;
         }

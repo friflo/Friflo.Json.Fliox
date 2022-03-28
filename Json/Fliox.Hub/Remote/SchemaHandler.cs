@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal SchemaResource AddSchema(string name, TypeSchema typeSchema, ICollection<TypeDef> sepTypes = null) {
             sepTypes    = sepTypes ?? typeSchema.GetEntityTypes().Values;
-            var schema  = new SchemaResource(typeSchema, sepTypes);
+            var schema  = new SchemaResource(name, typeSchema, sepTypes);
             schemas.Add(name, schema);
             return schema;
         }
@@ -118,13 +118,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     internal sealed class SchemaResource {
+        private  readonly   string                              database;
         private  readonly   TypeSchema                          typeSchema;
         private  readonly   ICollection<TypeDef>                separateTypes;
         /// key: <see cref="SchemaModel.type"/>  (csharp, typescript, ...)
         private             Dictionary<string, ModelResource>   modelResources;
         private  readonly   string                              schemaName;
-        
-        internal SchemaResource(TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
+
+        public   override   string                              ToString() => $"{database} - {schemaName}";
+
+        internal SchemaResource(string database, TypeSchema typeSchema, ICollection<TypeDef> separateTypes) {
+            this.database       = database;
             this.schemaName     = typeSchema.RootType.Name;
             this.typeSchema     = typeSchema;
             this.separateTypes  = separateTypes;
@@ -137,7 +141,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var storeName = typeSchema.RootType.Name;
             if (modelResources == null) {
                 var generators      = handler.Generators;
-                var schemaModels    = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators);
+                var databaseUrl     = $"/fliox/rest/{database}";
+                var schemaModels    = SchemaModel.GenerateSchemaModels(typeSchema, separateTypes, generators, databaseUrl);
                 modelResources      = new Dictionary<string, ModelResource>(schemaModels.Count);
                 foreach (var model in schemaModels) {
                     var fullSchema  = GetFullJsonSchema(model, context);

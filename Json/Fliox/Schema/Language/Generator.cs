@@ -73,6 +73,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         public   readonly   TypeDef                         rootType;
         public   readonly   StandardTypes                   standardTypes;
+        public   readonly   string                          databaseUrl;
 
 
         /// map of all <see cref="TypeDef"/>'s required by the types provided for schema generation
@@ -117,12 +118,14 @@ namespace Friflo.Json.Fliox.Schema.Language
         ///   E.g. in case of Java it would be: <code>type => $"{type.Namespace}.{type.Name}"</code> to generate
         ///   each type in its own file.
         /// </param>
+        /// <param name="databaseUrl">database url for OpenAPI</param>
         public Generator (
             TypeSchema              schema,
             string                  fileExtension,
-            ICollection<Replace>    replacements = null,
-            ICollection<TypeDef>    separateTypes = null,
-            Func<TypeDef, string>   getPath = null)
+            ICollection<Replace>    replacements    = null,
+            ICollection<TypeDef>    separateTypes   = null,
+            Func<TypeDef, string>   getPath         = null,
+            string                  databaseUrl     = null)
         {
             rootType                = schema.RootType;
             standardTypes           = schema.StandardTypes;
@@ -131,6 +134,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             this.replacements       = replacements  ?? new List<Replace>();
             this.separateTypes      = separateTypes ?? new List<TypeDef>();
             typeSchema              = schema;
+            this.databaseUrl        = databaseUrl;
             
             getPath = getPath ?? GetPathCallback;
             foreach (var type in types) {
