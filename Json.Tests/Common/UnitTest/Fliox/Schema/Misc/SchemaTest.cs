@@ -78,6 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
         }
         
         public static void AssertFoldersAreEqual(string expectFolder, string otherFolder) {
+            expectFolder += "/";
+            otherFolder  += "/";
             var expectFiles = Directory.GetFiles(expectFolder, "*.json", SearchOption.TopDirectoryOnly);
             var otherFiles  = Directory.GetFiles(otherFolder,  "*.json", SearchOption.TopDirectoryOnly);
             
@@ -86,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
 
             Assert.AreEqual (expectNames, otherNames);
             foreach (var expectName in expectNames) {
-                if (expectName == "\\openapi.json")
+                if (expectName == "openapi.json")
                     continue;
                 var expectContent = File.ReadAllText(expectFolder + expectName, Encoding.UTF8);
                 var otherContent  = File.ReadAllText(otherFolder  + expectName, Encoding.UTF8);
