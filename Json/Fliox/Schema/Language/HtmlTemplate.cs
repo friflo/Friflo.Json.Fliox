@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         desc        { margin-left: 40px; margin-bottom: 10px; display: block; opacity: 0.7; }
         docs        { margin-left: 10px; display: block; opacity: 0.7; }
         code        { white-space: pre; display: block; padding-left: 3px;  padding-right: 3px; font-size: 16px; }
-        oas         { background: var(--oas); font-size: 12px; font-weight: bold; border-radius: 6px; padding: 0px 3px; }
+        oas         { margin-left: 5px; background: var(--oas); font-size: 12px; font-weight: bold; border-radius: 3px; padding: 0px 3px; }
         oas a:visited,
         oas a:link  { color: white; }
 

@@ -112,13 +112,14 @@ $@"    <div class='type enum'>
             var qualifiedName   = type.Namespace + "." + type.Name;
             var unionType       = type.UnionType;
             var typeName        = type.IsSchema ? "schema": type.IsAbstract ? "abstract class" : "class";
+            var oasLink         = type.IsSchema ? GetOasLink("/", "") : "";
             var doc             = GetDoc("    <desc>", type.doc, "\n    </desc>");
 
             sb.AppendLine(
 $@"    <div class='type'>
     <h3 id='{qualifiedName}'>
         <a href='#{qualifiedName}'>{type.Name}</a>
-        <keyword>{typeName}</keyword>");
+        <keyword>{typeName}</keyword>{oasLink}");
             if (baseType != null) {
                 var baseName = GetTypeName(baseType, context);
                 sb.AppendLine($"        <keyword>extends</keyword> <extends>{baseName}</extends>");
@@ -180,11 +181,11 @@ $@"        <tr>
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
                 var fieldDoc    = GetDoc("\n            <td><docs>", field.doc, "</docs></td>");
-                var oasLink     = type.IsSchema ? $"<td>{GetOasLink("/", field.name)}</td>" : "";
+                var oasContainer= type.IsSchema ? $"<td>{GetOasLink("/", field.name)}</td>" : "";
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{oasLink}{fieldDoc}
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{oasContainer}{fieldDoc}
         </tr>");
             }
             sb.AppendLine("    </table>");
