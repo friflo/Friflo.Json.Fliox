@@ -85,16 +85,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             
-            // ------------------    POST           /rest/database/container?bulk=get
-            //                       POST           /rest/database/container?bulk=delete
-            if (isPost && res.length == 2) {
+            // ------------------    POST           /rest/database/container/bulk-get
+            //                       POST           /rest/database/container/bulk-delete
+            if (isPost && res.length == 3) {
                 bool getEntities    = false;
-                var bulk            = queryParams["bulk"];
+                var bulk            = res.id;
                 switch (bulk) {
-                    case "get":
+                    case "bulk-get":
                         getEntities = true;
                         break;
-                    case "delete":
+                    case "bulk-delete":
                         break;
                     default:
                         context.WriteError($"post failed", "invalid bulk parameter: {bulk}", 400);

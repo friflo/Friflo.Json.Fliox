@@ -540,7 +540,7 @@
         }
       }
     },
-    "/orders/?bulk=get": {
+    "/orders/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container orders",
         "tags":       ["orders"],
@@ -570,7 +570,7 @@
         }
       }
     },
-    "/orders/?bulk=delete": {
+    "/orders/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container orders",
         "tags":       ["orders"],
@@ -698,7 +698,7 @@
         }
       }
     },
-    "/customers/?bulk=get": {
+    "/customers/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container customers",
         "tags":       ["customers"],
@@ -728,7 +728,7 @@
         }
       }
     },
-    "/customers/?bulk=delete": {
+    "/customers/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container customers",
         "tags":       ["customers"],
@@ -856,7 +856,7 @@
         }
       }
     },
-    "/articles/?bulk=get": {
+    "/articles/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container articles",
         "tags":       ["articles"],
@@ -886,7 +886,7 @@
         }
       }
     },
-    "/articles/?bulk=delete": {
+    "/articles/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container articles",
         "tags":       ["articles"],
@@ -1014,7 +1014,7 @@
         }
       }
     },
-    "/producers/?bulk=get": {
+    "/producers/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container producers",
         "tags":       ["producers"],
@@ -1044,7 +1044,7 @@
         }
       }
     },
-    "/producers/?bulk=delete": {
+    "/producers/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container producers",
         "tags":       ["producers"],
@@ -1172,7 +1172,7 @@
         }
       }
     },
-    "/employees/?bulk=get": {
+    "/employees/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container employees",
         "tags":       ["employees"],
@@ -1202,7 +1202,7 @@
         }
       }
     },
-    "/employees/?bulk=delete": {
+    "/employees/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container employees",
         "tags":       ["employees"],
@@ -1330,7 +1330,7 @@
         }
       }
     },
-    "/types/?bulk=get": {
+    "/types/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container types",
         "tags":       ["types"],
@@ -1360,7 +1360,7 @@
         }
       }
     },
-    "/types/?bulk=delete": {
+    "/types/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container types",
         "tags":       ["types"],

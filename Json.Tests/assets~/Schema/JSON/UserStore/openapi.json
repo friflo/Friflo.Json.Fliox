@@ -332,7 +332,7 @@
         }
       }
     },
-    "/credentials/?bulk=get": {
+    "/credentials/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container credentials",
         "tags":       ["credentials"],
@@ -362,7 +362,7 @@
         }
       }
     },
-    "/credentials/?bulk=delete": {
+    "/credentials/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container credentials",
         "tags":       ["credentials"],
@@ -490,7 +490,7 @@
         }
       }
     },
-    "/permissions/?bulk=get": {
+    "/permissions/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container permissions",
         "tags":       ["permissions"],
@@ -520,7 +520,7 @@
         }
       }
     },
-    "/permissions/?bulk=delete": {
+    "/permissions/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container permissions",
         "tags":       ["permissions"],
@@ -648,7 +648,7 @@
         }
       }
     },
-    "/roles/?bulk=get": {
+    "/roles/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container roles",
         "tags":       ["roles"],
@@ -678,7 +678,7 @@
         }
       }
     },
-    "/roles/?bulk=delete": {
+    "/roles/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container roles",
         "tags":       ["roles"],

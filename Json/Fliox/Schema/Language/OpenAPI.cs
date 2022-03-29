@@ -147,11 +147,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                 null, getResponse, sb);
             
             var bulkGetResponse = new ContentRef(typeRef, true);
-            EmitPath   ("post", name, $"/{name}/?bulk=get",     null, $"get multiple records by id from container {container}",
+            EmitPath   ("post", name, $"/{name}/bulk-get",     null, $"get multiple records by id from container {container}",
                 new ContentRef(StringType, true), bulkGetResponse, sb);
             
             var bulkDeleteResponse = new ContentText();
-            EmitPath   ("post", name, $"/{name}/?bulk=delete",  null, $"delete multiple records by id container {container}",
+            EmitPath   ("post", name, $"/{name}/bulk-delete",  null, $"delete multiple records by id container {container}",
                 new ContentRef(StringType, true), bulkDeleteResponse, sb);
         }
         

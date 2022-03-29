@@ -329,7 +329,7 @@
         }
       }
     },
-    "/guidEntities/?bulk=get": {
+    "/guidEntities/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container guidEntities",
         "tags":       ["guidEntities"],
@@ -359,7 +359,7 @@
         }
       }
     },
-    "/guidEntities/?bulk=delete": {
+    "/guidEntities/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container guidEntities",
         "tags":       ["guidEntities"],
@@ -487,7 +487,7 @@
         }
       }
     },
-    "/intEntities/?bulk=get": {
+    "/intEntities/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container intEntities",
         "tags":       ["intEntities"],
@@ -517,7 +517,7 @@
         }
       }
     },
-    "/intEntities/?bulk=delete": {
+    "/intEntities/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container intEntities",
         "tags":       ["intEntities"],
@@ -645,7 +645,7 @@
         }
       }
     },
-    "/intEntitiesAuto/?bulk=get": {
+    "/intEntitiesAuto/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
@@ -675,7 +675,7 @@
         }
       }
     },
-    "/intEntitiesAuto/?bulk=delete": {
+    "/intEntitiesAuto/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
@@ -803,7 +803,7 @@
         }
       }
     },
-    "/longEntities/?bulk=get": {
+    "/longEntities/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container longEntities",
         "tags":       ["longEntities"],
@@ -833,7 +833,7 @@
         }
       }
     },
-    "/longEntities/?bulk=delete": {
+    "/longEntities/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container longEntities",
         "tags":       ["longEntities"],
@@ -961,7 +961,7 @@
         }
       }
     },
-    "/shortEntities/?bulk=get": {
+    "/shortEntities/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container shortEntities",
         "tags":       ["shortEntities"],
@@ -991,7 +991,7 @@
         }
       }
     },
-    "/shortEntities/?bulk=delete": {
+    "/shortEntities/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container shortEntities",
         "tags":       ["shortEntities"],
@@ -1119,7 +1119,7 @@
         }
       }
     },
-    "/byteEntities/?bulk=get": {
+    "/byteEntities/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container byteEntities",
         "tags":       ["byteEntities"],
@@ -1149,7 +1149,7 @@
         }
       }
     },
-    "/byteEntities/?bulk=delete": {
+    "/byteEntities/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container byteEntities",
         "tags":       ["byteEntities"],
@@ -1277,7 +1277,7 @@
         }
       }
     },
-    "/customIdEntities/?bulk=get": {
+    "/customIdEntities/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container customIdEntities",
         "tags":       ["customIdEntities"],
@@ -1307,7 +1307,7 @@
         }
       }
     },
-    "/customIdEntities/?bulk=delete": {
+    "/customIdEntities/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container customIdEntities",
         "tags":       ["customIdEntities"],
@@ -1435,7 +1435,7 @@
         }
       }
     },
-    "/entityRefs/?bulk=get": {
+    "/entityRefs/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container entityRefs",
         "tags":       ["entityRefs"],
@@ -1465,7 +1465,7 @@
         }
       }
     },
-    "/entityRefs/?bulk=delete": {
+    "/entityRefs/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container entityRefs",
         "tags":       ["entityRefs"],
@@ -1593,7 +1593,7 @@
         }
       }
     },
-    "/customIdEntities2/?bulk=get": {
+    "/customIdEntities2/bulk-get": {
       "post": {
         "summary":    "get multiple records by id from container customIdEntities2",
         "tags":       ["customIdEntities2"],
@@ -1623,7 +1623,7 @@
         }
       }
     },
-    "/customIdEntities2/?bulk=delete": {
+    "/customIdEntities2/bulk-delete": {
       "post": {
         "summary":    "delete multiple records by id container customIdEntities2",
         "tags":       ["customIdEntities2"],
