@@ -23,6 +23,7 @@
             --selected: #f0f0f0;    --selected-shadow:  #f0f0f0;    --selected-offset: 0px; --selected-radius: 1px;
             --link:     #0000ee;
             --visited:  #551a8b;
+            --oas:      #55cf42;
         }
         [data-theme='dark'] {
             --field:    #a8ddfc;     --field-border:    #a8ddfca0;
@@ -38,6 +39,7 @@
             --selected: #303030;    --selected-shadow:  #303030;    --selected-offset: 0px; --selected-radius: 1px;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
+            --oas:      #408935;
         }
         body::after {
             content: '';
@@ -113,7 +115,7 @@
         desc        { margin-left: 40px; margin-bottom: 10px; display: block; opacity: 0.7; }
         docs        { margin-left: 10px; display: block; opacity: 0.7; }
         code        { white-space: pre; display: block; padding-left: 3px;  padding-right: 3px; font-size: 16px; }
-        oas         { background: #55cf42; font-size: 12px; font-weight: bold; border-radius: 6px; padding: 0px 3px; }
+        oas         { background: var(--oas); font-size: 12px; font-weight: bold; border-radius: 6px; padding: 0px 3px; }
         oas a:visited,
         oas a:link  { color: white; }
 
