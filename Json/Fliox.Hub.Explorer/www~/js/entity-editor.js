@@ -63,8 +63,10 @@ export class EntityEditor {
         this.entityEditor.setValue(content);
     }
     setDatabaseInfo(database, dbContainer) {
+        const schemaType = app.getSchemaType(database);
+        const oasLink = App.getOpenApiLink(database, "");
         el("databaseName").innerHTML = App.getDatabaseLink(database);
-        el("databaseSchema").innerHTML = app.getSchemaType(database);
+        el("databaseSchema").innerHTML = `${schemaType} ${oasLink}`;
         el("databaseTypes").innerHTML = app.getSchemaTypes(database);
         el("databaseStorage").innerHTML = dbContainer.storage;
         el("schemaDescription").innerHTML = app.getSchemaDescription(database);
@@ -96,7 +98,9 @@ export class EntityEditor {
         el("databaseLabel").innerHTML = schemaType;
         filterRow.style.visibility = "hidden";
         entityFilter.style.visibility = "hidden";
-        readEntitiesDB.innerHTML = App.getMessagesLink(database);
+        const messagesLink = App.getMessagesLink(database);
+        const oasLink = App.getOpenApiLink(database, "#/commands");
+        readEntitiesDB.innerHTML = `${messagesLink} ${oasLink}`;
         readEntities.innerHTML = "";
         readEntitiesCount.innerHTML = "";
         const ulDatabase = createEl('ul');

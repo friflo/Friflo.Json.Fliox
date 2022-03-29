@@ -535,6 +535,10 @@ export class App {
     public static getDatabaseLink(database: string) : string {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
+
+    public static getOpenApiLink(database: string, hash: string) : string {
+        return `<a class="oas" title="open Swagger UI in new tab" href="./schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
+    }
     
     public static getMessagesLink (database: string) : string {
         const href = `./rest/${database}?command=std.Messages`;

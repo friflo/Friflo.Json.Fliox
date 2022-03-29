@@ -138,15 +138,16 @@ export class Explorer {
         const entityDocs = schema ? "&nbsp;·&nbsp;" + app.getEntityType(p.database, p.container) : "";
         catalogSchema.innerHTML = app.getSchemaType(p.database) + entityDocs;
         explorerTools.innerHTML = Explorer.selectAllHtml;
-        readEntitiesDB.innerHTML = App.getDatabaseLink(p.database) + "/";
+        readEntitiesDB.innerHTML = `${App.getDatabaseLink(p.database)}/`;
         const containerLink = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
-        readEntities.innerHTML = `${containerLink}<span class="spinner"></span>`;
+        const oasLink = App.getOpenApiLink(p.database, `#/${p.container}`);
+        readEntities.innerHTML = `${containerLink} ${oasLink}<span class="spinner"></span>`;
         const maxCount = "maxCount=100";
         const queryParams = query == null ? maxCount : `${query}&${maxCount}`;
         const response = await App.restRequest("GET", null, p.database, p.container, null, queryParams);
         const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`;
         writeResult.innerHTML = "";
-        readEntities.innerHTML = containerLink + reload;
+        readEntities.innerHTML = `${containerLink} ${oasLink}${reload}`;
         if (!response.ok) {
             const error = await response.text();
             entityExplorer.innerHTML = App.errorAsHtml(error, p);

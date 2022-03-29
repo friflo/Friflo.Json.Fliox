@@ -61,6 +61,7 @@
             --color:            #000;
             --doc-link:         #5555c0;
             --table-bar:        #e8e8e8;
+            --oas-color:        #55cf42;
         }
         [data-theme="dark"] {
             --selected-color:   #3b38b7;
@@ -80,6 +81,7 @@
             --color:            #fff;
             --doc-link:         #c0c0ff;
             --table-bar:        #444;
+            --oas-color:        #408935;
         }
 
         /* text-decoration: underline;      text-decoration-color: var(--link-deco) !important;
@@ -290,6 +292,9 @@
         .catalogs ul li div.selected{ background-color: var(--selected-color); }
         .catalogs li div.selected   { background-color: var(--selected-color); }
         .catalogs ul li div:hover   { background-color: var(--item-hover); }
+
+        .oas                        { background-color: var(--oas-color); padding: 0px 2px; font-size: 12px; border-radius: 3px; font-weight: bold; }
+        a.oas:visited               { color: white; }
 
         .entities                       { width: 100%; padding-left: 0px; font-size: 14px; border-collapse: collapse; margin: 0 0 4px 0px;
                                           table-layout: fixed;
