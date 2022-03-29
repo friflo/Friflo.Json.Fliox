@@ -245,7 +245,7 @@ export class EntityEditor {
         const idsStr = JSON.stringify(requestIds);
         // Typical limit for urls in Chrome, ASP.NET: 2048
         if (idsStr.length > 2000) {
-            return await App.restRequest("POST", idsStr, database, container, null, "get-entities");
+            return await App.restRequest("POST", idsStr, database, container, null, "bulk=get");
         }
         return await App.restRequest("GET", null, database, container, requestIds, null);
     }
@@ -405,7 +405,7 @@ export class EntityEditor {
         const idsStr = JSON.stringify(ids);
         // Typical limit for urls in Chrome, ASP.NET: 2048
         if (idsStr.length > 2000) {
-            return await App.restRequest("POST", idsStr, database, container, null, "delete-entities");
+            return await App.restRequest("POST", idsStr, database, container, null, "bulk=delete");
         }
         return await App.restRequest("DELETE", null, database, container, ids, null);
     }

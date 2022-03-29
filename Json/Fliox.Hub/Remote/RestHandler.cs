@@ -85,36 +85,36 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             
-            // ------------------    POST           /rest/database/container?get-entities
-            //                       POST           /rest/database/container?delete-entities
+            // ------------------    POST           /rest/database/container?bulk=get
+            //                       POST           /rest/database/container?bulk=delete
             if (isPost && res.length == 2) {
-                if (!HasQueryKey(queryParams, "get-entities", out bool getEntities, out string error)) {
-                    context.WriteError("POST failed", error, 400);
-                    return;
-                } 
-                if (!HasQueryKey(queryParams, "delete-entities", out bool deleteEntities, out error)) {
-                    context.WriteError("POST failed", error, 400);
-                    return;
-                } 
+                bool getEntities    = false;
+                var bulk            = queryParams["bulk"];
+                switch (bulk) {
+                    case "get":
+                        getEntities = true;
+                        break;
+                    case "delete":
+                        break;
+                    default:
+                        context.WriteError($"post failed", "invalid bulk parameter: {bulk}", 400);
+                        return;
+                }
                 JsonKey[] keys      = null;
-                if (getEntities || deleteEntities) {
-                    using (var pooled = pool.ObjectMapper.Get()) {
-                        var reader  = pooled.instance.reader;
-                        keys    = reader.Read<JsonKey[]>(context.body);
-                        if (reader.Error.ErrSet) {
-                            context.WriteError("invalid id list", reader.Error.ToString(), 400);
-                            return;
-                        }
+                using (var pooled = pool.ObjectMapper.Get()) {
+                    var reader  = pooled.instance.reader;
+                    keys    = reader.Read<JsonKey[]>(context.body);
+                    if (reader.Error.ErrSet) {
+                        context.WriteError("invalid id list", reader.Error.ToString(), 400);
+                        return;
                     }
                 }
                 if (getEntities) {
                     await GetEntitiesById (context, res.database, res.container, keys).ConfigureAwait(false);
                     return;
                 }
-                if (deleteEntities) {
-                    await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
-                    return;
-                }
+                await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
+                return;
             }
             
             if (isGet) {

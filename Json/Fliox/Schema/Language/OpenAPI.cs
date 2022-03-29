@@ -173,11 +173,20 @@ namespace Friflo.Json.Fliox.Schema.Language
                 new Parameter("query", "filter", StringType,  false),
                 new Parameter("query", "limit",  IntegerType, false)
             };
-            EmitMethod(container, "get",    $"return all records in container {container}",
+            EmitMethod(container, "get",    $"return multiple records from a container {container}",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
-            EmitMethod(container, "put",    $"create or update records in container {container}",
+            var postParams = new [] {
+                new Parameter("query", "bulk",  @"""type"": ""array"",
+              ""items"": {
+                ""type"": ""string"",
+                ""enum"": [""get"", ""delete""]
+              }", true)
+            };
+            EmitMethod(container, "post",   $"get or delete multiple records by id in container {container}",
+                new ContentRef(StringType, true), new ContentRef(typeRef, false), postParams, methodSb);
+            EmitMethod(container, "put",    $"create or update multiple records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
-            EmitMethod(container, "delete", $"delete records in container {container} by id",
+            EmitMethod(container, "delete", $"delete multiple records in container {container} by id",
                 null, new ContentText(), new [] { new Parameter("query", "ids", StringType, true)}, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }

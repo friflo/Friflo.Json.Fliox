@@ -257,6 +257,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container guidEntities",
+        "tags":       ["guidEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.GuidEntity.json#/definitions/GuidEntity"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container guidEntities",
         "tags":       ["guidEntities"],
@@ -347,6 +387,46 @@
             "description": "---"
           }
         ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary":    "get or delete multiple records by id in container intEntities",
+        "tags":       ["intEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
@@ -463,6 +543,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container intEntitiesAuto",
+        "tags":       ["intEntitiesAuto"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.AutoIntEntity.json#/definitions/AutoIntEntity"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
@@ -553,6 +673,46 @@
             "description": "---"
           }
         ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary":    "get or delete multiple records by id in container longEntities",
+        "tags":       ["longEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
@@ -669,6 +829,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container shortEntities",
+        "tags":       ["shortEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.ShortEntity.json#/definitions/ShortEntity"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container shortEntities",
         "tags":       ["shortEntities"],
@@ -759,6 +959,46 @@
             "description": "---"
           }
         ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary":    "get or delete multiple records by id in container byteEntities",
+        "tags":       ["byteEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
@@ -875,6 +1115,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container customIdEntities",
+        "tags":       ["customIdEntities"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container customIdEntities",
         "tags":       ["customIdEntities"],
@@ -978,6 +1258,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container entityRefs",
+        "tags":       ["entityRefs"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container entityRefs",
         "tags":       ["entityRefs"],
@@ -1068,6 +1388,46 @@
             "description": "---"
           }
         ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary":    "get or delete multiple records by id in container customIdEntities2",
+        "tags":       ["customIdEntities2"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",

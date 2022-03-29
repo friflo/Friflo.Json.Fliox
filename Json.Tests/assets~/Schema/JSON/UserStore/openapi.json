@@ -260,6 +260,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container credentials",
+        "tags":       ["credentials"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential.json#/definitions/UserCredential"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container credentials",
         "tags":       ["credentials"],
@@ -363,6 +403,46 @@
           }
         }
       },
+      "post": {
+        "summary":    "get or delete multiple records by id in container permissions",
+        "tags":       ["permissions"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission.json#/definitions/UserPermission"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "summary":    "create or update records in container permissions",
         "tags":       ["permissions"],
@@ -453,6 +533,46 @@
             "description": "---"
           }
         ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary":    "get or delete multiple records by id in container roles",
+        "tags":       ["roles"],
+        "parameters": [
+          {
+            "in":       "query",
+            "name":     "bulk",
+            "schema":   { "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["get", "delete"]
+              } },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
