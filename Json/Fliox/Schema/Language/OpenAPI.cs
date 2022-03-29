@@ -139,19 +139,16 @@ namespace Friflo.Json.Fliox.Schema.Language
         private void EmitContainerApi(FieldDef container, StringBuilder sb) {
             var name    = container.name;
             var typeRef = Ref (container.type, true, generator);
-            EmitPathContainer       (name, $"/{name}",              typeRef, sb);
+            EmitPathContainer (name, $"/{name}",              typeRef, sb);
             
-            var getResponse = new ContentRef(typeRef, false);
-            var getParams   = new [] { new Parameter("path", "id", StringType, true)};
-            EmitPath   ("get",  name, $"/{name}/{{id}}",   getParams, $"return a single record from container {container}",
-                null, getResponse, sb);
-            
+            EmitPathId        (name, $"/{name}/{{id}}",       typeRef, sb);
+
             var bulkGetResponse = new ContentRef(typeRef, true);
-            EmitPath   ("post", name, $"/{name}/bulk-get",     null, $"get multiple records by id from container {container}",
+            EmitPath ("post",   name, $"/{name}/bulk-get",    null, $"get multiple records by id from container {container}",
                 new ContentRef(StringType, true), bulkGetResponse, sb);
             
             var bulkDeleteResponse = new ContentText();
-            EmitPath   ("post", name, $"/{name}/bulk-delete",  null, $"delete multiple records by id container {container}",
+            EmitPath ("post",   name, $"/{name}/bulk-delete", null, $"delete multiple records by id container {container}",
                 new ContentRef(StringType, true), bulkDeleteResponse, sb);
         }
         
@@ -189,8 +186,15 @@ namespace Friflo.Json.Fliox.Schema.Language
                 null, new ContentRef(typeRef, false), getParams, methodSb);
             EmitMethod(container, "put",    $"create or update multiple records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
-            EmitMethod(container, "delete", $"delete multiple records in container {container} by id",
-                null, new ContentText(), new [] { new Parameter("query", "ids", StringType, true)}, methodSb);
+            AppendPath(path, methodSb.ToString(), sb);
+        }
+        
+        private static void EmitPathId(string container, string path, string typeRef, StringBuilder sb) {
+            var methodSb = new StringBuilder();
+            var getResponse = new ContentRef(typeRef, false);
+            var getParams   = new [] { new Parameter("path", "id", StringType, true)};
+            EmitMethod (container, "get",    $"get a single record from container {container}", null, getResponse, getParams, methodSb);
+            EmitMethod (container, "delete", $"delete a single record in container {container} by id", null, new ContentText(), getParams, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         

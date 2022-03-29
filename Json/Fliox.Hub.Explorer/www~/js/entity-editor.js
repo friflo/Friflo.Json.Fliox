@@ -402,12 +402,11 @@ export class EntityEditor {
         app.explorer.removeExplorerIds(ids);
     }
     static async deleteIds(database, container, ids) {
-        const idsStr = JSON.stringify(ids);
-        // Typical limit for urls in Chrome, ASP.NET: 2048
-        if (idsStr.length > 2000) {
-            return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null, null);
+        if (ids.length == 1) {
+            return await App.restRequest("DELETE", null, database, `${container}/${ids[0]}`, null, null);
         }
-        return await App.restRequest("DELETE", null, database, container, ids, null);
+        const idsStr = JSON.stringify(ids);
+        return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null, null);
     }
     getModel(url) {
         this.entityModel = this.entityModels[url];

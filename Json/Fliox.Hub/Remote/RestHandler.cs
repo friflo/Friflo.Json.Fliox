@@ -152,15 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
                     return;
                 }
-                // --------------    DELETE         /rest/database/container?ids=id1,id2,...
-                if (res.length == 2) {
-                    var idsParam    = queryParams["ids"];
-                    var ids         = idsParam.Split(',');
-                    var keys        = GetKeysFromIds(ids);
-                    await DeleteEntities(context, res.database, res.container, keys).ConfigureAwait(false);
-                    return;
-                }
-                context.WriteError("invalid request", "expect: /database/container?ids=id1,id2,... or /database/container/id", 400);
+                context.WriteError("invalid request", "expect: /database/container/id", 400);
                 return;
             }
             // ------------------    PUT            /rest/database/container        ?create

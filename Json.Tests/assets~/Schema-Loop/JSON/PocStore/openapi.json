@@ -490,32 +490,11 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary":    "delete multiple records in container orders by id",
-        "tags":       ["orders"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "ids",
-            "schema":   { "type": "string" },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "text/plain": { }
-            }
-          }
-        }
       }
     },
     "/orders/{id}": {
       "get": {
-        "summary":    "return a single record from container orders",
+        "summary":    "get a single record from container orders",
         "tags":       ["orders"],
         "parameters": [
           {
@@ -535,6 +514,27 @@
                   "$ref": "UnitTest.Fliox.Client.Order.json#/definitions/Order"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container orders by id",
+        "tags":       ["orders"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -648,32 +648,11 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary":    "delete multiple records in container customers by id",
-        "tags":       ["customers"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "ids",
-            "schema":   { "type": "string" },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "text/plain": { }
-            }
-          }
-        }
       }
     },
     "/customers/{id}": {
       "get": {
-        "summary":    "return a single record from container customers",
+        "summary":    "get a single record from container customers",
         "tags":       ["customers"],
         "parameters": [
           {
@@ -693,6 +672,27 @@
                   "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container customers by id",
+        "tags":       ["customers"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -806,32 +806,11 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary":    "delete multiple records in container articles by id",
-        "tags":       ["articles"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "ids",
-            "schema":   { "type": "string" },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "text/plain": { }
-            }
-          }
-        }
       }
     },
     "/articles/{id}": {
       "get": {
-        "summary":    "return a single record from container articles",
+        "summary":    "get a single record from container articles",
         "tags":       ["articles"],
         "parameters": [
           {
@@ -851,6 +830,27 @@
                   "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container articles by id",
+        "tags":       ["articles"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -964,32 +964,11 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary":    "delete multiple records in container producers by id",
-        "tags":       ["producers"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "ids",
-            "schema":   { "type": "string" },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "text/plain": { }
-            }
-          }
-        }
       }
     },
     "/producers/{id}": {
       "get": {
-        "summary":    "return a single record from container producers",
+        "summary":    "get a single record from container producers",
         "tags":       ["producers"],
         "parameters": [
           {
@@ -1009,6 +988,27 @@
                   "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container producers by id",
+        "tags":       ["producers"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -1122,32 +1122,11 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary":    "delete multiple records in container employees by id",
-        "tags":       ["employees"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "ids",
-            "schema":   { "type": "string" },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "text/plain": { }
-            }
-          }
-        }
       }
     },
     "/employees/{id}": {
       "get": {
-        "summary":    "return a single record from container employees",
+        "summary":    "get a single record from container employees",
         "tags":       ["employees"],
         "parameters": [
           {
@@ -1167,6 +1146,27 @@
                   "$ref": "UnitTest.Fliox.Client.Employee.json#/definitions/Employee"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container employees by id",
+        "tags":       ["employees"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -1280,32 +1280,11 @@
             }
           }
         }
-      },
-      "delete": {
-        "summary":    "delete multiple records in container types by id",
-        "tags":       ["types"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "ids",
-            "schema":   { "type": "string" },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "text/plain": { }
-            }
-          }
-        }
       }
     },
     "/types/{id}": {
       "get": {
-        "summary":    "return a single record from container types",
+        "summary":    "get a single record from container types",
         "tags":       ["types"],
         "parameters": [
           {
@@ -1325,6 +1304,27 @@
                   "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
                 }
               }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary":    "delete a single record in container types by id",
+        "tags":       ["types"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }

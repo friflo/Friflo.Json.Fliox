@@ -479,13 +479,12 @@ export class EntityEditor
     }
 
     private static async deleteIds(database: string, container: string, ids: string[]) : Promise<Response> {
-        const idsStr = JSON.stringify(ids);
-        // Typical limit for urls in Chrome, ASP.NET: 2048
-        if (idsStr.length > 2000) {
-            return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null, null);
+        if (ids.length == 1) {
+            return await App.restRequest("DELETE", null, database, `${container}/${ids[0]}`, null, null);
         }
-        return await App.restRequest("DELETE", null, database, container, ids, null);
-    }
+        const idsStr = JSON.stringify(ids);
+        return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null, null);
+}
 
     private entityModel:    monaco.editor.ITextModel;
     private entityModels:   {[key: string]: monaco.editor.ITextModel} = { };
