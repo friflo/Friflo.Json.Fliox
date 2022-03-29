@@ -11,6 +11,39 @@
       "url":          ""
     }
   ],
+  "tags": [
+    {
+      "name": "database",
+      "description": "schema <a target='_blank' href='html/schema.html#containers'>containers</a>"
+    },
+    {
+      "name": "commands",
+      "description": "schema <a target='_blank' href='html/schema.html#commands'>commands</a>"
+    },
+    {
+      "name": "orders",
+      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order'>Order</a>"
+    },
+    {
+      "name": "customers",
+      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Customer'>Customer</a>"
+    },
+    {
+      "name": "articles",
+      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Article'>Article</a>"
+    },
+    {
+      "name": "producers",
+      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Producer'>Producer</a>"
+    },
+    {
+      "name": "employees",
+      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Employee'>Employee</a>"
+    },
+    {
+      "name": "types",
+      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Tests.Common.UnitTest.Fliox.Client.TestType'>TestType</a>"
+    }],
   "paths": {
     "/": {
       "get": {

@@ -10,6 +10,51 @@
       "url":          ""
     }
   ],
+  "tags": [
+    {
+      "name": "database",
+      "description": "schema <a target='_blank' href='html/schema.html#containers'>containers</a>"
+    },
+    {
+      "name": "commands",
+      "description": "schema <a target='_blank' href='html/schema.html#commands'>commands</a>"
+    },
+    {
+      "name": "guidEntities",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.GuidEntity'>GuidEntity</a>"
+    },
+    {
+      "name": "intEntities",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.IntEntity'>IntEntity</a>"
+    },
+    {
+      "name": "intEntitiesAuto",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.AutoIntEntity'>AutoIntEntity</a>"
+    },
+    {
+      "name": "longEntities",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.LongEntity'>LongEntity</a>"
+    },
+    {
+      "name": "shortEntities",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.ShortEntity'>ShortEntity</a>"
+    },
+    {
+      "name": "byteEntities",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.ByteEntity'>ByteEntity</a>"
+    },
+    {
+      "name": "customIdEntities",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.CustomIdEntity'>CustomIdEntity</a>"
+    },
+    {
+      "name": "entityRefs",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.EntityRefs'>EntityRefs</a>"
+    },
+    {
+      "name": "customIdEntities2",
+      "description": "entity type: <a target='_blank' href='html/schema.html#UnitTest.Fliox.Client.CustomIdEntity2'>CustomIdEntity2</a>"
+    }],
   "paths": {
     "/": {
       "get": {

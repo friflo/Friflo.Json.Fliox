@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var description = schemaType.doc == null ? "" : JsonSchemaGenerator.GetDoc($@"
     ""description"":  ", schemaType.doc, ",");
             var serverUrl   = generator.databaseUrl ?? "";
+            var tags        = CreateTags (schemaType);
             var api     = $@"
 {{
   ""openapi"": ""3.0.0"",
@@ -49,6 +50,7 @@ namespace Friflo.Json.Fliox.Schema.Language
       ""url"":          ""{serverUrl}""
     }}
   ],
+  ""tags"": [{tags}],
   ""paths"": {{{paths}
   }}   
 }}";
@@ -60,6 +62,30 @@ namespace Friflo.Json.Fliox.Schema.Language
         private const string BooleanType    = @"""type"": ""boolean""";
         private const string JsonValueType  = @" ";
         private const string JsonKeyType    = @"""type"": ""string""";
+        
+        private static string CreateTags(TypeDef schemaType) {
+            var sb = new StringBuilder();
+            var anchorAttr = "target='_blank'";
+            sb.Append($@"
+    {{
+      ""name"": ""database"",
+      ""description"": ""schema <a {anchorAttr} href='html/schema.html#containers'>containers</a>""
+    }},
+    {{
+      ""name"": ""commands"",
+      ""description"": ""schema <a {anchorAttr} href='html/schema.html#commands'>commands</a>""
+    }}");
+            foreach (var container in schemaType.Fields) {
+                var type = container.type;
+                var link = $"{type.Namespace}.{type.Name}";
+                sb.Append($@",
+    {{
+      ""name"": ""{container.name}"",
+      ""description"": ""entity type: <a {anchorAttr} href='html/schema.html#{link}'>{type.Name}</a>""
+    }}");
+            }
+            return sb.ToString();
+        }
         
         private string GetType (TypeDef typeDef) {
             if (typeDef == standardTypes.String)
@@ -79,13 +105,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             return Ref (typeDef, true, generator);
         }
         
-        private void EmitPaths(TypeDef type, StringBuilder sb) {
+        private void EmitPaths(TypeDef schemaType, StringBuilder sb) {
             var dbContainers     = GetTypeRef("Friflo.Json.Fliox.Hub.DB.Cluster", "DbContainers");
             EmitPathRoot("database", "/",   "return all database containers", dbContainers, null, sb);
 
-            EmitMessages("command", type.Commands, sb);
-            EmitMessages("message", type.Messages, sb);
-            foreach (var container in type.Fields) {
+            EmitMessages("command", schemaType.Commands, sb);
+            EmitMessages("message", schemaType.Messages, sb);
+            foreach (var container in schemaType.Fields) {
                 EmitContainerApi(container, sb);
             }
         }

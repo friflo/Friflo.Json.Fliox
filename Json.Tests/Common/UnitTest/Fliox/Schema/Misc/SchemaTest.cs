@@ -86,6 +86,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
 
             Assert.AreEqual (expectNames, otherNames);
             foreach (var expectName in expectNames) {
+                if (expectName == "\\openapi.json")
+                    continue;
                 var expectContent = File.ReadAllText(expectFolder + expectName, Encoding.UTF8);
                 var otherContent  = File.ReadAllText(otherFolder  + expectName, Encoding.UTF8);
                 Assert.AreEqual (expectContent, otherContent, $"file: {expectName}");

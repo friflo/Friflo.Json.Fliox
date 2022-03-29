@@ -315,6 +315,9 @@ window.onload = function() {{
 <!--<script src='{relBase}/swagger-initializer.js'          charset='UTF-8'> </script> -->
     <script>{swaggerInitializer}
     </script>
+    <style>
+        div.renderedMarkdown p a {{ text-decoration:  none; font-weight: bold; }}
+    </style>
   </body>
 </html>";
         }
