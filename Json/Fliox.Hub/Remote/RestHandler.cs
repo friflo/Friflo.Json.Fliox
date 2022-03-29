@@ -88,8 +88,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // ------------------    POST           /rest/database/container?get-entities
             //                       POST           /rest/database/container?delete-entities
             if (isPost && res.length == 2) {
-                bool getEntities    = HasQueryKey(queryParams, "get-entities");
-                bool deleteEntities = HasQueryKey(queryParams, "delete-entities");
+                if (!HasQueryKey(queryParams, "get-entities", out bool getEntities, out string error)) {
+                    context.WriteError("POST failed", error, 400);
+                    return;
+                } 
+                if (!HasQueryKey(queryParams, "delete-entities", out bool deleteEntities, out error)) {
+                    context.WriteError("POST failed", error, 400);
+                    return;
+                } 
                 JsonKey[] keys      = null;
                 if (getEntities || deleteEntities) {
                     using (var pooled = pool.ObjectMapper.Get()) {
@@ -167,12 +173,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 if (!IsValidJson(pool, value, out string error)) {
-                    context.WriteError("PUT error", error, 400);
+                    context.WriteError("PUT failed", error, 400);
                     return;
                 }
                 var keyName     = queryParams["keyName"];
                 var resource2   = len == 3 ? res.id : null;
-                var type        = HasQueryKey(queryParams, "create") ? TaskType.create : TaskType.upsert;
+                if (!HasQueryKey(queryParams, "create", out bool create, out error)) {
+                    context.WriteError("PUT failed", error, 400);
+                    return;
+                }
+                var type        = create ? TaskType.create : TaskType.upsert;
                 await PutEntities(context, res.database, res.container, resource2, keyName, value, type).ConfigureAwait(false);
                 return;
             }
@@ -221,14 +231,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return false;
         }
         
-        private static bool HasQueryKey(NameValueCollection queryParams, string searchKey) {
+        private static bool HasQueryKey(NameValueCollection queryParams, string searchKey, out bool value, out string error) {
             var  allKeys  = queryParams.AllKeys;
             for (int n = 0; n < allKeys.Length; n++) {
-                var key = queryParams.Get(n); // what a crazy interface! :)
-                if (searchKey == key)
+                var paramValue = queryParams.Get(n); // what a crazy interface! :)
+                if (paramValue == null)
+                    continue;
+                if (paramValue == searchKey || paramValue == "true") {
+                    value = true;
+                    error = null;
                     return true;
+                }
+                if (paramValue == "false") {
+                    value = false;
+                    error = null;
+                    return true;
+                }
+                value = false;
+                error = $"invalid boolean query parameter value: {paramValue}, parameter: {searchKey}";
+                return false;
             }
-            return false;
+            error = null;
+            value = false;
+            return true;
         }
         
         // -------------------------------------- resource access  --------------------------------------
