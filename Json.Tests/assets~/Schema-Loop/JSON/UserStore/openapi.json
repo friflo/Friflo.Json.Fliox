@@ -14,23 +14,23 @@
   "tags": [
     {
       "name": "database",
-      "description": "schema <a target='_blank' href='html/schema.html#containers'>containers</a>"
+      "description": "<a target='UserStore' href='html/schema.html'>schema</a>"
     },
     {
       "name": "commands",
-      "description": "schema <a target='_blank' href='html/schema.html#commands'>commands</a>"
+      "description": "database <a target='UserStore' href='html/schema.html#commands'>commands</a>"
     },
     {
       "name": "credentials",
-      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a>"
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a>"
     },
     {
       "name": "permissions",
-      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a>"
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a>"
     },
     {
       "name": "roles",
-      "description": "entity type: <a target='_blank' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a>"
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a>"
     }],
   "paths": {
     "/": {

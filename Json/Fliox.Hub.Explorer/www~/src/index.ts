@@ -468,44 +468,45 @@ export class App {
     public readonly databaseSchemas: { [key: string]: DbSchema} = {};
     
     public getSchemaType(database: string) : string {
-        const schema        = this.databaseSchemas[database];
+        const schema    = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${database}" class="docLink">${schema.schemaName}</a>`;
+        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${schema.schemaName}" class="docLink">${schema.schemaName}</a>`;
     }
 
     public getSchemaCommand(database: string, category: MessageCategory, command: string) : string {
-        const schema        = this.databaseSchemas[database];
+        const schema    = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open ${category} API in new tab" href="./schema/${database}/html/schema.html#${category}" target="${database}" class="docLink">${command}</a>`;
+        return `<a title="open ${category} API in new tab" href="./schema/${database}/html/schema.html#${category}" target="${schema.schemaName}" class="docLink">${command}</a>`;
     }
 
     public getSchemaTypes(database: string) : string {
-        const schema        = this.databaseSchemas[database];
+        const schema    = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema types in new tab" href="./schema/${database}/index.html" target="${database}" class="docLink">Typescript, C#, Kotlin, JSON Schema</a>`;
+        return `<a title="open database schema types in new tab" href="./schema/${database}/index.html" target="${schema.schemaName}" class="docLink">Typescript, C#, Kotlin, JSON Schema</a>`;
     }
 
     public getSchemaDescription(database: string) : string {
-        const schema        = this.databaseSchemas[database];
+        const schema    = this.databaseSchemas[database];
         if (!schema)
             return ""; // this.schemaLess;
         return schema._rootSchema.description ?? "";
     }
 
-    private static getType(database: string, def: JsonType) {
-        const ns          = def._namespace;
-        const name        = def._typeName;
-        return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${database}" class="docLink">${name}</a>`;
+    private getType(database: string, def: JsonType) {
+        const schema    = this.databaseSchemas[database];
+        const ns        = def._namespace;
+        const name      = def._typeName;
+        return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${schema.schemaName}" class="docLink">${name}</a>`;
     }
 
     public getEntityType(database: string, container: string) : string {
         const def  = this.getContainerSchema(database, container);
         if (!def)
             return this.schemaLess;
-        return App.getType(database, def);
+        return app.getType(database, def);
     }
 
     public getTypeLabel(database: string, fieldType: FieldType) : string {
@@ -521,7 +522,7 @@ export class App {
         const type = Schema.getFieldType(fieldType);
         const def       = type.type._resolvedDef;
         if (def) {            
-            const typeStr = App.getType(database, def);
+            const typeStr = app.getType(database, def);
             const nullStr = type.isNullable ? " | null" : "";
             return `${typeStr}${nullStr}`;
         }

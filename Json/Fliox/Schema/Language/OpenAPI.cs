@@ -65,15 +65,15 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static string CreateTags(TypeDef schemaType) {
             var sb = new StringBuilder();
-            var anchorAttr = "target='_blank'";
+            var anchorAttr = $"target='{schemaType.Name}'";
             sb.Append($@"
     {{
       ""name"": ""database"",
-      ""description"": ""schema <a {anchorAttr} href='html/schema.html#containers'>containers</a>""
+      ""description"": ""<a {anchorAttr} href='html/schema.html'>schema</a>""
     }},
     {{
       ""name"": ""commands"",
-      ""description"": ""schema <a {anchorAttr} href='html/schema.html#commands'>commands</a>""
+      ""description"": ""database <a {anchorAttr} href='html/schema.html#commands'>commands</a>""
     }}");
             foreach (var container in schemaType.Fields) {
                 var type = container.type;
