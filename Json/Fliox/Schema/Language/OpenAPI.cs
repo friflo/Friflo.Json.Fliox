@@ -139,8 +139,20 @@ namespace Friflo.Json.Fliox.Schema.Language
         private void EmitContainerApi(FieldDef container, StringBuilder sb) {
             var name    = container.name;
             var typeRef = Ref (container.type, true, generator);
-            EmitPathContainer       (name, $"/{name}",          typeRef, sb);
-            EmitPathContainerEntity (name, $"/{name}/{{id}}",   typeRef, sb);
+            EmitPathContainer       (name, $"/{name}",              typeRef, sb);
+            
+            var getResponse = new ContentRef(typeRef, false);
+            var getParams   = new [] { new Parameter("path", "id", StringType, true)};
+            EmitPath   ("get",  name, $"/{name}/{{id}}",   getParams, $"return a single record from container {container}",
+                null, getResponse, sb);
+            
+            var bulkGetResponse = new ContentRef(typeRef, true);
+            EmitPath   ("post", name, $"/{name}/?bulk=get",     null, $"get multiple records by id from container {container}",
+                new ContentRef(StringType, true), bulkGetResponse, sb);
+            
+            var bulkDeleteResponse = new ContentText();
+            EmitPath   ("post", name, $"/{name}/?bulk=delete",  null, $"delete multiple records by id container {container}",
+                new ContentRef(StringType, true), bulkDeleteResponse, sb);
         }
         
         private static void AppendPath(string path, string methods, StringBuilder sb) {
@@ -173,17 +185,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 new Parameter("query", "filter", StringType,  false),
                 new Parameter("query", "limit",  IntegerType, false)
             };
-            EmitMethod(container, "get",    $"return multiple records from a container {container}",
+            EmitMethod(container, "get",    $"return multiple records from container {container}",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
-            var postParams = new [] {
-                new Parameter("query", "bulk",  @"""type"": ""array"",
-              ""items"": {
-                ""type"": ""string"",
-                ""enum"": [""get"", ""delete""]
-              }", true)
-            };
-            EmitMethod(container, "post",   $"get or delete multiple records by id in container {container}",
-                new ContentRef(StringType, true), new ContentRef(typeRef, false), postParams, methodSb);
             EmitMethod(container, "put",    $"create or update multiple records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
             EmitMethod(container, "delete", $"delete multiple records in container {container} by id",
@@ -191,10 +194,18 @@ namespace Friflo.Json.Fliox.Schema.Language
             AppendPath(path, methodSb.ToString(), sb);
         }
         
-        private static void EmitPathContainerEntity(string container, string path, string typeRef, StringBuilder sb) {
+        private static void EmitPath(
+            string                  method,
+            string                  tag,
+            string                  path,
+            ICollection<Parameter>  queryParams,
+            string                  summary,
+            Content                 request,
+            Content                 response,
+            StringBuilder           sb)
+        {
             var methodSb = new StringBuilder();
-            EmitMethod(container, "get",    $"return a single record from container {container}",
-                null, new ContentRef(typeRef, false), new [] { new Parameter("path", "id", StringType, true)}, methodSb);
+            EmitMethod(tag, method,   summary, request, response, queryParams, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         

@@ -439,7 +439,7 @@
     },
     "/orders": {
       "get": {
-        "summary":    "return all records in container orders",
+        "summary":    "return multiple records from container orders",
         "tags":       ["orders"],
         "parameters": [
           {
@@ -468,48 +468,8 @@
           }
         }
       },
-      "post": {
-        "summary":    "get or delete multiple records by id in container orders",
-        "tags":       ["orders"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "bulk",
-            "schema":   { "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["get", "delete"]
-              } },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "requestBody": {          
-          "description": "---",
-          "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-        },
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "UnitTest.Fliox.Client.Order.json#/definitions/Order"
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
-        "summary":    "create or update records in container orders",
+        "summary":    "create or update multiple records in container orders",
         "tags":       ["orders"],
         "requestBody": {          
           "description": "---",
@@ -532,7 +492,7 @@
         }
       },
       "delete": {
-        "summary":    "delete records in container orders by id",
+        "summary":    "delete multiple records in container orders by id",
         "tags":       ["orders"],
         "parameters": [
           {
@@ -580,9 +540,64 @@
         }
       }
     },
+    "/orders/?bulk=get": {
+      "post": {
+        "summary":    "get multiple records by id from container orders",
+        "tags":       ["orders"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.Order.json#/definitions/Order" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/?bulk=delete": {
+      "post": {
+        "summary":    "delete multiple records by id container orders",
+        "tags":       ["orders"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
     "/customers": {
       "get": {
-        "summary":    "return all records in container customers",
+        "summary":    "return multiple records from container customers",
         "tags":       ["customers"],
         "parameters": [
           {
@@ -611,48 +626,8 @@
           }
         }
       },
-      "post": {
-        "summary":    "get or delete multiple records by id in container customers",
-        "tags":       ["customers"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "bulk",
-            "schema":   { "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["get", "delete"]
-              } },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "requestBody": {          
-          "description": "---",
-          "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-        },
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer"
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
-        "summary":    "create or update records in container customers",
+        "summary":    "create or update multiple records in container customers",
         "tags":       ["customers"],
         "requestBody": {          
           "description": "---",
@@ -675,7 +650,7 @@
         }
       },
       "delete": {
-        "summary":    "delete records in container customers by id",
+        "summary":    "delete multiple records in container customers by id",
         "tags":       ["customers"],
         "parameters": [
           {
@@ -723,9 +698,64 @@
         }
       }
     },
+    "/customers/?bulk=get": {
+      "post": {
+        "summary":    "get multiple records by id from container customers",
+        "tags":       ["customers"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/?bulk=delete": {
+      "post": {
+        "summary":    "delete multiple records by id container customers",
+        "tags":       ["customers"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
     "/articles": {
       "get": {
-        "summary":    "return all records in container articles",
+        "summary":    "return multiple records from container articles",
         "tags":       ["articles"],
         "parameters": [
           {
@@ -754,48 +784,8 @@
           }
         }
       },
-      "post": {
-        "summary":    "get or delete multiple records by id in container articles",
-        "tags":       ["articles"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "bulk",
-            "schema":   { "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["get", "delete"]
-              } },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "requestBody": {          
-          "description": "---",
-          "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-        },
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article"
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
-        "summary":    "create or update records in container articles",
+        "summary":    "create or update multiple records in container articles",
         "tags":       ["articles"],
         "requestBody": {          
           "description": "---",
@@ -818,7 +808,7 @@
         }
       },
       "delete": {
-        "summary":    "delete records in container articles by id",
+        "summary":    "delete multiple records in container articles by id",
         "tags":       ["articles"],
         "parameters": [
           {
@@ -866,9 +856,64 @@
         }
       }
     },
+    "/articles/?bulk=get": {
+      "post": {
+        "summary":    "get multiple records by id from container articles",
+        "tags":       ["articles"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.Article.json#/definitions/Article" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles/?bulk=delete": {
+      "post": {
+        "summary":    "delete multiple records by id container articles",
+        "tags":       ["articles"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
     "/producers": {
       "get": {
-        "summary":    "return all records in container producers",
+        "summary":    "return multiple records from container producers",
         "tags":       ["producers"],
         "parameters": [
           {
@@ -897,48 +942,8 @@
           }
         }
       },
-      "post": {
-        "summary":    "get or delete multiple records by id in container producers",
-        "tags":       ["producers"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "bulk",
-            "schema":   { "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["get", "delete"]
-              } },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "requestBody": {          
-          "description": "---",
-          "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-        },
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer"
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
-        "summary":    "create or update records in container producers",
+        "summary":    "create or update multiple records in container producers",
         "tags":       ["producers"],
         "requestBody": {          
           "description": "---",
@@ -961,7 +966,7 @@
         }
       },
       "delete": {
-        "summary":    "delete records in container producers by id",
+        "summary":    "delete multiple records in container producers by id",
         "tags":       ["producers"],
         "parameters": [
           {
@@ -1009,9 +1014,64 @@
         }
       }
     },
+    "/producers/?bulk=get": {
+      "post": {
+        "summary":    "get multiple records by id from container producers",
+        "tags":       ["producers"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/producers/?bulk=delete": {
+      "post": {
+        "summary":    "delete multiple records by id container producers",
+        "tags":       ["producers"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
     "/employees": {
       "get": {
-        "summary":    "return all records in container employees",
+        "summary":    "return multiple records from container employees",
         "tags":       ["employees"],
         "parameters": [
           {
@@ -1040,48 +1100,8 @@
           }
         }
       },
-      "post": {
-        "summary":    "get or delete multiple records by id in container employees",
-        "tags":       ["employees"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "bulk",
-            "schema":   { "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["get", "delete"]
-              } },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "requestBody": {          
-          "description": "---",
-          "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-        },
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "UnitTest.Fliox.Client.Employee.json#/definitions/Employee"
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
-        "summary":    "create or update records in container employees",
+        "summary":    "create or update multiple records in container employees",
         "tags":       ["employees"],
         "requestBody": {          
           "description": "---",
@@ -1104,7 +1124,7 @@
         }
       },
       "delete": {
-        "summary":    "delete records in container employees by id",
+        "summary":    "delete multiple records in container employees by id",
         "tags":       ["employees"],
         "parameters": [
           {
@@ -1152,9 +1172,64 @@
         }
       }
     },
+    "/employees/?bulk=get": {
+      "post": {
+        "summary":    "get multiple records by id from container employees",
+        "tags":       ["employees"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees/?bulk=delete": {
+      "post": {
+        "summary":    "delete multiple records by id container employees",
+        "tags":       ["employees"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      }
+    },
     "/types": {
       "get": {
-        "summary":    "return all records in container types",
+        "summary":    "return multiple records from container types",
         "tags":       ["types"],
         "parameters": [
           {
@@ -1183,48 +1258,8 @@
           }
         }
       },
-      "post": {
-        "summary":    "get or delete multiple records by id in container types",
-        "tags":       ["types"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "bulk",
-            "schema":   { "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["get", "delete"]
-              } },
-            "required": true,
-            "description": "---"
-          }
-        ],
-        "requestBody": {          
-          "description": "---",
-          "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              }
-            }
-        },
-        "responses": {
-          "200": {             
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
-        "summary":    "create or update records in container types",
+        "summary":    "create or update multiple records in container types",
         "tags":       ["types"],
         "requestBody": {          
           "description": "---",
@@ -1247,7 +1282,7 @@
         }
       },
       "delete": {
-        "summary":    "delete records in container types by id",
+        "summary":    "delete multiple records in container types by id",
         "tags":       ["types"],
         "parameters": [
           {
@@ -1290,6 +1325,61 @@
                   "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    "/types/?bulk=get": {
+      "post": {
+        "summary":    "get multiple records by id from container types",
+        "tags":       ["types"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/types/?bulk=delete": {
+      "post": {
+        "summary":    "delete multiple records by id container types",
+        "tags":       ["types"],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
