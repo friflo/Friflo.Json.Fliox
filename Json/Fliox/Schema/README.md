@@ -14,14 +14,14 @@ Another objective of this namespace is to enables type validation for JSON paylo
 
 Currently supported input type schemas are:
 - C#
-- JSON Schema
+- [JSON Schema](https://json-schema.org/)
 
 From these input schemas the following output schemas can be generate:
 - C#
-- JSON Schema
-- HTML
+- [JSON Schema](https://json-schema.org/) / [OpenAPI](https://www.openapis.org/)
 - Typescript
 - Kotlin
+- HTML
 
 ## Features:
 - Code generators and JSON Validator support the C#/.NET language features:
@@ -50,7 +50,7 @@ From these input schemas the following output schemas can be generate:
 
 - The generated schemas for various languages are directly available via a **Fliox Hub** in the Browser.  
   To retrieve a zip or a single file click on a schema or type link in the [Hub Explorer](../../Fliox.Hub.Explorer/README.md)
-  and follow the link **Typescript, C#, Kotlin, JSON Schema** on the top of the schema page.
+  and follow the link **Typescript, C#, Kotlin, JSON Schema / OpenAPI** on the top of the schema page.
 
 
 ## Examples
