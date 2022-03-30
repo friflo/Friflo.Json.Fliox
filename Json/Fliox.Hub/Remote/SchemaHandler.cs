@@ -287,6 +287,7 @@ window.onload = function() {{
     dom_id:         '#swagger-ui',
     deepLinking:    true,
     docExpansion:   'none',
+    validatorUrl:   null, // disable request to https://validator.swagger.io/validator sending the OpenAPI schema
     presets: [
       SwaggerUIBundle.presets.apis,
       SwaggerUIStandalonePreset
