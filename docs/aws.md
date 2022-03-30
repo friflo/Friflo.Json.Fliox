@@ -35,4 +35,12 @@ docker push YOURACCOUNT.dkr.ecr.YOURREGION.amazonaws.com/YOURREPO:YOURTAG
 ```
 
 
+## Update DOcker image via AWS Web Console
+- Open ECS - Elastic Container Service
+- Select 'Clusters'
+- Select cluster in table
+- Switch to tab 'Tasks'
+- Click 'Run new Task'
+  - Select: EC2
+  - Click 'Run Task'
 
