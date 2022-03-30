@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             --type:     #0f54d6;
             --keyword:  #6f6f6f;
             --color:    #000;       --highlight:        #008;
-            --bg:       #fff;       --bg-highlight:     #e0e0ff;
+            --bg:       #fff;       --bg-highlight:     #e8e8ff;
             --bg2:      #fff;
             --bg-border:#ccc;
             --selected: #f0f0f0;    --selected-shadow:  #f0f0f0;    --selected-offset: 0px; --selected-radius: 1px;
