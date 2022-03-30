@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             --selected: #303030;    --selected-shadow:  #303030;    --selected-offset: 0px; --selected-radius: 1px;
             --link:   	#d0adf0;
             --visited:  #9e9eff;
-            --oas:      #408935;
+            --oas:      #009900;
         }
         body::after {
             content: '';
