@@ -1,6 +1,5 @@
 #if !UNITY_2020_1_OR_NEWER
 
-using System.Net;
 using Friflo.Json.Fliox.Hub.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
