@@ -392,7 +392,7 @@
     },
     "/guidEntities/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container guidEntities",
+        "summary":    "delete multiple records by id in container guidEntities",
         "tags":       ["guidEntities"],
         "requestBody": {          
           "description": "---",
@@ -581,7 +581,7 @@
     },
     "/intEntities/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container intEntities",
+        "summary":    "delete multiple records by id in container intEntities",
         "tags":       ["intEntities"],
         "requestBody": {          
           "description": "---",
@@ -770,7 +770,7 @@
     },
     "/intEntitiesAuto/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container intEntitiesAuto",
+        "summary":    "delete multiple records by id in container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
         "requestBody": {          
           "description": "---",
@@ -959,7 +959,7 @@
     },
     "/longEntities/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container longEntities",
+        "summary":    "delete multiple records by id in container longEntities",
         "tags":       ["longEntities"],
         "requestBody": {          
           "description": "---",
@@ -1148,7 +1148,7 @@
     },
     "/shortEntities/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container shortEntities",
+        "summary":    "delete multiple records by id in container shortEntities",
         "tags":       ["shortEntities"],
         "requestBody": {          
           "description": "---",
@@ -1337,7 +1337,7 @@
     },
     "/byteEntities/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container byteEntities",
+        "summary":    "delete multiple records by id in container byteEntities",
         "tags":       ["byteEntities"],
         "requestBody": {          
           "description": "---",
@@ -1526,7 +1526,7 @@
     },
     "/customIdEntities/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container customIdEntities",
+        "summary":    "delete multiple records by id in container customIdEntities",
         "tags":       ["customIdEntities"],
         "requestBody": {          
           "description": "---",
@@ -1715,7 +1715,7 @@
     },
     "/entityRefs/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container entityRefs",
+        "summary":    "delete multiple records by id in container entityRefs",
         "tags":       ["entityRefs"],
         "requestBody": {          
           "description": "---",
@@ -1904,7 +1904,7 @@
     },
     "/customIdEntities2/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container customIdEntities2",
+        "summary":    "delete multiple records by id in container customIdEntities2",
         "tags":       ["customIdEntities2"],
         "requestBody": {          
           "description": "---",

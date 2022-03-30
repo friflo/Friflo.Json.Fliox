@@ -395,7 +395,7 @@
     },
     "/credentials/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container credentials",
+        "summary":    "delete multiple records by id in container credentials",
         "tags":       ["credentials"],
         "requestBody": {          
           "description": "---",
@@ -584,7 +584,7 @@
     },
     "/permissions/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container permissions",
+        "summary":    "delete multiple records by id in container permissions",
         "tags":       ["permissions"],
         "requestBody": {          
           "description": "---",
@@ -773,7 +773,7 @@
     },
     "/roles/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container roles",
+        "summary":    "delete multiple records by id in container roles",
         "tags":       ["roles"],
         "requestBody": {          
           "description": "---",

@@ -603,7 +603,7 @@
     },
     "/orders/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container orders",
+        "summary":    "delete multiple records by id in container orders",
         "tags":       ["orders"],
         "requestBody": {          
           "description": "---",
@@ -792,7 +792,7 @@
     },
     "/customers/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container customers",
+        "summary":    "delete multiple records by id in container customers",
         "tags":       ["customers"],
         "requestBody": {          
           "description": "---",
@@ -981,7 +981,7 @@
     },
     "/articles/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container articles",
+        "summary":    "delete multiple records by id in container articles",
         "tags":       ["articles"],
         "requestBody": {          
           "description": "---",
@@ -1170,7 +1170,7 @@
     },
     "/producers/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container producers",
+        "summary":    "delete multiple records by id in container producers",
         "tags":       ["producers"],
         "requestBody": {          
           "description": "---",
@@ -1359,7 +1359,7 @@
     },
     "/employees/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container employees",
+        "summary":    "delete multiple records by id in container employees",
         "tags":       ["employees"],
         "requestBody": {          
           "description": "---",
@@ -1548,7 +1548,7 @@
     },
     "/types/bulk-delete": {
       "post": {
-        "summary":    "delete multiple records by id container types",
+        "summary":    "delete multiple records by id in container types",
         "tags":       ["types"],
         "requestBody": {          
           "description": "---",
