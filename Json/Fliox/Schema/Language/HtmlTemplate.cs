@@ -279,7 +279,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         </div>
         <div style='flex-grow: 1;'></div>
         <div class='languages' style='background-color: #363bff;'>
-            <a style='color: white;' href='../index.html'>Typescript, C#, Kotlin, JSON Schema</a>
+            <a style='color: white;' href='../index.html'>Typescript, C#, Kotlin, JSON Schema / OpenAPI</a>
         </div>
         <!--  🌣 ☀ 🌞︎ ☾ ☽︎ 🌓︎ 🌘︎ 🌒︎ 🌖︎ 🌚︎ 🌙 🌕 🌞 🌛 🔅 -->
         <div class='toggleTheme' onclick='toggleTheme()'>☀ 🌘︎</div>

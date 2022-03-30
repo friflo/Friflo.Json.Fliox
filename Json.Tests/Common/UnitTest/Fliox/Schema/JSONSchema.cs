@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/JSONSchema");
         }
         
-        /// C# -> JSON Schema
+        /// C# -> JSON Schema / OpenAPI
         [Test, Order(1)]
         public static void CS_JSON () {
             var options     = new NativeTypeOptions(typeof(JSONSchema));

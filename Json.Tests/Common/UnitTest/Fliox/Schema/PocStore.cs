@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Html/PocStore");
         }
         
-        /// C# -> JSON Schema
+        /// C# -> JSON Schema / OpenAPI
         [Test, Order(1)]
         public static void CS_JsonSchema () {
             // Use code generator directly

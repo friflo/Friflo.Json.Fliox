@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     
     /// <summary>
     /// <see cref="SchemaModel"/> instances are used to represent schemas in various programming languages
-    /// or schema formats like C#, Typescript, Kotlin, JSON Schema and HTML.<br/>
+    /// or schema formats like C#, Typescript, Kotlin, JSON Schema / OpenAPI and HTML.<br/>
     /// <see cref="SchemaModel"/> instances are immutable.
     /// </summary>
     public sealed class SchemaModel {
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         /// <summary>
         /// Generate schema models for the given <paramref name="rootType"/>. <br/>
-        /// The generated languages are the build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
+        /// The generated languages are the build-in supported languages: HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin
         /// and languages that are generated via the passed <paramref name="generators"/>
         /// </summary>
         public static List<SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null, string databaseUrl = null) {
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
 
         /// <summary>
-        /// Generate schema models for build-in supported languages: HTML, JSON Schema, Typescript, C#, Kotlin
+        /// Generate schema models for build-in supported languages: HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin
         /// and languages that are generated via the passed <paramref name="generators"/>
         /// </summary>
         public static List<SchemaModel> GenerateSchemaModels(
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes, databaseUrl = databaseUrl};
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema", "application/json", ".json", jsonGenerator.files);
+            var jsonModel           = new SchemaModel ("json-schema",   "JSON Schema / OpenAPI", "application/json", ".json", jsonGenerator.files);
             result.Add(jsonModel);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);

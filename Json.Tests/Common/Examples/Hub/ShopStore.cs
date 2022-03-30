@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.Examples.Hub
 #endif
         
         /// <summary>
-        /// Generate schema model files (HTML, JSON Schema, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
+        /// Generate schema model files (HTML, JSON Schema / OpenAPI, Typescript, C#, Kotlin) for <see cref="ShopStore"/>
         /// in the working directory.
         /// </summary>
         [Test]
