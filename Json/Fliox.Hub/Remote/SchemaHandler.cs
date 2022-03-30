@@ -317,7 +317,7 @@ window.onload = function() {{
     <script>{swaggerInitializer}
     </script>
     <style>
-        div.renderedMarkdown p a {{ text-decoration:  none; font-weight: bold; }}
+        div.renderedMarkdown * > a {{ text-decoration:  none; font-weight: bold; }}
     </style>
   </body>
 </html>";
