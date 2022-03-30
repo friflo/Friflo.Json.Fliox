@@ -537,6 +537,7 @@ export class App {
     }
 
     public static getOpenApiLink(database: string, description: string, hash: string) : string {
+        hash = hash.replace(".", "_");
         return `<a class="oas" title="${description} as OpenAPI specification (OAS) in new tab" href="./schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
     }
     

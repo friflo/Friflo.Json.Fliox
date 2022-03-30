@@ -775,13 +775,14 @@ export class EntityEditor
         const category: MessageCategory = signature.result ? "commands" : "messages";
         const param         = EntityEditor.getMessageArg("param", database, signature.param);
         const returnHtml    = EntityEditor.getReturnType(database, signature.result);
-        const commandEl     = app.getSchemaCommand(database, category, command);        
+        const commandEl     = app.getSchemaCommand(database, category, command);
+        const oasLink       = App.getOpenApiLink(database, "open commands API", `#/commands/get__command_${command}`);
         const el =
         `<span title="command parameter type">
             ${commandEl}
             (${param})
         </span>
-        ${returnHtml}`;
+        ${returnHtml}&nbsp;&nbsp;${oasLink}`;
         return el;
     }
 
