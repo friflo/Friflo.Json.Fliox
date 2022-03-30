@@ -190,11 +190,12 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitPathId(string container, string path, string typeRef, StringBuilder sb) {
-            var methodSb = new StringBuilder();
-            var getResponse = new ContentRef(typeRef, false);
-            var getParams   = new [] { new Parameter("path", "id", StringType, true)};
-            EmitMethod (container, "get",    $"get a single record from container {container}", null, getResponse, getParams, methodSb);
-            EmitMethod (container, "delete", $"delete a single record in container {container} by id", null, new ContentText(), getParams, methodSb);
+            var methodSb    = new StringBuilder();
+            var bodyContent = new ContentRef(typeRef, false);
+            var idParam     = new [] { new Parameter("path", "id", StringType, true)};
+            EmitMethod (container, "get",    $"get a single record from container {container}", null, bodyContent,              idParam, methodSb);
+            EmitMethod (container, "put",    $"write a single record to container {container}", bodyContent, new ContentText(), idParam, methodSb);
+            EmitMethod (container, "delete", $"delete a single record in container {container} by id", null, new ContentText(), idParam, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         

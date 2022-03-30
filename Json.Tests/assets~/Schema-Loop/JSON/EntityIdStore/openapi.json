@@ -307,6 +307,37 @@
           }
         }
       },
+      "put": {
+        "summary":    "write a single record to container guidEntities",
+        "tags":       ["guidEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.GuidEntity.json#/definitions/GuidEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container guidEntities by id",
         "tags":       ["guidEntities"],
@@ -461,6 +492,37 @@
                   "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity"
                 }
               }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "write a single record to container intEntities",
+        "tags":       ["intEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -623,6 +685,37 @@
           }
         }
       },
+      "put": {
+        "summary":    "write a single record to container intEntitiesAuto",
+        "tags":       ["intEntitiesAuto"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.AutoIntEntity.json#/definitions/AutoIntEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container intEntitiesAuto by id",
         "tags":       ["intEntitiesAuto"],
@@ -777,6 +870,37 @@
                   "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity"
                 }
               }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "write a single record to container longEntities",
+        "tags":       ["longEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -939,6 +1063,37 @@
           }
         }
       },
+      "put": {
+        "summary":    "write a single record to container shortEntities",
+        "tags":       ["shortEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.ShortEntity.json#/definitions/ShortEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container shortEntities by id",
         "tags":       ["shortEntities"],
@@ -1093,6 +1248,37 @@
                   "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity"
                 }
               }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "write a single record to container byteEntities",
+        "tags":       ["byteEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
@@ -1255,6 +1441,37 @@
           }
         }
       },
+      "put": {
+        "summary":    "write a single record to container customIdEntities",
+        "tags":       ["customIdEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container customIdEntities by id",
         "tags":       ["customIdEntities"],
@@ -1413,6 +1630,37 @@
           }
         }
       },
+      "put": {
+        "summary":    "write a single record to container entityRefs",
+        "tags":       ["entityRefs"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container entityRefs by id",
         "tags":       ["entityRefs"],
@@ -1567,6 +1815,37 @@
                   "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2"
                 }
               }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary":    "write a single record to container customIdEntities2",
+        "tags":       ["customIdEntities2"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": "---"
+          }
+        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
             }
           }
         }
