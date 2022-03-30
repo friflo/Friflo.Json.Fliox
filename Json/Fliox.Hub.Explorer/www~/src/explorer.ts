@@ -214,7 +214,7 @@ export class Explorer
         explorerTools.innerHTML  = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = `${App.getDatabaseLink(p.database)}/`;
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
-        const oasLink            = App.getOpenApiLink(p.database, `#/${p.container}`);
+        const oasLink            = App.getOpenApiLink(p.database, `open ${p.container} API`, `#/${p.container}`);
         readEntities.innerHTML   = `${containerLink} ${oasLink}<span class="spinner"></span>`;
 
         const maxCount           = "maxCount=100";

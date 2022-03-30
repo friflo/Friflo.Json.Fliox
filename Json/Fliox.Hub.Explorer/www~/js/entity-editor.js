@@ -64,7 +64,7 @@ export class EntityEditor {
     }
     setDatabaseInfo(database, dbContainer) {
         const schemaType = app.getSchemaType(database);
-        const oasLink = App.getOpenApiLink(database, "");
+        const oasLink = App.getOpenApiLink(database, "open database API", "");
         el("databaseName").innerHTML = App.getDatabaseLink(database);
         el("databaseSchema").innerHTML = `${schemaType} ${oasLink}`;
         el("databaseTypes").innerHTML = app.getSchemaTypes(database);
@@ -99,7 +99,7 @@ export class EntityEditor {
         filterRow.style.visibility = "hidden";
         entityFilter.style.visibility = "hidden";
         const messagesLink = App.getMessagesLink(database);
-        const oasLink = App.getOpenApiLink(database, "#/commands");
+        const oasLink = App.getOpenApiLink(database, "open commands API", "#/commands");
         readEntitiesDB.innerHTML = `${messagesLink} ${oasLink}`;
         readEntities.innerHTML = "";
         readEntitiesCount.innerHTML = "";

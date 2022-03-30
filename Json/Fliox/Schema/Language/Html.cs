@@ -106,13 +106,12 @@ $@"    <div class='type enum'>
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
-            int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var baseType        = type.BaseType;
 
             var qualifiedName   = type.Namespace + "." + type.Name;
             var unionType       = type.UnionType;
             var typeName        = type.IsSchema ? "schema": type.IsAbstract ? "abstract class" : "class";
-            var oasLink         = type.IsSchema ? GetOasLink("/", "") : "";
+            var oasLink         = type.IsSchema ? GetOasLink("/", "open schema API", "") : "";
             var doc             = GetDoc("    <desc>", type.doc, "\n    </desc>");
 
             sb.AppendLine(
@@ -157,19 +156,17 @@ $@"    <div class='type'>
         </tr>");
             }
             if (discriminant != null) {
-                maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
-                var indent      = Indent(maxFieldName, discriminator);
                 var discDoc     = GetDoc("<td><docs>", type.DiscriminatorDoc, "</docs></td>");
                 sb.AppendLine(
 $@"        <tr>
-            <td><disc>{discriminator}</disc></td>{indent} <td><discriminant>""{discriminant}""</discriminant></td>{discDoc}
+            <td><disc>{discriminator}</disc></td>
+            <td><discriminant>""{discriminant}""</discriminant></td>{discDoc}
         </tr>");
             }
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
                 var fieldType   = GetFieldType(field, context, field.required);
-                var indent      = Indent(maxFieldName, field.name);
                 var fieldTag    = "field";
                 if (type.KeyField == field.name) {
                     fieldTag    = "key";
@@ -181,11 +178,12 @@ $@"        <tr>
                     reference   = $"<rel></rel>{GetTypeName(relation, context)}";
                 }
                 var fieldDoc    = GetDoc("\n            <td><docs>", field.doc, "</docs></td>");
-                var oasContainer= type.IsSchema ? $"<td>{GetOasLink("/", field.name)}</td>" : "";
+                var oasContainer= type.IsSchema ? $"\n            <td>{GetOasLink("/", $"open {field.name} API", field.name)}</td>" : "";
                 // var nullStr = required ? "" : " | null";
                 sb.AppendLine(
 $@"        <tr>
-            <td><{fieldTag}>{field.name}</{fieldTag}></td>{indent} <td><type>{fieldType}{reference}</type></td>{oasContainer}{fieldDoc}
+            <td><{fieldTag}>{field.name}</{fieldTag}></td>
+            <td><type>{fieldType}{reference}</type></td>{oasContainer}{fieldDoc}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -202,17 +200,17 @@ $@"        <tr>
 $@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
     <table class='{type}'>
 ");
-            int maxFieldName    = messageDefs.MaxLength(field => field.name.Length);
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param, context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
                 var doc     = GetDoc("\n            <td><docs>", messageDef.doc, "</docs></td>");
-                var indent  = Indent(maxFieldName, messageDef.name);
                 var signature = $"({param}) : {result}";
-                var oasLink = GetOasLink("/commands/get__command_", messageDef.name);
+                var oasLink = GetOasLink("/commands/get__command_", $"open {messageDef.name} API", messageDef.name);
                 sb.AppendLine(
 $@"        <tr>
-            <td><cmd>{messageDef.name}</cmd></td>{indent}<td><sig>{signature}</sig></td><td>{oasLink}</td>{doc}
+            <td><cmd>{messageDef.name}</cmd></td>
+            <td><sig>{signature}</sig></td>
+            <td>{oasLink}</td>{doc}
         </tr>");
             }
             sb.AppendLine("    </table>");
@@ -268,9 +266,9 @@ $@"        <tr>
             return $"{prefix}{docs}{suffix}";
         }
 
-        private static string GetOasLink(string tag, string local) {
+        private static string GetOasLink(string tag, string description, string local) {
             local = local.Replace(".", "_");
-            return $"<oas><a href='../open-api.html#{tag}{local}' target='_blank' title='open Swagger UI in new tab'>OAS</a></oas>";
+            return $"<oas><a href='../open-api.html#{tag}{local}' target='_blank' title='{description} as OpenAPI specification (OAS) in new tab'>OAS</a></oas>";
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
