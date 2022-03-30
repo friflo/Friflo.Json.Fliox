@@ -148,7 +148,7 @@ export class Explorer
         e.loadMorePending   = true;
         const maxCount      = `maxCount=100&cursor=${e.cursor}`;
         const queryParams   = e.query == null ? maxCount : `${e.query}&${maxCount}`; 
-        const response      = await App.restRequest("GET", null, e.database, e.container, null, queryParams);
+        const response      = await App.restRequest("GET", null, e.database, e.container, queryParams);
 
         e.loadMorePending   = false;
         if (!response.ok) {
@@ -219,7 +219,7 @@ export class Explorer
 
         const maxCount           = "maxCount=100";
         const queryParams        = query == null ? maxCount : `${query}&${maxCount}`;
-        const response           = await App.restRequest("GET", null, p.database, p.container, null, queryParams);
+        const response           = await App.restRequest("GET", null, p.database, p.container, queryParams);
 
         const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`;
         writeResult.innerHTML   = "";        
@@ -737,7 +737,8 @@ export class Explorer
         const entity        = explorer.entities.find(entity => entity[keyName] == id);
         entity[fieldName]   = JSON.parse(jsonValue);
         const json          = JSON.stringify(entity, null, 4);
-        await App.restRequest("PUT", json, explorer.database, explorer.container, id, null);
+        const containerPath = `${explorer.container}/${id}`;
+        await App.restRequest("PUT", json, explorer.database, containerPath, null);
     }
 
     private static getDataType(fieldType: FieldType) : DataType {

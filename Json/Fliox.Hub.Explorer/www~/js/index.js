@@ -198,24 +198,16 @@ export class App {
         tag = tag ? tag : "";
         return await App.postRequest(request, `${database}/${tag}`);
     }
-    static getRestPath(database, container, ids, query) {
+    static getRestPath(database, container, query) {
         let path = `./rest/${database}`;
         if (container)
             path = `${path}/${container}`;
-        if (ids) {
-            if (Array.isArray(ids)) {
-                path = `${path}?ids=${ids.join(',')}`;
-            }
-            else {
-                path = `${path}/${ids}`;
-            }
-        }
         if (query)
             path = `${path}?${query}`;
         return path;
     }
-    static async restRequest(method, body, database, container, ids, query) {
-        const path = App.getRestPath(database, container, ids, query);
+    static async restRequest(method, body, database, container, query) {
+        const path = App.getRestPath(database, container, query);
         const init = {
             method: method,
             headers: { 'Content-Type': 'application/json' },

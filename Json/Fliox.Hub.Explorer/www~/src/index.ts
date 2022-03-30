@@ -228,22 +228,15 @@ export class App {
         return await App.postRequest(request, `${database}/${tag}`);
     }
 
-    public static getRestPath(database: string, container: string, ids: string | string[], query: string) : string {
+    private static getRestPath(database: string, container: string, query: string) : string {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
-        if (ids) {
-            if (Array.isArray(ids)) {
-                path = `${path}?ids=${ids.join(',')}`;
-            } else {
-                path = `${path}/${ids}`;
-            }
-        }
         if (query)      path = `${path}?${query}`;
         return path;
     }
 
-    static async restRequest (method: Method, body: string, database: string, container: string, ids: string | string[], query: string) : Promise<Response> {
-        const path = App.getRestPath(database, container, ids, query);        
+    public static async restRequest (method: Method, body: string, database: string, container: string, query: string) : Promise<Response> {
+        const path = App.getRestPath(database, container, query);        
         const init = {        
             method:  method,
             headers: { 'Content-Type': 'application/json' },

@@ -87,7 +87,7 @@ export class EntityEditor
         const command   = e.command;
         const type      = e.msgType;
 
-        const response  = await App.restRequest("POST", param, database, null, null, `${type}=${command}`);
+        const response  = await App.restRequest("POST", param, database, null, `${type}=${command}`);
         let content     = await response.text();
 
         content         = app.formatJson(app.config.formatResponses, content);
@@ -288,8 +288,7 @@ export class EntityEditor
             entityIds:  [...p.ids]
         };
         // execute GET request
-        const ids       = p.ids.length == 1 ? p.ids[0] : p.ids; // load as object if exact one id
-        const response  = await EntityEditor.requestIds(p.database, p.container, ids);
+        const response  = await EntityEditor.requestIds(p.database, p.container, p.ids);
         let content     = await response.text();
 
         content         = app.formatJson(app.config.formatEntities, content);
@@ -305,13 +304,16 @@ export class EntityEditor
         return content;
     }
 
-    private static async requestIds(database: string, container: string, requestIds: string | string[]) : Promise<Response> {
+    private static async requestIds(database: string, container: string, requestIds: string[]) : Promise<Response> {
         const idsStr = JSON.stringify(requestIds);
         // Typical limit for urls in Chrome, ASP.NET: 2048
         if (idsStr.length > 2000) {
-            return await App.restRequest("POST", idsStr, database, `${container}/bulk-get`, null, null);
+            return await App.restRequest("POST", idsStr, database, `${container}/bulk-get`, null);
         }
-        return await App.restRequest("GET", null, database, container, requestIds, null);
+        if (requestIds.length == 1)
+            return await App.restRequest("GET", null, database, `${container}/${requestIds[0]}`, null);
+        const query = `ids=${requestIds.join(',')}`;
+        return await App.restRequest("GET", null, database, container, query);
     }
 
     private updateGetEntitiesAnchor(database: string, container: string) {
@@ -418,8 +420,8 @@ export class EntityEditor
         const keyName           = EntityEditor.getEntityKeyName(type as JsonType);
         const ids               = entities.map(entity => String(entity[keyName]));
         writeResult.innerHTML   = 'save <span class="spinner"></span>';
-        const requestIds        = Array.isArray(value) ? null : ids[0];
-        const response          = await App.restRequest("PUT", jsonValue, database, container, requestIds, null);
+        const containerPath     = ids.length == 1 ? `${container}/${ids[0]}` : container;
+        const response          = await App.restRequest("PUT", jsonValue, database, containerPath, null);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = EntityEditor.formatResult("Save", response.status, response.statusText, error);
@@ -480,10 +482,10 @@ export class EntityEditor
 
     private static async deleteIds(database: string, container: string, ids: string[]) : Promise<Response> {
         if (ids.length == 1) {
-            return await App.restRequest("DELETE", null, database, `${container}/${ids[0]}`, null, null);
+            return await App.restRequest("DELETE", null, database, `${container}/${ids[0]}`, null);
         }
         const idsStr = JSON.stringify(ids);
-        return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null, null);
+        return await App.restRequest("POST", idsStr, database, `${container}/bulk-delete`, null);
 }
 
     private entityModel:    monaco.editor.ITextModel;
