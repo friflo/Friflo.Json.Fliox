@@ -7,6 +7,7 @@ window.onload = function() {
     url: "http://localhost:8010/fliox/schema/main_db/json-schema/openapi.json",
     dom_id: '#swagger-ui',
     deepLinking: true,
+    docExpansion: 'none',
     presets: [
       SwaggerUIBundle.presets.apis,
       SwaggerUIStandalonePreset
