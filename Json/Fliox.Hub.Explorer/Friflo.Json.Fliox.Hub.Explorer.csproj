@@ -42,7 +42,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Content Include="www~\*.*;www~\js\*.js;www~\img\*.*;www~\example-requests\*.sync.json" Exclude="www~\manifest.json;www~\sw.js;">
+      <Content Include="www~\*.*;www~\js\*.js;www~\img\*.*;www~\swagger\*.*;www~\example-requests\*.sync.json" Exclude="www~\manifest.json;www~\sw.js;">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <PackageCopyToOutput>true</PackageCopyToOutput>
       </Content>
