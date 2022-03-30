@@ -99,8 +99,7 @@ export class EntityEditor {
         filterRow.style.visibility = "hidden";
         entityFilter.style.visibility = "hidden";
         const messagesLink = App.getMessagesLink(database);
-        const oasLink = App.getOpenApiLink(database, "open commands API", "#/commands");
-        readEntitiesDB.innerHTML = `${messagesLink} ${oasLink}`;
+        readEntitiesDB.innerHTML = messagesLink;
         readEntities.innerHTML = "";
         readEntitiesCount.innerHTML = "";
         const ulDatabase = createEl('ul');
@@ -149,7 +148,8 @@ export class EntityEditor {
     }
     createMessagesDocLink(database, category) {
         const categoryEl = createEl('li');
-        categoryEl.innerHTML = app.getSchemaCommand(database, category, category);
+        const oasLink = category == "commands" ? " " + App.getOpenApiLink(database, "open commands API", "#/commands") : "";
+        categoryEl.innerHTML = app.getSchemaCommand(database, category, category) + oasLink;
         if (!app.databaseSchemas[database]) {
             categoryEl.innerHTML = `<span style="opacity: 0.5;">${category}</span>`;
         }

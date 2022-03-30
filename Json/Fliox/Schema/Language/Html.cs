@@ -196,8 +196,9 @@ $@"        <tr>
         private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
             if (messageDefs == null)
                 return;
+            var oasCommandsLink = GetOasLink("/commands", "open commands API", "");
             sb.Append(
-$@"    <chapter id='{type}'><a href='#{type}'>{type}</a></chapter>
+$@"    <chapter id='{type}'><a href='#{type}'>{type}</a>{oasCommandsLink}</chapter>
     <table class='{type}'>
 ");
             foreach (var messageDef in messageDefs) {
