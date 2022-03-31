@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.OAS;
 
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 namespace Friflo.Json.Fliox.Schema.Language
@@ -39,6 +40,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             var description = JsonSchemaGenerator.GetDoc("", doc, "");
             var serverUrl   = generator.databaseUrl ?? "";
             var tags        = CreateTags (schemaType);
+            var openAPI     = schemaType.openAPI;
+            var contact     = GetContact(openAPI?.info.contact);
+            var license     = GetLicense(openAPI?.info.license);
             var api     = $@"
 {{
   ""openapi"": ""3.0.0"",
@@ -46,7 +50,7 @@ namespace Friflo.Json.Fliox.Schema.Language
   ""info"": {{
     ""title"":        ""{schemaType.Name}"",
     ""description"":  {description},
-    ""version"":      ""0.0.0""
+    ""version"":      ""{openAPI?.version ?? "0.0.0"}""{contact}{license}
   }},
   ""servers"": [
     {{
@@ -58,6 +62,47 @@ namespace Friflo.Json.Fliox.Schema.Language
   }}   
 }}";
             generator.files.Add("openapi.json", api);
+        }
+        
+        private static string GetContact (OpenAPIContact contact) {
+            if (contact == null)
+                return "";
+            var sb = new StringBuilder();
+            var parent = ",\n    \"contact\": {\n";
+            Property(parent, "name",    contact.name,   sb);
+            Property(parent, "url",     contact.url,    sb);
+            Property(parent, "email",   contact.email,  sb);
+            if (sb.Length == 0)
+                return "";
+            sb.Append("\n    }");
+            return sb.ToString();
+        }
+        
+        private static string GetLicense (OpenAPILicense license) {
+            if (license == null)
+                return "";
+            var sb = new StringBuilder();
+            var parent = ",\n    \"license\": {\n";
+            Property(parent, "name",    license.name,   sb);
+            Property(parent, "url",     license.url,    sb);
+            if (sb.Length == 0)
+                return "";
+            sb.Append("\n    }");
+            return sb.ToString();
+        }
+        
+        private static void Property (string parent, string name, string value, StringBuilder sb) {
+            if (value == null)
+                return;
+            if (sb.Length == 0)
+                sb.Append(parent);
+            else
+                sb.Append(",\n");
+            sb.Append("      \"");
+            sb.Append(name);
+            sb.Append("\": \"");
+            sb.Append(value);
+            sb.Append("\"");
         }
         
         private const string StringType     = @"""type"": ""string""";

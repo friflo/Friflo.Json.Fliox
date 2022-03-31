@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Schema.OAS
 {
+    /// <summary>
+    /// <a href="https://spec.openapis.org/oas/v3.0.0#openapi-object">OpenAPI Object specification</a>
+    /// </summary>
     public sealed class OpenAPI {
         public  string              version;
         public  OpenAPIInfo         info;
