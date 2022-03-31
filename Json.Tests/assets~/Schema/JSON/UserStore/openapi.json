@@ -226,32 +226,33 @@
     },
     "/credentials": {
       "get": {
-        "summary":    "return / filter multiple records from container credentials.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
+        "summary":    "return / filter multiple records from container credentials",
+        "description":    "To process big result sets fetch them iteratively by setting **maxCount** of records per request and use the returned **cursor** on the subsequent request.",
         "tags":       ["credentials"],
         "parameters": [
           {
             "in":       "query",
             "name":     "filter",
             "schema":   { "type": "string" },
-            "description": "---"
+            "description": "filter returned records by applying a expression predicate. E.g. `o.name == 'Peter'`"
           },
           {
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
-            "description": "---"
+            "description": "limit the number of returned records"
           },
           {
             "in":       "query",
             "name":     "maxCount",
             "schema":   { "type": "integer" },
-            "description": "---"
+            "description": "maximum number of records. Result will return a **cursor** if more records available."
           },
           {
             "in":       "query",
             "name":     "cursor",
             "schema":   { "type": "string" },
-            "description": "---"
+            "description": "pass the **cursor** returned by the previous request"
           }
         ],
         "responses": {
@@ -301,7 +302,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "responses": {
@@ -326,7 +327,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "requestBody": {          
@@ -357,7 +358,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "responses": {
@@ -427,32 +428,33 @@
     },
     "/permissions": {
       "get": {
-        "summary":    "return / filter multiple records from container permissions.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
+        "summary":    "return / filter multiple records from container permissions",
+        "description":    "To process big result sets fetch them iteratively by setting **maxCount** of records per request and use the returned **cursor** on the subsequent request.",
         "tags":       ["permissions"],
         "parameters": [
           {
             "in":       "query",
             "name":     "filter",
             "schema":   { "type": "string" },
-            "description": "---"
+            "description": "filter returned records by applying a expression predicate. E.g. `o.name == 'Peter'`"
           },
           {
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
-            "description": "---"
+            "description": "limit the number of returned records"
           },
           {
             "in":       "query",
             "name":     "maxCount",
             "schema":   { "type": "integer" },
-            "description": "---"
+            "description": "maximum number of records. Result will return a **cursor** if more records available."
           },
           {
             "in":       "query",
             "name":     "cursor",
             "schema":   { "type": "string" },
-            "description": "---"
+            "description": "pass the **cursor** returned by the previous request"
           }
         ],
         "responses": {
@@ -502,7 +504,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "responses": {
@@ -527,7 +529,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "requestBody": {          
@@ -558,7 +560,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "responses": {
@@ -628,32 +630,33 @@
     },
     "/roles": {
       "get": {
-        "summary":    "return / filter multiple records from container roles.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
+        "summary":    "return / filter multiple records from container roles",
+        "description":    "To process big result sets fetch them iteratively by setting **maxCount** of records per request and use the returned **cursor** on the subsequent request.",
         "tags":       ["roles"],
         "parameters": [
           {
             "in":       "query",
             "name":     "filter",
             "schema":   { "type": "string" },
-            "description": "---"
+            "description": "filter returned records by applying a expression predicate. E.g. `o.name == 'Peter'`"
           },
           {
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
-            "description": "---"
+            "description": "limit the number of returned records"
           },
           {
             "in":       "query",
             "name":     "maxCount",
             "schema":   { "type": "integer" },
-            "description": "---"
+            "description": "maximum number of records. Result will return a **cursor** if more records available."
           },
           {
             "in":       "query",
             "name":     "cursor",
             "schema":   { "type": "string" },
-            "description": "---"
+            "description": "pass the **cursor** returned by the previous request"
           }
         ],
         "responses": {
@@ -703,7 +706,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "responses": {
@@ -728,7 +731,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "requestBody": {          
@@ -759,7 +762,7 @@
             "name":     "id",
             "schema":   { "type": "string" },
             "required": true,
-            "description": "---"
+            "description": ""
           }
         ],
         "responses": {

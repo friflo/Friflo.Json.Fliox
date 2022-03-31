@@ -248,15 +248,15 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
             var getParams = new [] {
-                new Parameter("query",  "filter",   StringType,  false),
-                new Parameter("query",  "limit",    IntegerType, false),
-                new Parameter("query",  "maxCount", IntegerType, false),
-                new Parameter("query",  "cursor",   StringType,  false)
+                new Parameter("query",  "filter",   StringType,  false, "filter returned records by applying a expression predicate. E.g. `o.name == 'Peter'`"),
+                new Parameter("query",  "limit",    IntegerType, false, "limit the number of returned records"),
+                new Parameter("query",  "maxCount", IntegerType, false, "maximum number of records. Result will return a **cursor** if more records available."),
+                new Parameter("query",  "cursor",   StringType,  false, "pass the **cursor** returned by the previous request")
             };
-            EmitMethod(container, "get",    $@"return / filter multiple records from container {container}." + 
-                "Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
+            EmitMethod(container, "get",    $@"return / filter multiple records from container {container}", 
+                "To process big result sets fetch them iteratively by setting **maxCount** of records per request and use the returned **cursor** on the subsequent request.",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
-            EmitMethod(container, "put",    $"create or update multiple records in container {container}",
+            EmitMethod(container, "put",    $"create or update multiple records in container {container}", null,
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
@@ -264,10 +264,10 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitPathId(string container, string path, string typeRef, StringBuilder sb) {
             var methodSb    = new StringBuilder();
             var bodyContent = new ContentRef(typeRef, false);
-            var idParam     = new [] { new Parameter("path", "id", StringType, true)};
-            EmitMethod (container, "get",    $"get a single record from container {container}", null, bodyContent,              idParam, methodSb);
-            EmitMethod (container, "put",    $"write a single record to container {container}", bodyContent, new ContentText(), idParam, methodSb);
-            EmitMethod (container, "delete", $"delete a single record in container {container} by id", null, new ContentText(), idParam, methodSb);
+            var idParam     = new [] { new Parameter("path", "id", StringType, true, null)};
+            EmitMethod (container, "get",    $"get a single record from container {container}", null, null, bodyContent,              idParam, methodSb);
+            EmitMethod (container, "put",    $"write a single record to container {container}", null, bodyContent, new ContentText(), idParam, methodSb);
+            EmitMethod (container, "delete", $"delete a single record in container {container} by id", null, null, new ContentText(), idParam, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             StringBuilder           sb)
         {
             var methodSb = new StringBuilder();
-            EmitMethod(tag, method,   summary, request, response, queryParams, methodSb);
+            EmitMethod(tag, method,   summary, null, request, response, queryParams, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
         
@@ -290,6 +290,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             string                  tag,
             string                  method,
             string                  summary,
+            string                  description,
             Content                 request,
             Content                 response,
             ICollection<Parameter>  queryParams,
@@ -299,6 +300,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.Append(",");
             var querySb = new StringBuilder();
             var queryStr = "";
+            var descriptionStr = description == null ? "" : $@"
+        ""description"":    ""{description}"","; 
             if (queryParams != null) {
                 foreach (var queryParam in queryParams) {
                     if (querySb.Length > 0)
@@ -318,7 +321,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var responseStr = response.Get();
             var methodStr = $@"
       ""{method}"": {{
-        ""summary"":    ""{summary}"",
+        ""summary"":    ""{summary}"",{descriptionStr}
         ""tags"":       [""{tag}""],{queryStr}{requestStr}
         ""responses"": {{
           ""200"": {{             
@@ -346,12 +349,14 @@ namespace Friflo.Json.Fliox.Schema.Language
         private     readonly    string  name;
         private     readonly    string  type;
         private     readonly    bool    required;
+        private     readonly    string  description;
         
-        internal Parameter(string paramType, string name, string type, bool required) {
-            this.paramType  = paramType;
-            this.name       = name;
-            this.type       = type;
-            this.required   = required;
+        internal Parameter(string paramType, string name, string type, bool required, string description) {
+            this.paramType      = paramType;
+            this.name           = name;
+            this.type           = type;
+            this.required       = required;
+            this.description    = description;
         }
         
         internal string Get() {
@@ -362,7 +367,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             ""in"":       ""{paramType}"",
             ""name"":     ""{name}"",
             ""schema"":   {{ {type} }},{requiredStr}
-            ""description"": ""---""
+            ""description"": ""{description ?? ""}""
           }}";
         }
     }
