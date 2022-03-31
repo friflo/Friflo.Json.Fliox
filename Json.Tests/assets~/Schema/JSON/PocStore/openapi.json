@@ -17,8 +17,12 @@
   },
   "servers": [
     {
-      "description": "ServerDescription",
-      "url": "ServerUrl"
+      "description": "test localhost",
+      "url": "http://localhost:8010/fliox/rest/main_db"
+    },
+    {
+      "description": "test 127.0.0.1",
+      "url": "http://127.0.0.1:8010/fliox/rest/main_db"
     }
   ],
   "tags": [
