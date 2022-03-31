@@ -185,8 +185,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private void EmitPaths(TypeDef schemaType, StringBuilder sb) {
-            var dbContainers     = GetTypeRef("Friflo.Json.Fliox.Hub.DB.Cluster", "DbContainers");
-            EmitPathRoot("database", "/",   "return all database containers", dbContainers, null, sb);
+            var dbContainers    = GetTypeRef("Friflo.Json.Fliox.Hub.DB.Cluster", "DbContainers");
+            var response        = new ContentRef(dbContainers, false);
+            EmitPath("database", "get", "/",   null, "return all database containers", null, response, sb);
 
             EmitMessages("command", schemaType.Commands, sb);
             EmitMessages("message", schemaType.Messages, sb);
@@ -210,9 +211,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var paramRef    = GetType(paramType);
                 queryParams.Add(new Parameter("query", "param", paramRef, false));
             }
-            var doc = type.doc ?? "";
-            var tag = messageType == "command" ? "commands" : "messages";
-            EmitPathRoot(tag, $"/?{messageType}={type.name}",  doc, "" , queryParams, sb);
+            var doc         = type.doc ?? "";
+            var tag         = messageType == "command" ? "commands" : "messages";
+            var response    = new ContentRef("", false);
+            EmitPath(tag, "get", $"/?{messageType}={type.name}", queryParams, doc, null, response, sb);
         }
         
         private void EmitContainerApi(FieldDef container, StringBuilder sb) {
@@ -223,11 +225,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             EmitPathId        (name, $"/{name}/{{id}}",       typeRef, sb);
 
             var bulkGetResponse = new ContentRef(typeRef, true);
-            EmitPath ("post",   name, $"/{name}/bulk-get",    null, $"get multiple records by id from container {container}",
+            EmitPath (name, "post", $"/{name}/bulk-get",    null, $"get multiple records by id from container {container}",
                 new ContentRef(StringType, true), bulkGetResponse, sb);
             
             var bulkDeleteResponse = new ContentText();
-            EmitPath ("post",   name, $"/{name}/bulk-delete", null, $"delete multiple records by id in container {container}",
+            EmitPath (name, "post", $"/{name}/bulk-delete", null, $"delete multiple records by id in container {container}",
                 new ContentRef(StringType, true), bulkDeleteResponse, sb);
         }
         
@@ -239,20 +241,6 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.Append(methods);
             sb.Append($@"
     }}");
-        }
-        
-        private static void EmitPathRoot(
-            string                  tag,
-            string                  path,
-            string                  summary,
-            string                  typeRef,
-            ICollection<Parameter>  queryParams,
-            StringBuilder           sb)
-        {
-            var methodSb = new StringBuilder();
-            EmitMethod(tag, "get",    summary,
-                null, new ContentRef(typeRef, false), queryParams, methodSb);
-            AppendPath(path, methodSb.ToString(), sb);
         }
         
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
@@ -279,8 +267,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitPath(
-            string                  method,
             string                  tag,
+            string                  method,
             string                  path,
             ICollection<Parameter>  queryParams,
             string                  summary,
