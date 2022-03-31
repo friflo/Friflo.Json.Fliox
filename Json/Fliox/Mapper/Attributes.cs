@@ -73,6 +73,25 @@ namespace Friflo.Json.Fliox.Mapper
         public sealed class MessagePrefixAttribute : Attribute {
             public MessagePrefixAttribute (string prefix) { }
         }
+        
+        // ------------------------------- OpenAPI attributes -------------------------------
+        [AttributeUsage(AttributeTargets.Class)]
+        public sealed class OpenAPI : Attribute {
+            public string           Version        { get; set; }
+            
+            public string           LicenseName    { get; set; }
+            public string           LicenseUrl     { get; set; }
+            
+            public string           ContactName    { get; set; }
+            public string           ContactUrl     { get; set; }
+            public string           ContactEmail   { get; set; }
+        }
+        
+        [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+        public sealed class OpenAPIServer : Attribute {
+            public string           Url             { get; set; }
+            public string           Description     { get; set; }
+        }
     }
     
 

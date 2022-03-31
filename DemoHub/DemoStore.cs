@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-
+using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable All
@@ -24,6 +24,10 @@ namespace Fliox.DemoHub
     /// The <see cref="MessageHandler"/> demonstates how to use a <see cref="DemoStore"/> instances as client to execute
     /// common database operations like: Upsert, Count and Query. <br/>
     /// </remarks>
+    [Fri.OpenAPI(Version = "1.0.0",
+        ContactName = "Ullrich Praetz", ContactUrl = "https://github.com/friflo/Friflo.Json.Fliox/issues",
+        LicenseName = "MIT",            LicenseUrl = "https://opensource.org/licenses/MIT")]
+    [Fri.OpenAPIServer(Description = "public DemoHub API", Url = "http://ec2-174-129-178-18.compute-1.amazonaws.com/fliox/schema/main_db")]
     public partial class DemoStore : FlioxClient {
         // --- containers
         public readonly EntitySet <long, Article>     articles;

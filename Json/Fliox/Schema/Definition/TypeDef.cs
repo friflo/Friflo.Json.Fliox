@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Schema.OAS;
 
 namespace Friflo.Json.Fliox.Schema.Definition
 {
@@ -63,6 +64,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         internal readonly   string                      fullName;
         internal            string                      keyField;
         public   readonly   string                      doc;
+        public              OpenAPI                     openAPI;
 
         
         protected TypeDef (string name, string @namespace, string doc) {

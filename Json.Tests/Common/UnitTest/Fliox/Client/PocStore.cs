@@ -27,6 +27,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// Its messages are methods returning a <see cref="MessageTask"/>.
     /// <see cref="PocStore"/> instances can be used on server and client side.
     /// </remarks>
+    [Fri.OpenAPI(Version = "1.0.0",
+        ContactName = "ContactName", ContactUrl = "ContactUrl", ContactEmail = "ContactEmail",
+        LicenseName = "LicenseName", LicenseUrl = "LicenseUrl")]
+    [Fri.OpenAPIServer(Description = "ServerDescription", Url = "ServerUrl")]
     public class PocStore : FlioxClient
     {
         // --- containers

@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
-
+using Friflo.Json.Fliox.Schema.OAS;
 using Req       = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 using Ignore    = Friflo.Json.Fliox.Mapper.Fri.IgnoreAttribute;
 
@@ -60,6 +60,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
 
         /// <summary>map of type <see cref="definitions"/> contained by the JSON Schema.</summary>
                 public      Dictionary<string, JsonType>    definitions;
+        
+                public      OpenAPI                         openAPI;
 
         /// <summary>file name is <see cref="name"/> + ".json".
         /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>
@@ -67,7 +69,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Ignore]public      string                          name;
         [Ignore]internal    Dictionary<string, JsonTypeDef> typeDefs;
 
-        public override string                          ToString() => fileName;
+        public  override    string                          ToString() => fileName;
     }
 
     /// <summary>
