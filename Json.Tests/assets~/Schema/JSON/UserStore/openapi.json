@@ -226,7 +226,7 @@
     },
     "/credentials": {
       "get": {
-        "summary":    "return multiple records from container credentials",
+        "summary":    "return / filter multiple records from container credentials.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["credentials"],
         "parameters": [
           {
@@ -239,6 +239,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -415,7 +427,7 @@
     },
     "/permissions": {
       "get": {
-        "summary":    "return multiple records from container permissions",
+        "summary":    "return / filter multiple records from container permissions.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["permissions"],
         "parameters": [
           {
@@ -428,6 +440,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -604,7 +628,7 @@
     },
     "/roles": {
       "get": {
-        "summary":    "return multiple records from container roles",
+        "summary":    "return / filter multiple records from container roles.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["roles"],
         "parameters": [
           {
@@ -617,6 +641,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],

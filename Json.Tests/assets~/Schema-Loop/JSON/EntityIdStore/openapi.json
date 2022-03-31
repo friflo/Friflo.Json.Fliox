@@ -222,7 +222,7 @@
     },
     "/guidEntities": {
       "get": {
-        "summary":    "return multiple records from container guidEntities",
+        "summary":    "return / filter multiple records from container guidEntities.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["guidEntities"],
         "parameters": [
           {
@@ -235,6 +235,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -411,7 +423,7 @@
     },
     "/intEntities": {
       "get": {
-        "summary":    "return multiple records from container intEntities",
+        "summary":    "return / filter multiple records from container intEntities.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["intEntities"],
         "parameters": [
           {
@@ -424,6 +436,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -600,7 +624,7 @@
     },
     "/intEntitiesAuto": {
       "get": {
-        "summary":    "return multiple records from container intEntitiesAuto",
+        "summary":    "return / filter multiple records from container intEntitiesAuto.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["intEntitiesAuto"],
         "parameters": [
           {
@@ -613,6 +637,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -789,7 +825,7 @@
     },
     "/longEntities": {
       "get": {
-        "summary":    "return multiple records from container longEntities",
+        "summary":    "return / filter multiple records from container longEntities.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["longEntities"],
         "parameters": [
           {
@@ -802,6 +838,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -978,7 +1026,7 @@
     },
     "/shortEntities": {
       "get": {
-        "summary":    "return multiple records from container shortEntities",
+        "summary":    "return / filter multiple records from container shortEntities.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["shortEntities"],
         "parameters": [
           {
@@ -991,6 +1039,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1167,7 +1227,7 @@
     },
     "/byteEntities": {
       "get": {
-        "summary":    "return multiple records from container byteEntities",
+        "summary":    "return / filter multiple records from container byteEntities.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["byteEntities"],
         "parameters": [
           {
@@ -1180,6 +1240,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1356,7 +1428,7 @@
     },
     "/customIdEntities": {
       "get": {
-        "summary":    "return multiple records from container customIdEntities",
+        "summary":    "return / filter multiple records from container customIdEntities.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["customIdEntities"],
         "parameters": [
           {
@@ -1369,6 +1441,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1545,7 +1629,7 @@
     },
     "/entityRefs": {
       "get": {
-        "summary":    "return multiple records from container entityRefs",
+        "summary":    "return / filter multiple records from container entityRefs.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["entityRefs"],
         "parameters": [
           {
@@ -1558,6 +1642,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1734,7 +1830,7 @@
     },
     "/customIdEntities2": {
       "get": {
-        "summary":    "return multiple records from container customIdEntities2",
+        "summary":    "return / filter multiple records from container customIdEntities2.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["customIdEntities2"],
         "parameters": [
           {
@@ -1747,6 +1843,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],

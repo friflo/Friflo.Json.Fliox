@@ -248,10 +248,13 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitPathContainer(string container, string path, string typeRef, StringBuilder sb) {
             var methodSb = new StringBuilder();
             var getParams = new [] {
-                new Parameter("query", "filter", StringType,  false),
-                new Parameter("query", "limit",  IntegerType, false)
+                new Parameter("query",  "filter",   StringType,  false),
+                new Parameter("query",  "limit",    IntegerType, false),
+                new Parameter("query",  "maxCount", IntegerType, false),
+                new Parameter("query",  "cursor",   StringType,  false)
             };
-            EmitMethod(container, "get",    $"return multiple records from container {container}",
+            EmitMethod(container, "get",    $@"return / filter multiple records from container {container}." + 
+                "Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
                 null, new ContentRef(typeRef, false), getParams, methodSb);
             EmitMethod(container, "put",    $"create or update multiple records in container {container}",
                 new ContentRef(typeRef, true), new ContentText(), null, methodSb);

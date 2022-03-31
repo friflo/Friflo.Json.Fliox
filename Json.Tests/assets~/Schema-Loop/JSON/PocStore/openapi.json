@@ -442,7 +442,7 @@
     },
     "/orders": {
       "get": {
-        "summary":    "return multiple records from container orders",
+        "summary":    "return / filter multiple records from container orders.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["orders"],
         "parameters": [
           {
@@ -455,6 +455,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -631,7 +643,7 @@
     },
     "/customers": {
       "get": {
-        "summary":    "return multiple records from container customers",
+        "summary":    "return / filter multiple records from container customers.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["customers"],
         "parameters": [
           {
@@ -644,6 +656,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -820,7 +844,7 @@
     },
     "/articles": {
       "get": {
-        "summary":    "return multiple records from container articles",
+        "summary":    "return / filter multiple records from container articles.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["articles"],
         "parameters": [
           {
@@ -833,6 +857,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1009,7 +1045,7 @@
     },
     "/producers": {
       "get": {
-        "summary":    "return multiple records from container producers",
+        "summary":    "return / filter multiple records from container producers.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["producers"],
         "parameters": [
           {
@@ -1022,6 +1058,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1198,7 +1246,7 @@
     },
     "/employees": {
       "get": {
-        "summary":    "return multiple records from container employees",
+        "summary":    "return / filter multiple records from container employees.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["employees"],
         "parameters": [
           {
@@ -1211,6 +1259,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
@@ -1387,7 +1447,7 @@
     },
     "/types": {
       "get": {
-        "summary":    "return multiple records from container types",
+        "summary":    "return / filter multiple records from container types.Optionally maxCount/cursor are used to iterate a big result set by returning maxCount of records per request",
         "tags":       ["types"],
         "parameters": [
           {
@@ -1400,6 +1460,18 @@
             "in":       "query",
             "name":     "limit",
             "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "maxCount",
+            "schema":   { "type": "integer" },
+            "description": "---"
+          },
+          {
+            "in":       "query",
+            "name":     "cursor",
+            "schema":   { "type": "string" },
             "description": "---"
           }
         ],
