@@ -67,7 +67,8 @@ __`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 ## **Testing**
 
 ### **Unit Tests**
-namespace **`Friflo.Json.Tests.Main`**                      [README.md](Json.Tests/README.md)
+📄   [README.md](Json.Tests/README.md)
+
 
 
 
