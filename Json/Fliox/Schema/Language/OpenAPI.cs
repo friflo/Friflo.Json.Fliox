@@ -205,16 +205,18 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private void EmitMessage(MessageDef type, string messageType, StringBuilder sb) {
-            var queryParams = new List<Parameter>();
+            // var queryParams = new List<Parameter>();
+            Content request = null;
             var paramType   = type.param?.type;
             if (paramType != null) {
                 var paramRef    = GetType(paramType);
-                queryParams.Add(new Parameter("query", "param", paramRef, false));
+                request         = new ContentRef(paramRef, false);
+                // queryParams.Add(new Parameter("query", "param", paramRef, false));
             }
             var doc         = type.doc ?? "";
             var tag         = messageType == "command" ? "commands" : "messages";
             var response    = new ContentRef("", false);
-            EmitPath(tag, "get", $"/?{messageType}={type.name}", queryParams, doc, null, response, sb);
+            EmitPath(tag, "post", $"/?{messageType}={type.name}", null, doc, request, response, sb);
         }
         
         private void EmitContainerApi(FieldDef container, StringBuilder sb) {
@@ -397,5 +399,4 @@ namespace Friflo.Json.Fliox.Schema.Language
             }}";
         }
     }
-
 }

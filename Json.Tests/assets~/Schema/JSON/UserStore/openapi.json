@@ -51,17 +51,19 @@
       }
     },
     "/?command=AuthenticateUser": {
-      "get": {
+      "post": {
         "summary":    "authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b>",
         "tags":       ["commands"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "param",
-            "schema":   { "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.json#/definitions/Credentials" },
-            "description": "---"
-          }
-        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.json#/definitions/Credentials"
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
@@ -77,17 +79,19 @@
       }
     },
     "/?command=std.Echo": {
-      "get": {
+      "post": {
         "summary":    "echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "param",
-            "schema":   {   },
-            "description": "---"
-          }
-        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                   
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
@@ -103,11 +107,9 @@
       }
     },
     "/?command=std.Containers": {
-      "get": {
+      "post": {
         "summary":    "list all database containers",
         "tags":       ["commands"],
-        "parameters": [
-        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -123,11 +125,9 @@
       }
     },
     "/?command=std.Messages": {
-      "get": {
+      "post": {
         "summary":    "list all database commands and messages",
         "tags":       ["commands"],
-        "parameters": [
-        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -143,11 +143,9 @@
       }
     },
     "/?command=std.Schema": {
-      "get": {
+      "post": {
         "summary":    "return the Schema assigned to the database",
         "tags":       ["commands"],
-        "parameters": [
-        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -163,17 +161,19 @@
       }
     },
     "/?command=std.Stats": {
-      "get": {
+      "post": {
         "summary":    "return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
-        "parameters": [
-          {
-            "in":       "query",
-            "name":     "param",
-            "schema":   { "type": "string" },
-            "description": "---"
-          }
-        ],
+        "requestBody": {          
+          "description": "---",
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+        },
         "responses": {
           "200": {             
             "description": "OK",
@@ -189,11 +189,9 @@
       }
     },
     "/?command=std.Details": {
-      "get": {
+      "post": {
         "summary":    "returns general information about the Hub like version, host, project and environment name",
         "tags":       ["commands"],
-        "parameters": [
-        ],
         "responses": {
           "200": {             
             "description": "OK",
@@ -209,11 +207,9 @@
       }
     },
     "/?command=std.Cluster": {
-      "get": {
+      "post": {
         "summary":    "list all databases and their containers hosted by the Hub",
         "tags":       ["commands"],
-        "parameters": [
-        ],
         "responses": {
           "200": {             
             "description": "OK",

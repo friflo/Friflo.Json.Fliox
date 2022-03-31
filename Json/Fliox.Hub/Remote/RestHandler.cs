@@ -68,9 +68,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var queryValue = queryParams["param"];
                     param = new JsonValue(queryValue);
                 }
-                if (!IsValidJson(pool, param, out string error)) {
-                    context.WriteError(GetErrorType(command), error, 400);
-                    return;
+                // Treat missing request body as null
+                if (param.Length == 0) {
+                    param = new JsonValue();
+                } else {
+                    if (!IsValidJson(pool, param, out string error)) {
+                        context.WriteError(GetErrorType(command), error, 400);
+                        return;
+                    }
                 }
                 if (command != null) {
                     await Command(context, database, command, param).ConfigureAwait(false); 
