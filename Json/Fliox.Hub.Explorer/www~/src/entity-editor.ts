@@ -778,7 +778,7 @@ export class EntityEditor
         const param         = EntityEditor.getMessageArg("param", database, signature.param);
         const returnHtml    = EntityEditor.getReturnType(database, signature.result);
         const commandEl     = app.getSchemaCommand(database, category, command);
-        const oasLink       = App.getOpenApiLink(database, "open commands API", `#/commands/get__command_${command}`);
+        const oasLink       = App.getOpenApiLink(database, "open commands API", `#/commands/post__command_${command}`);
         const el =
         `<span title="command parameter type">
             ${commandEl}
