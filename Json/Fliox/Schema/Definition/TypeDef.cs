@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         internal readonly   string                      fullName;
         internal            string                      keyField;
         public   readonly   string                      doc;
-        public              OpenAPI                     openAPI;
+        public              OpenApi                     openAPI;
 
         
         protected TypeDef (string name, string @namespace, string doc) {

@@ -8,29 +8,29 @@ namespace Friflo.Json.Fliox.Schema.OAS
     /// <summary>
     /// <a href="https://spec.openapis.org/oas/v3.0.0#openapi-object">OpenAPI Object specification</a>
     /// </summary>
-    public sealed class OpenAPI {
+    public sealed class OpenApi {
         public  string              version;
-        public  OpenAPIInfo         info;
-        public  List<OpenAPIServer> servers;
+        public  OpenApiInfo         info;
+        public  List<OpenApiServer> servers;
     }
     
-    public sealed class OpenAPIInfo {
-        public  OpenAPIContact      contact;
-        public  OpenAPILicense      license;
+    public sealed class OpenApiInfo {
+        public  OpenApiContact      contact;
+        public  OpenApiLicense      license;
     }
     
-    public sealed class OpenAPIContact {
+    public sealed class OpenApiContact {
         public  string              name;
         public  string              url;
         public  string              email;
     }
     
-    public sealed class OpenAPILicense {
+    public sealed class OpenApiLicense {
         public  string              name;
         public  string              url;
     }
 
-    public sealed class OpenAPIServer {
+    public sealed class OpenApiServer {
         public  string              url;
         public  string              description;
     }

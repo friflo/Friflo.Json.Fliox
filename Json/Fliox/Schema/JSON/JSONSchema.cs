@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         /// <summary>map of type <see cref="definitions"/> contained by the JSON Schema.</summary>
                 public      Dictionary<string, JsonType>    definitions;
         
-                public      OpenAPI                         openAPI;
+                public      OpenApi                         openAPI;
 
         /// <summary>file name is <see cref="name"/> + ".json".
         /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>

@@ -10,10 +10,10 @@ namespace Friflo.Json.Fliox.Schema.OAS
 {
     public static class OpenAPIAttributes
     {
-        public static OpenAPI GetOpenAPI(Type schemaType)
+        public static OpenApi GetOpenAPI(Type schemaType)
         {
             var     attributes  = schemaType.CustomAttributes;
-            OpenAPI openAPI     = null;
+            OpenApi openAPI     = null;
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.OpenAPI)) {
                     var namedArguments = attr.NamedArguments;
@@ -35,17 +35,17 @@ namespace Friflo.Json.Fliox.Schema.OAS
             return openAPI;
         }
         
-        private static OpenAPI CreateInstance() {
-            return new OpenAPI {
-                info = new OpenAPIInfo {
-                    contact = new OpenAPIContact(),
-                    license = new OpenAPILicense()
+        private static OpenApi CreateInstance() {
+            return new OpenApi {
+                info = new OpenApiInfo {
+                    contact = new OpenApiContact(),
+                    license = new OpenApiLicense()
                 },
-                servers = new List<OpenAPIServer>()
+                servers = new List<OpenApiServer>()
             };
         }
         
-        private static void GetOpenAPIAttributes(OpenAPI openAPI, IList<CustomAttributeNamedArgument> namedArguments) {
+        private static void GetOpenAPIAttributes(OpenApi openAPI, IList<CustomAttributeNamedArgument> namedArguments) {
             foreach (var args in namedArguments) {
                 var value = (string)args.TypedValue.Value;
                 switch (args.MemberName) {
@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Schema.OAS
             }
         }
         
-        private static void GetOpenAPIServerAttributes(OpenAPI openAPI, IList<CustomAttributeNamedArgument> namedArguments) {
-            var server = new OpenAPIServer();
+        private static void GetOpenAPIServerAttributes(OpenApi openAPI, IList<CustomAttributeNamedArgument> namedArguments) {
+            var server = new OpenApiServer();
             openAPI.servers.Add(server);
             foreach (var args in namedArguments) {
                 var value = (string)args.TypedValue.Value;

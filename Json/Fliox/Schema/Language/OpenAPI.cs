@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             generator.files.Add("openapi.json", api);
         }
         
-        private static string GetContact (OpenAPIContact contact) {
+        private static string GetContact (OpenApiContact contact) {
             if (contact == null)
                 return "";
             var sb = new StringBuilder();
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return sb.ToString();
         }
         
-        private static string GetLicense (OpenAPILicense license) {
+        private static string GetLicense (OpenApiLicense license) {
             if (license == null)
                 return "";
             var sb = new StringBuilder();
@@ -87,11 +87,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             return sb.ToString();
         }
         
-        private static string GetServers (List<OpenAPIServer> servers, string databaseUrl) {
+        private static string GetServers (List<OpenApiServer> servers, string databaseUrl) {
             var sb          = new StringBuilder();
-            var allServers  = new List<OpenAPIServer>();
+            var allServers  = new List<OpenApiServer>();
             if (databaseUrl != null) {
-                allServers.Add(new OpenAPIServer { url = databaseUrl, description = "local server" });
+                allServers.Add(new OpenApiServer { url = databaseUrl, description = "local server" });
             }
             if (servers != null) {
                 allServers.AddRange(servers);
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return sb.ToString();
         }
         
-        private static void GetServer (OpenAPIServer server, StringBuilder sb) {
+        private static void GetServer (OpenApiServer server, StringBuilder sb) {
             var parent = "    {\n";
             Property(parent, "description", server.description, sb);
             Property(parent, "url",         server.url,         sb);

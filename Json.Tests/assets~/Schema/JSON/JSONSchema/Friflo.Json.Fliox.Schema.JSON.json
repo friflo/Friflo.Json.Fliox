@@ -8,7 +8,7 @@
             "properties": {
                 "$ref":        { "type": ["string", "null"], "description": "reference to 'main' type definition in <b>definitions</b> to<br/>\nenable schema urls without fragment suffix like: <c>#/definitions/SomeType</c>" },
                 "definitions": { "additionalProperties": { "$ref": "#/definitions/JsonType" }, "type": "object", "description": "map of type <b>definitions</b> contained by the JSON Schema." },
-                "openAPI":     { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Schema.OAS.json#/definitions/OpenAPI" }, {"type": "null"}] }
+                "openAPI":     { "oneOf": [{ "$ref": "./Friflo.Json.Fliox.Schema.OAS.json#/definitions/OpenApi" }, {"type": "null"}] }
             },
             "additionalProperties": false
         },
