@@ -27,7 +27,7 @@ namespace Fliox.DemoHub
     [Fri.OpenAPI(Version = "1.0.0",
         ContactName = "Ullrich Praetz", ContactUrl = "https://github.com/friflo/Friflo.Json.Fliox/issues",
         LicenseName = "MIT",            LicenseUrl = "https://spdx.org/licenses/MIT.html")]
-    [Fri.OpenAPIServer(Description = "public DemoHub API", Url = "http://ec2-174-129-178-18.compute-1.amazonaws.com/fliox/schema/main_db")]
+    [Fri.OpenAPIServer(Description = "public DemoHub API", Url = "http://ec2-174-129-178-18.compute-1.amazonaws.com/fliox/rest/main_db")]
     public partial class DemoStore : FlioxClient {
         // --- containers
         public readonly EntitySet <long, Article>     articles;

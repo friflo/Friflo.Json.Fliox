@@ -12,12 +12,13 @@
     },
     "license": {
       "name": "AGPL-3.0",
-      "url": "https://spdx.org/licenses/GPL-3.0-only.html"
+      "url": "https://spdx.org/licenses/AGPL-3.0-only.html"
     }
   },
   "servers": [
     {
-      "url":          ""
+      "description": "ServerDescription",
+      "url": "ServerUrl"
     }
   ],
   "tags": [

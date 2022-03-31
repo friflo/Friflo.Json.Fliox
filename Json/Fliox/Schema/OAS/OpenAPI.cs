@@ -34,6 +34,4 @@ namespace Friflo.Json.Fliox.Schema.OAS
         public  string              url;
         public  string              description;
     }
-    
-
 }

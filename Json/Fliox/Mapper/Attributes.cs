@@ -75,6 +75,9 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         // ------------------------------- OpenAPI attributes -------------------------------
+        /// <summary>
+        /// <a href="https://spec.openapis.org/oas/v3.0.0#openapi-object">OpenAPI Object specification</a>
+        /// </summary>
         [AttributeUsage(AttributeTargets.Class)]
         public sealed class OpenAPI : Attribute {
             public string           Version        { get; set; }
@@ -87,6 +90,9 @@ namespace Friflo.Json.Fliox.Mapper
             public string           ContactEmail   { get; set; }
         }
         
+        /// <summary>
+        /// <a href="https://spec.openapis.org/oas/v3.0.0#server-object">OpenAPI Server Object</a>
+        /// </summary>
         [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
         public sealed class OpenAPIServer : Attribute {
             public string           Url             { get; set; }
