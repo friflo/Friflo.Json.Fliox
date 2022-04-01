@@ -93,7 +93,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                   
                 }
               }
             }
@@ -111,7 +111,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers"
                 }
               }
             }
@@ -129,7 +129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbMessages"
                 }
               }
             }
@@ -147,7 +147,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbSchema"
                 }
               }
             }
@@ -174,7 +174,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbStats"
                 }
               }
             }
@@ -192,7 +192,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostDetails"
                 }
               }
             }
@@ -210,7 +210,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/HostCluster"
                 }
               }
             }
