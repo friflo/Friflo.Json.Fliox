@@ -458,7 +458,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("delete error", resultError.message, 500);
                 return;
             }
-            var entityErrors = restResult.syncResponse.deleteErrors;
+            var entityErrors = deleteResult.deleteErrors;
             if (entityErrors != null) {
                 var sb = new StringBuilder();
                 FormatEntityErrors (entityErrors, sb);
@@ -513,16 +513,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             if (result.taskResult == null)
                 return;
-            var upsertResult    = (ICommandResult)result.taskResult;
-            var resultError     = upsertResult.Error;
+            var taskResult      = (ICommandResult)result.taskResult;
+            var resultError     = taskResult.Error;
             if (resultError != null) {
                 context.WriteError("PUT error", resultError.message, 500);
                 return;
             }
-            Dictionary<string, EntityErrors> entityErrors;
+            Dictionary<JsonKey, EntityError> entityErrors;
             switch (type) {
-                case TaskType.upsert: entityErrors = result.syncResponse.upsertErrors; break;
-                case TaskType.create: entityErrors = result.syncResponse.createErrors; break;
+                case TaskType.upsert: entityErrors = ((UpsertEntitiesResult)taskResult).upsertErrors;   break;
+                case TaskType.create: entityErrors = ((CreateEntitiesResult)taskResult).createErrors;   break;
                 default:
                     throw new InvalidOperationException($"Invalid PUT type: {type}");
             }
@@ -557,13 +557,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             if (result.taskResult == null)
                 return;
-            var patchResult     = (ICommandResult)result.taskResult;
+            var patchResult     = (PatchEntitiesResult)result.taskResult;
             var resultError     = patchResult.Error;
             if (resultError != null) {
                 context.WriteError("PATCH error", resultError.message, 500);
                 return;
             }
-            var entityErrors = result.syncResponse.upsertErrors;
+            var entityErrors = patchResult.patchErrors;
             if (entityErrors != null) {
                 var sb = new StringBuilder();
                 FormatEntityErrors (entityErrors, sb);
@@ -573,18 +573,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("PATCH successful", "text/plain", 200);
         }
         
-        private static void FormatEntityErrors(Dictionary<string, EntityErrors> entityErrors, StringBuilder sb) {
+        private static void FormatEntityErrors(Dictionary<JsonKey, EntityError> entityErrors, StringBuilder sb) {
             foreach (var pair in entityErrors) {
-                var errors = pair.Value.errors;
-                foreach (var errorPair in errors) {
-                    var error = errorPair.Value;
-                    sb.Append("\n| ");
-                    sb.Append(error.type);
-                    sb.Append(": [");
-                    sb.Append(error.id);
-                    sb.Append("], ");
-                    sb.Append(error.message);
-                }
+                var error = pair.Value;
+                sb.Append("\n| ");
+                sb.Append(error.type);
+                sb.Append(": [");
+                sb.Append(error.id);
+                sb.Append("], ");
+                sb.Append(error.message);
             }
         }
         

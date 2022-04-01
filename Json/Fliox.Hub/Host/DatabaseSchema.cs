@@ -85,10 +85,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             List<JsonValue>                         entities,
             ExecuteContext                          executeContext,
             EntityErrorType                         errorType,
-            ref Dictionary<string, EntityErrors>    entityErrorMap
+            ref Dictionary<JsonKey, EntityError>    validationErrors
         ) {
             EntityContainer.AssertEntityCounts(entityKeys, entities);
-            Dictionary<JsonKey, EntityError> validationErrors = null;
             if (!containerTypes.TryGetValue(container, out ValidationType type)) {
                 return $"No Schema definition for container Type: {container}";
             }
@@ -109,8 +108,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
             if (validationErrors == null)
                 return null;
-            var errors = SyncResponse.GetEntityErrors(ref entityErrorMap, container);
-            errors.AddErrors(validationErrors);
             
             // Remove invalid entries from entities
             int pos = 0;

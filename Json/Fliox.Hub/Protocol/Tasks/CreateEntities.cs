@@ -41,10 +41,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return InvalidTask(error);
             }
 
-            error = database.Schema?.ValidateEntities (container, entityKeys, entities, executeContext, EntityErrorType.WriteError, ref response.createErrors);
+            Dictionary<JsonKey, EntityError> validationErrors = null;
+            error = database.Schema?.ValidateEntities (container, entityKeys, entities, executeContext, EntityErrorType.WriteError, ref validationErrors);
             if (error != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, error));
             }
+            if (validationErrors != null && validationErrors.Count > 0) {
+                var errors = SyncResponse.GetEntityErrors(ref response.createErrors, container);
+                errors.AddErrors(validationErrors);
+            }
+            
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {

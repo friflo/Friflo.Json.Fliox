@@ -139,9 +139,13 @@ namespace Friflo.Json.Fliox.Hub.Host
                     targetKeys.Add(key);
                 }
             }
-            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, executeContext, EntityErrorType.PatchError, ref response.patchErrors);
+            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, executeContext, EntityErrorType.PatchError, ref patchErrors);
             if (valError != null) {
                 return new PatchEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
+            }
+            if (patchErrors != null && patchErrors.Count > 0) {
+                var errors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);
+                errors.AddErrors(patchErrors);
             }
             
             // Write patched entities back
@@ -158,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     AddEntityError(ref patchErrors, key, error);
                 }
             }
-            return new PatchEntitiesResult{patchErrors = patchErrors};
+            return new PatchEntitiesResult{ patchErrors = patchErrors };
         }
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets

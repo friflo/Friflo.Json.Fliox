@@ -112,10 +112,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class EntityErrors
     {
         /// <summary>container name - not utilized by Protocol</summary>
-        [DebugInfo]     public  string                              container;
+        [DebugInfo]     public      string                              container;
         /// <summary>map of entity errors when accessing the <see cref="container"/></summary>
-        [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
-        
+        [Fri.Required]  public      Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+
+        public          override    string                              ToString() => $"errors: {errors?.Count ?? 0}";
+
         public EntityErrors() {} // required for TypeMapper
 
         public EntityErrors(string container) {
