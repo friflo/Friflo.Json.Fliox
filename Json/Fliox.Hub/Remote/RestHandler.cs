@@ -163,8 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // ------------------    PUT            /rest/database/container        ?create
             //                       PUT            /rest/database/container/id     ?create
             if (method == "PUT") {
-                int len = res.length; 
-                if (len != 2 && len != 3) {
+                if (res.length != 2 && res.length != 3) {
                     context.WriteError("invalid PUT", "expect: /database/container or /database/container/id", 400);
                     return;
                 }
@@ -174,13 +173,28 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return;
                 }
                 var keyName     = queryParams["keyName"];
-                var resource2   = len == 3 ? res.id : null;
+                var resource2   = res.length == 3 ? res.id : null;
                 if (!HasQueryKey(queryParams, "create", out bool create, out error)) {
                     context.WriteError("PUT failed", error, 400);
                     return;
                 }
                 var type        = create ? TaskType.create : TaskType.upsert;
                 await PutEntities(context, res.database, res.container, resource2, keyName, value, type).ConfigureAwait(false);
+                return;
+            }
+            // ------------------    PATCH          /rest/database/container/id
+            if (method == "PATCH") {
+                if (res.length != 3) {
+                    context.WriteError("invalid PATCH", "expect: /database/container/id", 400);
+                    return;
+                }
+                var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                if (!IsValidJson(pool, value, out string error)) {
+                    context.WriteError("PATCH failed", error, 400);
+                    return;
+                }
+                var keyName     = queryParams["keyName"];
+                await PatchEntity(context, res.database, res.container, res.id, keyName, value).ConfigureAwait(false);
                 return;
             }
             context.WriteError("invalid path/method", route, 400);
@@ -462,6 +476,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (id != null) {
                 entities = new List<JsonValue> {value};
             } else {
+                // read entity array from request body
                 using (var pooled = pool.EntityProcessor.Get()) {
                     var processor = pooled.instance;
                     entities = processor.ReadJsonArray(value, out string error);
@@ -474,6 +489,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var entityId = new JsonKey(id);
             keyName = keyName ?? "id";
             if (id != null) {
+                // check if given id matches entity key
                 using (var pooled = pool.EntityProcessor.Get()) {
                     var processor = pooled.instance;
                     if (!processor.GetEntityKey(value, keyName, out JsonKey key, out string entityError)) {
@@ -517,6 +533,44 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             context.WriteString("PUT successful", "text/plain", 200);
+        }
+        
+        private async Task PatchEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
+            if (database == EntityDatabase.MainDB)
+                database = null;
+            var             pool = context.Pool;
+            List<JsonPatch> patches;
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var reader  = pooled.instance.reader;
+                patches     = reader.Read<List<JsonPatch>>(value);
+                if (reader.Error.ErrSet) {
+                    context.WriteError("PATCH error", reader.Error.ToString(), 400);
+                    return;
+                }
+            }
+            var entityId    = new JsonKey(id);
+            keyName         = keyName ?? "id";
+            var entityPatch = new EntityPatch { patches = patches };
+            var task        = new PatchEntities { container = container, keyName = keyName };
+            task.patches.Add(entityId, entityPatch);
+            var result = await ExecuteTask(context, database, task).ConfigureAwait(false);
+            
+            if (result.taskResult == null)
+                return;
+            var patchResult     = (ICommandResult)result.taskResult;
+            var resultError     = patchResult.Error;
+            if (resultError != null) {
+                context.WriteError("PATCH error", resultError.message, 500);
+                return;
+            }
+            var entityErrors = result.syncResponse.upsertErrors;
+            if (entityErrors != null) {
+                var sb = new StringBuilder();
+                FormatEntityErrors (entityErrors, sb);
+                context.WriteError("PATCH errors", sb.ToString(), 400);
+                return;
+            }
+            context.WriteString("PATCH successful", "text/plain", 200);
         }
         
         private static void FormatEntityErrors(Dictionary<string, EntityErrors> entityErrors, StringBuilder sb) {
