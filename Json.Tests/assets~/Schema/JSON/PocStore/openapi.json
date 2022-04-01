@@ -594,6 +594,10 @@
                       },
                       "value": { }
                     } }
+                },
+                "example": {
+                  "path": ".name",
+                  "value": "Hello Change"
                 }
               }
             }
@@ -830,6 +834,10 @@
                       },
                       "value": { }
                     } }
+                },
+                "example": {
+                  "path": ".name",
+                  "value": "Hello Change"
                 }
               }
             }
@@ -1066,6 +1074,10 @@
                       },
                       "value": { }
                     } }
+                },
+                "example": {
+                  "path": ".name",
+                  "value": "Hello Change"
                 }
               }
             }
@@ -1302,6 +1314,10 @@
                       },
                       "value": { }
                     } }
+                },
+                "example": {
+                  "path": ".name",
+                  "value": "Hello Change"
                 }
               }
             }
@@ -1538,6 +1554,10 @@
                       },
                       "value": { }
                     } }
+                },
+                "example": {
+                  "path": ".name",
+                  "value": "Hello Change"
                 }
               }
             }
@@ -1774,6 +1794,10 @@
                       },
                       "value": { }
                     } }
+                },
+                "example": {
+                  "path": ".name",
+                  "value": "Hello Change"
                 }
               }
             }

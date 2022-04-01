@@ -280,7 +280,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                       },
                       ""value"": { }
                     }";
-            var patchBody = new ContentRef(patchType, true);
+            var patchExample = @"{
+                  ""path"": "".name"",
+                  ""value"": ""Hello Change""
+                }";
+            var patchBody = new ContentRef(patchType, true, patchExample);
             EmitMethod (container, "get",    $"get a single record from container {container}", null, null, bodyContent,              idParam, methodSb);
             EmitMethod (container, "put",    $"write a single record to container {container}", null, bodyContent, new ContentText(), idParam, methodSb);
             EmitMethod (container, "patch",  $"patch a single record in container {container}", null, patchBody,   new ContentText(), idParam, methodSb);
@@ -405,20 +409,25 @@ namespace Friflo.Json.Fliox.Schema.Language
     internal class ContentRef : Content {
         private    readonly    string   type;
         private    readonly    bool     isArray;
+        private    readonly    string   example;
         
-        internal ContentRef(string type, bool isArray) {
+        internal ContentRef(string type, bool isArray, string example = null) {
             this.type       = type;
             this.isArray    = isArray;
+            this.example    = example;
         }
         
         internal override string Get() {
             var typeStr = isArray ? $@"""type"": ""array"",
                   ""items"": {{ {type} }}" : type;
+            var requestExample = example == null ? "" : $@",
+                ""example"": {example}";
+
             return $@"{{
               ""application/json"": {{
                 ""schema"": {{
                   {typeStr}
-                }}
+                }}{requestExample}
               }}
             }}";
         }
