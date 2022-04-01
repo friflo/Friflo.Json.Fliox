@@ -143,10 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (valError != null) {
                 return new PatchEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
             }
-            if (patchErrors != null && patchErrors.Count > 0) {
-                var errors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);
-                errors.AddErrors(patchErrors);
-            }
+            SyncResponse.AddEntityErrors(ref response.patchErrors, container, patchErrors);
             
             // Write patched entities back
             var task = new UpsertEntities {entities = targets, entityKeys = targetKeys };

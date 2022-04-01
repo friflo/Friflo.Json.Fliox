@@ -37,10 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }
-            if (result.patchErrors != null && result.patchErrors.Count > 0) {
-                var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);
-                patchErrors.AddErrors(result.patchErrors);
-            }
+            SyncResponse.AddEntityErrors(ref response.patchErrors, container, result.patchErrors);
             return result;
         }
     }

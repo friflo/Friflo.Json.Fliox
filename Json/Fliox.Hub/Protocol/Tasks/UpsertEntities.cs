@@ -43,10 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (error != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, error));
             }
-            if (validationErrors != null && validationErrors.Count > 0) {
-                var errors = SyncResponse.GetEntityErrors(ref response.upsertErrors, container);
-                errors.AddErrors(validationErrors);
-            }
+            SyncResponse.AddEntityErrors(ref response.upsertErrors, container, validationErrors);
 
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
@@ -66,10 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            if (result.upsertErrors != null && result.upsertErrors.Count > 0) {
-                var upsertErrors = SyncResponse.GetEntityErrors(ref response.upsertErrors, container);
-                upsertErrors.AddErrors(result.upsertErrors);
-            }
+            SyncResponse.AddEntityErrors(ref response.upsertErrors, container, result.upsertErrors);
             return result;
         }
     }

@@ -50,7 +50,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             return result;
         }
         
-        internal static EntityErrors GetEntityErrors(ref Dictionary<string, EntityErrors> entityErrorMap, string container) {
+        internal static void AddEntityErrors(
+            ref Dictionary<string, EntityErrors>    entityErrorMap,
+            string                                  container,
+            Dictionary<JsonKey, EntityError>        entityErrors)
+        {
+            if (entityErrors == null || entityErrors.Count == 0)
+                return;
+            var errors = GetEntityErrors(ref entityErrorMap, container);
+            errors.AddErrors(entityErrors);
+        }
+
+        private static EntityErrors GetEntityErrors(ref Dictionary<string, EntityErrors> entityErrorMap, string container) {
             if (entityErrorMap == null) {
                 entityErrorMap = new Dictionary<string, EntityErrors>();
             }
