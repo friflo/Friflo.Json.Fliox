@@ -11,7 +11,6 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     internal static partial class Rest {
