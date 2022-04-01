@@ -155,12 +155,14 @@ namespace Friflo.Json.Fliox.Schema.Language
       ""description"": ""database <a {anchorAttr} href='html/schema.html#commands'>commands</a>""
     }}");
             foreach (var container in schemaType.Fields) {
-                var type = container.type;
-                var link = $"{type.Namespace}.{type.Name}";
+                var type    = container.type;
+                var link    = $"{type.Namespace}.{type.Name}";
+                var doc     = $"entity type: <a {anchorAttr} href='html/schema.html#{link}'>{type.Name}</a> · {type.doc}"; 
+                var docStr  = JsonSchemaGenerator.GetDoc("", doc, "");
                 sb.Append($@",
     {{
       ""name"": ""{container.name}"",
-      ""description"": ""entity type: <a {anchorAttr} href='html/schema.html#{link}'>{type.Name}</a>""
+      ""description"": {docStr}
     }}");
             }
             return sb.ToString();

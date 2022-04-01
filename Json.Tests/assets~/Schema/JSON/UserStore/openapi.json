@@ -21,15 +21,15 @@
     },
     {
       "name": "credentials",
-      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a>"
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserCredential'>UserCredential</a> · contains a <b>token</b> assigned to a user used for authentication"
     },
     {
       "name": "permissions",
-      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a>"
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.UserPermission'>UserPermission</a> · Set of <b>roles</b> assigned to a user used for authorization"
     },
     {
       "name": "roles",
-      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a>"
+      "description": "entity type: <a target='UserStore' href='html/schema.html#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'>Role</a> · Contains a set of <b>rights</b> used for task authorization"
     }],
   "paths": {
     "/": {
