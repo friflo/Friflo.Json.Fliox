@@ -275,6 +275,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             var patchType = @"
                     ""type"": ""object"",
                     ""properties"": {
+                      ""op"": {
+                        ""enum"": [""replace""]
+                      },
                       ""path"": {
                         ""type"": ""string""
                       },
@@ -282,8 +285,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                     }";
             var patchExample = @"[
                   {
+                    ""op"":    ""replace"",
                     ""path"":  "".name"",
-                    ""value"": ""Hello Change!""
+                    ""value"": ""Hello Patch!""
                   }
                 ]";
             var patchBody = new ContentRef(patchType, true, patchExample);

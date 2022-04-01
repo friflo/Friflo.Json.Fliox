@@ -589,6 +589,9 @@
                   "items": { 
                     "type": "object",
                     "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
                       "path": {
                         "type": "string"
                       },
@@ -597,8 +600,9 @@
                 },
                 "example": [
                   {
+                    "op":    "replace",
                     "path":  ".name",
-                    "value": "Hello Change!"
+                    "value": "Hello Patch!"
                   }
                 ]
               }
@@ -831,6 +835,9 @@
                   "items": { 
                     "type": "object",
                     "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
                       "path": {
                         "type": "string"
                       },
@@ -839,8 +846,9 @@
                 },
                 "example": [
                   {
+                    "op":    "replace",
                     "path":  ".name",
-                    "value": "Hello Change!"
+                    "value": "Hello Patch!"
                   }
                 ]
               }
@@ -1073,6 +1081,9 @@
                   "items": { 
                     "type": "object",
                     "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
                       "path": {
                         "type": "string"
                       },
@@ -1081,8 +1092,9 @@
                 },
                 "example": [
                   {
+                    "op":    "replace",
                     "path":  ".name",
-                    "value": "Hello Change!"
+                    "value": "Hello Patch!"
                   }
                 ]
               }
@@ -1315,6 +1327,9 @@
                   "items": { 
                     "type": "object",
                     "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
                       "path": {
                         "type": "string"
                       },
@@ -1323,8 +1338,9 @@
                 },
                 "example": [
                   {
+                    "op":    "replace",
                     "path":  ".name",
-                    "value": "Hello Change!"
+                    "value": "Hello Patch!"
                   }
                 ]
               }
@@ -1557,6 +1573,9 @@
                   "items": { 
                     "type": "object",
                     "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
                       "path": {
                         "type": "string"
                       },
@@ -1565,8 +1584,9 @@
                 },
                 "example": [
                   {
+                    "op":    "replace",
                     "path":  ".name",
-                    "value": "Hello Change!"
+                    "value": "Hello Patch!"
                   }
                 ]
               }
@@ -1799,6 +1819,9 @@
                   "items": { 
                     "type": "object",
                     "properties": {
+                      "op": {
+                        "enum": ["replace"]
+                      },
                       "path": {
                         "type": "string"
                       },
@@ -1807,8 +1830,9 @@
                 },
                 "example": [
                   {
+                    "op":    "replace",
                     "path":  ".name",
-                    "value": "Hello Change!"
+                    "value": "Hello Patch!"
                   }
                 ]
               }
