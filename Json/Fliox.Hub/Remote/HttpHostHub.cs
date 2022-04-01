@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public   readonly   string                  endpoint; 
         public   readonly   string                  endpointRoot;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
-        private  readonly   RestHandler             restHandler     = new RestHandler();
+        private  readonly   Rest.RestHandler        restHandler     = new Rest.RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         
         public   const      string                  DefaultCacheControl = "max-age=600";
