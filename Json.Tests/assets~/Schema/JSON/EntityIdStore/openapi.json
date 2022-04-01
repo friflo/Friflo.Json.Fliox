@@ -341,6 +341,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container guidEntities",
+        "tags":       ["guidEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container guidEntities by id",
         "tags":       ["guidEntities"],
@@ -526,6 +564,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container intEntities",
+        "tags":       ["intEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }
@@ -737,6 +813,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container intEntitiesAuto",
+        "tags":       ["intEntitiesAuto"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container intEntitiesAuto by id",
         "tags":       ["intEntitiesAuto"],
@@ -922,6 +1036,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container longEntities",
+        "tags":       ["longEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }
@@ -1133,6 +1285,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container shortEntities",
+        "tags":       ["shortEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container shortEntities by id",
         "tags":       ["shortEntities"],
@@ -1318,6 +1508,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container byteEntities",
+        "tags":       ["byteEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }
@@ -1529,6 +1757,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container customIdEntities",
+        "tags":       ["customIdEntities"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container customIdEntities by id",
         "tags":       ["customIdEntities"],
@@ -1727,6 +1993,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container entityRefs",
+        "tags":       ["entityRefs"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container entityRefs by id",
         "tags":       ["entityRefs"],
@@ -1912,6 +2216,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container customIdEntities2",
+        "tags":       ["customIdEntities2"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }

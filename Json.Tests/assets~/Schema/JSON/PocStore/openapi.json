@@ -569,6 +569,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container orders",
+        "tags":       ["orders"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container orders by id",
         "tags":       ["orders"],
@@ -754,6 +792,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.Customer.json#/definitions/Customer"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container customers",
+        "tags":       ["customers"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }
@@ -965,6 +1041,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container articles",
+        "tags":       ["articles"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container articles by id",
         "tags":       ["articles"],
@@ -1150,6 +1264,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.Producer.json#/definitions/Producer"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container producers",
+        "tags":       ["producers"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }
@@ -1361,6 +1513,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container employees",
+        "tags":       ["employees"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container employees by id",
         "tags":       ["employees"],
@@ -1546,6 +1736,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "UnitTest.Fliox.Client.TestType.json#/definitions/TestType"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container types",
+        "tags":       ["types"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }

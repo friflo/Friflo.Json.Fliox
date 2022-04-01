@@ -344,6 +344,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container credentials",
+        "tags":       ["credentials"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container credentials by id",
         "tags":       ["credentials"],
@@ -542,6 +580,44 @@
           }
         }
       },
+      "patch": {
+        "summary":    "patch a single record in container permissions",
+        "tags":       ["permissions"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
       "delete": {
         "summary":    "delete a single record in container permissions by id",
         "tags":       ["permissions"],
@@ -727,6 +803,44 @@
               "application/json": {
                 "schema": {
                   "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.Role.json#/definitions/Role"
+                }
+              }
+            }
+        },
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "text/plain": { }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary":    "patch a single record in container roles",
+        "tags":       ["roles"],
+        "parameters": [
+          {
+            "in":       "path",
+            "name":     "id",
+            "schema":   { "type": "string" },
+            "required": true,
+            "description": ""
+          }
+        ],
+        "requestBody": {          
+          "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { 
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "value": { }
+                    } }
                 }
               }
             }

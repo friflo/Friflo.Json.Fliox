@@ -216,7 +216,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var doc             = type.doc ?? "";
             var tag             = messageType == "command" ? "commands" : "messages";
             var resultType      = type.result?.type;
-            Content response    = null;
+            Content response;
             if (resultType != null) {
                 var resultRef   = GetType(resultType); 
                 response        = new ContentRef(resultRef, false);
@@ -272,8 +272,18 @@ namespace Friflo.Json.Fliox.Schema.Language
             var methodSb    = new StringBuilder();
             var bodyContent = new ContentRef(typeRef, false);
             var idParam     = new [] { new Parameter("path", "id", StringType, true, null)};
+            var patchType = @"
+                    ""type"": ""object"",
+                    ""properties"": {
+                      ""path"": {
+                        ""type"": ""string""
+                      },
+                      ""value"": { }
+                    }";
+            var patchBody = new ContentRef(patchType, true);
             EmitMethod (container, "get",    $"get a single record from container {container}", null, null, bodyContent,              idParam, methodSb);
             EmitMethod (container, "put",    $"write a single record to container {container}", null, bodyContent, new ContentText(), idParam, methodSb);
+            EmitMethod (container, "patch",  $"patch a single record in container {container}", null, patchBody,   new ContentText(), idParam, methodSb);
             EmitMethod (container, "delete", $"delete a single record in container {container} by id", null, null, new ContentText(), idParam, methodSb);
             AppendPath(path, methodSb.ToString(), sb);
         }
