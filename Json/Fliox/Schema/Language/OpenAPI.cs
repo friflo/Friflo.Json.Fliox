@@ -280,10 +280,12 @@ namespace Friflo.Json.Fliox.Schema.Language
                       },
                       ""value"": { }
                     }";
-            var patchExample = @"{
-                  ""path"": "".name"",
-                  ""value"": ""Hello Change""
-                }";
+            var patchExample = @"[
+                  {
+                    ""path"":  "".name"",
+                    ""value"": ""Hello Change!""
+                  }
+                ]";
             var patchBody = new ContentRef(patchType, true, patchExample);
             EmitMethod (container, "get",    $"get a single record from container {container}", null, null, bodyContent,              idParam, methodSb);
             EmitMethod (container, "put",    $"write a single record to container {container}", null, bodyContent, new ContentText(), idParam, methodSb);
