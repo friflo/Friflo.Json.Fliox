@@ -79,7 +79,6 @@
         "summary":    "echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -161,7 +160,6 @@
         "summary":    "return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -268,7 +266,6 @@
         "summary":    "create or update multiple records in container guidEntities",
         "tags":       ["guidEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -327,7 +324,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -372,7 +368,6 @@
         "summary":    "get multiple records by id from container guidEntities",
         "tags":       ["guidEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -402,7 +397,6 @@
         "summary":    "delete multiple records by id in container guidEntities",
         "tags":       ["guidEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -470,7 +464,6 @@
         "summary":    "create or update multiple records in container intEntities",
         "tags":       ["intEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -529,7 +522,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -574,7 +566,6 @@
         "summary":    "get multiple records by id from container intEntities",
         "tags":       ["intEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -604,7 +595,6 @@
         "summary":    "delete multiple records by id in container intEntities",
         "tags":       ["intEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -672,7 +662,6 @@
         "summary":    "create or update multiple records in container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -731,7 +720,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -776,7 +764,6 @@
         "summary":    "get multiple records by id from container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -806,7 +793,6 @@
         "summary":    "delete multiple records by id in container intEntitiesAuto",
         "tags":       ["intEntitiesAuto"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -874,7 +860,6 @@
         "summary":    "create or update multiple records in container longEntities",
         "tags":       ["longEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -933,7 +918,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -978,7 +962,6 @@
         "summary":    "get multiple records by id from container longEntities",
         "tags":       ["longEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1008,7 +991,6 @@
         "summary":    "delete multiple records by id in container longEntities",
         "tags":       ["longEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1076,7 +1058,6 @@
         "summary":    "create or update multiple records in container shortEntities",
         "tags":       ["shortEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1135,7 +1116,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1180,7 +1160,6 @@
         "summary":    "get multiple records by id from container shortEntities",
         "tags":       ["shortEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1210,7 +1189,6 @@
         "summary":    "delete multiple records by id in container shortEntities",
         "tags":       ["shortEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1278,7 +1256,6 @@
         "summary":    "create or update multiple records in container byteEntities",
         "tags":       ["byteEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1337,7 +1314,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1382,7 +1358,6 @@
         "summary":    "get multiple records by id from container byteEntities",
         "tags":       ["byteEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1412,7 +1387,6 @@
         "summary":    "delete multiple records by id in container byteEntities",
         "tags":       ["byteEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1480,7 +1454,6 @@
         "summary":    "create or update multiple records in container customIdEntities",
         "tags":       ["customIdEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1539,7 +1512,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1584,7 +1556,6 @@
         "summary":    "get multiple records by id from container customIdEntities",
         "tags":       ["customIdEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1614,7 +1585,6 @@
         "summary":    "delete multiple records by id in container customIdEntities",
         "tags":       ["customIdEntities"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1682,7 +1652,6 @@
         "summary":    "create or update multiple records in container entityRefs",
         "tags":       ["entityRefs"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1741,7 +1710,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1786,7 +1754,6 @@
         "summary":    "get multiple records by id from container entityRefs",
         "tags":       ["entityRefs"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1816,7 +1783,6 @@
         "summary":    "delete multiple records by id in container entityRefs",
         "tags":       ["entityRefs"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1884,7 +1850,6 @@
         "summary":    "create or update multiple records in container customIdEntities2",
         "tags":       ["customIdEntities2"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1943,7 +1908,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1988,7 +1952,6 @@
         "summary":    "get multiple records by id from container customIdEntities2",
         "tags":       ["customIdEntities2"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -2018,7 +1981,6 @@
         "summary":    "delete multiple records by id in container customIdEntities2",
         "tags":       ["customIdEntities2"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {

@@ -67,7 +67,6 @@
         "summary":    "",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -95,7 +94,6 @@
         "summary":    "",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -123,7 +121,6 @@
         "summary":    "",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -187,7 +184,6 @@
         "summary":    "",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -215,7 +211,6 @@
         "summary":    "echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -297,7 +292,6 @@
         "summary":    "return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -361,7 +355,6 @@
         "summary":    "",
         "tags":       ["messages"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -389,7 +382,6 @@
         "summary":    "",
         "tags":       ["messages"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -417,7 +409,6 @@
         "summary":    "",
         "tags":       ["messages"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -488,7 +479,6 @@
         "summary":    "create or update multiple records in container orders",
         "tags":       ["orders"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -547,7 +537,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -592,7 +581,6 @@
         "summary":    "get multiple records by id from container orders",
         "tags":       ["orders"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -622,7 +610,6 @@
         "summary":    "delete multiple records by id in container orders",
         "tags":       ["orders"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -690,7 +677,6 @@
         "summary":    "create or update multiple records in container customers",
         "tags":       ["customers"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -749,7 +735,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -794,7 +779,6 @@
         "summary":    "get multiple records by id from container customers",
         "tags":       ["customers"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -824,7 +808,6 @@
         "summary":    "delete multiple records by id in container customers",
         "tags":       ["customers"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -892,7 +875,6 @@
         "summary":    "create or update multiple records in container articles",
         "tags":       ["articles"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -951,7 +933,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -996,7 +977,6 @@
         "summary":    "get multiple records by id from container articles",
         "tags":       ["articles"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1026,7 +1006,6 @@
         "summary":    "delete multiple records by id in container articles",
         "tags":       ["articles"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1094,7 +1073,6 @@
         "summary":    "create or update multiple records in container producers",
         "tags":       ["producers"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1153,7 +1131,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1198,7 +1175,6 @@
         "summary":    "get multiple records by id from container producers",
         "tags":       ["producers"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1228,7 +1204,6 @@
         "summary":    "delete multiple records by id in container producers",
         "tags":       ["producers"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1296,7 +1271,6 @@
         "summary":    "create or update multiple records in container employees",
         "tags":       ["employees"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1355,7 +1329,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1400,7 +1373,6 @@
         "summary":    "get multiple records by id from container employees",
         "tags":       ["employees"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1430,7 +1402,6 @@
         "summary":    "delete multiple records by id in container employees",
         "tags":       ["employees"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1498,7 +1469,6 @@
         "summary":    "create or update multiple records in container types",
         "tags":       ["types"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1557,7 +1527,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1602,7 +1571,6 @@
         "summary":    "get multiple records by id from container types",
         "tags":       ["types"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -1632,7 +1600,6 @@
         "summary":    "delete multiple records by id in container types",
         "tags":       ["types"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {

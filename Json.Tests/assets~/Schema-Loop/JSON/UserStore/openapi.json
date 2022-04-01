@@ -55,7 +55,6 @@
         "summary":    "authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b>",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -83,7 +82,6 @@
         "summary":    "echos the given parameter to assure the database is working appropriately.",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -165,7 +163,6 @@
         "summary":    "return the number of entities of all containers (or the given container) of the database",
         "tags":       ["commands"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -272,7 +269,6 @@
         "summary":    "create or update multiple records in container credentials",
         "tags":       ["credentials"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -331,7 +327,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -376,7 +371,6 @@
         "summary":    "get multiple records by id from container credentials",
         "tags":       ["credentials"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -406,7 +400,6 @@
         "summary":    "delete multiple records by id in container credentials",
         "tags":       ["credentials"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -474,7 +467,6 @@
         "summary":    "create or update multiple records in container permissions",
         "tags":       ["permissions"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -533,7 +525,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -578,7 +569,6 @@
         "summary":    "get multiple records by id from container permissions",
         "tags":       ["permissions"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -608,7 +598,6 @@
         "summary":    "delete multiple records by id in container permissions",
         "tags":       ["permissions"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -676,7 +665,6 @@
         "summary":    "create or update multiple records in container roles",
         "tags":       ["roles"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -735,7 +723,6 @@
           }
         ],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -780,7 +767,6 @@
         "summary":    "get multiple records by id from container roles",
         "tags":       ["roles"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {
@@ -810,7 +796,6 @@
         "summary":    "delete multiple records by id in container roles",
         "tags":       ["roles"],
         "requestBody": {          
-          "description": "---",
           "content": {
               "application/json": {
                 "schema": {

@@ -315,7 +315,6 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             var requestStr = request == null ? "" : $@"
         ""requestBody"": {{          
-          ""description"": ""---"",
           ""content"": {request.Get()}
         }},";
             var responseStr = response.Get();
