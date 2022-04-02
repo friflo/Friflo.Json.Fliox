@@ -206,7 +206,7 @@ $@"    <chapter id='{type}'><a href='#{type}'>{type}</a>{oasCommandsLink}</chapt
                 var result  = GetMessageArg(null,    messageDef.result, context);
                 var doc     = GetDoc("\n            <td><docs>", messageDef.doc, "</docs></td>");
                 var signature = $"({param}) : {result}";
-                var oasLink = GetOasLink("/commands/get__command_", $"open {messageDef.name} API", messageDef.name);
+                var oasLink = GetOasLink("/commands/post__command_", $"open {messageDef.name} API", messageDef.name);
                 sb.AppendLine(
 $@"        <tr>
             <td><cmd>{messageDef.name}</cmd></td>
