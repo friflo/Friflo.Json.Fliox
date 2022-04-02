@@ -76,13 +76,15 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public static SchemaInfo GetSchemaInfo(Type schemaType)
         {
-            var attributes  = schemaType.CustomAttributes;
-            var servers     = new List<SchemaInfoServer>();
+            var                     attributes  = schemaType.CustomAttributes;
+            List<SchemaInfoServer>  servers     = null;
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.OpenAPIServer)) {
                     var namedArguments = attr.NamedArguments;
                     if (namedArguments != null) {
                         var server = GetOpenAPIServerAttributes(namedArguments);
+                        if (servers == null)
+                            servers = new List<SchemaInfoServer>();
                         servers.Add(server);
                     }
                 }
