@@ -168,6 +168,8 @@ namespace Friflo.Json.Fliox.Schema.Native
                 SetKeyField(rootTypeDef);
                 SetRelationTypes(rootTypeDef, types);
                 RootType = rootTypeDef;
+                var nativeTypeDef           = nativeTypes[rootType];
+                nativeTypeDef.schemaInfo    = SchemaInfo.GetSchemaInfo(rootType);
             }
             Types = OrderTypes(RootType, types);
           }
@@ -216,10 +218,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
                 typeDef = new NativeTypeDef(mapper, name, "Standard");
             } else {
-                var schemaInfo  = SchemaInfo.GetSchemaInfo(nonNullableType);
-                typeDef         = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace) {
-                    schemaInfo = schemaInfo
-                };
+                typeDef         = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace);
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);
