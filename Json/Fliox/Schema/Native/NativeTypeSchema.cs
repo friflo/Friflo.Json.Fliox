@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
-using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.OAS;
 
 namespace Friflo.Json.Fliox.Schema.Native
@@ -218,8 +217,9 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
                 typeDef = new NativeTypeDef(mapper, name, "Standard");
             } else {
-                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace) {
-                    openAPI = OpenAPIAttributes.GetOpenAPI(nonNullableType)
+                var openAPI = OpenAPIAttributes.GetOpenAPI(nonNullableType);
+                typeDef     = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace) {
+                    schemaInfo = new SchemaInfo(openAPI)
                 };
             }
             nativeTypes.Add(nonNullableType, typeDef);

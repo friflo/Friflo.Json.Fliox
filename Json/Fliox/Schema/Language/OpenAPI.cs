@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
-using Friflo.Json.Fliox.Schema.OAS;
 
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 namespace Friflo.Json.Fliox.Schema.Language
@@ -39,10 +38,10 @@ namespace Friflo.Json.Fliox.Schema.Language
             var doc         = schemaType.doc != null ? $"{schemaType.doc}\\n\\n{link}" : link;  
             var description = JsonSchemaGenerator.GetDoc("", doc, "");
             var tags        = CreateTags (schemaType);
-            var openAPI     = schemaType.openAPI;
-            var contact     = GetContact(openAPI?.info.contact);
-            var license     = GetLicense(openAPI?.info.license);
-            var servers     = GetServers(openAPI?.servers, generator.databaseUrl);
+            var info        = schemaType.SchemaInfo;
+            var contact     = GetContact(info);
+            var license     = GetLicense(info);
+            var servers     = GetServers(info, generator.databaseUrl);
             var api     = $@"
 {{
   ""openapi"": ""3.0.0"",
@@ -50,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Language
   ""info"": {{
     ""title"":        ""{schemaType.Name}"",
     ""description"":  {description},
-    ""version"":      ""{openAPI?.version ?? "0.0.0"}""{contact}{license}
+    ""version"":      ""{info?.version ?? "0.0.0"}""{contact}{license}
   }},
   {servers},
   ""tags"": [{tags}],
@@ -60,41 +59,41 @@ namespace Friflo.Json.Fliox.Schema.Language
             generator.files.Add("openapi.json", api);
         }
         
-        private static string GetContact (OpenApiContact contact) {
-            if (contact == null)
+        private static string GetContact (SchemaInfo info) {
+            if (info == null)
                 return "";
             var sb = new StringBuilder();
             var parent = ",\n    \"contact\": {\n";
-            Property(parent, "name",    contact.name,   sb);
-            Property(parent, "url",     contact.url,    sb);
-            Property(parent, "email",   contact.email,  sb);
+            Property(parent, "name",    info.contactName,   sb);
+            Property(parent, "url",     info.contactUrl,    sb);
+            Property(parent, "email",   info.contactEmail,  sb);
             if (sb.Length == 0)
                 return "";
             sb.Append("\n    }");
             return sb.ToString();
         }
         
-        private static string GetLicense (OpenApiLicense license) {
-            if (license == null)
+        private static string GetLicense (SchemaInfo info) {
+            if (info == null)
                 return "";
             var sb = new StringBuilder();
             var parent = ",\n    \"license\": {\n";
-            Property(parent, "name",    license.name,   sb);
-            Property(parent, "url",     license.url,    sb);
+            Property(parent, "name",    info.licenseName,   sb);
+            Property(parent, "url",     info.licenseUrl,    sb);
             if (sb.Length == 0)
                 return "";
             sb.Append("\n    }");
             return sb.ToString();
         }
         
-        private static string GetServers (List<OpenApiServer> servers, string databaseUrl) {
+        private static string GetServers (SchemaInfo info, string databaseUrl) {
             var sb          = new StringBuilder();
-            var allServers  = new List<OpenApiServer>();
+            var allServers  = new List<SchemaInfoServer>();
             if (databaseUrl != null) {
-                allServers.Add(new OpenApiServer { url = databaseUrl, description = "local server" });
+                allServers.Add(new SchemaInfoServer(databaseUrl, "local server" ));
             }
-            if (servers != null) {
-                allServers.AddRange(servers);
+            if (info?.servers != null) {
+                allServers.AddRange(info.servers);
             }
             sb.Append("\"servers\": [\n");
             bool isFirst = true;
@@ -113,7 +112,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return sb.ToString();
         }
         
-        private static void GetServer (OpenApiServer server, StringBuilder sb) {
+        private static void GetServer (SchemaInfoServer server, StringBuilder sb) {
             var parent = "    {\n";
             Property(parent, "description", server.description, sb);
             Property(parent, "url",         server.url,         sb);

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Schema.OAS;
 
 namespace Friflo.Json.Fliox.Schema.Definition
 {
@@ -61,10 +60,13 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public   abstract   bool                        IsEnum          { get; }
         public   abstract   IReadOnlyList<EnumValue>    EnumValues      { get; }
+        public   readonly   string                      doc;
+        public              SchemaInfo                  SchemaInfo      => schemaInfo;
+        
+        // --- internal
         internal readonly   string                      fullName;
         internal            string                      keyField;
-        public   readonly   string                      doc;
-        public              OpenApi                     openAPI;
+        internal            SchemaInfo                  schemaInfo;
 
         
         protected TypeDef (string name, string @namespace, string doc) {
