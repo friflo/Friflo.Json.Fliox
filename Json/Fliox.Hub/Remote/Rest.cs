@@ -122,9 +122,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
             var pool = context.Pool;
             using (var pooled = pool.ObjectMapper.Get()) {
-                var writer = pooled.instance.writer;
-                var entitiesJson = writer.Write(entities);
-                context.Write(new JsonValue(entitiesJson), 0, "application/json", 200);
+                var writer          = pooled.instance.writer;
+                var entitiesJson    = new JsonValue(writer.WriteAsArray(entities));
+                context.Write(entitiesJson, 0, "application/json", 200);
             }
         }
         
@@ -144,8 +144,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             if (restResult.taskResult == null)
                 return;
-            var queryResult  = (QueryEntitiesResult)restResult.taskResult;
-            var resultError = queryResult.Error;
+            var queryResult     = (QueryEntitiesResult)restResult.taskResult;
+            var resultError     = queryResult.Error;
             if (resultError != null) {
                 context.WriteError("query error", resultError.message, 500);
                 return;
@@ -162,16 +162,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
             var pool = context.Pool;
             using (var pooled = pool.ObjectMapper.Get()) {
-                var writer = pooled.instance.writer;
+                var writer      = pooled.instance.writer;
                 var entityArray = writer.WriteAsArray(entities);
-                var response = new JsonValue(entityArray);
+                var response    = new JsonValue(entityArray);
                 context.Write(response, 0, "application/json", 200);
             }
         }
         
         /// enforce "o" as lambda argument
-        private const string DefaultParam = "o";
-        private const string InvalidFilter = "invalid filter";
+        private const string DefaultParam   = "o";
+        private const string InvalidFilter  = "invalid filter";
         
         private static JsonValue CreateFilterTree(RequestContext context, NameValueCollection queryParams) {
             var sharedCache         = context.SharedCache;
@@ -275,8 +275,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             if (restResult.taskResult == null)
                 return;
-            var deleteResult  = (DeleteEntitiesResult)restResult.taskResult;
-            var resultError = deleteResult.Error;
+            var deleteResult    = (DeleteEntitiesResult)restResult.taskResult;
+            var resultError     = deleteResult.Error;
             if (resultError != null) {
                 context.WriteError("delete error", resultError.message, 500);
                 return;
@@ -309,8 +309,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                 }
             }
-            var entityId = new JsonKey(id);
-            keyName = keyName ?? "id";
+            var entityId    = new JsonKey(id);
+            keyName         = keyName ?? "id";
             if (id != null) {
                 // check if given id matches entity key
                 using (var pooled = pool.EntityProcessor.Get()) {

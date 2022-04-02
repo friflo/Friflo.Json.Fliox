@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteString(result.content, result.contentType, 200);
                 return Task.CompletedTask;
             }
-            context.Write(new JsonValue(result.bytes), 0, result.contentType, 200);
+            context.Write(result.bytes, 0, result.contentType, 200);
             return Task.CompletedTask;
         }
         
@@ -99,11 +99,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  SchemaModel     schemaModel;
         internal  readonly  string          zipNameSuffix;  // .csharp.zip, json-schema.zip, ...
         private             byte[]          zipArchive;
-        internal  readonly  string          fullSchema;
+        internal  readonly  JsonValue       fullSchema;
 
         public    override  string          ToString() => schemaModel.type;
 
-        internal ModelResource(SchemaModel schemaModel, string fullSchema) {
+        internal ModelResource(SchemaModel schemaModel, JsonValue fullSchema) {
             this.schemaModel    = schemaModel;
             this.fullSchema     = fullSchema;
             zipNameSuffix       = $".{schemaModel.type}.zip";
@@ -197,8 +197,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Set(sb.ToString(), "text/html");
             }
             if (fileName.StartsWith(storeName) && fileName.EndsWith(modelResource.zipNameSuffix)) {
-                result.bytes        = modelResource.GetZipArchive(handler.zip);
-                if (result.bytes == null)
+                result.bytes        = new JsonValue(modelResource.GetZipArchive(handler.zip));
+                if (result.bytes.IsNull())
                     return result.Error("ZipArchive not supported (Unity)");
                 result.contentType  = "application/zip";
                 result.isText       = false;
@@ -259,9 +259,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             sb.AppendLine("</html>");
         }
         
-        private static  string GetFullJsonSchema(SchemaModel schemaModel, RequestContext context) {
+        private static  JsonValue GetFullJsonSchema(SchemaModel schemaModel, RequestContext context) {
             if (schemaModel.type != "json-schema")
-                return null;
+                return default;
             var jsonSchemaMap = new Dictionary<string, JsonValue>(schemaModel.files.Count);
             foreach (var pair in schemaModel.files) {
                 var file = pair.Value;
@@ -269,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             using (var pooled = context.Pool.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
-                return writer.Write(jsonSchemaMap);
+                return new JsonValue(writer.WriteAsArray(jsonSchemaMap));
             }
         }
         
@@ -326,15 +326,22 @@ window.onload = function() {{
     }
     
     internal struct Result {
-        internal    string  content;
-        internal    string  contentType;
-        internal    byte[]  bytes;
-        internal    bool    isText;
+        internal    string      content;
+        internal    string      contentType;
+        internal    JsonValue   bytes;
+        internal    bool        isText;
         
         internal  bool Set(string  content, string  contentType) {
             this.content        = content;
             this.contentType    = contentType;
             isText              = true;
+            return true;
+        }
+        
+        internal  bool Set(JsonValue  content, string  contentType) {
+            this.bytes          = content;
+            this.contentType    = contentType;
+            isText              = false;
             return true;
         }
         
