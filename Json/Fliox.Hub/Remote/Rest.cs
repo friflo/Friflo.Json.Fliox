@@ -487,7 +487,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError(errorResult.type.ToString(), message, status);
                 return default;
             }
-            return new RestResult { taskResult = taskResult, syncResponse = syncResponse };
+            return new RestResult (syncResponse, taskResult);
         }
     }
 }

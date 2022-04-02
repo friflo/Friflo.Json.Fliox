@@ -195,9 +195,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
     }
 
-    internal struct RestResult {
-        internal    SyncResponse    syncResponse;
-        internal    SyncTaskResult  taskResult;
+    internal readonly struct RestResult {
+        internal  readonly  SyncResponse    syncResponse;
+        internal  readonly  SyncTaskResult  taskResult;
+        
+        internal RestResult (SyncResponse syncResponse, SyncTaskResult  taskResult) {
+            this.syncResponse   = syncResponse;
+            this.taskResult     = taskResult;
+        }
     } 
 
     internal readonly struct Resource {
