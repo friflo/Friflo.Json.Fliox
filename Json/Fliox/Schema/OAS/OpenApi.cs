@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.Schema.OAS
     /// </summary>
     public sealed class OpenApi {
         public  string              version;
+        public  string              termsOfService;
         public  OpenApiInfo         info;
         public  List<OpenApiServer> servers;
     }

@@ -27,9 +27,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// Its messages are methods returning a <see cref="MessageTask"/>.
     /// <see cref="PocStore"/> instances can be used on server and client side.
     /// </remarks>
-    [Fri.OpenAPI(Version = "1.0.0",
-        ContactName = "Ullrich Praetz", ContactUrl = "https://github.com/friflo/Friflo.Json.Fliox/issues",
-        LicenseName = "AGPL-3.0",       LicenseUrl = "https://spdx.org/licenses/AGPL-3.0-only.html")]
+    [Fri.OpenAPI(Version = "1.0.0",     TermsOfService  = "https://github.com/friflo/Friflo.Json.Fliox",
+        ContactName = "Ullrich Praetz", ContactUrl      = "https://github.com/friflo/Friflo.Json.Fliox/issues",
+        LicenseName = "AGPL-3.0",       LicenseUrl      = "https://spdx.org/licenses/AGPL-3.0-only.html")]
     [Fri.OpenAPIServer(Description = "test localhost",  Url = "http://localhost:8010/fliox/rest/main_db")]
     [Fri.OpenAPIServer(Description = "test 127.0.0.1",  Url = "http://127.0.0.1:8010/fliox/rest/main_db")]
     public class PocStore : FlioxClient

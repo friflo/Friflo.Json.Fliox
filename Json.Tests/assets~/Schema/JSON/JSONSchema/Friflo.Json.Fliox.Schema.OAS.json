@@ -6,9 +6,10 @@
             "type": "object",
             "description": "<a href='https://spec.openapis.org/oas/v3.0.0#openapi-object'>OpenAPI Object specification</a>",
             "properties": {
-                "version": { "type": ["string", "null"] },
-                "info":    { "oneOf": [{ "$ref": "#/definitions/OpenApiInfo" }, {"type": "null"}] },
-                "servers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/OpenApiServer" } }
+                "version":        { "type": ["string", "null"] },
+                "termsOfService": { "type": ["string", "null"] },
+                "info":           { "oneOf": [{ "$ref": "#/definitions/OpenApiInfo" }, {"type": "null"}] },
+                "servers":        { "type": ["array", "null"], "items": { "$ref": "#/definitions/OpenApiServer" } }
             },
             "additionalProperties": false
         },

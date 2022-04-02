@@ -42,6 +42,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var contact     = GetContact(info);
             var license     = GetLicense(info);
             var servers     = GetServers(info, generator.databaseUrl);
+            var tos         = info?.termsOfService == null ? "" : $@",
+    ""termsOfService"": ""{info.termsOfService}""";
             var api     = $@"
 {{
   ""openapi"": ""3.0.0"",
@@ -49,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema.Language
   ""info"": {{
     ""title"":        ""{schemaType.Name}"",
     ""description"":  {description},
-    ""version"":      ""{info?.version ?? "0.0.0"}""{contact}{license}
+    ""version"":      ""{info?.version ?? "0.0.0"}""{tos}{contact}{license}
   }},
   {servers},
   ""tags"": [{tags}],

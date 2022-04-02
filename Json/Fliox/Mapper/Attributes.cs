@@ -81,6 +81,7 @@ namespace Friflo.Json.Fliox.Mapper
         [AttributeUsage(AttributeTargets.Class)]
         public sealed class OpenAPI : Attribute {
             public string           Version        { get; set; }
+            public string           TermsOfService { get; set; }
             
             public string           LicenseName    { get; set; }
             public string           LicenseUrl     { get; set; }

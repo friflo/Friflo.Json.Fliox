@@ -2,9 +2,10 @@
 
 /** [OpenAPI Object specification](https://spec.openapis.org/oas/v3.0.0#openapi-object) */
 export class OpenApi {
-    version? : string | null;
-    info?    : OpenApiInfo | null;
-    servers? : OpenApiServer[] | null;
+    version?        : string | null;
+    termsOfService? : string | null;
+    info?           : OpenApiInfo | null;
+    servers?        : OpenApiServer[] | null;
 }
 
 export class OpenApiInfo {
