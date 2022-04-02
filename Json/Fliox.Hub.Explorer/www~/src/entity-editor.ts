@@ -304,16 +304,19 @@ export class EntityEditor
         return content;
     }
 
+    static readonly testBulkGet = false; // alternative to read entities by id. Will not work properly if entity ids contain commas
+
     private static async requestIds(database: string, container: string, requestIds: string[]) : Promise<Response> {
-        const idsStr = JSON.stringify(requestIds);
-        // Typical limit for urls in Chrome, ASP.NET: 2048
-        if (idsStr.length > 2000) {
-            return await App.restRequest("POST", idsStr, database, `${container}/bulk-get`, null);
-        }
-        if (requestIds.length == 1)
+        if (requestIds.length == 1) {
             return await App.restRequest("GET", null, database, `${container}/${requestIds[0]}`, null);
-        const query = `ids=${requestIds.join(',')}`;
-        return await App.restRequest("GET", null, database, container, query);
+        }
+        if (this.testBulkGet) {
+            const query = `ids=${requestIds.join(',')}`;
+            return await App.restRequest("GET", null, database, container, query);        
+        }
+        const idsStr = JSON.stringify(requestIds);
+        return await App.restRequest("POST", idsStr, database, `${container}/bulk-get`, null);
+        
     }
 
     private updateGetEntitiesAnchor(database: string, container: string) {
