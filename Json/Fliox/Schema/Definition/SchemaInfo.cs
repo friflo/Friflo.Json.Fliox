@@ -1,9 +1,14 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.OAS;
 
+// ReSharper disable PossibleMultipleEnumeration
 namespace Friflo.Json.Fliox.Schema.Definition
 {
     public class SchemaInfoServer {
@@ -29,7 +34,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public  readonly IReadOnlyList<SchemaInfoServer>    servers;
 
-        
+        /// <summary>Will be used for <see cref="JSON.JSONSchema"/></summary>
         public SchemaInfo(OpenApi openApi) {
             if (openApi == null)
                 return;
@@ -49,6 +54,83 @@ namespace Friflo.Json.Fliox.Schema.Definition
                     infoServers.Add(new SchemaInfoServer (server.url, server.description));
                 }
             }
+        }
+        
+        private SchemaInfo(
+            string      version,
+            string      contactName,
+            string      contactUrl,
+            string      contactEmail,
+            string      licenseName,
+            string      licenseUrl,
+            ICollection<SchemaInfoServer>   servers)
+        {
+            this.version        = version;
+            this.contactName    = contactName;
+            this.contactUrl     = contactUrl;
+            this.contactEmail   = contactEmail;
+            this.licenseName    = licenseName;
+            this.licenseUrl     = licenseUrl;
+            this.servers        = servers.ToList();
+        }
+        
+        public static SchemaInfo GetSchemaInfo(Type schemaType)
+        {
+            var attributes  = schemaType.CustomAttributes;
+            var servers     = new List<SchemaInfoServer>();
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.OpenAPIServer)) {
+                    var namedArguments = attr.NamedArguments;
+                    if (namedArguments != null) {
+                        var server = GetOpenAPIServerAttributes(namedArguments);
+                        servers.Add(server);
+                    }
+                }
+            }
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.OpenAPI)) {
+                    var namedArguments = attr.NamedArguments;
+                    if (namedArguments != null) {
+                        return GetOpenAPIAttributes(namedArguments, servers);
+                    }
+                }
+
+            }
+            return null;
+        }
+        
+        private static SchemaInfo GetOpenAPIAttributes(IList<CustomAttributeNamedArgument> namedArguments, List<SchemaInfoServer> servers) {
+            string  version         = null;
+            string  licenseName     = null;
+            string  licenseUrl      = null;
+            string  contactName     = null;
+            string  contactUrl      = null;
+            string  contactEmail    = null;
+            foreach (var args in  namedArguments) {
+                var value = (string)args.TypedValue.Value;
+                switch (args.MemberName) {
+                    case nameof(Fri.OpenAPI.Version):       version             = value;    break;
+                    case nameof(Fri.OpenAPI.LicenseName):   licenseName   = value;    break;
+                    case nameof(Fri.OpenAPI.LicenseUrl):    licenseUrl    = value;    break;
+                    case nameof(Fri.OpenAPI.ContactName):   contactName   = value;    break;
+                    case nameof(Fri.OpenAPI.ContactUrl):    contactUrl    = value;    break;
+                    case nameof(Fri.OpenAPI.ContactEmail):  contactEmail  = value;    break;
+                }
+            }
+            return new SchemaInfo(version, contactName, contactUrl, contactEmail, licenseName, licenseUrl, servers);
+        }
+        
+        private static SchemaInfoServer GetOpenAPIServerAttributes(IList<CustomAttributeNamedArgument> namedArguments) {
+            string description  = null;
+            string url          = null;
+            foreach (var args in namedArguments) {
+                var value = (string)args.TypedValue.Value;
+                switch (args.MemberName) {
+                    case nameof(Fri.OpenAPIServer.Description): description = value;    break;
+                    case nameof(Fri.OpenAPIServer.Url):         url         = value;    break;
+                }
+            }
+            return new SchemaInfoServer(url, description);
         }
     }
 }
