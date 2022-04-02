@@ -64,9 +64,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 schema = AddSchema(name, database.Schema.typeSchema);
             }
             var schemaPath  = route.Substring(firstSlash + 1);
-            Result result   = new Result();
-            bool success    = schema.GetSchemaFile(schemaPath, ref result, this, context);
-            if (!success) {
+            var result      = schema.GetSchemaFile(schemaPath, this, context);
+            if (!result.success) {
                 context.WriteError("schema error", result.content, 404);
                 return Task.CompletedTask;
             }
@@ -134,9 +133,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.separateTypes  = separateTypes;
         }
 
-        internal bool GetSchemaFile(string path, ref Result result, SchemaHandler handler, RequestContext context) {
+        internal Result GetSchemaFile(string path, SchemaHandler handler, RequestContext context) {
             if (typeSchema == null) {
-                return result.Error("no schema attached to database");
+                return Result.Error("no schema attached to database");
             }
             var storeName = typeSchema.RootType.Name;
             if (modelResources == null) {
@@ -160,23 +159,23 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
-                return result.Set(sb.ToString(), "text/html");
+                return Result.Success(sb.ToString(), "text/html");
             }
             if (path == "json-schema.json") {
                 var jsonSchemaModel = modelResources["json-schema"];
-                return result.Set(jsonSchemaModel.fullSchema, jsonSchemaModel.schemaModel.contentType);
+                return Result.Success(jsonSchemaModel.fullSchema, jsonSchemaModel.schemaModel.contentType);
             }
             if (path == "open-api.html") {
                 var swaggerIndex = GetSwaggerIndex(storeName);
-                return result.Set(swaggerIndex, "text/html");
+                return Result.Success(swaggerIndex, "text/html");
             }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
-                return result.Error($"invalid path:  {path}");
+                return Result.Error($"invalid path:  {path}");
             }
             var schemaType = path.Substring(0, schemaTypeEnd);
             if (!modelResources.TryGetValue(schemaType, out ModelResource modelResource)) {
-                return result.Error($"unknown schema type: {schemaType}");
+                return Result.Error($"unknown schema type: {schemaType}");
             }
             var schemaModel = modelResource.schemaModel;
             var files       = schemaModel.files;
@@ -194,15 +193,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
-                return result.Set(sb.ToString(), "text/html");
+                return Result.Success(sb.ToString(), "text/html");
             }
             if (fileName.StartsWith(storeName) && fileName.EndsWith(modelResource.zipNameSuffix)) {
-                result.bytes        = new JsonValue(modelResource.GetZipArchive(handler.zip));
-                if (result.bytes.IsNull())
-                    return result.Error("ZipArchive not supported (Unity)");
-                result.contentType  = "application/zip";
-                result.isText       = false;
-                return true;
+                var bytes = new JsonValue(modelResource.GetZipArchive(handler.zip));
+                if (bytes.IsNull())
+                    return Result.Error("ZipArchive not supported (Unity)");
+                return Result.Success(bytes, "application/zip");
             }
             if (fileName == "directory") {
                 var pool = context.Pool;
@@ -210,13 +207,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var writer      = pooled.instance.writer;
                     writer.Pretty   = true;
                     var directory   = writer.Write(files.Keys.ToList());
-                    return result.Set(directory, "application/json");
+                    return Result.Success(directory, "application/json");
                 }
             }
             if (!files.TryGetValue(fileName, out string content)) {
-                return result.Error($"file not found: '{fileName}'");
+                return Result.Error($"file not found: '{fileName}'");
             }
-            return result.Set(content, schemaModel.contentType);
+            return Result.Success(content, schemaModel.contentType);
         }
 
         private static void HtmlHeader(StringBuilder sb, string[] titlePath, string description, SchemaHandler handler) {
@@ -325,31 +322,31 @@ window.onload = function() {{
         }
     }
     
-    internal struct Result {
-        internal    string      content;
-        internal    string      contentType;
-        internal    JsonValue   bytes;
-        internal    bool        isText;
+    internal readonly struct Result {
+        internal  readonly  bool        success;
+        internal  readonly  string      content;
+        internal  readonly  string      contentType;
+        internal  readonly  JsonValue   bytes;
+        internal  readonly  bool        isText;
         
-        internal  bool Set(string  content, string  contentType) {
+        private Result (string content, string contentType, JsonValue bytes, bool isText, bool success) {
             this.content        = content;
             this.contentType    = contentType;
-            isText              = true;
-            return true;
+            this.bytes          = bytes;
+            this.isText         = isText;
+            this.success        = success;
         }
         
-        internal  bool Set(JsonValue  content, string  contentType) {
-            this.bytes          = content;
-            this.contentType    = contentType;
-            isText              = false;
-            return true;
+        internal static Result Success(string  content, string  contentType) {
+            return new Result(content, contentType, default, true, true);
         }
         
-        internal bool Error(string  content) {
-            this.content        = content;
-            this.contentType    = "text/plain";
-            isText              = true;
-            return false;
+        internal static  Result Success(JsonValue  content, string  contentType) {
+            return new Result(null, contentType, content, false, true);
+        }
+        
+        internal static Result Error(string  content) {
+            return new Result(content, "text/plain", default, true, false);
         }
     }
 }
