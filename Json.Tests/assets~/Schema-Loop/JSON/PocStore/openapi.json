@@ -21,27 +21,27 @@
     },
     {
       "name": "orders",
-      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Order'>Order</a> · Some useful class documentation :)\n<code>multiline line\ncode documentation</code>\nTest type reference '<b>OrderItem</b>'"
+      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Order'>Order</a>"
     },
     {
       "name": "customers",
-      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Customer'>Customer</a> · "
+      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Customer'>Customer</a>"
     },
     {
       "name": "articles",
-      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Article'>Article</a> · "
+      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Article'>Article</a>"
     },
     {
       "name": "producers",
-      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Producer'>Producer</a> · "
+      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Producer'>Producer</a>"
     },
     {
       "name": "employees",
-      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Employee'>Employee</a> · "
+      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.Employee'>Employee</a>"
     },
     {
       "name": "types",
-      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.TestType'>TestType</a> · "
+      "description": "entity type: <a target='PocStore' href='html/schema.html#UnitTest.Fliox.Client.TestType'>TestType</a>"
     }],
   "paths": {
     "/": {
