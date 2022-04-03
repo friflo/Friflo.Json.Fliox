@@ -61,6 +61,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   abstract   bool                        IsEnum          { get; }
         public   abstract   IReadOnlyList<EnumValue>    EnumValues      { get; }
         public   readonly   string                      doc;
+        /// <summary>meta data assigned to a schema compatible to <b>OpenAPI</b></summary>
         public              SchemaInfo                  SchemaInfo      => schemaInfo;
         
         // --- internal
