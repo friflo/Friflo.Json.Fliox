@@ -10,7 +10,7 @@ The **Fliox DemoHub** is used to demonstrate the features of
 [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) .NET library via a Web project.  
 This library is an ORM used to create a schema for key-value or document databases by declaring
 a set of model classes used do define the types stored in each database container / table.  
-For a simple setup the schema is used to run a server also as a database storing records (entities) in memory or
+For a simple setup the schema is used to run a server also as a database storing records (entities) in-memory or
 in the file-system without any configuration or installation of a third party DBMS (database management system).
 
 
