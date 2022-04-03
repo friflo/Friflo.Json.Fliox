@@ -40,8 +40,8 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 - host a single-page Web App to browse database containers / tables and execute domain specific commands.
   See [**Hub Explorer**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub.Explorer/README.md)
 - enables access to administrative databases via Web APIs and the Hub Explorer:
-  - `cluster` showing the database exposed by the server
-  - `monitor` for monitoring information like requests & tasks executed by users & clients
+  - `cluster` listing the databases and their containers exposed by the server
+  - `monitor` to get monitoring information like requests & tasks executed by users & clients
   - `user_db` to explore or change user access rights
 - expose an [**OpenAPI interface**](https://spec.openapis.org/oas/v3.0.0) describing the **REST API** and
   host [**Swagger UI**](https://swagger.io/tools/swagger-ui/) to explore the API
