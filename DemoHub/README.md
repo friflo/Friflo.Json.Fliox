@@ -37,18 +37,19 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
   See [**Hub Explorer**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub.Explorer/README.md)
 
 
-## Files
+## Project
 
-|                      file                     |                   description                             
-|-----------------------------------------------|-----------------------------------------------
-|[DemoStore.cs](DemoStore.cs)                   | is the database client <br/> declares database containers
-|[DemoStore_commands.cs](DemoStore_commands.cs) | declares database commands
-|[MessageHandler.cs](MessageHandler.cs)         | implement custom database commands by utilizing **DemoStore** clients
-|[Program.cs](Program.cs)                       | bootstrapping & configuration of host
-|[Startup.cs](Startup.cs)                       | **ASP.NET Core** configuration and host integration
-|[Utils.cs](Utils.cs)                           | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records to 
+``` markdown
+.
+├── [](DemoStore.cs)            is the database client
+|                               declares database containers
+├── [](DemoStore_commands.cs)   declares database commands
+├── [](MessageHandler.cs)       implement custom commands by utilizing DemoStore clients
+├── [](Program.cs)              bootstrapping & configuration of host
+├── [](Startup.cs)              ASP.NET Core configuration and host integration
+└── [](Utils.cs)                utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records to 
 
-
+```
 
 
 
