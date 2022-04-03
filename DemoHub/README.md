@@ -6,7 +6,13 @@
 
 ## General
 
-The **Fliox DemoHub** is used to demonstrate the features of [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) .NET library via a Web project.
+The **Fliox DemoHub** is used to demonstrate the features of
+[**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) .NET library via a Web project.  
+This library is an ORM used to create a database schema for key-value or document storages by declaring
+a set of model classes used do define the types stored in each database container / table.  
+For a simple setup the schema is used to run a server as a database storing the records in memory or
+in the file-system without any configuration or installation of a third party database management system.
+
 
 **TL;DR**  
 [**Fliox DemoHub**](http://ec2-174-129-178-18.compute-1.amazonaws.com/) running on **AWS** using **t2-micro** instance
