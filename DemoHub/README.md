@@ -27,7 +27,8 @@ The key class when running a HTTP server using **JSON Fliox Hub** is [**DemoStor
 This class provide two fundamental functionalities:
 1. It is a **database client** providing type-safe access to its containers, commands and messages
 2. It defines a **database schema** by declaring its containers, commands and messages.  
-  The schema is used by host for **record validation** and serving it as **JSON Schema** and other various formats.
+  The schema is used by host for **record validation** and serving it as:  
+  **JSON Schema**, **OpenAPI**, **HTML**, **Typescript**, **C#** & **Kotlin**.
 
 
 ## Features
