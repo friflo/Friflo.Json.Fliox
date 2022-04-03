@@ -46,7 +46,7 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 - expose an [**OpenAPI interface**](https://spec.openapis.org/oas/v3.0.0) describing the **REST API** and
   host [**Swagger UI**](https://swagger.io/tools/swagger-ui/) to explore the API
 - [**JSON Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox) is designed as a library - not a framework.  
-  This enable seamless integration in any **ASP.NET Core** application by a single path. e.g. `"/fliox/{*path}"`
+  This enable seamless integration in any **ASP.NET Core** application by a single route. e.g. `"/fliox/{*path}"`
   
 
 ## Files
