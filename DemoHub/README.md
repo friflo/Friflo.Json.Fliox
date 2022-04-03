@@ -33,12 +33,14 @@ This class provide two fundamental functionalities:
 ## Features
 The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub) are:
 - provide **JSON based Web API**s to access **key-value** or **document** databases.
-- add a **database schema** to these databases as they typically don't have a build-in solution for schemas
+- assign a **database schema** to each databases as they typically don't have a build-in solution for schemas
 - aim for near optimal request performance regarding **low latency** and **high throughput**
 - enable simple and efficient TDD as database access can be tested with **in-memory** or **file-system** based databases.
-- hosts a single-page Web App to browse database containers / tables and execute domain specific commands.
+- host a single-page Web App to browse database containers / tables and execute domain specific commands.
   See [**Hub Explorer**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub.Explorer/README.md)
-
+- expose an [**OpenAPI interface**](https://spec.openapis.org/oas/v3.0.0) describing the **REST API** and
+  host [**Swagger UI**](https://swagger.io/tools/swagger-ui/) to explore the API
+  
 
 ## Files
 
@@ -49,7 +51,7 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 |[MessageHandler.cs](MessageHandler.cs)         | implement custom database commands by utilizing **DemoStore** clients
 |[Program.cs](Program.cs)                       | bootstrapping & configuration of host
 |[Startup.cs](Startup.cs)                       | **ASP.NET Core** configuration and host integration
-|[Utils.cs](Utils.cs)                           | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records to 
+|[Utils.cs](Utils.cs)                           | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records
 
 
 
