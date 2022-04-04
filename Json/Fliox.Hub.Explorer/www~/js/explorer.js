@@ -98,8 +98,7 @@ export class Explorer {
         }
         writeResult.innerHTML = "";
         e.cursor = response.headers.get("cursor");
-        const json = await response.json();
-        const entities = json;
+        const entities = await this.readResponse(response, null);
         const type = app.getContainerSchema(e.database, e.container);
         this.updateExplorerEntities(entities, type);
     }
@@ -154,15 +153,7 @@ export class Explorer {
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        const jsonResult = await response.text();
-        let entities;
-        try {
-            entities = JSON.parse(jsonResult);
-        }
-        catch (e) {
-            entityExplorer.innerHTML = App.errorAsHtml(e.message, p);
-            return;
-        }
+        const entities = await this.readResponse(response, p);
         this.explorer = Object.assign(Object.assign({}, this.explorer), { entities }); // explorer: entities loaded successful
         this.explorer.cursor = response.headers.get("cursor");
         const head = this.createExplorerHead(entityType, this.entityFields);
@@ -177,6 +168,16 @@ export class Explorer {
         // set initial focus cell
         if (this.explorerTable.rows.length > 1) {
             this.setFocusCell(1, 1);
+        }
+    }
+    async readResponse(response, p) {
+        try {
+            const jsonResult = await response.text();
+            return JSON.parse(jsonResult);
+        }
+        catch (e) {
+            entityExplorer.innerHTML = App.errorAsHtml(e.message, p);
+            return null;
         }
     }
     async explorerOnClick(ev, p) {

@@ -158,8 +158,8 @@ export class Explorer
         }
         writeResult.innerHTML = "";
         e.cursor        = response.headers.get("cursor");
-        const json      = await response.json();
-        const entities  = json as Entity[];
+        const entities  = await this.readResponse(response, null) as Entity[];
+
         const type      = app.getContainerSchema(e.database, e.container);
 
         this.updateExplorerEntities(entities, type);
@@ -230,14 +230,8 @@ export class Explorer
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        const jsonResult        = await response.text();
-        let entities : Entity[];
-        try {
-            entities            = JSON.parse(jsonResult) as Entity[];
-        } catch (e) {
-            entityExplorer.innerHTML = App.errorAsHtml(e.message, p);
-            return;
-        }
+
+        const entities          = await this.readResponse(response, p) as Entity[];
         this.explorer           = { ...this.explorer, entities };   // explorer: entities loaded successful
         this.explorer.cursor    = response.headers.get("cursor");
 
@@ -255,6 +249,16 @@ export class Explorer
         // set initial focus cell
         if (this.explorerTable.rows.length > 1) {
             this.setFocusCell(1, 1);
+        }
+    }
+
+    private async readResponse(response: Response, p: Resource) : Promise<any> {
+        try {
+            const jsonResult = await response.text();
+            return JSON.parse(jsonResult);
+        } catch (e) {
+            entityExplorer.innerHTML = App.errorAsHtml(e.message, p);
+            return null;
         }
     }
 
