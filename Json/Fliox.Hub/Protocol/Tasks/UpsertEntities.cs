@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class UpsertEntitiesResult : SyncTaskResult, ICommandResult
     {
         [Fri.Ignore] public CommandError        Error { get; set; }
+        /// <summary>list of entity errors failed to upsert</summary>
                      public List<EntityError>   errors;
 
         internal override   TaskType            TaskType => TaskType.upsert;

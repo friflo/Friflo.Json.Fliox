@@ -307,6 +307,7 @@ export abstract class SyncTaskResult {
 export class CreateEntitiesResult extends SyncTaskResult {
     /** task result type */
     task    : "create";
+    /** list of entity errors failed to create */
     errors? : EntityError[] | null;
 }
 
@@ -314,6 +315,7 @@ export class CreateEntitiesResult extends SyncTaskResult {
 export class UpsertEntitiesResult extends SyncTaskResult {
     /** task result type */
     task    : "upsert";
+    /** list of entity errors failed to upsert */
     errors? : EntityError[] | null;
 }
 
@@ -350,6 +352,7 @@ export class AggregateEntitiesResult extends SyncTaskResult {
 export class PatchEntitiesResult extends SyncTaskResult {
     /** task result type */
     task    : "patch";
+    /** list of entity errors failed to patch */
     errors? : EntityError[] | null;
 }
 
@@ -357,6 +360,7 @@ export class PatchEntitiesResult extends SyncTaskResult {
 export class DeleteEntitiesResult extends SyncTaskResult {
     /** task result type */
     task    : "delete";
+    /** list of entity errors failed to delete */
     errors? : EntityError[] | null;
 }
 

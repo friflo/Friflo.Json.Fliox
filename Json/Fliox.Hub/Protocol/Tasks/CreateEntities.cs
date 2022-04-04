@@ -75,6 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CreateEntitiesResult : SyncTaskResult, ICommandResult
     {
         [Fri.Ignore] public CommandError        Error { get; set; }
+        /// <summary>list of entity errors failed to create</summary>
                      public List<EntityError>   errors;
         
         internal override   TaskType            TaskType => TaskType.create;

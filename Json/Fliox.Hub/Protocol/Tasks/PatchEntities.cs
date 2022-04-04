@@ -57,6 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class PatchEntitiesResult : SyncTaskResult, ICommandResult
     {
         [Fri.Ignore] public CommandError        Error { get; set; }
+        /// <summary>list of entity errors failed to patch</summary>
                      public List<EntityError>   errors;
         
         internal override   TaskType            TaskType => TaskType.patch;

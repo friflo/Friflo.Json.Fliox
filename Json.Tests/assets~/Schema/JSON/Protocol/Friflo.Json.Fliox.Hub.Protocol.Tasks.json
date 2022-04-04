@@ -342,7 +342,7 @@
             "description": "Result of a <b>CreateEntities</b> task",
             "properties": {
                 "task":   { "enum": ["create"] },
-                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors failed to create" }
             },
             "required": [
                 "task"
@@ -355,7 +355,7 @@
             "description": "Result of a <b>UpsertEntities</b> task",
             "properties": {
                 "task":   { "enum": ["upsert"] },
-                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors failed to upsert" }
             },
             "required": [
                 "task"
@@ -414,7 +414,7 @@
             "description": "Result of a <b>PatchEntities</b> task",
             "properties": {
                 "task":   { "enum": ["patch"] },
-                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors failed to patch" }
             },
             "required": [
                 "task"
@@ -427,7 +427,7 @@
             "description": "Result of a <b>DeleteEntities</b> task",
             "properties": {
                 "task":   { "enum": ["delete"] },
-                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "description": "list of entity errors failed to delete" }
             },
             "required": [
                 "task"

@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class DeleteEntitiesResult : SyncTaskResult, ICommandResult
     {
         [Fri.Ignore] public CommandError        Error { get; set; }
+        /// <summary>list of entity errors failed to delete</summary>
                      public List<EntityError>   errors;
 
         internal override   TaskType            TaskType => TaskType.delete;

@@ -160,7 +160,7 @@ export class ContainerEntities {
     entities   : any[];
     /** list of entities not found by **ReadEntities** tasks */
     notFound?  : string[] | null;
-    /** list of entity errors when accessing the database */
+    /** list of entity errors read from **container** */
     errors?    : EntityError[] | null;
 }
 

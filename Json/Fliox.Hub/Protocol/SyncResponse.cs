@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  List<JsonKey>                       notFound;
-        /// <summary>list of entity errors when accessing the database</summary>
+        /// <summary>list of entity errors read from <see cref="container"/></summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  List<EntityError>                   errors;
         
