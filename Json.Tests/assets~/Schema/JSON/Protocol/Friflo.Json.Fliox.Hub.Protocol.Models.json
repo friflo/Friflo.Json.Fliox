@@ -30,31 +30,11 @@
             ],
             "additionalProperties": false
         },
-        "ReadEntitiesSetResult": {
-            "type": "object",
-            "properties": {
-                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
-            },
-            "additionalProperties": false
-        },
-        "ReferencesResult": {
-            "type": "object",
-            "properties": {
-                "error":      { "type": ["string", "null"] },
-                "container":  { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
-                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
-                "ids":        { "type": "array", "items": { "type": "string" } },
-                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
-            },
-            "required": [
-                "ids"
-            ],
-            "additionalProperties": false
-        },
         "EntityError": {
             "type": "object",
             "description": "Used by <b>SyncResponse</b> to return errors when mutating an entity by: create, upsert, patch and delete",
             "properties": {
+                "id":      { "type": ["string", "null"] },
                 "type":    { "$ref": "#/definitions/EntityErrorType", "description": "error type when accessing an entity in a database" },
                 "message": { "type": ["string", "null"], "description": "error details when accessing an entity" }
             },
@@ -80,6 +60,27 @@
                 "PatchError":  "Patching an entity failed"
             }
 
+        },
+        "ReadEntitiesSetResult": {
+            "type": "object",
+            "properties": {
+                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
+            },
+            "additionalProperties": false
+        },
+        "ReferencesResult": {
+            "type": "object",
+            "properties": {
+                "error":      { "type": ["string", "null"] },
+                "container":  { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
+                "count":      { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "number of <b>ids</b> - not utilized by Protocol" },
+                "ids":        { "type": "array", "items": { "type": "string" } },
+                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
+            },
+            "required": [
+                "ids"
+            ],
+            "additionalProperties": false
         }
     }
 }

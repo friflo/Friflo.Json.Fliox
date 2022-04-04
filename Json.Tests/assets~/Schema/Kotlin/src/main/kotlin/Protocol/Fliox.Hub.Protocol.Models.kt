@@ -20,21 +20,8 @@ data class References (
 )
 
 @Serializable
-data class ReadEntitiesSetResult (
-              val references : List<ReferencesResult>? = null,
-)
-
-@Serializable
-data class ReferencesResult (
-              val error      : String? = null,
-              val container  : String? = null,
-              val count      : Int? = null,
-              val ids        : List<String>,
-              val references : List<ReferencesResult>? = null,
-)
-
-@Serializable
 data class EntityError (
+              val id      : String? = null,
               val type    : EntityErrorType,
               val message : String? = null,
 )
@@ -47,4 +34,18 @@ enum class EntityErrorType {
     DeleteError,
     PatchError,
 }
+
+@Serializable
+data class ReadEntitiesSetResult (
+              val references : List<ReferencesResult>? = null,
+)
+
+@Serializable
+data class ReferencesResult (
+              val error      : String? = null,
+              val container  : String? = null,
+              val count      : Int? = null,
+              val ids        : List<String>,
+              val references : List<ReferencesResult>? = null,
+)
 

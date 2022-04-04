@@ -41,12 +41,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 return InvalidTask(error);
             }
 
-            Dictionary<JsonKey, EntityError> validationErrors = null;
+            List<EntityError> validationErrors = null;
             error = database.Schema?.ValidateEntities (container, entityKeys, entities, executeContext, EntityErrorType.WriteError, ref validationErrors);
             if (error != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, error));
             }
-            SyncResponse.AddEntityErrors(ref response.createErrors, container, validationErrors);
             
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
@@ -64,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            SyncResponse.AddEntityErrors(ref response.createErrors, container, result.createErrors);
+            SyncResponse.AddEntityErrors(ref result.errors, validationErrors);
             return result;
         }
     }
@@ -75,9 +74,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class CreateEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError                        Error { get; set; }
-        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    createErrors;
+        [Fri.Ignore] public CommandError        Error { get; set; }
+                     public List<EntityError>   errors;
         
-        internal override   TaskType                            TaskType => TaskType.create;
+        internal override   TaskType            TaskType => TaskType.create;
     }
 }

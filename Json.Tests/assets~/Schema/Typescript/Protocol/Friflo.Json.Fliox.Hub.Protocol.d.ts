@@ -134,26 +134,17 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 /** A **SyncResponse** is the response of **SyncRequest** executed by a **FlioxHub** */
 export class SyncResponse extends ProtocolResponse {
     /** message type */
-    msg           : "resp";
+    msg         : "resp";
     /** for debugging - not used by Protocol */
-    database?     : string | null;
+    database?   : string | null;
     /** list of task results corresponding to the **tasks** in a **SyncRequest** */
-    tasks?        : SyncTaskResult_Union[] | null;
+    tasks?      : SyncTaskResult_Union[] | null;
     /**
      * entities as results from the **tasks** in a **SyncRequest**
      * grouped by container
      */
-    containers?   : ContainerEntities[] | null;
-    /** entity errors caused by **CreateEntities** tasks per container */
-    createErrors? : { [key: string]: EntityErrors } | null;
-    /** entity errors caused by **UpsertEntities** tasks per container */
-    upsertErrors? : { [key: string]: EntityErrors } | null;
-    /** entity errors caused by **PatchEntities** tasks per container */
-    patchErrors?  : { [key: string]: EntityErrors } | null;
-    /** entity errors caused by **DeleteEntities** tasks per container */
-    deleteErrors? : { [key: string]: EntityErrors } | null;
-    /** optional JSON value to return debug / development data - e.g. execution times or resource usage. */
-    info?         : any | null;
+    containers? : ContainerEntities[] | null;
+    info?       : any | null;
 }
 
 /**
@@ -171,14 +162,6 @@ export class ContainerEntities {
     notFound?  : string[] | null;
     /** list of entity errors when accessing the database */
     errors?    : { [key: string]: EntityError } | null;
-}
-
-/** entity errors per container when accessing the database */
-export class EntityErrors {
-    /** container name - not utilized by Protocol */
-    container? : string | null;
-    /** map of entity errors when accessing the **container** */
-    errors     : { [key: string]: EntityError };
 }
 
 /** **ErrorResponse** is returned for a **SyncRequest** in case the whole requests failed */

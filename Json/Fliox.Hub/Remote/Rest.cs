@@ -281,7 +281,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("delete error", resultError.message, 500);
                 return;
             }
-            var entityErrors = deleteResult.deleteErrors;
+            var entityErrors = deleteResult.errors;
             if (entityErrors != null) {
                 var sb = new StringBuilder();
                 FormatEntityErrors (entityErrors, sb);
@@ -342,10 +342,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("PUT error", resultError.message, 500);
                 return;
             }
-            Dictionary<JsonKey, EntityError> entityErrors;
+            List<EntityError> entityErrors;
             switch (type) {
-                case TaskType.upsert: entityErrors = ((UpsertEntitiesResult)taskResult).upsertErrors;   break;
-                case TaskType.create: entityErrors = ((CreateEntitiesResult)taskResult).createErrors;   break;
+                case TaskType.upsert: entityErrors = ((UpsertEntitiesResult)taskResult).errors;   break;
+                case TaskType.create: entityErrors = ((CreateEntitiesResult)taskResult).errors;   break;
                 default:
                     throw new InvalidOperationException($"Invalid PUT type: {type}");
             }
@@ -386,7 +386,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("PATCH error", resultError.message, 500);
                 return;
             }
-            var entityErrors = patchResult.patchErrors;
+            var entityErrors = patchResult.errors;
             if (entityErrors != null) {
                 var sb = new StringBuilder();
                 FormatEntityErrors (entityErrors, sb);
@@ -396,9 +396,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("PATCH successful", "text/plain", 200);
         }
         
-        private static void FormatEntityErrors(Dictionary<JsonKey, EntityError> entityErrors, StringBuilder sb) {
-            foreach (var pair in entityErrors) {
-                var error = pair.Value;
+        private static void FormatEntityErrors(List<EntityError> entityErrors, StringBuilder sb) {
+            foreach (var error in entityErrors) {
                 sb.Append("\n| ");
                 sb.Append(error.type);
                 sb.Append(": [");

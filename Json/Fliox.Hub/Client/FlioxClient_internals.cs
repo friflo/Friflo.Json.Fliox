@@ -138,39 +138,54 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (expect != taskCount)
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
+        
+        private static void CopyErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
+            if (errors == null)
+                return;
+            foreach (var error in errors) {
+                // error .container is not serialized as it is redundant data.
+                // Infer its value from containing error List
+                error.container = container;
+            }
+            if (errorMap == SyncSet.NoErrors) {
+                errorMap = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+            }
+            foreach (var error in errors) {
+                errorMap.Add(error.id, error);
+            }
+        }
 
-        private static void SetErrors(SyncResponse response, SyncStore syncStore) {
+        private static void SetErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
             var syncSets = syncStore.SyncSets;
-            var createErrors = response.createErrors;
-            if (createErrors != null) {
-                foreach (var createError in createErrors) {
-                    createError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[createError.Key];
-                    syncSet.errorsCreate = createError.Value.errors;
-                }
-            }
-            var upsertErrors = response.upsertErrors;
-            if (upsertErrors != null) {
-                foreach (var upsertError in upsertErrors) {
-                    upsertError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[upsertError.Key];
-                    syncSet.errorsUpsert = upsertError.Value.errors;
-                }
-            }
-            var patchErrors = response.patchErrors;
-            if (patchErrors != null) {
-                foreach (var patchError in patchErrors) {
-                    patchError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[patchError.Key];
-                    syncSet.errorsPatch = patchError.Value.errors;
-                }
-            }
-            var deleteErrors = response.deleteErrors;
-            if (deleteErrors != null) {
-                foreach (var deleteError in deleteErrors) {
-                    deleteError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[deleteError.Key];
-                    syncSet.errorsDelete = deleteError.Value.errors;
+            
+            for (int n = 0; n < tasks.Count; n++) {
+                var task            = tasks[n];
+                var responseTask    = responseTasks[n];
+                switch (responseTask.TaskType) {
+                    case TaskType.upsert:
+                        var upsert          = (UpsertEntities)task;
+                        var upsertResult    = (UpsertEntitiesResult)responseTasks[n];
+                        SyncSet syncSet     = syncSets[upsert.container];
+                        CopyErrorsToMap(upsertResult.errors,    upsert.container, ref syncSet.errorsUpsert);
+                        break; 
+                    case TaskType.create:
+                        var create          = (CreateEntities)task;
+                        var createResult    = (CreateEntitiesResult)responseTasks[n];
+                        syncSet             = syncSets[create.container];
+                        CopyErrorsToMap(createResult.errors,    create.container, ref syncSet.errorsCreate);
+                        break;
+                    case TaskType.patch:
+                        var patch           = (PatchEntities)task;
+                        var patchResult     = (PatchEntitiesResult)responseTasks[n];
+                        syncSet             = syncSets[patch.container];
+                        CopyErrorsToMap(patchResult.errors,     patch.container, ref syncSet.errorsPatch);
+                        break;
+                    case TaskType.delete:
+                        var delete          = (DeleteEntities)task;
+                        var deleteResult    = (DeleteEntitiesResult)responseTasks[n];
+                        syncSet             = syncSets[delete.container];
+                        CopyErrorsToMap(deleteResult.errors,    delete.container, ref syncSet.errorsDelete);
+                        break;
                 }
             }
         }
@@ -273,7 +288,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     var set = _intern.GetSetByName(containerResult.Key);
                     set.SyncPeerEntities(containerEntities.entityMap, mapper);
                 }
-                SetErrors(result, syncStore);
+                SetErrors(syncRequest.tasks, result.tasks, syncStore);
             } else {
                 syncError = new TaskErrorResult (TaskErrorResultType.SyncError, error.message);
                 containerResults = new Dictionary<string, ContainerEntities>();

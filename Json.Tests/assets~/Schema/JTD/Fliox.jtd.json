@@ -255,16 +255,12 @@
         },
         "SyncResponse": {
             "properties": {
-                "req":          { "type": "int32", "nullable": true },
-                "clt":          { "type": "string", "nullable": true },
-                "database":     { "type": "string", "nullable": true },
-                "tasks":        { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
-                "containers":   { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
-                "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "info":         { "nullable": true }
+                "req":        { "type": "int32", "nullable": true },
+                "clt":        { "type": "string", "nullable": true },
+                "database":   { "type": "string", "nullable": true },
+                "tasks":      { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
+                "containers": { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
+                "info":       { "nullable": true }
             }
         },
         "ProtocolResponse": {
@@ -302,12 +298,29 @@
         },
         "CreateEntitiesResult": {
             "properties": {
-
+                "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
+        },
+        "EntityError": {
+            "properties": {
+                "id":      { "type": "string", "nullable": true },
+                "type":    { "ref":  "EntityErrorType" },
+                "message": { "type": "string", "nullable": true }
+            }
+        },
+        "EntityErrorType": {
+            "enum": [
+                "Undefined",
+                "ParseError",
+                "ReadError",
+                "WriteError",
+                "DeleteError",
+                "PatchError"
+            ]
         },
         "UpsertEntitiesResult": {
             "properties": {
-
+                "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "ReadEntitiesResult": {
@@ -346,12 +359,12 @@
         },
         "PatchEntitiesResult": {
             "properties": {
-
+                "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "DeleteEntitiesResult": {
             "properties": {
-
+                "errors": { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "SendMessageResult": {
@@ -424,28 +437,6 @@
                 "entities":  { "elements": {  } },
                 "notFound":  { "elements": { "type": "string" }, "nullable": true },
                 "errors":    { "values": { "ref":  "EntityError" }, "nullable": true }
-            }
-        },
-        "EntityError": {
-            "properties": {
-                "type":    { "ref":  "EntityErrorType" },
-                "message": { "type": "string", "nullable": true }
-            }
-        },
-        "EntityErrorType": {
-            "enum": [
-                "Undefined",
-                "ParseError",
-                "ReadError",
-                "WriteError",
-                "DeleteError",
-                "PatchError"
-            ]
-        },
-        "EntityErrors": {
-            "properties": {
-                "container": { "type": "string", "nullable": true },
-                "errors":    { "values": { "ref":  "EntityError" } }
             }
         },
         "ErrorResponse": {

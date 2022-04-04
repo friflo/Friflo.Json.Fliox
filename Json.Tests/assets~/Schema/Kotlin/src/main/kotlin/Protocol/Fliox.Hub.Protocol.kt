@@ -35,16 +35,12 @@ abstract class ProtocolRequest  : ProtocolMessage() {
 @Serializable
 @SerialName("resp")
 data class SyncResponse (
-    override  val req          : Int? = null,
-    override  val clt          : String? = null,
-              val database     : String? = null,
-              val tasks        : List<SyncTaskResult>? = null,
-              val containers   : List<ContainerEntities>? = null,
-              val createErrors : HashMap<String, EntityErrors>? = null,
-              val upsertErrors : HashMap<String, EntityErrors>? = null,
-              val patchErrors  : HashMap<String, EntityErrors>? = null,
-              val deleteErrors : HashMap<String, EntityErrors>? = null,
-              val info         : JsonElement? = null,
+    override  val req        : Int? = null,
+    override  val clt        : String? = null,
+              val database   : String? = null,
+              val tasks      : List<SyncTaskResult>? = null,
+              val containers : List<ContainerEntities>? = null,
+              val info       : JsonElement? = null,
 ) : ProtocolResponse()
 
 @Serializable
@@ -61,12 +57,6 @@ data class ContainerEntities (
               val entities  : List<JsonElement>,
               val notFound  : List<String>? = null,
               val errors    : HashMap<String, EntityError>? = null,
-)
-
-@Serializable
-data class EntityErrors (
-              val container : String? = null,
-              val errors    : HashMap<String, EntityError>,
 )
 
 @Serializable

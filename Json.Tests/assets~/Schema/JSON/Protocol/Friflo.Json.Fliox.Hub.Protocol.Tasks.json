@@ -341,7 +341,8 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "description": "Result of a <b>CreateEntities</b> task",
             "properties": {
-                "task": { "enum": ["create"] }
+                "task":   { "enum": ["create"] },
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
             },
             "required": [
                 "task"
@@ -353,7 +354,8 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "description": "Result of a <b>UpsertEntities</b> task",
             "properties": {
-                "task": { "enum": ["upsert"] }
+                "task":   { "enum": ["upsert"] },
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
             },
             "required": [
                 "task"
@@ -411,7 +413,8 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "description": "Result of a <b>PatchEntities</b> task",
             "properties": {
-                "task": { "enum": ["patch"] }
+                "task":   { "enum": ["patch"] },
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
             },
             "required": [
                 "task"
@@ -423,7 +426,8 @@
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "description": "Result of a <b>DeleteEntities</b> task",
             "properties": {
-                "task": { "enum": ["delete"] }
+                "task":   { "enum": ["delete"] },
+                "errors": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" } }
             },
             "required": [
                 "task"

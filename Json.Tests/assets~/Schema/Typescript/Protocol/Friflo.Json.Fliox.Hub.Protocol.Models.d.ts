@@ -23,22 +23,9 @@ export class References {
     references? : References[] | null;
 }
 
-export class ReadEntitiesSetResult {
-    references? : ReferencesResult[] | null;
-}
-
-export class ReferencesResult {
-    error?      : string | null;
-    /** container name - not utilized by Protocol */
-    container?  : string | null;
-    /** number of **ids** - not utilized by Protocol */
-    count?      : int32 | null;
-    ids         : string[];
-    references? : ReferencesResult[] | null;
-}
-
 /** Used by **SyncResponse** to return errors when mutating an entity by: create, upsert, patch and delete */
 export class EntityError {
+    id?      : string | null;
     /** error type when accessing an entity in a database */
     type     : EntityErrorType;
     /** error details when accessing an entity */
@@ -66,4 +53,18 @@ export type EntityErrorType =
        */
     | "PatchError"       /** Patching an entity failed */
 ;
+
+export class ReadEntitiesSetResult {
+    references? : ReferencesResult[] | null;
+}
+
+export class ReferencesResult {
+    error?      : string | null;
+    /** container name - not utilized by Protocol */
+    container?  : string | null;
+    /** number of **ids** - not utilized by Protocol */
+    count?      : int32 | null;
+    ids         : string[];
+    references? : ReferencesResult[] | null;
+}
 

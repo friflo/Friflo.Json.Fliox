@@ -166,12 +166,14 @@ abstract class SyncTaskResult  {
 
 @Serializable
 @SerialName("create")
-class CreateEntitiesResult (
+data class CreateEntitiesResult (
+              val errors : List<EntityError>? = null,
 ) : SyncTaskResult()
 
 @Serializable
 @SerialName("upsert")
-class UpsertEntitiesResult (
+data class UpsertEntitiesResult (
+              val errors : List<EntityError>? = null,
 ) : SyncTaskResult()
 
 @Serializable
@@ -199,12 +201,14 @@ data class AggregateEntitiesResult (
 
 @Serializable
 @SerialName("patch")
-class PatchEntitiesResult (
+data class PatchEntitiesResult (
+              val errors : List<EntityError>? = null,
 ) : SyncTaskResult()
 
 @Serializable
 @SerialName("delete")
-class DeleteEntitiesResult (
+data class DeleteEntitiesResult (
+              val errors : List<EntityError>? = null,
 ) : SyncTaskResult()
 
 @Serializable

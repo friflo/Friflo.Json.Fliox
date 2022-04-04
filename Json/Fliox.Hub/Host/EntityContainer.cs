@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   <para>2. The database request was successful, but one or more entities (key/values) had an error when accessing.
     ///         E.g. Writing an entity to a file with a <see cref="FileContainer"/> fails because it is used by another process.
     ///         => An <see cref="EntityError"/> need to be added to entity error dictionary of the <see cref="ICommandResult"/>
-    ///            E.g. an error is added to <see cref="CreateEntitiesResult.createErrors"/> in case of
+    ///            E.g. an error is added to <see cref="CreateEntitiesResult.errors"/> in case of
     ///            <see cref="FileContainer.CreateEntities"/>
     ///   </para>
     ///   
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var targets     = new  List<JsonValue>  (entities.Count);
             var targetKeys  = new  List<JsonKey>    (entities.Count);
             var container   = patchEntities.container;
-            Dictionary<JsonKey, EntityError> patchErrors = null;
+            List<EntityError> patchErrors = null;
             using (var pooled = executeContext.pool.JsonPatcher.Get()) {
                 JsonPatcher patcher = pooled.instance;
                 foreach (var entity in entities) {
@@ -143,7 +143,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (valError != null) {
                 return new PatchEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
             }
-            SyncResponse.AddEntityErrors(ref response.patchErrors, container, patchErrors);
             
             // Write patched entities back
             var task = new UpsertEntities {entities = targets, entityKeys = targetKeys };
@@ -151,15 +150,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (upsertResult.Error != null) {
                 return new PatchEntitiesResult {Error = upsertResult.Error};
             }
-            var upsertErrors = upsertResult.upsertErrors;
-            if (upsertErrors != null) {
-                foreach (var errorEntry in upsertErrors) {
-                    var key = errorEntry.Key;
-                    var error = errorEntry.Value;
-                    AddEntityError(ref patchErrors, key, error);
-                }
-            }
-            return new PatchEntitiesResult{ patchErrors = patchErrors };
+            
+            SyncResponse.AddEntityErrors(ref patchErrors, upsertResult.errors);
+            return new PatchEntitiesResult{ errors = patchErrors };
         }
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
@@ -351,12 +344,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new ReadReferencesResult {references = referenceResults};
         }
 
-        protected static void AddEntityError(ref Dictionary<JsonKey, EntityError> errors, JsonKey key, EntityError error) {
+        protected static void AddEntityError(ref List<EntityError> errors, JsonKey key, EntityError error) {
             if (errors == null) {
-                errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                errors = new List<EntityError>();
             }
             // add with TryAdd(). Only the first entity error is relevant. Subsequent entity errors are consequential failures.
-            errors.TryAdd(key, error);
+            errors.Add(error);
         }
         
         

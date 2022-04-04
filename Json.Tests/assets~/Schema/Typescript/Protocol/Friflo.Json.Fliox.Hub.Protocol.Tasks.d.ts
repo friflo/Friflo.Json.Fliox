@@ -5,6 +5,7 @@ import { References }            from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { int32 }                 from "./Standard";
 import { JsonPatch }             from "./Friflo.Json.Fliox.Transform";
 import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform";
+import { EntityError }           from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { ReadEntitiesSetResult } from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { ReferencesResult }      from "./Friflo.Json.Fliox.Hub.Protocol.Models";
 import { double }                from "./Standard";
@@ -305,13 +306,15 @@ export abstract class SyncTaskResult {
 /** Result of a **CreateEntities** task */
 export class CreateEntitiesResult extends SyncTaskResult {
     /** task result type */
-    task  : "create";
+    task    : "create";
+    errors? : EntityError[] | null;
 }
 
 /** Result of a **UpsertEntities** task */
 export class UpsertEntitiesResult extends SyncTaskResult {
     /** task result type */
-    task  : "upsert";
+    task    : "upsert";
+    errors? : EntityError[] | null;
 }
 
 /** Result of a **ReadEntities** task */
@@ -346,13 +349,15 @@ export class AggregateEntitiesResult extends SyncTaskResult {
 /** Result of a **PatchEntities** task */
 export class PatchEntitiesResult extends SyncTaskResult {
     /** task result type */
-    task  : "patch";
+    task    : "patch";
+    errors? : EntityError[] | null;
 }
 
 /** Result of a **DeleteEntities** task */
 export class DeleteEntitiesResult extends SyncTaskResult {
     /** task result type */
-    task  : "delete";
+    task    : "delete";
+    errors? : EntityError[] | null;
 }
 
 export abstract class SyncMessageResult extends SyncTaskResult {

@@ -126,9 +126,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             AssertEntityCounts(command.entityKeys, command.entities);
             var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
-                return Task.FromResult(new CreateEntitiesResult {Error = error});
+                return Task.FromResult(new CreateEntitiesResult { Error = error });
             if (errors != null)
-                return Task.FromResult(new CreateEntitiesResult {createErrors = errors});
+                return Task.FromResult(new CreateEntitiesResult { errors = errors });
             return Task.FromResult(new CreateEntitiesResult());
         }
 
@@ -136,18 +136,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             AssertEntityCounts(command.entityKeys, command.entities);
             var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
-                return Task.FromResult(new UpsertEntitiesResult {Error = error});
+                return Task.FromResult(new UpsertEntitiesResult { Error = error });
             if (errors != null)
-                return Task.FromResult(new UpsertEntitiesResult {upsertErrors = errors});
+                return Task.FromResult(new UpsertEntitiesResult { errors = errors });
             return Task.FromResult(new UpsertEntitiesResult());
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, ExecuteContext executeContext) {
             var error = SimulateWriteErrors(command.ids, out var errors);
             if (error != null)
-                return Task.FromResult(new DeleteEntitiesResult {Error = error});
+                return Task.FromResult(new DeleteEntitiesResult { Error = error });
             if (errors != null)
-                return Task.FromResult(new DeleteEntitiesResult {deleteErrors = errors});
+                return Task.FromResult(new DeleteEntitiesResult { errors = errors });
             return Task.FromResult(new DeleteEntitiesResult());
         }
 
@@ -210,16 +210,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return error;
         }
         
-        private CommandError SimulateWriteErrors(HashSet<JsonKey> entities, out Dictionary<JsonKey, EntityError> errors) {
+        private CommandError SimulateWriteErrors(HashSet<JsonKey> entities, out List<EntityError> errors) {
             errors = null;
             foreach (var pair in writeEntityErrors) {
                 var id = new JsonKey(pair.Key);
                 if (entities.Contains(id)) {
                     if (errors == null)
-                        errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                        errors = new List<EntityError>();
                     var fcn = pair.Value;
                     var entityError = fcn();
-                    errors.Add(id, entityError);
+                    errors.Add(entityError);
                 }
             }
             foreach (var pair in writeTaskErrors) {

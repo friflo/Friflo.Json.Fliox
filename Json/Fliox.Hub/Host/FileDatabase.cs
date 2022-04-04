@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
-            Dictionary<JsonKey, EntityError> createErrors = null;
+            List<EntityError> createErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 for (int n = 0; n < entities.Count; n++) {
@@ -109,13 +109,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             } finally {
                 rwLock.ReleaseWriterLock();
             }
-            return new CreateEntitiesResult{createErrors = createErrors};
+            return new CreateEntitiesResult{ errors = createErrors };
         }
 
         public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
-            Dictionary<JsonKey, EntityError> upsertErrors = null;
+            List<EntityError> upsertErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 for (int n = 0; n < entities.Count; n++) {
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } finally {
                 rwLock.ReleaseWriterLock();
             }
-            return new UpsertEntitiesResult{upsertErrors = upsertErrors};
+            return new UpsertEntitiesResult{ errors = upsertErrors };
         }
 
         public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, ExecuteContext executeContext) {
@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, ExecuteContext executeContext) {
             var keys = command.ids;
-            Dictionary<JsonKey, EntityError> deleteErrors = null;
+            List<EntityError> deleteErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 if (keys != null && keys.Count > 0) {
@@ -227,7 +227,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             } finally {
                 rwLock.ReleaseWriterLock();
             }
-            var result = new DeleteEntitiesResult{deleteErrors = deleteErrors};
+            var result = new DeleteEntitiesResult{ errors = deleteErrors };
             return result;
         }
 

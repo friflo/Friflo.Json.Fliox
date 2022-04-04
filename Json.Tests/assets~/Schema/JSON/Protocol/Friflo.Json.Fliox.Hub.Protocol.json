@@ -28,17 +28,13 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "description": "A <b>SyncResponse</b> is the response of <b>SyncRequest</b> executed by a <b>FlioxHub</b>",
             "properties": {
-                "msg":          { "enum": ["resp"] },
-                "req":          { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
-                "clt":          { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
-                "database":     { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
-                "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
-                "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
-                "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>CreateEntities</b> tasks per container" },
-                "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>UpsertEntities</b> tasks per container" },
-                "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>PatchEntities</b> tasks per container" },
-                "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object", "description": "entity errors caused by <b>DeleteEntities</b> tasks per container" },
-                "info":         { "description": "optional JSON value to return debug / development data - e.g. execution times or resource usage." }
+                "msg":        { "enum": ["resp"] },
+                "req":        { "oneOf": [{ "$ref": "./Standard.json#/definitions/int32" }, {"type": "null"}], "description": "Set to the value of the corresponding <b>reqId</b> of a <b>ProtocolRequest</b>" },
+                "clt":        { "type": ["string", "null"], "description": "Set to <b>clientId</b> of a <b>SyncRequest</b> in case the given\n<b>clientId</b> was valid. Otherwise it is set to null." },
+                "database":   { "type": ["string", "null"], "description": "for debugging - not used by Protocol" },
+                "tasks":      { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" }, "description": "list of task results corresponding to the <b>tasks</b> in a <b>SyncRequest</b>" },
+                "containers": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" }, "description": "entities as results from the <b>tasks</b> in a <b>SyncRequest</b>\ngrouped by container" },
+                "info":       {  }
             },
             "required": [
                 "msg"
@@ -58,18 +54,6 @@
             "required": [
                 "container",
                 "entities"
-            ],
-            "additionalProperties": false
-        },
-        "EntityErrors": {
-            "type": "object",
-            "description": "entity errors per container when accessing the database",
-            "properties": {
-                "container": { "type": ["string", "null"], "description": "container name - not utilized by Protocol" },
-                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/EntityError" }, "type": "object", "description": "map of entity errors when accessing the <b>container</b>" }
-            },
-            "required": [
-                "errors"
             ],
             "additionalProperties": false
         },

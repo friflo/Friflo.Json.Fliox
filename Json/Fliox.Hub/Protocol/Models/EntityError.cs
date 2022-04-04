@@ -20,12 +20,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </remarks> 
     public sealed class EntityError
     {
+                            public  JsonKey             id;
         /// <summary>error type when accessing an entity in a database</summary>
         [Fri.Required]      public  EntityErrorType     type;
         /// <summary>error details when accessing an entity</summary>
         [Fri.Property]      public  string              message;
             
-        [Fri.Ignore]        public  JsonKey             id;
         [Fri.Ignore]        public  string              container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
         [Fri.Ignore]        public  TaskErrorResultType taskErrorType;

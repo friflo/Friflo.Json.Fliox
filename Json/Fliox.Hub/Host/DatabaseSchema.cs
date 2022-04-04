@@ -80,12 +80,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public string ValidateEntities (
-            string                                  container,
-            List<JsonKey>                           entityKeys,
-            List<JsonValue>                         entities,
-            ExecuteContext                          executeContext,
-            EntityErrorType                         errorType,
-            ref Dictionary<JsonKey, EntityError>    validationErrors
+            string                  container,
+            List<JsonKey>           entityKeys,
+            List<JsonValue>         entities,
+            ExecuteContext          executeContext,
+            EntityErrorType         errorType,
+            ref List<EntityError>   validationErrors
         ) {
             EntityContainer.AssertEntityCounts(entityKeys, entities);
             if (!containerTypes.TryGetValue(container, out ValidationType type)) {
@@ -99,10 +99,10 @@ namespace Friflo.Json.Fliox.Hub.Host
                     if (!validator.ValidateObject(entity, type, out string error)) {
                         var key = entityKeys[n];
                         if (validationErrors == null) {
-                            validationErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                            validationErrors = new List<EntityError>();
                         }
                         entities[n] = new JsonValue();
-                        validationErrors.Add(key, new EntityError(errorType, container, key, error));
+                        validationErrors.Add(new EntityError(errorType, container, key, error));
                     }
                 }
             }

@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, ExecuteContext executeContext) {
             var entities = command.entities;
-            Dictionary<JsonKey, EntityError> createErrors = null;
+            List<EntityError> createErrors = null;
             AssertEntityCounts(command.entityKeys, entities);
             for (int n = 0; n < entities.Count; n++) {
                 var key     = command.entityKeys[n];
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 var error = new EntityError(EntityErrorType.WriteError, name, key, "entity already exist");
                 AddEntityError(ref createErrors, key, error);
             }
-            var result = new CreateEntitiesResult { createErrors = createErrors };
+            var result = new CreateEntitiesResult { errors = createErrors };
             return Task.FromResult(result);
         }
 

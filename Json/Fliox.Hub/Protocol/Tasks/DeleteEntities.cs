@@ -45,7 +45,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            SyncResponse.AddEntityErrors(ref response.deleteErrors, container, result.deleteErrors);
             return result;
         }
     }
@@ -56,9 +55,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class DeleteEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError                        Error { get; set; }
-        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    deleteErrors;
+        [Fri.Ignore] public CommandError        Error { get; set; }
+                     public List<EntityError>   errors;
 
-        internal override   TaskType                            TaskType => TaskType.delete;
+        internal override   TaskType            TaskType => TaskType.delete;
     }
 }

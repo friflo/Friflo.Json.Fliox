@@ -37,7 +37,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }
-            SyncResponse.AddEntityErrors(ref response.patchErrors, container, result.patchErrors);
             return result;
         }
     }
@@ -57,9 +56,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class PatchEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError                        Error { get; set; }
-        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    patchErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+        [Fri.Ignore] public CommandError        Error { get; set; }
+                     public List<EntityError>   errors;
         
-        internal override   TaskType                            TaskType => TaskType.patch;
+        internal override   TaskType            TaskType => TaskType.patch;
     }
 }
