@@ -230,7 +230,14 @@ export class Explorer
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        const entities          = await response.json() as Entity[];
+        const jsonResult        = await response.text();
+        let entities : Entity[];
+        try {
+            entities            = JSON.parse(jsonResult) as Entity[];
+        } catch (e) {
+            entityExplorer.innerHTML = App.errorAsHtml(e.message, p);
+            return;
+        }
         this.explorer           = { ...this.explorer, entities };   // explorer: entities loaded successful
         this.explorer.cursor    = response.headers.get("cursor");
 

@@ -154,7 +154,15 @@ export class Explorer {
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
             return;
         }
-        const entities = await response.json();
+        const jsonResult = await response.text();
+        let entities;
+        try {
+            entities = JSON.parse(jsonResult);
+        }
+        catch (e) {
+            entityExplorer.innerHTML = App.errorAsHtml(e.message, p);
+            return;
+        }
         this.explorer = Object.assign(Object.assign({}, this.explorer), { entities }); // explorer: entities loaded successful
         this.explorer.cursor = response.headers.get("cursor");
         const head = this.createExplorerHead(entityType, this.entityFields);
