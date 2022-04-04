@@ -303,7 +303,7 @@
         },
         "EntityError": {
             "properties": {
-                "id":      { "type": "string", "nullable": true },
+                "id":      { "type": "string" },
                 "type":    { "ref":  "EntityErrorType" },
                 "message": { "type": "string", "nullable": true }
             }
@@ -436,7 +436,7 @@
                 "count":     { "type": "int32", "nullable": true },
                 "entities":  { "elements": {  } },
                 "notFound":  { "elements": { "type": "string" }, "nullable": true },
-                "errors":    { "values": { "ref":  "EntityError" }, "nullable": true }
+                "errors":    { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "ErrorResponse": {

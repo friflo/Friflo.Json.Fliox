@@ -21,7 +21,7 @@ data class References (
 
 @Serializable
 data class EntityError (
-              val id      : String? = null,
+              val id      : String,
               val type    : EntityErrorType,
               val message : String? = null,
 )

@@ -241,9 +241,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 // --- errors
                 if (errors == null || errors.Count == 0)
                     continue;
-                foreach (var errorPair in errors) {
-                    var key = errorPair.Key;
-                    entityMap.Add(key, new EntityValue(errorPair.Value));
+                foreach (var error in errors) {
+                    entityMap.Add(error.id, new EntityValue(error));
                 }
                 errors.Clear();
                 container.errors = null;

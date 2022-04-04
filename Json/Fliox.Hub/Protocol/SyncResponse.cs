@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
                         public  List<JsonKey>                       notFound;
         /// <summary>list of entity errors when accessing the database</summary>
         /// Required only by <see cref="RemoteHostHub"/> for serialization
-                        public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality); // todo should be instantiated only if required
+                        public  List<EntityError>                   errors;
         
         [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 

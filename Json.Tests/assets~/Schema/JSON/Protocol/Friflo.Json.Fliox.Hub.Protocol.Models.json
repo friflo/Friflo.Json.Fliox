@@ -34,11 +34,12 @@
             "type": "object",
             "description": "Used by <b>SyncResponse</b> to return errors when mutating an entity by: create, upsert, patch and delete",
             "properties": {
-                "id":      { "type": ["string", "null"] },
+                "id":      { "type": "string" },
                 "type":    { "$ref": "#/definitions/EntityErrorType", "description": "error type when accessing an entity in a database" },
                 "message": { "type": ["string", "null"], "description": "error details when accessing an entity" }
             },
             "required": [
+                "id",
                 "type"
             ],
             "additionalProperties": false

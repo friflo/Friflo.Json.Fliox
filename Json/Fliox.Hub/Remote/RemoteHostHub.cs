@@ -73,14 +73,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var entityMap       = container.entityMap;
                 var entities        = new List<JsonValue> (entityMap.Count);
                 container.entities  = entities;
-                List<JsonKey> notFound = null;
-                var errors          = container.errors;
-                container.errors    = null;
+                List<JsonKey>       notFound = null;
+                List<EntityError>   errors   = null;
                 entities.Capacity   = entityMap.Count;
                 foreach (var entityPair in entityMap) {
-                    EntityValue entity = entityPair.Value;
-                    if (entity.Error != null) {
-                        errors.Add(entityPair.Key, entity.Error);
+                    EntityValue entity  = entityPair.Value;
+                    var error           = entity.Error;
+                    if (error != null) {
+                        if (errors == null) {
+                            errors = new List<EntityError>();
+                        }
+                        errors.Add(error);
                         continue;
                     }
                     var json = entity.Json;
@@ -97,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (notFound != null) {
                     container.notFound = notFound;
                 }
-                if (errors != null && errors.Count > 0) {
+                if (errors != null) {
                     container.errors = errors;
                 }
                 if (entities.Count > 0) {

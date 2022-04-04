@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </remarks> 
     public sealed class EntityError
     {
-                            public  JsonKey             id;
+        [Fri.Required]      public  JsonKey             id;
         /// <summary>error type when accessing an entity in a database</summary>
         [Fri.Required]      public  EntityErrorType     type;
         /// <summary>error details when accessing an entity</summary>

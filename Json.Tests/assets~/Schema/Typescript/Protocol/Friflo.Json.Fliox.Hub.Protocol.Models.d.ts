@@ -25,7 +25,7 @@ export class References {
 
 /** Used by **SyncResponse** to return errors when mutating an entity by: create, upsert, patch and delete */
 export class EntityError {
-    id?      : string | null;
+    id       : string;
     /** error type when accessing an entity in a database */
     type     : EntityErrorType;
     /** error details when accessing an entity */

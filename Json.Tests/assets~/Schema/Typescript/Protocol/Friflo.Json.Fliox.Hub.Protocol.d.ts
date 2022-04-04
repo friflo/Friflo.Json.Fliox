@@ -161,7 +161,7 @@ export class ContainerEntities {
     /** list of entities not found by **ReadEntities** tasks */
     notFound?  : string[] | null;
     /** list of entity errors when accessing the database */
-    errors?    : { [key: string]: EntityError } | null;
+    errors?    : EntityError[] | null;
 }
 
 /** **ErrorResponse** is returned for a **SyncRequest** in case the whole requests failed */
