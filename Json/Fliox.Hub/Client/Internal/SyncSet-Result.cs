@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var creates = Creates();
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
-                    errorsCreate = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                    errorsCreate = new Dictionary<JsonKey, EntityError>(creates.Count, JsonKey.Equality);
                 }
                 foreach (var createPair in creates) {
                     var id = createPair.Key;
@@ -353,7 +353,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     patchTask.state.SetError(new TaskErrorInfo(taskError));
                 }
                 if (errorsPatch == NoErrors) {
-                    errorsPatch = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                    errorsPatch = new Dictionary<JsonKey, EntityError>(patches.Count, JsonKey.Equality);
                 }
                 foreach (var patchPair in patches) {
                     var id = patchPair.Key;

@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 error.container = container;
             }
             if (errorMap == SyncSet.NoErrors) {
-                errorMap = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                errorMap = new Dictionary<JsonKey, EntityError>(errors.Count, JsonKey.Equality);
             }
             foreach (var error in errors) {
                 errorMap.Add(error.id, error);
