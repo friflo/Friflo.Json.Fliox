@@ -33,10 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         internal ContainerEntities GetContainerResult(string container) {
             if (resultMap.TryGetValue(container, out ContainerEntities result))
                 return result;
-            result = new ContainerEntities {
-                container = container,
-                entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality)
-            };
+            result = new ContainerEntities { container = container };
             resultMap.Add(container, result);
             return result;
         }
@@ -85,7 +82,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Required only by <see cref="RemoteHostHub"/> for serialization
                         public  List<EntityError>                   errors;
         
-        [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        [Fri.Ignore]
+                public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 
         public override         string                              ToString() => container;
 
