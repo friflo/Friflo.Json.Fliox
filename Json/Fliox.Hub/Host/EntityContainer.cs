@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </para> 
     ///   <para>2. The database request was successful, but one or more entities (key/values) had an error when accessing.
     ///         E.g. Writing an entity to a file with a <see cref="FileContainer"/> fails because it is used by another process.
-    ///         => An <see cref="EntityError"/> need to be added to entity error dictionary of the <see cref="ICommandResult"/>
-    ///            E.g. an error is added to <see cref="CreateEntitiesResult.errors"/> in case of
+    ///         => An <see cref="EntityError"/> need to be added to task result errors.
+    ///            E.g. add an error to <see cref="CreateEntitiesResult.errors"/> in case of
     ///            <see cref="FileContainer.CreateEntities"/>
     ///   </para>
     ///   
