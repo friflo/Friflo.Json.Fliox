@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                         if (!parser.key.IsEqualBytes(ref idKey))
                             break;
                         foundKey = true;
-                        keyValue = new JsonKey(ref parser.value, ref parser.valueParser);
+                        keyValue = new JsonKey(ref parser.value, ref parser);
                         switch (processingType) {
                             case ProcessingType.Validate:
                                 continue;

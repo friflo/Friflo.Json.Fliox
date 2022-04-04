@@ -48,12 +48,12 @@ namespace Friflo.Json.Fliox.Mapper
             this.lng    = 0;
         }
         
-        public JsonKey (ref Bytes bytes, ref ValueParser valueParser) {
+        public JsonKey (ref Bytes bytes, ref Utf8JsonParser parser) {
             if (bytes.IsIntegral()) {
                 this.type   = JsonKeyType.Long;
                 this.str    = null;
                 var error = new Bytes();
-                this.lng    = valueParser.ParseLong(ref bytes, ref error, out bool success);
+                this.lng    = parser.valueParser.ParseLong(ref bytes, ref error, out bool success);
                 if (!success)
                     throw new InvalidOperationException("expect a valid integral type");
                 guid        = new Guid();
@@ -97,6 +97,27 @@ namespace Friflo.Json.Fliox.Mapper
             lng         = 0;
             this.guid   = hasValue ? guid.Value : new Guid();
         }
+        /*
+        public static JsonKey TryParse (ref Bytes bytes, ref ValueParser valueParser) {
+            if (bytes.IsIntegral()) {
+                this.type   = JsonKeyType.Long;
+                this.str    = null;
+                var error = new Bytes();
+                this.lng    = valueParser.ParseLong(ref bytes, ref error, out bool success);
+                if (!success)
+                    throw new InvalidOperationException("expect a valid integral type");
+                guid        = new Guid();
+                return;
+            }
+            if (bytes.TryParseGuid(out guid, out string temp)) { // temp not null in Unity. Otherwise null
+                type    = JsonKeyType.Guid;
+                str     = temp;
+            } else {
+                type    = JsonKeyType.String;
+                str     = temp ?? bytes.AsString();
+            }
+            this.lng    = 0;
+        } */
         
     /*  public JsonKey (in JsonKey? jsonKey) {
             if (jsonKey.HasValue) {
