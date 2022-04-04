@@ -36,6 +36,7 @@ namespace Fliox.DemoHub
         private static async Task<Records> FakeRecords(Param<Fake> param, MessageContext command) {
             var demoStore       = new DemoStore(command.Hub);
             demoStore.UserInfo  = command.UserInfo;
+            demoStore.WritePretty = true;
             
             if (!param.GetValidate(out var fake, out var error))
                 return command.Error<Records>(error);
