@@ -100,6 +100,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                         if (!parser.key.IsEqualBytes(ref idKey))
                             break;
                         foundKey = true;
+                        if (ev == JsonEvent.ValueNumber && !parser.isFloat) {
+                            parser.valueParser.ParseLong(ref parser.value, ref sb, out bool success);
+                            if (!success) {
+                                error = "invalid integer key: " + sb.AsString();
+                                return false;
+                            }
+                        }
                         keyValue = new JsonKey(ref parser.value, ref parser.valueParser);
                         switch (processingType) {
                             case ProcessingType.Validate:

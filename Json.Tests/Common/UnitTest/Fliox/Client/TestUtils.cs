@@ -114,6 +114,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     // null defaults to "id"
                     var result = processor.ReplaceKey(json, null, false, "id", out JsonKey _, out _);
                     IsTrue(json.IsEqualReference(result));
+                } {
+                    // --- error on invalid integer key. Valid range: [long.MinValue, long.MaxValue] 
+                    var     json = new JsonValue("{\"id\": 9223372036854776000}");
+                    var     result  = processor.ReplaceKey(json, "id", false, "id", out JsonKey _, out string error);
+                    IsTrue(result.IsNull()); 
+                    AreEqual("invalid integer key: Value out of range when parsing long: 9223372036854776000", error);
                 }
             }
         }
