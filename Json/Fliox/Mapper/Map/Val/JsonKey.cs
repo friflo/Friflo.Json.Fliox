@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     return new JsonKey();
                 case JsonEvent.ValueString:
                     success = true;
-                    return new JsonKey(ref parser.value, ref parser);
+                    return new JsonKey(ref parser.value, ref parser.valueParser);
                 default:
                     throw new InvalidOperationException($"JsonKey - unexpected event: {ev}");
             }
