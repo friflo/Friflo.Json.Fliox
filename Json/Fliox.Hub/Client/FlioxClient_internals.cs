@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private static void SetErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
+        private static void CopyEntityErrors(List<SyncRequestTask> tasks, List<SyncTaskResult> responseTasks, SyncStore syncStore) {
             var syncSets = syncStore.SyncSets;
             
             for (int n = 0; n < tasks.Count; n++) {
@@ -263,7 +263,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             using (var pooled = ObjectMapper.Get()) {
                 SyncResult syncResult;
                 try {
-                    HandleSyncResponse(syncRequest, response, syncStore, pooled.instance);
+                    ProcessSyncTasks(syncRequest, response, syncStore, pooled.instance);
+                    syncStore.LogResults();
                 }
                 finally {
                     var failed = new List<SyncTask>();
@@ -276,53 +277,58 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private void HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
+        private void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
             mapper.TracerContext = _intern.tracerContext;
             
-            ErrorResponse   error       = response.error;
-            TaskErrorResult syncError;
-            Dictionary<string, ContainerEntities>   containerResults;
+            var             tasks           = syncRequest.tasks;
+            ErrorResponse   error           = response.error;
             
-            if (error == null) {
-                var result = response.success;
-                response.success.AssertResponse(syncRequest);
-                syncError = null;
-                var hub = _intern.hub; 
-                if (hub is RemoteClientHub)
-                    GetContainerResults(result);
-                containerResults = result.resultMap;
-                foreach (var containerResult in containerResults) {
-                    ContainerEntities containerEntities = containerResult.Value;
-                    var set = _intern.GetSetByName(containerResult.Key);
-                    set.SyncPeerEntities(containerEntities.entityMap, mapper);
+            if (error != null) {
+                // ----------- handle ErrorResponse -----------
+                var syncError       = new TaskErrorResult (TaskErrorResultType.SyncError, error.message);
+                var emptyResults    = new Dictionary<string, ContainerEntities>();
+                // process all task using by passing an error 
+                for (int n = 0; n < tasks.Count; n++) {
+                    SyncRequestTask task    = tasks[n];
+                    ProcessTaskResult(task, syncError, syncStore, emptyResults, mapper);
                 }
-                SetErrors(syncRequest.tasks, result.tasks, syncStore);
-            } else {
-                syncError = new TaskErrorResult (TaskErrorResultType.SyncError, error.message);
-                containerResults = new Dictionary<string, ContainerEntities>();
+                return;
             }
-
-            var tasks = syncRequest.tasks;
+            // ----------- handle SyncResponse -----------
+            response.success.AssertResponse(syncRequest);
+            SyncResponse    syncResponse    = response.success;
+            var             hub             = _intern.hub; 
+            if (hub is RemoteClientHub) {
+                GetContainerResults(syncResponse);
+            }
+            var containerResults = syncResponse.resultMap;
+            foreach (var containerResult in containerResults) {
+                ContainerEntities containerEntities = containerResult.Value;
+                EntitySet set = _intern.GetSetByName(containerResult.Key);
+                set.SyncPeerEntities(containerEntities.entityMap, mapper);
+            }
+            var responseTasks = syncResponse.tasks;
+            // Ensure every response task result type matches its task
             for (int n = 0; n < tasks.Count; n++) {
-                var task = tasks[n];
-                TaskType    taskType = task.TaskType;
-                SyncTaskResult  result;
-                if (syncError == null) {
-                    var results = response.success.tasks;
-                    result = results[n];
-                    var actual = result.TaskType;
-                    if (actual != TaskType.error) {
-                        if (taskType != actual) {
-                            var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
-                            throw new InvalidOperationException(msg);
-                        }
-                    }
-                } else {
-                    result = syncError;
-                }
+                var task        = tasks[n];
+                var taskType    = task.TaskType;
+                var result      = responseTasks[n];
+                var actual      = result.TaskType;
+                if (actual == TaskType.error)
+                    continue;
+                if (taskType == actual)
+                    continue;
+                var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
+                throw new InvalidOperationException(msg);
+            }
+            CopyEntityErrors(tasks, responseTasks, syncStore);
+            
+            // process all tasks by passing the related response task result
+            for (int n = 0; n < tasks.Count; n++) {
+                SyncRequestTask task    = tasks[n];
+                SyncTaskResult  result  = responseTasks[n];
                 ProcessTaskResult(task, result, syncStore, containerResults, mapper);
             }
-            syncStore.LogResults();
         }
         
         private static void ProcessTaskResult (
