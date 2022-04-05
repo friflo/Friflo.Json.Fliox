@@ -139,9 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
         
-        private static void CopyErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
-            if (errors == null)
-                return;
+        private static void CopyEntityErrorsToMap(List<EntityError> errors, string container, ref IDictionary<JsonKey, EntityError> errorMap) {
             foreach (var error in errors) {
                 // error .container is not serialized as it is redundant data.
                 // Infer its value from containing error List
@@ -163,28 +161,36 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var responseTask    = responseTasks[n];
                 switch (responseTask.TaskType) {
                     case TaskType.upsert:
-                        var upsert          = (UpsertEntities)task;
-                        var upsertResult    = (UpsertEntitiesResult)responseTasks[n];
-                        SyncSet syncSet     = syncSets[upsert.container];
-                        CopyErrorsToMap(upsertResult.errors,    upsert.container, ref syncSet.errorsUpsert);
+                        var upsertResult    = (UpsertEntitiesResult)responseTask;
+                        if (upsertResult.errors == null)
+                            continue;
+                        var container       = ((UpsertEntities)task).container;
+                        SyncSet syncSet     = syncSets[container];
+                        CopyEntityErrorsToMap(upsertResult.errors,  container, ref syncSet.errorsUpsert);
                         break; 
                     case TaskType.create:
-                        var create          = (CreateEntities)task;
-                        var createResult    = (CreateEntitiesResult)responseTasks[n];
-                        syncSet             = syncSets[create.container];
-                        CopyErrorsToMap(createResult.errors,    create.container, ref syncSet.errorsCreate);
+                        var createResult    = (CreateEntitiesResult)responseTask;
+                        if (createResult.errors == null)
+                            continue;
+                        container           = ((CreateEntities)task).container;
+                        syncSet             = syncSets[container];
+                        CopyEntityErrorsToMap(createResult.errors,  container, ref syncSet.errorsCreate);
                         break;
                     case TaskType.patch:
-                        var patch           = (PatchEntities)task;
-                        var patchResult     = (PatchEntitiesResult)responseTasks[n];
-                        syncSet             = syncSets[patch.container];
-                        CopyErrorsToMap(patchResult.errors,     patch.container, ref syncSet.errorsPatch);
+                        var patchResult     = (PatchEntitiesResult)responseTask;
+                        if (patchResult.errors == null)
+                            continue;
+                        container           = ((PatchEntities)task).container;
+                        syncSet             = syncSets[container];
+                        CopyEntityErrorsToMap(patchResult.errors,   container, ref syncSet.errorsPatch);
                         break;
                     case TaskType.delete:
-                        var delete          = (DeleteEntities)task;
-                        var deleteResult    = (DeleteEntitiesResult)responseTasks[n];
-                        syncSet             = syncSets[delete.container];
-                        CopyErrorsToMap(deleteResult.errors,    delete.container, ref syncSet.errorsDelete);
+                        var deleteResult    = (DeleteEntitiesResult)responseTask;
+                        if (deleteResult.errors == null)
+                            continue;
+                        container           = ((DeleteEntities)task).container;
+                        syncSet             = syncSets[container];
+                        CopyEntityErrorsToMap(deleteResult.errors,  container, ref syncSet.errorsDelete);
                         break;
                 }
             }
