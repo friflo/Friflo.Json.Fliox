@@ -100,12 +100,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     entities.Add(json);
                 }
                 entityMap.Clear();
-                if (notFound != null) {
-                    container.notFound = notFound;
-                }
-                if (errors != null) {
-                    container.errors = errors;
-                }
+                container.notFound  = notFound;
+                container.errors    = errors;
                 if (entities.Count > 0) {
                     container.count = entities.Count;
                 }
