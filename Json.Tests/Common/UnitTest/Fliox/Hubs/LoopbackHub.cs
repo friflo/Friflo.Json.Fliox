@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Remote;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     ///<summary>
-    /// Provide same behavior as <see cref="HttpClientHub"/> / <see cref="HttpListenerHost"/> regarding
+    /// Provide same behavior as <see cref="HttpClientHub"/> / <see cref="WebSocketClientHub"/> regarding
     /// serialization of <see cref="SyncRequest"/> and deserialization of <see cref="SyncResponse"/>.
     /// 
     /// This features allows testing a remote client/host scenario with the following features:
@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// <para>No creation of an extra thread for the HTTP server.</para>
     /// <para>Simplify debugging as only a single thread is running.</para>
     /// </summary>
-    public class LoopbackHub : RemoteClientHub
+    public class LoopbackHub : FlioxHub
     {
         public readonly    FlioxHub  host;
 

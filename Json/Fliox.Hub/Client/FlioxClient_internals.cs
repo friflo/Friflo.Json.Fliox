@@ -194,11 +194,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
         /// These properties are set by <see cref="RemoteHostHub.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
-            var containers     = response.containers;
-            if (containers == null)
-                return;
+            var containers      = response.containers;
             response.containers = null;
-            var resultMap   = response.resultMap = new Dictionary<string, ContainerEntities>(containers.Count);
+            if (containers == null) {
+                response.resultMap = new Dictionary<string, ContainerEntities>();
+                return;
+            }
+            var resultMap       = new Dictionary<string, ContainerEntities>(containers.Count);
+            response.resultMap  = resultMap;
             foreach (var result in containers) {
                 resultMap.Add(result.container, result);
             }
