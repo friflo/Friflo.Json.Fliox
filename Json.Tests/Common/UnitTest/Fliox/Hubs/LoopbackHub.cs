@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     /// <para>No creation of an extra thread for the HTTP server.</para>
     /// <para>Simplify debugging as only a single thread is running.</para>
     /// </summary>
-    public class LoopbackHub : FlioxHub
+    public class LoopbackHub : RemoteClientHub
     {
         public readonly    FlioxHub  host;
 
@@ -33,8 +33,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var response = await host.ExecuteSync(syncRequest, executeContext);
-            return response;
+            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.pool);
+            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, executeContext.pool, out _);
+            var requestCopy     = (SyncRequest)requestMessage;
+            
+            var syncResponse    = await host.ExecuteSync(requestCopy, executeContext);
+            
+            if (syncResponse.error != null) {
+                return syncResponse;
+            }
+            RemoteHostHub.SetContainerResults(syncResponse.success);
+            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, executeContext.pool);
+            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, executeContext.pool, out _);
+            var responseCopy    = (SyncResponse)responseMessage;
+            
+            return new ExecuteSyncResult(responseCopy);
         }
     }
 }

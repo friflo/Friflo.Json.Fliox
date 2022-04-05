@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.
         /// <see cref="Client.FlioxClient.GetContainerResults"/> remap these properties.
-        private static void SetContainerResults(SyncResponse response)
+        public static void SetContainerResults(SyncResponse response)
         {
             if (response == null)
                 return;
