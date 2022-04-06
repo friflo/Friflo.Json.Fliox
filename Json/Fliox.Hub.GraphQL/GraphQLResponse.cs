@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     [Fri.Polymorph(typeof(GqlUnion),        Discriminant = "UNION")]
     [Fri.Polymorph(typeof(GqlEnum),         Discriminant = "ENUM")]
     public class GqlType {
-        public  string      name;
-        public  string      description;
+        public  string      name            { get; set; }
+        public  string      description     { get; set; }
     }
     
     public class GqlScalar : GqlType {
