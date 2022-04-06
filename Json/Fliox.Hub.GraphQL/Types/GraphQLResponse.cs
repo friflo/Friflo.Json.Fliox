@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable ClassNeverInstantiated.Global
-namespace Friflo.Json.Fliox.Hub.GraphQL
+namespace Friflo.Json.Fliox.Hub.GraphQL.Types
 {
     public class GqlResponse {
         public  GqlData     data;
