@@ -1,6 +1,7 @@
 ﻿using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
+using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -61,6 +62,7 @@ namespace Friflo.Json.Tests.Main
             var hostHub             = new HttpHostHub(hub, "/fliox/").CacheControl(c.cache);
             hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
+            hostHub.AddHandler       (new GraphQLHandler());
             return hostHub;
         }
         

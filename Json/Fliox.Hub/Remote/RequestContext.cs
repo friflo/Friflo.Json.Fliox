@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              int                         Offset              { get; private set; }
         public              Dictionary<string, string>  ResponseHeaders     => responseHeaders;
         public              bool                        Handled             => handled;
-        internal            Pool                        Pool                => hub.sharedEnv.Pool;
+        public              Pool                        Pool                => hub.sharedEnv.Pool;
         internal            SharedCache                 SharedCache         => hub.sharedEnv.sharedCache;
 
         public    override  string                      ToString() => $"{method} {route}{query}";
