@@ -33,6 +33,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         }
                     },
                     new GqlField { name = "_service",
+                        args = new List<GqlArg>(),
                         type = new GqlNonNull {
                             ofType = new GqlObject{ name = "_Service",
                                 fields = new List<GqlField>()
@@ -41,11 +42,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     } 
                 }
             },
-            new GqlUnion  { name = "_Entity" }, // possibleTypes?
+            new GqlUnion { name = "_Entity",
+                possibleTypes = new List<GqlType> ()
+            },
             new GqlScalar { name = "_Any" },
             new GqlObject { name = "_Service",
                 fields = new List<GqlField> {
                     new GqlField { name = "sdl",
+                        args = new List<GqlArg>(),
                         type = new GqlScalar{ name = "String" }
                     }
                 }
@@ -53,9 +57,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             new GqlObject { name = "__Schema",
                 fields = new List<GqlField> {
                     new GqlField { name = "description",
+                        args = new List<GqlArg>(),
                         type = new GqlScalar{ name = "String" }
                     },
                     new GqlField { name = "types",
+                        args = new List<GqlArg>(),
                         type = new GqlNonNull {
                             ofType = new GqlList {
                                 ofType = new GqlNonNull {
@@ -65,21 +71,21 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         }
                     },
                     new GqlField { name = "queryType",
+                        args = new List<GqlArg>(),
                         type = new GqlNonNull {
                             ofType = new GqlObject { name = "__Type" }
                         }
                     },
                     new GqlField { name = "mutationType",
-                        type = new GqlNonNull {
-                            ofType = new GqlObject { name = "__Type" }
-                        }
+                        args = new List<GqlArg>(),
+                        type = new GqlObject { name = "__Type" }
                     },
                     new GqlField { name = "subscriptionType",
-                        type = new GqlNonNull {
-                            ofType = new GqlObject { name = "__Type" }
-                        }
+                        args = new List<GqlArg>(),
+                        type =  new GqlObject { name = "__Type" }
                     },
                     new GqlField { name = "directives",
+                        args = new List<GqlArg>(),
                         type = new GqlNonNull {
                             ofType = new GqlList {
                                 ofType = new GqlNonNull {
@@ -240,7 +246,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     new GqlField { name = "type",
                         args = new List<GqlArg>(),
                         type = new GqlNonNull {
-                            ofType = new GqlScalar { name = "__Type" }
+                            ofType = new GqlObject { name = "__Type" }
                         }
                     },
                     new GqlField { name = "defaultValue",
@@ -319,7 +325,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         type = new GqlNonNull {
                             ofType = new GqlList {
                                 ofType = new GqlNonNull {
-                                    ofType = new GqlEnum { name = "__InputValue" }
+                                    ofType = new GqlObject { name = "__InputValue" }
                                 }
                             }
                         }

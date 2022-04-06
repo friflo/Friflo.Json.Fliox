@@ -62,12 +62,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     public class GqlField {
         public  string          name;
-        public  GqlType         type;
         public  List<GqlArg>    args;
+        public  GqlType         type;
     }
     
     public class GqlUnion : GqlType {
-        public  GqlType         ofType;
+        public  List<GqlType>   possibleTypes;
     }
     
     public class GqlEnum : GqlType {

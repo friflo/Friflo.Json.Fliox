@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -69,7 +70,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 writer.WriteNullMembers = false;
                 var responseBody        = new JsonValue(writer.WriteAsArray(response));
                 context.Write(responseBody, responseBody.Length, "application/json", 200);
-                Console.WriteLine(responseBody.AsString());
+                File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/graphql-meta.json", responseBody.AsString());
+                // Console.WriteLine(responseBody.AsString());
             }
         }
 
