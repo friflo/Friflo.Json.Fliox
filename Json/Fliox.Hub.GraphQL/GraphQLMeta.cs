@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.GraphQL.Types;
+using Friflo.Json.Fliox.Schema.GraphQL;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {

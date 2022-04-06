@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.GraphQL.Types;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.GraphQL;
 using GraphQLParser;
 using GraphQLParser.AST;
 
@@ -83,6 +83,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             public  string                      query;
             public  string                      operationName;
             public  Dictionary<string,string>   variables;
+        }
+        
+        public class GqlResponse {
+            public  GqlData             data;
+        }
+    
+        public class GqlData {
+            [Fri.Property(Name =             "__schema")]
+            public  GqlSchema           schema;
         }
     }
 }

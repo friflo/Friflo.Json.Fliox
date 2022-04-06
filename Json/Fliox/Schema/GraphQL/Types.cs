@@ -8,17 +8,8 @@ using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable ClassNeverInstantiated.Global
-namespace Friflo.Json.Fliox.Hub.GraphQL.Types
+namespace Friflo.Json.Fliox.Schema.GraphQL
 {
-    public class GqlResponse {
-                public  GqlData             data;
-    }
-    
-    public class GqlData {
-        [Fri.Property(Name =             "__schema")]
-                public  GqlSchema           schema;
-    }
-    
     /// <summary>
     /// <a href ="https://spec.graphql.org/June2018/#sec-Schema-Introspection">GraphQL specification - Schema Introspection</a>
     /// </summary>
@@ -127,5 +118,4 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Types
         INPUT_OBJECT,
         INPUT_FIELD_DEFINITION,
     }
-    
 }
