@@ -4,6 +4,8 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable InconsistentNaming
 // ReSharper disable ClassNeverInstantiated.Global
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
@@ -18,6 +20,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     public class GqlSchema {
         public  GqlQueryType        queryType;
+        public  string              mutationType;       // todo fix type
+        public  string              subscriptionType;   // todo fix type
         public  List<GqlType>       types;
         public  List<GqlDirective>  directives;
     }
@@ -46,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     public class GqlObject : GqlType {
         public  List<GqlField>  fields;
+        public  List<GqlType>   interfaces = new List<GqlType>();
     }
     
     public class GqlInterface : GqlType {
@@ -62,8 +67,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     public class GqlField {
         public  string          name;
-        public  List<GqlArg>    args;
+        public  List<GqlArg>    args = new List<GqlArg>();
         public  GqlType         type;
+        public  bool?           isDeprecated;
     }
     
     public class GqlUnion : GqlType {
