@@ -1,3 +1,6 @@
+// Copyright (c) Ullrich Praetz. All rights reserved.
+// See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
@@ -166,7 +169,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     },
                 }
             },
-            new GqlEnum { name = "__TypeKind",
+            new GqlEnum   { name = "__TypeKind",
                 enumValues = new List<GqlEnumValue> {
                     new GqlEnumValue { name = "SCALAR"       },
                     new GqlEnumValue { name = "OBJECT"       },
@@ -220,6 +223,130 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         args = new List<GqlArg>(),
                         type = new GqlScalar { name = "String" }
                     },
+                }
+            },
+            new GqlObject { name = "__InputValue",
+                fields = new List<GqlField> {
+                    new GqlField { name = "name",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "String" }
+                        }
+                    },
+                    new GqlField { name = "description",
+                        args = new List<GqlArg>(),
+                        type = new GqlScalar { name = "String" }
+                    },
+                    new GqlField { name = "type",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "__Type" }
+                        }
+                    },
+                    new GqlField { name = "defaultValue",
+                        args = new List<GqlArg>(),
+                        type = new GqlScalar { name = "String" }
+                    },
+                    new GqlField { name = "isDeprecated",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "Boolean" }
+                        }
+                    },
+                    new GqlField { name = "deprecationReason",
+                        args = new List<GqlArg>(),
+                        type = new GqlScalar { name = "String" }
+                    },
+                }
+            },
+            new GqlObject { name = "__EnumValue",
+                fields = new List<GqlField> {
+                    new GqlField { name = "name",
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "String" }
+                        }
+                    },
+                    new GqlField { name = "description",
+                        args = new List<GqlArg>(),
+                        type = new GqlScalar { name = "String" }
+                    },
+                    new GqlField { name = "isDeprecated",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "Boolean" }
+                        }
+                    },
+                    new GqlField { name = "deprecationReason",
+                        args = new List<GqlArg>(),
+                        type = new GqlScalar { name = "String" }
+                    },
+                }
+            },
+            new GqlObject { name = "__Directive",
+                fields = new List<GqlField> {
+                    new GqlField { name = "name",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "String" }
+                        }
+                    },
+                    new GqlField { name = "description",
+                        args = new List<GqlArg>(),
+                        type = new GqlScalar { name = "String" }
+                    },
+                    new GqlField { name = "isRepeatable",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlScalar { name = "Boolean" }
+                        }
+                    },
+                    new GqlField { name = "locations",
+                        args = new List<GqlArg>(),
+                        type = new GqlNonNull {
+                            ofType = new GqlList {
+                                ofType = new GqlNonNull {
+                                    ofType = new GqlEnum { name = "__DirectiveLocation" }
+                                }
+                            }
+                        }
+                    },
+                    new GqlField { name = "args",
+                        args = new List<GqlArg> {
+                            new GqlArg { name = "includeDeprecated",
+                                type = new GqlScalar { name = "Boolean" }
+                            }
+                        },
+                        type = new GqlNonNull {
+                            ofType = new GqlList {
+                                ofType = new GqlNonNull {
+                                    ofType = new GqlEnum { name = "__InputValue" }
+                                }
+                            }
+                        }
+                    },
+                }
+            },
+            new GqlEnum { name = "__DirectiveLocation",
+                enumValues = new List<GqlEnumValue> {
+                    new GqlEnumValue { name = "QUERY"                  },
+                    new GqlEnumValue { name = "MUTATION"               },
+                    new GqlEnumValue { name = "SUBSCRIPTION"           },
+                    new GqlEnumValue { name = "FIELD"                  },
+                    new GqlEnumValue { name = "FRAGMENT_DEFINITION"    },
+                    new GqlEnumValue { name = "FRAGMENT_SPREAD"        },
+                    new GqlEnumValue { name = "INLINE_FRAGMENT"        },
+                    new GqlEnumValue { name = "VARIABLE_DEFINITION"    },
+                    new GqlEnumValue { name = "SCHEMA"                 },
+                    new GqlEnumValue { name = "SCALAR"                 },
+                    new GqlEnumValue { name = "OBJECT"                 },
+                    new GqlEnumValue { name = "FIELD_DEFINITION"       },
+                    new GqlEnumValue { name = "ARGUMENT_DEFINITION"    },
+                    new GqlEnumValue { name = "INTERFACE"              },
+                    new GqlEnumValue { name = "UNION"                  },
+                    new GqlEnumValue { name = "ENUM"                   },
+                    new GqlEnumValue { name = "ENUM_VALUE"             },
+                    new GqlEnumValue { name = "INPUT_OBJECT"           },
+                    new GqlEnumValue { name = "INPUT_FIELD_DEFINITION" },
                 }
             }
         };
