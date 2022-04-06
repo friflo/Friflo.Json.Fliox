@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
@@ -10,98 +11,99 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.GraphQL.Types
 {
     public class GqlResponse {
-        public  GqlData     data;
+                public  GqlData             data;
     }
     
     public class GqlData {
-        [Fri.Property(Name =     "__schema")]
-        public  GqlSchema           schema;
+        [Fri.Property(Name =             "__schema")]
+                public  GqlSchema           schema;
     }
     
+    /// <summary>
+    /// <a href ="https://spec.graphql.org/June2018/#sec-Schema-Introspection">GraphQL specification - Schema Introspection</a>
+    /// </summary>
     public class GqlSchema {
-        public  GqlQueryType        queryType;
-        public  string              mutationType;       // todo fix type
-        public  string              subscriptionType;   // todo fix type
-        public  List<GqlType>       types;
-        public  List<GqlDirective>  directives;
+        [Req]   public  GqlType             queryType;
+                public  GqlType             mutationType;
+                public  GqlType             subscriptionType;
+        [Req]   public  List<GqlType>       types;
+                public  List<GqlDirective>  directives;
     }
     
-    public class GqlQueryType {
-        public  string      name;
-        public  string      description;
-    }
-    
+    // ------------------------------------- GraphQL Type ------------------------------------- 
     [Fri.Discriminator("kind")]
     [Fri.Polymorph(typeof(GqlScalar),       Discriminant = "SCALAR")]
     [Fri.Polymorph(typeof(GqlObject),       Discriminant = "OBJECT")]
     [Fri.Polymorph(typeof(GqlInterface),    Discriminant = "INTERFACE")]
-    [Fri.Polymorph(typeof(GqlList),         Discriminant = "LIST")]
-    [Fri.Polymorph(typeof(GqlNonNull),      Discriminant = "NON_NULL")]
-    [Fri.Polymorph(typeof(GqlInputObject),  Discriminant = "INPUT_OBJECT")]
     [Fri.Polymorph(typeof(GqlUnion),        Discriminant = "UNION")]
     [Fri.Polymorph(typeof(GqlEnum),         Discriminant = "ENUM")]
+    [Fri.Polymorph(typeof(GqlInputObject),  Discriminant = "INPUT_OBJECT")]
+    [Fri.Polymorph(typeof(GqlList),         Discriminant = "LIST")]
+    [Fri.Polymorph(typeof(GqlNonNull),      Discriminant = "NON_NULL")]
     public class GqlType {
-        public  string      name            { get; set; }
-        public  string      description     { get; set; }
+        [Req]   public  string      name            { get; set; }
+                public  string      description     { get; set; }
     }
     
-    public class GqlScalar : GqlType {
+    public class GqlScalar      : GqlType {
     }
     
-    public class GqlObject : GqlType {
-        public  List<GqlField>  fields;
-        public  List<GqlType>   interfaces = new List<GqlType>();
-    }
-    
-    public class GqlInterface : GqlType {
-        public  GqlType         ofType;
-    }
-    
-    public class GqlList : GqlType {
-        public  GqlType         ofType;
-    }
-    
-    public class GqlNonNull : GqlType {
-        public  GqlType         ofType;
+    public class GqlObject      : GqlType {
+                public  List<GqlField>      fields;
+                public  List<GqlType>       interfaces = new List<GqlType>();
     }
     
     public class GqlField {
-        public  string          name;
-        public  List<GqlArg>    args = new List<GqlArg>();
-        public  GqlType         type;
-        public  bool?           isDeprecated;
+        [Req]   public  string              name;
+        [Req]   public  List<GqlInputValue> args = new List<GqlInputValue>();
+        [Req]   public  GqlType             type;
+                public  bool?               isDeprecated;
+                public  string              deprecationReason;
     }
     
-    public class GqlUnion : GqlType {
-        public  List<GqlType>   possibleTypes;
+    public class GqlInterface   : GqlType {
+                public  GqlType             ofType;
     }
     
-    public class GqlEnum : GqlType {
-        public  List<GqlEnumValue>  enumValues;
+    public class GqlUnion       : GqlType {
+                public  List<GqlType>       possibleTypes;
     }
-
+    
+    public class GqlEnum        : GqlType {
+                public  List<GqlEnumValue>  enumValues;
+    }
+    
     public class GqlEnumValue {
-        public  string          name;
-        public  string          description;
+        [Req]   public  string      name;
+                public  string      description;
+                public  bool?       isDeprecated;
+                public  string      deprecationReason;
     }
-
     
     public class GqlInputObject : GqlType {
-        public  GqlType         type;
-        public  List<GqlField>  inputFields;
+                public  GqlType             type;
+                public  List<GqlField>      inputFields;
     }
     
+    public class GqlList        : GqlType {
+                public  GqlType     ofType;
+    }
+    
+    public class GqlNonNull     : GqlType {
+                public  GqlType     ofType;
+    }
+
     public class GqlDirective {
-        public  string          name;
-        public  string          description;
-        public  List<string>    locations;
-        public  List<GqlArg>    args;
+        [Req]   public  string              name;
+                public  string              description;
+        [Req]   public  List<string>        locations;
+        [Req]   public  List<GqlInputValue> args;
     }
     
-    public class GqlArg {
-        public  string          name;
-        public  string          description;
-        public  GqlType         type;
-        public  string          defaultValue;
+    public class GqlInputValue {
+        [Req]   public  string      name;
+                public  string      description;
+        [Req]   public  GqlType     type;
+                public  string      defaultValue;
     }
 }

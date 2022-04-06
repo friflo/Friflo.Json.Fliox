@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var types = GraphQLMeta.Types;
             
             var schema = new GqlSchema {
-                queryType   = new GqlQueryType { name = "Query" },
+                queryType   = new GqlType { name = "Query" },
                 types       = types,
                 directives  = new List<GqlDirective>()
             };

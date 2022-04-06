@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             new GqlObject { name = "Query",
                 fields = new List<GqlField> {
                     new GqlField { name = "_entities",
-                        args = new List<GqlArg> {
-                            new GqlArg { name = "representations",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "representations",
                                 type = new GqlNonNull {
                                     ofType = new GqlList {
                                         ofType = new GqlNonNull {
@@ -106,9 +106,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         type = new GqlScalar { name = "String" }
                     },
                     new GqlField { name = "fields",
-                        args = new List<GqlArg> {
-                            new GqlArg {
-                                name = "includeDeprecated",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "includeDeprecated",
                                 type = new GqlScalar() { name = "Boolean" } 
                             }
                         },
@@ -133,8 +132,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         }
                     },
                     new GqlField { name = "enumValues",
-                        args = new List<GqlArg> {
-                            new GqlArg { name = "includeDeprecated",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "includeDeprecated",
                                 type = new GqlScalar { name = "Boolean" }
                             }
                         },
@@ -145,8 +144,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         }
                     },
                     new GqlField { name = "inputFields",
-                        args = new List<GqlArg> {
-                            new GqlArg { name = "includeDeprecated",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "includeDeprecated",
                                 type = new GqlScalar { name = "Boolean" }
                             }
                         },
@@ -184,8 +183,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         type = new GqlScalar { name = "String" }
                     },
                     new GqlField { name = "args",
-                        args = new List<GqlArg> {
-                            new GqlArg { name = "includeDeprecated",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "includeDeprecated",
                                 type = new GqlScalar { name = "Boolean" }
                             }
                         },
@@ -285,8 +284,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         }
                     },
                     new GqlField { name = "args",
-                        args = new List<GqlArg> {
-                            new GqlArg { name = "includeDeprecated",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "includeDeprecated",
                                 type = new GqlScalar { name = "Boolean" }
                             }
                         },
