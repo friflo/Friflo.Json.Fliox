@@ -94,10 +94,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Types
     }
 
     public class GqlDirective {
-        [Req]   public  string              name;
-                public  string              description;
-        [Req]   public  List<string>        locations;
-        [Req]   public  List<GqlInputValue> args;
+        [Req]   public  string                      name;
+                public  string                      description;
+        [Req]   public  List<GqlDirectiveLocation>  locations;
+        [Req]   public  List<GqlInputValue>         args;
     }
     
     public class GqlInputValue {
@@ -106,4 +106,26 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Types
         [Req]   public  GqlType     type;
                 public  string      defaultValue;
     }
+    
+    public enum GqlDirectiveLocation {
+        QUERY,
+        MUTATION,
+        SUBSCRIPTION,
+        FIELD,
+        FRAGMENT_DEFINITION,
+        FRAGMENT_SPREAD,
+        INLINE_FRAGMENT,
+        SCHEMA,
+        SCALAR,
+        OBJECT,
+        FIELD_DEFINITION,
+        ARGUMENT_DEFINITION,
+        INTERFACE,
+        UNION,
+        ENUM,
+        ENUM_VALUE,
+        INPUT_OBJECT,
+        INPUT_FIELD_DEFINITION,
+    }
+    
 }
