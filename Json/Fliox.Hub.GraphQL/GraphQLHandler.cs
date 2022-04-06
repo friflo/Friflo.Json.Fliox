@@ -3,13 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using GraphQLParser;
 using GraphQLParser.AST;
-using GraphQLParser.Visitors;
+
 
 #pragma warning disable CS0649
 // ReSharper disable ClassNeverInstantiated.Global
@@ -34,13 +33,43 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var reader  = pooled.instance.reader;
                 postBody    = reader.Read<GraphQLPost>(body);
             }
-            var document    = Parser.Parse(postBody.query);
-            var queryString = document.Source.ToString();
-            Console.WriteLine("-------------------------------- query --------------------------------");
-            Console.WriteLine(queryString);
-            context.WriteString("{}", "application/json", 200);
+            var query       = Parser.Parse(postBody.query);
+            switch (postBody.operationName) {
+                case "IntrospectionQuery":
+                    IntrospectionQuery(context, query);
+                    return;
+                default:
+                    context.WriteError("Invalid operation", postBody.operationName, 400);
+                    return;
+            }
         }
         
+        private static void IntrospectionQuery (RequestContext context, GraphQLDocument query) {
+            var queryString = query.Source.ToString();
+            // Console.WriteLine("-------------------------------- query --------------------------------");
+            // Console.WriteLine(queryString);
+            
+            var schema = new GqlSchema {
+                queryType   = new GqlQueryType { name = "Query" },
+                types       = new List<GqlType>(),
+                directives  = new List<GqlDirective>()
+            };
+            var response = new GqlResponse {
+                data = new GqlData {
+                    schema = schema
+                }
+            };
+            var pool        = context.Pool;
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var writer              = pooled.instance.writer;
+                writer.Pretty           = true;
+                writer.WriteNullMembers = false;
+                var responseBody        = new JsonValue(writer.WriteAsArray(response));
+                context.Write(responseBody, responseBody.Length, "application/json", 200);
+                Console.WriteLine(responseBody.AsString());
+            }
+        }
+
         internal class GraphQLPost
         {
             public  string                      query;
