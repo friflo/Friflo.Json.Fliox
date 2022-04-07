@@ -64,10 +64,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var html = SchemaSwagger.Get(storeName);
                 return Result.Success(html, "text/html");
             }
-            if (path == "graphiql.html") {
-                var html = SchemaGraphiQL.Get(storeName);
-                return Result.Success(html, "text/html");
-            }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
                 return Result.Error($"invalid path:  {path}");

@@ -60,9 +60,9 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
             var hostHub             = new HttpHostHub(hub, "/fliox/").CacheControl(c.cache);
+            hostHub.AddHandler       (new GraphQLHandler());
             hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
-            hostHub.AddHandler       (new GraphQLHandler());
             return hostHub;
         }
         

@@ -25,13 +25,32 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private const   string  GraphQLRoute = "/graphql";
         
         public bool IsMatch(RequestContext context) {
-            if (context.method != "POST")
+            var method = context.method;
+            if (method != "POST" && method != "GET")
                 return false;
-            return context.route == GraphQLRoute;
+            return RequestContext.IsBasePath(GraphQLRoute, context.route);
+        }
+        
+        public async Task HandleRequest(RequestContext context) {
+            if (context.route == GraphQLRoute) {
+                context.WriteError("invalid path", "expect: graphql/database", 400);
+                return;
+            }
+            var method  = context.method;
+            var route   = context.route.Substring(GraphQLRoute.Length + 1);
+            if (method == "POST") {
+                var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                HandlePost(context, body);
+                return;
+            }
+            if (method == "GET") {
+                var html = HtmlGraphiQL.Get(route);
+                context.WriteString(html, "text/html", 200);
+                return;
+            }
         }
 
-        public async Task HandleRequest(RequestContext context) {
-            var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+        private static void HandlePost(RequestContext context, JsonValue body) {
             var pool    = context.Pool;
             GraphQLPost postBody;
             using (var pooled = pool.ObjectMapper.Get()) {

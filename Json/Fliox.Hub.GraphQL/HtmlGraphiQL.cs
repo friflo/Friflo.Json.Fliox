@@ -1,12 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-namespace Friflo.Json.Fliox.Hub.Remote
+namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class SchemaGraphiQL
+    internal static class HtmlGraphiQL
     {
         internal static string Get(string storeName) {
-            var relBase = "../../graphiql";
+            var relBase = "../graphiql";
             return $@"<!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     history.replaceState(null, null, newSearch);
   }}
 
-  const graphqlPath = '../../graphql'
+  const graphqlPath = './'
 
   function graphQLFetcher(graphQLParams) {{
     // This example expects a GraphQL server at the path /graphql.
