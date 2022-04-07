@@ -22,10 +22,22 @@ using GraphQLParser.AST;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
+    internal class GraphQLSchema {
+        internal readonly   string      database;
+        internal readonly   JsonValue   schemaResponse;
+
+        public   override   string      ToString() => database;
+
+        internal GraphQLSchema(string database, JsonValue schemaResponse) {
+            this.database       = database;
+            this.schemaResponse = schemaResponse;
+        } 
+    }
+    
     public class GraphQLHandler: IRequestHandler
     {
-        private readonly    Dictionary<string, JsonValue>   schemas         = new Dictionary<string, JsonValue>();
-        private const       string                          GraphQLRoute    = "/graphql";
+        private readonly    Dictionary<string, GraphQLSchema>   schemas         = new Dictionary<string, GraphQLSchema>();
+        private const       string                              GraphQLRoute    = "/graphql";
         
         public bool IsMatch(RequestContext context) {
             var method = context.method;
@@ -40,8 +52,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             var dbName      = context.route.Substring(GraphQLRoute.Length + 1);
-            var schemaJson  = GetSchemaJson(context, dbName, out string error);
-            if (schemaJson.IsNull()) {
+            var schemaJson  = GetSchema(context, dbName, out string error);
+            if (schemaJson == null) {
                 context.WriteString($"error: {error}, database: {dbName}", "text/html", 400);
                 return;
             }
@@ -58,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
 
-        private static void HandlePost(RequestContext context, JsonValue body, JsonValue schemaResponse) {
+        private static void HandlePost(RequestContext context, JsonValue body, GraphQLSchema schema) {
             var pool    = context.Pool;
             GraphQLPost postBody;
             using (var pooled = pool.ObjectMapper.Get()) {
@@ -68,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var query       = Parser.Parse(postBody.query);
             switch (postBody.operationName) {
                 case "IntrospectionQuery":
-                    IntrospectionQuery(context, query, schemaResponse);
+                    IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 default:
                     context.WriteError("Invalid operation", postBody.operationName, 400);
@@ -76,15 +88,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private JsonValue GetSchemaJson (RequestContext context, string databaseName, out string error) {
+        private GraphQLSchema GetSchema (RequestContext context, string databaseName, out string error) {
             var hub         = context.hub;
             if (!hub.TryGetDatabase(databaseName, out var database)) {
                 error = $"database not found: {databaseName}";
                 return default;
             }
-            if (schemas.TryGetValue(databaseName, out var schemaResponse)) {
+            if (schemas.TryGetValue(databaseName, out var schema)) {
                 error = null;
-                return schemaResponse;
+                return schema;
             }
             error                   = null;
             var typeSchema          = database.Schema.typeSchema;
@@ -92,9 +104,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             GraphQLGenerator.Generate(generator);
             
             var schemaJson          = generator.files["schema.json"];
-            schemaResponse          = CreateSchemaResponse(context.Pool, schemaJson);
-            schemas[databaseName]   = schemaResponse;
-            return schemaResponse;
+            var schemaResponse      = CreateSchemaResponse(context.Pool, schemaJson);
+            schema                  = new GraphQLSchema (databaseName, schemaResponse);
+            schemas[databaseName]   = schema;
+            return schema;
         }
         
         private static JsonValue CreateSchemaResponse(Pool pool, string schemaJson) {
