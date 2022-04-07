@@ -12,19 +12,42 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
         {
             new GqlObject { name = "Query",
                 fields = new List<GqlField> {
-                    new GqlField { name = "test",
+                    new GqlField { name = "articles_read",
                         args = new List<GqlInputValue> {
-                            new GqlInputValue { name = "parameter",
-                                type = new GqlScalar{ name = "String" }
+                            new GqlInputValue { name = "ids",
+                                type = new GqlNonNull { 
+                                    ofType = new GqlList {
+                                        ofType = new GqlScalar{ name = "String" }
+                                    }
+                                }
                             }
                         },
                         type = new GqlList {
-                            ofType = new GqlScalar{ name = "String" }
+                            ofType = new GqlScalar{ name = "TestType" }
+                        }
+                    },
+                    new GqlField { name = "articles_query",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "filter",
+                                type = new GqlList {
+                                    ofType = new GqlScalar{ name = "String" }
+                                }
+                            }
+                        },
+                        type = new GqlList {
+                            ofType = new GqlScalar{ name = "TestType" }
                         }
                     }
                 }
             },
             new GqlScalar { name = "String"  },
+            new GqlObject { name = "TestType",
+                fields = new List<GqlField> {
+                    new GqlField { name = "field1",
+                        type = new GqlScalar{ name = "String" }
+                    }
+                }
+            },
         };
     }
 }
