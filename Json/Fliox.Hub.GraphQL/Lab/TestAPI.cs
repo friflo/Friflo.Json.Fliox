@@ -17,46 +17,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
                 fields = new List<GqlField> {
                     new GqlField { name = "articles",
                         args = new List<GqlInputValue> {
-                            new GqlInputValue { name = "filter",
-                                type = new GqlScalar{ name = "String" }
-                            },
-                            new GqlInputValue { name = "limit",
-                                type = new GqlScalar { name = "Int"}
-                            }
+                            Gql.InputValue ("filter",   new GqlScalar { name = "String" }),
+                            Gql.InputValue ("limit",    new GqlScalar  { name = "Int" })
                         },
-                        type = new GqlNonNull{
-                            ofType = new GqlList {
-                                ofType = new GqlNonNull {
-                                    ofType = new GqlScalar{ name = "TestType" }
-                                }
-                            }
-                        }
+                        type = Gql.List("TestType", true, true)
                     },
                     new GqlField { name = "articlesById",
                         args = new List<GqlInputValue> {
-                            new GqlInputValue { name = "ids",
-                                type = new GqlNonNull { 
-                                    ofType = new GqlList {
-                                        ofType = new GqlNonNull { 
-                                            ofType = new GqlScalar{ name = "String" }
-                                        }
-                                    }
-                                }
-                            }
+                            Gql.InputValue ("ids",      Gql.List("String", true, true))
                         },
-                        type = new GqlNonNull {
-                            ofType = new GqlList {
-                                ofType = new GqlScalar{ name = "TestType" }
-                            }
-                        }
-                    },
+                        type = Gql.List("TestType", true, false)
+                    }
                 }
             },
             new GqlObject { name = "TestType",
                 fields = new List<GqlField> {
-                    new GqlField { name = "field1",
-                        type = new GqlScalar{ name = "String" }
-                    }
+                    new GqlField { name = "field1", type = new GqlScalar{ name = "String" } }
                 }
             },
         };
