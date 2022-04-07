@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.GraphQL.Lab;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.GraphQL;
@@ -23,8 +24,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     public class GraphQLHandler: IRequestHandler
     {
-        private readonly    Dictionary<string, string>  schemas         = new Dictionary<string, string>();
-        private const       string                      GraphQLRoute    = "/graphql";
+        private readonly    Dictionary<string, JsonValue>   schemas         = new Dictionary<string, JsonValue>();
+        private const       string                          GraphQLRoute    = "/graphql";
         
         public bool IsMatch(RequestContext context) {
             var method = context.method;
@@ -39,15 +40,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             var dbName      = context.route.Substring(GraphQLRoute.Length + 1);
-            /* var schema      = GetSchema(context, dbName, out string error);
-            if (schema == null) {
+            var schemaJson  = GetSchemaJson(context, dbName, out string error);
+            if (schemaJson.IsNull()) {
                 context.WriteString($"error: {error}, database: {dbName}", "text/html", 400);
                 return;
-            }*/
+            }
             var method  = context.method;
             if (method == "POST") {
                 var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                HandlePost(context, body);
+                HandlePost(context, body, schemaJson);
                 return;
             }
             if (method == "GET") {
@@ -57,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
 
-        private static void HandlePost(RequestContext context, JsonValue body) {
+        private static void HandlePost(RequestContext context, JsonValue body, JsonValue schemaResponse) {
             var pool    = context.Pool;
             GraphQLPost postBody;
             using (var pooled = pool.ObjectMapper.Get()) {
@@ -67,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var query       = Parser.Parse(postBody.query);
             switch (postBody.operationName) {
                 case "IntrospectionQuery":
-                    IntrospectionQuery(context, query);
+                    IntrospectionQuery(context, query, schemaResponse);
                     return;
                 default:
                     context.WriteError("Invalid operation", postBody.operationName, 400);
@@ -75,55 +76,68 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private string GetSchema (RequestContext context, string databaseName, out string error) {
+        private JsonValue GetSchemaJson (RequestContext context, string databaseName, out string error) {
             var hub         = context.hub;
             if (!hub.TryGetDatabase(databaseName, out var database)) {
                 error = $"database not found: {databaseName}";
-                return null;
+                return default;
             }
-            if (schemas.TryGetValue(databaseName, out string schemaJson)) {
+            if (schemas.TryGetValue(databaseName, out var schemaResponse)) {
                 error = null;
-                return schemaJson;
+                return schemaResponse;
             }
             error                   = null;
             var typeSchema          = database.Schema.typeSchema;
             var generator           = new Generator(typeSchema, ".json");
             GraphQLGenerator.Generate(generator);
-            schemaJson              = generator.files["schema.json"];
-            schemas[databaseName]   = schemaJson;
-            return schemaJson;
+            
+            var schemaJson          = generator.files["schema.json"];
+            schemaResponse          = CreateSchemaResponse(context.Pool, schemaJson);
+            schemas[databaseName]   = schemaResponse;
+            return schemaResponse;
         }
         
-        // ReSharper disable once UnusedParameter.Local
-        private static void IntrospectionQuery (RequestContext context, GraphQLDocument query) {
-            // var queryString = query.Source.ToString();
-            // Console.WriteLine("-------------------------------- query --------------------------------");
-            // Console.WriteLine(queryString);
-            
-            var types = TestAPI.Types;
-            
-            var schema = new GqlSchema {
-                queryType   = new GqlType { name = "Query" },
-                types       = types,
-                directives  = new List<GqlDirective>()
-            };
+        private static JsonValue CreateSchemaResponse(Pool pool, string schemaJson) {
             var response = new GqlResponse {
                 data = new GqlData {
-                    schema = schema
+                    schema = new JsonValue(schemaJson)
                 }
             };
-            var pool        = context.Pool;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
-                var responseBody        = new JsonValue(writer.WriteAsArray(response));
-                File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/graphql-meta.json", responseBody.AsString());
-                var testResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);
-                context.Write(responseBody, responseBody.Length, "application/json", 200);
-                // context.WriteString(testResponse, "application/json", 200);
-                // Console.WriteLine(responseBody.AsString());
+                return new JsonValue(writer.WriteAsArray(response));
             }
+        }
+        
+        private static JsonValue CreateTestSchema(Pool pool) {
+            var types   = TestAPI.Types;
+            var schema  = new GqlSchema {
+                queryType   = new GqlType { name = "Query" },
+                types       = types,
+                directives  = new List<GqlDirective>()
+            };
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var writer              = pooled.instance.writer;
+                writer.Pretty           = true;
+                writer.WriteNullMembers = false;
+                var schemaJson = writer.Write(schema);
+                return CreateSchemaResponse(pool, schemaJson);
+            }
+        }
+        
+        private static void IntrospectionQuery (RequestContext context, GraphQLDocument query, JsonValue schemaResponse) {
+            // var queryString = query.Source.ToString();
+            // Console.WriteLine("-------------------------------- query --------------------------------");
+            // Console.WriteLine(queryString);
+            schemaResponse = CreateTestSchema(context.Pool);
+
+            File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/graphql-meta.json", schemaResponse.AsString());
+            var testResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);
+            context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
+            // context.WriteString(testResponse, "application/json", 200);
+            // Console.WriteLine(responseBody.AsString());
         }
 
         internal class GraphQLPost
@@ -139,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
         public class GqlData {
             [Fri.Property(Name =     "__schema")]
-            public  GqlSchema           schema;
+            public  JsonValue           schema;
         }
     }
 }

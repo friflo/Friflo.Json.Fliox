@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
 using Friflo.Json.Fliox.Schema.GraphQL;
@@ -39,15 +40,27 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         public static void Generate(Generator generator) {
             var emitter = new GraphQLGenerator(generator);
-            var sb      = new StringBuilder();
+            var types   = new List<GqlType>();
             foreach (var type in generator.types) {
-                sb.Clear();
                 var result = emitter.EmitType(type);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
+                types.Add(result.graphQLType);
             }
-            generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
+            var schema = new GqlSchema {
+                queryType   = new GqlType { name = "Query" },
+                types       = types,
+                directives  = new List<GqlDirective>()
+            };
+            
+            using (var typeStore    = new TypeStore()) 
+            using (var writer       = new ObjectWriter(typeStore)) {
+                writer.Pretty           = true;
+                writer.WriteNullMembers = false;
+                var schemaJson          = writer.Write(schema);
+                generator.files.Add("schema.json", schemaJson);
+            }
         }
         
         private static void AddType (Dictionary<TypeDef, GqlType> types, TypeDef type, GqlType value, string description) {
