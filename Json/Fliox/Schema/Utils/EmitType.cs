@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Utils
 {
-    public sealed class EmitType
+    public class EmitType
     {
         public   readonly   TypeDef                 type;
         /// the mapper assigned to the type
@@ -22,8 +22,20 @@ namespace Friflo.Json.Fliox.Schema.Utils
         internal readonly   ICollection<EmitType>   emitDependencies = new List<EmitType>();
 
         public   override   string                  ToString() => type.Name;
+        
+        public EmitType(
+            TypeDef             type,
+            HashSet<TypeDef>    imports         = null,
+            List<TypeDef>       dependencies    = null)
+        {
+            this.type               = type;
+            this.path               = type.Path;
+            this.imports            = imports       ?? new HashSet<TypeDef>();
+            this.typeDependencies   = dependencies  ?? new List<TypeDef>();
+        }
 
-        public EmitType(TypeDef type,
+        public EmitType(
+            TypeDef             type,
             StringBuilder       sb,
             HashSet<TypeDef>    imports         = null,
             List<TypeDef>       dependencies    = null)

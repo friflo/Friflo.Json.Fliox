@@ -109,4 +109,25 @@ namespace Friflo.Json.Fliox.Schema.Language
             return generator;
         }
     }
+    
+    /// <summary>
+    /// Generate GraphQL from the given options. Examples available at:
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema">Schema unit tests</a>
+    /// </summary>
+    public sealed partial class GraphQLGenerator
+    {
+        public static Generator Generate(NativeTypeOptions options) {
+            var schema      = new NativeTypeSchema(options.types, options.rootType);
+            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
+            var generator   = new Generator(schema, options.fileExt ?? ".d.ts", options.replacements, sepTypes, options.getPath);
+            Generate(generator);
+            return generator;
+        }
+        
+        public static Generator Generate(JsonTypeOptions options) {
+            var generator   = new Generator(options.schema, options.fileExt ?? ".d.ts", options.replacements, options.separateTypes, options.getPath);
+            Generate(generator);
+            return generator;
+        }
+    }
 }
