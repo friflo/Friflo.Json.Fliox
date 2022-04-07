@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     history.replaceState(null, null, newSearch);
   }}
 
-  const graphqlPath = './'
+  const graphqlPath = '{storeName}'
 
   function graphQLFetcher(graphQLParams) {{
     // This example expects a GraphQL server at the path /graphql.

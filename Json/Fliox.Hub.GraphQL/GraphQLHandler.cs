@@ -36,15 +36,20 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 context.WriteError("invalid path", "expect: graphql/database", 400);
                 return;
             }
+            var dbName      = context.route.Substring(GraphQLRoute.Length + 1);
+            var hub         = context.hub;
+            if (!hub.TryGetDatabase(dbName, out _)) {
+                context.WriteString($"database not found: {dbName}", "text/html", 400);
+                return;
+            }
             var method  = context.method;
-            var route   = context.route.Substring(GraphQLRoute.Length + 1);
             if (method == "POST") {
                 var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 HandlePost(context, body);
                 return;
             }
             if (method == "GET") {
-                var html = HtmlGraphiQL.Get(route);
+                var html = HtmlGraphiQL.Get(dbName);
                 context.WriteString(html, "text/html", 200);
                 return;
             }
@@ -112,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
     
         public class GqlData {
-            [Fri.Property(Name =             "__schema")]
+            [Fri.Property(Name =     "__schema")]
             public  GqlSchema           schema;
         }
     }

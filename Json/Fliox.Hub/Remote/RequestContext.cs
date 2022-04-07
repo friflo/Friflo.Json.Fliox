@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public sealed class RequestContext
     {
-        internal  readonly  FlioxHub                    hub;
+        public    readonly  FlioxHub                    hub;
         public    readonly  string                      method;
         public    readonly  string                      route;
         public    readonly  string                      query;

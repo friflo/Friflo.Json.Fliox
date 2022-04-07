@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -49,17 +50,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var route       = context.route.Substring(SchemaBase.Length + 1);
             var firstSlash  = route.IndexOf('/');
             var name        = firstSlash == -1 ? route : route.Substring(0, firstSlash);
-            if (!schemas.TryGetValue(name, out var schema)) {
-                if (!hub.TryGetDatabase(name, out var database)) {
-                    context.WriteError("schema not found", name, 404);
-                    return Task.CompletedTask;
-                }
-                var typeSchema = database.Schema.typeSchema;
-                if (typeSchema == null) {
-                    context.WriteError("missing schema for database", name, 404);
-                    return Task.CompletedTask;
-                }
-                schema = AddSchema(name, database.Schema.typeSchema);
+            var schema      = GetSchemaResource(hub, name, out string error);
+            if (schema == null) {
+                context.WriteError(error, name, 404);
+                return Task.CompletedTask;
             }
             var schemaPath  = route.Substring(firstSlash + 1);
             var result      = schema.GetSchemaFile(schemaPath, this, context);
@@ -76,6 +70,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             context.Write(result.bytes, 0, result.contentType, 200);
             return Task.CompletedTask;
+        }
+        
+        private SchemaResource GetSchemaResource(FlioxHub hub, string name, out string error) {
+            if (schemas.TryGetValue(name, out var schema)) {
+                error = null;
+                return schema;
+            }
+            if (!hub.TryGetDatabase(name, out var database)) {
+                error = "schema not found";
+                return null;
+            }
+            var typeSchema = database.Schema.typeSchema;
+            if (typeSchema == null) {
+                error = "missing schema for database";
+                return null;
+            }
+            error = null;
+            return AddSchema(name, typeSchema);
         }
         
         internal SchemaResource AddSchema(string name, TypeSchema typeSchema, ICollection<TypeDef> sepTypes = null) {
