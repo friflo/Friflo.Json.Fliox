@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.GraphQL;
 
-namespace Friflo.Json.Fliox.Hub.GraphQL
+namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
 {
-    public static class GraphQLMeta
+    public static class ExampleAPI
     {
         internal static readonly List<GqlType> Types = new List<GqlType>
         {

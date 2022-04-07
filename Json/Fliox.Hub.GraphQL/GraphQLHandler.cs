@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.GraphQL.Lab;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.GraphQL;
@@ -54,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);
             
-            var types = GraphQLMeta.Types;
+            var types = TestAPI.Types;
             
             var schema = new GqlSchema {
                 queryType   = new GqlType { name = "Query" },
