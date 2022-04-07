@@ -8,8 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 #pragma warning disable CS0649
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class GraphQLPost
-    {
+    internal class GqlRequest {
         public  string                      query;
         public  string                      operationName;
         public  Dictionary<string,string>   variables;

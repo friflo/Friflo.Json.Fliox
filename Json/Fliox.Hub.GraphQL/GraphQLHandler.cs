@@ -65,10 +65,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
         private static void HandlePost(RequestContext context, JsonValue body, GraphQLSchema schema) {
             var pool    = context.Pool;
-            GraphQLPost postBody;
+            GqlRequest postBody;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                postBody    = reader.Read<GraphQLPost>(body);
+                postBody    = reader.Read<GqlRequest>(body);
             }
             var query       = Parser.Parse(postBody.query);
             switch (postBody.operationName) {

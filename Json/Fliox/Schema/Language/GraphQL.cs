@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
-                // types.Add(result.graphQLType);
+                types.Add(result.graphQLType);
             }
             var schema = new GqlSchema {
                 queryType   = new GqlType { name = "Query" },
@@ -180,15 +180,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
             } */
             foreach (var field in fields) {
-                /* if (field.IsDerivedField)
-                    continue;
-                var fieldDoc    = GetDoc(field.doc, "    ");
-                sb.Append(fieldDoc);
+                var gqlField = new GqlField();
+                gqlFields.Add(gqlField);
+                //  if (field.IsDerivedField)
+                //      continue;
+                gqlField.description    = GetDoc(field.doc, "    ");
+                gqlField.name           = field.name;
+                gqlField.type           = Gql.String();
+
                 bool required   = field.required;
                 var fieldType   = GetFieldType(field, context, required);
-                var indent      = Indent(maxFieldName, field.name);
-                var optStr      = required ? " ": "?";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};"); */
             }
             // EmitMessages("commands", type.Commands, context, sb);
             // EmitMessages("messages", type.Messages, context, sb);

@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
     
     public class GqlField {
         [Req]   public  string              name;
+                public  string              description;
         [Req]   public  List<GqlInputValue> args = new List<GqlInputValue>();
         [Req]   public  GqlType             type;
                 public  bool?               isDeprecated;
