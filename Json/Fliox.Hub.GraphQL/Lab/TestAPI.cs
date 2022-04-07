@@ -10,6 +10,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
     {
         internal static readonly List<GqlType> Types = new List<GqlType>
         {
+            new GqlScalar { name = "String" },
+            new GqlScalar { name = "Int"    },
+            //
             new GqlObject { name = "Query",
                 fields = new List<GqlField> {
                     new GqlField { name = "articles_read",
@@ -32,6 +35,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
                                 type = new GqlList {
                                     ofType = new GqlScalar{ name = "String" }
                                 }
+                            },
+                            new GqlInputValue { name = "limit",
+                                type = new GqlScalar { name = "Int"}
                             }
                         },
                         type = new GqlList {
@@ -40,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
                     }
                 }
             },
-            new GqlScalar { name = "String"  },
             new GqlObject { name = "TestType",
                 fields = new List<GqlField> {
                     new GqlField { name = "field1",
