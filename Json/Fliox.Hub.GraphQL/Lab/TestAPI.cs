@@ -15,35 +15,41 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
             //
             new GqlObject { name = "Query",
                 fields = new List<GqlField> {
-                    new GqlField { name = "articles_read",
-                        args = new List<GqlInputValue> {
-                            new GqlInputValue { name = "ids",
-                                type = new GqlNonNull { 
-                                    ofType = new GqlList {
-                                        ofType = new GqlScalar{ name = "String" }
-                                    }
-                                }
-                            }
-                        },
-                        type = new GqlList {
-                            ofType = new GqlScalar{ name = "TestType" }
-                        }
-                    },
-                    new GqlField { name = "articles_query",
+                    new GqlField { name = "articles",
                         args = new List<GqlInputValue> {
                             new GqlInputValue { name = "filter",
-                                type = new GqlList {
-                                    ofType = new GqlScalar{ name = "String" }
-                                }
+                                type = new GqlScalar{ name = "String" }
                             },
                             new GqlInputValue { name = "limit",
                                 type = new GqlScalar { name = "Int"}
                             }
                         },
-                        type = new GqlList {
-                            ofType = new GqlScalar{ name = "TestType" }
+                        type = new GqlNonNull{
+                            ofType = new GqlList {
+                                ofType = new GqlNonNull {
+                                    ofType = new GqlScalar{ name = "TestType" }
+                                }
+                            }
                         }
-                    }
+                    },
+                    new GqlField { name = "articlesById",
+                        args = new List<GqlInputValue> {
+                            new GqlInputValue { name = "ids",
+                                type = new GqlNonNull { 
+                                    ofType = new GqlList {
+                                        ofType = new GqlNonNull { 
+                                            ofType = new GqlScalar{ name = "String" }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        type = new GqlNonNull {
+                            ofType = new GqlList {
+                                ofType = new GqlScalar{ name = "TestType" }
+                            }
+                        }
+                    },
                 }
             },
             new GqlObject { name = "TestType",
