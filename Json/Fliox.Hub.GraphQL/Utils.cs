@@ -9,8 +9,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     internal static class Utils
     {
         internal static JsonValue CreateSchemaResponse(Pool pool, string schemaJson) {
-            var response = new GraphQLHandler.GqlResponse {
-                data = new GraphQLHandler.GqlData {
+            var response = new GqlResponse {
+                data = new GqlData {
                     schema = new JsonValue(schemaJson)
                 }
             };

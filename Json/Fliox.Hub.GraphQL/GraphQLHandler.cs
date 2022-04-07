@@ -13,16 +13,13 @@ using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
 using GraphQLParser.AST;
 
-#pragma warning disable CS0649
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class GraphQLSchema {
-        internal readonly   string      database;
-        internal readonly   JsonValue   schemaResponse;
+        private     readonly    string      database;
+        internal    readonly    JsonValue   schemaResponse;
 
-        public   override   string      ToString() => database;
+        public      override    string      ToString() => database;
 
         internal GraphQLSchema(string database, JsonValue schemaResponse) {
             this.database       = database;
@@ -117,22 +114,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
             // context.WriteString(testResponse, "application/json", 200);
             // Console.WriteLine(responseBody.AsString());
-        }
-
-        internal class GraphQLPost
-        {
-            public  string                      query;
-            public  string                      operationName;
-            public  Dictionary<string,string>   variables;
-        }
-        
-        public class GqlResponse {
-            public  GqlData             data;
-        }
-    
-        public class GqlData {
-            [Fri.Property(Name =     "__schema")]
-            public  JsonValue           schema;
         }
     }
 }
