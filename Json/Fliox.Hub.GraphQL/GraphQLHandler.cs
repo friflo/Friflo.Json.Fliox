@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Hub.GraphQL.Lab;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.GraphQL;
+using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
 using GraphQLParser.AST;
 
@@ -22,7 +23,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     public class GraphQLHandler: IRequestHandler
     {
-        private const   string  GraphQLRoute = "/graphql";
+        private readonly    Dictionary<string, string>  schemas         = new Dictionary<string, string>();
+        private const       string                      GraphQLRoute    = "/graphql";
         
         public bool IsMatch(RequestContext context) {
             var method = context.method;
@@ -37,11 +39,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             var dbName      = context.route.Substring(GraphQLRoute.Length + 1);
-            var hub         = context.hub;
-            if (!hub.TryGetDatabase(dbName, out _)) {
-                context.WriteString($"database not found: {dbName}", "text/html", 400);
+            /* var schema      = GetSchema(context, dbName, out string error);
+            if (schema == null) {
+                context.WriteString($"error: {error}, database: {dbName}", "text/html", 400);
                 return;
-            }
+            }*/
             var method  = context.method;
             if (method == "POST") {
                 var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
@@ -71,6 +73,25 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     context.WriteError("Invalid operation", postBody.operationName, 400);
                     return;
             }
+        }
+        
+        private string GetSchema (RequestContext context, string databaseName, out string error) {
+            var hub         = context.hub;
+            if (!hub.TryGetDatabase(databaseName, out var database)) {
+                error = $"database not found: {databaseName}";
+                return null;
+            }
+            if (schemas.TryGetValue(databaseName, out string schemaJson)) {
+                error = null;
+                return schemaJson;
+            }
+            error                   = null;
+            var typeSchema          = database.Schema.typeSchema;
+            var generator           = new Generator(typeSchema, ".json");
+            GraphQLGenerator.Generate(generator);
+            schemaJson              = generator.files["schema.json"];
+            schemas[databaseName]   = schemaJson;
+            return schemaJson;
         }
         
         // ReSharper disable once UnusedParameter.Local

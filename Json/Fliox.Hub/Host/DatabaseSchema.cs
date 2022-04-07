@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public sealed class DatabaseSchema
     {
-        internal readonly   TypeSchema                          typeSchema;
+        public   readonly   TypeSchema                          typeSchema;
         private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
         private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
         
