@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.GraphQL;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
@@ -36,5 +38,21 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
                 }
             },
         };
+        
+        internal static JsonValue CreateTestSchema(Pool pool) {
+            var types   = Types;
+            var schema  = new GqlSchema {
+                queryType   = new GqlType { name = "Query" },
+                types       = types,
+                directives  = new List<GqlDirective>()
+            };
+            using (var pooled = pool.ObjectMapper.Get()) {
+                var writer              = pooled.instance.writer;
+                writer.Pretty           = true;
+                writer.WriteNullMembers = false;
+                var schemaJson = writer.Write(schema);
+                return Utils.CreateSchemaResponse(pool, schemaJson);
+            }
+        }
     }
 }

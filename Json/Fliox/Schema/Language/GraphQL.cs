@@ -40,13 +40,19 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         public static void Generate(Generator generator) {
             var emitter = new GraphQLGenerator(generator);
-            var types   = new List<GqlType>();
+            var types   = new List<GqlType> {
+                Gql.String(),
+                Gql.Int(),
+                Gql.Float(),
+                Gql.Boolean(),
+                new GqlObject { name = "Query", fields = new List<GqlField> () }
+            };
             foreach (var type in generator.types) {
                 var result = emitter.EmitType(type);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
-                types.Add(result.graphQLType);
+                // types.Add(result.graphQLType);
             }
             var schema = new GqlSchema {
                 queryType   = new GqlType { name = "Query" },
@@ -125,7 +131,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private EmitTypeGql EmitClassType(TypeDef type) {
-            var obj             = new GqlObject();
+            var gqlFields       = new List<GqlField>();
+            var obj             = new GqlObject { fields = gqlFields };
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();
@@ -140,15 +147,14 @@ namespace Friflo.Json.Fliox.Schema.Language
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
+            obj.name    = type.Name;
             var unionType = type.UnionType;
-        /*    if (unionType == null) {
-                if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
+            if (unionType == null) {
+                // if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
                 var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
-                sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
-                if (type.IsSchema)
-                    sb.AppendLine("    // --- containers");
+                // sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
             } else {
-                sb.AppendLine($"export type {type.Name}{Union} =");
+                /*  sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     sb.AppendLine($"    | {polyTypeDef.Name}");
@@ -163,18 +169,18 @@ namespace Friflo.Json.Fliox.Schema.Language
                 foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.discriminant}\"");
                 }
-                sb.AppendLine($"    ;");
+                sb.AppendLine($"    ;"); */
             }
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
-            if (discriminant != null) {
+            /* if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
-            }
+            } */
             foreach (var field in fields) {
-                if (field.IsDerivedField)
+                /* if (field.IsDerivedField)
                     continue;
                 var fieldDoc    = GetDoc(field.doc, "    ");
                 sb.Append(fieldDoc);
@@ -182,13 +188,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var fieldType   = GetFieldType(field, context, required);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? " ": "?";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
+                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};"); */
             }
-            EmitMessages("commands", type.Commands, context, sb);
-            EmitMessages("messages", type.Messages, context, sb);
+            // EmitMessages("commands", type.Commands, context, sb);
+            // EmitMessages("messages", type.Messages, context, sb);
 
-            sb.AppendLine("}");
-            sb.AppendLine(); */
             return new EmitTypeGql(type, obj, imports, dependencies);
         }
         

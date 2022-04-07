@@ -7,15 +7,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.GraphQL.Lab;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
 using GraphQLParser.AST;
-
 
 #pragma warning disable CS0649
 // ReSharper disable ClassNeverInstantiated.Global
@@ -104,49 +100,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             GraphQLGenerator.Generate(generator);
             
             var schemaJson          = generator.files["schema.json"];
-            var schemaResponse      = CreateSchemaResponse(context.Pool, schemaJson);
+            var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, schemaJson);
             schema                  = new GraphQLSchema (databaseName, schemaResponse);
             schemas[databaseName]   = schema;
             return schema;
         }
-        
-        private static JsonValue CreateSchemaResponse(Pool pool, string schemaJson) {
-            var response = new GqlResponse {
-                data = new GqlData {
-                    schema = new JsonValue(schemaJson)
-                }
-            };
-            using (var pooled = pool.ObjectMapper.Get()) {
-                var writer              = pooled.instance.writer;
-                writer.Pretty           = true;
-                writer.WriteNullMembers = false;
-                return new JsonValue(writer.WriteAsArray(response));
-            }
-        }
-        
-        private static JsonValue CreateTestSchema(Pool pool) {
-            var types   = TestAPI.Types;
-            var schema  = new GqlSchema {
-                queryType   = new GqlType { name = "Query" },
-                types       = types,
-                directives  = new List<GqlDirective>()
-            };
-            using (var pooled = pool.ObjectMapper.Get()) {
-                var writer              = pooled.instance.writer;
-                writer.Pretty           = true;
-                writer.WriteNullMembers = false;
-                var schemaJson = writer.Write(schema);
-                return CreateSchemaResponse(pool, schemaJson);
-            }
-        }
-        
+
         private static void IntrospectionQuery (RequestContext context, GraphQLDocument query, JsonValue schemaResponse) {
             // var queryString = query.Source.ToString();
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);
-            schemaResponse = CreateTestSchema(context.Pool);
+            // schemaResponse = TestAPI.CreateTestSchema(context.Pool);
 
-            File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/graphql-meta.json", schemaResponse.AsString());
+            File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/schema.json", schemaResponse.AsString());
             var testResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);
             context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
             // context.WriteString(testResponse, "application/json", 200);
