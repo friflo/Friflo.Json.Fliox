@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.GraphQL;
 
 // ReSharper disable ClassNeverInstantiated.Global
 #pragma warning disable CS0649
@@ -20,6 +21,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     public class GqlData {
         [Fri.Property(Name =     "__schema")]
-        public  JsonValue           schema;
+        public  GqlSchema           schema;
     }
 }

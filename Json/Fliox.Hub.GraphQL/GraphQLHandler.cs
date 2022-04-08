@@ -94,10 +94,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             error                   = null;
             var typeSchema          = database.Schema.typeSchema;
             var generator           = new Generator(typeSchema, ".json");
-            GraphQLGenerator.Generate(generator);
+            var gqlSchema           = GraphQLGenerator.Generate(generator);
             
-            var schemaJson          = generator.files["schema.json"];
-            var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, schemaJson);
+            var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, gqlSchema);
             schema                  = new GraphQLSchema (databaseName, schemaResponse);
             schemas[databaseName]   = schema;
             return schema;

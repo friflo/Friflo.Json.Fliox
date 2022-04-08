@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
@@ -38,7 +37,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             standardTypes   = GetStandardTypes(generator.standardTypes);
         }
         
-        public static void Generate(Generator generator) {
+        public static GqlSchema Generate(Generator generator) {
             var emitter = new GraphQLGenerator(generator);
             var types   = new List<GqlType> {
                 Gql.String(),
@@ -68,6 +67,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var schemaJson          = writer.Write(schema);
                 generator.files.Add("schema.json", schemaJson);
             }
+            return schema;
         }
         
         private static void AddType (Dictionary<TypeDef, GqlType> types, TypeDef type, GqlType value, string description) {

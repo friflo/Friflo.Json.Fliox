@@ -40,19 +40,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
         };
         
         internal static JsonValue CreateTestSchema(Pool pool) {
-            var types   = Types;
-            var schema  = new GqlSchema {
+            var types       = Types;
+            var gqlSchema   = new GqlSchema {
                 queryType   = new GqlType { name = "Query" },
                 types       = types,
                 directives  = new List<GqlDirective>()
             };
-            using (var pooled = pool.ObjectMapper.Get()) {
-                var writer              = pooled.instance.writer;
-                writer.Pretty           = true;
-                writer.WriteNullMembers = false;
-                var schemaJson = writer.Write(schema);
-                return Utils.CreateSchemaResponse(pool, schemaJson);
-            }
+            return Utils.CreateSchemaResponse(pool, gqlSchema);
         }
     }
 }

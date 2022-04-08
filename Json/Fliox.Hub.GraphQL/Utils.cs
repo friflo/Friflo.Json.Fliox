@@ -3,16 +3,15 @@
 
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.GraphQL;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class Utils
     {
-        internal static JsonValue CreateSchemaResponse(Pool pool, string schemaJson) {
+        internal static JsonValue CreateSchemaResponse(Pool pool, GqlSchema gqlSchema) {
             var response = new GqlResponse {
-                data = new GqlData {
-                    schema = new JsonValue(schemaJson)
-                }
+                data = new GqlData { schema = gqlSchema }
             };
             using (var pooled = pool.ObjectMapper.Get()) {
                 var writer              = pooled.instance.writer;
