@@ -10,27 +10,31 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.GraphQL.Lab;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
 using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class GraphQLSchema {
+    internal class DbGraphQLSchema {
         private     readonly    string      database;
         internal    readonly    JsonValue   schemaResponse;
+        internal    readonly    GqlSchema   schema;
 
         public      override    string      ToString() => database;
 
-        internal GraphQLSchema(string database, JsonValue schemaResponse) {
+        internal DbGraphQLSchema(string database, GqlSchema schema, JsonValue schemaResponse) {
             this.database       = database;
+            this.schema         = schema;
             this.schemaResponse = schemaResponse;
         } 
     }
     
     public class GraphQLHandler: IRequestHandler
     {
-        private readonly    Dictionary<string, GraphQLSchema>   schemas         = new Dictionary<string, GraphQLSchema>();
+        private readonly    Dictionary<string, DbGraphQLSchema> schemas         = new Dictionary<string, DbGraphQLSchema>();
         private const       string                              GraphQLRoute    = "/graphql";
         
         public bool IsMatch(RequestContext context) {
@@ -54,14 +58,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var method  = context.method;
             // --------------    POST           /graphql/{database}
             if (method == "POST") {
-                var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                var body        = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 var postBody    = ReadRequestBody(context, body);
                 var query       = Parser.Parse(postBody.query);
                 if (postBody.operationName == "IntrospectionQuery") {
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                await GraphQLQuery.Execute(context, schema);
+                await GraphQLQuery.Execute(context, query, schema);
                 return;
             }
             // --------------    GET            /graphql/{database}
@@ -80,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private GraphQLSchema GetSchema (RequestContext context, string databaseName, out string error) {
+        private DbGraphQLSchema GetSchema (RequestContext context, string databaseName, out string error) {
             var hub         = context.hub;
             if (!hub.TryGetDatabase(databaseName, out var database)) {
                 error = $"database not found: {databaseName}";
@@ -96,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var gqlSchema           = GraphQLGenerator.Generate(generator);
             
             var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, gqlSchema);
-            schema                  = new GraphQLSchema (databaseName, schemaResponse);
+            schema                  = new DbGraphQLSchema (databaseName, gqlSchema, schemaResponse);
             schemas[databaseName]   = schema;
             return schema;
         }
