@@ -19,7 +19,8 @@
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "eslint": "^7.32.0",
-    "fswin": "^3.21.1015"
+    "fswin": "^3.21.1015",
+    "graphql": "16.3.0"
   },
   "dependencies": {},
   "workspaces": [

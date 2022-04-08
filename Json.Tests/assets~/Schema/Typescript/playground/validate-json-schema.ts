@@ -19,7 +19,7 @@ export function validateSchemas() {
     const schemas : string[] = userStoreFiles.concat(pocStoreFiles, entityIdStoreFiles, jsonFlowSchemaFiles, protocolFiles, filterFiles);
 
     for (var path of schemas) {
-        console.log("validate: ", path);
+        console.log("  validate: ", path);
         var json: string = fs.readFileSync(path, "utf8");
         var jsonSchema = JSON.parse(json);
 
