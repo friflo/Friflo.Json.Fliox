@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 types       = types,
                 directives  = new List<GqlDirective>()
             };
-            var graphQLSchema = CreateSchema(schema);
+            var graphQLSchema = CreateSchema(schema, schemaType.schemaInfo);
             generator.files.Add("schema.graphql", graphQLSchema);
 
             return schema;

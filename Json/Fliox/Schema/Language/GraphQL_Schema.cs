@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Schema.Utils;
 using static Friflo.Json.Fliox.Schema.Language.Generator;
@@ -11,8 +12,9 @@ namespace Friflo.Json.Fliox.Schema.Language
 {
     public sealed partial class GraphQLGenerator
     {
-        private static string CreateSchema(GqlSchema schema) {
+        private static string CreateSchema(GqlSchema schema, SchemaInfo schemaInfo) {
             var sb = new StringBuilder();
+            EmitMetaInfo(schemaInfo, sb);
             foreach (var type in schema.types) {
                 switch (type) {
                     case GqlScalar scalarType:  EmitScalar  (scalarType,    sb);    break;
@@ -25,6 +27,29 @@ namespace Friflo.Json.Fliox.Schema.Language
             return sb.ToString();
         }
         
+        private static void EmitMetaInfo(SchemaInfo si, StringBuilder sb) {
+            sb.AppendLine($"# {Note}");
+            sb.AppendLine();
+            if (si == null)
+                return;
+            Comment("version",          si.version,         sb);
+            Comment("termsOfService",   si.termsOfService,  sb);
+            Comment("contactName",      si.contactName,     sb);
+            Comment("contactUrl",       si.contactUrl,      sb);
+            Comment("contactEmail",     si.contactEmail,    sb);
+            sb.AppendLine();
+        }
+
+        private static void Comment(string key, string value, StringBuilder sb) {
+            if (string.IsNullOrEmpty(value))
+                return;
+            sb.Append("# ");
+            sb.Append(key);
+            sb.Append(": ");
+            sb.Append(Indent(14, key));
+            sb.AppendLine(value);
+        }
+
         private static void EmitScalar(GqlScalar type, StringBuilder sb) {
             sb.AppendLine($"scalar {type.name}");
         }

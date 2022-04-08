@@ -5,7 +5,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class HtmlGraphiQL
     {
-        internal static string Get(string storeName) {
+        internal static string Get(string dbName, string schemaName) {
             var relBase = "../graphiql";
             return $@"<!DOCTYPE html>
 <html lang='en'>
@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
   <meta name='robots' content='noindex' />
   <meta name='referrer' content='origin' />
   <meta name='viewport' content='width=device-width, initial-scale=1' />
-  <title>GraphQL API</title>
+  <title>{schemaName} · {dbName} - GraphQL</title>
   <style>
     body {{
       height: 100vh;
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     history.replaceState(null, null, newSearch);
   }}
 
-  const graphqlPath = '{storeName}'
+  const graphqlPath = '{dbName}'
 
   function graphQLFetcher(graphQLParams) {{
     // This example expects a GraphQL server at the path /graphql.
