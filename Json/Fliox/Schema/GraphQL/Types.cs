@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
+// ReSharper disable UnassignedField.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable ClassNeverInstantiated.Global
@@ -32,8 +35,10 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
     [Fri.Polymorph(typeof(GqlList),         Discriminant = "LIST")]
     [Fri.Polymorph(typeof(GqlNonNull),      Discriminant = "NON_NULL")]
     public class GqlType {
-        [Req]   public  string      name            { get; set; }
-                public  string      description     { get; set; }
+        [Req]   public  string      name        { get; set; }
+                public  string      description { get; set; }
+                
+        public override string      ToString()  => name;
     }
     
     public class GqlScalar      : GqlType {
@@ -51,6 +56,8 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         [Req]   public  GqlType             type;
                 public  bool?               isDeprecated;
                 public  string              deprecationReason;
+
+        public override string              ToString() => name;
     }
     
     public class GqlInterface   : GqlType {
@@ -70,6 +77,8 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
                 public  string      description;
                 public  bool?       isDeprecated;
                 public  string      deprecationReason;
+                
+        public override string      ToString() => name;
     }
     
     public class GqlInputObject : GqlType {
@@ -90,6 +99,8 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
                 public  string                      description;
         [Req]   public  List<GqlDirectiveLocation>  locations;
         [Req]   public  List<GqlInputValue>         args;
+        
+        public override string                      ToString() => name;
     }
     
     public class GqlInputValue {
@@ -97,6 +108,8 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
                 public  string      description;
         [Req]   public  GqlType     type;
                 public  string      defaultValue;
+                
+        public override string      ToString() => name;
     }
     
     public enum GqlDirectiveLocation {
