@@ -28,6 +28,8 @@ function validateSchema(path: string) {
 }
 
 export function validateGraphQLSchemas() {
+    validateSchema("../GraphQL/ClusterStore/schema.graphql");
+//  validateSchema("../GraphQL/MonitorStore/schema.graphql"); todo
     validateSchema("../GraphQL/PocStore/schema.graphql");
     validateSchema("../GraphQL/UserStore/schema.graphql");
 }

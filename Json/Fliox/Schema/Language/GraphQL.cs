@@ -122,53 +122,39 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private EmitTypeGql EmitClassType(TypeDef type) {
+            GqlType     gqlType;
             var gqlFields       = new List<GqlField>();
-            var obj             = new GqlObject { fields = gqlFields };
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
-            var extendsStr      = "";
             var baseType        = type.BaseType;
             var doc             = GetDoc(type.doc, "");
-            obj.description = doc;
             if (baseType != null) {
-                extendsStr = $"extends {baseType.Name} ";
+                // extendsStr = $"extends {baseType.Name} ";
                 dependencies.Add(baseType);
                 imports.Add(baseType);
             }
-            obj.name    = type.Name;
+            
             var unionType = type.UnionType;
             if (unionType == null) {
+                gqlType     = new GqlObject { fields = gqlFields };
                 // if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
                 var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
                 // sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
             } else {
-                /*  sb.AppendLine($"export type {type.Name}{Union} =");
+                var union   = new GqlUnion { possibleTypes = new List<GqlType>() };
+                gqlType     = union;
+                // var fieldDoc    = GetDoc(unionType.doc, "    ");
+                // sb.AppendLine($"    abstract {unionType.discriminator}:");
                 foreach (var polyType in unionType.types) {
-                    var polyTypeDef = polyType.typeDef;
-                    sb.AppendLine($"    | {polyTypeDef.Name}");
-                    imports.Add(polyTypeDef);
+                    var unionItemType = Gql.Scalar(polyType.typeDef.Name);
+                    union.possibleTypes.Add(unionItemType);
                 }
-                var fieldDoc    = GetDoc(unionType.doc, "    ");
-                sb.AppendLine($";");
-                sb.AppendLine();
-                sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
-                sb.Append(fieldDoc);
-                sb.AppendLine($"    abstract {unionType.discriminator}:");
-                foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"        | \"{polyType.discriminant}\"");
-                }
-                sb.AppendLine($"    ;"); */
             }
-            string  discriminant    = type.Discriminant;
-            string  discriminator   = type.Discriminator;
-            /* if (discriminant != null) {
-                maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
-                var indent      = Indent(maxFieldName, discriminator);
-                sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
-                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
-            } */
+            gqlType.name            = type.Name;
+            gqlType.description     = doc;
+            
             foreach (var field in fields) {
                 var gqlField = new GqlField();
                 gqlFields.Add(gqlField);
@@ -182,7 +168,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             // EmitMessages("commands", type.Commands, context, sb);
             // EmitMessages("messages", type.Messages, context, sb);
 
-            return new EmitTypeGql(type, obj, imports, dependencies);
+            return new EmitTypeGql(type, gqlType, imports, dependencies);
         }
         
         private static List<GqlField> EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context) {

@@ -4,6 +4,7 @@
 
 using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Schema.Language;
+using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -19,6 +20,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             var options     = new NativeTypeOptions(typeof(ClusterStore));
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/ClusterStore");
+        }
+        
+        /// C# -> GraphQL
+        [Test]
+        public static void CS_GraphQL () {
+            var typeSchema  = new NativeTypeSchema(typeof(ClusterStore));
+            var generator   = new Generator(typeSchema, ".graphql");
+            GraphQLGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/ClusterStore");
         }
     }
 }

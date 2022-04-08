@@ -3,7 +3,6 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;

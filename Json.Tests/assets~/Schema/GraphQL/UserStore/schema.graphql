@@ -39,9 +39,13 @@ type Role {
     description: String
 }
 
-type Right {
-    description: String
-}
+union Right =
+    | AllowRight
+    | TaskRight
+    | SendMessageRight
+    | SubscribeMessageRight
+    | OperationRight
+    | PredicateRight
 
 type AllowRight {
     database:    String

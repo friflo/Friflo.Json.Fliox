@@ -1,0 +1,125 @@
+scalar String
+
+scalar Int
+
+scalar Float
+
+scalar Boolean
+
+scalar Any
+
+type Query {
+    hosts:         [HostHits!]!
+    hostsById:     [HostHits]!
+    users:         [UserHits!]!
+    usersById:     [UserHits]!
+    clients:       [ClientHits!]!
+    clientsById:   [ClientHits]!
+    histories:     [HistoryHits!]!
+    historiesById: [HistoryHits]!
+}
+
+type MonitorStore {
+    hosts:     Any
+    users:     Any
+    clients:   Any
+    histories: Any
+}
+
+type HostHits {
+    id:     String!
+    counts: RequestCount!
+}
+
+type UserHits {
+    id:      String!
+    clients: [String!]!
+    counts:  [RequestCount!]
+}
+
+type ClientHits {
+    id:     String!
+    user:   String!
+    counts: [RequestCount!]
+    event:  EventDelivery
+}
+
+type HistoryHits {
+    id:         Int!
+    counters:   [Int!]!
+    lastUpdate: Int!
+}
+
+type RequestCount {
+    db:       String
+    requests: Int!
+    tasks:    Int!
+}
+
+type EventDelivery {
+    seq:         Int!
+    queued:      Int!
+    messageSubs: [String!]
+    changeSubs:  [ChangeSubscription!]
+}
+
+type ChangeSubscription {
+    container: String!
+    changes:   [Change!]!
+    filter:    String
+}
+
+enum Change {
+    create
+    upsert
+    patch
+    delete
+}
+
+type ClearStats {
+}
+
+type ClearStatsResult {
+}
+
+type DbContainers {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
+type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+type DbSchema {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
+type DbStats {
+    containers: [ContainerStats!]
+}
+
+type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+type HostDetails {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+}
+
+type HostCluster {
+    databases: [DbContainers!]!
+}
+

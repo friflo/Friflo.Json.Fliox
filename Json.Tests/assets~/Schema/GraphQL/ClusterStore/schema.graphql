@@ -1,0 +1,66 @@
+scalar String
+
+scalar Int
+
+scalar Float
+
+scalar Boolean
+
+scalar Any
+
+type Query {
+    containers:     [DbContainers!]!
+    containersById: [DbContainers]!
+    messages:       [DbMessages!]!
+    messagesById:   [DbMessages]!
+    schemas:        [DbSchema!]!
+    schemasById:    [DbSchema]!
+}
+
+type ClusterStore {
+    containers: Any
+    messages:   Any
+    schemas:    Any
+}
+
+type DbContainers {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
+type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+type DbSchema {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
+type DbStats {
+    containers: [ContainerStats!]
+}
+
+type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+type HostDetails {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+}
+
+type HostCluster {
+    databases: [DbContainers!]!
+}
+

@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             GraphQLGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/UserStore");
         }
-        
+
         // ---------------------------------- input: JSON Schema ----------------------------------
         
         static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets~/Schema/JSON/UserStore";

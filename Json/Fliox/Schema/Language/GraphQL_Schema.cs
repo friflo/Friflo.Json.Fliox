@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 switch (type) {
                     case GqlScalar scalarType:  EmitScalar  (scalarType,    sb);    break;
                     case GqlObject obj:         EmitObject  (obj,           sb);    break;
+                    case GqlUnion  unionType:   EmitUnion   (unionType,     sb);    break;
                     case GqlEnum   enumType:    EmitEnum    (enumType,      sb);    break;
                 }
                 sb.AppendLine();
@@ -37,6 +38,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLine($"    {field.name}: {indent}{fieldType}");
             }
             sb.AppendLine("}");
+        }
+        
+        private static void EmitUnion(GqlUnion type, StringBuilder sb) {
+            sb.AppendLine($"union {type.name} =");
+            foreach (var itemType in type.possibleTypes) {
+                sb.AppendLine($"    | {itemType.name}");
+            }
         }
         
         private static void EmitEnum(GqlEnum type, StringBuilder sb) {
