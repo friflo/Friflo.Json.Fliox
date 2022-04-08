@@ -29,7 +29,6 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         private  readonly   Generator                       generator;
         private  readonly   Dictionary<TypeDef, GqlType>    standardTypes;
-        private  const      string                          Union = "_Union";
         
         private GraphQLGenerator (Generator generator) {
             this.generator  = generator;
@@ -69,6 +68,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void AddType (Dictionary<TypeDef, GqlType> types, TypeDef type, GqlType value, string description) {
             if (type == null)
                 return;
+            value.description = description;
             types.Add(type, value);
         }
         
@@ -139,8 +139,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var unionType = type.UnionType;
             if (unionType == null) {
                 gqlType     = new GqlObject { fields = gqlFields };
-                // if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
-                var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
+                // var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
                 // sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
             } else {
                 var union   = new GqlUnion { possibleTypes = new List<GqlType>() };
