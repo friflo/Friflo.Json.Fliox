@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         public static GqlSchema Generate(Generator generator) {
             var emitter     = new GraphQLGenerator(generator);
             var schemaType  = generator.FindSchemaType();
-            var queries     = CreateQueries(generator, schemaType);
+            var queries     = CreateQueries(schemaType);
             var types   = new List<GqlType> {
                 Gql.String(),
                 Gql.Int(),
@@ -265,9 +265,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
         }
         
-        private static List<GqlField> CreateQueries(Generator generator, TypeDef schemaType) {
-            var imports     = new HashSet<TypeDef>();
-            var context     = new TypeContext (generator, imports, schemaType);
+        private static List<GqlField> CreateQueries(TypeDef schemaType) {
             var queries     = new List<GqlField>();
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
