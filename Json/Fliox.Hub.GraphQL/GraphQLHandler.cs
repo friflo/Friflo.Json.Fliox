@@ -45,40 +45,38 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 context.WriteError("invalid path", "expect: graphql/database", 400);
                 return;
             }
-            var dbName      = context.route.Substring(GraphQLRoute.Length + 1);
-            var schemaJson  = GetSchema(context, dbName, out string error);
-            if (schemaJson == null) {
+            var dbName  = context.route.Substring(GraphQLRoute.Length + 1);
+            var schema  = GetSchema(context, dbName, out string error);
+            if (schema == null) {
                 context.WriteString($"error: {error}, database: {dbName}", "text/html", 400);
                 return;
             }
             var method  = context.method;
+            // --------------    POST           /graphql/{database}
             if (method == "POST") {
                 var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                HandlePost(context, body, schemaJson);
+                var postBody    = ReadRequestBody(context, body);
+                var query       = Parser.Parse(postBody.query);
+                if (postBody.operationName == "IntrospectionQuery") {
+                    IntrospectionQuery(context, query, schema.schemaResponse);
+                    return;
+                }
+                await GraphQLQuery.Execute(context, schema);
                 return;
             }
+            // --------------    GET            /graphql/{database}
             if (method == "GET") {
                 var html = HtmlGraphiQL.Get(dbName);
                 context.WriteString(html, "text/html", 200);
                 return;
             }
         }
-
-        private static void HandlePost(RequestContext context, JsonValue body, GraphQLSchema schema) {
+        
+        private static GqlRequest ReadRequestBody(RequestContext context, JsonValue body) {
             var pool    = context.Pool;
-            GqlRequest postBody;
             using (var pooled = pool.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                postBody    = reader.Read<GqlRequest>(body);
-            }
-            var query       = Parser.Parse(postBody.query);
-            switch (postBody.operationName) {
-                case "IntrospectionQuery":
-                    IntrospectionQuery(context, query, schema.schemaResponse);
-                    return;
-                default:
-                    context.WriteError("Invalid operation", postBody.operationName, 400);
-                    return;
+                return reader.Read<GqlRequest>(body);
             }
         }
         
