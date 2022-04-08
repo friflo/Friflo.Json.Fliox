@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitEnum(GqlEnum type, StringBuilder sb) {
-            sb.AppendLine($"type {type.name} {{");
+            sb.AppendLine($"enum {type.name} {{");
             foreach (var value in type.enumValues) {
                 sb.AppendLine($"    {value.name}");
             }

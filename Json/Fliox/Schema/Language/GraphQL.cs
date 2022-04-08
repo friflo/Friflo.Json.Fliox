@@ -105,24 +105,18 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return EmitClassType(type);
             }
             if (type.IsEnum) {
-                return null;
-            /*  var enumValues  = type.EnumValues;
-                var doc         = GetDoc(type.doc, "");
-                var maxNameLen  = enumValues.Max(e => e.name.Length);
-                sb.AppendLine($"{doc}export type {type.Name} =");
+                var enumType            = new GqlEnum { enumValues = new List<GqlEnumValue>() };
+                var enumValues          = type.EnumValues;
+                enumType.description    = GetDoc(type.doc, "");
+                enumType.name           = type.Name;
                 foreach (var enumValue in enumValues) {
-                    sb.Append($"    | \"{enumValue.name}\"");
-                    var enumDoc = enumValue.doc;
-                    if (enumDoc != null) {
-                        sb.Append(Indent(maxNameLen, enumValue.name));
-                        sb.Append(GetDoc(enumDoc, "      "));
-                        continue;
-                    }
-                    sb.AppendLine();
+                    var gqlValue = new GqlEnumValue {
+                        name        = enumValue.name,
+                        description = GetDoc(enumValue.doc, "")
+                    };
+                    enumType.enumValues.Add(gqlValue);
                 }
-                sb.AppendLine($";");
-                sb.AppendLine();
-                return new EmitType(type, sb); */
+                return new EmitTypeGql(type, enumType);
             }
             return null;
         }

@@ -54,6 +54,23 @@ type TaskRight {
     description: String
 }
 
+enum TaskType {
+    read
+    query
+    create
+    upsert
+    patch
+    delete
+    aggregate
+    message
+    command
+    closeCursors
+    subscribeChanges
+    subscribeMessage
+    reserveKeys
+    error
+}
+
 type SendMessageRight {
     database:    String
     names:       [String!]!
@@ -75,6 +92,26 @@ type OperationRight {
 type ContainerAccess {
     operations:       [OperationType!]
     subscribeChanges: [Change!]
+}
+
+enum OperationType {
+    create
+    upsert
+    delete
+    deleteAll
+    patch
+    read
+    query
+    aggregate
+    mutate
+    full
+}
+
+enum Change {
+    create
+    upsert
+    patch
+    delete
 }
 
 type PredicateRight {
