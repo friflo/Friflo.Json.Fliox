@@ -45,6 +45,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 Gql.Int(),
                 Gql.Float(),
                 Gql.Boolean(),
+                Gql.Any(),
                 new GqlObject { name = "Query", fields = new List<GqlField> () }
             };
             foreach (var type in generator.types) {
@@ -137,7 +138,6 @@ namespace Friflo.Json.Fliox.Schema.Language
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
-            int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
             var doc             = GetDoc(type.doc, "");
@@ -186,10 +186,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 //      continue;
                 gqlField.description    = GetDoc(field.doc, "    ");
                 gqlField.name           = field.name;
-                gqlField.type           = Gql.String();
-
-                bool required   = field.required;
-                var fieldType   = GetFieldType(field, context, required);
+                bool required           = field.required;
+                gqlField.type           = GetFieldType(field, context, required);
             }
             // EmitMessages("commands", type.Commands, context, sb);
             // EmitMessages("messages", type.Messages, context, sb);
@@ -197,63 +195,70 @@ namespace Friflo.Json.Fliox.Schema.Language
             return new EmitTypeGql(type, obj, imports, dependencies);
         }
         
-        private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
+        private static List<GqlField> EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context) {
             if (messageDefs == null)
-                return;
-            sb.AppendLine($"\n    // --- {type}");
-            int maxFieldName    = messageDefs.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
+                return null;
+            var fields = new List<GqlField>();
             foreach (var messageDef in messageDefs) {
-                var param   = GetMessageArg("param", messageDef.param,  context);
-                var result  = GetMessageArg(null,    messageDef.result, context);
-                var doc     = GetDoc(messageDef.doc, "    ");
-                sb.Append(doc);
-                var indent  = Indent(maxFieldName, messageDef.name);
-                var signature = $"({param}) : {result ?? "void"}";
-                sb.AppendLine($"    [\"{messageDef.name}\"]{indent} {signature};");
+                var field           = new GqlField { name = messageDef.name, args = new List<GqlInputValue>() }; 
+                var param           = GetMessageArg("param", messageDef.param,  context);
+                field.args.Add(param);
+                var result          = messageDef.result;
+                if (result != null) {
+                    field.type      = GetFieldType(result, context, result.required);
+                }
+                field.description   = GetDoc(messageDef.doc, "    ");
             }
+            return fields;
         }
         
-        private static string GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
+        private static GqlInputValue GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
             if (fieldDef == null)
-                return name != null ? "" : "void";
+                return null;
             var argType = GetFieldType(fieldDef, context, fieldDef.required);
-            return name != null ? $"{name}: {argType}" : argType;
+            return new GqlInputValue { type = argType, name = name };
         }
         
-        private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
-            var nullStr = required ? "" : " | null";
+        private static GqlType GetFieldType(FieldDef field, TypeContext context, bool required) {
             if (field.isArray) {
                 var elementTypeName = GetElementType(field, context);
-                return $"{elementTypeName}[]{nullStr}";
+                var listType = new GqlList { ofType = elementTypeName };
+                return Gql.Type(listType, required);
             }
             if (field.isDictionary) {
-                var valueTypeName = GetElementType(field, context);
-                return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
+                // var valueTypeName = GetElementType(field, context);
+                // return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
+                return Gql.Any();
             }
-            return $"{GetTypeName(field.type, context)}{nullStr}";
+            var type = GetTypeName(field.type, context);
+            return Gql.Type(type, required);
         }
         
-        private static string GetElementType(FieldDef field, TypeContext context) {
+        private static GqlType GetElementType(FieldDef field, TypeContext context) {
             var elementTypeName = GetTypeName(field.type, context);
-            if (field.isNullableElement)
-                return $"({elementTypeName} | null)";
-            return elementTypeName;
+            return Gql.Type(elementTypeName, !field.isNullableElement);
         }
         
-        private static string GetTypeName(TypeDef type, TypeContext context) {
+        private static GqlType GetTypeName(TypeDef type, TypeContext context) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
-                return "any"; // known as Mr anti-any  :) 
-            if (type == standard.String || type == standard.JsonKey)
-                return "string";
+                return Gql.Any();
+            if (type == standard.String   || type == standard.JsonKey ||
+                type == standard.DateTime || type == standard.Guid    || type == standard.BigInteger )
+                return Gql.String();
             if (type == standard.Boolean)
-                return "boolean";
+                return Gql.Boolean();
+            if (type == standard.Float || type == standard.Double)
+                return Gql.Float();
+            if (type == standard.Uint8 || type == standard.Int16 || type == standard.Int32|| type == standard.Int64)
+                return Gql.Int();
             context.imports.Add(type);
             if (type.UnionType != null)
-                return $"{type.Name}{Union}";
-            return type.Name;
+                return new GqlScalar { name = type.Name };
+            return new GqlScalar { name = type.Name };
         }
         
+        // todo remove indent and Typescript comment syntax
         private static string GetDoc(string docs, string indent) {
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
         }
