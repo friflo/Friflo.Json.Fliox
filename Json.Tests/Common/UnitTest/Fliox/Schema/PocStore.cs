@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Language;
 using Friflo.Json.Fliox.Schema.Native;
@@ -80,6 +81,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             var options     = new NativeTypeOptions(PocStoreTypes);
             var generator   = JsonTypeDefinition.Generate(options, "PocStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
+        }
+        
+        /// C# -> GraphQL
+        [Test]
+        public static void CS_GraphQL () {
+            var typeSchema  = new NativeTypeSchema(typeof(PocStore));
+            var generator   = new Generator(typeSchema, ".graphql");
+            GraphQLGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/PocStore");
         }
         
         // ---------------------------------- input: JSON Schema ----------------------------------

@@ -1,0 +1,176 @@
+scalar String
+
+scalar Int
+
+scalar Float
+
+scalar Boolean
+
+scalar Any
+
+type Query {
+    orders:        [Order!]!
+    ordersById:    [Order]!
+    customers:     [Customer!]!
+    customersById: [Customer]!
+    articles:      [Article!]!
+    articlesById:  [Article]!
+    producers:     [Producer!]!
+    producersById: [Producer]!
+    employees:     [Employee!]!
+    employeesById: [Employee]!
+    types:         [TestType!]!
+    typesById:     [TestType]!
+}
+
+type PocStore {
+    orders:    Any
+    customers: Any
+    articles:  Any
+    producers: Any
+    employees: Any
+    types:     Any
+}
+
+type Order {
+    id:       String!
+    customer: String
+    created:  String!
+    items:    [OrderItem!]
+}
+
+type Customer {
+    id:   String!
+    name: String!
+}
+
+type Article {
+    id:       String!
+    name:     String!
+    producer: String
+}
+
+type Producer {
+    id:        String!
+    name:      String!
+    employees: [String!]
+}
+
+type Employee {
+    id:        String!
+    firstName: String!
+    lastName:  String
+}
+
+type TestType {
+    id:               String!
+    dateTime:         String!
+    dateTimeNull:     String
+    bigInt:           String!
+    bigIntNull:       String
+    boolean:          Boolean!
+    booleanNull:      Boolean
+    uint8:            Int!
+    uint8Null:        Int
+    int16:            Int!
+    int16Null:        Int
+    int32:            Int!
+    int32Null:        Int
+    int64:            Int!
+    int64Null:        Int
+    float32:          Float!
+    float32Null:      Float
+    float64:          Float!
+    float64Null:      Float
+    pocStruct:        PocStruct!
+    pocStructNull:    PocStruct
+    intArray:         [Int!]!
+    intArrayNull:     [Int!]
+    intNullArray:     [Int]
+    jsonValue:        Any
+    derivedClass:     DerivedClass!
+    derivedClassNull: DerivedClass
+}
+
+scalar String
+
+type OrderItem {
+    article: String!
+    amount:  Int!
+    name:    String
+}
+
+scalar Int
+
+type PocEntity {
+    id: String!
+}
+
+scalar String
+
+scalar Int
+
+scalar Int
+
+scalar Int
+
+scalar Float
+
+scalar Float
+
+type PocStruct {
+    value: Int!
+}
+
+type DerivedClass {
+    derivedVal: Int!
+    article:    String!
+    amount:     Int!
+    name:       String
+}
+
+type TestCommand {
+    text: String
+}
+
+type DbContainers {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
+type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+type DbSchema {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
+type DbStats {
+    containers: [ContainerStats!]
+}
+
+type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+type HostDetails {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+}
+
+type HostCluster {
+    databases: [DbContainers!]!
+}
+

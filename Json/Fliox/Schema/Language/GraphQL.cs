@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
 using Friflo.Json.Fliox.Schema.GraphQL;
@@ -61,14 +60,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 types       = types,
                 directives  = new List<GqlDirective>()
             };
-            
-            using (var typeStore    = new TypeStore()) 
-            using (var writer       = new ObjectWriter(typeStore)) {
-                writer.Pretty           = true;
-                writer.WriteNullMembers = false;
-                var schemaJson          = writer.Write(schema);
-                generator.files.Add("schema.json", schemaJson);
-            }
+            var graphQLSchema = CreateSchema(schema);
+            generator.files.Add("schema.graphql", graphQLSchema);
+
             return schema;
         }
         
