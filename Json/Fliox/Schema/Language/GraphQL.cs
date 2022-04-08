@@ -38,14 +38,16 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         public static GqlSchema Generate(Generator generator) {
-            var emitter = new GraphQLGenerator(generator);
+            var emitter     = new GraphQLGenerator(generator);
+            var schemaType  = generator.FindSchemaType();
+            var queries     = CreateQueries(generator, schemaType);
             var types   = new List<GqlType> {
                 Gql.String(),
                 Gql.Int(),
                 Gql.Float(),
                 Gql.Boolean(),
                 Gql.Any(),
-                new GqlObject { name = "Query", fields = new List<GqlField> () }
+                new GqlObject { name = "Query", fields = queries }
             };
             foreach (var type in generator.types) {
                 var result = emitter.EmitType(type);
@@ -261,6 +263,31 @@ namespace Friflo.Json.Fliox.Schema.Language
         // todo remove indent and Typescript comment syntax
         private static string GetDoc(string docs, string indent) {
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
+        }
+        
+        private static List<GqlField> CreateQueries(Generator generator, TypeDef schemaType) {
+            var imports     = new HashSet<TypeDef>();
+            var context     = new TypeContext (generator, imports, schemaType);
+            var queries     = new List<GqlField>();
+            foreach (var field in schemaType.Fields) {
+                var containerType = Gql.Scalar(field.type.Name);
+                var query = new GqlField { name = field.name,
+                    args = new List<GqlInputValue> {
+                        Gql.InputValue ("filter",   Gql.String()),
+                        Gql.InputValue ("limit",    Gql.Int())
+                    },
+                    type = Gql.List(containerType, true, true)
+                };
+                var queryById = new GqlField { name = $"{field.name}ById",
+                    args = new List<GqlInputValue> {
+                        Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
+                    },
+                    type = Gql.List(containerType, true, false)
+                };
+                queries.Add(query);
+                queries.Add(queryById);
+            }
+            return queries;
         }
     }
 }

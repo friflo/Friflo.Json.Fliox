@@ -6,8 +6,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
 {
     public static class Gql
     {
-        public static GqlType List (string name, bool required, bool itemsRequired) {
-            GqlType itemType = new GqlScalar{ name = name };
+        public static GqlType List (GqlType itemType, bool required, bool itemsRequired) {
             if (itemsRequired) {
                 itemType = new GqlNonNull { ofType = itemType };
             }
@@ -16,6 +15,10 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
                 return new GqlNonNull { ofType = listType };
             }
             return listType;
+        }
+        
+        public static GqlScalar Scalar (string name) {
+            return new GqlScalar { name = name };
         }
         
         public static GqlType Type (GqlType type, bool required) {

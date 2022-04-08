@@ -22,13 +22,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
                             Gql.InputValue ("filter",   Gql.String()),
                             Gql.InputValue ("limit",    Gql.Int())
                         },
-                        type = Gql.List("TestType", true, true)
+                        type = Gql.List(Gql.Scalar("TestType"), true, true)
                     },
                     new GqlField { name = "articlesById",
                         args = new List<GqlInputValue> {
-                            Gql.InputValue ("ids",      Gql.List("String", true, true))
+                            Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
                         },
-                        type = Gql.List("TestType", true, false)
+                        type = Gql.List(Gql.Scalar("TestType"), true, false)
                     }
                 }
             },

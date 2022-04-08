@@ -18,17 +18,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             standardTypes   = generator.standardTypes;
         }
         
-        private TypeDef FindSchemaType() {
-            foreach (var type in generator.types) {
-                if (type.IsSchema)
-                    return type;
-            }
-            return null;
-        }
-        
         public static void Generate(Generator generator) {
             var emitter     = new OpenAPI(generator);
-            var schemaType  = emitter.FindSchemaType();
+            var schemaType  = generator.FindSchemaType();
             if (schemaType == null)
                 return;
             var sb = new StringBuilder();

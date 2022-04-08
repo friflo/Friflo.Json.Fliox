@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.GraphQL.Lab;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Language;
@@ -103,10 +104,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
 
         private static void IntrospectionQuery (RequestContext context, GraphQLDocument query, JsonValue schemaResponse) {
+            // schemaResponse = TestAPI.CreateTestSchema(context.Pool);
+            
             // var queryString = query.Source.ToString();
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);
-            // schemaResponse = TestAPI.CreateTestSchema(context.Pool);
 
             File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/schema.json", schemaResponse.AsString());
             var testResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);

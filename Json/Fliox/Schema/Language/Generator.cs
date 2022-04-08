@@ -148,6 +148,14 @@ namespace Friflo.Json.Fliox.Schema.Language
             return typeSchema.FindTypeDef(@namespace, name);
         }
         
+        public TypeDef FindSchemaType() {
+            foreach (var type in types) {
+                if (type.IsSchema)
+                    return type;
+            }
+            return null;
+        }
+        
         private string Strip (string ns) {
             ns  = ns ?? "default";
             foreach (var replacement in replacements) {
