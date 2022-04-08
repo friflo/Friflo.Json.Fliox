@@ -73,6 +73,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
         
+        /// C# -> GraphQL
+        [Test]
+        public static void CS_GraphQL () {
+            var typeSchema  = new NativeTypeSchema(typeof(UserStore));
+            var generator   = new Generator(typeSchema, ".graphql");
+            GraphQLGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/UserStore");
+        }
+        
         // ---------------------------------- input: JSON Schema ----------------------------------
         
         static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets~/Schema/JSON/UserStore";

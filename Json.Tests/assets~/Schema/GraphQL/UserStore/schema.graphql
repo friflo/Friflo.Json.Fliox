@@ -1,0 +1,136 @@
+scalar String
+
+scalar Int
+
+scalar Float
+
+scalar Boolean
+
+scalar Any
+
+type Query {
+    credentials:     [UserCredential!]!
+    credentialsById: [UserCredential]!
+    permissions:     [UserPermission!]!
+    permissionsById: [UserPermission]!
+    roles:           [Role!]!
+    rolesById:       [Role]!
+}
+
+type UserStore {
+    credentials: Any
+    permissions: Any
+    roles:       Any
+}
+
+type UserCredential {
+    id:    String!
+    token: String
+}
+
+type UserPermission {
+    id:    String!
+    roles: [String!]
+}
+
+type Role {
+    id:          String!
+    rights:      [Right!]!
+    description: String
+}
+
+type Right {
+    description: String
+}
+
+type AllowRight {
+    database:    String
+    description: String
+}
+
+type TaskRight {
+    database:    String
+    types:       [TaskType!]!
+    description: String
+}
+
+type SendMessageRight {
+    database:    String
+    names:       [String!]!
+    description: String
+}
+
+type SubscribeMessageRight {
+    database:    String
+    names:       [String!]!
+    description: String
+}
+
+type OperationRight {
+    database:    String
+    containers:  Any
+    description: String
+}
+
+type ContainerAccess {
+    operations:       [OperationType!]
+    subscribeChanges: [Change!]
+}
+
+type PredicateRight {
+    names:       [String!]!
+    description: String
+}
+
+type Credentials {
+    userId: String!
+    token:  String!
+}
+
+type AuthResult {
+    isValid: Boolean!
+}
+
+type DbContainers {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
+type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+type DbSchema {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
+type DbStats {
+    containers: [ContainerStats!]
+}
+
+type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+scalar Int
+
+type HostDetails {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+}
+
+type HostCluster {
+    databases: [DbContainers!]!
+}
+
