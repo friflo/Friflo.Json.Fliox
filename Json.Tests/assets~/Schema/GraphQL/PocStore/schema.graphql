@@ -92,31 +92,15 @@ type TestType {
     derivedClassNull: DerivedClass
 }
 
-scalar String
-
 type OrderItem {
     article: String!
     amount:  Int!
     name:    String
 }
 
-scalar Int
-
 type PocEntity {
     id: String!
 }
-
-scalar String
-
-scalar Int
-
-scalar Int
-
-scalar Int
-
-scalar Float
-
-scalar Float
 
 type PocStruct {
     value: Int!

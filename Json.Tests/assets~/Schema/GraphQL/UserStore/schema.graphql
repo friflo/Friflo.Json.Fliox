@@ -156,8 +156,6 @@ type ContainerStats {
     count: Int!
 }
 
-scalar Int
-
 type HostDetails {
     version:        String!
     hostName:       String

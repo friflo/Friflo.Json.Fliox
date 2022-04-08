@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
 using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Schema.Utils;
-using static Friflo.Json.Fliox.Schema.Language.Generator;
+
 
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils, .Schema.GraphQL
 namespace Friflo.Json.Fliox.Schema.Language
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private EmitTypeGql EmitType(TypeDef type) {
             var standardType    = EmitStandardType(type);
             if (standardType != null ) {
-                return standardType;
+                return null;
             }
             if (type.IsClass) {
                 return EmitClassType(type);
