@@ -17,18 +17,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class QueryHandler
     {
-        private readonly string                     database;
-        private readonly Dictionary<string, Query>  queryTypes = new Dictionary<string, Query>();
+        private readonly string                             database;
+        private readonly Dictionary<string, QueryResolver>  resolvers = new Dictionary<string, QueryResolver>();
         
         internal QueryHandler(TypeSchema typeSchema, string database) {
             this.database   = database;
             var rootType    = typeSchema.RootType;
             foreach (var field in rootType.Fields) {
                 var container = field.name;
-                var query       = new Query(QueryType.Query,    container);
-                var readById    = new Query(QueryType.ReadById, container);
-                queryTypes.Add(container,           query);
-                queryTypes.Add($"{container}ById",  readById);
+                var query       = new QueryResolver(QueryType.Query,    container);
+                var readById    = new QueryResolver(QueryType.ReadById, container);
+                resolvers.Add(container,           query);
+                resolvers.Add($"{container}ById",  readById);
             }
         }
         
@@ -37,7 +37,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
                         var selections  = operation.SelectionSet.Selections;
-                        var syncRequest = CreateSyncRequest(context, selections, out string error);
+                        var queries     = new List<GraphQLField> (selections.Count);
+                        var syncRequest = CreateSyncRequest(context, selections, queries, out string error);
                         if (error != null) {
                             return new QueryResult("query error", error, 400);
                         }
@@ -46,33 +47,39 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         if (response.error != null) {
                             return new QueryResult("request error", response.error.message, 400);
                         }
-                        return ResponseHandler.ProcessSyncResponse(context, syncRequest, response.success);
+                        return ResponseHandler.ProcessSyncResponse(context, queries, syncRequest, response.success);
                 }
             }
             return new QueryResult ("request", "not implemented", 400);
         }
         
-        private SyncRequest CreateSyncRequest(RequestContext context, List<ASTNode> selections, out string error) {
+        private SyncRequest CreateSyncRequest(
+            RequestContext      context,
+            List<ASTNode>       selections,
+            List<GraphQLField>  queries,
+            out string          error)
+        {
             error       = null;
             var tasks   = new List<SyncRequestTask>(selections.Count);
             foreach (var selection in selections) {
                 switch (selection) {
-                    case GraphQLField queryField:
-                        var name = queryField.Name.StringValue;
-                        if (!queryTypes.TryGetValue(name, out var query)) {
+                    case GraphQLField query:
+                        var name = query.Name.StringValue;
+                        if (!resolvers.TryGetValue(name, out var resolver)) {
                             continue;
                         }
                         SyncRequestTask task = null;
-                        switch(query.type) {
+                        switch(resolver.type) {
                             case QueryType.Query:
-                                task = CreateQuery   (query, queryField, out error);
+                                task = QueryEntities   (resolver, query, out error);
                                 break;
                             case QueryType.ReadById:
-                                task = CreateReadById(query, queryField, out error);
+                                task = ReadEntities(resolver, query, out error);
                                 break;
                         }
                         if (error != null)
                             return null;
+                        queries.Add(query);
                         tasks.Add(task);
                         break;
                 }
@@ -87,11 +94,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             };
         }
         
-        private static QueryEntities CreateQuery(Query query, GraphQLField queryField, out string error)
+        private static QueryEntities QueryEntities(QueryResolver resolver, GraphQLField query, out string error)
         {
             string  filter  = null;
             int?    limit   = null; 
-            var arguments   = queryField.Arguments;
+            var arguments   = query.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
                     var value = argument.Value;
@@ -108,14 +115,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 }
             }
             error = null;
-            return new QueryEntities { container = query.container, filter = filter, limit = limit };
+            return new QueryEntities { container = resolver.container, filter = filter, limit = limit };
         }
         
-        private static ReadEntities CreateReadById(Query query, GraphQLField queryField, out string error)
+        private static ReadEntities ReadEntities(QueryResolver resolver, GraphQLField query, out string error)
         {
             error                   = null;
             List<JsonKey> idList    = null;
-            var arguments = queryField.Arguments;
+            var arguments = query.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
                     switch (argument.Name.StringValue) {
@@ -134,18 +141,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
             error = null;
-            return new ReadEntities { container = query.container, sets = sets };
+            return new ReadEntities { container = resolver.container, sets = sets };
         }
     }
     
-    internal class Query
+    internal class QueryResolver
     {
         internal  readonly  QueryType   type;
         internal  readonly  string      container;
 
         public    override  string      ToString() => container;
 
-        internal Query(QueryType type, string container) {
+        internal QueryResolver(QueryType type, string container) {
             this.type       = type;
             this.container  = container;
         }
