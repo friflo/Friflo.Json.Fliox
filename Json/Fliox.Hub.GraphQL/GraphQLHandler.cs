@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.GraphQL.Lab;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
@@ -19,18 +18,26 @@ using GraphQLParser.AST;
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class DbGraphQLSchema {
-        private     readonly    string      database;
-        internal    readonly    string      schemaName;
-        internal    readonly    JsonValue   schemaResponse;
-        internal    readonly    GqlSchema   schema;
+        private     readonly    string          database;
+        internal    readonly    string          schemaName;
+        internal    readonly    JsonValue       schemaResponse;
+        internal    readonly    GqlSchema       schema;
+        internal    readonly    QueryHandler    handler;
 
         public      override    string      ToString() => database;
 
-        internal DbGraphQLSchema(string database, string schemaName, GqlSchema schema, JsonValue schemaResponse) {
+        internal DbGraphQLSchema(
+            string          database,
+            string          schemaName,
+            GqlSchema       schema,
+            JsonValue       schemaResponse,
+            QueryHandler    handler)
+        {
             this.database       = database;
             this.schemaName     = schemaName;
             this.schema         = schema;
             this.schemaResponse = schemaResponse;
+            this.handler        = handler;
         } 
     }
     
@@ -67,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                await GraphQLQuery.Execute(context, query, schema);
+                await schema.handler.Execute(context, query);
                 return;
             }
             // --------------    GET            /graphql/{database}
@@ -103,7 +110,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaName          = generator.rootType.Name;
 
             var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, gqlSchema);
-            schema                  = new DbGraphQLSchema (databaseName, schemaName, gqlSchema, schemaResponse);
+            var queryHandler        = new QueryHandler(typeSchema);
+            schema                  = new DbGraphQLSchema (databaseName, schemaName, gqlSchema, schemaResponse, queryHandler);
             schemas[databaseName]   = schema;
             return schema;
         }
