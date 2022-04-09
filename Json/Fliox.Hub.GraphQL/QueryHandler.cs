@@ -81,13 +81,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var arguments   = queryField.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
+                    var value = argument.Value;
                     switch (argument.Name.StringValue) {
                         case "filter":  
-                            if (!AstUtils.TryGetStringArg (argument, out filter, out error))
+                            if (!AstUtils.TryGetStringArg (value, out filter, out error))
                                 return null;
                             break;
                         case "limit":
-                            if (!AstUtils.TryGetIntArg (argument, out limit, out error))
+                            if (!AstUtils.TryGetIntArg (value, out limit, out error))
                                 return null;
                             break;
                     }
@@ -99,16 +100,25 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static ReadEntities CreateReadById(Query query, GraphQLField queryField, out string error)
         {
+            error                   = null;
+            List<JsonKey> idList    = null;
             var arguments = queryField.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
                     switch (argument.Name.StringValue) {
                         case "ids":
+                            if (!AstUtils.TryGetIdList (argument, out idList, out error))
+                                return null;
                             break;
                     }
                 }
             }
-            var ids     = new HashSet<JsonKey>(JsonKey.Equality);
+            if (idList == null)
+                return null;
+            var ids     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
+            foreach (var id in idList) {
+                ids.Add(id);
+            }
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
             error = null;
             return new ReadEntities { container = query.container, sets = sets };
