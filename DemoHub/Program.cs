@@ -3,6 +3,7 @@ using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Explorer;
+using Friflo.Json.Fliox.Hub.GraphQL;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -53,6 +54,7 @@ namespace Fliox.DemoHub
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
             var hostHub             = new HttpHostHub(hub, "/fliox/").CacheControl(c.cache);
+            hostHub.AddHandler       (new GraphQLHandler());
             hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             return hostHub;
         }
