@@ -32,27 +32,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal async Task Execute(RequestContext context, GraphQLDocument document) {
+        internal async Task<QueryResult> Execute(RequestContext context, GraphQLDocument document) {
             foreach (var definition in document.Definitions) {
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
                         var selections  = operation.SelectionSet.Selections;
                         var syncRequest = CreateSyncRequest(context, selections, out string error);
                         if (error != null) {
-                            context.WriteError("query error", error, 400);
-                            return;
+                            return new QueryResult("query error", error, 400);
                         }
                         var response = await context.ExecuteSyncRequest(syncRequest);
                         
                         if (response.error != null) {
-                            context.WriteError("request error", response.error.message, 400);
-                            return;
+                            return new QueryResult("request error", response.error.message, 400);
                         }
-                        ResponseHandler.ProcessSyncResponse(context, syncRequest, response.success);
-                        return;
+                        return ResponseHandler.ProcessSyncResponse(context, syncRequest, response.success);
                 }
             }
-            context.WriteError("request", "not implemented", 400);
+            return new QueryResult ("request", "not implemented", 400);
         }
         
         private SyncRequest CreateSyncRequest(RequestContext context, List<ASTNode> selections, out string error) {
@@ -158,6 +155,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         Query,
         ReadById
     }
+    
+    internal readonly struct QueryResult {
+        internal  readonly  string  error;
+        internal  readonly  string  details;
+        internal  readonly  int     statusCode;
+        
+        internal QueryResult (string error, string details, int statusCode) {
+            this.error      = error;
+            this.details    = details;
+            this.statusCode = statusCode;
+        }
+    } 
 }
 
 #endif

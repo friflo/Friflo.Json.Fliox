@@ -8,8 +8,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class ResponseHandler
     {
-        public static void ProcessSyncResponse(RequestContext context, SyncRequest syncRequest, SyncResponse syncResponse) {
-            context.WriteError("response error", "ResponseHandler not implemented", 400);
+        public static QueryResult ProcessSyncResponse(RequestContext context, SyncRequest syncRequest, SyncResponse syncResponse) {
+            return new QueryResult("response error", "ResponseHandler not implemented", 400);
         }
     }
 }

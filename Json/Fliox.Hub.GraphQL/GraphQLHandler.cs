@@ -74,7 +74,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                await schema.handler.Execute(context, query);
+                var queryResult = await schema.handler.Execute(context, query);
+                
+                if (queryResult.error == null)
+                    return;
+                context.WriteError(queryResult.error, queryResult.details, queryResult.statusCode);  
                 return;
             }
             // --------------    GET            /graphql/{database}
