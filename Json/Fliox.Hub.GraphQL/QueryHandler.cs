@@ -5,7 +5,10 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using GraphQLParser.AST;
 
@@ -26,49 +29,89 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal async Task Execute(RequestContext context, GraphQLDocument document) {
-            foreach (ASTNode definition in document.Definitions) {
+        internal Task Execute(RequestContext context, GraphQLDocument document) {
+            foreach (var definition in document.Definitions) {
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
-                        foreach (var selection in operation.SelectionSet.Selections) {
-                            switch (selection) {
-                                case GraphQLField queryField:
-                                    var name = queryField.Name.StringValue;
-                                    if (!queryTypes.TryGetValue(name, out var query)) {
-                                        context.WriteError("unknown query", name, 400);
-                                        continue;
-                                    }
-                                    switch(query.type) {
-                                        case QueryType.Query:
-                                            await ExecuteQuery   (context, query, queryField);
-                                            break;
-                                        case QueryType.ReadById:
-                                            await ExecuteReadById(context, query, queryField);
-                                            break;
-                                    }
-                                    break;
-                            }
+                        var selections  = operation.SelectionSet.Selections;
+                        CreateTasks(selections, out string error);
+                        if (error != null) {
+                            context.WriteError("query error", error, 400);
+                            return Task.CompletedTask;
                         }
                         break;
                 }
             }
             context.WriteError("request", "not implemented", 400);
-        }
-        
-        private Task ExecuteQuery(RequestContext context, Query query, GraphQLField queryField) {
-            var selectionSet    = queryField.SelectionSet;
-            if (selectionSet != null) {
-                foreach (var selection in selectionSet.Selections) { }
-            }
             return Task.CompletedTask;
         }
         
-        private Task ExecuteReadById(RequestContext context, Query query, GraphQLField queryField) {
-            var selectionSet    = queryField.SelectionSet;
-            if (selectionSet != null) {
-                foreach (var selection in selectionSet.Selections) { }
+        private List<SyncRequestTask> CreateTasks(List<ASTNode> selections, out string error) {
+            error       = null;
+            var tasks   = new List<SyncRequestTask>(selections.Count);
+            foreach (var selection in selections) {
+                switch (selection) {
+                    case GraphQLField queryField:
+                        var name = queryField.Name.StringValue;
+                        if (!queryTypes.TryGetValue(name, out var query)) {
+                            continue;
+                        }
+                        SyncRequestTask task = null;
+                        switch(query.type) {
+                            case QueryType.Query:
+                                task = CreateQuery   (query, queryField, out error);
+                                break;
+                            case QueryType.ReadById:
+                                task = CreateReadById(query, queryField, out error);
+                                break;
+                        }
+                        if (error != null)
+                            return null;
+                        tasks.Add(task);
+                        break;
+                }
             }
-            return Task.CompletedTask;
+            return tasks;
+        }
+        
+        private static QueryEntities CreateQuery(Query query, GraphQLField queryField, out string error)
+        {
+            string  filter  = null;
+            int?    limit   = null; 
+            var arguments   = queryField.Arguments;
+            if (arguments != null) {
+                foreach (var argument in arguments) {
+                    switch (argument.Name.StringValue) {
+                        case "filter":  
+                            if (!AstUtils.TryGetStringArg (argument, out filter, out error))
+                                return null;
+                            break;
+                        case "limit":
+                            if (!AstUtils.TryGetIntArg (argument, out limit, out error))
+                                return null;
+                            break;
+                    }
+                }
+            }
+            error = null;
+            return new QueryEntities { container = query.container, filter = filter, limit = limit };
+        }
+        
+        private static ReadEntities CreateReadById(Query query, GraphQLField queryField, out string error)
+        {
+            var arguments = queryField.Arguments;
+            if (arguments != null) {
+                foreach (var argument in arguments) {
+                    switch (argument.Name.StringValue) {
+                        case "ids":
+                            break;
+                    }
+                }
+            }
+            var ids     = new HashSet<JsonKey>(JsonKey.Equality);
+            var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
+            error = null;
+            return new ReadEntities { container = query.container, sets = sets };
         }
     }
     
