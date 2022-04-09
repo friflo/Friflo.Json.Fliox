@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         public  Dictionary<string,string>   variables;
     }
         
-    public class GqlResponse {
+    internal class GqlResponse {
         public  Dictionary <string, JsonValue>  data;
     }
 }
