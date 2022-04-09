@@ -25,10 +25,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var rootType    = typeSchema.RootType;
             foreach (var field in rootType.Fields) {
                 var container = field.name;
-                var query       = new QueryResolver(QueryType.Query,    container);
-                var readById    = new QueryResolver(QueryType.ReadById, container);
-                resolvers.Add(container,           query);
-                resolvers.Add($"{container}ById",  readById);
+                var query       = new QueryResolver(container,          QueryType.Query,    container);
+                var readById    = new QueryResolver($"{container}ById", QueryType.ReadById, container);
+                resolvers.Add(query.name,       query);
+                resolvers.Add(readById.name,    readById);
             }
         }
         
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         }
                         if (error != null)
                             return null;
-                        var query = new Query(resolver.type, resolver.container, task, graphQLQuery);
+                        var query = new Query(name, resolver.type, resolver.container, task, graphQLQuery);
                         queries.Add(query);
                         break;
                 }
@@ -150,14 +150,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal readonly struct Query
     {
+        internal  readonly  string          name;
         internal  readonly  QueryType       type;
         private   readonly  string          container;
         internal  readonly  SyncRequestTask task;
         internal  readonly  GraphQLField    graphQL;
 
-        public    override  string      ToString() => $"{container} - {type}";
+        public    override  string      ToString() => name;
 
-        internal Query(QueryType type, string container, SyncRequestTask task, GraphQLField graphQL) {
+        internal Query(string name, QueryType type, string container, SyncRequestTask task, GraphQLField graphQL) {
+            this.name       = name;
             this.type       = type;
             this.container  = container;
             this.task       = task;
@@ -167,12 +169,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal readonly struct QueryResolver
     {
+        internal  readonly  string      name;
         internal  readonly  QueryType   type;
         internal  readonly  string      container;
 
         public    override  string      ToString() => $"{container} - {type}";
 
-        internal QueryResolver(QueryType type, string container) {
+        internal QueryResolver(string name, QueryType type, string container) {
+            this.name       = name;
             this.type       = type;
             this.container  = container;
         }
