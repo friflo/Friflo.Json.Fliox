@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
                         var selections  = operation.SelectionSet.Selections;
-                        var queries     = new List<GraphQLField> (selections.Count);
+                        var queries     = new List<Query> (selections.Count);
                         var syncRequest = CreateSyncRequest(context, selections, queries, out string error);
                         if (error != null) {
                             return new QueryResult("query error", error, 400);
@@ -47,45 +47,48 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         if (response.error != null) {
                             return new QueryResult("request error", response.error.message, 400);
                         }
-                        return ResponseHandler.ProcessSyncResponse(context, queries, syncRequest, response.success);
+                        return ResponseHandler.ProcessSyncResponse(context, queries, response.success);
                 }
             }
             return new QueryResult ("request", "not implemented", 400);
         }
         
         private SyncRequest CreateSyncRequest(
-            RequestContext      context,
-            List<ASTNode>       selections,
-            List<GraphQLField>  queries,
-            out string          error)
+            RequestContext  context,
+            List<ASTNode>   selections,
+            List<Query>     queries,
+            out string      error)
         {
             error       = null;
-            var tasks   = new List<SyncRequestTask>(selections.Count);
             foreach (var selection in selections) {
                 switch (selection) {
-                    case GraphQLField query:
-                        var name = query.Name.StringValue;
+                    case GraphQLField graphQLQuery:
+                        var name = graphQLQuery.Name.StringValue;
                         if (!resolvers.TryGetValue(name, out var resolver)) {
                             continue;
                         }
                         SyncRequestTask task = null;
                         switch(resolver.type) {
                             case QueryType.Query:
-                                task = QueryEntities   (resolver, query, out error);
+                                task = QueryEntities(resolver, graphQLQuery, out error);
                                 break;
                             case QueryType.ReadById:
-                                task = ReadEntities(resolver, query, out error);
+                                task = ReadEntities (resolver, graphQLQuery, out error);
                                 break;
                         }
                         if (error != null)
                             return null;
+                        var query = new Query(resolver.type, resolver.container, task, graphQLQuery);
                         queries.Add(query);
-                        tasks.Add(task);
                         break;
                 }
             }
             var userId  = context.cookies["fliox-user"];
             var token   = context.cookies["fliox-token"];
+            var tasks   = new List<SyncRequestTask>(queries.Count);
+            foreach (var query in queries) {
+                tasks.Add(query.task);   
+            }
             return new SyncRequest {
                 database    = database,
                 tasks       = tasks,
@@ -97,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static QueryEntities QueryEntities(QueryResolver resolver, GraphQLField query, out string error)
         {
             string  filter  = null;
-            int?    limit   = null; 
+            int?    limit   = null;
             var arguments   = query.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
@@ -145,12 +148,29 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
     }
     
-    internal class QueryResolver
+    internal readonly struct Query
+    {
+        private   readonly  QueryType       type;
+        private   readonly  string          container;
+        internal  readonly  SyncRequestTask task;
+        internal  readonly  GraphQLField    graphQL;
+
+        public    override  string      ToString() => $"{container} - {type}";
+
+        internal Query(QueryType type, string container, SyncRequestTask task, GraphQLField graphQL) {
+            this.type       = type;
+            this.container  = container;
+            this.task       = task;
+            this.graphQL    = graphQL;
+        }
+    }
+    
+    internal readonly struct QueryResolver
     {
         internal  readonly  QueryType   type;
         internal  readonly  string      container;
 
-        public    override  string      ToString() => container;
+        public    override  string      ToString() => $"{container} - {type}";
 
         internal QueryResolver(QueryType type, string container) {
             this.type       = type;
