@@ -15,12 +15,12 @@ using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class QueryHandler
+    internal class QueryRequest
     {
         private readonly string                             database;
         private readonly Dictionary<string, QueryResolver>  resolvers = new Dictionary<string, QueryResolver>();
         
-        internal QueryHandler(TypeSchema typeSchema, string database) {
+        internal QueryRequest(TypeSchema typeSchema, string database) {
             this.database   = database;
             var rootType    = typeSchema.RootType;
             foreach (var field in rootType.Fields) {
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         if (response.error != null) {
                             return new QueryResult("request error", response.error.message, 400);
                         }
-                        return ResponseHandler.ProcessSyncResponse(context, queries, response.success);
+                        return QueryResponse.ProcessSyncResponse(context, queries, response.success);
                 }
             }
             return new QueryResult ("request", "not implemented", 400);
@@ -147,57 +147,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new ReadEntities { container = resolver.container, sets = sets };
         }
     }
-    
-    internal readonly struct Query
-    {
-        internal  readonly  string          name;
-        internal  readonly  QueryType       type;
-        private   readonly  string          container;
-        internal  readonly  SyncRequestTask task;
-        internal  readonly  GraphQLField    graphQL;
-
-        public    override  string      ToString() => name;
-
-        internal Query(string name, QueryType type, string container, SyncRequestTask task, GraphQLField graphQL) {
-            this.name       = name;
-            this.type       = type;
-            this.container  = container;
-            this.task       = task;
-            this.graphQL    = graphQL;
-        }
-    }
-    
-    internal readonly struct QueryResolver
-    {
-        internal  readonly  string      name;
-        internal  readonly  QueryType   type;
-        internal  readonly  string      container;
-
-        public    override  string      ToString() => $"{container} - {type}";
-
-        internal QueryResolver(string name, QueryType type, string container) {
-            this.name       = name;
-            this.type       = type;
-            this.container  = container;
-        }
-    }
-    
-    internal enum QueryType {
-        Query,
-        ReadById
-    }
-    
-    internal readonly struct QueryResult {
-        internal  readonly  string  error;
-        internal  readonly  string  details;
-        internal  readonly  int     statusCode;
-        
-        internal QueryResult (string error, string details, int statusCode) {
-            this.error      = error;
-            this.details    = details;
-            this.statusCode = statusCode;
-        }
-    } 
 }
 
 #endif

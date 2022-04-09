@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class ResponseHandler
+    internal static class QueryResponse
     {
         internal static QueryResult ProcessSyncResponse(
             RequestContext  context,

@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal    readonly    string          schemaName;
         internal    readonly    JsonValue       schemaResponse;
         internal    readonly    GqlSchema       schema;
-        internal    readonly    QueryHandler    handler;
+        internal    readonly    QueryRequest    requestHandler;
 
         public      override    string      ToString() => database;
 
@@ -30,13 +30,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             string          schemaName,
             GqlSchema       schema,
             JsonValue       schemaResponse,
-            QueryHandler    handler)
+            QueryRequest    handler)
         {
             this.database       = database;
             this.schemaName     = schemaName;
             this.schema         = schema;
             this.schemaResponse = schemaResponse;
-            this.handler        = handler;
+            this.requestHandler = handler;
         } 
     }
     
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                var queryResult = await schema.handler.Execute(context, query);
+                var queryResult = await schema.requestHandler.Execute(context, query);
                 
                 if (queryResult.error == null)
                     return;
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaName          = generator.rootType.Name;
 
             var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, gqlSchema);
-            var queryHandler        = new QueryHandler(typeSchema, databaseName);
+            var queryHandler        = new QueryRequest(typeSchema, databaseName);
             schema                  = new DbGraphQLSchema (databaseName, schemaName, gqlSchema, schemaResponse, queryHandler);
             schemas[databaseName]   = schema;
             return schema;
