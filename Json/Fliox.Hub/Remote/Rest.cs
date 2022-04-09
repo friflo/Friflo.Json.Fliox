@@ -444,7 +444,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var tasks   = new List<SyncRequestTask> { task };
             var userId  = context.cookies["fliox-user"];
             var token   = context.cookies["fliox-token"];
-            var synRequest = new SyncRequest {
+            var syncRequest = new SyncRequest {
                 database    = database,
                 tasks       = tasks,
                 userId      = new JsonKey(userId),
@@ -454,7 +454,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var sharedCache     = context.SharedCache;
             var localPool       = new Pool(hub.sharedEnv);
             var executeContext  = new ExecuteContext(localPool, null, sharedCache);
-            var result = await hub.ExecuteSync(synRequest, executeContext).ConfigureAwait(false);
+            var result          = await hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
             var error = result.error;
             if (error != null) {

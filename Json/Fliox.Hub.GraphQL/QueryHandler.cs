@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -16,10 +17,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class QueryHandler
     {
+        private readonly string                     database;
         private readonly Dictionary<string, Query>  queryTypes = new Dictionary<string, Query>();
         
-        internal QueryHandler(TypeSchema typeSchema) {
-            var rootType = typeSchema.RootType;
+        internal QueryHandler(TypeSchema typeSchema, string database) {
+            this.database   = database;
+            var rootType    = typeSchema.RootType;
             foreach (var field in rootType.Fields) {
                 var container = field.name;
                 var query       = new Query(QueryType.Query,    container);
@@ -29,24 +32,30 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal Task Execute(RequestContext context, GraphQLDocument document) {
+        internal async Task Execute(RequestContext context, GraphQLDocument document) {
             foreach (var definition in document.Definitions) {
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
                         var selections  = operation.SelectionSet.Selections;
-                        CreateTasks(selections, out string error);
+                        var syncRequest = CreateSyncRequest(context, selections, out string error);
                         if (error != null) {
                             context.WriteError("query error", error, 400);
-                            return Task.CompletedTask;
+                            return;
                         }
-                        break;
+                        var response = await context.ExecuteSyncRequest(syncRequest);
+                        
+                        if (response.error != null) {
+                            context.WriteError("request error", response.error.message, 400);
+                            return;
+                        }
+                        ResponseHandler.ProcessSyncResponse(context, syncRequest, response.success);
+                        return;
                 }
             }
             context.WriteError("request", "not implemented", 400);
-            return Task.CompletedTask;
         }
         
-        private List<SyncRequestTask> CreateTasks(List<ASTNode> selections, out string error) {
+        private SyncRequest CreateSyncRequest(RequestContext context, List<ASTNode> selections, out string error) {
             error       = null;
             var tasks   = new List<SyncRequestTask>(selections.Count);
             foreach (var selection in selections) {
@@ -71,7 +80,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         break;
                 }
             }
-            return tasks;
+            var userId  = context.cookies["fliox-user"];
+            var token   = context.cookies["fliox-token"];
+            return new SyncRequest {
+                database    = database,
+                tasks       = tasks,
+                userId      = new JsonKey(userId),
+                token       = token
+            };
         }
         
         private static QueryEntities CreateQuery(Query query, GraphQLField queryField, out string error)

@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaName          = generator.rootType.Name;
 
             var schemaResponse      = Utils.CreateSchemaResponse(context.Pool, gqlSchema);
-            var queryHandler        = new QueryHandler(typeSchema);
+            var queryHandler        = new QueryHandler(typeSchema, databaseName);
             schema                  = new DbGraphQLSchema (databaseName, schemaName, gqlSchema, schemaResponse, queryHandler);
             schemas[databaseName]   = schema;
             return schema;
