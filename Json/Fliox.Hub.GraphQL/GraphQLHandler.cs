@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                var queryResult = await schema.requestHandler.Execute(context, query);
+                var queryResult = await schema.requestHandler.Execute(context, query).ConfigureAwait(false);
                 
                 if (queryResult.error == null)
                     return;

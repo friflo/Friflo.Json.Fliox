@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         if (error != null) {
                             return new QueryResult("query error", error, 400);
                         }
-                        var response = await context.ExecuteSyncRequest(syncRequest);
+                        var response = await context.ExecuteSyncRequest(syncRequest).ConfigureAwait(false);
                         
                         if (response.error != null) {
                             return new QueryResult("request error", response.error.message, 400);
