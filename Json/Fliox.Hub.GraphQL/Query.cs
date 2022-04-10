@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  QueryType   type;
         internal  readonly  string      container;
 
-        public    override  string      ToString() => $"{container} - {type}";
+        public    override  string      ToString() => name;
 
         internal QueryResolver(string name, QueryType type, string container) {
             this.name       = name;
