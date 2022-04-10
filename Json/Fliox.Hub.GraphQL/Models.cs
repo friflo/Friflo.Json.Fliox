@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.GraphQL;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable ClassNeverInstantiated.Global
 #pragma warning disable CS0649
@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal static class ModelUtils
     {
-        internal static JsonValue CreateSchemaResponse(Pool pool, GqlSchema gqlSchema) {
-            using (var pooled = pool.ObjectMapper.Get()) {
+        internal static JsonValue CreateSchemaResponse(ObjectPool<ObjectMapper> mapper, GqlSchema gqlSchema) {
+            using (var pooled = mapper.Get()) {
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;

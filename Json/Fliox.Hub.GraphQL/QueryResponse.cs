@@ -27,8 +27,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var queryResult = ProcessTaskResult(query, taskResult);
                 data.Add(query.name, queryResult);
             }
-            var pool = context.Pool;
-            using (var pooled = pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;

@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public sealed class RequestContext
     {
+        // --- fields
         public    readonly  FlioxHub                    hub;
         public    readonly  string                      method;
         public    readonly  string                      route;
@@ -29,14 +31,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public    readonly  IHttpCookies                cookies;
         private             Dictionary<string, string>  responseHeaders;
         internal            bool                        handled;
-        
+        // --- public properties
         public              string                      ResponseContentType { get; private set; }
         public              int                         StatusCode          { get; private set; }
         public              JsonValue                   Response            { get; private set; }
         public              int                         Offset              { get; private set; }
         public              Dictionary<string, string>  ResponseHeaders     => responseHeaders;
         public              bool                        Handled             => handled;
-        public              Pool                        Pool                => hub.sharedEnv.Pool;
+        public              ObjectPool<ObjectMapper>    ObjectMapper        => Pool.ObjectMapper;
+        // --- internal properties
+        internal            Pool                        Pool                => hub.sharedEnv.Pool;
         internal            SharedCache                 SharedCache         => hub.sharedEnv.sharedCache;
 
         public    override  string                      ToString() => $"{method} {route}{query}";

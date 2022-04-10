@@ -62,8 +62,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static GqlRequest ReadRequestBody(RequestContext context, JsonValue body) {
-            var pool    = context.Pool;
-            using (var pooled = pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 return reader.Read<GqlRequest>(body);
             }
@@ -85,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var gqlSchema       = GraphQLGenerator.Generate(generator);
             var schemaName      = generator.rootType.Name;
 
-            var schemaResponse  = ModelUtils.CreateSchemaResponse(context.Pool, gqlSchema);
+            var schemaResponse  = ModelUtils.CreateSchemaResponse(context.ObjectMapper, gqlSchema);
             var queryHandler    = new QueryRequest(typeSchema, dbName);
             schema              = new GraphQLDbSchema (dbName, schemaName, gqlSchema, schemaResponse, queryHandler);
             dbSchemas[dbName]   = schema;
