@@ -17,6 +17,13 @@ type Query {
     messagesById:   [DbMessages]!
     schemas:        [DbSchema!]!
     schemasById:    [DbSchema]!
+    std_Echo:       Any!
+    std_Containers: DbContainers!
+    std_Messages:   DbMessages!
+    std_Schema:     DbSchema!
+    std_Stats:      DbStats!
+    std_Details:    HostDetails!
+    std_Cluster:    HostCluster!
 }
 
 type ClusterStore {

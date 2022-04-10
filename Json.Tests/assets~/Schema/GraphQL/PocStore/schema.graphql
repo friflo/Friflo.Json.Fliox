@@ -16,18 +16,34 @@ scalar Boolean
 scalar Any
 
 type Query {
-    orders:        [Order!]!
-    ordersById:    [Order]!
-    customers:     [Customer!]!
-    customersById: [Customer]!
-    articles:      [Article!]!
-    articlesById:  [Article]!
-    producers:     [Producer!]!
-    producersById: [Producer]!
-    employees:     [Employee!]!
-    employeesById: [Employee]!
-    types:         [TestType!]!
-    typesById:     [TestType]!
+    orders:            [Order!]!
+    ordersById:        [Order]!
+    customers:         [Customer!]!
+    customersById:     [Customer]!
+    articles:          [Article!]!
+    articlesById:      [Article]!
+    producers:         [Producer!]!
+    producersById:     [Producer]!
+    employees:         [Employee!]!
+    employeesById:     [Employee]!
+    types:             [TestType!]!
+    typesById:         [TestType]!
+    TestCommand:       Boolean!
+    SyncCommand:       String!
+    AsyncCommand:      String!
+    Command1:          String!
+    test_Command2:     String!
+    test_CommandHello: String!
+    std_Echo:          Any!
+    std_Containers:    DbContainers!
+    std_Messages:      DbMessages!
+    std_Schema:        DbSchema!
+    std_Stats:         DbStats!
+    std_Details:       HostDetails!
+    std_Cluster:       HostCluster!
+    Message1:          Any
+    AsyncMessage:      Any
+    test_Message2:     Any
 }
 
 type PocStore {

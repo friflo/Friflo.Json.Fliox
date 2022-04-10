@@ -178,23 +178,24 @@ namespace Friflo.Json.Fliox.Schema.Language
                 bool required           = field.required;
                 gqlField.type           = GetFieldType(field, context, required, kind);
             }
-            // EmitMessages("commands", type.Commands, context, sb);
-            // EmitMessages("messages", type.Messages, context, sb);
-
             return new EmitTypeGql(type, gqlType, imports, dependencies);
         }
         
-        private static void EmitMessages(List<GqlField> fields, IReadOnlyList<MessageDef> messageDefs, Kind kind, TypeContext context) {
+        private static void EmitMessages(List<GqlField> fields, IReadOnlyList<MessageDef> messageDefs, TypeContext context) {
             if (messageDefs == null)
                 return;
             foreach (var messageDef in messageDefs) {
                 var name            = messageDef.name.Replace(".", "_");
                 var field           = new GqlField { name = name, args = new List<GqlInputValue>() }; 
-                var param           = GetMessageArg("param", messageDef.param, kind,  context);
-                field.args.Add(param);
+                if (messageDef.param != null) {
+                    var param       = GetMessageArg("param", messageDef.param, Kind.Input,  context);
+                    field.args.Add(param);
+                }
                 var result          = messageDef.result;
                 if (result != null) {
-                    field.type      = GetFieldType(result, context, result.required, kind);
+                    field.type      = GetFieldType(result, context, result.required, Kind.Output);
+                } else {
+                    field.type      = Gql.Any(); // todo - check returning error for messages
                 }
                 field.description   = GetDoc(messageDef.doc, "");
                 fields.Add(field);
@@ -275,8 +276,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             var imports = new HashSet<TypeDef>();
             var context = new TypeContext (generator, imports, schemaType);
-            // EmitMessages(queries, schemaType.Commands, context);
-            // EmitMessages(queries, schemaType.Messages, context);
+            EmitMessages(queries, schemaType.Commands, context);
+            EmitMessages(queries, schemaType.Messages, context);
             return queries;
         }
         
