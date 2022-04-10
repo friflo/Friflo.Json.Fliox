@@ -111,17 +111,20 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
         /// </summary>
         /// 
-        public   readonly   string              hostName;
+        public   readonly   string                  hostName;
         
-        public   readonly   string              Version = "0.0.1";
+        public   readonly   string                  Version = "0.0.1";
         
         /// <summary>General Hub information. Clients can request this information with the command <b>std.HostDetails</b></summary>
-        public              HubInfo             Info { get => info; set => info = NotNull(value, nameof(Info)); }
+        public              HubInfo                 Info { get => info; set => info = NotNull(value, nameof(Info)); }
         
-        public   readonly   SharedEnv           sharedEnv;
+        public              IReadOnlyList<string>   Routes => routes;
         
-        internal readonly   HostStats           hostStats = new HostStats{ requestCount = new RequestCount{ db = "*"} };
+        public   readonly   SharedEnv               sharedEnv;
         
+        internal readonly   HostStats               hostStats   = new HostStats{ requestCount = new RequestCount{ db = "*"} };
+        internal readonly   List<string>            routes      = new List<string>();
+
         [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
         [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();

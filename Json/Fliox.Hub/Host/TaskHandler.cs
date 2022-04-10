@@ -193,15 +193,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static HostDetails Details (Param<Empty> param, MessageContext context) {
-            var hub             = context.Hub;
-            var info            = hub.Info;
-            var details         = new HostDetails {
+            var hub     = context.Hub;
+            var info    = hub.Info;
+            var routes  = new List<string>(hub.Routes);       
+            var details = new HostDetails {
                 version         = hub.Version,
                 hostName        = hub.hostName,
                 projectName     = info?.projectName,
                 projectWebsite  = info?.projectWebsite,
                 envName         = info?.envName,
-                envColor        = info?.envColor
+                envColor        = info?.envColor,
+                routes          = routes
             };
             return details;
         }

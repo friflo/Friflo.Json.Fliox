@@ -18,6 +18,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private readonly    Dictionary<string, GraphQLDbSchema> dbSchemas       = new Dictionary<string, GraphQLDbSchema>();
         private const       string                              GraphQLRoute    = "/graphql";
         
+        public string       Route => GraphQLRoute;
+        
         public bool IsMatch(RequestContext context) {
             var method = context.method;
             if (method != "POST" && method != "GET")

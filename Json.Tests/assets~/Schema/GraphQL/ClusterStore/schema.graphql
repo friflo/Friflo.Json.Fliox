@@ -60,6 +60,7 @@ type HostDetails {
     projectWebsite: String
     envName:        String
     envColor:       String
+    routes:         [String!]!
 }
 
 type HostCluster {

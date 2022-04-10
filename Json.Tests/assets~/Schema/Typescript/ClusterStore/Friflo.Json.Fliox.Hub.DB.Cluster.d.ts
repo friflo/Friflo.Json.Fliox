@@ -105,6 +105,8 @@ export class HostDetails {
      * E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
      */
     envColor?       : string | null;
+    /** routes configures by **HttpHostHub** - commonly below /fliox */
+    routes          : string[];
 }
 
 /** All **databases** hosted by Hub */

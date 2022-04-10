@@ -55,6 +55,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             fileExtensions.Add(fileExt);
         }
         
+        public string  Route => "/* - static files";
+        
         public bool IsMatch(RequestContext context) {
             return context.method == "GET";
         }

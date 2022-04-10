@@ -46,12 +46,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   Rest.RestHandler        restHandler     = new Rest.RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
+        private  readonly   List<string>            routes;
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
         public HttpHostHub(FlioxHub hub, string endpoint, SharedEnv env = null, string hostName = null)
             : base(hub, env, hostName)
         {
+            routes = hub.routes;
+            routes.Add(restHandler.Route);
+            routes.Add(schemaHandler.Route);
+            
             if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
             if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
             if (!endpoint.EndsWith("/"))    throw new ArgumentException("endpoint requires '/' as last character");
@@ -108,10 +113,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void AddHandler(IRequestHandler requestHandler) {
             if (requestHandler == null) throw new ArgumentNullException(nameof(requestHandler));
             customHandlers.Add(requestHandler);
+            routes.Add(requestHandler.Route);
         }
         
         public void RemoveHandler(IRequestHandler requestHandler) {
             customHandlers.Remove(requestHandler);
+            routes.Remove(requestHandler.Route);
         }
         
         public void AddSchemaGenerator(string type, string name, SchemaGenerator generator) {

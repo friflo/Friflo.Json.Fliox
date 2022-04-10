@@ -35,6 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return this;
         }
         
+        public string  Route => SchemaBase;
+
         public bool IsMatch(RequestContext context) {
             if (context.method != "GET")
                 return false;
