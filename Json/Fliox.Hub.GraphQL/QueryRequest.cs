@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using GraphQLParser.AST;
 
+// ReSharper disable PossibleNullReferenceException
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class QueryRequest
@@ -105,40 +106,40 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var arguments   = query.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
-                    var value = argument.Value;
-                    switch (argument.Name.StringValue) {
-                        case "filter":  
-                            if (!AstUtils.TryGetStringArg (value, out filter, out error))
-                                return null;
-                            break;
-                        case "limit":
-                            if (!AstUtils.TryGetIntArg (value, out limit, out error))
-                                return null;
-                            break;
+                    var value   = argument.Value;
+                    var argName = argument.Name.StringValue;
+                    switch (argName) {
+                        case "filter":  filter  = AstUtils.TryGetStringArg (value, out error);  break;
+                        case "limit":   limit   = AstUtils.TryGetIntArg    (value, out error);  break;
+                        default:        error   = UnknownArgument(argName);                     break;
                     }
+                    if (error != null)
+                        return null;
                 }
             }
             error = null;
             return new QueryEntities { container = resolver.container, filter = filter, limit = limit };
         }
         
+        private static string UnknownArgument(string argName) {
+            return $"unknown argument: {argName}";
+        }
+        
         private static ReadEntities ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
-            error                   = null;
             List<JsonKey> idList    = null;
             var arguments = query.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
-                    switch (argument.Name.StringValue) {
-                        case "ids":
-                            if (!AstUtils.TryGetIdList (argument, out idList, out error))
-                                return null;
-                            break;
+                    var argName = argument.Name.StringValue;
+                    switch (argName) {
+                        case "ids":     idList  = AstUtils.TryGetIdList (argument, out error);  break;
+                        default:        error   = UnknownArgument(argName);                     break;
                     }
+                    if (error != null)
+                        return null;
                 }
             }
-            if (idList == null)
-                return null;
             var ids     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
             foreach (var id in idList) {
                 ids.Add(id);

@@ -11,57 +11,51 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class AstUtils
     {
-        internal static bool TryGetStringArg(GraphQLValue gqlValue, out string value, out string error) {
+        internal static string TryGetStringArg(GraphQLValue gqlValue, out string error) {
             var stringValue = gqlValue as GraphQLStringValue;
             if (stringValue == null) {
-                value = null;
                 error = "expect string argument";
-                return false;
+                return null;
             }
-            value = stringValue.Value.ToString();
             error = null;
-            return true;
+            return stringValue.Value.ToString();;
         }
         
-        internal static bool TryGetIntArg(GraphQLValue gqlValue, out int? value, out string error) {
+        internal static int? TryGetIntArg(GraphQLValue gqlValue, out string error) {
             var gqlIntValue = gqlValue as GraphQLIntValue;
             if (gqlIntValue == null) {
-                value = null;
                 error = "expect string argument";
-                return false;
+                return null;
             }
             var stringValue = gqlIntValue.Value.ToString(); // todo avoid string creation
             if (!int.TryParse(stringValue, out var intValue)) {
-                value = null;
                 error = "invalid integer";
-                return false;
+                return null;
             }
-            value = intValue;
             error = null;
-            return true;
+            return intValue;
         }
         
-        internal static bool TryGetIdList(GraphQLArgument arg, out List<JsonKey> value, out string error) {
+        internal static List<JsonKey> TryGetIdList(GraphQLArgument arg, out string error) {
             var gqlList = arg.Value as GraphQLListValue;
             if (gqlList == null) {
-                value = null;
                 error = "expect string array";
-                return false;
+                return null;
             }
             var values = gqlList.Values;
             if (values == null) {
                 error = "invalid string array";
-                value = null;
-                return false;
+                return null;
             }
-            value = new List<JsonKey>(values.Count);
+            var result = new List<JsonKey>(values.Count);
             foreach (var item in values) {
-                if (!TryGetStringArg(item, out string stringValue, out error))
-                    return false;
-                value.Add(new JsonKey(stringValue));
+                var stringValue = TryGetStringArg(item, out error);
+                if (error != null)
+                    return null;
+                result.Add(new JsonKey(stringValue));
             }
             error = null;
-            return true;
+            return result;
         }
     }
 }
