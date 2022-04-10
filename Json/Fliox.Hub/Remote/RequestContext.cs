@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -91,14 +92,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return route[basePath.Length] == '/';
         }
         
-        // todo should be moved elsewhere
-        // method is added to avoid public access to: SharedCache, Pool() and ExecuteContext()
-        public async Task<ExecuteSyncResult> ExecuteSyncRequest(SyncRequest syncRequest) {
+        // method is added to preserve API internal for: SharedCache, Pool()
+        public ExecuteContext CreateExecuteContext(IEventTarget eventTarget) {
             var sharedCache     = SharedCache;
             var localPool       = new Pool(hub.sharedEnv);
-            var executeContext  = new ExecuteContext(localPool, null, sharedCache);
-            
-            return await hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+            return new ExecuteContext(localPool, eventTarget, sharedCache);
         }
     }
     
