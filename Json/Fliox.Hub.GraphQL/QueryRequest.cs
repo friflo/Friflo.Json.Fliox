@@ -24,13 +24,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         internal QueryRequest(TypeSchema typeSchema, string database) {
             this.database   = database;
-            var rootType    = typeSchema.RootType;
-            foreach (var field in rootType.Fields) {
+            var schemaType  = typeSchema.RootType;
+            foreach (var field in schemaType.Fields) {
                 var container = field.name;
                 var query       = new QueryResolver(container,          QueryType.Query,    container);
                 var readById    = new QueryResolver($"{container}ById", QueryType.ReadById, container);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
+            }
+
+            foreach (var command in schemaType.Commands) {
+                var name    = command.name.Replace(".", "_");
+                var query   = new QueryResolver(command.name,           QueryType.Command,  null);
+                resolvers.Add(name,             query);
+            }
+            foreach (var message in schemaType.Messages) {
+                var name    = message.name.Replace(".", "_");
+                var query   = new QueryResolver(message.name,           QueryType.Message,  null);
+                resolvers.Add(name,             query);
             }
         }
         
@@ -96,6 +107,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             switch(resolver.type) {
                 case QueryType.Query:       return QueryEntities(resolver, query, out error);
                 case QueryType.ReadById:    return ReadEntities (resolver, query, out error);
+                case QueryType.Command:     return SendCommand  (resolver, query, out error);
+                case QueryType.Message:     return SendMessage  (resolver, query, out error);
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
         }
@@ -144,6 +157,44 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
             error = null;
             return new ReadEntities { container = resolver.container, sets = sets };
+        }
+        
+        private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, out string error)
+        {
+            var param       = new JsonValue();
+            var arguments   = query.Arguments;
+            if (arguments != null) {
+                foreach (var argument in arguments) {
+                    var argName = argument.Name.StringValue;
+                    switch (argName) {
+                        case "param":   error   = null;                                         break; // todo
+                        default:        error   = AstUtils.UnknownArgument(argName);            break;
+                    }
+                    if (error != null)
+                        return null;
+                }
+            }
+            error = null;
+            return new SendCommand { name = resolver.name, param = param };
+        }
+        
+        private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, out string error)
+        {
+            var param       = new JsonValue();
+            var arguments   = query.Arguments;
+            if (arguments != null) {
+                foreach (var argument in arguments) {
+                    var argName = argument.Name.StringValue;
+                    switch (argName) {
+                        case "param":   error   = null;                                         break; // todo
+                        default:        error   = AstUtils.UnknownArgument(argName);            break;
+                    }
+                    if (error != null)
+                        return null;
+                }
+            }
+            error = null;
+            return new SendMessage { name = resolver.name, param = param };
         }
     }
 }

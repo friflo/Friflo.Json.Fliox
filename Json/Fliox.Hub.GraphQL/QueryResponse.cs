@@ -46,6 +46,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             switch (query.type) {
                 case QueryType.Query:       return QueryEntitiesResult  (query, result, writer);
                 case QueryType.ReadById:    return ReadEntitiesResult   (query, result, writer);
+                case QueryType.Command:     return SendCommandResult    (query, result, writer);
+                case QueryType.Message:     return SendMessageResult    (query, result, writer);
             }
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }
@@ -54,7 +56,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new JsonValue("{}");
         }
         
-        private static JsonValue ReadEntitiesResult(Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue ReadEntitiesResult (Query query, SyncTaskResult result, ObjectWriter writer) {
+            return new JsonValue("{}");
+        }
+        
+        private static JsonValue SendCommandResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
+            var commandResult = (SendCommandResult)result;
+            return commandResult.result;
+        }
+        
+        private static JsonValue SendMessageResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
             return new JsonValue("{}");
         }
     }

@@ -44,7 +44,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal enum QueryType {
         Query,
-        ReadById
+        ReadById,
+        Command,
+        Message
     }
     
     internal readonly struct QueryResult {
