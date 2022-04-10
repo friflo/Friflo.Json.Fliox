@@ -7,40 +7,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
 using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class DbGraphQLSchema {
-        private     readonly    string          database;
-        internal    readonly    string          schemaName;
-        internal    readonly    JsonValue       schemaResponse;
-        internal    readonly    GqlSchema       schema;
-        internal    readonly    QueryRequest    requestHandler;
-
-        public      override    string      ToString() => database;
-
-        internal DbGraphQLSchema(
-            string          database,
-            string          schemaName,
-            GqlSchema       schema,
-            JsonValue       schemaResponse,
-            QueryRequest    handler)
-        {
-            this.database       = database;
-            this.schemaName     = schemaName;
-            this.schema         = schema;
-            this.schemaResponse = schemaResponse;
-            this.requestHandler = handler;
-        } 
-    }
-    
     public class GraphQLHandler: IRequestHandler
     {
-        private readonly    Dictionary<string, DbGraphQLSchema> schemas         = new Dictionary<string, DbGraphQLSchema>();
+        private readonly    Dictionary<string, GraphQLDbSchema> dbSchemas       = new Dictionary<string, GraphQLDbSchema>();
         private const       string                              GraphQLRoute    = "/graphql";
         
         public bool IsMatch(RequestContext context) {
@@ -94,26 +69,26 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private DbGraphQLSchema GetSchema (RequestContext context, string databaseName, out string error) {
+        private GraphQLDbSchema GetSchema (RequestContext context, string dbName, out string error) {
             var hub         = context.hub;
-            if (!hub.TryGetDatabase(databaseName, out var database)) {
-                error = $"database not found: {databaseName}";
+            if (!hub.TryGetDatabase(dbName, out var database)) {
+                error = $"database not found: {dbName}";
                 return default;
             }
-            if (schemas.TryGetValue(databaseName, out var schema)) {
+            if (dbSchemas.TryGetValue(dbName, out var schema)) {
                 error = null;
                 return schema;
             }
-            error                   = null;
-            var typeSchema          = database.Schema.typeSchema;
-            var generator           = new Generator(typeSchema, ".graphql");
-            var gqlSchema           = GraphQLGenerator.Generate(generator);
-            var schemaName          = generator.rootType.Name;
+            error               = null;
+            var typeSchema      = database.Schema.typeSchema;
+            var generator       = new Generator(typeSchema, ".graphql");
+            var gqlSchema       = GraphQLGenerator.Generate(generator);
+            var schemaName      = generator.rootType.Name;
 
-            var schemaResponse      = ModelUtils.CreateSchemaResponse(context.Pool, gqlSchema);
-            var queryHandler        = new QueryRequest(typeSchema, databaseName);
-            schema                  = new DbGraphQLSchema (databaseName, schemaName, gqlSchema, schemaResponse, queryHandler);
-            schemas[databaseName]   = schema;
+            var schemaResponse  = ModelUtils.CreateSchemaResponse(context.Pool, gqlSchema);
+            var queryHandler    = new QueryRequest(typeSchema, dbName);
+            schema              = new GraphQLDbSchema (dbName, schemaName, gqlSchema, schemaResponse, queryHandler);
+            dbSchemas[dbName]   = schema;
             return schema;
         }
 
