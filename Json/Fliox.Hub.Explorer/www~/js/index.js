@@ -471,9 +471,15 @@ export class App {
     static getDatabaseLink(database) {
         return `<a title="open database in new tab" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     }
-    static getOpenApiLink(database, description, hash) {
+    static getApiLinks(database, description, hash) {
         hash = hash.replace(".", "_");
-        return `<a class="oas" title="${description} as OpenAPI specification (OAS) in new tab" href="./schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
+        let apiLinks = `<a class="oas" title="${description} as OpenAPI specification (OAS) in new tab "` +
+            `href="./schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
+        if (app.hostDetails.routes.includes("/graphql")) {
+            apiLinks += ` <a class="graphql" title="${description} as GraphQL API (GQL) in new tab "` +
+                `href="./graphql/${database}" target="_blank" rel="noopener noreferrer">GQL</a>`;
+        }
+        return apiLinks;
     }
     static getMessagesLink(database) {
         const href = `./rest/${database}?command=std.Messages`;

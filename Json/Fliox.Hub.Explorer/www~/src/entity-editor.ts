@@ -96,9 +96,9 @@ export class EntityEditor
 
     private setDatabaseInfo(database: string, dbContainer: DbContainers) {
         const schemaType                    = app.getSchemaType(database);
-        const oasLink                       = App.getOpenApiLink(database, "open database API", "");
+        const apiLinks                      = App.getApiLinks(database, "open database API", "");
         el("databaseName").innerHTML        = App.getDatabaseLink(database);
-        el("databaseSchema").innerHTML      = `${schemaType} ${oasLink}`;
+        el("databaseSchema").innerHTML      = `${schemaType} ${apiLinks}`;
         el("databaseTypes").innerHTML       = app.getSchemaTypes(database);
         el("databaseStorage").innerHTML     = dbContainer.storage;
         el("schemaDescription").innerHTML   = app.getSchemaDescription(database);
@@ -189,8 +189,8 @@ export class EntityEditor
 
     private createMessagesDocLink (database: string, category: MessageCategory) : HTMLLIElement {
         const categoryEl        = createEl('li');
-        const oasLink           = category == "commands" ? " " + App.getOpenApiLink(database, "open commands API", "#/commands") : "";
-        categoryEl.innerHTML    = app.getSchemaCommand(database, category, category) + oasLink;
+        const apiLinks          = category == "commands" ? " " + App.getApiLinks(database, "open commands API", "#/commands") : "";
+        categoryEl.innerHTML    = app.getSchemaCommand(database, category, category) + apiLinks;
         if (!app.databaseSchemas[database]) {
             categoryEl.innerHTML    = `<span style="opacity: 0.5;">${category}</span>`;
         }
@@ -781,13 +781,13 @@ export class EntityEditor
         const param         = EntityEditor.getMessageArg("param", database, signature.param);
         const returnHtml    = EntityEditor.getReturnType(database, signature.result);
         const commandEl     = app.getSchemaCommand(database, category, command);
-        const oasLink       = App.getOpenApiLink(database, "open commands API", `#/commands/post__command_${command}`);
+        const apiLinks      = App.getApiLinks(database, "open commands API", `#/commands/post__command_${command}`);
         const el =
         `<span title="command parameter type">
             ${commandEl}
             (${param})
         </span>
-        ${returnHtml}&nbsp;&nbsp;${oasLink}`;
+        ${returnHtml}&nbsp;&nbsp;${apiLinks}`;
         return el;
     }
 

@@ -215,8 +215,8 @@ export class Explorer
         explorerTools.innerHTML  = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = `${App.getDatabaseLink(p.database)}/`;
         const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
-        const oasLink            = App.getOpenApiLink(p.database, `open ${p.container} API`, `#/${p.container}`);
-        readEntities.innerHTML   = `${containerLink} ${oasLink}<span class="spinner"></span>`;
+        const apiLinks           = App.getApiLinks(p.database, `open ${p.container} API`, `#/${p.container}`);
+        readEntities.innerHTML   = `${containerLink} ${apiLinks}<span class="spinner"></span>`;
 
         const maxCount           = "maxCount=100";
         const queryParams        = query == null ? maxCount : `${query}&${maxCount}`;
@@ -224,7 +224,7 @@ export class Explorer
 
         const reload = `<span class="reload" title='reload container' onclick='app.explorer.loadContainer(${JSON.stringify(p)})'></span>`;
         writeResult.innerHTML   = "";        
-        readEntities.innerHTML  = `${containerLink} ${oasLink}${reload}`;
+        readEntities.innerHTML  = `${containerLink} ${apiLinks}${reload}`;
         if (!response.ok) {
             const error = await response.text();
             entityExplorer.innerHTML = App.errorAsHtml(error, p);
