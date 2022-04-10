@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         public static GqlSchema Generate(Generator generator) {
             var emitter     = new GraphQLGenerator(generator);
             var schemaType  = generator.FindSchemaType();
-            var queries     = CreateQueries(schemaType);
+            var queries     = CreateQueries(schemaType, generator);
             var types   = new List<GqlType> {
                 Gql.String(),
                 Gql.Int(),
@@ -48,11 +48,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                 new GqlObject { name = "Query", fields = queries }
             };
             foreach (var type in generator.types) {
-                var result = emitter.EmitType(type);
+                var result = emitter.EmitType(type, Kind.Output);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
                 types.Add(result.graphQLType);
+                var isClass = type.IsClass && !type.IsSchema;
+                if (isClass) {
+                    result = emitter.EmitClassType(type, Kind.Input);
+                    types.Add(result.graphQLType);
+                }
             }
             var schema = new GqlSchema {
                 queryType   = new GqlType { name = "Query" },
@@ -96,13 +101,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             return new EmitTypeGql(type, definition);
         }
         
-        private EmitTypeGql EmitType(TypeDef type) {
+        private EmitTypeGql EmitType(TypeDef type, Kind kind) {
             var standardType    = EmitStandardType(type);
             if (standardType != null ) {
                 return null;
             }
             if (type.IsClass) {
-                return EmitClassType(type);
+                return EmitClassType(type, kind);
             }
             if (type.IsEnum) {
                 var enumType            = new GqlEnum { enumValues = new List<GqlEnumValue>() };
@@ -121,7 +126,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return null;
         }
         
-        private EmitTypeGql EmitClassType(TypeDef type) {
+        private EmitTypeGql EmitClassType(TypeDef type, Kind kind) {
             GqlType     gqlType;
             var gqlFields       = new List<GqlField>();
             var imports         = new HashSet<TypeDef>();
@@ -138,20 +143,29 @@ namespace Friflo.Json.Fliox.Schema.Language
             
             var unionType = type.UnionType;
             if (unionType == null) {
-                gqlType     = new GqlObject { fields = gqlFields };
+                if (kind == Kind.Output) {
+                    gqlType = new GqlObject      { fields       = gqlFields };
+                } else {
+                    gqlType = new GqlInputObject { inputFields  = gqlFields };
+                }
                 // var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
                 // sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
             } else {
-                var union   = new GqlUnion { possibleTypes = new List<GqlType>() };
-                gqlType     = union;
-                // var fieldDoc    = GetDoc(unionType.doc, "    ");
-                // sb.AppendLine($"    abstract {unionType.discriminator}:");
-                foreach (var polyType in unionType.types) {
-                    var unionItemType = Gql.Scalar(polyType.typeDef.Name);
-                    union.possibleTypes.Add(unionItemType);
+                if (kind == Kind.Output) { 
+                    var union   = new GqlUnion { possibleTypes = new List<GqlType>() };
+                    gqlType     = union;
+                    // var fieldDoc    = GetDoc(unionType.doc, "    ");
+                    // sb.AppendLine($"    abstract {unionType.discriminator}:");
+                    foreach (var polyType in unionType.types) {
+                        var unionItemType = Gql.Scalar(polyType.typeDef.Name);
+                        union.possibleTypes.Add(unionItemType);
+                    }
+                } else {
+                    gqlType = Gql.Any(); // todo - need to check the agreed solution for input union types. options:
+                    // [RFC: OneOf Input Objects by benjie · Pull Request #825 · graphql/graphql-spec] https://github.com/graphql/graphql-spec/pull/825
                 }
             }
-            gqlType.name            = type.Name;
+            gqlType.name            = GetName(type, kind);
             gqlType.description     = doc;
             
             foreach (var field in fields) {
@@ -162,7 +176,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 gqlField.description    = GetDoc(field.doc, "    ");
                 gqlField.name           = field.name;
                 bool required           = field.required;
-                gqlField.type           = GetFieldType(field, context, required);
+                gqlField.type           = GetFieldType(field, context, required, kind);
             }
             // EmitMessages("commands", type.Commands, context, sb);
             // EmitMessages("messages", type.Messages, context, sb);
@@ -170,33 +184,33 @@ namespace Friflo.Json.Fliox.Schema.Language
             return new EmitTypeGql(type, gqlType, imports, dependencies);
         }
         
-        private static List<GqlField> EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context) {
+        private static void EmitMessages(List<GqlField> fields, IReadOnlyList<MessageDef> messageDefs, Kind kind, TypeContext context) {
             if (messageDefs == null)
-                return null;
-            var fields = new List<GqlField>();
+                return;
             foreach (var messageDef in messageDefs) {
-                var field           = new GqlField { name = messageDef.name, args = new List<GqlInputValue>() }; 
-                var param           = GetMessageArg("param", messageDef.param,  context);
+                var name            = messageDef.name.Replace(".", "_");
+                var field           = new GqlField { name = name, args = new List<GqlInputValue>() }; 
+                var param           = GetMessageArg("param", messageDef.param, kind,  context);
                 field.args.Add(param);
                 var result          = messageDef.result;
                 if (result != null) {
-                    field.type      = GetFieldType(result, context, result.required);
+                    field.type      = GetFieldType(result, context, result.required, kind);
                 }
-                field.description   = GetDoc(messageDef.doc, "    ");
+                field.description   = GetDoc(messageDef.doc, "");
+                fields.Add(field);
             }
-            return fields;
         }
         
-        private static GqlInputValue GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
+        private static GqlInputValue GetMessageArg(string name, FieldDef fieldDef, Kind kind, TypeContext context) {
             if (fieldDef == null)
                 return null;
-            var argType = GetFieldType(fieldDef, context, fieldDef.required);
+            var argType = GetFieldType(fieldDef, context, fieldDef.required, kind);
             return new GqlInputValue { type = argType, name = name };
         }
         
-        private static GqlType GetFieldType(FieldDef field, TypeContext context, bool required) {
+        private static GqlType GetFieldType(FieldDef field, TypeContext context, bool required, Kind kind) {
             if (field.isArray) {
-                var elementTypeName = GetElementType(field, context);
+                var elementTypeName = GetElementType(field, kind, context);
                 var listType = new GqlList { ofType = elementTypeName };
                 return Gql.Type(listType, required);
             }
@@ -205,16 +219,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                 // return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
                 return Gql.Any();
             }
-            var type = GetTypeName(field.type, context);
+            var type = GetTypeName(field.type, kind, context);
             return Gql.Type(type, required);
         }
         
-        private static GqlType GetElementType(FieldDef field, TypeContext context) {
-            var elementTypeName = GetTypeName(field.type, context);
+        private static GqlType GetElementType(FieldDef field, Kind kind, TypeContext context) {
+            var elementTypeName = GetTypeName(field.type, kind, context);
             return Gql.Type(elementTypeName, !field.isNullableElement);
         }
         
-        private static GqlType GetTypeName(TypeDef type, TypeContext context) {
+        private static GqlType GetTypeName(TypeDef type, Kind kind, TypeContext context) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return Gql.Any();
@@ -228,9 +242,10 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type == standard.Uint8 || type == standard.Int16 || type == standard.Int32|| type == standard.Int64)
                 return Gql.Int();
             context.imports.Add(type);
+            var name = GetName(type, kind);
             if (type.UnionType != null)
-                return new GqlScalar { name = type.Name };
-            return new GqlScalar { name = type.Name };
+                return new GqlScalar { name = name };
+            return new GqlScalar { name = name };
         }
         
         // todo remove indent and Typescript comment syntax
@@ -238,7 +253,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
         }
         
-        private static List<GqlField> CreateQueries(TypeDef schemaType) {
+        private static List<GqlField> CreateQueries(TypeDef schemaType, Generator generator) {
             var queries     = new List<GqlField>();
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
@@ -258,7 +273,23 @@ namespace Friflo.Json.Fliox.Schema.Language
                 queries.Add(query);
                 queries.Add(queryById);
             }
+            var imports = new HashSet<TypeDef>();
+            var context = new TypeContext (generator, imports, schemaType);
+            // EmitMessages(queries, schemaType.Commands, context);
+            // EmitMessages(queries, schemaType.Messages, context);
             return queries;
         }
+        
+        private static string GetName (TypeDef type, Kind kind) {
+            var name = type.Name;
+            if (kind == Kind.Input && !type.IsEnum)
+                return name + "Input";
+            return name;
+        } 
     }
+    
+    internal enum Kind {
+        Output,
+        Input
+    } 
 }

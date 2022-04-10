@@ -30,7 +30,17 @@ type UserCredential {
     token: String
 }
 
+input UserCredentialInput {
+    id:    String!
+    token: String
+}
+
 type UserPermission {
+    id:    String!
+    roles: [String!]
+}
+
+input UserPermissionInput {
     id:    String!
     roles: [String!]
 }
@@ -38,6 +48,12 @@ type UserPermission {
 type Role {
     id:          String!
     rights:      [Right!]!
+    description: String
+}
+
+input RoleInput {
+    id:          String!
+    rights:      [RightInput!]!
     description: String
 }
 
@@ -49,12 +65,25 @@ union Right =
     | OperationRight
     | PredicateRight
 
+scalar RightInput
+
 type AllowRight {
     database:    String
     description: String
 }
 
+input AllowRightInput {
+    database:    String
+    description: String
+}
+
 type TaskRight {
+    database:    String
+    types:       [TaskType!]!
+    description: String
+}
+
+input TaskRightInput {
     database:    String
     types:       [TaskType!]!
     description: String
@@ -83,7 +112,19 @@ type SendMessageRight {
     description: String
 }
 
+input SendMessageRightInput {
+    database:    String
+    names:       [String!]!
+    description: String
+}
+
 type SubscribeMessageRight {
+    database:    String
+    names:       [String!]!
+    description: String
+}
+
+input SubscribeMessageRightInput {
     database:    String
     names:       [String!]!
     description: String
@@ -95,7 +136,18 @@ type OperationRight {
     description: String
 }
 
+input OperationRightInput {
+    database:    String
+    containers:  Any
+    description: String
+}
+
 type ContainerAccess {
+    operations:       [OperationType!]
+    subscribeChanges: [Change!]
+}
+
+input ContainerAccessInput {
     operations:       [OperationType!]
     subscribeChanges: [Change!]
 }
@@ -125,12 +177,26 @@ type PredicateRight {
     description: String
 }
 
+input PredicateRightInput {
+    names:       [String!]!
+    description: String
+}
+
 type Credentials {
     userId: String!
     token:  String!
 }
 
+input CredentialsInput {
+    userId: String!
+    token:  String!
+}
+
 type AuthResult {
+    isValid: Boolean!
+}
+
+input AuthResultInput {
     isValid: Boolean!
 }
 
@@ -140,7 +206,19 @@ type DbContainers {
     containers: [String!]!
 }
 
+input DbContainersInput {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
 type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+input DbMessagesInput {
     id:       String!
     commands: [String!]!
     messages: [String!]!
@@ -153,11 +231,27 @@ type DbSchema {
     jsonSchemas: Any
 }
 
+input DbSchemaInput {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
 type DbStats {
     containers: [ContainerStats!]
 }
 
+input DbStatsInput {
+    containers: [ContainerStatsInput!]
+}
+
 type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+input ContainerStatsInput {
     name:  String!
     count: Int!
 }
@@ -172,7 +266,21 @@ type HostDetails {
     routes:         [String!]!
 }
 
+input HostDetailsInput {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+    routes:         [String!]!
+}
+
 type HostCluster {
     databases: [DbContainers!]!
+}
+
+input HostClusterInput {
+    databases: [DbContainersInput!]!
 }
 

@@ -31,7 +31,19 @@ type DbContainers {
     containers: [String!]!
 }
 
+input DbContainersInput {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
 type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+input DbMessagesInput {
     id:       String!
     commands: [String!]!
     messages: [String!]!
@@ -44,11 +56,27 @@ type DbSchema {
     jsonSchemas: Any
 }
 
+input DbSchemaInput {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
 type DbStats {
     containers: [ContainerStats!]
 }
 
+input DbStatsInput {
+    containers: [ContainerStatsInput!]
+}
+
 type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+input ContainerStatsInput {
     name:  String!
     count: Int!
 }
@@ -63,7 +91,21 @@ type HostDetails {
     routes:         [String!]!
 }
 
+input HostDetailsInput {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+    routes:         [String!]!
+}
+
 type HostCluster {
     databases: [DbContainers!]!
+}
+
+input HostClusterInput {
+    databases: [DbContainersInput!]!
 }
 

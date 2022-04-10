@@ -46,12 +46,30 @@ type Order {
     items:    [OrderItem!]
 }
 
+input OrderInput {
+    id:       String!
+    customer: String
+    created:  String!
+    items:    [OrderItemInput!]
+}
+
 type Customer {
     id:   String!
     name: String!
 }
 
+input CustomerInput {
+    id:   String!
+    name: String!
+}
+
 type Article {
+    id:       String!
+    name:     String!
+    producer: String
+}
+
+input ArticleInput {
     id:       String!
     name:     String!
     producer: String
@@ -63,7 +81,19 @@ type Producer {
     employees: [String!]
 }
 
+input ProducerInput {
+    id:        String!
+    name:      String!
+    employees: [String!]
+}
+
 type Employee {
+    id:        String!
+    firstName: String!
+    lastName:  String
+}
+
+input EmployeeInput {
     id:        String!
     firstName: String!
     lastName:  String
@@ -99,7 +129,43 @@ type TestType {
     derivedClassNull: DerivedClass
 }
 
+input TestTypeInput {
+    id:               String!
+    dateTime:         String!
+    dateTimeNull:     String
+    bigInt:           String!
+    bigIntNull:       String
+    boolean:          Boolean!
+    booleanNull:      Boolean
+    uint8:            Int!
+    uint8Null:        Int
+    int16:            Int!
+    int16Null:        Int
+    int32:            Int!
+    int32Null:        Int
+    int64:            Int!
+    int64Null:        Int
+    float32:          Float!
+    float32Null:      Float
+    float64:          Float!
+    float64Null:      Float
+    pocStruct:        PocStructInput!
+    pocStructNull:    PocStructInput
+    intArray:         [Int!]!
+    intArrayNull:     [Int!]
+    intNullArray:     [Int]
+    jsonValue:        Any
+    derivedClass:     DerivedClassInput!
+    derivedClassNull: DerivedClassInput
+}
+
 type OrderItem {
+    article: String!
+    amount:  Int!
+    name:    String
+}
+
+input OrderItemInput {
     article: String!
     amount:  Int!
     name:    String
@@ -109,7 +175,15 @@ type PocEntity {
     id: String!
 }
 
+input PocEntityInput {
+    id: String!
+}
+
 type PocStruct {
+    value: Int!
+}
+
+input PocStructInput {
     value: Int!
 }
 
@@ -120,7 +194,18 @@ type DerivedClass {
     name:       String
 }
 
+input DerivedClassInput {
+    derivedVal: Int!
+    article:    String!
+    amount:     Int!
+    name:       String
+}
+
 type TestCommand {
+    text: String
+}
+
+input TestCommandInput {
     text: String
 }
 
@@ -130,7 +215,19 @@ type DbContainers {
     containers: [String!]!
 }
 
+input DbContainersInput {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
 type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+input DbMessagesInput {
     id:       String!
     commands: [String!]!
     messages: [String!]!
@@ -143,11 +240,27 @@ type DbSchema {
     jsonSchemas: Any
 }
 
+input DbSchemaInput {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
 type DbStats {
     containers: [ContainerStats!]
 }
 
+input DbStatsInput {
+    containers: [ContainerStatsInput!]
+}
+
 type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+input ContainerStatsInput {
     name:  String!
     count: Int!
 }
@@ -162,7 +275,21 @@ type HostDetails {
     routes:         [String!]!
 }
 
+input HostDetailsInput {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+    routes:         [String!]!
+}
+
 type HostCluster {
     databases: [DbContainers!]!
+}
+
+input HostClusterInput {
+    databases: [DbContainersInput!]!
 }
 

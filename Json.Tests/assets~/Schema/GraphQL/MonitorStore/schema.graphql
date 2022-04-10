@@ -33,10 +33,21 @@ type HostHits {
     counts: RequestCount!
 }
 
+input HostHitsInput {
+    id:     String!
+    counts: RequestCountInput!
+}
+
 type UserHits {
     id:      String!
     clients: [String!]!
     counts:  [RequestCount!]
+}
+
+input UserHitsInput {
+    id:      String!
+    clients: [String!]!
+    counts:  [RequestCountInput!]
 }
 
 type ClientHits {
@@ -46,13 +57,32 @@ type ClientHits {
     event:  EventDelivery
 }
 
+input ClientHitsInput {
+    id:     String!
+    user:   String!
+    counts: [RequestCountInput!]
+    event:  EventDeliveryInput
+}
+
 type HistoryHits {
     id:         Int!
     counters:   [Int!]!
     lastUpdate: Int!
 }
 
+input HistoryHitsInput {
+    id:         Int!
+    counters:   [Int!]!
+    lastUpdate: Int!
+}
+
 type RequestCount {
+    db:       String
+    requests: Int!
+    tasks:    Int!
+}
+
+input RequestCountInput {
     db:       String
     requests: Int!
     tasks:    Int!
@@ -65,7 +95,20 @@ type EventDelivery {
     changeSubs:  [ChangeSubscription!]
 }
 
+input EventDeliveryInput {
+    seq:         Int!
+    queued:      Int!
+    messageSubs: [String!]
+    changeSubs:  [ChangeSubscriptionInput!]
+}
+
 type ChangeSubscription {
+    container: String!
+    changes:   [Change!]!
+    filter:    String
+}
+
+input ChangeSubscriptionInput {
     container: String!
     changes:   [Change!]!
     filter:    String
@@ -81,7 +124,13 @@ enum Change {
 type ClearStats {
 }
 
+input ClearStatsInput {
+}
+
 type ClearStatsResult {
+}
+
+input ClearStatsResultInput {
 }
 
 type DbContainers {
@@ -90,7 +139,19 @@ type DbContainers {
     containers: [String!]!
 }
 
+input DbContainersInput {
+    id:         String!
+    storage:    String!
+    containers: [String!]!
+}
+
 type DbMessages {
+    id:       String!
+    commands: [String!]!
+    messages: [String!]!
+}
+
+input DbMessagesInput {
     id:       String!
     commands: [String!]!
     messages: [String!]!
@@ -103,11 +164,27 @@ type DbSchema {
     jsonSchemas: Any
 }
 
+input DbSchemaInput {
+    id:          String!
+    schemaName:  String!
+    schemaPath:  String!
+    jsonSchemas: Any
+}
+
 type DbStats {
     containers: [ContainerStats!]
 }
 
+input DbStatsInput {
+    containers: [ContainerStatsInput!]
+}
+
 type ContainerStats {
+    name:  String!
+    count: Int!
+}
+
+input ContainerStatsInput {
     name:  String!
     count: Int!
 }
@@ -122,7 +199,21 @@ type HostDetails {
     routes:         [String!]!
 }
 
+input HostDetailsInput {
+    version:        String!
+    hostName:       String
+    projectName:    String
+    projectWebsite: String
+    envName:        String
+    envColor:       String
+    routes:         [String!]!
+}
+
 type HostCluster {
     databases: [DbContainers!]!
+}
+
+input HostClusterInput {
+    databases: [DbContainersInput!]!
 }
 

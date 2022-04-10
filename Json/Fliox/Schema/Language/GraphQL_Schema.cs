@@ -17,10 +17,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             EmitMetaInfo(schemaInfo, sb);
             foreach (var type in schema.types) {
                 switch (type) {
-                    case GqlScalar scalarType:  EmitScalar  (scalarType,    sb);    break;
-                    case GqlObject obj:         EmitObject  (obj,           sb);    break;
-                    case GqlUnion  unionType:   EmitUnion   (unionType,     sb);    break;
-                    case GqlEnum   enumType:    EmitEnum    (enumType,      sb);    break;
+                    case GqlScalar      scalarType:  EmitScalar     (scalarType,    sb);    break;
+                    case GqlObject      obj:         EmitObject     (obj,           sb);    break;
+                    case GqlUnion       unionType:   EmitUnion      (unionType,     sb);    break;
+                    case GqlEnum        enumType:    EmitEnum       (enumType,      sb);    break;
+                    case GqlInputObject inputObject: EmitInputObject(inputObject,   sb);    break;
                 }
                 sb.AppendLine();
             }
@@ -65,6 +66,17 @@ namespace Friflo.Json.Fliox.Schema.Language
             sb.AppendLine("}");
         }
         
+        private static void EmitInputObject(GqlInputObject type, StringBuilder sb) {
+            int maxFieldName    = type.inputFields.MaxLength(field => field.name.Length);
+            sb.AppendLine($"input {type.name} {{");
+            foreach (var field in type.inputFields) {
+                var fieldType   = GetType(field.type);
+                var indent      = Indent(maxFieldName, field.name);
+                sb.AppendLine($"    {field.name}: {indent}{fieldType}");
+            }
+            sb.AppendLine("}");
+        }
+        
         private static void EmitUnion(GqlUnion type, StringBuilder sb) {
             sb.AppendLine($"union {type.name} =");
             foreach (var itemType in type.possibleTypes) {
@@ -83,6 +95,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static string GetType(GqlType type) {
             switch(type) {
+                case null:
+                    return "Any"; // for messages - as they have no return value
                 case GqlScalar      _:
                 case GqlObject      _:
                 case GqlInterface   _:
