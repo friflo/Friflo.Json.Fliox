@@ -11,115 +11,115 @@ scalar Boolean
 scalar Any
 
 type Query {
-    hosts:          [HostHits!]!
-    hostsById:      [HostHits]!
-    users:          [UserHits!]!
-    usersById:      [UserHits]!
-    clients:        [ClientHits!]!
-    clientsById:    [ClientHits]!
-    histories:      [HistoryHits!]!
-    historiesById:  [HistoryHits]!
-    ClearStats:     ClearStatsResult!
-    std_Echo:       Any!
-    std_Containers: DbContainers!
-    std_Messages:   DbMessages!
-    std_Schema:     DbSchema!
-    std_Stats:      DbStats!
-    std_Details:    HostDetails!
-    std_Cluster:    HostCluster!
+    hosts         (filter: String, limit: Int) : [HostHits!]!
+    hostsById     (ids: [String!]!) : [HostHits]!
+    users         (filter: String, limit: Int) : [UserHits!]!
+    usersById     (ids: [String!]!) : [UserHits]!
+    clients       (filter: String, limit: Int) : [ClientHits!]!
+    clientsById   (ids: [String!]!) : [ClientHits]!
+    histories     (filter: String, limit: Int) : [HistoryHits!]!
+    historiesById (ids: [String!]!) : [HistoryHits]!
+    ClearStats    (param: ClearStatsInput) : ClearStatsResult!
+    std_Echo      (param: Any!) : Any!
+    std_Containers : DbContainers!
+    std_Messages   : DbMessages!
+    std_Schema     : DbSchema!
+    std_Stats     (param: String) : DbStats!
+    std_Details    : HostDetails!
+    std_Cluster    : HostCluster!
 }
 
 type MonitorStore {
-    hosts:     Any
-    users:     Any
-    clients:   Any
-    histories: Any
+    hosts     : Any
+    users     : Any
+    clients   : Any
+    histories : Any
 }
 
 type HostHits {
-    id:     String!
-    counts: RequestCount!
+    id     : String!
+    counts : RequestCount!
 }
 
 input HostHitsInput {
-    id:     String!
-    counts: RequestCountInput!
+    id     : String!
+    counts : RequestCountInput!
 }
 
 type UserHits {
-    id:      String!
-    clients: [String!]!
-    counts:  [RequestCount!]
+    id      : String!
+    clients : [String!]!
+    counts  : [RequestCount!]
 }
 
 input UserHitsInput {
-    id:      String!
-    clients: [String!]!
-    counts:  [RequestCountInput!]
+    id      : String!
+    clients : [String!]!
+    counts  : [RequestCountInput!]
 }
 
 type ClientHits {
-    id:     String!
-    user:   String!
-    counts: [RequestCount!]
-    event:  EventDelivery
+    id     : String!
+    user   : String!
+    counts : [RequestCount!]
+    event  : EventDelivery
 }
 
 input ClientHitsInput {
-    id:     String!
-    user:   String!
-    counts: [RequestCountInput!]
-    event:  EventDeliveryInput
+    id     : String!
+    user   : String!
+    counts : [RequestCountInput!]
+    event  : EventDeliveryInput
 }
 
 type HistoryHits {
-    id:         Int!
-    counters:   [Int!]!
-    lastUpdate: Int!
+    id         : Int!
+    counters   : [Int!]!
+    lastUpdate : Int!
 }
 
 input HistoryHitsInput {
-    id:         Int!
-    counters:   [Int!]!
-    lastUpdate: Int!
+    id         : Int!
+    counters   : [Int!]!
+    lastUpdate : Int!
 }
 
 type RequestCount {
-    db:       String
-    requests: Int!
-    tasks:    Int!
+    db       : String
+    requests : Int!
+    tasks    : Int!
 }
 
 input RequestCountInput {
-    db:       String
-    requests: Int!
-    tasks:    Int!
+    db       : String
+    requests : Int!
+    tasks    : Int!
 }
 
 type EventDelivery {
-    seq:         Int!
-    queued:      Int!
-    messageSubs: [String!]
-    changeSubs:  [ChangeSubscription!]
+    seq         : Int!
+    queued      : Int!
+    messageSubs : [String!]
+    changeSubs  : [ChangeSubscription!]
 }
 
 input EventDeliveryInput {
-    seq:         Int!
-    queued:      Int!
-    messageSubs: [String!]
-    changeSubs:  [ChangeSubscriptionInput!]
+    seq         : Int!
+    queued      : Int!
+    messageSubs : [String!]
+    changeSubs  : [ChangeSubscriptionInput!]
 }
 
 type ChangeSubscription {
-    container: String!
-    changes:   [Change!]!
-    filter:    String
+    container : String!
+    changes   : [Change!]!
+    filter    : String
 }
 
 input ChangeSubscriptionInput {
-    container: String!
-    changes:   [Change!]!
-    filter:    String
+    container : String!
+    changes   : [Change!]!
+    filter    : String
 }
 
 enum Change {
@@ -142,86 +142,86 @@ input ClearStatsResultInput {
 }
 
 type DbContainers {
-    id:         String!
-    storage:    String!
-    containers: [String!]!
+    id         : String!
+    storage    : String!
+    containers : [String!]!
 }
 
 input DbContainersInput {
-    id:         String!
-    storage:    String!
-    containers: [String!]!
+    id         : String!
+    storage    : String!
+    containers : [String!]!
 }
 
 type DbMessages {
-    id:       String!
-    commands: [String!]!
-    messages: [String!]!
+    id       : String!
+    commands : [String!]!
+    messages : [String!]!
 }
 
 input DbMessagesInput {
-    id:       String!
-    commands: [String!]!
-    messages: [String!]!
+    id       : String!
+    commands : [String!]!
+    messages : [String!]!
 }
 
 type DbSchema {
-    id:          String!
-    schemaName:  String!
-    schemaPath:  String!
-    jsonSchemas: Any
+    id          : String!
+    schemaName  : String!
+    schemaPath  : String!
+    jsonSchemas : Any
 }
 
 input DbSchemaInput {
-    id:          String!
-    schemaName:  String!
-    schemaPath:  String!
-    jsonSchemas: Any
+    id          : String!
+    schemaName  : String!
+    schemaPath  : String!
+    jsonSchemas : Any
 }
 
 type DbStats {
-    containers: [ContainerStats!]
+    containers : [ContainerStats!]
 }
 
 input DbStatsInput {
-    containers: [ContainerStatsInput!]
+    containers : [ContainerStatsInput!]
 }
 
 type ContainerStats {
-    name:  String!
-    count: Int!
+    name  : String!
+    count : Int!
 }
 
 input ContainerStatsInput {
-    name:  String!
-    count: Int!
+    name  : String!
+    count : Int!
 }
 
 type HostDetails {
-    version:        String!
-    hostName:       String
-    projectName:    String
-    projectWebsite: String
-    envName:        String
-    envColor:       String
-    routes:         [String!]!
+    version        : String!
+    hostName       : String
+    projectName    : String
+    projectWebsite : String
+    envName        : String
+    envColor       : String
+    routes         : [String!]!
 }
 
 input HostDetailsInput {
-    version:        String!
-    hostName:       String
-    projectName:    String
-    projectWebsite: String
-    envName:        String
-    envColor:       String
-    routes:         [String!]!
+    version        : String!
+    hostName       : String
+    projectName    : String
+    projectWebsite : String
+    envName        : String
+    envColor       : String
+    routes         : [String!]!
 }
 
 type HostCluster {
-    databases: [DbContainers!]!
+    databases : [DbContainers!]!
 }
 
 input HostClusterInput {
-    databases: [DbContainersInput!]!
+    databases : [DbContainersInput!]!
 }
 

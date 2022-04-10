@@ -11,58 +11,58 @@ scalar Boolean
 scalar Any
 
 type Query {
-    credentials:      [UserCredential!]!
-    credentialsById:  [UserCredential]!
-    permissions:      [UserPermission!]!
-    permissionsById:  [UserPermission]!
-    roles:            [Role!]!
-    rolesById:        [Role]!
-    AuthenticateUser: AuthResult!
-    std_Echo:         Any!
-    std_Containers:   DbContainers!
-    std_Messages:     DbMessages!
-    std_Schema:       DbSchema!
-    std_Stats:        DbStats!
-    std_Details:      HostDetails!
-    std_Cluster:      HostCluster!
+    credentials     (filter: String, limit: Int) : [UserCredential!]!
+    credentialsById (ids: [String!]!) : [UserCredential]!
+    permissions     (filter: String, limit: Int) : [UserPermission!]!
+    permissionsById (ids: [String!]!) : [UserPermission]!
+    roles           (filter: String, limit: Int) : [Role!]!
+    rolesById       (ids: [String!]!) : [Role]!
+    AuthenticateUser(param: CredentialsInput) : AuthResult!
+    std_Echo        (param: Any!) : Any!
+    std_Containers   : DbContainers!
+    std_Messages     : DbMessages!
+    std_Schema       : DbSchema!
+    std_Stats       (param: String) : DbStats!
+    std_Details      : HostDetails!
+    std_Cluster      : HostCluster!
 }
 
 type UserStore {
-    credentials: Any
-    permissions: Any
-    roles:       Any
+    credentials : Any
+    permissions : Any
+    roles       : Any
 }
 
 type UserCredential {
-    id:    String!
-    token: String
+    id    : String!
+    token : String
 }
 
 input UserCredentialInput {
-    id:    String!
-    token: String
+    id    : String!
+    token : String
 }
 
 type UserPermission {
-    id:    String!
-    roles: [String!]
+    id    : String!
+    roles : [String!]
 }
 
 input UserPermissionInput {
-    id:    String!
-    roles: [String!]
+    id    : String!
+    roles : [String!]
 }
 
 type Role {
-    id:          String!
-    rights:      [Right!]!
-    description: String
+    id          : String!
+    rights      : [Right!]!
+    description : String
 }
 
 input RoleInput {
-    id:          String!
-    rights:      [RightInput!]!
-    description: String
+    id          : String!
+    rights      : [RightInput!]!
+    description : String
 }
 
 union Right =
@@ -76,25 +76,25 @@ union Right =
 scalar RightInput
 
 type AllowRight {
-    database:    String
-    description: String
+    database    : String
+    description : String
 }
 
 input AllowRightInput {
-    database:    String
-    description: String
+    database    : String
+    description : String
 }
 
 type TaskRight {
-    database:    String
-    types:       [TaskType!]!
-    description: String
+    database    : String
+    types       : [TaskType!]!
+    description : String
 }
 
 input TaskRightInput {
-    database:    String
-    types:       [TaskType!]!
-    description: String
+    database    : String
+    types       : [TaskType!]!
+    description : String
 }
 
 enum TaskType {
@@ -115,49 +115,49 @@ enum TaskType {
 }
 
 type SendMessageRight {
-    database:    String
-    names:       [String!]!
-    description: String
+    database    : String
+    names       : [String!]!
+    description : String
 }
 
 input SendMessageRightInput {
-    database:    String
-    names:       [String!]!
-    description: String
+    database    : String
+    names       : [String!]!
+    description : String
 }
 
 type SubscribeMessageRight {
-    database:    String
-    names:       [String!]!
-    description: String
+    database    : String
+    names       : [String!]!
+    description : String
 }
 
 input SubscribeMessageRightInput {
-    database:    String
-    names:       [String!]!
-    description: String
+    database    : String
+    names       : [String!]!
+    description : String
 }
 
 type OperationRight {
-    database:    String
-    containers:  Any
-    description: String
+    database    : String
+    containers  : Any
+    description : String
 }
 
 input OperationRightInput {
-    database:    String
-    containers:  Any
-    description: String
+    database    : String
+    containers  : Any
+    description : String
 }
 
 type ContainerAccess {
-    operations:       [OperationType!]
-    subscribeChanges: [Change!]
+    operations       : [OperationType!]
+    subscribeChanges : [Change!]
 }
 
 input ContainerAccessInput {
-    operations:       [OperationType!]
-    subscribeChanges: [Change!]
+    operations       : [OperationType!]
+    subscribeChanges : [Change!]
 }
 
 enum OperationType {
@@ -181,114 +181,114 @@ enum Change {
 }
 
 type PredicateRight {
-    names:       [String!]!
-    description: String
+    names       : [String!]!
+    description : String
 }
 
 input PredicateRightInput {
-    names:       [String!]!
-    description: String
+    names       : [String!]!
+    description : String
 }
 
 type Credentials {
-    userId: String!
-    token:  String!
+    userId : String!
+    token  : String!
 }
 
 input CredentialsInput {
-    userId: String!
-    token:  String!
+    userId : String!
+    token  : String!
 }
 
 type AuthResult {
-    isValid: Boolean!
+    isValid : Boolean!
 }
 
 input AuthResultInput {
-    isValid: Boolean!
+    isValid : Boolean!
 }
 
 type DbContainers {
-    id:         String!
-    storage:    String!
-    containers: [String!]!
+    id         : String!
+    storage    : String!
+    containers : [String!]!
 }
 
 input DbContainersInput {
-    id:         String!
-    storage:    String!
-    containers: [String!]!
+    id         : String!
+    storage    : String!
+    containers : [String!]!
 }
 
 type DbMessages {
-    id:       String!
-    commands: [String!]!
-    messages: [String!]!
+    id       : String!
+    commands : [String!]!
+    messages : [String!]!
 }
 
 input DbMessagesInput {
-    id:       String!
-    commands: [String!]!
-    messages: [String!]!
+    id       : String!
+    commands : [String!]!
+    messages : [String!]!
 }
 
 type DbSchema {
-    id:          String!
-    schemaName:  String!
-    schemaPath:  String!
-    jsonSchemas: Any
+    id          : String!
+    schemaName  : String!
+    schemaPath  : String!
+    jsonSchemas : Any
 }
 
 input DbSchemaInput {
-    id:          String!
-    schemaName:  String!
-    schemaPath:  String!
-    jsonSchemas: Any
+    id          : String!
+    schemaName  : String!
+    schemaPath  : String!
+    jsonSchemas : Any
 }
 
 type DbStats {
-    containers: [ContainerStats!]
+    containers : [ContainerStats!]
 }
 
 input DbStatsInput {
-    containers: [ContainerStatsInput!]
+    containers : [ContainerStatsInput!]
 }
 
 type ContainerStats {
-    name:  String!
-    count: Int!
+    name  : String!
+    count : Int!
 }
 
 input ContainerStatsInput {
-    name:  String!
-    count: Int!
+    name  : String!
+    count : Int!
 }
 
 type HostDetails {
-    version:        String!
-    hostName:       String
-    projectName:    String
-    projectWebsite: String
-    envName:        String
-    envColor:       String
-    routes:         [String!]!
+    version        : String!
+    hostName       : String
+    projectName    : String
+    projectWebsite : String
+    envName        : String
+    envColor       : String
+    routes         : [String!]!
 }
 
 input HostDetailsInput {
-    version:        String!
-    hostName:       String
-    projectName:    String
-    projectWebsite: String
-    envName:        String
-    envColor:       String
-    routes:         [String!]!
+    version        : String!
+    hostName       : String
+    projectName    : String
+    projectWebsite : String
+    envName        : String
+    envColor       : String
+    routes         : [String!]!
 }
 
 type HostCluster {
-    databases: [DbContainers!]!
+    databases : [DbContainers!]!
 }
 
 input HostClusterInput {
-    databases: [DbContainersInput!]!
+    databases : [DbContainersInput!]!
 }
 

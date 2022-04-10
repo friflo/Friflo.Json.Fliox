@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.GraphQL;
@@ -61,10 +62,32 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var field in type.fields) {
                 var fieldType   = GetType(field.type);
                 var indent      = Indent(maxFieldName, field.name);
-                sb.AppendLine($"    {field.name}: {indent}{fieldType}");
+                var args        = GetArgs(field.args);
+                sb.AppendLine($"    {field.name}{indent}{args} : {fieldType}");
             }
             sb.AppendLine("}");
         }
+        
+        private static string GetArgs(List<GqlInputValue> args) {
+            if (args.Count == 0)
+                return "";
+            var sb = new StringBuilder();
+            sb.Append("(");
+            bool firstArg = true;
+            foreach (var arg in args) {
+                if (firstArg) {
+                    firstArg = false;
+                } else {
+                    sb.Append(", ");
+                }
+                sb.Append(arg.name);
+                sb.Append(": ");
+                var type = GetType(arg.type);
+                sb.Append(type);
+            }
+            sb.Append(")");
+            return sb.ToString();
+       }
         
         private static void EmitInputObject(GqlInputObject type, StringBuilder sb) {
             int maxFieldName    = type.inputFields.MaxLength(field => field.name.Length);
@@ -72,7 +95,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var field in type.inputFields) {
                 var fieldType   = GetType(field.type);
                 var indent      = Indent(maxFieldName, field.name);
-                sb.AppendLine($"    {field.name}: {indent}{fieldType}");
+                sb.AppendLine($"    {field.name}{indent} : {fieldType}");
             }
             sb.AppendLine("}");
         }
