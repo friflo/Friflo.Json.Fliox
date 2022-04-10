@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -101,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);
 
-            File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/schema.json", schemaResponse.AsString());
+            // File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/schema.json", schemaResponse.AsString());
             // var testResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);
             context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
             // context.WriteString(testResponse, "application/json", 200);

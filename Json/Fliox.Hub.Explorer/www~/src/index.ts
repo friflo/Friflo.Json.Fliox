@@ -535,7 +535,7 @@ export class App {
         `href="./schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
 
         if (app.hostDetails.routes.includes("/graphql")) {
-            apiLinks += ` <a class="graphql" title="${description} as GraphQL API (GQL) in new tab "` +
+            apiLinks += `&nbsp;<a class="graphql" title="${description} as GraphQL API (GQL) in new tab "` +
             `href="./graphql/${database}" target="_blank" rel="noopener noreferrer">GQL</a>`;
         }
         return apiLinks;

@@ -11,8 +11,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     public class GraphQLHandler: IRequestHandler
     {
-        public bool IsMatch       (RequestContext context)  => false;
-        public Task HandleRequest (RequestContext context)  => throw new NotImplementedException("GraphQLHandler");
+        public string   Route                                   => "/graphql";
+        public bool     IsMatch       (RequestContext context)  => false;
+        public Task     HandleRequest (RequestContext context)  => throw new NotImplementedException("GraphQLHandler");
     }
 }
 
