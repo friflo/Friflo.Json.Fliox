@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -67,15 +68,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         if (!resolvers.TryGetValue(name, out var resolver)) {
                             continue;
                         }
-                        SyncRequestTask task = null;
-                        switch(resolver.type) {
-                            case QueryType.Query:
-                                task = QueryEntities(resolver, graphQLQuery, out error);
-                                break;
-                            case QueryType.ReadById:
-                                task = ReadEntities (resolver, graphQLQuery, out error);
-                                break;
-                        }
+                        var task = CreateQueryTask(resolver, graphQLQuery, out error);
                         if (error != null)
                             return null;
                         var query = new Query(name, resolver.type, resolver.container, task, graphQLQuery);
@@ -97,7 +90,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             };
         }
         
-        private static QueryEntities QueryEntities(QueryResolver resolver, GraphQLField query, out string error)
+        private static SyncRequestTask CreateQueryTask(in QueryResolver resolver, GraphQLField query, out string error) {
+            switch(resolver.type) {
+                case QueryType.Query:       return QueryEntities(resolver, query, out error);
+                case QueryType.ReadById:    return ReadEntities (resolver, query, out error);
+            }
+            throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
+        }
+        
+        private static QueryEntities QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             string  filter  = null;
             int?    limit   = null;
@@ -121,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new QueryEntities { container = resolver.container, filter = filter, limit = limit };
         }
         
-        private static ReadEntities ReadEntities(QueryResolver resolver, GraphQLField query, out string error)
+        private static ReadEntities ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             error                   = null;
             List<JsonKey> idList    = null;

@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -23,15 +24,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             for (int n = 0; n < queries.Count; n++) {
                 var query       = queries[n];
                 var taskResult  = taskResults[n];
-                JsonValue queryResult;
-                switch (query.type) {
-                    case QueryType.Query:
-                        queryResult = QueryEntities(query, (QueryEntitiesResult)taskResult);
-                        break;
-                    case QueryType.ReadById:
-                        queryResult = ReadEntities(query, (ReadEntitiesResult)taskResult);
-                        break;
-                }
+                var queryResult = ProcessTaskResult(query, taskResult);
                 data.Add(query.name, queryResult);
             }
             var pool = context.Pool;
@@ -48,11 +41,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return default;
         }
         
-        private static JsonValue QueryEntities(Query query, QueryEntitiesResult result) {
+        private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result) {
+            switch (query.type) {
+                case QueryType.Query:       return QueryEntities (query, result);
+                case QueryType.ReadById:    return ReadEntities  (query, result);
+            }
+            throw new InvalidOperationException($"unexpected query type: {query.type}");
+        }
+        
+        private static JsonValue QueryEntities(Query query, SyncTaskResult result) {
             return new JsonValue("{}");
         }
         
-        private static JsonValue ReadEntities(Query query, ReadEntitiesResult result) {
+        private static JsonValue ReadEntities(Query query, SyncTaskResult result) {
             return new JsonValue("{}");
         }
     }
