@@ -43,17 +43,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result) {
             switch (query.type) {
-                case QueryType.Query:       return QueryEntities (query, result);
-                case QueryType.ReadById:    return ReadEntities  (query, result);
+                case QueryType.Query:       return QueryEntitiesResult  (query, result);
+                case QueryType.ReadById:    return ReadEntitiesResult   (query, result);
             }
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }
         
-        private static JsonValue QueryEntities(Query query, SyncTaskResult result) {
+        private static JsonValue QueryEntitiesResult(Query query, SyncTaskResult result) {
             return new JsonValue("{}");
         }
         
-        private static JsonValue ReadEntities(Query query, SyncTaskResult result) {
+        private static JsonValue ReadEntitiesResult(Query query, SyncTaskResult result) {
             return new JsonValue("{}");
         }
     }

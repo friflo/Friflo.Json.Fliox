@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL.Lab
                 types       = types,
                 directives  = new List<GqlDirective>()
             };
-            return Utils.CreateSchemaResponse(pool, gqlSchema);
+            return ModelUtils.CreateSchemaResponse(pool, gqlSchema);
         }
     }
 }
