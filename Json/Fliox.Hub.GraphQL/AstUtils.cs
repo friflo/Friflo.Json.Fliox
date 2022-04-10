@@ -11,6 +11,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class AstUtils
     {
+        internal static string UnknownArgument(string argName) => $"unknown argument: {argName}";
+
         internal static string TryGetStringArg(GraphQLValue gqlValue, out string error) {
             var stringValue = gqlValue as GraphQLStringValue;
             if (stringValue == null) {
@@ -18,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return null;
             }
             error = null;
-            return stringValue.Value.ToString();;
+            return stringValue.Value.ToString();
         }
         
         internal static int? TryGetIntArg(GraphQLValue gqlValue, out string error) {

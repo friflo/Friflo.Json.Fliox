@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
         }
-        
+
         private static QueryEntities QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             string  filter  = null;
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     switch (argName) {
                         case "filter":  filter  = AstUtils.TryGetStringArg (value, out error);  break;
                         case "limit":   limit   = AstUtils.TryGetIntArg    (value, out error);  break;
-                        default:        error   = UnknownArgument(argName);                     break;
+                        default:        error   = AstUtils.UnknownArgument(argName);            break;
                     }
                     if (error != null)
                         return null;
@@ -119,10 +119,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             error = null;
             return new QueryEntities { container = resolver.container, filter = filter, limit = limit };
-        }
-        
-        private static string UnknownArgument(string argName) {
-            return $"unknown argument: {argName}";
         }
         
         private static ReadEntities ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
@@ -134,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var argName = argument.Name.StringValue;
                     switch (argName) {
                         case "ids":     idList  = AstUtils.TryGetIdList (argument, out error);  break;
-                        default:        error   = UnknownArgument(argName);                     break;
+                        default:        error   = AstUtils.UnknownArgument(argName);            break;
                     }
                     if (error != null)
                         return null;
