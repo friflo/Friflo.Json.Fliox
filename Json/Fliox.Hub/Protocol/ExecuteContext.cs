@@ -6,7 +6,9 @@ using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -23,16 +25,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class ExecuteContext
     {
         // --- public
-        public    readonly  IPool               pool;
-        public              FlioxHub            Hub         => hub;
-        public              JsonKey             clientId;
-        public              ClientIdValidation  clientIdValidation;
-        public              User                User            => authState.user;
-        public              bool                Authenticated   => authState.authenticated;
-        public              string              DatabaseName    { get; internal set; }
-        public              EntityDatabase      Database        => hub.GetDatabase(DatabaseName);
+        public              FlioxHub                    Hub             => hub;
+        public              JsonKey                     clientId;
+        public              ClientIdValidation          clientIdValidation;
+        public              User                        User            => authState.user;
+        public              bool                        Authenticated   => authState.authenticated;
+        public              string                      DatabaseName    { get; internal set; }
+        public              EntityDatabase              Database        => hub.GetDatabase(DatabaseName);
+        public              ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
+        public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
 
         // --- internal / private by intention
+        /// <summary>
+        /// Note!  Keep <see cref="pool"/> internal
+        /// Its <see cref="ObjectPool{T}"/> instances can be made public as properties if required
+        /// </summary>
+        internal  readonly  IPool               pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         internal  readonly  IEventTarget        eventTarget;
         internal            AuthState           authState;

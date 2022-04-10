@@ -33,8 +33,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.pool);
-            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, executeContext.pool, out _);
+            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.ObjectMapper);
+            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, executeContext.ObjectMapper, out _);
             var requestCopy     = (SyncRequest)requestMessage;
             
             var syncResponse    = await host.ExecuteSync(requestCopy, executeContext);
@@ -43,8 +43,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                 return syncResponse;
             }
             RemoteHostHub.SetContainerResults(syncResponse.success);
-            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, executeContext.pool);
-            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, executeContext.pool, out _);
+            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, executeContext.ObjectMapper);
+            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, executeContext.ObjectMapper, out _);
             var responseCopy    = (SyncResponse)responseMessage;
             
             return new ExecuteSyncResult(responseCopy);

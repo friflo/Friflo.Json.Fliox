@@ -1,9 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public static class RemoteUtils
     {
-        public static JsonValue CreateProtocolMessage (ProtocolMessage message, IPool pool)
+        public static JsonValue CreateProtocolMessage (ProtocolMessage message, ObjectPool<ObjectMapper> mapperPool)
         {
-            using (var pooledMapper = pool.ObjectMapper.Get()) {
+            using (var pooledMapper = mapperPool.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
@@ -39,9 +39,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static ProtocolMessage ReadProtocolMessage (JsonValue jsonMessage, IPool pool, out string error)
+        public static ProtocolMessage ReadProtocolMessage (JsonValue jsonMessage, ObjectPool<ObjectMapper> mapperPool, out string error)
         {
-            using (var pooledMapper = pool.ObjectMapper.Get()) {
+            using (var pooledMapper = mapperPool.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;
                 var message         = reader.Read<ProtocolMessage>(jsonMessage);
                 if (reader.Error.ErrSet) {

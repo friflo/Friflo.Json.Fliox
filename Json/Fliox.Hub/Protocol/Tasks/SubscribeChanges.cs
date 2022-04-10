@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, executeContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
 
-            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 filterOp    = reader.Read<FilterOperation>(filter);
                 if (reader.Error.ErrSet) {

@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             if (error != null) {
                 return Task.FromResult(new InvokeResult(error));
             }
-            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             if (error != null) {
                 return new InvokeResult(error);
             }
-            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.ObjectMapper.Get()) {
                 var writer = pooled.instance;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;

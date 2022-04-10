@@ -120,8 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 entities.Add(pair.Value.Json);
             }
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
-            var pool = context.Pool;
-            using (var pooled = pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var writer          = pooled.instance.writer;
                 var entitiesJson    = new JsonValue(writer.WriteAsArray(entities));
                 context.Write(entitiesJson, 0, "application/json", 200);
@@ -160,8 +159,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 entities.Add(pair.Value.Json);
             }
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
-            var pool = context.Pool;
-            using (var pooled = pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var writer      = pooled.instance.writer;
                 var entityArray = writer.WriteAsArray(entities);
                 var response    = new JsonValue(entityArray);
@@ -176,8 +174,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static JsonValue CreateFilterTree(RequestContext context, NameValueCollection queryParams) {
             var sharedCache         = context.SharedCache;
             var filterValidation    = sharedCache.GetValidationType(typeof(FilterOperation));
-            var pool                = context.Pool;
-            using (var pooled = pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
                 var filter = CreateFilter(context, queryParams, mapper, filterValidation.Type);
                 if (filter == null)
@@ -361,9 +358,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private static async Task PatchEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
             if (database == EntityDatabase.MainDB)
                 database = null;
-            var             pool = context.Pool;
             List<JsonPatch> patches;
-            using (var pooled = pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 patches     = reader.Read<List<JsonPatch>>(value);
                 if (reader.Error.ErrSet) {

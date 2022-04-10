@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private void OnReceive(JsonValue messageJson) {
             try {
                 var contextPool    = new Pool(sharedEnv.Pool);
-                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPool, out _);
+                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPool.ObjectMapper, out _);
                 switch (message) {
                     case null:
                         break; // errors are ignored. 
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
             int sendReqId = Interlocked.Increment(ref reqId);
             syncRequest.reqId = sendReqId;
-            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.pool);
+            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.ObjectMapper);
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
                 var wsRequest         = new WebsocketRequest(executeContext, cancellationToken);

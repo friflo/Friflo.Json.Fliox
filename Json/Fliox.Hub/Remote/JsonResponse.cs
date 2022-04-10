@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         {
             var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
             var errorResponse   = new ErrorResponse { message = message, type = type };
-            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;

@@ -97,8 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return Result.Success(bytes, "application/zip");
             }
             if (fileName == "directory") {
-                var pool = context.Pool;
-                using (var pooled = pool.ObjectMapper.Get()) {
+                using (var pooled = context.ObjectMapper.Get()) {
                     var writer      = pooled.instance.writer;
                     writer.Pretty   = true;
                     var directory   = writer.Write(files.Keys.ToList());
@@ -159,7 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var file = pair.Value;
                 jsonSchemaMap.Add(pair.Key, new JsonValue(file));
             }
-            using (var pooled = context.Pool.ObjectMapper.Get()) {
+            using (var pooled = context.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 return new JsonValue(writer.WriteAsArray(jsonSchemaMap));
             }

@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public Task<bool> ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext) {
             try {
-                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, executeContext.pool);
+                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, executeContext.ObjectMapper);
                 var arraySegment    = jsonEvent.AsArraySegment();
                 sendWriter.TryWrite(arraySegment);
                 return Task.FromResult(true);

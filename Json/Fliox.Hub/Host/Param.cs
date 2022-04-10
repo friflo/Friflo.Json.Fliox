@@ -45,9 +45,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
         public bool Get<T>(out T param, out string error) {
-            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+            using (var pooled = executeContext.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
-                param      = reader.Read<T>(this.param);
+                param       = reader.Read<T>(this.param);
                 if (reader.Error.ErrSet) {
                     error   = reader.Error.msg.ToString();
                     return false;
