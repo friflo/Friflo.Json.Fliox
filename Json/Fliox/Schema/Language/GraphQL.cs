@@ -265,13 +265,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                     },
                     type = Gql.List(containerType, true, true)
                 };
+                queries.Add(query);
+            }
+            foreach (var field in schemaType.Fields) {
+                var containerType = Gql.Scalar(field.type.Name);
                 var queryById = new GqlField { name = $"{field.name}ById",
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
                     },
                     type = Gql.List(containerType, true, false)
                 };
-                queries.Add(query);
                 queries.Add(queryById);
             }
             var imports = new HashSet<TypeDef>();

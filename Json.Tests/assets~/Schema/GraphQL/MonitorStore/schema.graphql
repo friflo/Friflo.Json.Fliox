@@ -12,12 +12,12 @@ scalar Any
 
 type Query {
     hosts         (filter: String, limit: Int) : [HostHits!]!
-    hostsById     (ids: [String!]!) : [HostHits]!
     users         (filter: String, limit: Int) : [UserHits!]!
-    usersById     (ids: [String!]!) : [UserHits]!
     clients       (filter: String, limit: Int) : [ClientHits!]!
-    clientsById   (ids: [String!]!) : [ClientHits]!
     histories     (filter: String, limit: Int) : [HistoryHits!]!
+    hostsById     (ids: [String!]!) : [HostHits]!
+    usersById     (ids: [String!]!) : [UserHits]!
+    clientsById   (ids: [String!]!) : [ClientHits]!
     historiesById (ids: [String!]!) : [HistoryHits]!
     ClearStats    (param: ClearStatsInput) : ClearStatsResult!
     std_Echo      (param: Any!) : Any!

@@ -12,10 +12,10 @@ scalar Any
 
 type Query {
     credentials     (filter: String, limit: Int) : [UserCredential!]!
-    credentialsById (ids: [String!]!) : [UserCredential]!
     permissions     (filter: String, limit: Int) : [UserPermission!]!
-    permissionsById (ids: [String!]!) : [UserPermission]!
     roles           (filter: String, limit: Int) : [Role!]!
+    credentialsById (ids: [String!]!) : [UserCredential]!
+    permissionsById (ids: [String!]!) : [UserPermission]!
     rolesById       (ids: [String!]!) : [Role]!
     AuthenticateUser(param: CredentialsInput) : AuthResult!
     std_Echo        (param: Any!) : Any!

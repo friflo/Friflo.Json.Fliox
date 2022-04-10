@@ -12,10 +12,10 @@ scalar Any
 
 type Query {
     containers    (filter: String, limit: Int) : [DbContainers!]!
-    containersById(ids: [String!]!) : [DbContainers]!
     messages      (filter: String, limit: Int) : [DbMessages!]!
-    messagesById  (ids: [String!]!) : [DbMessages]!
     schemas       (filter: String, limit: Int) : [DbSchema!]!
+    containersById(ids: [String!]!) : [DbContainers]!
+    messagesById  (ids: [String!]!) : [DbMessages]!
     schemasById   (ids: [String!]!) : [DbSchema]!
     std_Echo      (param: Any!) : Any!
     std_Containers : DbContainers!

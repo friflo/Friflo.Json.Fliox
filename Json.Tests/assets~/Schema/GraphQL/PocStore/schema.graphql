@@ -17,16 +17,16 @@ scalar Any
 
 type Query {
     orders           (filter: String, limit: Int) : [Order!]!
-    ordersById       (ids: [String!]!) : [Order]!
     customers        (filter: String, limit: Int) : [Customer!]!
-    customersById    (ids: [String!]!) : [Customer]!
     articles         (filter: String, limit: Int) : [Article!]!
-    articlesById     (ids: [String!]!) : [Article]!
     producers        (filter: String, limit: Int) : [Producer!]!
-    producersById    (ids: [String!]!) : [Producer]!
     employees        (filter: String, limit: Int) : [Employee!]!
-    employeesById    (ids: [String!]!) : [Employee]!
     types            (filter: String, limit: Int) : [TestType!]!
+    ordersById       (ids: [String!]!) : [Order]!
+    customersById    (ids: [String!]!) : [Customer]!
+    articlesById     (ids: [String!]!) : [Article]!
+    producersById    (ids: [String!]!) : [Producer]!
+    employeesById    (ids: [String!]!) : [Employee]!
     typesById        (ids: [String!]!) : [TestType]!
     TestCommand      (param: TestCommandInput) : Boolean!
     SyncCommand      (param: String) : String!
