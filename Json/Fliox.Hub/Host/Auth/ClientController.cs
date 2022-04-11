@@ -24,8 +24,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public abstract class ClientController {
         /// key: clientId
-        internal readonly   ConcurrentDictionary<JsonKey, UserClient>  clients = new ConcurrentDictionary<JsonKey, UserClient>(JsonKey.Equality);
-        public              IReadOnlyDictionary<JsonKey, UserClient>   Clients => clients;
+        internal readonly   ConcurrentDictionary<JsonKey, UserClient>   clients = new ConcurrentDictionary<JsonKey, UserClient>(JsonKey.Equality);
+        internal            IReadOnlyDictionary <JsonKey, UserClient>   Clients => clients;
         
         protected abstract  JsonKey     NewId();
 

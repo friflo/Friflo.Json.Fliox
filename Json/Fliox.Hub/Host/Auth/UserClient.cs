@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public readonly struct UserClient {
+    internal readonly struct UserClient {
         internal readonly   JsonKey                                     userId;
         internal readonly   ConcurrentDictionary<string, RequestCount>  requestCounts;
         
