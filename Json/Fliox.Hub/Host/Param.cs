@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
