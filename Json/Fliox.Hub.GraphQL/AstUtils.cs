@@ -76,6 +76,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var nullVal = (GraphQLNullValue)value;
                     sb.Append(nullVal.Value.Span);
                     break;
+                case ASTNodeKind.BooleanValue:
+                    var boolVal = (GraphQLBooleanValue)value;
+                    sb.Append(boolVal.Value.Span);
+                    break;
                 case ASTNodeKind.IntValue:
                     var intVal = (GraphQLIntValue)value;
                     sb.Append(intVal.Value.Span);
