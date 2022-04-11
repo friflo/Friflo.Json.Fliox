@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Utils
         private readonly    Dictionary<string, byte[]>          files   = new Dictionary<string, byte[]>();
         private readonly    Dictionary<string, List<string>>    folders = new Dictionary<string, List<string>>();
         
+        public              string[]                            BaseFolders => throw new NotImplementedException();
         
         public static ZipFileHandler Create (string zipPath, string baseFolder) {
             var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read, FileShare.Read, 0x1000, false);
