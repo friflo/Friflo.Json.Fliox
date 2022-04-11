@@ -17,9 +17,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal class RestHandler : IRequestHandler
         {
-            private const   string  RestBase = "/rest";
+            private const   string      RestBase = "/rest";
             
-            public          string  Route => RestBase;
+            public          string[]    Routes => new []{ RestBase };
             
             public bool IsMatch(RequestContext context) {
                 return RequestContext.IsBasePath(RestBase, context.route);

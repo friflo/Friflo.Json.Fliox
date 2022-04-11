@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             : base(hub, env, hostName)
         {
             hubRoutes = hub.routes;
-            hubRoutes.Add(restHandler.Route);
-            hubRoutes.Add(schemaHandler.Route);
+            hubRoutes.AddRange(restHandler.Routes);
+            hubRoutes.AddRange(schemaHandler.Routes);
             
             if (endpoint == null)           throw new ArgumentNullException(nameof(endpoint), "common values: \"/fliox/\" or \"/\"");
             if (!endpoint.StartsWith("/"))  throw new ArgumentException("endpoint requires '/' as first character");
@@ -114,12 +114,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void AddHandler(IRequestHandler requestHandler) {
             if (requestHandler == null) throw new ArgumentNullException(nameof(requestHandler));
             customHandlers.Add(requestHandler);
-            hubRoutes.Add(requestHandler.Route);
+            hubRoutes.AddRange(requestHandler.Routes);
         }
         
         public void RemoveHandler(IRequestHandler requestHandler) {
             customHandlers.Remove(requestHandler);
-            hubRoutes.Remove(requestHandler.Route);
+            foreach (var route in requestHandler.Routes) {
+                hubRoutes.Remove(route);
+            }
         }
         
         public void AddSchemaGenerator(string type, string name, SchemaGenerator generator) {

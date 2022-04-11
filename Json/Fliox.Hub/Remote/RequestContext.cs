@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public interface IRequestHandler
     {
-        string      Route           { get; }
+        string[]    Routes          { get; }
         bool        IsMatch         (RequestContext context);
         Task        HandleRequest   (RequestContext context);
     }
