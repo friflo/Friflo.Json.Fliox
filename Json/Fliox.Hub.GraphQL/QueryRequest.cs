@@ -186,17 +186,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 }
                 return new JsonValue();
             }
+            JsonValue result;
             foreach (var argument in args) {
                 var argName = argument.Name.StringValue;
                 switch (argName) {
-                    case "param":   error   = null;                                 break; // todo
-                    default:        error   = AstUtils.UnknownArgument(argName);    break;
+                    case "param":   result  = AstUtils.TryGetAny(argument.Value, out error);    break;
+                    default:        error   = AstUtils.UnknownArgument(argName);                break;
                 }
                 if (error != null)
                     return new JsonValue();
             }
             error = null;
-            return new JsonValue();
+            return result;
         }
     }
 }

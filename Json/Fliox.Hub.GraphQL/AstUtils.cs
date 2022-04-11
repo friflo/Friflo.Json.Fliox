@@ -3,10 +3,13 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using GraphQLParser.AST;
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class AstUtils
@@ -14,23 +17,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal static string UnknownArgument(string argName) => $"unknown argument: {argName}";
 
         internal static string TryGetStringArg(GraphQLValue gqlValue, out string error) {
-            var stringValue = gqlValue as GraphQLStringValue;
-            if (stringValue == null) {
+            var strVal = gqlValue as GraphQLStringValue;
+            if (strVal == null) {
                 error = "expect string argument";
                 return null;
             }
             error = null;
-            return stringValue.Value.ToString();
+            return strVal.Value.ToString();
         }
         
         internal static int? TryGetIntArg(GraphQLValue gqlValue, out string error) {
             var gqlIntValue = gqlValue as GraphQLIntValue;
             if (gqlIntValue == null) {
-                error = "expect string argument";
+                error = "expect int argument";
                 return null;
             }
-            var stringValue = gqlIntValue.Value.ToString(); // todo avoid string creation
-            if (!int.TryParse(stringValue, out var intValue)) {
+            var strVal = gqlIntValue.Value.Span;
+            if (!int.TryParse(strVal, out var intValue)) {
                 error = "invalid integer";
                 return null;
             }
@@ -58,6 +61,72 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             error = null;
             return result;
+        }
+        
+        internal static JsonValue TryGetAny(GraphQLValue value, out string error) {
+            var sb = new StringBuilder();
+            GetAny(value, sb);
+            error = null;
+            return new JsonValue(sb.ToString());
+        }
+        
+        private static void GetAny(GraphQLValue value, StringBuilder sb) {
+            switch (value.Kind) {
+                case ASTNodeKind.NullValue:
+                    sb.Append("null");
+                    break;
+                case ASTNodeKind.IntValue:
+                    var intVal = (GraphQLIntValue)value;
+                    sb.Append(intVal.Value.Span);
+                    break;
+                case ASTNodeKind.FloatValue:
+                    var fltVal = (GraphQLFloatValue)value;
+                    sb.Append(fltVal.Value.Span);
+                    break;
+                case ASTNodeKind.StringValue:
+                    var strVal = (GraphQLStringValue)value;
+                    sb.Append('"');
+                    sb.Append(strVal.Value.Span);
+                    sb.Append('"');
+                    break;
+                case ASTNodeKind.ObjectValue:
+                    var obj = (GraphQLObjectValue)value;
+                    sb.Append('{');
+                    var firstField = true;
+                    if (obj.Fields != null) {
+                        foreach (var field in obj.Fields) {
+                            if (firstField) {
+                                firstField = false;
+                            } else {
+                                sb.Append(", ");
+                            }
+                            sb.Append('"');
+                            sb.Append(field.Name.StringValue);
+                            sb.Append("\": ");
+                            GetAny(field.Value, sb);
+                        }
+                    }
+                    sb.Append('}');
+                    break;
+                case ASTNodeKind.ListValue:
+                    var list = (GraphQLListValue)value;
+                    sb.Append('[');
+                    var firstItem = true;
+                    if (list.Values != null) {
+                        foreach (var item in list.Values) {
+                            if (firstItem) {
+                                firstItem = false;
+                            } else {
+                                sb.Append(", ");
+                            }
+                            GetAny(item, sb);
+                        }
+                    }
+                    sb.Append(']');
+                    break;
+                default:
+                    throw new InvalidOperationException($"unexpected Kind: {value.Kind}");
+            }
         }
     }
 }
