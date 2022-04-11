@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  SyncRequestTask task;
         internal  readonly  GraphQLField    graphQL;
 
-        public    override  string      ToString() => name;
+        public    override  string          ToString() => $"{type}: {name}";
 
         internal Query(string name, QueryType type, string container, SyncRequestTask task, GraphQLField graphQL) {
             this.name       = name;
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
         internal  readonly  bool        paramRequired;  // message / command only
 
-        public    override  string      ToString() => name;
+        public    override  string      ToString() => $"{type}: {name}";
 
         internal QueryResolver(string name, QueryType type, string container, FieldDef param) {
             this.name       = name;
