@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     internal sealed class SchemaHandler : IRequestHandler
     {
         private   const     string                              SchemaBase = "/schema";
-        internal            string                              image = "img/Json-Fliox-53x43.svg";
+        internal            string                              image = "explorer/img/Json-Fliox-53x43.svg";
         internal  readonly  CreateZip                           zip;
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
         private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
