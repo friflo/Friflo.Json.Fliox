@@ -27,20 +27,20 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaType  = typeSchema.RootType;
             foreach (var field in schemaType.Fields) {
                 var container = field.name;
-                var query       = new QueryResolver(container,          QueryType.Query,    container, null, null);
-                var readById    = new QueryResolver($"{container}ById", QueryType.ReadById, container, null, null);
+                var query       = new QueryResolver(container,          QueryType.Query,    container, null);
+                var readById    = new QueryResolver($"{container}ById", QueryType.ReadById, container, null);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
             }
 
             foreach (var command in schemaType.Commands) {
                 var name    = command.name.Replace(".", "_");
-                var query   = new QueryResolver(command.name, QueryType.Command, null, command.param, command.result);
+                var query   = new QueryResolver(command.name, QueryType.Command, null, command.param);
                 resolvers.Add(name,             query);
             }
             foreach (var message in schemaType.Messages) {
                 var name    = message.name.Replace(".", "_");
-                var query   = new QueryResolver(message.name, QueryType.Message, null, message.param, message.result);
+                var query   = new QueryResolver(message.name, QueryType.Message, null, message.param);
                 resolvers.Add(name,             query);
             }
         }
@@ -162,24 +162,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, out string error)
         {
             var arguments   = query.Arguments;
-            var param       = GetMessageArg(arguments, resolver.param, out error);
+            var param       = GetMessageArg(arguments, resolver, out error);
             return new SendCommand { name = resolver.name, param = param };
         }
         
         private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, out string error)
         {
             var arguments   = query.Arguments;
-            var param       = GetMessageArg(arguments, resolver.param, out error);
+            var param       = GetMessageArg(arguments, resolver, out error);
             return new SendMessage { name = resolver.name, param = param };
         }
         
-        private static JsonValue GetMessageArg(GraphQLArguments args, FieldDef param, out string error) {
+        private static JsonValue GetMessageArg(GraphQLArguments args, in QueryResolver resolver, out string error) {
             if (args == null) {
-                if (param == null) {
+                if (!resolver.hasParam) {
                     error = null;
                     return new JsonValue();
                 }
-                if (param.required) {
+                if (resolver.paramRequired) {
                     error = "Expect argument: param";
                 } else {
                     error = null;
