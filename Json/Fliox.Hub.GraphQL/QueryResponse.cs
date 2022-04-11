@@ -12,9 +12,9 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class QueryResponse
+    internal static class QueryResponseHandler
     {
-        internal static QueryResult ProcessSyncResponse(
+        internal static JsonValue ProcessSyncResponse(
             RequestContext  context,
             List<Query>     queries,
             SyncResponse    syncResponse)
@@ -32,11 +32,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     data.Add(query.name, queryResult);
                 }
                 var response            = new GqlResponse { data = data };
-                var jsonResponse        = new JsonValue(writer.WriteAsArray(response));
-
-                context.Write(jsonResponse, 0, "application/json", 200);
+                return new JsonValue(writer.WriteAsArray(response));
             }
-            return default;
         }
         
         private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer) {

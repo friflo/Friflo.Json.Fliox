@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -17,12 +16,24 @@ using GraphQLParser.AST;
 // ReSharper disable PossibleNullReferenceException
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class QueryRequest
+    internal readonly struct QueryRequest
+    {
+        internal readonly   SyncRequest     syncRequest;
+        internal readonly   List<Query>     queries;
+        
+        internal QueryRequest (SyncRequest syncRequest, List<Query> queries) {
+            this.syncRequest    = syncRequest;
+            this.queries        = queries;
+        }
+    }
+    
+    
+    internal class QueryRequestHandler
     {
         private readonly string                             database;
         private readonly Dictionary<string, QueryResolver>  resolvers = new Dictionary<string, QueryResolver>();
         
-        internal QueryRequest(TypeSchema typeSchema, string database) {
+        internal QueryRequestHandler(TypeSchema typeSchema, string database) {
             this.database   = database;
             var schemaType  = typeSchema.RootType;
             foreach (var field in schemaType.Fields) {
@@ -46,26 +57,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal async Task<QueryResult> Execute(RequestContext context, GraphQLDocument document, string docStr) {
-            foreach (var definition in document.Definitions) {
+        internal List<QueryRequest> CreateRequests(RequestContext context, GraphQLDocument document, string docStr, out string error) {
+            var definitions = document.Definitions;
+            var result      = new List<QueryRequest>(definitions.Count);
+            foreach (var definition in definitions) {
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
                         var selections  = operation.SelectionSet.Selections;
                         var queries     = new List<Query> (selections.Count);
-                        var syncRequest = CreateSyncRequest(context, selections, docStr, queries, out string error);
+                        var syncRequest = CreateSyncRequest(context, selections, docStr, queries, out error);
                         if (error != null) {
-                            return new QueryResult("query error", error, 400);
+                            return null;
                         }
-                        var executeContext  = context.CreateExecuteContext(null);
-                        var response        = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
-
-                        if (response.error != null) {
-                            return new QueryResult("request error", response.error.message, 400);
-                        }
-                        return QueryResponse.ProcessSyncResponse(context, queries, response.success);
+                        result.Add(new QueryRequest(syncRequest, queries));
+                        break;
                 }
             }
-            return new QueryResult ("request", "not implemented", 400);
+            error = null;
+            return result;
         }
         
         private SyncRequest CreateSyncRequest(

@@ -49,11 +49,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                var queryResult = await schema.requestHandler.Execute(context, query, docStr).ConfigureAwait(false);
-                
-                if (queryResult.error == null)
+                var queryRequests = schema.requestHandler.CreateRequests(context, query, docStr, out error);
+                if (error != null) {
+                    context.WriteError("invalid request", error, 400);
                     return;
-                context.WriteError(queryResult.error, queryResult.details, queryResult.statusCode);  
+                }
+                foreach (var request in queryRequests) {
+                    var executeContext  = context.CreateExecuteContext(null);
+                    var syncResult      = await context.hub.ExecuteSync(request.syncRequest, executeContext).ConfigureAwait(false);
+
+                    if (syncResult.error != null) {
+                        context.WriteError("execution error", syncResult.error.message, 500);
+                        return;
+                    }
+                    var response    = QueryResponseHandler.ProcessSyncResponse(context, request.queries, syncResult.success);
+                    // todo - for now return response only for first query
+                    context.Write(response, 0, "application/json", 200);
+                    return;
+                }
                 return;
             }
             // --------------    GET            /graphql/{database}
@@ -88,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaName      = generator.rootType.Name;
 
             var schemaResponse  = ModelUtils.CreateSchemaResponse(context.ObjectMapper, gqlSchema);
-            var queryHandler    = new QueryRequest(typeSchema, dbName);
+            var queryHandler    = new QueryRequestHandler(typeSchema, dbName);
             schema              = new GraphQLDbSchema (dbName, schemaName, gqlSchema, schemaResponse, queryHandler);
             dbSchemas[dbName]   = schema;
             return schema;
