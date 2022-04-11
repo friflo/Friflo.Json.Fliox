@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     
-    public sealed class Pool : IPool
+    internal sealed class Pool : IPool
     {
         // Note: Pool does not expose sharedEnv.TypeStore by intention to avoid side effects by unexpected usage. 
         private   readonly  SharedEnv                       sharedEnv;

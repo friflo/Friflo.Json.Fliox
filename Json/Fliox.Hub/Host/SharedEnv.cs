@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   TypeStore       typeStore;
         internal readonly   SharedCache     sharedCache;
         public   virtual    TypeStore       TypeStore   => typeStore;
-        public              Pool            Pool        { get; }
+        internal            Pool            Pool        { get; }
         internal readonly   HubLogger       hubLogger = new HubLogger();
         public              IHubLogger      Logger {
             get => hubLogger.instance;
@@ -56,6 +56,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual void Dispose () {
             Pool.Dispose();
             TypeStore.Dispose();
+        }
+        
+        public void DisposePool () {
+            Pool.Dispose();
         }
     }
     
