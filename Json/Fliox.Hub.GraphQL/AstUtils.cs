@@ -63,13 +63,20 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static JsonValue TryGetAny(GraphQLValue value, out string error) {
+        internal static JsonValue TryGetAny(GraphQLValue value, string docStr, out string error) {
             var sb = new StringBuilder();
-            error = GetAny(value, sb);
+            var astError = GetAny(value, sb);
+            if (astError != null) {
+                var loc         = astError.location;
+                var astValue    = docStr.Substring(loc.Start, loc.End - loc.Start);
+                error           = $"invalid value at position {loc.Start}. kind: {astError.kind}, value: {astValue}";
+                return new JsonValue();
+            }
+            error = null;
             return new JsonValue(sb.ToString());
         }
         
-        private static string GetAny(GraphQLValue value, StringBuilder sb) {
+        private static Error GetAny(GraphQLValue value, StringBuilder sb) {
             switch (value.Kind) {
                 case ASTNodeKind.NullValue:
                     var nullVal = (GraphQLNullValue)value;
@@ -134,7 +141,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     sb.Append(']');
                     return null;
             }
-            return $"unexpected value. kind: {value.Kind}, value: {value}";
+            return new Error(value.Kind, value.Location);
+        }
+        
+        private class Error {
+            internal    readonly    ASTNodeKind     kind;
+            internal    readonly    GraphQLLocation location;
+            
+            internal Error(ASTNodeKind kind, GraphQLLocation location) {
+                this.kind       = kind;
+                this.location   = location;
+            }
         }
     }
 }

@@ -43,12 +43,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (method == "POST") {
                 var body        = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 var postBody    = ReadRequestBody(context, body);
-                var query       = Parser.Parse(postBody.query);
+                var docStr      = postBody.query;
+                var query       = Parser.Parse(docStr);
                 if (postBody.operationName == "IntrospectionQuery") {
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                var queryResult = await schema.requestHandler.Execute(context, query).ConfigureAwait(false);
+                var queryResult = await schema.requestHandler.Execute(context, query, docStr).ConfigureAwait(false);
                 
                 if (queryResult.error == null)
                     return;

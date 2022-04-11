@@ -46,13 +46,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal async Task<QueryResult> Execute(RequestContext context, GraphQLDocument document) {
+        internal async Task<QueryResult> Execute(RequestContext context, GraphQLDocument document, string docStr) {
             foreach (var definition in document.Definitions) {
                 switch (definition) {
                     case GraphQLOperationDefinition operation:
                         var selections  = operation.SelectionSet.Selections;
                         var queries     = new List<Query> (selections.Count);
-                        var syncRequest = CreateSyncRequest(context, selections, queries, out string error);
+                        var syncRequest = CreateSyncRequest(context, selections, docStr, queries, out string error);
                         if (error != null) {
                             return new QueryResult("query error", error, 400);
                         }
@@ -71,6 +71,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private SyncRequest CreateSyncRequest(
             RequestContext  context,
             List<ASTNode>   selections,
+            string          docStr,
             List<Query>     queries,
             out string      error)
         {
@@ -82,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         if (!resolvers.TryGetValue(name, out var resolver)) {
                             continue;
                         }
-                        var task = CreateQueryTask(resolver, graphQLQuery, out error);
+                        var task = CreateQueryTask(resolver, graphQLQuery, docStr, out error);
                         if (error != null)
                             return null;
                         var query = new Query(name, resolver.type, resolver.container, task, graphQLQuery);
@@ -104,12 +105,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             };
         }
         
-        private static SyncRequestTask CreateQueryTask(in QueryResolver resolver, GraphQLField query, out string error) {
+        private static SyncRequestTask CreateQueryTask(
+            in QueryResolver    resolver,
+            GraphQLField        query,
+            string              docStr,
+            out string          error)
+        {
             switch(resolver.type) {
                 case QueryType.Query:       return QueryEntities(resolver, query, out error);
                 case QueryType.ReadById:    return ReadEntities (resolver, query, out error);
-                case QueryType.Command:     return SendCommand  (resolver, query, out error);
-                case QueryType.Message:     return SendMessage  (resolver, query, out error);
+                case QueryType.Command:     return SendCommand  (resolver, query, docStr, out error);
+                case QueryType.Message:     return SendMessage  (resolver, query, docStr, out error);
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
         }
@@ -160,21 +166,21 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new ReadEntities { container = resolver.container, sets = sets };
         }
         
-        private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, out string error)
+        private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
             var arguments   = query.Arguments;
-            var param       = GetMessageArg(arguments, resolver, out error);
+            var param       = GetMessageArg(arguments, docStr, resolver, out error);
             return new SendCommand { name = resolver.name, param = param };
         }
         
-        private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, out string error)
+        private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
             var arguments   = query.Arguments;
-            var param       = GetMessageArg(arguments, resolver, out error);
+            var param       = GetMessageArg(arguments, docStr, resolver, out error);
             return new SendMessage { name = resolver.name, param = param };
         }
         
-        private static JsonValue GetMessageArg(GraphQLArguments args, in QueryResolver resolver, out string error) {
+        private static JsonValue GetMessageArg(GraphQLArguments args, string docStr, in QueryResolver resolver, out string error) {
             if (args == null) {
                 if (!resolver.hasParam) {
                     error = null;
@@ -191,8 +197,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in args) {
                 var argName = argument.Name.StringValue;
                 switch (argName) {
-                    case "param":   result  = AstUtils.TryGetAny(argument.Value, out error);    break;
-                    default:        error   = AstUtils.UnknownArgument(argName);                break;
+                    case "param":   result  = AstUtils.TryGetAny(argument.Value, docStr, out error);    break;
+                    default:        error   = AstUtils.UnknownArgument(argName);                        break;
                 }
                 if (error != null)
                     return new JsonValue();
