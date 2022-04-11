@@ -65,35 +65,34 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         internal static JsonValue TryGetAny(GraphQLValue value, out string error) {
             var sb = new StringBuilder();
-            GetAny(value, sb);
-            error = null;
+            error = GetAny(value, sb);
             return new JsonValue(sb.ToString());
         }
         
-        private static void GetAny(GraphQLValue value, StringBuilder sb) {
+        private static string GetAny(GraphQLValue value, StringBuilder sb) {
             switch (value.Kind) {
                 case ASTNodeKind.NullValue:
                     var nullVal = (GraphQLNullValue)value;
                     sb.Append(nullVal.Value.Span);
-                    break;
+                    return null;
                 case ASTNodeKind.BooleanValue:
                     var boolVal = (GraphQLBooleanValue)value;
                     sb.Append(boolVal.Value.Span);
-                    break;
+                    return null;
                 case ASTNodeKind.IntValue:
                     var intVal = (GraphQLIntValue)value;
                     sb.Append(intVal.Value.Span);
-                    break;
+                    return null;
                 case ASTNodeKind.FloatValue:
                     var fltVal = (GraphQLFloatValue)value;
                     sb.Append(fltVal.Value.Span);
-                    break;
+                    return null;
                 case ASTNodeKind.StringValue:
                     var strVal = (GraphQLStringValue)value;
                     sb.Append('"');
                     sb.Append(strVal.Value.Span);
                     sb.Append('"');
-                    break;
+                    return null;
                 case ASTNodeKind.ObjectValue:
                     var obj = (GraphQLObjectValue)value;
                     sb.Append('{');
@@ -109,11 +108,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                             sb.Append(field.Name.StringValue);
                             sb.Append('"');
                             sb.Append(':');
-                            GetAny(field.Value, sb);
+                            var error = GetAny(field.Value, sb);
+                            if (error != null)
+                                return error;
                         }
                     }
                     sb.Append('}');
-                    break;
+                    return null;
                 case ASTNodeKind.ListValue:
                     var list = (GraphQLListValue)value;
                     sb.Append('[');
@@ -125,14 +126,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                             } else {
                                 sb.Append(',');
                             }
-                            GetAny(item, sb);
+                            var error = GetAny(item, sb);
+                            if (error != null)
+                                return error;
                         }
                     }
                     sb.Append(']');
-                    break;
-                default:
-                    throw new InvalidOperationException($"unexpected Kind: {value.Kind}");
+                    return null;
             }
+            return $"unexpected value. kind: {value.Kind}, value: {value}";
         }
     }
 }
