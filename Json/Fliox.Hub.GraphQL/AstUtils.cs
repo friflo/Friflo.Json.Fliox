@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             var values = gqlList.Values;
             if (values == null) {
-                error = "invalid string array";
-                return null;
+                error = null;
+                return new List<JsonKey>();
             }
             var result = new List<JsonKey>(values.Count);
             foreach (var item in values) {
@@ -63,8 +63,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         internal static JsonValue TryGetAny(GraphQLValue value, string docStr, out string error) {
-            var sb = new StringBuilder();
-            var astError = GetAny(value, sb);
+            var sb          = new StringBuilder();
+            var astError    = GetAny(value, sb);
             if (astError != null) {
                 var loc         = astError.location;
                 var astValue    = docStr.Substring(loc.Start, loc.End - loc.Start);
@@ -102,40 +102,46 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case ASTNodeKind.ObjectValue:
                     var obj = (GraphQLObjectValue)value;
                     sb.Append('{');
-                    var firstField = true;
-                    if (obj.Fields != null) {
-                        foreach (var field in obj.Fields) {
-                            if (firstField) {
-                                firstField = false;
-                            } else {
-                                sb.Append(',');
-                            }
-                            sb.Append('"');
-                            sb.Append(field.Name.StringValue);
-                            sb.Append('"');
-                            sb.Append(':');
-                            var error = GetAny(field.Value, sb);
-                            if (error != null)
-                                return error;
+                    var firstField  = true;
+                    var fields      = obj.Fields;
+                    if (fields == null) {
+                        sb.Append('}');
+                        return null;
+                    }
+                    foreach (var field in fields) {
+                        if (firstField) {
+                            firstField = false;
+                        } else {
+                            sb.Append(',');
                         }
+                        sb.Append('"');
+                        sb.Append(field.Name.StringValue);
+                        sb.Append('"');
+                        sb.Append(':');
+                        var error = GetAny(field.Value, sb);
+                        if (error != null)
+                            return error;
                     }
                     sb.Append('}');
                     return null;
                 case ASTNodeKind.ListValue:
                     var list = (GraphQLListValue)value;
                     sb.Append('[');
-                    var firstItem = true;
-                    if (list.Values != null) {
-                        foreach (var item in list.Values) {
-                            if (firstItem) {
-                                firstItem = false;
-                            } else {
-                                sb.Append(',');
-                            }
-                            var error = GetAny(item, sb);
-                            if (error != null)
-                                return error;
+                    var firstItem   = true;
+                    var values      = list.Values;
+                    if (values == null) {
+                        sb.Append(']');
+                        return null;
+                    }
+                    foreach (var item in values) {
+                        if (firstItem) {
+                            firstItem = false;
+                        } else {
+                            sb.Append(',');
                         }
+                        var error = GetAny(item, sb);
+                        if (error != null)
+                            return error;
                     }
                     sb.Append(']');
                     return null;
