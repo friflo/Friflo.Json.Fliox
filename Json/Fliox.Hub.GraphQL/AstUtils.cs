@@ -73,7 +73,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static void GetAny(GraphQLValue value, StringBuilder sb) {
             switch (value.Kind) {
                 case ASTNodeKind.NullValue:
-                    sb.Append("null");
+                    var nullVal = (GraphQLNullValue)value;
+                    sb.Append(nullVal.Value.Span);
                     break;
                 case ASTNodeKind.IntValue:
                     var intVal = (GraphQLIntValue)value;
@@ -98,11 +99,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                             if (firstField) {
                                 firstField = false;
                             } else {
-                                sb.Append(", ");
+                                sb.Append(',');
                             }
                             sb.Append('"');
                             sb.Append(field.Name.StringValue);
-                            sb.Append("\": ");
+                            sb.Append('"');
+                            sb.Append(':');
                             GetAny(field.Value, sb);
                         }
                     }
@@ -117,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                             if (firstItem) {
                                 firstItem = false;
                             } else {
-                                sb.Append(", ");
+                                sb.Append(',');
                             }
                             GetAny(item, sb);
                         }
