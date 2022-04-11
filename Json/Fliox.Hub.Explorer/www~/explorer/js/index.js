@@ -25,7 +25,7 @@ const entityContainer = el("entityContainer");
         console.error(`SW failed: ${error}`);
     });
 } */
-export const flioxRoot = "../";
+export const flioxRoot = "./";
 export class App {
     constructor() {
         // --------------------------------------- schema ---------------------------------------

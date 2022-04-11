@@ -52,7 +52,7 @@ namespace Fliox.DemoHub
                     await context.Response.WriteAsync("Hello World!");
                 });
                 endpoints.Map("/", async context => {
-                    var location = $"{hostHub.endpoint}explorer/";
+                    var location = hostHub.endpoint;
                     context.Response.Redirect(location, false);
                     await context.Response.WriteAsync($"redirect -> {location}");
                 });

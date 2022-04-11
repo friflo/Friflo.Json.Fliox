@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 return;
                             }
                             if (path == "/" && endpoint != "/") {
-                                var location = $"{endpoint}explorer/";
+                                var location = endpoint;
                                 var headers = new Dictionary<string, string> { { "Location", location }};
                                 await HttpListenerExtensions.WriteResponseString(context.Response, "text/plain", 302, $"redirect -> {location}", headers).ConfigureAwait(false);
                                 return;

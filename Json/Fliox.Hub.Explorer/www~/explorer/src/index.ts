@@ -45,7 +45,7 @@ const entityContainer       = el("entityContainer");
     });
 } */
 
-export const flioxRoot = "../";
+export const flioxRoot = "./";
 
 
 export class App {

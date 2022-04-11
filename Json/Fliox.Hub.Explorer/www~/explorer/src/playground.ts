@@ -183,7 +183,7 @@ export class Playground
         option.text     = "Select request ...";
         selectExample.add(option);
 
-        const folder    = './example-requests';
+        const folder    = './explorer/example-requests';
         const response  = await fetch(folder);
         if (!response.ok)
             return;

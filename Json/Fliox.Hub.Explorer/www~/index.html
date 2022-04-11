@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Test page for Json.Fliox.Hub to browse databases and send requests via HTTP and WebSocket to Hub">
     <meta name="color-scheme" content="dark light">
-    <link rel="icon"     href="./img/Json-Fliox-53x43.svg" type="image/x-icon">
+    <link rel="icon"     href="./explorer/img/Json-Fliox-53x43.svg" type="image/x-icon">
     <!-- <link rel="manifest" href="./manifest.json"> -->
     <meta name="theme-color" content="#ffffff">
     <title>JSON Fliox Hub</title>
@@ -28,9 +28,9 @@
         }
         window.setTheme(theme);
     </script>
-    <script src='js/bundle.js'></script> <!-- todo: load deferred -->
+    <script src='./explorer/js/bundle.js'></script> <!-- todo: load deferred -->
     <script type="module">
-        import { app  } from  "./js/index.js";
+        import { app  } from  "./explorer/js/index.js";
         window.app = app;
         app.initApp();
     </script>
@@ -106,7 +106,7 @@
 
         body::after {
             content: "";
-            background-image: url('img/paint-splatter.svg'); /* from https://freesvg.org/ */
+            background-image: url('./explorer/img/paint-splatter.svg'); /* from https://freesvg.org/ */
             background-repeat: repeat; background-position: 5% 5%;
             opacity: 1;
             top: 0; left: 0; bottom: 0; right: 0;
@@ -240,7 +240,7 @@
         .toggleDescription::before              { opacity: 0.5; content: "❯" }
         .toggleDescription:hover                { background-color: var(--tab-hover); }
         .miniHeader .toggleDescription          { width: 53px; height: 43px; transform: rotate(0) scale(0.8) translate(-0px, -17px);
-                                                  background-image: url("./img/Json-Fliox-53x43.svg");  opacity: 1;  }
+                                                  background-image: url("./explorer/img/Json-Fliox-53x43.svg");  opacity: 1;  }
         .miniHeader .toggleDescription::before  { content: unset }
         #toggleDescription                      { min-width: 33px;}
         .miniHeader #toggleDescription          { min-width: 60px;}
@@ -418,7 +418,7 @@
     <tr>
       <td style="padding: 5px;">
         <a href="https://github.com/friflo/Friflo.Json.Fliox" target='_blank' rel='noopener'>
-          <img src='./img/Json-Fliox-53x43.svg' width="53" height="43" alt="friflo JSON Fliox">
+          <img src='./explorer/img/Json-Fliox-53x43.svg' width="53" height="43" alt="friflo JSON Fliox">
         </a>
       </td>
       <td style="padding-left: 5px; padding-right: 5px;">
@@ -512,7 +512,7 @@
 
     <div style="grid-area: pl-title-req; padding-left: 7px;">
         <small>
-            <a href="../schema/protocol/html/schema.html#Friflo.Json.Fliox.Hub.Protocol.SyncRequest" class="docLink"
+            <a href="./schema/protocol/html/schema.html#Friflo.Json.Fliox.Hub.Protocol.SyncRequest" class="docLink"
                title="open request definition in new tab"  target="_blank" rel="noopener noreferrer"">SyncRequest</a>
         </small>
         <div style="opacity: 0.6; float: right;" title="properties added to request on: WebSocket send">
@@ -524,7 +524,7 @@
     
     <div style="grid-area: pl-title-resp; padding-right: 7px;" class="nobreak">
       <small>
-        <a href="../schema/protocol/html/schema.html#Friflo.Json.Fliox.Hub.Protocol.SyncResponse" class="docLink"
+        <a href="./schema/protocol/html/schema.html#Friflo.Json.Fliox.Hub.Protocol.SyncResponse" class="docLink"
            title="open response definition in new tab"  target="_blank" rel="noopener noreferrer">SyncResponse</a>
       </small> <small id="response-state"></small>
       
@@ -724,15 +724,15 @@
     <div class="settings">
       <table style="font-size: 14px; margin-left: 20px;">
         <tr>
-          <td><a target='_blank' rel='noopener' href="../schema/protocol/html/schema.html" class="docLink">Protocol</a></td>
+          <td><a target='_blank' rel='noopener' href="./schema/protocol/html/schema.html" class="docLink">Protocol</a></td>
           <td style="opacity: 0.6; padding-left: 10px;">batch API used in Playground</td>
         </tr>
         <tr>
-          <td><a target='_blank' rel='noopener' href="../schema/filter/html/schema.html" class="docLink">FilterOperation</a></td>
+          <td><a target='_blank' rel='noopener' href="./schema/filter/html/schema.html" class="docLink">FilterOperation</a></td>
           <td style="opacity: 0.6; padding-left: 10px;">filterTree in Protocol tasks: query & aggregate</td>
         </tr>
         <tr>
-          <td><a target='_blank' rel='noopener' href="../schema/json-schema/html/schema.html" class="docLink">JSON Schema</a></td>
+          <td><a target='_blank' rel='noopener' href="./schema/json-schema/html/schema.html" class="docLink">JSON Schema</a></td>
           <td style="opacity: 0.6; padding-left: 10px;">jsonSchemas in ClusterStore jsonSchemas</td>
         </tr>
       </table>
