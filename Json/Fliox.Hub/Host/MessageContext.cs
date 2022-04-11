@@ -22,28 +22,28 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
     public class MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
-        public              IPool           Pool            => executeContext.pool;
         public              FlioxHub        Hub             => executeContext.hub;
         public              string          DatabaseName    => executeContext.DatabaseName;
         public              EntityDatabase  Database        => executeContext.Database;
         public              User            User            => executeContext.User;
         public              JsonKey         ClientId        => executeContext.clientId;
-        
-        [DebuggerBrowsable(Never)]
-        internal            ExecuteContext  ExecuteContext  => executeContext;
-        [DebuggerBrowsable(Never)]
-        private   readonly  ExecuteContext  executeContext;
+        public              UserInfo        UserInfo        => GetUserInfo();
         
         public              bool            WriteNull       { get; set; }
         public              bool            WritePretty     { get; set; }
+
+        // --- internal / private properties
+        internal            IPool           Pool            => executeContext.pool;
+        [DebuggerBrowsable(Never)]
+        internal            ExecuteContext  ExecuteContext  => executeContext;
+        
+        // --- internal / private fields
+        [DebuggerBrowsable(Never)]
+        private   readonly  ExecuteContext  executeContext;
+        internal            string          error;
+        
         public   override   string          ToString()      => Name;
 
-        internal            string          error;
-
-        public              UserInfo        UserInfo { get {
-            var user = executeContext.User;
-            return new UserInfo (user.userId, user.token, executeContext.clientId);
-        } }
 
         internal MessageContext(string name, ExecuteContext executeContext) {
             Name                = name;
@@ -67,6 +67,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         public TResult Error<TResult>(string message) {
             error = message;
             return default;
+        }
+        
+        private UserInfo GetUserInfo() { 
+            var user = executeContext.User;
+            return new UserInfo (user.userId, user.token, executeContext.clientId);
         }
     }
 }

@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public enum JsonResponseStatus {
+    internal enum JsonResponseStatus {
         /// maps to HTTP 200 OK
         Ok          = 200,         
         /// maps to HTTP 400 Bad Request
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         Exception   = 500
     }
     
-    public sealed class JsonResponse
+    internal sealed class JsonResponse
     {
         public readonly     JsonValue           body;
         public readonly     JsonResponseStatus  status;

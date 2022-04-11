@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return response;
         }
 
-        public async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, ExecuteContext executeContext) {
+        internal async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, ExecuteContext executeContext) {
             try {
                 var request = RemoteUtils.ReadProtocolMessage(jsonRequest, executeContext.ObjectMapper, out string error);
                 switch (request) {

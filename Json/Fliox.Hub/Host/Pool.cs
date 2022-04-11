@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// Custom types can also be managed by <see cref="IPool"/> by using <see cref="Type{T}"/>.
     /// Its typical use case is pooling a domain specific <see cref="Client.FlioxClient"/> implementation. 
     /// </summary>
-    public interface IPool : IDisposable
+    internal interface IPool : IDisposable
     {
         ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         ObjectPool<ScalarSelector>  ScalarSelector  { get; }

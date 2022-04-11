@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
@@ -48,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>
-        private static bool TestPredicate (SyncRequestTask task, IPool pool) {
+        private static bool TestPredicate (SyncRequestTask task, ExecuteContext executeContext) {
             switch (task) {
                 case ReadEntities   read:
                     return read.container   == nameof(PocStore.articles);
