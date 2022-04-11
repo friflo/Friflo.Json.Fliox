@@ -2,8 +2,8 @@ import { el, createEl, Resource, Entity, parseAst, MessageCategory }   from "./t
 import { App, app }                                                 from "./index.js";
 import { Schema }                                                   from "./schema.js";
 
-import { MessageType, JsonType, FieldType } from "../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
-import { DbContainers, DbMessages }         from "../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
+import { MessageType, JsonType, FieldType } from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
+import { DbContainers, DbMessages }         from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
 
 type AddRelation = (value: jsonToAst.ValueNode, container: string) => void;
 

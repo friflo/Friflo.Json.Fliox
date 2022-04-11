@@ -1,4 +1,4 @@
-/// <reference types="../../../../node_modules/@types/json-to-ast/index" />
+/// <reference types="../../../../../node_modules/@types/json-to-ast/index" />
 export const defaultConfig = {
     showLineNumbers: false,
     showMinimap: false,

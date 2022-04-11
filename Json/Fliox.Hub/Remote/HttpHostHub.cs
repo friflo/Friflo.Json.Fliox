@@ -95,8 +95,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public RequestContext GetRequestContext(string path, string method) {
             if (path == endpointRoot && method == "GET") {
                 var context = new RequestContext(this, "GET", "/", null, null, null, null);
-                context.AddHeader("Location", endpoint);
-                context.WriteString($"redirect -> {endpoint}", "text/plain", 302);
+                var location = $"{endpoint}explorer/";
+                context.AddHeader("Location", location);
+                context.WriteString($"redirect -> {location}", "text/plain", 302);
                 context.handled = true;
                 return context;
             }

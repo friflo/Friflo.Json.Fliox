@@ -1,4 +1,4 @@
-/// <reference types="../../../../node_modules/monaco-editor/monaco" />
+/// <reference types="../../../../../node_modules/monaco-editor/monaco" />
 import { el, createEl, defaultConfig, getColorBasedOnBackground } from "./types.js";
 import { Schema } from "./schema.js";
 import { Explorer } from "./explorer.js";
@@ -25,6 +25,7 @@ const entityContainer = el("entityContainer");
         console.error(`SW failed: ${error}`);
     });
 } */
+export const flioxRoot = "../";
 export class App {
     constructor() {
         // --------------------------------------- schema ---------------------------------------
@@ -167,7 +168,7 @@ export class App {
             body: request
         };
         try {
-            const path = `./?${tag}`;
+            const path = `${flioxRoot}?${tag}`;
             const rawResponse = await fetch(path, init);
             const text = await rawResponse.text();
             return {
@@ -199,7 +200,7 @@ export class App {
         return await App.postRequest(request, `${database}/${tag}`);
     }
     static getRestPath(database, container, query) {
-        let path = `./rest/${database}`;
+        let path = `${flioxRoot}rest/${database}`;
         if (container)
             path = `${path}/${container}`;
         if (query)
@@ -415,19 +416,19 @@ export class App {
         const schema = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema in new tab" href="./schema/${database}/html/schema.html" target="${schema.schemaName}" class="docLink">${schema.schemaName}</a>`;
+        return `<a title="open database schema in new tab" href="${flioxRoot}schema/${database}/html/schema.html" target="${schema.schemaName}" class="docLink">${schema.schemaName}</a>`;
     }
     getSchemaCommand(database, category, command) {
         const schema = this.databaseSchemas[database];
         if (!schema)
             return command;
-        return `<a title="open ${category} API in new tab" href="./schema/${database}/html/schema.html#${category}" target="${schema.schemaName}" class="docLink">${command}</a>`;
+        return `<a title="open ${category} API in new tab" href="${flioxRoot}schema/${database}/html/schema.html#${category}" target="${schema.schemaName}" class="docLink">${command}</a>`;
     }
     getSchemaTypes(database) {
         const schema = this.databaseSchemas[database];
         if (!schema)
             return this.schemaLess;
-        return `<a title="open database schema types in new tab" href="./schema/${database}/index.html" target="${schema.schemaName}" class="docLink">Typescript, C#, Kotlin, JSON Schema / OpenAPI</a>`;
+        return `<a title="open database schema types in new tab" href="${flioxRoot}schema/${database}/index.html" target="${schema.schemaName}" class="docLink">Typescript, C#, Kotlin, JSON Schema / OpenAPI</a>`;
     }
     getSchemaDescription(database) {
         var _a;
@@ -440,7 +441,7 @@ export class App {
         const schema = this.databaseSchemas[database];
         const ns = def._namespace;
         const name = def._typeName;
-        return `<a title="open type definition in new tab" href="./schema/${database}/html/schema.html#${ns}.${name}" target="${schema.schemaName}" class="docLink">${name}</a>`;
+        return `<a title="open type definition in new tab" href="${flioxRoot}schema/${database}/html/schema.html#${ns}.${name}" target="${schema.schemaName}" class="docLink">${name}</a>`;
     }
     getEntityType(database, container) {
         const def = this.getContainerSchema(database, container);
@@ -474,10 +475,10 @@ export class App {
     static getApiLinks(database, description, hash) {
         hash = hash.replace(".", "_");
         let apiLinks = `<a class="oas" title="${description} as OpenAPI specification (OAS) in new tab "` +
-            `href="./schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
+            `href="${flioxRoot}schema/${database}/open-api.html${hash}" target="_blank" rel="noopener noreferrer">OAS</a>`;
         if (app.hostDetails.routes.includes("/graphql")) {
             apiLinks += `&nbsp;<a class="graphql" title="${description} as GraphQL API (GQL) in new tab "` +
-                `href="./graphql/${database}" target="_blank" rel="noopener noreferrer">GQL</a>`;
+                `href="${flioxRoot}graphql/${database}" target="_blank" rel="noopener noreferrer">GQL</a>`;
         }
         return apiLinks;
     }
@@ -594,10 +595,10 @@ export class App {
             }]; */
         const schemas = [];
         try {
-            const protocolSchemaResponse = await fetch("schema/protocol/json-schema.json");
+            const protocolSchemaResponse = await fetch(`${flioxRoot}schema/protocol/json-schema.json`);
             const protocolSchema = await protocolSchemaResponse.json();
             App.addSchema("protocol/json-schema/", protocolSchema, schemas);
-            const filterSchemaResponse = await fetch("schema/filter/json-schema.json");
+            const filterSchemaResponse = await fetch(`${flioxRoot}schema/filter/json-schema.json`);
             const filterSchema = await filterSchemaResponse.json();
             App.addSchema("filter/json-schema/", filterSchema, schemas);
             App.refineFilterTree(protocolSchema);

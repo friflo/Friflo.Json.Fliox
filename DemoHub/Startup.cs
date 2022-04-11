@@ -52,8 +52,9 @@ namespace Fliox.DemoHub
                     await context.Response.WriteAsync("Hello World!");
                 });
                 endpoints.Map("/", async context => {
-                    context.Response.Redirect(hostHub.endpoint, false);
-                    await context.Response.WriteAsync($"redirect -> {hostHub.endpoint}");
+                    var location = $"{hostHub.endpoint}explorer/";
+                    context.Response.Redirect(location, false);
+                    await context.Response.WriteAsync($"redirect -> {location}");
                 });
                 endpoints.Map("/fliox/{*path}", async context => {
                     var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false);

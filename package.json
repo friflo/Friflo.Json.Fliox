@@ -8,8 +8,8 @@
     "schema:tsc": "tsc --project Json.Tests/assets~/Schema/Typescript",
     "schema:run": "npm run run -w Json.Tests/assets~/Schema/Typescript",
 
-    "www:tsc":       "tsc --project Json/Fliox.Hub.Explorer/www~/src",
-    "www:tsc-watch": "tsc --project Json/Fliox.Hub.Explorer/www~/src -w",
+    "www:tsc":       "tsc --project Json/Fliox.Hub.Explorer/www~/explorer/src",
+    "www:tsc-watch": "tsc --project Json/Fliox.Hub.Explorer/www~/explorer/src -w",
 
     "postinstall": "node scripts/postinstall.js"
   },
@@ -24,7 +24,7 @@
   },
   "dependencies": {},
   "workspaces": [
-      "Json/Fliox.Hub.Explorer/www~/src",
+      "Json/Fliox.Hub.Explorer/www~/explorer/src",
       "Json.Tests/assets~/Schema/Typescript"
   ]
 }

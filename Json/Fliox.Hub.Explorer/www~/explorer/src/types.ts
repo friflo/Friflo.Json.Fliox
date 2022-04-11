@@ -1,4 +1,4 @@
-/// <reference types="../../../../node_modules/@types/json-to-ast/index" />
+/// <reference types="../../../../../node_modules/@types/json-to-ast/index" />
 
 
 // declare const parse : any; // https://www.npmjs.com/package/json-to-ast
