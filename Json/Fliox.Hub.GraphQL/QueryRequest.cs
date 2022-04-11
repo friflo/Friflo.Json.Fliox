@@ -32,15 +32,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
             }
-
-            foreach (var command in schemaType.Commands) {
-                var name    = command.name.Replace(".", "_");
-                var query   = new QueryResolver(command.name, QueryType.Command, null, command.param);
-                resolvers.Add(name,             query);
-            }
-            foreach (var message in schemaType.Messages) {
+            AddMessages(schemaType.Commands, QueryType.Command);
+            AddMessages(schemaType.Messages, QueryType.Message);
+        }
+        
+        private void AddMessages(IReadOnlyList<MessageDef> messages, QueryType messageType) {
+            if (messages == null)
+                return;
+            foreach (var message in messages) {
                 var name    = message.name.Replace(".", "_");
-                var query   = new QueryResolver(message.name, QueryType.Message, null, message.param);
+                var query   = new QueryResolver(message.name, messageType, null, message.param);
                 resolvers.Add(name,             query);
             }
         }
