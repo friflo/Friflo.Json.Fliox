@@ -4,6 +4,7 @@
 #if !UNITY_5_3_OR_NEWER
 
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema.Definition;
 using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
@@ -32,13 +33,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  string      name;
         internal  readonly  QueryType   type;
         internal  readonly  string      container;
+        internal  readonly  FieldDef    param;
+        internal  readonly  FieldDef    result;
 
         public    override  string      ToString() => name;
 
-        internal QueryResolver(string name, QueryType type, string container) {
+        internal QueryResolver(string name, QueryType type, string container, FieldDef param, FieldDef result) {
             this.name       = name;
             this.type       = type;
             this.container  = container;
+            this.param      = param;
+            this.result     = result;
         }
     }
     
