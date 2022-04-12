@@ -45,11 +45,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal QLRequestContext CreateRequest(RequestContext context, GraphQLDocument document, string docStr, out string error) {
+        internal QLRequestContext CreateRequest(
+            RequestContext  context,
+            string          operationName,
+            GraphQLDocument document,
+            string          docStr,
+            out string      error)
+        {
             var definitions = document.Definitions;
             var queries     = new List<Query> ();
             foreach (var definition in definitions) {
                 if (!(definition is GraphQLOperationDefinition operation))
+                    continue;
+                if (operation.Name != operationName)
                     continue;
                 var selections  = operation.SelectionSet.Selections;
                 error           = AddQueries(selections, docStr, queries);

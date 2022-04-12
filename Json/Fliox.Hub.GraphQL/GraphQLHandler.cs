@@ -40,17 +40,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             var method  = context.method;
             if (method == "POST") {
-                var body        = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                var postBody    = ReadRequestBody(context, body);
-                var docStr      = postBody.query;
-                var query       = Parser.Parse(docStr);
-                // --------------    POST           /graphql/{database}   case: "operationName" == "IntrospectionQuery"
-                if (postBody.operationName == "IntrospectionQuery") {
+                var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                var postBody        = ReadRequestBody(context, body);
+                var docStr          = postBody.query;
+                var query           = Parser.Parse(docStr);
+                var operationName   = postBody.operationName;
+                // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
+                if (operationName == "IntrospectionQuery") {
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                // --------------    POST           /graphql/{database}
-                var request = schema.requestHandler.CreateRequest(context, query, docStr, out error);
+                // --------------    POST           /graphql/{database}     case: any other "operationName"
+                var request = schema.requestHandler.CreateRequest(context, operationName, query, docStr, out error);
                 if (error != null) {
                     context.WriteError("invalid request", error, 400);
                     return;
