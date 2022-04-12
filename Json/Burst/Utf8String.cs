@@ -5,9 +5,8 @@
 
 using System;
 using System.Text;
-using Friflo.Json.Burst;
 
-namespace Friflo.Json.Fliox.Hub.GraphQL
+namespace Friflo.Json.Burst
 {
     public readonly struct Utf8String {
         private   readonly  Utf8StringBuffer    buffer;

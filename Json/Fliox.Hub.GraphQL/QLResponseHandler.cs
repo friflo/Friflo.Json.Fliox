@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
