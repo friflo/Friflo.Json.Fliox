@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal bool FindByBytes(ref Bytes key, out SelectionNode result) {
             for (int n = 0; n < nodes.Length; n++) {
                 var node  = nodes[n];
-                if (node.name.IsEqual(key.buffer.array)) {
+                if (node.name.IsEqual(ref key)) {
                     result = node;
                     return true;
                 }

@@ -65,8 +65,16 @@ namespace Friflo.Json.Fliox.Mapper
             return Array.SequenceEqual(value.Array);
         }
         
-        public bool IsEqual (byte[] value) {
-            return Array.SequenceEqual(value);
+        public bool IsEqual (ref Bytes value) {
+            var len = Length;
+            if (len != value.Len)
+                return false;
+            var other = value.buffer.array;
+            for (int n = 0; n < len; n++) {
+                if (array[n] != other[n])
+                    return false;
+            }
+            return true;
         }
         
         /// <summary>Use for testing only</summary>

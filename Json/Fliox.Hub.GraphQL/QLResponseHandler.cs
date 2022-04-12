@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static JsonValue SendCommandResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
-            var commandResult = (SendCommandResult)result;
-            var selectionNode    = new SelectionNode(query);
+            var commandResult   = (SendCommandResult)result;
+            var selectionNode   = new SelectionNode(query);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, commandResult.result);
         }
