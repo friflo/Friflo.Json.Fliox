@@ -29,7 +29,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             serializer.Dispose();
         }
 
-        internal JsonValue Filter(SelectionNode node, in JsonValue value) {
+        internal JsonValue Filter(in SelectionNode node, in JsonValue value) {
+            return value;
             nodeStack.Clear();
             nodeStack.Add(node);
             targetJson.Clear();
@@ -37,22 +38,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
             serializer.SetPretty(true);
-            return value;
-            /*
-            TraceTree(ref targetParser);
+
+        //  TraceTree(ref targetParser);
             if (targetParser.error.ErrSet)
                 return default;
 
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             
-            // refill result list cause application code may mutate between Select() calls
-            var results = scalarSelect.results; 
-            results.Clear();
-            foreach (var selector in scalarSelect.nodeTree.selectors) {
-                results.Add(selector.result);
-            }
-            return results; */
+            return new JsonValue(serializer.json.AsArray());
         }
         /*
         private void AddPathNodeResult(SelectionNode node) {
@@ -92,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private bool TraceObject(ref Utf8JsonParser p) {
             while (Utf8JsonWriter.NextObjectMember(ref p)) {
                 var node = nodeStack[nodeStack.Count - 1];
-                if (!node.FindByBytes(ref p.key, out PathNode<JsonSelectResult> path)) {
+                if (!node.FindByBytes(ref p.key, out SelectionNode subNode)) {
                     targetParser.SkipEvent();
                     continue;
                 }
