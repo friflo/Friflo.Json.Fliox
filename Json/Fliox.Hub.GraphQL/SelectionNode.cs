@@ -1,10 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Text;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper;
 using GraphQLParser.AST;
 
 #if !UNITY_5_3_OR_NEWER
@@ -14,34 +11,30 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     internal readonly struct SelectionNode
     {
         private   readonly      SelectionNode[] nodes;
-        private   readonly      JsonValue       name;
+        private   readonly      Utf8String      name;
 
         public override         string          ToString() => name.ToString();
 
-        internal SelectionNode (in Query query)
-            : this (null, query.graphQL.SelectionSet)
+        internal SelectionNode (in Query query, Utf8StringBuffer buffer)
+            : this (null, query.graphQL.SelectionSet, buffer)
         { }
-        
-        private static readonly UTF8Encoding Utf8    = new UTF8Encoding(false);
             
-        private SelectionNode  (GraphQLName name, GraphQLSelectionSet selectionSet) {
-            if (name != (object)null) {
-                var         readOnlySpan    = name.Value.Span;
-                var         len             = Utf8.GetByteCount(readOnlySpan);
-                var         bytes           = new byte[len];
-                Span<byte>  dest            = bytes;
-                Utf8.GetBytes(readOnlySpan, dest);
-                this.name                   = new JsonValue(bytes);
+        private SelectionNode  (GraphQLName name, GraphQLSelectionSet selectionSet, Utf8StringBuffer buffer) {
+            if (name == (object)null) {
+                this.name           = new Utf8String();
+            } else {
+                var readOnlySpan    = name.Value.Span;
+                this.name           = buffer.Add(buffer, readOnlySpan);
             }
             if (selectionSet == null) {
-                nodes = null;
+                nodes       = null;
                 return;
             }
             var selections  = selectionSet.Selections;
             nodes           = new SelectionNode[selections.Count];
             for (int n = 0; n < selections.Count; n++) {
                 var selection   = (GraphQLField)selections[n];
-                nodes[n]        = new SelectionNode(selection.Name, selection.SelectionSet);
+                nodes[n]        = new SelectionNode(selection.Name, selection.SelectionSet, buffer);
             }
         }
         

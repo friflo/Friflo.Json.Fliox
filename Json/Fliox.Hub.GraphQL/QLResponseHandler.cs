@@ -12,9 +12,15 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class QLResponseHandler
+    internal readonly struct QLResponseHandler
     {
-        internal static JsonValue ProcessResponse(
+        readonly Utf8StringBuffer buffer;
+        
+        internal QLResponseHandler(Utf8StringBuffer buffer) {
+            this.buffer = buffer;
+        }
+        
+        internal JsonValue ProcessResponse(
             ObjectPool<ObjectMapper>    mapper,
             List<Query>                 queries,
             SyncResponse                syncResponse)
@@ -37,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             if (result is TaskErrorResult taskError) {
                 return new JsonValue(writer.WriteAsArray(taskError));
             }
@@ -50,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }
         
-        private static JsonValue QueryEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private JsonValue QueryEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             var queryResult     = (QueryEntitiesResult)result;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = queryResult.ids;
@@ -60,12 +66,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = new SelectionNode(query);
+            var selectionNode   = new SelectionNode(query, buffer);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, json);
         }
         
-        private static JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             var readTask        = (ReadEntities)query.task;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = readTask.sets[0].ids;
@@ -75,14 +81,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = new SelectionNode(query);
+            var selectionNode   = new SelectionNode(query, buffer);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, json);
         }
         
-        private static JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
+        private JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
             var commandResult   = (SendCommandResult)result;
-            var selectionNode   = new SelectionNode(query);
+            var selectionNode   = new SelectionNode(query, buffer);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, commandResult.result);
         }
