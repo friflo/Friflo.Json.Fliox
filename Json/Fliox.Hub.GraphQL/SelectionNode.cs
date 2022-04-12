@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal readonly struct SelectionNode
     {
-        internal  readonly      SelectionNode[] nodes;
-        internal  readonly      JsonValue       name;
+        private   readonly      SelectionNode[] nodes;
+        private   readonly      JsonValue       name;
 
         public override         string          ToString() => name.ToString();
 

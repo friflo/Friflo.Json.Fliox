@@ -14,58 +14,57 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private             Utf8JsonWriter          serializer;
             
         private             Bytes                   targetJson = new Bytes(128);
-        private             Utf8JsonParser          targetParser;
+        private             Utf8JsonParser          parser;
         
-        public              string                  ErrorMessage => targetParser.error.msg.AsString();
+        public              string                  ErrorMessage => parser.error.msg.AsString();
 
         public void Dispose() {
-            targetParser.Dispose();
+            parser.Dispose();
             targetJson.Dispose();
             serializer.Dispose();
         }
 
         internal JsonValue Filter(in SelectionNode node, in JsonValue value) {
-            return value;
             targetJson.Clear();
             targetJson.AppendArray(value);
-            targetParser.InitParser(targetJson);
-            targetParser.NextEvent();
+            parser.InitParser(targetJson);
+            parser.NextEvent();
             serializer.InitSerializer();
             serializer.SetPretty(true);
 
             TraceTree(node);
-            if (targetParser.error.ErrSet)
+            if (parser.error.ErrSet)
                 return default;
 
             return new JsonValue(serializer.json.AsArray());
         }
         
         private bool TraceObject(in SelectionNode node) {
-            ref Utf8JsonParser p = ref targetParser;
-            while (Utf8JsonWriter.NextObjectMember(ref targetParser)) {
-                if (!node.FindByBytes(ref p.key, out var subNode))
+            while (Utf8JsonWriter.NextObjectMember(ref parser)) {
+                if (!node.FindByBytes(ref parser.key, out var subNode)) {
+                    parser.SkipEvent();
                     continue;
-
-                switch (p.Event) {
+                }
+                switch (parser.Event) {
                     case JsonEvent.ArrayStart:
-                        serializer.MemberArrayStart(in p.key);
+                        serializer.MemberArrayStart(in parser.key);
                         TraceArray(subNode);
                         break;
                     case JsonEvent.ObjectStart:
-                        serializer.MemberObjectStart(in p.key);
+                        serializer.MemberObjectStart(in parser.key);
                         TraceObject(subNode);
                         break;
                     case JsonEvent.ValueString:
-                        serializer.MemberStr(in p.key, in p.value);
+                        serializer.MemberStr(in parser.key, in parser.value);
                         break;
                     case JsonEvent.ValueNumber:
-                        serializer.MemberBytes(in p.key, ref p.value);
+                        serializer.MemberBytes(in parser.key, ref parser.value);
                         break;
                     case JsonEvent.ValueBool:
-                        serializer.MemberBln(in p.key, p.boolValue);
+                        serializer.MemberBln(in parser.key, parser.boolValue);
                         break;
                     case JsonEvent.ValueNull:
-                        serializer.MemberNul(in p.key);
+                        serializer.MemberNul(in parser.key);
                         break;
                     case JsonEvent.ObjectEnd:
                     case JsonEvent.ArrayEnd:
@@ -74,45 +73,46 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         throw new InvalidOperationException("WriteObject() unreachable"); // because of behaviour of ContinueObject()
                 }
             }
+            serializer.ObjectEnd();
             return true;
         }
         
         private bool TraceArray(in SelectionNode node) {
-            ref Utf8JsonParser p = ref targetParser;
-
-            switch (p.Event) {
-                case JsonEvent.ArrayStart:
-                    serializer.ArrayStart(true);
-                    TraceArray(node);
-                    break;
-                case JsonEvent.ObjectStart:
-                    serializer.ObjectStart();
-                    TraceObject(node);
-                    break;
-                case JsonEvent.ValueString:
-                    serializer.ElementStr(in p.value);
-                    break;
-                case JsonEvent.ValueNumber:
-                    serializer.ElementBytes (ref p.value);
-                    break;
-                case JsonEvent.ValueBool:
-                    serializer.ElementBln(p.boolValue);
-                    break;
-                case JsonEvent.ValueNull:
-                    serializer.ElementNul();
-                    break;
-                case JsonEvent.ObjectEnd:
-                case JsonEvent.ArrayEnd:
-                case JsonEvent.Error:
-                case JsonEvent.EOF:
-                    throw new InvalidOperationException("TraceArray() unreachable");  // because of behaviour of ContinueArray()
+            while (Utf8JsonWriter.NextArrayElement(ref parser)) {
+                switch (parser.Event) {
+                    case JsonEvent.ArrayStart:
+                        serializer.ArrayStart(true);
+                        TraceArray(node);
+                        break;
+                    case JsonEvent.ObjectStart:
+                        serializer.ObjectStart();
+                        TraceObject(node);
+                        break;
+                    case JsonEvent.ValueString:
+                        serializer.ElementStr(in parser.value);
+                        break;
+                    case JsonEvent.ValueNumber:
+                        serializer.ElementBytes (ref parser.value);
+                        break;
+                    case JsonEvent.ValueBool:
+                        serializer.ElementBln(parser.boolValue);
+                        break;
+                    case JsonEvent.ValueNull:
+                        serializer.ElementNul();
+                        break;
+                    case JsonEvent.ObjectEnd:
+                    case JsonEvent.ArrayEnd:
+                    case JsonEvent.Error:
+                    case JsonEvent.EOF:
+                        throw new InvalidOperationException("TraceArray() unreachable");  // because of behaviour of ContinueArray()
+                }
             }
+            serializer.ArrayEnd();
             return true;
         }
         
         private bool TraceTree(in SelectionNode node) {
-            ref Utf8JsonParser p = ref targetParser;
-            switch (p.Event) {
+            switch (parser.Event) {
                 case JsonEvent.ObjectStart:
                     serializer.ObjectStart();
                     return TraceObject(node);
@@ -120,13 +120,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     serializer.ArrayStart(true);
                     return TraceArray(node);
                 case JsonEvent.ValueString:
-                    serializer.ElementStr(in p.value);
+                    serializer.ElementStr(in parser.value);
                     return true;
                 case JsonEvent.ValueNumber:
-                    serializer.ElementBytes(ref p.value);
+                    serializer.ElementBytes(ref parser.value);
                     return true;
                 case JsonEvent.ValueBool:
-                    serializer.ElementBln(p.boolValue);
+                    serializer.ElementBln(parser.boolValue);
                     return true;
                 case JsonEvent.ValueNull:
                     serializer.ElementNul();
