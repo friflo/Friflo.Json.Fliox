@@ -50,7 +50,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (method == "POST") {
                 var mapper          = context.ObjectMapper;
                 var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                var postBody        = ReadRequestBody(mapper, body);
+                var postBody        = ReadRequestBody(mapper, body, out error);
+                if (error != null) {
+                    context.WriteError("invalid request body", error, 400);
+                    return;
+                }
                 var docStr          = postBody.query;
                 var query           = Parser.Parse(docStr);
                 var operationName   = postBody.operationName;
@@ -64,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 // --------------    POST           /graphql/{database}     case: any other "operationName"
                 var request = schema.requestHandler.CreateRequest(operationName, query, docStr, out error);
                 if (error != null) {
-                    context.WriteError("invalid request", error, 400);
+                    context.WriteError("invalid GraphQL query", error, 400);
                     return;
                 }
                 var syncRequest     = request.syncRequest; 
@@ -85,10 +89,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             context.WriteError("invalid request", context.ToString(), 400);
         }
         
-        private static GqlRequest ReadRequestBody(ObjectPool<ObjectMapper> mapper, JsonValue body) {
+        private static GqlRequest ReadRequestBody(ObjectPool<ObjectMapper> mapper, JsonValue body, out string error) {
             using (var pooled = mapper.Get()) {
                 var reader  = pooled.instance.reader;
-                return reader.Read<GqlRequest>(body);
+                var result = reader.Read<GqlRequest>(body);
+                if (reader.Error.ErrSet) {
+                    error = reader.Error.msg.ToString();
+                    return null;
+                }
+                error = null;
+                return result;
             }
         }
         
