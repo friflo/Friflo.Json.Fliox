@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }
         
-        private static JsonValue QueryEntitiesResult(Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private static JsonValue QueryEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             var queryResult     = (QueryEntitiesResult)result;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = queryResult.ids;
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return filter.Filter(selectionNode, json);
         }
         
-        private static JsonValue ReadEntitiesResult (Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private static JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             var readTask        = (ReadEntities)query.task;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = readTask.sets[0].ids;
@@ -80,14 +80,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return filter.Filter(selectionNode, json);
         }
         
-        private static JsonValue SendCommandResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
             var commandResult   = (SendCommandResult)result;
             var selectionNode   = new SelectionNode(query);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, commandResult.result);
         }
         
-        private static JsonValue SendMessageResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue SendMessageResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
             return new JsonValue("{}");
         }
     }
