@@ -11,6 +11,7 @@ using Friflo.Json.Fliox.Schema.Language;
 using GraphQLParser;
 using GraphQLParser.AST;
 
+// ReSharper disable ConvertIfStatementToSwitchStatement
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     public class GraphQLHandler: IRequestHandler
@@ -39,6 +40,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             var method  = context.method;
+            // ------------------    GET            /graphql/{database}
+            if (method == "GET") {
+                var html = HtmlGraphiQL.Get(dbName, schema.schemaName);
+                context.WriteString(html, "text/html", 200);
+                return;
+            }
             if (method == "POST") {
                 var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 var postBody        = ReadRequestBody(context, body);
@@ -67,12 +74,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 context.Write(response, 0, "application/json", 200);
                 return;
             }
-            // ------------------    GET            /graphql/{database}
-            if (method == "GET") {
-                var html = HtmlGraphiQL.Get(dbName, schema.schemaName);
-                context.WriteString(html, "text/html", 200);
-                return;
-            }
+            context.WriteError("invalid request", context.ToString(), 400);
         }
         
         private static GqlRequest ReadRequestBody(RequestContext context, JsonValue body) {
