@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var docStr          = postBody.query;
                 var query           = Parser.Parse(docStr);
                 var operationName   = postBody.operationName;
+                
                 // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
                 if (operationName == "IntrospectionQuery") {
                     IntrospectionQuery(context, query, schema.schemaResponse);
