@@ -50,16 +50,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static JsonValue QueryEntitiesResult(Query query, SyncTaskResult result, ObjectWriter writer) {
-            return new JsonValue("{}");
+            var selectionNode   = new SelectionNode(query);
+            var filter          = new SelectionFilter();
+            return filter.Filter(selectionNode, new JsonValue("{}"));
         }
         
         private static JsonValue ReadEntitiesResult (Query query, SyncTaskResult result, ObjectWriter writer) {
-            return new JsonValue("{}");
+            var selectionNode   = new SelectionNode(query);
+            var filter          = new SelectionFilter();
+            return filter.Filter(selectionNode, new JsonValue("{}"));
         }
         
         private static JsonValue SendCommandResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
             var commandResult = (SendCommandResult)result;
-            return commandResult.result;
+            var selectionNode    = new SelectionNode(query);
+            var filter          = new SelectionFilter();
+            return filter.Filter(selectionNode, commandResult.result);
         }
         
         private static JsonValue SendMessageResult  (Query query, SyncTaskResult result, ObjectWriter writer) {
