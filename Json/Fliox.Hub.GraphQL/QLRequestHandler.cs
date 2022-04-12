@@ -46,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         internal QLRequestContext CreateRequest(
-            RequestContext  context,
             string          operationName,
             GraphQLDocument document,
             string          docStr,
@@ -66,17 +65,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 }
             }
             error       = null;
-            var userId  = context.cookies["fliox-user"];
-            var token   = context.cookies["fliox-token"];
             var tasks   = new List<SyncRequestTask>(queries.Count);
             foreach (var query in queries) {
                 tasks.Add(query.task);   
             }
             var syncRequest = new SyncRequest {
                 database    = database,
-                tasks       = tasks,
-                userId      = new JsonKey(userId),
-                token       = token
+                tasks       = tasks
             };
             return new QLRequestContext(syncRequest, queries);
         }

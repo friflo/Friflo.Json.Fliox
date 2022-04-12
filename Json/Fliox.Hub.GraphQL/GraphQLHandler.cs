@@ -59,13 +59,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return;
                 }
                 // --------------    POST           /graphql/{database}     case: any other "operationName"
-                var request = schema.requestHandler.CreateRequest(context, operationName, query, docStr, out error);
+                var request = schema.requestHandler.CreateRequest(operationName, query, docStr, out error);
                 if (error != null) {
                     context.WriteError("invalid request", error, 400);
                     return;
                 }
+                var syncRequest     = request.syncRequest; 
+                var cookies         = context.cookies;
+                syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 
+                syncRequest.token   = cookies["fliox-token"];
                 var executeContext  = context.CreateExecuteContext(null);
-                var syncResult      = await context.hub.ExecuteSync(request.syncRequest, executeContext).ConfigureAwait(false);
+                var syncResult      = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
 
                 if (syncResult.error != null) {
                     context.WriteError("execution error", syncResult.error.message, 500);
