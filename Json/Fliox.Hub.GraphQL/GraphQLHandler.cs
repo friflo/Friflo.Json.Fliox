@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Language;
+using Friflo.Json.Fliox.Utils;
 using GraphQLParser;
 using GraphQLParser.AST;
 
@@ -47,15 +48,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             if (method == "POST") {
+                var mapper          = context.ObjectMapper;
                 var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                var postBody        = ReadRequestBody(context, body);
+                var postBody        = ReadRequestBody(mapper, body);
                 var docStr          = postBody.query;
                 var query           = Parser.Parse(docStr);
                 var operationName   = postBody.operationName;
                 
                 // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
                 if (operationName == "IntrospectionQuery") {
-                    IntrospectionQuery(context, query, schema.schemaResponse);
+                    var schemaResponse = IntrospectionQuery(mapper, query, schema.schemaResponse);
+                    context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
                     return;
                 }
                 // --------------    POST           /graphql/{database}     case: any other "operationName"
@@ -75,15 +78,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     context.WriteError("execution error", syncResult.error.message, 500);
                     return;
                 }
-                var response        = QLResponseHandler.ProcessResponse(context, request.queries, syncResult.success);
-                context.Write(response, 0, "application/json", 200);
+                var opResponse      = QLResponseHandler.ProcessResponse(mapper, request.queries, syncResult.success);
+                context.Write(opResponse, 0, "application/json", 200);
                 return;
             }
             context.WriteError("invalid request", context.ToString(), 400);
         }
         
-        private static GqlRequest ReadRequestBody(RequestContext context, JsonValue body) {
-            using (var pooled = context.ObjectMapper.Get()) {
+        private static GqlRequest ReadRequestBody(ObjectPool<ObjectMapper> mapper, JsonValue body) {
+            using (var pooled = mapper.Get()) {
                 var reader  = pooled.instance.reader;
                 return reader.Read<GqlRequest>(body);
             }
@@ -112,18 +115,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return schema;
         }
 
-        private static void IntrospectionQuery (RequestContext context, GraphQLDocument query, JsonValue schemaResponse) {
-            // schemaResponse = TestAPI.CreateTestSchema(context.Pool);
+        private static JsonValue IntrospectionQuery (ObjectPool<ObjectMapper> mapper, GraphQLDocument query, JsonValue schemaResponse) {
+            // schemaResponse = TestAPI.CreateTestSchema(mapper);
             
             // var queryString = query.Source.ToString();
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);
 
             // File.WriteAllText("Json/Fliox.Hub.GraphQL/temp/schema.json", schemaResponse.AsString());
-            // var testResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);
-            context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
-            // context.WriteString(testResponse, "application/json", 200);
-            // Console.WriteLine(responseBody.AsString());
+            // var schemaResponse = File.ReadAllText ("Json/Fliox.Hub.GraphQL/temp/response.json", Encoding.UTF8);
+            return schemaResponse;
         }
     }
 }

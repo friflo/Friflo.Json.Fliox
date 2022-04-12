@@ -7,21 +7,21 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class QLResponseHandler
     {
         internal static JsonValue ProcessResponse(
-            RequestContext  context,
-            List<Query>     queries,
-            SyncResponse    syncResponse)
+            ObjectPool<ObjectMapper>    mapper,
+            List<Query>                 queries,
+            SyncResponse                syncResponse)
         {
             var data        = new Dictionary<string, JsonValue>(queries.Count);
             var taskResults = syncResponse.tasks;
-            using (var pooled = context.ObjectMapper.Get()) {
+            using (var pooled = mapper.Get()) {
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
