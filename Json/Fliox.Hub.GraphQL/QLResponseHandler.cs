@@ -23,42 +23,61 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var taskResults = syncResponse.tasks;
             using (var pooled = mapper.Get()) {
                 var writer              = pooled.instance.writer;
-                writer.Pretty           = true;
+                writer.Pretty           = false;
                 writer.WriteNullMembers = false;
                 for (int n = 0; n < queries.Count; n++) {
                     var query       = queries[n];
                     var taskResult  = taskResults[n];
-                    var queryResult = ProcessTaskResult(query, taskResult, writer);
+                    var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
                     data.Add(query.name, queryResult);
                 }
                 var response            = new GqlResponse { data = data };
+                writer.Pretty           = true;
                 return new JsonValue(writer.WriteAsArray(response));
             }
         }
         
-        private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             if (result is TaskErrorResult taskError) {
                 return new JsonValue(writer.WriteAsArray(taskError));
             }
             switch (query.type) {
-                case QueryType.Query:       return QueryEntitiesResult  (query, result, writer);
-                case QueryType.ReadById:    return ReadEntitiesResult   (query, result, writer);
+                case QueryType.Query:       return QueryEntitiesResult  (query, result, writer, synResponse);
+                case QueryType.ReadById:    return ReadEntitiesResult   (query, result, writer, synResponse);
                 case QueryType.Command:     return SendCommandResult    (query, result, writer);
                 case QueryType.Message:     return SendMessageResult    (query, result, writer);
             }
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }
         
-        private static JsonValue QueryEntitiesResult(Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue QueryEntitiesResult(Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+            var queryResult     = (QueryEntitiesResult)result;
+            var entities        = synResponse.resultMap[query.container].entityMap;
+            var ids             = queryResult.ids;
+            var list            = new List<JsonValue>(ids.Count);
+            foreach (var id in ids) {
+                var entity = entities[id].Json;
+                list.Add(entity);
+            }
+            var json            = new JsonValue(writer.WriteAsArray(list));
             var selectionNode   = new SelectionNode(query);
             var filter          = new SelectionFilter();
-            return filter.Filter(selectionNode, new JsonValue("{}"));
+            return filter.Filter(selectionNode, json);
         }
         
-        private static JsonValue ReadEntitiesResult (Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue ReadEntitiesResult (Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+            var readTask        = (ReadEntities)query.task;
+            var entities        = synResponse.resultMap[query.container].entityMap;
+            var ids             = readTask.sets[0].ids;
+            var list            = new List<JsonValue>(ids.Count);
+            foreach (var id in ids) {
+                var entity = entities[id].Json;
+                list.Add(entity);
+            }
+            var json            = new JsonValue(writer.WriteAsArray(list));
             var selectionNode   = new SelectionNode(query);
             var filter          = new SelectionFilter();
-            return filter.Filter(selectionNode, new JsonValue("{}"));
+            return filter.Filter(selectionNode, json);
         }
         
         private static JsonValue SendCommandResult  (Query query, SyncTaskResult result, ObjectWriter writer) {

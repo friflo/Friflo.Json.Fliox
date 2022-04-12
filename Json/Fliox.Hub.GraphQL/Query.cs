@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     {
         internal  readonly  string          name;
         internal  readonly  QueryType       type;
-        private   readonly  string          container;
+        internal  readonly  string          container;
         internal  readonly  SyncRequestTask task;
         internal  readonly  GraphQLField    graphQL;
 
