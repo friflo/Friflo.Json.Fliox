@@ -56,27 +56,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         Command,
         Message
     }
-    
-    /* internal readonly struct QueryResult {
-        internal  readonly  string      error;
-        internal  readonly  string      details;
-        internal  readonly  int         statusCode;
-        internal  readonly  JsonValue   value;
-        
-        internal QueryResult (string error, string details, int statusCode) {
-            this.statusCode = statusCode;
-            this.error      = error;
-            this.details    = details;
-        }
-        
-        internal QueryResult (JsonValue   value) {
-            statusCode      = 200;
-            this.value      = value;
-            error           = null;
-            details         = null;
-            
-        }
-    } */
 }
 
 #endif

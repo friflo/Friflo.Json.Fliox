@@ -12,9 +12,9 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class QueryResponseHandler
+    internal static class QLResponseHandler
     {
-        internal static JsonValue ProcessSyncResponse(
+        internal static JsonValue ProcessResponse(
             RequestContext  context,
             List<Query>     queries,
             SyncResponse    syncResponse)

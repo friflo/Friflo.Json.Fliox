@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     public class GraphQLHandler: IRequestHandler
     {
-        private readonly    Dictionary<string, GraphQLDbSchema> dbSchemas       = new Dictionary<string, GraphQLDbSchema>();
-        private const       string                              GraphQLRoute    = "/graphql";
+        private readonly    Dictionary<string, QLDatabaseSchema>    dbSchemas       = new Dictionary<string, QLDatabaseSchema>();
+        private const       string                                  GraphQLRoute    = "/graphql";
         
         public string[]     Routes => new [] { GraphQLRoute };
         
@@ -39,37 +39,34 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             var method  = context.method;
-            // --------------    POST           /graphql/{database}
             if (method == "POST") {
                 var body        = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 var postBody    = ReadRequestBody(context, body);
                 var docStr      = postBody.query;
                 var query       = Parser.Parse(docStr);
+                // --------------    POST           /graphql/{database}   case: "operationName" == "IntrospectionQuery"
                 if (postBody.operationName == "IntrospectionQuery") {
                     IntrospectionQuery(context, query, schema.schemaResponse);
                     return;
                 }
-                var queryRequests = schema.requestHandler.CreateRequests(context, query, docStr, out error);
+                // --------------    POST           /graphql/{database}
+                var request = schema.requestHandler.CreateRequest(context, query, docStr, out error);
                 if (error != null) {
                     context.WriteError("invalid request", error, 400);
                     return;
                 }
-                foreach (var request in queryRequests) {
-                    var executeContext  = context.CreateExecuteContext(null);
-                    var syncResult      = await context.hub.ExecuteSync(request.syncRequest, executeContext).ConfigureAwait(false);
+                var executeContext  = context.CreateExecuteContext(null);
+                var syncResult      = await context.hub.ExecuteSync(request.syncRequest, executeContext).ConfigureAwait(false);
 
-                    if (syncResult.error != null) {
-                        context.WriteError("execution error", syncResult.error.message, 500);
-                        return;
-                    }
-                    var response    = QueryResponseHandler.ProcessSyncResponse(context, request.queries, syncResult.success);
-                    // todo - for now return response only for first query
-                    context.Write(response, 0, "application/json", 200);
+                if (syncResult.error != null) {
+                    context.WriteError("execution error", syncResult.error.message, 500);
                     return;
                 }
+                var response        = QLResponseHandler.ProcessResponse(context, request.queries, syncResult.success);
+                context.Write(response, 0, "application/json", 200);
                 return;
             }
-            // --------------    GET            /graphql/{database}
+            // ------------------    GET            /graphql/{database}
             if (method == "GET") {
                 var html = HtmlGraphiQL.Get(dbName, schema.schemaName);
                 context.WriteString(html, "text/html", 200);
@@ -84,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private GraphQLDbSchema GetSchema (RequestContext context, string dbName, out string error) {
+        private QLDatabaseSchema GetSchema (RequestContext context, string dbName, out string error) {
             var hub         = context.hub;
             if (!hub.TryGetDatabase(dbName, out var database)) {
                 error = $"database not found: {dbName}";
@@ -101,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaName      = generator.rootType.Name;
 
             var schemaResponse  = ModelUtils.CreateSchemaResponse(context.ObjectMapper, gqlSchema);
-            var queryHandler    = new QueryRequestHandler(typeSchema, dbName);
-            schema              = new GraphQLDbSchema (dbName, schemaName, gqlSchema, schemaResponse, queryHandler);
+            var queryHandler    = new QLRequestHandler (typeSchema, dbName);
+            schema              = new QLDatabaseSchema (dbName, schemaName, gqlSchema, schemaResponse, queryHandler);
             dbSchemas[dbName]   = schema;
             return schema;
         }

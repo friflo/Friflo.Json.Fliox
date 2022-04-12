@@ -8,21 +8,21 @@ using Friflo.Json.Fliox.Schema.GraphQL;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class GraphQLDbSchema {
+    internal class QLDatabaseSchema {
         private     readonly    string              database;
         internal    readonly    string              schemaName;
         internal    readonly    JsonValue           schemaResponse;
         internal    readonly    GqlSchema           schema;
-        internal    readonly    QueryRequestHandler requestHandler;
+        internal    readonly    QLRequestHandler    requestHandler;
 
-        public      override    string          ToString() => database;
+        public      override    string              ToString() => database;
 
-        internal GraphQLDbSchema(
+        internal QLDatabaseSchema(
             string              database,
             string              schemaName,
             GqlSchema           schema,
             JsonValue           schemaResponse,
-            QueryRequestHandler handler)
+            QLRequestHandler    handler)
         {
             this.database       = database;
             this.schemaName     = schemaName;

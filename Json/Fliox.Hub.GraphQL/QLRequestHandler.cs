@@ -16,24 +16,12 @@ using GraphQLParser.AST;
 // ReSharper disable PossibleNullReferenceException
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal readonly struct QueryRequest
-    {
-        internal readonly   SyncRequest     syncRequest;
-        internal readonly   List<Query>     queries;
-        
-        internal QueryRequest (SyncRequest syncRequest, List<Query> queries) {
-            this.syncRequest    = syncRequest;
-            this.queries        = queries;
-        }
-    }
-    
-    
-    internal class QueryRequestHandler
+    internal class QLRequestHandler
     {
         private readonly string                             database;
         private readonly Dictionary<string, QueryResolver>  resolvers = new Dictionary<string, QueryResolver>();
         
-        internal QueryRequestHandler(TypeSchema typeSchema, string database) {
+        internal QLRequestHandler(TypeSchema typeSchema, string database) {
             this.database   = database;
             var schemaType  = typeSchema.RootType;
             foreach (var field in schemaType.Fields) {
@@ -57,61 +45,50 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal List<QueryRequest> CreateRequests(RequestContext context, GraphQLDocument document, string docStr, out string error) {
+        internal QLRequestContext CreateRequest(RequestContext context, GraphQLDocument document, string docStr, out string error) {
             var definitions = document.Definitions;
-            var result      = new List<QueryRequest>(definitions.Count);
+            var queries     = new List<Query> ();
             foreach (var definition in definitions) {
-                switch (definition) {
-                    case GraphQLOperationDefinition operation:
-                        var selections  = operation.SelectionSet.Selections;
-                        var queries     = new List<Query> (selections.Count);
-                        var syncRequest = CreateSyncRequest(context, selections, docStr, queries, out error);
-                        if (error != null) {
-                            return null;
-                        }
-                        result.Add(new QueryRequest(syncRequest, queries));
-                        break;
+                if (!(definition is GraphQLOperationDefinition operation))
+                    continue;
+                var selections  = operation.SelectionSet.Selections;
+                error           = AddQueries(selections, docStr, queries);
+                if (error != null) {
+                    return default;
                 }
             }
-            error = null;
-            return result;
-        }
-        
-        private SyncRequest CreateSyncRequest(
-            RequestContext  context,
-            List<ASTNode>   selections,
-            string          docStr,
-            List<Query>     queries,
-            out string      error)
-        {
             error       = null;
-            foreach (var selection in selections) {
-                switch (selection) {
-                    case GraphQLField graphQLQuery:
-                        var name = graphQLQuery.Name.StringValue;
-                        if (!resolvers.TryGetValue(name, out var resolver)) {
-                            continue;
-                        }
-                        var task = CreateQueryTask(resolver, graphQLQuery, docStr, out error);
-                        if (error != null)
-                            return null;
-                        var query = new Query(name, resolver.type, resolver.container, task, graphQLQuery);
-                        queries.Add(query);
-                        break;
-                }
-            }
             var userId  = context.cookies["fliox-user"];
             var token   = context.cookies["fliox-token"];
             var tasks   = new List<SyncRequestTask>(queries.Count);
             foreach (var query in queries) {
                 tasks.Add(query.task);   
             }
-            return new SyncRequest {
+            var syncRequest = new SyncRequest {
                 database    = database,
                 tasks       = tasks,
                 userId      = new JsonKey(userId),
                 token       = token
             };
+            return new QLRequestContext(syncRequest, queries);
+        }
+        
+        private string AddQueries(List<ASTNode> selections, string docStr, List<Query> queries)
+        {
+            foreach (var selection in selections) {
+                if (!(selection is GraphQLField graphQLQuery))
+                    continue;
+                var name = graphQLQuery.Name.StringValue;
+                if (!resolvers.TryGetValue(name, out var resolver)) {
+                    continue;
+                }
+                var task = CreateQueryTask(resolver, graphQLQuery, docStr, out string error);
+                if (error != null)
+                    return error;
+                var query = new Query(name, resolver.type, resolver.container, task, graphQLQuery);
+                queries.Add(query);
+            }
+            return null;
         }
         
         private static SyncRequestTask CreateQueryTask(
@@ -121,10 +98,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             out string          error)
         {
             switch(resolver.type) {
-                case QueryType.Query:       return QueryEntities(resolver, query, out error);
-                case QueryType.ReadById:    return ReadEntities (resolver, query, out error);
-                case QueryType.Command:     return SendCommand  (resolver, query, docStr, out error);
-                case QueryType.Message:     return SendMessage  (resolver, query, docStr, out error);
+                case QueryType.Query:       return QueryEntities(resolver, query,           out error);
+                case QueryType.ReadById:    return ReadEntities (resolver, query,           out error);
+                case QueryType.Command:     return SendCommand  (resolver, query, docStr,   out error);
+                case QueryType.Message:     return SendMessage  (resolver, query, docStr,   out error);
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
         }
