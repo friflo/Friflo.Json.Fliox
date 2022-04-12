@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private string GetName() {
-            var buf = buffer.Buf;
+            var buf = buffer?.Buf;
             if (buf == null)
                 return null;
             return Utf8StringBuffer.Utf8.GetString(buffer.Buf, start, len);  
