@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 types       = types,
                 directives  = new List<GqlDirective>()
             };
-            var graphQLSchema = CreateSchema(schema, schemaType.schemaInfo);
+            var graphQLSchema = CreateSchema(schema, schemaType?.schemaInfo);
             generator.files.Add("schema.graphql", graphQLSchema);
 
             return schema;
@@ -256,6 +256,8 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static List<GqlField> CreateQueries(TypeDef schemaType, Generator generator) {
             var queries     = new List<GqlField>();
+            if (schemaType == null)
+                return queries;
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
                 var query = new GqlField { name = field.name,
