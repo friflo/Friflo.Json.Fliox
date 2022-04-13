@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Tests.Unity.Utils;
@@ -28,17 +29,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             strings.Add(fooUtf8);
             
             // 2. search a value in strings
-            for (int i = 0; i < 1000; i++) {
-                for (int n = 0; n <= count; n++) {
-                    var str = strings[n];    
-                    if (str.IsEqual(ref foo)) {
-                        AreEqual(count, n);
-                        foo.Dispose();
-                        return;
-                    }
-                }
-                Fail("unexpected");
+            for (long i = 0; i < 1000; i++) {
+                Search(strings, ref foo);
             }
+            foo.Dispose();
+        }
+        
+        private static void Search (List<Utf8String> strings, ref Bytes value) {
+            var count   = strings.Count - 1;
+            for (int n = 0; n <= count; n++) {
+                var str = strings[n];    
+                if (str.IsEqual(ref value)) {
+                    AreEqual(count, n);
+                    return;
+                }
+            }
+            Fail("unexpected");
         }
     }
 }
