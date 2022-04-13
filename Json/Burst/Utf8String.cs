@@ -6,10 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Burst
 {
     public readonly struct Utf8String {
         private   readonly  Utf8Buffer  buffer;
+        // todo - may add 64 bit alignment (multiple of 8) for start
+        // start is currently not a multiple of 8. So equality checks with another byte[] starting at 0 is not CPU optimal.
+        // Consider: in case of many string entries using alignment will degrade memory locality
         internal  readonly  int         start;
         internal  readonly  int         len;
 
