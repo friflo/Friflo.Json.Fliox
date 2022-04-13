@@ -61,7 +61,24 @@ namespace Friflo.Json.Burst
         }
     }
     
-    public class Utf8Buffer {
+    /// <summary>
+    /// Using <see cref="IUtf8Buffer"/> instead of <see cref="Utf8Buffer"/> enables using
+    /// instances of <see cref="Utf8Buffer"/> as private fields.
+    /// This preserve the immutable behavior when using these fields. 
+    /// </summary>
+    public interface IUtf8Buffer
+    {
+#if UNITY_5_3_OR_NEWER
+        Utf8String  GetOrAdd    (string value);
+        Utf8String  Add         (string value);
+
+#else
+        Utf8String  GetOrAdd    (ReadOnlySpan<char> value);
+        Utf8String  Add         (ReadOnlySpan<char> value);
+#endif
+    }
+    
+    public class Utf8Buffer : IUtf8Buffer {
         private             byte[]              buf;
         private             int                 pos;
         private  readonly   List<Utf8String>    strings = new List<Utf8String>();

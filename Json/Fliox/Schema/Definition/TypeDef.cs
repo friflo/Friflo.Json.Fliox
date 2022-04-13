@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             TypeDef     ownerType,
             string      relation,
             string      doc,
-            Utf8Buffer  buffer) 
+            IUtf8Buffer buffer) 
         {
             this.name               = name;
             this.nameUtf8           = buffer.GetOrAdd(name);
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
         public   override   string      ToString() => name;
 
-        private EnumValue (string name, string doc, Utf8Buffer buffer) {
+        private EnumValue (string name, string doc, IUtf8Buffer buffer) {
             this.name       = name;
             this.nameUtf8   = buffer.Add(name);
             this.doc        = doc;
@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         internal static List<EnumValue> CreateEnumValues(
             ICollection<string>                 enumNames,
             IReadOnlyDictionary<string,string>  enumDocs,
-            Utf8Buffer                          buffer)
+            IUtf8Buffer                         buffer)
         {
             if (enumNames == null)
                 return null;
@@ -226,7 +226,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public   override   string                      ToString() => discriminator;
         
-        public UnionType(string discriminator, string doc, List<UnionItem> types, Utf8Buffer buffer) {
+        public UnionType(string discriminator, string doc, List<UnionItem> types, IUtf8Buffer buffer) {
             this.discriminator      = discriminator;
             this.discriminatorUtf8  = buffer.Add(discriminator);
             this.doc                = doc;
@@ -240,7 +240,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   string      discriminant;
         public   readonly   Utf8String  discriminantUtf8;
         
-        public UnionItem (TypeDef typeDef, string discriminant, Utf8Buffer buffer) {
+        public UnionItem (TypeDef typeDef, string discriminant, IUtf8Buffer buffer) {
             this.typeDef            = typeDef;
             this.discriminant       = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
             this.discriminantUtf8   = buffer.Add(discriminant);

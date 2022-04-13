@@ -45,7 +45,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public abstract     TypeDef                 RootType        { get; }
 
-        internal readonly   Utf8Buffer                      utf8Buffer = new Utf8Buffer();
+        private  readonly   Utf8Buffer                      utf8Buffer = new Utf8Buffer();
+        internal            IUtf8Buffer                     Utf8Buffer => utf8Buffer;
         private             Dictionary<TypeDefKey, TypeDef> typeDefMap;
         
         public              TypeDef                 FindTypeDef(string @namespace, string name) {

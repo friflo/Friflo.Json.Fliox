@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var @namespace  = GetNamespace(schema, typeName);
-                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, schema, utf8Buffer);
+                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, schema, Utf8Buffer);
                     var schemaId    = $"./{schema.fileName}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     JsonTypeDef typeDef = pair.Value;
                     JsonType    type    = typeDef.type;
                     var schema          = typeDef.schema; 
-                    var context = new JsonTypeContext(schema, typeMap, standardTypes, reader, utf8Buffer);
+                    var context = new JsonTypeContext(schema, typeMap, standardTypes, reader, Utf8Buffer);
                     var rootRef = schema.rootRef;
                     if (rootRef != null) {
                         FindRef(schema.rootRef, context);
@@ -90,12 +90,12 @@ namespace Friflo.Json.Fliox.Schema.JSON
                             var itemRef             = FindRef(item.reference, context);
                             var discriminantMember  = itemRef.type.properties[type.discriminator];
                             var discriminant        = discriminantMember.discriminant[0];
-                            var unionItem           = new UnionItem(itemRef, discriminant, utf8Buffer);
+                            var unionItem           = new UnionItem(itemRef, discriminant, Utf8Buffer);
                             unionTypes.Add(unionItem);
                         }
                         typeDef.isAbstract  = true;
                         var discField       = type.properties[type.discriminator];
-                        typeDef.unionType   = new UnionType (type.discriminator, discField.description, unionTypes, utf8Buffer);
+                        typeDef.unionType   = new UnionType (type.discriminator, discField.description, unionTypes, Utf8Buffer);
                     }
                 }
                 foreach (JSONSchema schema in schemaList) {
@@ -421,14 +421,14 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
-        internal readonly   Utf8Buffer                      utf8Buffer;
+        internal readonly   IUtf8Buffer                     utf8Buffer;
 
         internal JsonTypeContext (
             JSONSchema                      schema,
             Dictionary<string, JsonTypeDef> schemas,
             JsonStandardTypes               standardTypes,
             ObjectReader                    reader,
-            Utf8Buffer                      utf8Buffer)
+            IUtf8Buffer                     utf8Buffer)
         {
             this.schema         = schema;
             this.schemas        = schemas;

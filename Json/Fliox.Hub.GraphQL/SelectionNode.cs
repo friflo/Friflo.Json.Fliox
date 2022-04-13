@@ -15,11 +15,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
         public override         string          ToString() => name.ToString();
 
-        internal SelectionNode (in Query query, Utf8Buffer buffer)
+        internal SelectionNode (in Query query, IUtf8Buffer buffer)
             : this (null, query.graphQL.SelectionSet, buffer)
         { }
             
-        private SelectionNode  (GraphQLName name, GraphQLSelectionSet selectionSet, Utf8Buffer buffer) {
+        private SelectionNode  (GraphQLName name, GraphQLSelectionSet selectionSet, IUtf8Buffer buffer) {
             if (name == (object)null) {
                 this.name           = new Utf8String();
             } else {

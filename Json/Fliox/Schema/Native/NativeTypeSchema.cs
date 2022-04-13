@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
 
                         var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type,
-                            isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, utf8Buffer);
+                            isArray, isDictionary, isNullableElement, typeDef, relation, propField.docs, Utf8Buffer);
                         typeDef.fields.Add(fieldDef);
                     }
                 }
@@ -151,10 +151,10 @@ namespace Friflo.Json.Fliox.Schema.Native
                         var unionTypes  = new List<UnionItem>(polyTypes.Length);
                         foreach (var polyType in polyTypes) {
                             TypeDef element = nativeTypes[polyType.type];
-                            var item = new UnionItem (element, polyType.name, utf8Buffer);
+                            var item = new UnionItem (element, polyType.name, Utf8Buffer);
                             unionTypes.Add(item);
                         }
-                        typeDef.unionType  = new UnionType (factory.discriminator, factory.description, unionTypes, utf8Buffer);
+                        typeDef.unionType  = new UnionType (factory.discriminator, factory.description, unionTypes, Utf8Buffer);
                     }
                 }
             }
@@ -204,7 +204,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 return null;
             var attr        = GetArgAttributes(type);
             required       |= attr.required;
-            return new FieldDef(name, required, false, false, attr.typeDef, false, false, false, null, null, null, utf8Buffer);
+            return new FieldDef(name, required, false, false, attr.typeDef, false, false, false, null, null, null, Utf8Buffer);
         }
         
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
@@ -216,9 +216,9 @@ namespace Friflo.Json.Fliox.Schema.Native
                 return;
             NativeTypeDef typeDef;
             if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
-                typeDef = new NativeTypeDef(mapper, name, "Standard", utf8Buffer);
+                typeDef = new NativeTypeDef(mapper, name, "Standard", Utf8Buffer);
             } else {
-                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, utf8Buffer);
+                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace, Utf8Buffer);
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);
