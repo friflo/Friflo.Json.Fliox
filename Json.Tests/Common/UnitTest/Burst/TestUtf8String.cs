@@ -40,7 +40,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             for (int n = 0; n <= count; n++) {
                 var str = strings[n];    
                 if (str.IsEqual(ref value)) {
-                    AreEqual(count, n);
+                    if (n != count)
+                        throw new InvalidOperationException("unexpected");
                     return;
                 }
             }

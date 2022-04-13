@@ -42,9 +42,9 @@ namespace Friflo.Json.Burst
 #endif
         
         public bool IsEqual (ref Bytes value) {
-#if UNITY_5_3_OR_NEWER
             if (len != value.Len)
                 return false;
+#if UNITY_5_3_OR_NEWER
             return ArraysEqual(buffer.Buf, start, value.buffer.array, len);
 #else
             var left   = ReadOnlySpan();
