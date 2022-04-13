@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             strings.Add(fooUtf8);
             
             // 2. search a value in strings
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 1000; i++) {
                 for (int n = 0; n <= count; n++) {
                     var str = strings[n];    
                     if (str.IsEqual(ref foo)) {
