@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Schema.Definition
 {
@@ -44,8 +45,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
         
         public abstract     TypeDef                 RootType        { get; }
 
+        internal readonly   Utf8Buffer                      utf8Buffer = new Utf8Buffer();
         private             Dictionary<TypeDefKey, TypeDef> typeDefMap;
-
+        
         public              TypeDef                 FindTypeDef(string @namespace, string name) {
             if (typeDefMap == null) {
                 typeDefMap = new Dictionary<TypeDefKey, TypeDef>(Types.Count);

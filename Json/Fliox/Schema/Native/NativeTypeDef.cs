@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         
         public   override   string                      ToString()      => $"{Namespace} {Name}";
         
-        public NativeTypeDef (TypeMapper mapper, string name, string @namespace) :
+        public NativeTypeDef (TypeMapper mapper, string name, string @namespace, Utf8Buffer buffer) :
             base(name, @namespace, mapper.docs) 
         {
             this.native     = mapper.type;
@@ -49,7 +50,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             IsClass         = mapper.IsComplex;
             IsStruct        = mapper.type.IsValueType && mapper.type != typeof(JsonKey); // JsonKey is "nullable"
             Discriminant    = mapper.Discriminant;
-            EnumValues      = EnumValue.CreateEnumValues(mapper.GetEnumValues(), mapper.GetEnumValueDocs());
+            EnumValues      = EnumValue.CreateEnumValues(mapper.GetEnumValues(), mapper.GetEnumValueDocs(), buffer);
         }
         
         public override bool Equals(object obj) {

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.JSON
@@ -40,13 +41,13 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal            bool                isAbstract;
         internal readonly   JSONSchema          schema;
 
-        public JsonTypeDef (JsonType type, string name, string ns, JSONSchema schema) :
+        public JsonTypeDef (JsonType type, string name, string ns, JSONSchema schema, Utf8Buffer buffer) :
             base (name, ns, type.description)
         {
             this.name   = name;
             this.type   = type;
             this.schema = schema;
-            EnumValues  = EnumValue.CreateEnumValues(type.enums, type.descriptions);
+            EnumValues  = EnumValue.CreateEnumValues(type.enums, type.descriptions, buffer);
         }
         
         public JsonTypeDef (string name) :

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 
@@ -33,7 +34,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var @namespace  = GetNamespace(schema, typeName);
-                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, schema);
+                    var typeDef     = new JsonTypeDef (type, typeName, @namespace, schema, utf8Buffer);
                     var schemaId    = $"./{schema.fileName}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
@@ -51,7 +52,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     JsonTypeDef typeDef = pair.Value;
                     JsonType    type    = typeDef.type;
                     var schema          = typeDef.schema; 
-                    var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
+                    var context = new JsonTypeContext(schema, typeMap, standardTypes, reader, utf8Buffer);
                     var rootRef = schema.rootRef;
                     if (rootRef != null) {
                         FindRef(schema.rootRef, context);
@@ -89,12 +90,12 @@ namespace Friflo.Json.Fliox.Schema.JSON
                             var itemRef             = FindRef(item.reference, context);
                             var discriminantMember  = itemRef.type.properties[type.discriminator];
                             var discriminant        = discriminantMember.discriminant[0];
-                            var unionItem           = new UnionItem(itemRef, discriminant);
+                            var unionItem           = new UnionItem(itemRef, discriminant, utf8Buffer);
                             unionTypes.Add(unionItem);
                         }
                         typeDef.isAbstract  = true;
                         var discField       = type.properties[type.discriminator];
-                        typeDef.unionType   = new UnionType (type.discriminator, discField.description, unionTypes);
+                        typeDef.unionType   = new UnionType (type.discriminator, discField.description, unionTypes, utf8Buffer);
                     }
                 }
                 foreach (JSONSchema schema in schemaList) {
@@ -147,9 +148,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
             var relation        = field.relation;
-            
+
             var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType,
-                attr.isArray, attr.isDictionary, attr.isNullableElement, typeDef, relation, field.description);
+                attr.isArray, attr.isDictionary, attr.isNullableElement, typeDef, relation, field.description, context.utf8Buffer);
             typeDef.fields.Add(fieldDef);
         }
         
@@ -223,7 +224,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var attr        = new FieldAttributes();
             var argType     = GetFieldType(fieldType, ref attr, context);
             var required    = !attr.isNullable;
-            return new FieldDef(name, required, false, false, argType, attr.isArray, attr.isDictionary, false, null, null, null);
+            return new FieldDef(name, required, false, false, argType, attr.isArray, attr.isDictionary, false, null, null, null, context.utf8Buffer);
         }
         
         private static TypeDef FindTypeFromJson (
@@ -420,17 +421,20 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
+        internal readonly   Utf8Buffer                      utf8Buffer;
 
         internal JsonTypeContext (
             JSONSchema                      schema,
             Dictionary<string, JsonTypeDef> schemas,
             JsonStandardTypes               standardTypes,
-            ObjectReader                    reader)
+            ObjectReader                    reader,
+            Utf8Buffer                      utf8Buffer)
         {
             this.schema         = schema;
             this.schemas        = schemas;
             this.standardTypes  = standardTypes;
             this.reader         = reader;
+            this.utf8Buffer     = utf8Buffer;
         }
     }
 }

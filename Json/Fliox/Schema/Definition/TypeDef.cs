@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Schema.Definition
 {
@@ -98,6 +99,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </summary>
     public sealed class FieldDef {
         public   readonly   string          name;
+        public   readonly   Utf8String      nameUtf8;
         public   readonly   bool            required;
         public   readonly   bool            isKey;
         public   readonly   bool            isAutoIncrement;
@@ -129,9 +131,11 @@ namespace Friflo.Json.Fliox.Schema.Definition
             bool        isNullableElement,
             TypeDef     ownerType,
             string      relation,
-            string      doc)
+            string      doc,
+            Utf8Buffer  buffer) 
         {
             this.name               = name;
+            this.nameUtf8           = buffer.GetOrAdd(name);
             this.required           = required;
             this.isKey              = isKey;
             this.isAutoIncrement    = isAutoIncrement;
@@ -161,23 +165,29 @@ namespace Friflo.Json.Fliox.Schema.Definition
     public readonly struct EnumValue
     {
         public   readonly   string      name;
+        public   readonly   Utf8String  nameUtf8;
         public   readonly   string      doc;
 
         public   override   string      ToString() => name;
 
-        private EnumValue (string name, string doc) {
-            this.name   = name;
-            this.doc    = doc;
+        private EnumValue (string name, string doc, Utf8Buffer buffer) {
+            this.name       = name;
+            this.nameUtf8   = buffer.Add(name);
+            this.doc        = doc;
         }
         
-        internal static List<EnumValue> CreateEnumValues(ICollection<string> enumNames, IReadOnlyDictionary<string,string> enumDocs) {
+        internal static List<EnumValue> CreateEnumValues(
+            ICollection<string>                 enumNames,
+            IReadOnlyDictionary<string,string>  enumDocs,
+            Utf8Buffer                          buffer)
+        {
             if (enumNames == null)
                 return null;
             var enumValues  = new List<EnumValue>(enumNames.Count);
             foreach (var name in enumNames) {
                 string doc = null; 
                 enumDocs?.TryGetValue(name, out doc);
-                enumValues.Add(new EnumValue(name, doc));
+                enumValues.Add(new EnumValue(name, doc, buffer));
             }
             return enumValues;
         }
@@ -210,15 +220,17 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
     public sealed class UnionType {
         public   readonly   string                      discriminator;
+        public   readonly   Utf8String                  discriminatorUtf8;
         public   readonly   string                      doc;
         public   readonly   IReadOnlyList<UnionItem>    types;
         
         public   override   string                      ToString() => discriminator;
         
-        public UnionType(string discriminator, string doc, List<UnionItem> types) {
-            this.discriminator  = discriminator;
-            this.doc            = doc;
-            this.types          = types;
+        public UnionType(string discriminator, string doc, List<UnionItem> types, Utf8Buffer buffer) {
+            this.discriminator      = discriminator;
+            this.discriminatorUtf8  = buffer.Add(discriminator);
+            this.doc                = doc;
+            this.types              = types;
         }
     }
     
@@ -226,10 +238,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
     {
         public   readonly   TypeDef     typeDef;
         public   readonly   string      discriminant;
+        public   readonly   Utf8String  discriminantUtf8;
         
-        public UnionItem (TypeDef typeDef, string discriminant) {
-            this.typeDef        = typeDef;
-            this.discriminant   = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
+        public UnionItem (TypeDef typeDef, string discriminant, Utf8Buffer buffer) {
+            this.typeDef            = typeDef;
+            this.discriminant       = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
+            this.discriminantUtf8   = buffer.Add(discriminant);
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal readonly struct QLResponseHandler
     {
-        readonly Utf8StringBuffer buffer;
+        readonly Utf8Buffer buffer;
         
-        internal QLResponseHandler(Utf8StringBuffer buffer) {
+        internal QLResponseHandler(Utf8Buffer buffer) {
             this.buffer = buffer;
         }
         
