@@ -13,26 +13,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         [Test]
         public void Utf8String() {
-            var count   = 100;
+            // Typical use case:
+            //
+            // 1. add strings once
+            var foo = new Bytes("foo");
+            var count   = 10;
             var strings = new List<Utf8String>(count);
             var buffer  = new Utf8Buffer();
             for (int n = 0; n < count; n++) {
-                var str = buffer.Add("xxx"); 
+                var str = buffer.Add("abc"); 
                 strings.Add(str);
             }
             var fooUtf8 = buffer.Add("foo"); 
             strings.Add(fooUtf8);
             
-            var foo = new Bytes("foo");
-            for (int n = 0; n <= count; n++) {
-                var str = strings[n];    
-                if (str.IsEqual(ref foo)) {
-                    AreEqual(count, n);
-                    foo.Dispose();
-                    return;
+            // 2. search a value in strings
+            for (int i = 0; i < 10000; i++) {
+                for (int n = 0; n <= count; n++) {
+                    var str = strings[n];    
+                    if (str.IsEqual(ref foo)) {
+                        AreEqual(count, n);
+                        foo.Dispose();
+                        return;
+                    }
                 }
+                Fail("unexpected");
             }
-            Fail("unexpected");
         }
     }
 }
