@@ -24,8 +24,18 @@ namespace Friflo.Json.Burst
             this.buffer = buffer;
             this.start  = start;
             this.len    = len;
+            // hashCode    = ComputeHash(buffer.Buf, start, start + len);
         }
-        
+
+        // using as resulted in 20% less performance - not convinced to use it
+        private static int ComputeHash(byte[] array, int start, int end) {
+            var result  = 0;
+            for (int n = start; n < end; n++) {
+                result = (result * 31) ^ array[n];
+            }
+            return result;
+        }
+
 #if UNITY_5_3_OR_NEWER
         public static bool ArraysEqual(byte[] left, int leftStart, byte[] right, int len) {
             var pos     = leftStart;
