@@ -31,8 +31,9 @@ namespace Friflo.Json.Fliox.Transform.Select
         internal readonly   PathNode<TResult>                       parent;
         
         private  readonly   SelectorNode                            selectorNode;
-        private  readonly   List<PathNode<TResult>>                 children = new List<PathNode<TResult>>();
-        private  readonly   List<byte[]>                            keys = new List<byte[]>();
+        private  readonly   List<PathNode<TResult>>                 children    = new List<PathNode<TResult>>();
+        private  readonly   List<Utf8String>                        keys        = new List<Utf8String>();
+        private  readonly   Utf8Buffer                              utf8Buffer  = new Utf8Buffer();
 
         public      bool                            IsMember()      => selectorNode.selectorType == SelectorType.Member;
         public      string                          GetName()       => selectorNode.name;
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Transform.Select
 
         internal bool FindByBytes(ref Bytes key, out PathNode<TResult> node) {
             for (int n = 0; n < keys.Count; n++) {
-                if (key.IsEqualArray(keys[n])) {
+                if (keys[n].IsEqual(ref key)) {
                     node = children[n];
                     return true;
                 }
@@ -77,13 +78,14 @@ namespace Friflo.Json.Fliox.Transform.Select
 
         internal void Add(PathNode<TResult> node) {
             children.Add(node);
-            var key = Encoding.UTF8.GetBytes(node.selectorNode.name);
+            var key = utf8Buffer.Add(node.selectorNode.name);
             keys.Add(key);
         }
 
         internal void Clear() {
             children.Clear();
             keys.Clear();
+            utf8Buffer.Clear();
         }
 
         private void AscendToString(StringBuilder sb) {

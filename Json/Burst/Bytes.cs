@@ -278,6 +278,7 @@ namespace Friflo.Json.Burst
             return Utf8Utils.IsStringEqualUtf8(str, in this);
         }
 
+        /// <summary>deprecated: Use <see cref="Utf8String"/> instead </summary>
         public bool IsEqualArray(byte[] array) {
 #if UNITY_5_3_OR_NEWER
             if (Len != array.Length)

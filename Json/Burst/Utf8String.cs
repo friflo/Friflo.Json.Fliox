@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst
     }
     
     public class Utf8Buffer {
-        private             byte[]              buf = new byte[32];
+        private             byte[]              buf;
         private             int                 pos;
         private  readonly   List<Utf8String>    strings = new List<Utf8String>();
         
@@ -72,7 +72,15 @@ namespace Friflo.Json.Burst
         internal static readonly UTF8Encoding   Utf8    = new UTF8Encoding(false);
 
         // ReSharper disable once EmptyConstructor - find all instantiations
-        public Utf8Buffer() {}
+        public Utf8Buffer() {
+            Clear();
+        }
+
+        public void Clear() {
+            buf = new byte[32];
+            pos = 0;
+            strings.Clear();
+        }
         
 #if UNITY_5_3_OR_NEWER
         public Utf8String GetOrAdd (string value) {
