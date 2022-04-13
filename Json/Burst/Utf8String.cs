@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
 
 using System;
 using System.Collections.Generic;
@@ -11,8 +10,8 @@ namespace Friflo.Json.Burst
 {
     public readonly struct Utf8String {
         private   readonly  Utf8Buffer  buffer;
-        private   readonly  int         start;
-        private   readonly  int         len;
+        internal  readonly  int         start;
+        internal  readonly  int         len;
 
         public    override  string      ToString()  => GetName();
         public              bool        IsNull      => buffer?.Buf == null;
@@ -23,6 +22,16 @@ namespace Friflo.Json.Burst
             this.len    = len;
         }
         
+#if UNITY_5_3_OR_NEWER
+        public static bool ArraysEqual(byte[] left, int leftStart, byte[] right, int len) {
+            var pos     = leftStart;
+            for (int n = 0; n < len; n++) {
+                if (left[pos++] != right[n])
+                    return false;
+            }
+            return true;
+        }
+#else
         public ReadOnlySpan<byte> ReadOnlySpan () {
             return new ReadOnlySpan<byte> (buffer.Buf, start, len);
         }
@@ -30,11 +39,18 @@ namespace Friflo.Json.Burst
         internal Span<byte> Span () {
             return new Span<byte> (buffer.Buf, start, len);
         }
+#endif
         
         public bool IsEqual (ref Bytes value) {
+#if UNITY_5_3_OR_NEWER
+            if (len != value.Len)
+                return false;
+            return ArraysEqual(buffer.Buf, start, value.buffer.array, len);
+#else
             var left   = Span();
             var right  = new Span<byte> (value.buffer.array, value.start, value.Len);
             return left.SequenceEqual(right);
+#endif
         }
         
         private string GetName() {
@@ -58,12 +74,35 @@ namespace Friflo.Json.Burst
         // ReSharper disable once EmptyConstructor - find all instantiations
         public Utf8Buffer() {}
         
+#if UNITY_5_3_OR_NEWER
+        public Utf8String GetOrAdd (string value) {
+            var len         = Utf8.GetByteCount(value);
+            var temp        = new byte[len];
+            Utf8.GetBytes(value, 0, value.Length, temp, 0);
+            foreach (var str in strings) {
+                if (len == str.len) {
+                    if (Utf8String.ArraysEqual(buf, str.start, temp, len))
+                        return str;
+                }
+            }
+            return Add(value);
+        }
+        
+        public Utf8String Add (string value) {
+            var len     = Utf8.GetByteCount(value);
+            int destPos = Reserve(len);
+            Utf8.GetBytes(value, 0, value.Length, buf, destPos);
+            var utf8    = new Utf8String(this, destPos, len);
+            strings.Add(utf8);
+            return utf8;
+        }
+#else
         public Utf8String GetOrAdd (ReadOnlySpan<char> value) {
             var len         = Utf8.GetByteCount(value);
-            Span<byte> span = stackalloc byte[len];
-            Utf8.GetBytes(value, span);
+            Span<byte> temp = stackalloc byte[len];
+            Utf8.GetBytes(value, temp);
             foreach (var str in strings) {
-                if (span.SequenceEqual(str.Span()))
+                if (temp.SequenceEqual(str.Span()))
                     return str;
             }
             return Add(value);
@@ -78,6 +117,7 @@ namespace Friflo.Json.Burst
             strings.Add(utf8);
             return utf8;
         }
+#endif
         
         private int Reserve (int len) {
             int curPos  = pos;
@@ -98,4 +138,4 @@ namespace Friflo.Json.Burst
     }
 }
 
-#endif
+
