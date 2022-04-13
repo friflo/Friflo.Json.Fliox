@@ -9,6 +9,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform.Project;
 using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
@@ -67,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = new SelectionNode(query, buffer);
+            var selectionNode   = ProjectUtils.CreateSelection(query, buffer);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, json);
         }
@@ -82,14 +83,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = new SelectionNode(query, buffer);
+            var selectionNode   = ProjectUtils.CreateSelection(query, buffer);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, json);
         }
         
         private JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
             var commandResult   = (SendCommandResult)result;
-            var selectionNode   = new SelectionNode(query, buffer);
+            var selectionNode   = ProjectUtils.CreateSelection(query, buffer);
             var filter          = new SelectionFilter();
             return filter.Filter(selectionNode, commandResult.result);
         }

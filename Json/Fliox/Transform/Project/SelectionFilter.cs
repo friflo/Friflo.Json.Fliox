@@ -7,9 +7,9 @@ using Friflo.Json.Fliox.Mapper;
 
 #if !UNITY_5_3_OR_NEWER
 
-namespace Friflo.Json.Fliox.Hub.GraphQL
+namespace Friflo.Json.Fliox.Transform.Project
 {
-    internal class SelectionFilter: IDisposable
+    public class SelectionFilter: IDisposable
     {
         private             Utf8JsonWriter          serializer;
             
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             serializer.Dispose();
         }
 
-        internal JsonValue Filter(in SelectionNode node, in JsonValue value) {
+        public JsonValue Filter(in SelectionNode node, in JsonValue value) {
             targetJson.Clear();
             targetJson.AppendArray(value);
             parser.InitParser(targetJson);
