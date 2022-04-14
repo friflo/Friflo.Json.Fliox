@@ -1,8 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
-
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Transform.Project;
@@ -57,5 +55,3 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         Message
     }
 }
-
-#endif

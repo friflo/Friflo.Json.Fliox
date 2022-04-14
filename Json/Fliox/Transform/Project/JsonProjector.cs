@@ -5,8 +5,6 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 
-#if !UNITY_5_3_OR_NEWER
-
 namespace Friflo.Json.Fliox.Transform.Project
 {
     public class JsonProjector: IDisposable
@@ -136,5 +134,3 @@ namespace Friflo.Json.Fliox.Transform.Project
         }
     }
 }
-
-#endif
