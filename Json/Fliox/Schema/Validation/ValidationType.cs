@@ -302,7 +302,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
 
         public   override   string          ToString() => discriminantStr;
 
-        public UnionItem (string discriminant, Utf8String discriminantUtf8, ValidationType type) {
+        public UnionItem (string discriminant, in Utf8String discriminantUtf8, ValidationType type) {
             discriminantStr     = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
             this.discriminant   = discriminantUtf8;
             this.type           = type;

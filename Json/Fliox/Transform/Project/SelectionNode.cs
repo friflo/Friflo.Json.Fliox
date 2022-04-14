@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Project
 
         public override         string          ToString() => FormatToString();
 
-        public SelectionNode  (Utf8String name, SelectionNode[] nodes) {
+        public SelectionNode  (in Utf8String name, SelectionNode[] nodes) {
             this.name           = name;
             this.nodes          = nodes;
         }
