@@ -12,11 +12,18 @@ namespace Friflo.Json.Fliox.Transform.Project
         private   readonly      SelectionNode[] nodes;
         private   readonly      Utf8String      name;
 
-        public override         string          ToString() => name.ToString();
+        public override         string          ToString() => FormatToString();
 
         public SelectionNode  (Utf8String name, SelectionNode[] nodes) {
             this.name           = name;
             this.nodes          = nodes;
+        }
+        
+        private string FormatToString() {
+            var selectionName = name.IsNull ? "(root)" : name.ToString();
+            if (nodes == null)
+                return selectionName;
+            return $"{selectionName} - nodes: {nodes.Length}";
         }
         
         public bool FindByBytes(ref Bytes key, out SelectionNode result) {
