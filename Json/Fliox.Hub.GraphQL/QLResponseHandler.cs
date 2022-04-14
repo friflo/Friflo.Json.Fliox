@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -14,15 +13,9 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal readonly struct QLResponseHandler
+    internal static class QLResponseHandler
     {
-        private  readonly   IUtf8Buffer     buffer;
-        
-        internal QLResponseHandler(IUtf8Buffer buffer) {
-            this.buffer = buffer;
-        }
-        
-        internal JsonValue ProcessResponse(
+        internal static JsonValue ProcessResponse(
             ObjectPool<ObjectMapper>    mapper,
             List<Query>                 queries,
             SyncResponse                syncResponse)
@@ -45,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        private JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             if (result is TaskErrorResult taskError) {
                 return new JsonValue(writer.WriteAsArray(taskError));
             }
@@ -58,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }
         
-        private JsonValue QueryEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private static JsonValue QueryEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             var queryResult     = (QueryEntitiesResult)result;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = queryResult.ids;
@@ -68,12 +61,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = ResponseUtils.CreateSelection(query, buffer);
             var projector       = new JsonProjector();
-            return projector.Project(selectionNode, json);
+            return projector.Project(query.selection, json);
         }
         
-        private JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
+        private static JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             var readTask        = (ReadEntities)query.task;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = readTask.sets[0].ids;
@@ -83,16 +75,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = ResponseUtils.CreateSelection(query, buffer);
             var projector       = new JsonProjector();
-            return projector.Project(selectionNode, json);
+            return projector.Project(query.selection, json);
         }
         
-        private JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
             var commandResult   = (SendCommandResult)result;
-            var selectionNode   = ResponseUtils.CreateSelection(query, buffer);
             var projector       = new JsonProjector();
-            return projector.Project(selectionNode, commandResult.result);
+            return projector.Project(query.selection, commandResult.result);
         }
         
         private static JsonValue SendMessageResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {

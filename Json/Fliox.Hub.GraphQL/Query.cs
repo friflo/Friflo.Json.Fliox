@@ -5,7 +5,7 @@
 
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
-using GraphQLParser.AST;
+using Friflo.Json.Fliox.Transform.Project;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
@@ -15,16 +15,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  QueryType       type;
         internal  readonly  string          container;
         internal  readonly  SyncRequestTask task;
-        internal  readonly  GraphQLField    graphQL;
+        internal  readonly  SelectionNode   selection;
 
         public    override  string          ToString() => $"{type}: {name}";
 
-        internal Query(string name, QueryType type, string container, SyncRequestTask task, GraphQLField graphQL) {
+        internal Query(string name, QueryType type, string container, SyncRequestTask task, in SelectionNode selection) {
             this.name       = name;
             this.type       = type;
             this.container  = container;
             this.task       = task;
-            this.graphQL    = graphQL;
+            this.selection  = selection;
         }
     }
     

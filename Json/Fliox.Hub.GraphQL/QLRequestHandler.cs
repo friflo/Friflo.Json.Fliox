@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -17,8 +18,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class QLRequestHandler
     {
-        private readonly string                             database;
-        private readonly Dictionary<string, QueryResolver>  resolvers = new Dictionary<string, QueryResolver>();
+        private  readonly   string                              database;
+        private  readonly   Dictionary<string, QueryResolver>   resolvers = new Dictionary<string, QueryResolver>();
         
         internal QLRequestHandler(TypeSchema typeSchema, string database) {
             this.database   = database;
@@ -52,13 +53,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         {
             var definitions = document.Definitions;
             var queries     = new List<Query> ();
+            var utf8Buffer  = new Utf8Buffer();
             foreach (var definition in definitions) {
                 if (!(definition is GraphQLOperationDefinition operation))
                     continue;
                 if (operation.Name != operationName)
                     continue;
                 var selections  = operation.SelectionSet.Selections;
-                error           = AddQueries(selections, docStr, queries);
+                error           = AddQueries(selections, docStr, queries, utf8Buffer);
                 if (error != null) {
                     return default;
                 }
@@ -75,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new QLRequestContext(syncRequest, queries);
         }
         
-        private string AddQueries(List<ASTNode> selections, string docStr, List<Query> queries)
+        private string AddQueries(List<ASTNode> selections, string docStr, List<Query> queries, IUtf8Buffer buffer)
         {
             foreach (var selection in selections) {
                 if (!(selection is GraphQLField graphQLQuery))
@@ -87,7 +89,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var task = CreateQueryTask(resolver, graphQLQuery, docStr, out string error);
                 if (error != null)
                     return error;
-                var query = new Query(name, resolver.type, resolver.container, task, graphQLQuery);
+                var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer);
+                var query           = new Query(name, resolver.type, resolver.container, task, selectionNode);
                 queries.Add(query);
             }
             return null;

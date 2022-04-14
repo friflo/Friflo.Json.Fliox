@@ -11,8 +11,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class ResponseUtils
     {
-        internal static SelectionNode CreateSelection (in Query query, IUtf8Buffer buffer) {
-            return CreateNode(null, query.graphQL.SelectionSet, buffer);
+        internal static SelectionNode CreateSelection (GraphQLField query, IUtf8Buffer buffer) {
+            return CreateNode(null, query.SelectionSet, buffer);
         }
         
         private static SelectionNode CreateNode (GraphQLName name, GraphQLSelectionSet selectionSet, IUtf8Buffer buffer) {
