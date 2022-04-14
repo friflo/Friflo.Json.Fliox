@@ -51,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal enum QueryType {
         Query,
+        Count,
         ReadById,
         Create,
         Upsert,

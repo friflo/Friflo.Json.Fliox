@@ -26,11 +26,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var field in schemaType.Fields) {
                 var container   = field.name;
                 var query       = new QueryResolver("query",    QueryType.Query,    container, null);
+                var count       = new QueryResolver("count",    QueryType.Count,    container, null);
                 var readById    = new QueryResolver("read",     QueryType.ReadById, container, null);
                 var create      = new QueryResolver("create",   QueryType.Create,   container, null);
                 var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null);
                 var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null);
                 resolvers.Add(query.name,       query);
+                resolvers.Add(count.name,       count);
                 resolvers.Add(readById.name,    readById);
                 resolvers.Add(create.name,      create);
                 resolvers.Add(upsert.name,      upsert);
@@ -109,6 +111,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         {
             switch(resolver.type) {
                 case QueryType.Query:       return QueryEntities    (resolver, query,           out error);
+                case QueryType.Count:       return CountEntities    (resolver, query,           out error);
                 case QueryType.ReadById:    return ReadEntities     (resolver, query,           out error);
                 case QueryType.Create:      return CreateEntities   (resolver, query, docStr,   out error);
                 case QueryType.Upsert:      return UpsertEntities   (resolver, query, docStr,   out error);
@@ -121,22 +124,21 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
         private static QueryEntities QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
-            string  filter  = null;
-            int?    limit   = null;
-            var arguments   = query.Arguments;
-            if (arguments != null) {
-                foreach (var argument in arguments) {
-                    var value   = argument.Value;
-                    var argName = argument.Name.Value.Span;
-                    if      (argName.SequenceEqual("filter"))   { filter  = RequestUtils.TryGetStringArg (value, out error); }
-                    else if (argName.SequenceEqual("limit"))    { limit   = RequestUtils.TryGetIntArg    (value, out error); }
-                    else                                        { error   = RequestUtils.UnknownArgument(argName); }
-                    if (error != null)
-                        return null;
-                }
-            }
-            error = null;
+            string  filter  = RequestArgs.GetString (query, "filter", out error);
+            if (error != null)
+                return null;
+            int?    limit   = RequestArgs.GetInt    (query, "limit", out error);
+            if (error != null)
+                return null;
             return new QueryEntities { container = resolver.container, filter = filter, limit = limit };
+        }
+        
+        private static AggregateEntities CountEntities(in QueryResolver resolver, GraphQLField query, out string error)
+        {
+            string  filter  = RequestArgs.GetString (query, "filter", out error);
+            if (error != null)
+                return null;
+            return new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
         }
         
         private static ReadEntities ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
@@ -174,15 +176,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
-            var arguments   = query.Arguments;
-            var param       = RequestArgs.GetParam(arguments, docStr, resolver, out error);
+            var param       = RequestArgs.GetParam(query, docStr, resolver, out error);
             return new SendCommand { name = resolver.name, param = param };
         }
         
         private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
-            var arguments   = query.Arguments;
-            var param       = RequestArgs.GetParam(arguments, docStr, resolver, out error);
+            var param       = RequestArgs.GetParam(query, docStr, resolver, out error);
             return new SendMessage { name = resolver.name, param = param };
         }
     }

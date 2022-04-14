@@ -17,6 +17,9 @@ type Query {
     readContainers (ids: [String!]!) : [DbContainers]!
     readMessages   (ids: [String!]!) : [DbMessages]!
     readSchemas    (ids: [String!]!) : [DbSchema]!
+    countContainers(filter: String) : Int
+    countMessages  (filter: String) : Int
+    countSchemas   (filter: String) : Int
     std_Echo       (param: Any!) : Any!
     std_Containers  : DbContainers!
     std_Messages    : DbMessages!

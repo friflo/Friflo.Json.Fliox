@@ -265,7 +265,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var queries     = new List<GqlField>();
             if (schemaType == null)
                 return queries;
-            foreach (var field in schemaType.Fields) {
+            var fields = schemaType.Fields;
+            foreach (var field in fields) {
                 var containerType = Gql.Scalar(field.type.Name);
                 var query = new GqlField {
                     name = Gql.MethodName("query", field.name),
@@ -277,7 +278,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 };
                 queries.Add(query);
             }
-            foreach (var field in schemaType.Fields) {
+            foreach (var field in fields) {
                 var containerType = Gql.Scalar(field.type.Name);
                 var queryById = new GqlField {
                     name = Gql.MethodName("read", field.name),
@@ -287,6 +288,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                     type = Gql.List(containerType, true, false)
                 };
                 queries.Add(queryById);
+            }
+            foreach (var field in fields) {
+                var count = new GqlField {
+                    name = Gql.MethodName("count", field.name),
+                    args = new List<GqlInputValue> {
+                        Gql.InputValue ("filter",   Gql.String()),
+                    },
+                    type = Gql.Int()
+                };
+                queries.Add(count);
             }
             var imports = new HashSet<TypeDef>();
             var context = new TypeContext (generator, imports, schemaType);

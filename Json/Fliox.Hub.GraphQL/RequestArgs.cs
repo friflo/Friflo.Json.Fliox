@@ -12,6 +12,46 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class RequestArgs
     {
+        internal static string GetString(GraphQLField query, string name, out string error)
+        {
+            var arguments   = query.Arguments;
+            if (arguments == null) {
+                error = null;
+                return null;
+            }
+            string result = null;
+            foreach (var argument in arguments) {
+                var argName = argument.Name.Value.Span;
+                if (argName.SequenceEqual(name)) {
+                    result  = RequestUtils.TryGetStringArg (argument.Value, out error);
+                    if (error != null)
+                        return null;
+                }
+            }
+            error = null;
+            return result;
+        }
+        
+        internal static int? GetInt(GraphQLField query, string name, out string error)
+        {
+            var arguments   = query.Arguments;
+            if (arguments == null) {
+                error = null;
+                return null;
+            }
+            int? result = null;
+            foreach (var argument in arguments) {
+                var argName = argument.Name.Value.Span;
+                if  (argName.SequenceEqual(name)) {
+                    result  = RequestUtils.TryGetIntArg(argument.Value, out error);
+                    if (error != null)
+                        return null;
+                }
+            }
+            error = null;
+            return result;
+        }
+        
         internal static HashSet<JsonKey> GetIds(GraphQLField query, out string error) {
             var arguments = query.Arguments;
             if (arguments == null) {
@@ -61,7 +101,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return entities;
         }
         
-        internal static JsonValue GetParam(GraphQLArguments args, string docStr, in QueryResolver resolver, out string error) {
+        internal static JsonValue GetParam(GraphQLField query, string docStr, in QueryResolver resolver, out string error) {
+            var args = query.Arguments;
             if (args == null) {
                 if (!resolver.hasParam) {
                     error = null;

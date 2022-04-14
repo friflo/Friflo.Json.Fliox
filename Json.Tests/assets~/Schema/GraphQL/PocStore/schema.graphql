@@ -28,6 +28,12 @@ type Query {
     readProducers    (ids: [String!]!) : [Producer]!
     readEmployees    (ids: [String!]!) : [Employee]!
     readTypes        (ids: [String!]!) : [TestType]!
+    countOrders      (filter: String) : Int
+    countCustomers   (filter: String) : Int
+    countArticles    (filter: String) : Int
+    countProducers   (filter: String) : Int
+    countEmployees   (filter: String) : Int
+    countTypes       (filter: String) : Int
     TestCommand      (param: TestCommandInput) : Boolean!
     SyncCommand      (param: String) : String!
     AsyncCommand     (param: String) : String!

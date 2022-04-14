@@ -19,6 +19,10 @@ type Query {
     readUsers     (ids: [String!]!) : [UserHits]!
     readClients   (ids: [String!]!) : [ClientHits]!
     readHistories (ids: [String!]!) : [HistoryHits]!
+    countHosts    (filter: String) : Int
+    countUsers    (filter: String) : Int
+    countClients  (filter: String) : Int
+    countHistories(filter: String) : Int
     ClearStats    (param: ClearStatsInput) : ClearStatsResult!
     std_Echo      (param: Any!) : Any!
     std_Containers : DbContainers!

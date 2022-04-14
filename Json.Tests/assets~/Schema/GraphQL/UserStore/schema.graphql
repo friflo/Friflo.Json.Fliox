@@ -17,6 +17,9 @@ type Query {
     readCredentials (ids: [String!]!) : [UserCredential]!
     readPermissions (ids: [String!]!) : [UserPermission]!
     readRoles       (ids: [String!]!) : [Role]!
+    countCredentials(filter: String) : Int
+    countPermissions(filter: String) : Int
+    countRoles      (filter: String) : Int
     AuthenticateUser(param: CredentialsInput) : AuthResult!
     std_Echo        (param: Any!) : Any!
     std_Containers   : DbContainers!
