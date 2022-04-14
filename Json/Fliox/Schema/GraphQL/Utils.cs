@@ -44,5 +44,8 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public static GqlType Boolean   () =>   new GqlScalar { name = "Boolean"  };
         public static GqlType Any       () =>   new GqlScalar { name = "Any"      };
         
+        public static string MethodName (string methodType, string container) {
+            return methodType + char.ToUpper(container[0]) + container.Substring(1);
+        }
     }
 }

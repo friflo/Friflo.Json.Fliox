@@ -3,6 +3,7 @@
 
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.GraphQL;
 using Friflo.Json.Fliox.Transform.Project;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         public    override  string      ToString() => $"{type}: {name}";
 
         internal QueryResolver(string name, QueryType type, string container, FieldDef param) {
-            this.name       = name;
+            this.name       = container != null ? Gql.MethodName(name, container) : name;
             this.type       = type;
             this.container  = container;
             hasParam        = param != null;

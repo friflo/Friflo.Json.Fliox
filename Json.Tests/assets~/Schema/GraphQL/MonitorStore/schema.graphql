@@ -11,14 +11,14 @@ scalar Boolean
 scalar Any
 
 type Query {
-    hosts         (filter: String, limit: Int) : [HostHits!]!
-    users         (filter: String, limit: Int) : [UserHits!]!
-    clients       (filter: String, limit: Int) : [ClientHits!]!
-    histories     (filter: String, limit: Int) : [HistoryHits!]!
-    hostsById     (ids: [String!]!) : [HostHits]!
-    usersById     (ids: [String!]!) : [UserHits]!
-    clientsById   (ids: [String!]!) : [ClientHits]!
-    historiesById (ids: [String!]!) : [HistoryHits]!
+    queryHosts    (filter: String, limit: Int) : [HostHits!]!
+    queryUsers    (filter: String, limit: Int) : [UserHits!]!
+    queryClients  (filter: String, limit: Int) : [ClientHits!]!
+    queryHistories(filter: String, limit: Int) : [HistoryHits!]!
+    readHosts     (ids: [String!]!) : [HostHits]!
+    readUsers     (ids: [String!]!) : [UserHits]!
+    readClients   (ids: [String!]!) : [ClientHits]!
+    readHistories (ids: [String!]!) : [HistoryHits]!
     ClearStats    (param: ClearStatsInput) : ClearStatsResult!
     std_Echo      (param: Any!) : Any!
     std_Containers : DbContainers!

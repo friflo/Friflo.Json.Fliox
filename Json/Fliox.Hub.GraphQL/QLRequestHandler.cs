@@ -26,11 +26,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaType  = typeSchema.RootType;
             foreach (var field in schemaType.Fields) {
                 var container   = field.name;
-                var camelCase   = char.ToUpper(container[0]) + container.Substring(1);
-                var query       = new QueryResolver(container,              QueryType.Query,    container, null);
-                var readById    = new QueryResolver($"{container}ById",     QueryType.ReadById, container, null);
-                var create      = new QueryResolver($"create{camelCase}",   QueryType.Create,   container, null);
-                var upsert      = new QueryResolver($"upsert{camelCase}",   QueryType.Upsert,   container, null);
+                var query       = new QueryResolver("query",    QueryType.Query,    container, null);
+                var readById    = new QueryResolver("read",     QueryType.ReadById, container, null);
+                var create      = new QueryResolver("create",   QueryType.Create,   container, null);
+                var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
                 resolvers.Add(create.name,      create);

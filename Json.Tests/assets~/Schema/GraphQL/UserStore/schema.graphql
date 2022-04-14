@@ -11,12 +11,12 @@ scalar Boolean
 scalar Any
 
 type Query {
-    credentials     (filter: String, limit: Int) : [UserCredential!]!
-    permissions     (filter: String, limit: Int) : [UserPermission!]!
-    roles           (filter: String, limit: Int) : [Role!]!
-    credentialsById (ids: [String!]!) : [UserCredential]!
-    permissionsById (ids: [String!]!) : [UserPermission]!
-    rolesById       (ids: [String!]!) : [Role]!
+    queryCredentials(filter: String, limit: Int) : [UserCredential!]!
+    queryPermissions(filter: String, limit: Int) : [UserPermission!]!
+    queryRoles      (filter: String, limit: Int) : [Role!]!
+    readCredentials (ids: [String!]!) : [UserCredential]!
+    readPermissions (ids: [String!]!) : [UserPermission]!
+    readRoles       (ids: [String!]!) : [Role]!
     AuthenticateUser(param: CredentialsInput) : AuthResult!
     std_Echo        (param: Any!) : Any!
     std_Containers   : DbContainers!

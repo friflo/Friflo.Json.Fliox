@@ -268,7 +268,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
                 var query = new GqlField {
-                    name = field.name,
+                    name = Gql.MethodName("query", field.name),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("filter",   Gql.String()),
                         Gql.InputValue ("limit",    Gql.Int())
@@ -280,7 +280,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
                 var queryById = new GqlField {
-                    name = $"{field.name}ById",
+                    name = Gql.MethodName("read", field.name),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
                     },
@@ -304,13 +304,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             return mutations;
         }
         
-        private static void AddMutations(string mutationType, List<GqlField> mutations, TypeDef schemaType) {
+        private static void AddMutations(string methodType, List<GqlField> mutations, TypeDef schemaType) {
             foreach (var field in schemaType.Fields) {
                 var containerType   = Gql.ScalarInput(field.type.Name);
                 var list            = Gql.List(containerType, true, true);
-                var container       = field.name;
                 var query = new GqlField {
-                    name = mutationType + char.ToUpper(container[0]) + container.Substring(1),
+                    name = Gql.MethodName(methodType, field.name),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("entities",   list),
                     },
@@ -325,7 +324,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (kind == Kind.Input && !type.IsEnum)
                 return name + "Input";
             return name;
-        } 
+        }
     }
     
     internal enum Kind {
