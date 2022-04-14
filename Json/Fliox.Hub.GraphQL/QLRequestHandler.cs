@@ -25,11 +25,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             this.database   = database;
             var schemaType  = typeSchema.RootType;
             foreach (var field in schemaType.Fields) {
-                var container = field.name;
-                var query       = new QueryResolver(container,          QueryType.Query,    container, null);
-                var readById    = new QueryResolver($"{container}ById", QueryType.ReadById, container, null);
+                var container   = field.name;
+                var camelCase   = char.ToUpper(container[0]) + container.Substring(1);
+                var query       = new QueryResolver(container,              QueryType.Query,    container, null);
+                var readById    = new QueryResolver($"{container}ById",     QueryType.ReadById, container, null);
+                var create      = new QueryResolver($"create{camelCase}",   QueryType.Create,   container, null);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
+                resolvers.Add(create.name,      create);
             }
             AddMessages(schemaType.Commands, QueryType.Command);
             AddMessages(schemaType.Messages, QueryType.Message);
@@ -103,10 +106,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             out string          error)
         {
             switch(resolver.type) {
-                case QueryType.Query:       return QueryEntities(resolver, query,           out error);
-                case QueryType.ReadById:    return ReadEntities (resolver, query,           out error);
-                case QueryType.Command:     return SendCommand  (resolver, query, docStr,   out error);
-                case QueryType.Message:     return SendMessage  (resolver, query, docStr,   out error);
+                case QueryType.Query:       return QueryEntities    (resolver, query,           out error);
+                case QueryType.ReadById:    return ReadEntities     (resolver, query,           out error);
+                case QueryType.Create:      return CreateEntities   (resolver, query, docStr,   out error);
+                case QueryType.Command:     return SendCommand      (resolver, query, docStr,   out error);
+                case QueryType.Message:     return SendMessage      (resolver, query, docStr,   out error);
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
         }
@@ -155,6 +159,25 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
             error = null;
             return new ReadEntities { container = resolver.container, sets = sets };
+        }
+        
+        private static CreateEntities CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        {
+            List<JsonValue> entities = null;
+            var arguments = query.Arguments;
+            if (arguments != null) {
+                foreach (var argument in arguments) {
+                    var argName = argument.Name.StringValue;
+                    switch (argName) {
+                        case "entities":    entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);    break;
+                        default:            error       = RequestUtils.UnknownArgument(argName);                            break;
+                    }
+                    if (error != null)
+                        return null;
+                }
+            }
+            error = null;
+            return new CreateEntities { container = resolver.container, entities = entities };
         }
         
         private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)

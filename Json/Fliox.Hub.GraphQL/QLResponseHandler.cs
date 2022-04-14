@@ -43,6 +43,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             switch (query.type) {
                 case QueryType.Query:       return QueryEntitiesResult  (query, result, writer, synResponse);
                 case QueryType.ReadById:    return ReadEntitiesResult   (query, result, writer, synResponse);
+                case QueryType.Create:      return CreateEntitiesResult (query, result, writer);
                 case QueryType.Command:     return SendCommandResult    (query, result, writer);
                 case QueryType.Message:     return SendMessageResult    (query, result, writer);
             }
@@ -75,6 +76,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var json            = new JsonValue(writer.WriteAsArray(list));
             var projector       = new JsonProjector();
             return projector.Project(query.selection, json);
+        }
+        
+        private static JsonValue CreateEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
+            var createResult    = (CreateEntitiesResult)result;
+            return new JsonValue("{}"); // todo return errors
         }
         
         private static JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {

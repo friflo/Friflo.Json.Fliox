@@ -62,6 +62,34 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
+        internal static List<JsonValue> TryGetAnyList(GraphQLValue value, string docStr, out string error) {
+            var gqlList = value as GraphQLListValue;
+            if (gqlList == null) {
+                error = "expect list";
+                return null;
+            }
+            var values = gqlList.Values;
+            if (values == null) {
+                error = null;
+                return new List<JsonValue>();
+            }
+            var sb      = new StringBuilder();
+            var result  = new List<JsonValue>(values.Count);
+            foreach (var item in values) {
+                sb.Clear();
+                var astError    = GetAny(item, sb);
+                if (astError != null) {
+                    var loc         = astError.location;
+                    var astValue    = docStr.Substring(loc.Start, loc.End - loc.Start);
+                    error           = $"invalid value at position {loc.Start}. kind: {astError.kind}, value: {astValue}";
+                    return new List<JsonValue>();
+                }
+                result.Add(new JsonValue(sb.ToString()));
+            }
+            error = null;
+            return result;
+        }
+        
         internal static JsonValue TryGetAny(GraphQLValue value, string docStr, out string error) {
             var sb          = new StringBuilder();
             var astError    = GetAny(value, sb);
