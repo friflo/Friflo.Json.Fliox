@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var loc         = astError.location;
                     var astValue    = docStr.Substring(loc.Start, loc.End - loc.Start);
                     error           = $"invalid value at position {loc.Start}. kind: {astError.kind}, value: {astValue}";
-                    return new List<JsonValue>();
+                    return null;
                 }
                 result.Add(new JsonValue(sb.ToString()));
             }
