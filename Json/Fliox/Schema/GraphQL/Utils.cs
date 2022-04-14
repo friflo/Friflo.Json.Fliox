@@ -21,6 +21,10 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
             return new GqlScalar { name = name };
         }
         
+        public static GqlScalar ScalarInput (string name) {
+            return new GqlScalar { name = name + "Input",  };
+        }
+        
         public static GqlType Type (GqlType type, bool required) {
             if (required)
                 return new GqlNonNull { ofType = type };

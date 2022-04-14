@@ -26,6 +26,12 @@ type Query {
     std_Cluster    : HostCluster!
 }
 
+type Mutation {
+    createContainers(entities: [DbContainersInput!]!) : String
+    createMessages  (entities: [DbMessagesInput!]!) : String
+    createSchemas   (entities: [DbSchemaInput!]!) : String
+}
+
 type ClusterStore {
     containers : Any
     messages   : Any

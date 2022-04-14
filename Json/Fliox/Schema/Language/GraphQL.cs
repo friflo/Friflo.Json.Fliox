@@ -38,15 +38,21 @@ namespace Friflo.Json.Fliox.Schema.Language
         public static GqlSchema Generate(Generator generator) {
             var emitter     = new GraphQLGenerator(generator);
             var schemaType  = generator.FindSchemaType();
-            var queries     = CreateQueries(schemaType, generator);
+            var queries     = CreateQueries  (schemaType, generator);
+            var mutations   = CreateMutations(schemaType);
+            var query       = new GqlObject { name = "Query", fields = queries };
             var types   = new List<GqlType> {
                 Gql.String(),
                 Gql.Int(),
                 Gql.Float(),
                 Gql.Boolean(),
                 Gql.Any(),
-                new GqlObject { name = "Query", fields = queries }
+                query
             };
+            if (mutations != null) {
+                var mutation = new GqlObject { name = "Mutation", fields = mutations };
+                types.Add(mutation);
+            }
             foreach (var type in generator.types) {
                 var result = emitter.EmitType(type, Kind.Output);
                 if (result == null)
@@ -60,9 +66,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                 }
             }
             var schema = new GqlSchema {
-                queryType   = new GqlType { name = "Query" },
-                types       = types,
-                directives  = new List<GqlDirective>()
+                queryType       = new GqlType { name = "Query" },
+                mutationType    = mutations != null ? new GqlType { name = "Mutation" } : null,
+                types           = types,
+                directives      = new List<GqlDirective>()
             };
             var graphQLSchema = CreateSchema(schema, schemaType?.schemaInfo);
             generator.files.Add("schema.graphql", graphQLSchema);
@@ -260,7 +267,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return queries;
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
-                var query = new GqlField { name = field.name,
+                var query = new GqlField {
+                    name = field.name,
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("filter",   Gql.String()),
                         Gql.InputValue ("limit",    Gql.Int())
@@ -271,7 +279,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             foreach (var field in schemaType.Fields) {
                 var containerType = Gql.Scalar(field.type.Name);
-                var queryById = new GqlField { name = $"{field.name}ById",
+                var queryById = new GqlField {
+                    name = $"{field.name}ById",
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
                     },
@@ -286,6 +295,26 @@ namespace Friflo.Json.Fliox.Schema.Language
             return queries;
         }
         
+        private static List<GqlField> CreateMutations(TypeDef schemaType) {
+            if (schemaType == null)
+                return null;
+            var mutations   = new List<GqlField>();
+            foreach (var field in schemaType.Fields) {
+                var containerType   = Gql.ScalarInput(field.type.Name);
+                var list            = Gql.List(containerType, true, true);
+                var container       = field.name;
+                var query = new GqlField {
+                    name = "create" + char.ToUpper(container[0]) + container.Substring(1),
+                    args = new List<GqlInputValue> {
+                        Gql.InputValue ("entities",   list),
+                    },
+                    type = Gql.String() // todo return errors
+                };
+                mutations.Add(query);
+            }
+            return mutations;
+        }
+        
         private static string GetName (TypeDef type, Kind kind) {
             var name = type.Name;
             if (kind == Kind.Input && !type.IsEnum)
@@ -297,5 +326,5 @@ namespace Friflo.Json.Fliox.Schema.Language
     internal enum Kind {
         Output,
         Input
-    } 
+    }
 }

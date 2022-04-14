@@ -46,6 +46,15 @@ type Query {
     test_Message2    (param: String) : Any
 }
 
+type Mutation {
+    createOrders   (entities: [OrderInput!]!) : String
+    createCustomers(entities: [CustomerInput!]!) : String
+    createArticles (entities: [ArticleInput!]!) : String
+    createProducers(entities: [ProducerInput!]!) : String
+    createEmployees(entities: [EmployeeInput!]!) : String
+    createTypes    (entities: [TestTypeInput!]!) : String
+}
+
 type PocStore {
     orders    : Any
     customers : Any

@@ -27,6 +27,12 @@ type Query {
     std_Cluster      : HostCluster!
 }
 
+type Mutation {
+    createCredentials(entities: [UserCredentialInput!]!) : String
+    createPermissions(entities: [UserPermissionInput!]!) : String
+    createRoles      (entities: [RoleInput!]!) : String
+}
+
 type UserStore {
     credentials : Any
     permissions : Any

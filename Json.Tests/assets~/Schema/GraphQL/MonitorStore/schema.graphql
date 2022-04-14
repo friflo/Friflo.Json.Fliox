@@ -29,6 +29,13 @@ type Query {
     std_Cluster    : HostCluster!
 }
 
+type Mutation {
+    createHosts    (entities: [HostHitsInput!]!) : String
+    createUsers    (entities: [UserHitsInput!]!) : String
+    createClients  (entities: [ClientHitsInput!]!) : String
+    createHistories(entities: [HistoryHitsInput!]!) : String
+}
+
 type MonitorStore {
     hosts     : Any
     users     : Any
