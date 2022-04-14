@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using GraphQLParser.AST;
@@ -19,10 +20,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             List<JsonKey> idList = null;
             foreach (var argument in arguments) {
-                var argName = argument.Name.StringValue;
-                switch (argName) {
-                    case "ids":     idList  = RequestUtils.TryGetIdList (argument, out error);  break;
-                    default:        error   = RequestUtils.UnknownArgument(argName);            break;
+                var argName = argument.Name.Value.Span;
+                if (argName.SequenceEqual("ids")) {
+                    idList  = RequestUtils.TryGetIdList (argument, out error);
+                } else {
+                    error   = RequestUtils.UnknownArgument(argName);
                 }
                 if (error != null)
                     return null;
@@ -45,10 +47,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var arguments = query.Arguments;
             if (arguments != null) {
                 foreach (var argument in arguments) {
-                    var argName = argument.Name.StringValue;
-                    switch (argName) {
-                        case "entities":    entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);    break;
-                        default:            error       = RequestUtils.UnknownArgument(argName);                            break;
+                    var argName = argument.Name.Value.Span;
+                    if (argName.SequenceEqual("entities")) {
+                        entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);
+                    } else {
+                        error       = RequestUtils.UnknownArgument(argName);
                     }
                     if (error != null)
                         return null;
@@ -73,10 +76,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             JsonValue result;
             foreach (var argument in args) {
-                var argName = argument.Name.StringValue;
-                switch (argName) {
-                    case "param":   result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);    break;
-                    default:        error   = RequestUtils.UnknownArgument(argName);                        break;
+                var argName = argument.Name.Value.Span;
+                if (argName.SequenceEqual("param")) {
+                    result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);
+                } else {
+                    error   = RequestUtils.UnknownArgument(argName);
                 }
                 if (error != null)
                     return new JsonValue();

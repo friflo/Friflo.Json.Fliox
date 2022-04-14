@@ -127,12 +127,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (arguments != null) {
                 foreach (var argument in arguments) {
                     var value   = argument.Value;
-                    var argName = argument.Name.StringValue;
-                    switch (argName) {
-                        case "filter":  filter  = RequestUtils.TryGetStringArg (value, out error);  break;
-                        case "limit":   limit   = RequestUtils.TryGetIntArg    (value, out error);  break;
-                        default:        error   = RequestUtils.UnknownArgument(argName);            break;
-                    }
+                    var argName = argument.Name.Value.Span;
+                    if      (argName.SequenceEqual("filter"))   { filter  = RequestUtils.TryGetStringArg (value, out error); }
+                    else if (argName.SequenceEqual("limit"))    { limit   = RequestUtils.TryGetIntArg    (value, out error); }
+                    else                                        { error   = RequestUtils.UnknownArgument(argName); }
                     if (error != null)
                         return null;
                 }
