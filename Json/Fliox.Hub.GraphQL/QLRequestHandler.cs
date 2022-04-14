@@ -86,6 +86,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private string AddQueries(List<ASTNode> selections, string docStr, List<Query> queries, IUtf8Buffer buffer)
         {
+            queries.Capacity = queries.Count + selections.Count;
             foreach (var selection in selections) {
                 if (!(selection is GraphQLField graphQLQuery))
                     continue;
