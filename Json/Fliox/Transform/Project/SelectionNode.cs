@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Transform.Project
             return $"{selectionName} - nodes: {nodes.Length}";
         }
         
-        public bool FindByBytes(ref Bytes key, out SelectionNode result) {
+        public bool FindNode(ref Bytes key, out SelectionNode result) {
             for (int n = 0; n < nodes.Length; n++) {
                 var node  = nodes[n];
                 if (node.name.IsEqual(ref key)) {
