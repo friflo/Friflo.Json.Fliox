@@ -30,9 +30,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var query       = new QueryResolver(container,              QueryType.Query,    container, null);
                 var readById    = new QueryResolver($"{container}ById",     QueryType.ReadById, container, null);
                 var create      = new QueryResolver($"create{camelCase}",   QueryType.Create,   container, null);
+                var upsert      = new QueryResolver($"upsert{camelCase}",   QueryType.Upsert,   container, null);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
                 resolvers.Add(create.name,      create);
+                resolvers.Add(upsert.name,      upsert);
             }
             AddMessages(schemaType.Commands, QueryType.Command);
             AddMessages(schemaType.Messages, QueryType.Message);
@@ -109,6 +111,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.Query:       return QueryEntities    (resolver, query,           out error);
                 case QueryType.ReadById:    return ReadEntities     (resolver, query,           out error);
                 case QueryType.Create:      return CreateEntities   (resolver, query, docStr,   out error);
+                case QueryType.Upsert:      return UpsertEntities   (resolver, query, docStr,   out error);
                 case QueryType.Command:     return SendCommand      (resolver, query, docStr,   out error);
                 case QueryType.Message:     return SendMessage      (resolver, query, docStr,   out error);
             }
@@ -161,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new ReadEntities { container = resolver.container, sets = sets };
         }
         
-        private static CreateEntities CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        private static List<JsonValue> GetEntities(GraphQLField query, string docStr, out string error)
         {
             List<JsonValue> entities = null;
             var arguments = query.Arguments;
@@ -177,7 +180,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 }
             }
             error = null;
+            return entities;
+        }
+        
+        private static CreateEntities CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        {
+            var entities = GetEntities(query, docStr, out error);
+            if (error != null)
+                return null;
             return new CreateEntities { container = resolver.container, entities = entities };
+        }
+        
+        private static UpsertEntities UpsertEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        {
+            var entities = GetEntities(query, docStr, out error);
+            if (error != null)
+                return null;
+            return new UpsertEntities { container = resolver.container, entities = entities };
         }
         
         private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)

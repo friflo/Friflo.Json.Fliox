@@ -31,6 +31,9 @@ type Mutation {
     createCredentials(entities: [UserCredentialInput!]!) : String
     createPermissions(entities: [UserPermissionInput!]!) : String
     createRoles      (entities: [RoleInput!]!) : String
+    upsertCredentials(entities: [UserCredentialInput!]!) : String
+    upsertPermissions(entities: [UserPermissionInput!]!) : String
+    upsertRoles      (entities: [RoleInput!]!) : String
 }
 
 type UserStore {

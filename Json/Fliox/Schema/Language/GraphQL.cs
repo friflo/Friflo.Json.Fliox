@@ -299,12 +299,18 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (schemaType == null)
                 return null;
             var mutations   = new List<GqlField>();
+            AddMutations("create", mutations, schemaType);
+            AddMutations("upsert", mutations, schemaType);
+            return mutations;
+        }
+        
+        private static void AddMutations(string mutationType, List<GqlField> mutations, TypeDef schemaType) {
             foreach (var field in schemaType.Fields) {
                 var containerType   = Gql.ScalarInput(field.type.Name);
                 var list            = Gql.List(containerType, true, true);
                 var container       = field.name;
                 var query = new GqlField {
-                    name = "create" + char.ToUpper(container[0]) + container.Substring(1),
+                    name = mutationType + char.ToUpper(container[0]) + container.Substring(1),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("entities",   list),
                     },
@@ -312,7 +318,6 @@ namespace Friflo.Json.Fliox.Schema.Language
                 };
                 mutations.Add(query);
             }
-            return mutations;
         }
         
         private static string GetName (TypeDef type, Kind kind) {

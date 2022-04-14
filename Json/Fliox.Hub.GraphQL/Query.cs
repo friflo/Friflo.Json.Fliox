@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         Query,
         ReadById,
         Create,
+        Upsert,
         Command,
         Message
     }
