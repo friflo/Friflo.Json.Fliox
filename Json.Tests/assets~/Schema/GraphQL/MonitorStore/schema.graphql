@@ -38,6 +38,10 @@ type Mutation {
     upsertUsers    (entities: [UserHitsInput!]!) : String
     upsertClients  (entities: [ClientHitsInput!]!) : String
     upsertHistories(entities: [HistoryHitsInput!]!) : String
+    deleteHosts    (ids: [String!]!) : String
+    deleteUsers    (ids: [String!]!) : String
+    deleteClients  (ids: [String!]!) : String
+    deleteHistories(ids: [String!]!) : String
 }
 
 type MonitorStore {

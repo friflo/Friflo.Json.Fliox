@@ -9,7 +9,6 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using GraphQLParser.AST;
 
@@ -30,10 +29,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var readById    = new QueryResolver("read",     QueryType.ReadById, container, null);
                 var create      = new QueryResolver("create",   QueryType.Create,   container, null);
                 var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null);
+                var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(readById.name,    readById);
                 resolvers.Add(create.name,      create);
                 resolvers.Add(upsert.name,      upsert);
+                resolvers.Add(delete.name,      delete);
             }
             AddMessages(schemaType.Commands, QueryType.Command);
             AddMessages(schemaType.Messages, QueryType.Message);
@@ -111,6 +112,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.ReadById:    return ReadEntities     (resolver, query,           out error);
                 case QueryType.Create:      return CreateEntities   (resolver, query, docStr,   out error);
                 case QueryType.Upsert:      return UpsertEntities   (resolver, query, docStr,   out error);
+                case QueryType.Delete:      return DeleteEntities   (resolver, query,           out error);
                 case QueryType.Command:     return SendCommand      (resolver, query, docStr,   out error);
                 case QueryType.Message:     return SendMessage      (resolver, query, docStr,   out error);
             }
@@ -141,50 +143,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static ReadEntities ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
-            List<JsonKey> idList    = null;
-            var arguments = query.Arguments;
-            if (arguments != null) {
-                foreach (var argument in arguments) {
-                    var argName = argument.Name.StringValue;
-                    switch (argName) {
-                        case "ids":     idList  = RequestUtils.TryGetIdList (argument, out error);  break;
-                        default:        error   = RequestUtils.UnknownArgument(argName);            break;
-                    }
-                    if (error != null)
-                        return null;
-                }
-            }
-            var ids     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
-            foreach (var id in idList) {
-                ids.Add(id);
-            }
+            var ids = RequestArgs.GetIds(query, out error);
+            if (error != null)
+                return null;
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
-            error = null;
             return new ReadEntities { container = resolver.container, sets = sets };
-        }
-        
-        private static List<JsonValue> GetEntities(GraphQLField query, string docStr, out string error)
-        {
-            List<JsonValue> entities = null;
-            var arguments = query.Arguments;
-            if (arguments != null) {
-                foreach (var argument in arguments) {
-                    var argName = argument.Name.StringValue;
-                    switch (argName) {
-                        case "entities":    entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);    break;
-                        default:            error       = RequestUtils.UnknownArgument(argName);                            break;
-                    }
-                    if (error != null)
-                        return null;
-                }
-            }
-            error = null;
-            return entities;
         }
         
         private static CreateEntities CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
-            var entities = GetEntities(query, docStr, out error);
+            var entities = RequestArgs.GetEntities(query, docStr, out error);
             if (error != null)
                 return null;
             return new CreateEntities { container = resolver.container, entities = entities };
@@ -192,51 +160,32 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static UpsertEntities UpsertEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
-            var entities = GetEntities(query, docStr, out error);
+            var entities = RequestArgs.GetEntities(query, docStr, out error);
             if (error != null)
                 return null;
             return new UpsertEntities { container = resolver.container, entities = entities };
         }
         
+        private static DeleteEntities DeleteEntities(in QueryResolver resolver, GraphQLField query, out string error)
+        {
+            var ids = RequestArgs.GetIds(query, out error);
+            if (error != null)
+                return null;
+            return new DeleteEntities { container = resolver.container, ids = ids };
+        }
+        
         private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
             var arguments   = query.Arguments;
-            var param       = GetMessageArg(arguments, docStr, resolver, out error);
+            var param       = RequestArgs.GetParam(arguments, docStr, resolver, out error);
             return new SendCommand { name = resolver.name, param = param };
         }
         
         private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
             var arguments   = query.Arguments;
-            var param       = GetMessageArg(arguments, docStr, resolver, out error);
+            var param       = RequestArgs.GetParam(arguments, docStr, resolver, out error);
             return new SendMessage { name = resolver.name, param = param };
-        }
-        
-        private static JsonValue GetMessageArg(GraphQLArguments args, string docStr, in QueryResolver resolver, out string error) {
-            if (args == null) {
-                if (!resolver.hasParam) {
-                    error = null;
-                    return new JsonValue();
-                }
-                if (resolver.paramRequired) {
-                    error = "Expect argument: param";
-                } else {
-                    error = null;
-                }
-                return new JsonValue();
-            }
-            JsonValue result;
-            foreach (var argument in args) {
-                var argName = argument.Name.StringValue;
-                switch (argName) {
-                    case "param":   result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);    break;
-                    default:        error   = RequestUtils.UnknownArgument(argName);                        break;
-                }
-                if (error != null)
-                    return new JsonValue();
-            }
-            error = null;
-            return result;
         }
     }
 }

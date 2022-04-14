@@ -301,6 +301,16 @@ namespace Friflo.Json.Fliox.Schema.Language
             var mutations   = new List<GqlField>();
             AddMutations("create", mutations, schemaType);
             AddMutations("upsert", mutations, schemaType);
+            foreach (var field in schemaType.Fields) {
+                var query = new GqlField {
+                    name = Gql.MethodName("delete", field.name),
+                    args = new List<GqlInputValue> {
+                        Gql.InputValue ("ids",   Gql.List(Gql.String(), true, true)),
+                    },
+                    type = Gql.String() // todo return errors
+                };
+                mutations.Add(query);
+            }
             return mutations;
         }
         

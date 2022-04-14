@@ -34,6 +34,9 @@ type Mutation {
     upsertCredentials(entities: [UserCredentialInput!]!) : String
     upsertPermissions(entities: [UserPermissionInput!]!) : String
     upsertRoles      (entities: [RoleInput!]!) : String
+    deleteCredentials(ids: [String!]!) : String
+    deletePermissions(ids: [String!]!) : String
+    deleteRoles      (ids: [String!]!) : String
 }
 
 type UserStore {

@@ -45,6 +45,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.ReadById:    return ReadEntitiesResult   (query, result, writer, synResponse);
                 case QueryType.Create:      return CreateEntitiesResult (query, result, writer);
                 case QueryType.Upsert:      return UpsertEntitiesResult (query, result, writer);
+                case QueryType.Delete:      return DeleteEntitiesResult (query, result, writer);
                 case QueryType.Command:     return SendCommandResult    (query, result, writer);
                 case QueryType.Message:     return SendMessageResult    (query, result, writer);
             }
@@ -86,6 +87,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue UpsertEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
             var upsertResult    = (UpsertEntitiesResult)result;
+            return new JsonValue("{}"); // todo return errors
+        }
+        
+        private static JsonValue DeleteEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer) {
+            var deleteTask      = (DeleteEntities)query.task;
             return new JsonValue("{}"); // todo return errors
         }
         

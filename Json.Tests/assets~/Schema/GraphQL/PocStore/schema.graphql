@@ -59,6 +59,12 @@ type Mutation {
     upsertProducers(entities: [ProducerInput!]!) : String
     upsertEmployees(entities: [EmployeeInput!]!) : String
     upsertTypes    (entities: [TestTypeInput!]!) : String
+    deleteOrders   (ids: [String!]!) : String
+    deleteCustomers(ids: [String!]!) : String
+    deleteArticles (ids: [String!]!) : String
+    deleteProducers(ids: [String!]!) : String
+    deleteEmployees(ids: [String!]!) : String
+    deleteTypes    (ids: [String!]!) : String
 }
 
 type PocStore {

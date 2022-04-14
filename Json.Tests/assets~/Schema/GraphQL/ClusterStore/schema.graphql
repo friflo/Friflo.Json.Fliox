@@ -33,6 +33,9 @@ type Mutation {
     upsertContainers(entities: [DbContainersInput!]!) : String
     upsertMessages  (entities: [DbMessagesInput!]!) : String
     upsertSchemas   (entities: [DbSchemaInput!]!) : String
+    deleteContainers(ids: [String!]!) : String
+    deleteMessages  (ids: [String!]!) : String
+    deleteSchemas   (ids: [String!]!) : String
 }
 
 type ClusterStore {
