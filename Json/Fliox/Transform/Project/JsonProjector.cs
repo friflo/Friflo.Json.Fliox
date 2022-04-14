@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Transform.Project
 {
-    public class SelectionFilter: IDisposable
+    public class JsonProjector: IDisposable
     {
         private             Utf8JsonWriter          serializer;
             
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Transform.Project
             serializer.Dispose();
         }
 
-        public JsonValue Filter(in SelectionNode node, in JsonValue value) {
+        public JsonValue Project(in SelectionNode node, in JsonValue value) {
             targetJson.Clear();
             targetJson.AppendArray(value);
             parser.InitParser(targetJson);

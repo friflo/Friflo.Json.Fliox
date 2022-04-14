@@ -11,7 +11,7 @@ using GraphQLParser.AST;
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class AstUtils
+    internal static class RequestUtils
     {
         internal static string UnknownArgument(string argName) => $"unknown argument: {argName}";
 

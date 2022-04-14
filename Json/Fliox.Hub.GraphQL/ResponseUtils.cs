@@ -9,7 +9,7 @@ using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal static class ProjectUtils
+    internal static class ResponseUtils
     {
         internal static SelectionNode CreateSelection (in Query query, IUtf8Buffer buffer) {
             return CreateNode(null, query.graphQL.SelectionSet, buffer);

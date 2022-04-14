@@ -118,9 +118,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var value   = argument.Value;
                     var argName = argument.Name.StringValue;
                     switch (argName) {
-                        case "filter":  filter  = AstUtils.TryGetStringArg (value, out error);  break;
-                        case "limit":   limit   = AstUtils.TryGetIntArg    (value, out error);  break;
-                        default:        error   = AstUtils.UnknownArgument(argName);            break;
+                        case "filter":  filter  = RequestUtils.TryGetStringArg (value, out error);  break;
+                        case "limit":   limit   = RequestUtils.TryGetIntArg    (value, out error);  break;
+                        default:        error   = RequestUtils.UnknownArgument(argName);            break;
                     }
                     if (error != null)
                         return null;
@@ -138,8 +138,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 foreach (var argument in arguments) {
                     var argName = argument.Name.StringValue;
                     switch (argName) {
-                        case "ids":     idList  = AstUtils.TryGetIdList (argument, out error);  break;
-                        default:        error   = AstUtils.UnknownArgument(argName);            break;
+                        case "ids":     idList  = RequestUtils.TryGetIdList (argument, out error);  break;
+                        default:        error   = RequestUtils.UnknownArgument(argName);            break;
                     }
                     if (error != null)
                         return null;
@@ -185,8 +185,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in args) {
                 var argName = argument.Name.StringValue;
                 switch (argName) {
-                    case "param":   result  = AstUtils.TryGetAny(argument.Value, docStr, out error);    break;
-                    default:        error   = AstUtils.UnknownArgument(argName);                        break;
+                    case "param":   result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);    break;
+                    default:        error   = RequestUtils.UnknownArgument(argName);                        break;
                 }
                 if (error != null)
                     return new JsonValue();

@@ -68,9 +68,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = ProjectUtils.CreateSelection(query, buffer);
-            var filter          = new SelectionFilter();
-            return filter.Filter(selectionNode, json);
+            var selectionNode   = ResponseUtils.CreateSelection(query, buffer);
+            var projector       = new JsonProjector();
+            return projector.Project(selectionNode, json);
         }
         
         private JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
@@ -83,16 +83,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(writer.WriteAsArray(list));
-            var selectionNode   = ProjectUtils.CreateSelection(query, buffer);
-            var filter          = new SelectionFilter();
-            return filter.Filter(selectionNode, json);
+            var selectionNode   = ResponseUtils.CreateSelection(query, buffer);
+            var projector       = new JsonProjector();
+            return projector.Project(selectionNode, json);
         }
         
         private JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
             var commandResult   = (SendCommandResult)result;
-            var selectionNode   = ProjectUtils.CreateSelection(query, buffer);
-            var filter          = new SelectionFilter();
-            return filter.Filter(selectionNode, commandResult.result);
+            var selectionNode   = ResponseUtils.CreateSelection(query, buffer);
+            var projector       = new JsonProjector();
+            return projector.Project(selectionNode, commandResult.result);
         }
         
         private static JsonValue SendMessageResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
