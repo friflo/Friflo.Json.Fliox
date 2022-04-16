@@ -124,6 +124,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (type.IsSchema) {
                     sb.AppendLine("    <<Schema>>");
                 }
+                if (type.IsAbstract) {
+                    sb.AppendLine("    <<abstract>>");
+                }
             } else {
                 sb.AppendLine($"class {type.Name}{Union} {{");
                 sb.AppendLine("    <<abstract>>");
@@ -143,14 +146,14 @@ namespace Friflo.Json.Fliox.Schema.Language
                 }
                 sb.AppendLine($"    ;"); */
             }
-            /* string  discriminant    = type.Discriminant;
+            string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
-                sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
-                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
-            } */
+                // sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
+                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\"");
+            }
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
@@ -297,6 +300,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                     AddDependencies(fieldType, dependencies);
                 }
             }
+            var baseType = type.BaseType;
+            if (baseType != null) {
+                dependencies.Add(baseType);
+                AddDependencies(baseType, dependencies);
+            }
             var unionType = type.UnionType;
             if (unionType != null) {
                 foreach (var polyType in unionType.types) {
@@ -319,8 +327,14 @@ namespace Friflo.Json.Fliox.Schema.Language
             var fileEmits = OrderNamespaces(generator);
             
             var dependencies = new HashSet<TypeDef> { generator.rootType };
-            AddDependencies(generator.rootType, dependencies);
-            
+            var rootType = generator.rootType;
+            if (rootType != null) {
+                AddDependencies(rootType, dependencies);
+            } else {
+                foreach (var type in generator.types) {
+                    AddDependencies(type, dependencies);
+                }
+            }
             foreach (var emitFile in fileEmits) {
                 // string ns = emitFile.@namespace;
                 foreach (var result in emitFile.emitTypes) {

@@ -15,6 +15,11 @@ namespace Friflo.Json.Fliox.Schema.Language
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
     <title>{{schemaName}} - ER Diagram</title>
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
+    <style>
+        .mermaid {            
+            width: 1600px;  /** Enable zooming in Mermaid svg **/
+        }
+    </style>
 </head>
 <body>
     <script>

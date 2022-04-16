@@ -135,8 +135,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         public static Generator Generate(NativeTypeOptions options) {
             var schema      = new NativeTypeSchema(options.types, options.rootType);
-            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".md", options.replacements, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".md", options.replacements, null, options.getPath);
             Generate(generator);
             return generator;
         }

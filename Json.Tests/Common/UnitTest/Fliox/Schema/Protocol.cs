@@ -66,5 +66,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             var generator   = JsonTypeDefinition.Generate(options, "Fliox");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
+        
+        /// C# -> Markdown / Mermaid Class Diagram
+        [Test]
+        public static void CS_Markdown () {
+            var options     = new NativeTypeOptions(ProtocolTypes);
+            var generator   = MarkdownGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/Protocol");
+        }
     }
 }
