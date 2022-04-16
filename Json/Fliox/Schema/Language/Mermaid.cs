@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
@@ -13,19 +12,19 @@ using static Friflo.Json.Fliox.Schema.Language.Generator;
 
 namespace Friflo.Json.Fliox.Schema.Language
 {
-    public sealed class MermaidERGenerator
+    public sealed class MermaidClassDiagramGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Union = "_Union";
 
-        private MermaidERGenerator (Generator generator) {
+        private MermaidClassDiagramGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
         }
         
         public static void Generate(Generator generator) {
-            var emitter = new MermaidERGenerator(generator);
+            var emitter = new MermaidClassDiagramGenerator(generator);
             var sb      = new StringBuilder();
             foreach (var type in generator.types) {
                 sb.Clear();
@@ -35,9 +34,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            // emitter.EmitFileHeaders(sb);
-            // EmitFileFooters(sb);  no TS footer
-            generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
+
+            EmitMermaidERFile(generator, sb);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -70,12 +68,12 @@ namespace Friflo.Json.Fliox.Schema.Language
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
             var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
-                return standardType;
+                return null;
             }
             if (type.IsClass) {
                 return EmitClassType(type, sb);
             }
-            if (type.IsEnum) {
+            /* if (type.IsEnum) {
                 var enumValues  = type.EnumValues;
                 var doc         = GetDoc(type.doc, "");
                 var maxNameLen  = enumValues.Max(e => e.name.Length);
@@ -93,7 +91,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLine($";");
                 sb.AppendLine();
                 return new EmitType(type, sb);
-            }
+            } */
             return null;
         }
         
@@ -105,8 +103,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
-            var doc             = GetDoc(type.doc, "");
-            sb.Append(doc);
+            // var doc             = GetDoc(type.doc, "");
+            // sb.Append(doc);
             if (baseType != null) {
                 extendsStr = $"extends {baseType.Name} ";
                 dependencies.Add(baseType);
@@ -114,13 +112,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             var unionType = type.UnionType;
             if (unionType == null) {
-                if (type.IsSchema) sb.AppendLine("// schema documentation only - not implemented right now");
-                var typeName = type.IsSchema ? "interface" : type.IsAbstract ? "abstract class" : "class";
-                sb.AppendLine($"export {typeName} {type.Name} {extendsStr}{{");
-                if (type.IsSchema)
-                    sb.AppendLine("    // --- containers");
+                sb.AppendLine($"class {type.Name} {{");
             } else {
-                sb.AppendLine($"export type {type.Name}{Union} =");
+                /*sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     sb.AppendLine($"    | {polyTypeDef.Name}");
@@ -135,32 +129,31 @@ namespace Friflo.Json.Fliox.Schema.Language
                 foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.discriminant}\"");
                 }
-                sb.AppendLine($"    ;");
+                sb.AppendLine($"    ;"); */
             }
-            string  discriminant    = type.Discriminant;
+            /* string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (discriminant != null) {
                 maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 var indent      = Indent(maxFieldName, discriminator);
                 sb.Append(GetDoc(type.DiscriminatorDoc, "    "));
                 sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
-            }
+            } */
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                var fieldDoc    = GetDoc(field.doc, "    ");
-                sb.Append(fieldDoc);
+                // var fieldDoc    = GetDoc(field.doc, "    ");
+                // sb.Append(fieldDoc);
                 bool required   = field.required;
                 var fieldType   = GetFieldType(field, context, required);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? " ": "?";
-                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
+                sb.AppendLine($"    - {field.name}{optStr}{indent} : {fieldType}");
             }
-            EmitMessages("commands", type.Commands, context, sb);
-            EmitMessages("messages", type.Messages, context, sb);
+            // EmitMessages("commands", type.Commands, context, sb);
+            // EmitMessages("messages", type.Messages, context, sb);
 
             sb.AppendLine("}");
-            sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }
         
@@ -195,7 +188,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             if (field.isDictionary) {
                 var valueTypeName = GetElementType(field, context);
-                return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
+                // return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
+                return $"{valueTypeName}[]{nullStr}"; // todo
             }
             return $"{GetTypeName(field.type, context)}{nullStr}";
         }
@@ -223,6 +217,44 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static string GetDoc(string docs, string indent) {
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
+        }
+        
+        private static List<EmitFile> OrderNamespaces(Generator generator) {
+            var emitFiles   = new List<EmitFile>(generator.fileEmits.Values);
+            var rootType    = generator.rootType;
+            emitFiles.Sort((file1, file2) => {
+                // namespace Standard to bottom
+                if (file1.@namespace == "Standard")
+                    return +1;
+                if (file2.@namespace == "Standard")
+                    return -1;
+                // namespace containing root type (schema) on top
+                var type1 = file1.emitTypes[0].type; 
+                var type2 = file2.emitTypes[0].type; 
+                if (type1 == rootType)
+                    return -1;
+                if (type2 == rootType)
+                    return +1;
+                // remaining namespace by comparing theirs names
+                return string.Compare(file1.@namespace, file2.@namespace, StringComparison.Ordinal);
+            });
+            return emitFiles;
+        }
+        
+        private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
+            sb.Clear();
+            sb.AppendLine("classDiagram");
+            sb.AppendLine();
+            var fileEmits = OrderNamespaces(generator);
+
+            foreach (var emitFile in fileEmits) {
+                // string ns = emitFile.@namespace;
+                foreach (var result in emitFile.emitTypes) {
+                    sb.AppendLine(result.content);
+                }
+            }
+            var mermaidFile     = sb.ToString();
+            generator.files.Add("class-diagram.mmd", mermaidFile);
         }
     }
 }

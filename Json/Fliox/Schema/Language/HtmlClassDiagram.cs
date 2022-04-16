@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Schema.Language
 </head>
 <body>
     <div class='mermaid'>
-{{mermaidERDiagram}}
+{{mermaidClassDiagram}}
     </div>
     <script>
         mermaid.initialize({ startOnLoad: true});

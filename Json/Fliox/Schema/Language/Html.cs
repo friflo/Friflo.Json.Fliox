@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             // emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
             EmitHtmlFile(generator, template, sb);
-            EmitHtmlMermaidER(generator.typeSchema);
+            EmitHtmlMermaidER(generator);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -360,21 +360,17 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
             return emitFiles;
         }
         
-        private static void EmitHtmlMermaidER(TypeSchema typeSchema) {
-            var generator       = new Generator(typeSchema, ".mmd");
-            var schemaName      = generator.rootType.Name;
-            var htmlFile        = Mermaid;             
-            var mermaidERDiagram = @"graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;";
-            MermaidERGenerator.Generate(generator);
+        private static void EmitHtmlMermaidER(Generator generator) {
+            var mermaidGenerator    = new Generator(generator.typeSchema, ".mmd");
+            var schemaName          = mermaidGenerator.rootType.Name;
+            var htmlFile            = Mermaid;             
+            MermaidClassDiagramGenerator.Generate(mermaidGenerator);
+            var mermaidFile         = mermaidGenerator.files["class-diagram.mmd"];
             
-            htmlFile            = htmlFile.Replace("{{schemaName}}",        schemaName);
-            htmlFile            = htmlFile.Replace("{{mermaidERDiagram}}",  mermaidERDiagram);
+            htmlFile                = htmlFile.Replace("{{schemaName}}",            schemaName);
+            htmlFile                = htmlFile.Replace("{{mermaidClassDiagram}}",   mermaidFile);
             
-            generator.files.Add("er-diagram.html", htmlFile);
+            generator.files.Add("class-diagram.html", htmlFile);
         }
     }
 }
