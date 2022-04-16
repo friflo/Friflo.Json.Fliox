@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     sb.AppendLine("    <<Schema>>");
                 }
             } else {
-                sb.AppendLine($"class type {type.Name}{Union} {{");
+                sb.AppendLine($"class {type.Name}{Union} {{");
                 sb.AppendLine("    <<abstract>>");
                 /* foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;

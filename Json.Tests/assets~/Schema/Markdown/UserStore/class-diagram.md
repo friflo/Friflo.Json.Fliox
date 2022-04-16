@@ -28,7 +28,7 @@ class Role {
 }
 Role "*" --> "1" Right : rights
 
-class type Right {
+class Right {
     <<abstract>>
     description? : string | null
 }
