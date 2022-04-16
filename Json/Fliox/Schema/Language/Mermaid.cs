@@ -54,6 +54,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.BigInteger,  $"/** integer with arbitrary precision       */{nl}export type BigInteger = string" );
             AddType (map, standard.DateTime,    $"/** timestamp as RFC 3339 + milliseconds   */{nl}export type DateTime = string" );
             AddType (map, standard.Guid,        $"/** GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\" */{nl}export type Guid = string" );
+            AddType (map, standard.String,      $"/** string **/" );
+            AddType (map, standard.Boolean,     $"/** boolean **/" );
             return map;
         }
 
@@ -103,14 +105,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
-            var extendsStr      = "";
             var baseType        = type.BaseType;
             // var doc             = GetDoc(type.doc, "");
             // sb.Append(doc);
             if (baseType != null) {
-                extendsStr = $"extends {baseType.Name} ";
                 dependencies.Add(baseType);
                 imports.Add(baseType);
+                sb.AppendLine($"{baseType.Name} <|-- {type.Name}");
             }
             var unionType = type.UnionType;
             if (unionType == null) {
@@ -156,10 +157,21 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var optStr      = required ? " ": "?";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}");
             }
+
             // EmitMessages("commands", type.Commands, context, sb);
             // EmitMessages("messages", type.Messages, context, sb);
 
             sb.AppendLine("}");
+            foreach (var field in fields) {
+                if (field.IsDerivedField)
+                    continue;
+                // var fieldDoc    = GetDoc(field.doc, "    ");
+                // sb.Append(fieldDoc);
+                var fieldType =  field.type;
+                if (standardTypes.ContainsKey(fieldType))
+                    continue;
+                sb.AppendLine($"{type.Name} \"*\" --> \"1\" {fieldType.Name} : {field.name}");
+            }
             return new EmitType(type, sb, imports, dependencies);
         }
         
@@ -250,7 +262,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
             sb.AppendLine("classDiagram");
-            sb.AppendLine("direction RL");
+            // sb.AppendLine("direction RL");
             sb.AppendLine();
             var fileEmits = OrderNamespaces(generator);
 

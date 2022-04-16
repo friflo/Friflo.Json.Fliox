@@ -1,6 +1,5 @@
 ```mermaid
 classDiagram
-direction RL
 
 class PocStore {
     <<Service>>
@@ -11,6 +10,12 @@ class PocStore {
     employees  : Employee[]
     types      : TestType[]
 }
+PocStore "*" --> "1" Order : orders
+PocStore "*" --> "1" Customer : customers
+PocStore "*" --> "1" Article : articles
+PocStore "*" --> "1" Producer : producers
+PocStore "*" --> "1" Employee : employees
+PocStore "*" --> "1" TestType : types
 
 class Order {
     id        : string
@@ -18,6 +23,7 @@ class Order {
     created   : DateTime
     items?    : OrderItem[] | null
 }
+Order "*" --> "1" OrderItem : items
 
 class Customer {
     id    : string
@@ -46,6 +52,7 @@ class PocEntity {
     id  : string
 }
 
+PocEntity <|-- TestType
 class TestType {
     dateTime          : DateTime
     dateTimeNull?     : DateTime | null
@@ -74,6 +81,11 @@ class TestType {
     derivedClass      : DerivedClass
     derivedClassNull? : DerivedClass | null
 }
+TestType "*" --> "1" PocStruct : pocStruct
+TestType "*" --> "1" PocStruct : pocStructNull
+TestType "*" --> "1" JsonValue : jsonValue
+TestType "*" --> "1" DerivedClass : derivedClass
+TestType "*" --> "1" DerivedClass : derivedClassNull
 
 class OrderItem {
     article  : string
@@ -85,6 +97,7 @@ class PocStruct {
     value  : int32
 }
 
+OrderItem <|-- DerivedClass
 class DerivedClass {
     derivedVal  : int32
 }
@@ -111,10 +124,12 @@ class DbSchema {
     schemaPath   : string
     jsonSchemas  : any[]
 }
+DbSchema "*" --> "1" JsonValue : jsonSchemas
 
 class DbStats {
     containers? : ContainerStats[] | null
 }
+DbStats "*" --> "1" ContainerStats : containers
 
 class ContainerStats {
     name   : string
@@ -134,6 +149,7 @@ class HostDetails {
 class HostCluster {
     databases  : DbContainers[]
 }
+HostCluster "*" --> "1" DbContainers : databases
 
 
 ```
