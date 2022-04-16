@@ -88,6 +88,10 @@ namespace Friflo.Json.Fliox.Schema.Language
             var graphQLModel        = new SchemaModel ("graphql",       "GraphQL",      "text/plain",   ".graphql", graphQLGenerator.files);
             result.Add(graphQLModel);
             
+            var markdownGenerator   = MarkdownGenerator.Generate(options);
+            var markdownModel       = new SchemaModel ("markdown",      "Markdown",     "text/markdown",".md",      markdownGenerator.files);
+            result.Add(markdownModel);
+            
             var typescriptGenerator = TypescriptGenerator.Generate(options);
             var typescriptModel     = new SchemaModel ("typescript",    "Typescript",   "text/plain",   ".d.ts",    typescriptGenerator.files);
             result.Add(typescriptModel);
