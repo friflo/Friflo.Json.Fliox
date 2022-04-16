@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
@@ -16,7 +17,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
-        private  const      string                      Union = "_Union";
+        private  const      string                      Union = "";
 
         private MermaidClassDiagramGenerator (Generator generator) {
             this.generator  = generator;
@@ -73,25 +74,26 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type.IsClass) {
                 return EmitClassType(type, sb);
             }
-            /* if (type.IsEnum) {
+            if (type.IsEnum) {
                 var enumValues  = type.EnumValues;
-                var doc         = GetDoc(type.doc, "");
+                // var doc         = GetDoc(type.doc, "");
                 var maxNameLen  = enumValues.Max(e => e.name.Length);
-                sb.AppendLine($"{doc}export type {type.Name} =");
+                sb.AppendLine($"class {type.Name} {{");
+                sb.AppendLine("    <<enumeration>>");
                 foreach (var enumValue in enumValues) {
-                    sb.Append($"    | \"{enumValue.name}\"");
-                    var enumDoc = enumValue.doc;
+                    sb.Append($"    {enumValue.name}");
+                    /* var enumDoc = enumValue.doc;
                     if (enumDoc != null) {
                         sb.Append(Indent(maxNameLen, enumValue.name));
                         sb.Append(GetDoc(enumDoc, "      "));
                         continue;
-                    }
+                    }*/
                     sb.AppendLine();
                 }
-                sb.AppendLine($";");
+                sb.AppendLine("}");
                 sb.AppendLine();
                 return new EmitType(type, sb);
-            } */
+            }
             return null;
         }
         
@@ -113,9 +115,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             var unionType = type.UnionType;
             if (unionType == null) {
                 sb.AppendLine($"class {type.Name} {{");
+                if (type.IsSchema) {
+                    sb.AppendLine("    <<Service>>");
+                }
             } else {
-                /*sb.AppendLine($"export type {type.Name}{Union} =");
-                foreach (var polyType in unionType.types) {
+                sb.AppendLine($"class type {type.Name}{Union} {{");
+                sb.AppendLine("    <<abstract>>");
+                /* foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     sb.AppendLine($"    | {polyTypeDef.Name}");
                     imports.Add(polyTypeDef);
@@ -148,7 +154,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var fieldType   = GetFieldType(field, context, required);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? " ": "?";
-                sb.AppendLine($"    - {field.name}{optStr}{indent} : {fieldType}");
+                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}");
             }
             // EmitMessages("commands", type.Commands, context, sb);
             // EmitMessages("messages", type.Messages, context, sb);
@@ -244,6 +250,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
             sb.AppendLine("classDiagram");
+            sb.AppendLine("direction RL");
             sb.AppendLine();
             var fileEmits = OrderNamespaces(generator);
 

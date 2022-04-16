@@ -81,6 +81,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             GraphQLGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/UserStore");
         }
+        
+        /// C# -> Markdown / Mermaid Class Diagram
+        [Test]
+        public static void CS_Markdown () {
+            var typeSchema  = new NativeTypeSchema(typeof(UserStore));
+            var generator   = new Generator(typeSchema, ".md");
+            MarkdownGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/UserStore");
+        }
 
         // ---------------------------------- input: JSON Schema ----------------------------------
         
