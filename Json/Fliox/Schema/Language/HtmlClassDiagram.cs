@@ -17,10 +17,15 @@ namespace Friflo.Json.Fliox.Schema.Language
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
 </head>
 <body>
-    <div class='mermaid'>
-{{mermaidClassDiagram}}
-    </div>
     <script>
+        let mermaidContent = `{{mermaidClassDiagram}}
+`;
+        const search = /\</g;
+        mermaidContent = mermaidContent.replace(search, '&lt;');
+        const div = document.createElement('div');
+        div.classList.add('mermaid');
+        div.innerHTML = mermaidContent;
+        document.body.append(div);
         mermaid.initialize({ startOnLoad: true});
     </script>
 </body>
