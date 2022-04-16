@@ -110,9 +110,6 @@ namespace Friflo.Json.Fliox.Schema.Language
             var baseType        = type.BaseType;
             // var doc             = GetDoc(type.doc, "");
             // sb.Append(doc);
-            if (type.Name == "DbContainers") {
-                int i = 11;
-            }
             if (baseType != null) {
                 dependencies.Add(baseType);
                 imports.Add(baseType);
