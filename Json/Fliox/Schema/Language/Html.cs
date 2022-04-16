@@ -36,6 +36,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
             EmitHtmlFile(generator, template, sb);
+            EmitHtmlMermaid(generator);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -386,6 +387,20 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
                 return string.Compare(file1.@namespace, file2.@namespace, StringComparison.Ordinal);
             });
             return emitFiles;
+        }
+        
+        private static void EmitHtmlMermaid(Generator generator) {
+            var schemaName      = generator.rootType.Name;
+            var htmlFile        = Mermaid;             
+            var mermaidERDiagram = @"graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;";
+            htmlFile            = htmlFile.Replace("{{schemaName}}",        schemaName);
+            htmlFile            = htmlFile.Replace("{{mermaidERDiagram}}",  mermaidERDiagram);
+            
+            generator.files.Add("er-diagram.html", htmlFile);
         }
     }
 }
