@@ -9,8 +9,8 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
 using Friflo.Json.Fliox.Schema.Utils;
 using static Friflo.Json.Fliox.Schema.Language.Generator;
-// Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 
+// Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 namespace Friflo.Json.Fliox.Schema.Language
 {
     public sealed class MermaidClassDiagramGenerator
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
 
-            EmitMermaidERFile(generator, sb);
+            emitter.EmitMermaidERFile(generator, sb);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -54,8 +54,10 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.BigInteger,  $"/** integer with arbitrary precision       */{nl}export type BigInteger = string" );
             AddType (map, standard.DateTime,    $"/** timestamp as RFC 3339 + milliseconds   */{nl}export type DateTime = string" );
             AddType (map, standard.Guid,        $"/** GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\" */{nl}export type Guid = string" );
-            AddType (map, standard.String,      $"/** string **/" );
-            AddType (map, standard.Boolean,     $"/** boolean **/" );
+            AddType (map, standard.String,      "/** string **/" );
+            AddType (map, standard.Boolean,     "/** boolean **/" );
+            AddType (map, standard.JsonValue,   "/** any **/" );
+            AddType (map, standard.JsonKey,     "/** string **/" );
             return map;
         }
 
@@ -108,6 +110,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             var baseType        = type.BaseType;
             // var doc             = GetDoc(type.doc, "");
             // sb.Append(doc);
+            if (type.Name == "DbContainers") {
+                int i = 11;
+            }
             if (baseType != null) {
                 dependencies.Add(baseType);
                 imports.Add(baseType);
@@ -117,7 +122,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (unionType == null) {
                 sb.AppendLine($"class {type.Name} {{");
                 if (type.IsSchema) {
-                    sb.AppendLine("    <<Service>>");
+                    sb.AppendLine("    <<Schema>>");
                 }
             } else {
                 sb.AppendLine($"class type {type.Name}{Union} {{");
@@ -157,10 +162,6 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var optStr      = required ? " ": "?";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}");
             }
-
-            // EmitMessages("commands", type.Commands, context, sb);
-            // EmitMessages("messages", type.Messages, context, sb);
-
             sb.AppendLine("}");
             foreach (var field in fields) {
                 if (field.IsDerivedField)
@@ -172,30 +173,56 @@ namespace Friflo.Json.Fliox.Schema.Language
                     continue;
                 sb.AppendLine($"{type.Name} \"*\" --> \"1\" {fieldType.Name} : {field.name}");
             }
+            if (EmitMessagesFlag && type.IsSchema) {
+                EmitMessages(type.Commands, context, sb);
+                EmitMessages(type.Messages, context, sb);
+            }
             return new EmitType(type, sb, imports, dependencies);
         }
         
-        private static void EmitMessages(string type, IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
+        private void EmitMessages(IReadOnlyList<MessageDef> messageDefs, TypeContext context, StringBuilder sb) {
             if (messageDefs == null)
                 return;
-            sb.AppendLine($"\n    // --- {type}");
+            sb.AppendLine();
+            sb.AppendLine($"class Messages {{");
+            sb.AppendLine("    <<Service>>");
             int maxFieldName    = messageDefs.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
             foreach (var messageDef in messageDefs) {
                 var param   = GetMessageArg("param", messageDef.param,  context);
                 var result  = GetMessageArg(null,    messageDef.result, context);
-                var doc     = GetDoc(messageDef.doc, "    ");
-                sb.Append(doc);
+                // var doc     = GetDoc(messageDef.doc, "    ");
+                // sb.Append(doc);
                 var indent  = Indent(maxFieldName, messageDef.name);
-                var signature = $"({param}) : {result ?? "void"}";
-                sb.AppendLine($"    [\"{messageDef.name}\"]{indent} {signature};");
+                var signature = $"({param}) {result ?? "void"}";
+                var name    = messageDef.name.Replace('.', '_');
+                sb.AppendLine($"    {name}{indent} {signature}");
+            }
+            sb.AppendLine("}");
+            if (EmitMessagesFlag) {
+                foreach (var messageDef in messageDefs) {
+                    Link(messageDef.name, messageDef.param,   context, sb);
+                    Link(messageDef.name, messageDef.result,  context, sb);
+                }
             }
         }
-        
+
+        // ReSharper disable once ConvertToConstant.Local
+        private static readonly bool EmitMessagesFlag = false;
+
         private static string GetMessageArg(string name, FieldDef fieldDef, TypeContext context) {
             if (fieldDef == null)
                 return name != null ? "" : "void";
             var argType = GetFieldType(fieldDef, context, fieldDef.required);
             return name != null ? $"{name}: {argType}" : argType;
+        }
+        
+        private void Link(string name, FieldDef fieldDef, TypeContext context, StringBuilder sb) {
+            if (fieldDef == null)
+                return;
+            var fieldType = fieldDef.type;
+            if (standardTypes.ContainsKey(fieldType))
+                return;
+            sb.AppendLine($"Messages ..> {fieldType.Name} : {name}");
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
@@ -259,16 +286,46 @@ namespace Friflo.Json.Fliox.Schema.Language
             return emitFiles;
         }
         
-        private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
+        private void AddDependencies(TypeDef type, HashSet<TypeDef> dependencies) {
+            if (type.IsClass) {
+                foreach (var field in type.Fields) {
+                    var fieldType = field.type;
+                    if (standardTypes.ContainsKey(fieldType))
+                        continue;
+                    if (!dependencies.Add(fieldType))
+                        continue;
+                    AddDependencies(fieldType, dependencies);
+                }
+            }
+            var unionType = type.UnionType;
+            if (unionType != null) {
+                foreach (var polyType in unionType.types) {
+                    var polyTypeDef = polyType.typeDef;
+                    if (!dependencies.Add(polyTypeDef))
+                        continue;
+                    AddDependencies(polyTypeDef, dependencies);
+                }
+            }
+            if (type.IsEnum) {
+                dependencies.Add(type);
+            }
+        }
+        
+        private void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
             sb.AppendLine("classDiagram");
             // sb.AppendLine("direction RL");
             sb.AppendLine();
             var fileEmits = OrderNamespaces(generator);
-
+            
+            var dependencies = new HashSet<TypeDef> { generator.rootType };
+            AddDependencies(generator.rootType, dependencies);
+            
             foreach (var emitFile in fileEmits) {
                 // string ns = emitFile.@namespace;
                 foreach (var result in emitFile.emitTypes) {
+                    if (!dependencies.Contains(result.type))
+                        continue;
                     sb.AppendLine(result.content);
                 }
             }

@@ -2,7 +2,7 @@
 classDiagram
 
 class PocStore {
-    <<Service>>
+    <<Schema>>
     orders     : Order[]
     customers  : Customer[]
     articles   : Article[]
@@ -48,10 +48,6 @@ class Employee {
     lastName?  : string | null
 }
 
-class PocEntity {
-    id  : string
-}
-
 PocEntity <|-- TestType
 class TestType {
     dateTime          : DateTime
@@ -83,7 +79,6 @@ class TestType {
 }
 TestType "*" --> "1" PocStruct : pocStruct
 TestType "*" --> "1" PocStruct : pocStructNull
-TestType "*" --> "1" JsonValue : jsonValue
 TestType "*" --> "1" DerivedClass : derivedClass
 TestType "*" --> "1" DerivedClass : derivedClassNull
 
@@ -101,55 +96,6 @@ OrderItem <|-- DerivedClass
 class DerivedClass {
     derivedVal  : int32
 }
-
-class TestCommand {
-    text? : string | null
-}
-
-class DbContainers {
-    id          : string
-    storage     : string
-    containers  : string[]
-}
-
-class DbMessages {
-    id        : string
-    commands  : string[]
-    messages  : string[]
-}
-
-class DbSchema {
-    id           : string
-    schemaName   : string
-    schemaPath   : string
-    jsonSchemas  : any[]
-}
-DbSchema "*" --> "1" JsonValue : jsonSchemas
-
-class DbStats {
-    containers? : ContainerStats[] | null
-}
-DbStats "*" --> "1" ContainerStats : containers
-
-class ContainerStats {
-    name   : string
-    count  : int64
-}
-
-class HostDetails {
-    version         : string
-    hostName?       : string | null
-    projectName?    : string | null
-    projectWebsite? : string | null
-    envName?        : string | null
-    envColor?       : string | null
-    routes          : string[]
-}
-
-class HostCluster {
-    databases  : DbContainers[]
-}
-HostCluster "*" --> "1" DbContainers : databases
 
 
 ```

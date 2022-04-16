@@ -2,7 +2,7 @@
 classDiagram
 
 class UserStore {
-    <<Service>>
+    <<Schema>>
     credentials  : UserCredential[]
     permissions  : UserPermission[]
     roles        : Role[]
@@ -15,13 +15,11 @@ class UserCredential {
     id     : string
     token? : string | null
 }
-UserCredential "*" --> "1" JsonKey : id
 
 class UserPermission {
     id     : string
     roles? : string[] | null
 }
-UserPermission "*" --> "1" JsonKey : id
 
 class Role {
     id           : string
@@ -29,61 +27,6 @@ class Role {
     description? : string | null
 }
 Role "*" --> "1" Right : rights
-
-class Credentials {
-    userId  : string
-    token   : string
-}
-Credentials "*" --> "1" JsonKey : userId
-
-class AuthResult {
-    isValid  : boolean
-}
-
-class DbContainers {
-    id          : string
-    storage     : string
-    containers  : string[]
-}
-
-class DbMessages {
-    id        : string
-    commands  : string[]
-    messages  : string[]
-}
-
-class DbSchema {
-    id           : string
-    schemaName   : string
-    schemaPath   : string
-    jsonSchemas  : any[]
-}
-DbSchema "*" --> "1" JsonValue : jsonSchemas
-
-class DbStats {
-    containers? : ContainerStats[] | null
-}
-DbStats "*" --> "1" ContainerStats : containers
-
-class ContainerStats {
-    name   : string
-    count  : int64
-}
-
-class HostDetails {
-    version         : string
-    hostName?       : string | null
-    projectName?    : string | null
-    projectWebsite? : string | null
-    envName?        : string | null
-    envColor?       : string | null
-    routes          : string[]
-}
-
-class HostCluster {
-    databases  : DbContainers[]
-}
-HostCluster "*" --> "1" DbContainers : databases
 
 class type Right {
     <<abstract>>
