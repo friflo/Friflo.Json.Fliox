@@ -13,19 +13,19 @@ using static Friflo.Json.Fliox.Schema.Language.Generator;
 
 namespace Friflo.Json.Fliox.Schema.Language
 {
-    public sealed class MermaidGenerator
+    public sealed class MermaidERGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Union = "_Union";
 
-        private MermaidGenerator (Generator generator) {
+        private MermaidERGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
         }
         
         public static void Generate(Generator generator) {
-            var emitter = new MermaidGenerator(generator);
+            var emitter = new MermaidERGenerator(generator);
             var sb      = new StringBuilder();
             foreach (var type in generator.types) {
                 sb.Clear();
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            emitter.EmitFileHeaders(sb);
+            // emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
             generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
         }
@@ -223,34 +223,6 @@ namespace Friflo.Json.Fliox.Schema.Language
         
         private static string GetDoc(string docs, string indent) {
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
-        }
-        
-        private void EmitFileHeaders(StringBuilder sb) {
-            foreach (var pair in generator.fileEmits) {
-                EmitFile    emitFile    = pair.Value;
-                string      filePath    = pair.Key;
-                sb.Clear();
-                sb.AppendLine($"// {Note}");
-                var max = emitFile.imports.MaxLength(imp => {
-                    var typeDef = imp.Value.type;
-                    var len = typeDef.UnionType != null ? typeDef.Name.Length + Union.Length : typeDef.Name.Length;
-                    return typeDef.Path == filePath ? 0 : len;
-                });
-                foreach (var importPair in emitFile.imports) {
-                    var import = importPair.Value.type;
-                    if (import.Path == filePath)
-                        continue;
-                    var typeName    = import.Name;
-                    var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\";");
-                    if (import.UnionType != null) {
-                        var unionName = $"{typeName}{Union}";
-                        indent      = Indent(max, unionName);
-                        sb.AppendLine($"import {{ {unionName} }}{indent} from \"./{import.Path}\";");
-                    }
-                }
-                emitFile.header = sb.ToString();
-            }
         }
     }
 }

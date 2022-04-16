@@ -15,7 +15,6 @@ namespace Friflo.Json.Fliox.Schema.Language
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
-        private  const      string                      Union = "_Union";
 
         private HtmlGenerator (Generator generator) {
             this.generator  = generator;
@@ -33,10 +32,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            emitter.EmitFileHeaders(sb);
+            // emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
             EmitHtmlFile(generator, template, sb);
-            EmitHtmlMermaid(generator);
+            EmitHtmlMermaidER(generator.typeSchema);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -273,34 +272,6 @@ $@"        <tr>
             return $"<oas><a href='../open-api.html#{tag}{local}' target='_blank' title='{description} as OpenAPI specification (OAS) in new tab'>OAS</a></oas>";
         }
         
-        private void EmitFileHeaders(StringBuilder sb) {
-            foreach (var pair in generator.fileEmits) {
-                EmitFile    emitFile    = pair.Value;
-                string      filePath    = pair.Key;
-                sb.Clear();
-                sb.AppendLine($"// {Note}");
-                var max = emitFile.imports.MaxLength(imp => {
-                    var typeDef = imp.Value.type;
-                    var len = typeDef.UnionType != null ? typeDef.Name.Length + Union.Length : typeDef.Name.Length;
-                    return typeDef.Path == filePath ? 0 : len;
-                });
-                foreach (var importPair in emitFile.imports) {
-                    var import = importPair.Value.type;
-                    if (import.Path == filePath)
-                        continue;
-                    var typeName    = import.Name;
-                    var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
-                    if (import.UnionType != null) {
-                        var unionName = $"{typeName}{Union}";
-                        indent      = Indent(max, unionName);
-                        sb.AppendLine($"import {{ {unionName} }}{indent} from \"./{import.Path}\"");
-                    }
-                }
-                emitFile.header = sb.ToString();
-            }
-        }
-        
         private static void EmitHtmlFile(Generator generator, string template, StringBuilder sb) {
             var sbNav = new StringBuilder();
             sb.Clear();
@@ -389,7 +360,8 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
             return emitFiles;
         }
         
-        private static void EmitHtmlMermaid(Generator generator) {
+        private static void EmitHtmlMermaidER(TypeSchema typeSchema) {
+            var generator       = new Generator(typeSchema, ".mmd");
             var schemaName      = generator.rootType.Name;
             var htmlFile        = Mermaid;             
             var mermaidERDiagram = @"graph TD;
@@ -397,6 +369,8 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
     A-->C;
     B-->D;
     C-->D;";
+            MermaidERGenerator.Generate(generator);
+            
             htmlFile            = htmlFile.Replace("{{schemaName}}",        schemaName);
             htmlFile            = htmlFile.Replace("{{mermaidERDiagram}}",  mermaidERDiagram);
             
