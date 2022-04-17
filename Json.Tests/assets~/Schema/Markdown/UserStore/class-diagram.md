@@ -1,7 +1,8 @@
 ```mermaid
 classDiagram
+direction LR
 
-class UserStore {
+class UserStore:::cssSchema {
     <<Schema>>
     <<abstract>>
     credentials  : UserCredential[]
@@ -12,17 +13,18 @@ UserStore "*" --> "1" UserCredential : credentials
 UserStore "*" --> "1" UserPermission : permissions
 UserStore "*" --> "1" Role : roles
 
-class UserCredential {
+class UserCredential:::cssEntity {
     id     : string
     token? : string | null
 }
 
-class UserPermission {
+class UserPermission:::cssEntity {
     id     : string
     roles? : string[] | null
 }
+UserPermission "*" ..> "1" Role : roles
 
-class Role {
+class Role:::cssEntity {
     id           : string
     rights       : Right[]
     description? : string | null
@@ -77,7 +79,7 @@ class ContainerAccess {
 ContainerAccess "*" --> "1" OperationType : operations
 ContainerAccess "*" --> "1" Change : subscribeChanges
 
-class OperationType {
+class OperationType:::cssEnum {
     <<enumeration>>
     create
     upsert
@@ -98,7 +100,7 @@ class PredicateRight {
     names        : string[]
 }
 
-class TaskType {
+class TaskType:::cssEnum {
     <<enumeration>>
     read
     query
@@ -117,7 +119,7 @@ class TaskType {
 }
 
 
-class Change {
+class Change:::cssEnum {
     <<enumeration>>
     create
     upsert

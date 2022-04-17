@@ -168,6 +168,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 SetKeyField(rootTypeDef);
                 SetRelationTypes(rootTypeDef, types);
                 RootType = rootTypeDef;
+                MarkEntityTypes();
                 var nativeTypeDef           = nativeTypes[rootType];
                 nativeTypeDef.schemaInfo    = SchemaInfo.GetSchemaInfo(rootType);
             }

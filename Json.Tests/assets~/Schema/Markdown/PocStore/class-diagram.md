@@ -1,7 +1,8 @@
 ```mermaid
 classDiagram
+direction LR
 
-class PocStore {
+class PocStore:::cssSchema {
     <<Schema>>
     <<abstract>>
     orders     : Order[]
@@ -18,32 +19,35 @@ PocStore "*" --> "1" Producer : producers
 PocStore "*" --> "1" Employee : employees
 PocStore "*" --> "1" TestType : types
 
-class Order {
+class Order:::cssEntity {
     id        : string
     customer? : string | null
     created   : DateTime
     items?    : OrderItem[] | null
 }
+Order "*" ..> "1" Customer : customer
 Order "*" --> "1" OrderItem : items
 
-class Customer {
+class Customer:::cssEntity {
     id    : string
     name  : string
 }
 
-class Article {
+class Article:::cssEntity {
     id        : string
     name      : string
     producer? : string | null
 }
+Article "*" ..> "1" Producer : producer
 
-class Producer {
+class Producer:::cssEntity {
     id         : string
     name       : string
     employees? : string[] | null
 }
+Producer "*" ..> "1" Employee : employees
 
-class Employee {
+class Employee:::cssEntity {
     id         : string
     firstName  : string
     lastName?  : string | null
@@ -55,7 +59,7 @@ class PocEntity {
 }
 
 PocEntity <|-- TestType
-class TestType {
+class TestType:::cssEntity {
     dateTime          : DateTime
     dateTimeNull?     : DateTime | null
     bigInt            : BigInteger
@@ -93,6 +97,7 @@ class OrderItem {
     amount   : int32
     name?    : string | null
 }
+OrderItem "*" ..> "1" Article : article
 
 class PocStruct {
     value  : int32

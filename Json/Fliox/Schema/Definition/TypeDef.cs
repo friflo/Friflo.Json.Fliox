@@ -64,11 +64,13 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   string                      doc;
         /// <summary>meta data assigned to a schema compatible to <b>OpenAPI</b></summary>
         public              SchemaInfo                  SchemaInfo      => schemaInfo;
+        public              bool                        IsEntity        => isEntity;
         
         // --- internal
         internal readonly   string                      fullName;
         internal            string                      keyField;
         internal            SchemaInfo                  schemaInfo;
+        internal            bool                        isEntity;
 
         
         protected TypeDef (string name, string @namespace, string doc) {

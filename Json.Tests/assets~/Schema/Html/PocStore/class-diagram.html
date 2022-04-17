@@ -3,21 +3,34 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name='description' content='Schema - PocStore'>
+    <meta name='description' content='Class Diagram: Schema - PocStore'>
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
-    <title>PocStore - ER Diagram</title>
+    <title>PocStore - Class Diagram</title>
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
     <style>
         .mermaid {            
             width: 1600px;  /** Enable zooming in Mermaid svg **/
+        }
+        .cssSchema > rect {
+            stroke-width:2px !important;
+            stroke:#ff0000 !important;
+        }
+        .cssEntity > rect {
+            stroke-width:2px !important;
+            stroke:#0000ff !important;
+        }
+        .cssEnum > rect {
+            fill:#f8f8f8 !important;
+            stroke:#d0d0d0 !important;
         }
     </style>
 </head>
 <body>
     <script>
         let mermaidContent = `classDiagram
+direction LR
 
-class PocStore {
+class PocStore:::cssSchema {
     <<Schema>>
     <<abstract>>
     orders     : Order[]
@@ -34,32 +47,35 @@ PocStore "*" --> "1" Producer : producers
 PocStore "*" --> "1" Employee : employees
 PocStore "*" --> "1" TestType : types
 
-class Order {
+class Order:::cssEntity {
     id        : string
     customer? : string | null
     created   : DateTime
     items?    : OrderItem[] | null
 }
+Order "*" ..> "1" Customer : customer
 Order "*" --> "1" OrderItem : items
 
-class Customer {
+class Customer:::cssEntity {
     id    : string
     name  : string
 }
 
-class Article {
+class Article:::cssEntity {
     id        : string
     name      : string
     producer? : string | null
 }
+Article "*" ..> "1" Producer : producer
 
-class Producer {
+class Producer:::cssEntity {
     id         : string
     name       : string
     employees? : string[] | null
 }
+Producer "*" ..> "1" Employee : employees
 
-class Employee {
+class Employee:::cssEntity {
     id         : string
     firstName  : string
     lastName?  : string | null
@@ -71,7 +87,7 @@ class PocEntity {
 }
 
 PocEntity <|-- TestType
-class TestType {
+class TestType:::cssEntity {
     dateTime          : DateTime
     dateTimeNull?     : DateTime | null
     bigInt            : BigInteger
@@ -109,6 +125,7 @@ class OrderItem {
     amount   : int32
     name?    : string | null
 }
+OrderItem "*" ..> "1" Article : article
 
 class PocStruct {
     value  : int32

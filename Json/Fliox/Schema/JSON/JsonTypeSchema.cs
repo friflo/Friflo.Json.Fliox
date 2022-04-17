@@ -126,9 +126,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     throw new InvalidOperationException($"rootType not found: {rootType}");
                 if (!rootTypeDef.IsClass)
                     throw new InvalidOperationException($"rootType must be a class: {rootType}");
-                SetRelationTypes(rootTypeDef, types);
                 SetKeyField(rootTypeDef);
+                SetRelationTypes(rootTypeDef, types);
                 RootType = rootTypeDef;
+                MarkEntityTypes();
             }
             Types = OrderTypes(RootType, types);
         }

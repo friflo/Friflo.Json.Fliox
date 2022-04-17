@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var enumValues  = type.EnumValues;
                 // var doc         = GetDoc(type.doc, "");
                 var maxNameLen  = enumValues.Max(e => e.name.Length);
-                sb.AppendLine($"class {type.Name} {{");
+                sb.AppendLine($"class {type.Name}:::cssEnum {{");
                 sb.AppendLine("    <<enumeration>>");
                 foreach (var enumValue in enumValues) {
                     sb.Append($"    {enumValue.name}");
@@ -116,8 +116,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLine($"{baseType.Name} <|-- {type.Name}");
             }
             var unionType = type.UnionType;
+            var cssType = type.isEntity ? ":::cssEntity" : type.IsSchema ? ":::cssSchema" : "";
             if (unionType == null) {
-                sb.AppendLine($"class {type.Name} {{");
+                sb.AppendLine($"class {type.Name}{cssType} {{");
                 if (type.IsSchema) {
                     sb.AppendLine("    <<Schema>>");
                 }
@@ -125,7 +126,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     sb.AppendLine("    <<abstract>>");
                 }
             } else {
-                sb.AppendLine($"class {type.Name}{Union} {{");
+                sb.AppendLine($"class {type.Name}{Union}{cssType} {{");
                 sb.AppendLine("    <<abstract>>");
                 /* foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
@@ -169,9 +170,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                 // var fieldDoc    = GetDoc(field.doc, "    ");
                 // sb.Append(fieldDoc);
                 var fieldType =  field.type;
-                if (standardTypes.ContainsKey(fieldType))
-                    continue;
-                sb.AppendLine($"{type.Name} \"*\" --> \"1\" {fieldType.Name} : {field.name}");
+                if (!standardTypes.ContainsKey(fieldType)) {
+                    sb.AppendLine($"{type.Name} \"*\" --> \"1\" {fieldType.Name} : {field.name}");
+                }
+                var relationType = field.RelationType;
+                if (relationType != null) {
+                    sb.AppendLine($"{type.Name} \"*\" ..> \"1\" {relationType.Name} : {field.name}");
+                }
             }
             if (EmitMessagesFlag && type.IsSchema) {
                 EmitMessages(type.Commands, context, sb);
@@ -267,7 +272,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
             sb.AppendLine("classDiagram");
-            // sb.AppendLine("direction RL");
+            sb.AppendLine("direction LR");
             sb.AppendLine();
             var fileEmits = generator.OrderNamespaces();
             

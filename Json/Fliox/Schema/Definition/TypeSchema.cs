@@ -73,6 +73,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
             return map;
         }
         
+        protected void MarkEntityTypes () {
+            foreach (var field in RootType.Fields) {
+                field.type.isEntity = true;
+            }
+        }
+        
         /// <summary>
         /// Must to be called after collecting all <see cref="Types"/> and their <see cref="TypeDef.Fields"/>.
         /// </summary>

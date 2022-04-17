@@ -3,21 +3,34 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name='description' content='Schema - UserStore'>
+    <meta name='description' content='Class Diagram: Schema - UserStore'>
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
-    <title>UserStore - ER Diagram</title>
+    <title>UserStore - Class Diagram</title>
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
     <style>
         .mermaid {            
             width: 1600px;  /** Enable zooming in Mermaid svg **/
+        }
+        .cssSchema > rect {
+            stroke-width:2px !important;
+            stroke:#ff0000 !important;
+        }
+        .cssEntity > rect {
+            stroke-width:2px !important;
+            stroke:#0000ff !important;
+        }
+        .cssEnum > rect {
+            fill:#f8f8f8 !important;
+            stroke:#d0d0d0 !important;
         }
     </style>
 </head>
 <body>
     <script>
         let mermaidContent = `classDiagram
+direction LR
 
-class UserStore {
+class UserStore:::cssSchema {
     <<Schema>>
     <<abstract>>
     credentials  : UserCredential[]
@@ -28,17 +41,18 @@ UserStore "*" --> "1" UserCredential : credentials
 UserStore "*" --> "1" UserPermission : permissions
 UserStore "*" --> "1" Role : roles
 
-class UserCredential {
+class UserCredential:::cssEntity {
     id     : string
     token? : string | null
 }
 
-class UserPermission {
+class UserPermission:::cssEntity {
     id     : string
     roles? : string[] | null
 }
+UserPermission "*" ..> "1" Role : roles
 
-class Role {
+class Role:::cssEntity {
     id           : string
     rights       : Right[]
     description? : string | null
@@ -93,7 +107,7 @@ class ContainerAccess {
 ContainerAccess "*" --> "1" OperationType : operations
 ContainerAccess "*" --> "1" Change : subscribeChanges
 
-class OperationType {
+class OperationType:::cssEnum {
     <<enumeration>>
     create
     upsert
@@ -114,7 +128,7 @@ class PredicateRight {
     names        : string[]
 }
 
-class TaskType {
+class TaskType:::cssEnum {
     <<enumeration>>
     read
     query
@@ -133,7 +147,7 @@ class TaskType {
 }
 
 
-class Change {
+class Change:::cssEnum {
     <<enumeration>>
     create
     upsert

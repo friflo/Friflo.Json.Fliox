@@ -1,5 +1,6 @@
 ```mermaid
 classDiagram
+direction LR
 
 class ProtocolMessage {
     <<abstract>>
@@ -59,7 +60,7 @@ class ErrorResponse {
 }
 ErrorResponse "*" --> "1" ErrorResponseType : type
 
-class ErrorResponseType {
+class ErrorResponseType:::cssEnum {
     <<enumeration>>
     BadRequest
     Exception
@@ -104,7 +105,7 @@ class EntityError {
 }
 EntityError "*" --> "1" EntityErrorType : type
 
-class EntityErrorType {
+class EntityErrorType:::cssEnum {
     <<enumeration>>
     Undefined
     ParseError
@@ -186,7 +187,7 @@ class AggregateEntities {
 }
 AggregateEntities "*" --> "1" AggregateType : type
 
-class AggregateType {
+class AggregateType:::cssEnum {
     <<enumeration>>
     count
 }
@@ -247,7 +248,7 @@ class SubscribeChanges {
 }
 SubscribeChanges "*" --> "1" Change : changes
 
-class Change {
+class Change:::cssEnum {
     <<enumeration>>
     create
     upsert
@@ -381,7 +382,7 @@ class TaskErrorResult {
 }
 TaskErrorResult "*" --> "1" TaskErrorResultType : type
 
-class TaskErrorResultType {
+class TaskErrorResultType:::cssEnum {
     <<enumeration>>
     None
     UnhandledException
