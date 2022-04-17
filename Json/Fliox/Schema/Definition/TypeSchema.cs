@@ -66,6 +66,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
 
         public Dictionary<string, TypeDef> GetEntityTypes() {
+            if (!RootType.IsSchema)
+                return new Dictionary<string, TypeDef>();
             var map = new Dictionary<string, TypeDef>(RootType.Fields.Count);
             foreach (var field in RootType.Fields) {
                 map.Add(field.name, field.type);
@@ -74,6 +76,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
         
         protected void MarkEntityTypes () {
+            if (!RootType.IsSchema)
+                return;
             foreach (var field in RootType.Fields) {
                 field.type.isEntity = true;
             }

@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
     <style>
         .mermaid {            
-            width: 1600px;  /** Enable zooming in Mermaid svg **/
+            width: 1440px;  /** Enable zooming in Mermaid svg **/
         }
         .cssSchema > rect {
             stroke-width:2px !important;
