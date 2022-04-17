@@ -179,6 +179,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 }
             }
             if (EmitMessagesFlag && type.IsSchema) {
+                sb.AppendLine($"{type.Name} ..> Messages");
                 EmitMessages(type.Commands, context, sb);
                 EmitMessages(type.Messages, context, sb);
             }
@@ -189,7 +190,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (messageDefs == null)
                 return;
             sb.AppendLine();
-            sb.AppendLine($"class Messages {{");
+            sb.AppendLine("class Messages:::cssSchema {");
             sb.AppendLine("    <<Service>>");
             int maxFieldName    = messageDefs.MaxLength(field => field.name.Length + 4); // 4 <= ["..."]
             foreach (var messageDef in messageDefs) {
@@ -203,11 +204,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLine($"    {name}{indent} {signature}");
             }
             sb.AppendLine("}");
-            if (EmitMessagesFlag) {
-                foreach (var messageDef in messageDefs) {
-                    Link(messageDef.name, messageDef.param,   context, sb);
-                    Link(messageDef.name, messageDef.result,  context, sb);
-                }
+            foreach (var messageDef in messageDefs) {
+                Link(messageDef.name, messageDef.param,   context, sb);
+                Link(messageDef.name, messageDef.result,  context, sb);
             }
         }
 
@@ -278,7 +277,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             
             var dependencies = new HashSet<TypeDef>();
             var rootType = generator.rootType;
-            if (rootType != null) {
+            if (!EmitMessagesFlag && rootType != null) {
                 rootType.GetDependencies(dependencies);
             } else {
                 foreach (var type in generator.types) {
