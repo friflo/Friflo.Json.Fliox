@@ -52,5 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/Filter");
         }
+        
+        /// C# -> Markdown / Mermaid Class Diagram
+        [Test]
+        public static void CS_Markdown () {
+            var options     = new NativeTypeOptions(FilterTypes);
+            var generator   = MarkdownGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/Filter");
+        }
     }
 }
