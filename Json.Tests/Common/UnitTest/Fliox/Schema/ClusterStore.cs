@@ -30,5 +30,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             GraphQLGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/ClusterStore");
         }
+        
+        /// C# -> Markdown / Mermaid Class Diagram
+        [Test]
+        public static void CS_Markdown () {
+            var typeSchema  = new NativeTypeSchema(typeof(ClusterStore));
+            var generator   = new Generator(typeSchema, ".md");
+            MarkdownGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/ClusterStore");
+        }
     }
 }
