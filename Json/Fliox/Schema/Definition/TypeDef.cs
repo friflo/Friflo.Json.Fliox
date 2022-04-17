@@ -85,6 +85,27 @@ namespace Friflo.Json.Fliox.Schema.Definition
             }
             return null;
         }
+        
+        public void GetDependencies(HashSet<TypeDef> dependencies) {
+            if (!dependencies.Add(this))
+                return;
+            if (IsClass) {
+                foreach (var field in Fields) {
+                    var fieldType = field.type;
+                    fieldType.GetDependencies(dependencies);
+                    var fieldRelationType = field.RelationType;
+                    fieldRelationType?.GetDependencies(dependencies);
+                }
+            }
+            var baseType = BaseType;
+            baseType?.GetDependencies(dependencies);
+            var unionType = UnionType;
+            if (unionType != null) {
+                foreach (var polyType in unionType.types) {
+                    polyType.typeDef.GetDependencies(dependencies);
+                }
+            }
+        }
     }
     
     // could by a readonly struct - but may be used by reference in future

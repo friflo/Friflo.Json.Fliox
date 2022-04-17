@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
 
-            emitter.EmitMermaidERFile(generator, sb);
+            EmitMermaidERFile(generator, sb);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
@@ -286,50 +286,20 @@ namespace Friflo.Json.Fliox.Schema.Language
             return emitFiles;
         }
         
-        private void AddDependencies(TypeDef type, HashSet<TypeDef> dependencies) {
-            if (type.IsClass) {
-                foreach (var field in type.Fields) {
-                    var fieldType = field.type;
-                    if (standardTypes.ContainsKey(fieldType))
-                        continue;
-                    if (!dependencies.Add(fieldType))
-                        continue;
-                    AddDependencies(fieldType, dependencies);
-                }
-            }
-            var baseType = type.BaseType;
-            if (baseType != null) {
-                dependencies.Add(baseType);
-                AddDependencies(baseType, dependencies);
-            }
-            var unionType = type.UnionType;
-            if (unionType != null) {
-                foreach (var polyType in unionType.types) {
-                    var polyTypeDef = polyType.typeDef;
-                    if (!dependencies.Add(polyTypeDef))
-                        continue;
-                    AddDependencies(polyTypeDef, dependencies);
-                }
-            }
-            if (type.IsEnum) {
-                dependencies.Add(type);
-            }
-        }
-        
-        private void EmitMermaidERFile(Generator generator, StringBuilder sb) {
+        private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
             sb.AppendLine("classDiagram");
             // sb.AppendLine("direction RL");
             sb.AppendLine();
             var fileEmits = OrderNamespaces(generator);
             
-            var dependencies = new HashSet<TypeDef> { generator.rootType };
+            var dependencies = new HashSet<TypeDef>();
             var rootType = generator.rootType;
             if (rootType != null) {
-                AddDependencies(rootType, dependencies);
+                rootType.GetDependencies(dependencies);
             } else {
                 foreach (var type in generator.types) {
-                    AddDependencies(type, dependencies);
+                    type.GetDependencies(dependencies);
                 }
             }
             foreach (var emitFile in fileEmits) {
