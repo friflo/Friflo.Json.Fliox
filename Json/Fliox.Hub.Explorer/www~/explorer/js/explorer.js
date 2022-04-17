@@ -136,7 +136,8 @@ export class Explorer {
         //  const schema             = app.databaseSchemas[p.database];
         //  const entityDocs         = schema ? "&nbsp;·&nbsp;" + app.getEntityType(p.database, p.container) : "";
         //  catalogSchema.innerHTML  = app.getSchemaType(p.database) + entityDocs;
-        catalogSchema.innerHTML = app.getEntityType(p.database, p.container);
+        const docLink = app.getEntityType(p.database, p.container);
+        catalogSchema.innerHTML = docLink;
         explorerTools.innerHTML = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = `${App.getDatabaseLink(p.database)}/`;
         const containerLink = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;

@@ -64,9 +64,10 @@ export class EntityEditor {
     }
     setDatabaseInfo(database, dbContainer) {
         const schemaType = app.getSchemaType(database);
+        const diagramLink = App.getDiagramLink(database);
         const apiLinks = App.getApiLinks(database, "open database API", "");
         el("databaseName").innerHTML = App.getDatabaseLink(database);
-        el("databaseSchema").innerHTML = `${schemaType} ${apiLinks}`;
+        el("databaseSchema").innerHTML = `${schemaType} ${diagramLink} ${apiLinks}`;
         el("databaseTypes").innerHTML = app.getSchemaTypes(database);
         el("databaseStorage").innerHTML = dbContainer.storage;
         el("schemaDescription").innerHTML = app.getSchemaDescription(database);
@@ -93,7 +94,8 @@ export class EntityEditor {
         app.explorer.initExplorer(null, null, null, null);
         this.setDatabaseInfo(database, dbContainer);
         const schemaType = app.getSchemaType(database);
-        catalogSchema.innerHTML = schemaType;
+        const diagramLink = App.getDiagramLink(database);
+        catalogSchema.innerHTML = `${schemaType}&nbsp;${diagramLink}`;
         explorerTools.innerHTML = "";
         el("databaseLabel").innerHTML = schemaType;
         filterRow.style.visibility = "hidden";

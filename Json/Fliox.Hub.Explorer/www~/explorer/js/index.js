@@ -482,6 +482,10 @@ export class App {
         }
         return apiLinks;
     }
+    static getDiagramLink(database) {
+        return `<a class="diagram" title="Open database schema as class diagram in new tab "` +
+            `href="${flioxRoot}schema/${database}/html/class-diagram.html" target="_blank" rel="noopener noreferrer">CD</a>`;
+    }
     static getMessagesLink(database) {
         const href = `./rest/${database}?command=std.Messages`;
         return `<a title="open database commands & messages in new tab" href=${href} target="_blank" rel="noopener noreferrer">${database}</a>`;
