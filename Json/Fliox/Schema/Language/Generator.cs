@@ -263,6 +263,27 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
         }
         
+        public List<EmitFile> OrderNamespaces() {
+            var emitFiles   = new List<EmitFile>(fileEmits.Values);
+            emitFiles.Sort((file1, file2) => {
+                // namespace Standard to bottom
+                if (file1.@namespace == "Standard")
+                    return +1;
+                if (file2.@namespace == "Standard")
+                    return -1;
+                // namespace containing root type (schema) on top
+                var type1 = file1.emitTypes[0].type; 
+                var type2 = file2.emitTypes[0].type; 
+                if (type1 == rootType)
+                    return -1;
+                if (type2 == rootType)
+                    return +1;
+                // remaining namespace by comparing theirs names
+                return string.Compare(file1.@namespace, file2.@namespace, StringComparison.Ordinal);
+            });
+            return emitFiles;
+        }
+        
         /// <summary>
         /// Write the generated file to the given folder and remove all others file with the used <see cref="fileExt"/>
         /// </summary>

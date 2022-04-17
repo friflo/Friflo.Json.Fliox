@@ -264,34 +264,12 @@ namespace Friflo.Json.Fliox.Schema.Language
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
         }
         
-        private static List<EmitFile> OrderNamespaces(Generator generator) {
-            var emitFiles   = new List<EmitFile>(generator.fileEmits.Values);
-            var rootType    = generator.rootType;
-            emitFiles.Sort((file1, file2) => {
-                // namespace Standard to bottom
-                if (file1.@namespace == "Standard")
-                    return +1;
-                if (file2.@namespace == "Standard")
-                    return -1;
-                // namespace containing root type (schema) on top
-                var type1 = file1.emitTypes[0].type; 
-                var type2 = file2.emitTypes[0].type; 
-                if (type1 == rootType)
-                    return -1;
-                if (type2 == rootType)
-                    return +1;
-                // remaining namespace by comparing theirs names
-                return string.Compare(file1.@namespace, file2.@namespace, StringComparison.Ordinal);
-            });
-            return emitFiles;
-        }
-        
         private static void EmitMermaidERFile(Generator generator, StringBuilder sb) {
             sb.Clear();
             sb.AppendLine("classDiagram");
             // sb.AppendLine("direction RL");
             sb.AppendLine();
-            var fileEmits = OrderNamespaces(generator);
+            var fileEmits = generator.OrderNamespaces();
             
             var dependencies = new HashSet<TypeDef>();
             var rootType = generator.rootType;
