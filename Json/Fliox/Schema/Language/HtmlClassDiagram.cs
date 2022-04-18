@@ -23,10 +23,12 @@ namespace Friflo.Json.Fliox.Schema.Language
         .cssSchema > rect {
             stroke-width:2px !important;
             stroke:#ff0000 !important;
+            rx: 8;
         }
         .cssEntity > rect {
             stroke-width:2px !important;
             stroke:#0000ff !important;
+            rx: 8;
         }
         .cssEnum > rect {
             fill:#f8f8f8 !important;
