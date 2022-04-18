@@ -16,12 +16,14 @@ MonitorStore *-- "0..*" ClientHits : clients
 MonitorStore *-- "0..*" HistoryHits : histories
 
 class HostHits:::cssEntity {
+    <<Entity>>
     id      : string
     counts  : RequestCount
 }
 HostHits *-- "1" RequestCount : counts
 
 class UserHits:::cssEntity {
+    <<Entity>>
     id       : string
     clients  : string[]
     counts?  : RequestCount[] | null
@@ -30,6 +32,7 @@ UserHits o.. "0..*" ClientHits : clients
 UserHits *-- "0..*" RequestCount : counts
 
 class ClientHits:::cssEntity {
+    <<Entity>>
     id      : string
     user    : string
     counts? : RequestCount[] | null
@@ -40,6 +43,7 @@ ClientHits *-- "0..*" RequestCount : counts
 ClientHits *-- "0..1" EventDelivery : event
 
 class HistoryHits:::cssEntity {
+    <<Entity>>
     id          : int32
     counters    : int32[]
     lastUpdate  : int32

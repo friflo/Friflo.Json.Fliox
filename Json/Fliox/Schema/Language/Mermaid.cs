@@ -119,12 +119,9 @@ namespace Friflo.Json.Fliox.Schema.Language
             var cssType = type.isEntity ? ":::cssEntity" : type.IsSchema ? ":::cssSchema" : "";
             if (unionType == null) {
                 sb.AppendLine($"class {type.Name}{cssType} {{");
-                if (type.IsSchema) {
-                    sb.AppendLine("    <<Schema>>");
-                }
-                if (type.IsAbstract) {
-                    sb.AppendLine("    <<abstract>>");
-                }
+                if (type.IsSchema)      sb.AppendLine("    <<Schema>>");
+                if (type.IsAbstract)    sb.AppendLine("    <<abstract>>");
+                if (type.IsEntity)      sb.AppendLine("    <<Entity>>");
             } else {
                 sb.AppendLine($"class {type.Name}{Union}{cssType} {{");
                 sb.AppendLine("    <<abstract>>");
