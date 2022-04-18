@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         document.body.append(div);
         mermaid.initialize({ startOnLoad: true}); */
 
-        mermaid.mermaidAPI.initialize({ startOnLoad: false });
+        mermaid.mermaidAPI.initialize({ startOnLoad: false, logLevel: 4 });
         const mermaidEl = document.getElementById('graphDiv');
         const insertSvg = function (svgCode, bindFunctions) {
             mermaidEl.innerHTML = svgCode;
