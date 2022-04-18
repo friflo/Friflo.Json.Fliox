@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Doc;
@@ -81,18 +80,10 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type.IsEnum) {
                 var enumValues  = type.EnumValues;
                 // var doc         = GetDoc(type.doc, "");
-                var maxNameLen  = enumValues.Max(e => e.name.Length);
                 sb.AppendLine($"class {type.Name}:::cssEnum {{");
                 sb.AppendLine("    <<enumeration>>");
                 foreach (var enumValue in enumValues) {
-                    sb.Append($"    {enumValue.name}");
-                    /* var enumDoc = enumValue.doc;
-                    if (enumDoc != null) {
-                        sb.Append(Indent(maxNameLen, enumValue.name));
-                        sb.Append(GetDoc(enumDoc, "      "));
-                        continue;
-                    }*/
-                    sb.AppendLine();
+                    sb.AppendLine($"    {enumValue.name}");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -109,7 +100,6 @@ namespace Friflo.Json.Fliox.Schema.Language
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var baseType        = type.BaseType;
             // var doc             = GetDoc(type.doc, "");
-            // sb.Append(doc);
             if (baseType != null) {
                 dependencies.Add(baseType);
                 imports.Add(baseType);
@@ -125,21 +115,6 @@ namespace Friflo.Json.Fliox.Schema.Language
             } else {
                 sb.AppendLine($"class {type.Name}{Union}{cssType} {{");
                 sb.AppendLine("    <<abstract>>");
-                /* foreach (var polyType in unionType.types) {
-                    var polyTypeDef = polyType.typeDef;
-                    sb.AppendLine($"    | {polyTypeDef.Name}");
-                    imports.Add(polyTypeDef);
-                }
-                var fieldDoc    = GetDoc(unionType.doc, "    ");
-                sb.AppendLine($";");
-                sb.AppendLine();
-                sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
-                sb.Append(fieldDoc);
-                sb.AppendLine($"    abstract {unionType.discriminator}:");
-                foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"        | \"{polyType.discriminant}\"");
-                }
-                sb.AppendLine($"    ;"); */
             }
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
@@ -153,7 +128,6 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (field.IsDerivedField)
                     continue;
                 // var fieldDoc    = GetDoc(field.doc, "    ");
-                // sb.Append(fieldDoc);
                 bool required   = field.required;
                 var fieldType   = GetFieldType(field, context, true); // required);
                 var indent      = Indent(maxFieldName, field.name);
@@ -204,8 +178,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             }
             sb.AppendLine("}");
             foreach (var messageDef in messageDefs) {
-                Link(messageDef.name, messageDef.param,   context, sb);
-                Link(messageDef.name, messageDef.result,  context, sb);
+                Link(messageDef.name, messageDef.param,   sb);
+                Link(messageDef.name, messageDef.result,  sb);
             }
         }
 
@@ -219,7 +193,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return name != null ? $"{name}: {argType}" : argType;
         }
         
-        private void Link(string name, FieldDef fieldDef, TypeContext context, StringBuilder sb) {
+        private void Link(string name, FieldDef fieldDef, StringBuilder sb) {
             if (fieldDef == null)
                 return;
             var fieldType = fieldDef.type;
