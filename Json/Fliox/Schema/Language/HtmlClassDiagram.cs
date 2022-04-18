@@ -35,16 +35,24 @@ namespace Friflo.Json.Fliox.Schema.Language
     </style>
 </head>
 <body>
+    <div id='graphDiv'></div>
     <script>
         let mermaidContent = `{{mermaidClassDiagram}}
 `;
-        const search = /\</g;
+        /* const search = /\</g;
         mermaidContent = mermaidContent.replace(search, '&lt;');
         const div = document.createElement('div');
         div.classList.add('mermaid');
         div.innerHTML = mermaidContent;
         document.body.append(div);
-        mermaid.initialize({ startOnLoad: true});
+        mermaid.initialize({ startOnLoad: true}); */
+
+        mermaid.mermaidAPI.initialize({ startOnLoad: false });
+        const mermaidEl = document.getElementById('graphDiv');
+        const insertSvg = function (svgCode, bindFunctions) {
+            mermaidEl.innerHTML = svgCode;
+        };
+        mermaid.mermaidAPI.render('graph', mermaidContent, insertSvg);
     </script>
 </body>
 </html>
