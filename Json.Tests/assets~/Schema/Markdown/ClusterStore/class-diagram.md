@@ -5,9 +5,9 @@ direction LR
 class ClusterStore:::cssSchema {
     <<Schema>>
     <<abstract>>
-    containers  : DbContainers[]
-    messages    : DbMessages[]
-    schemas     : DbSchema[]
+    containers  : [id] ➞ DbContainers
+    messages    : [id] ➞ DbMessages
+    schemas     : [id] ➞ DbSchema
 }
 ClusterStore *-- "0..*" DbContainers : containers
 ClusterStore *-- "0..*" DbMessages : messages
@@ -32,7 +32,7 @@ class DbSchema:::cssEntity {
     id           : string
     schemaName   : string
     schemaPath   : string
-    jsonSchemas  : any[]
+    jsonSchemas  : string ➞ any
 }
 
 

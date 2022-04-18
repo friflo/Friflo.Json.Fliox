@@ -33,9 +33,9 @@ direction LR
 class UserStore:::cssSchema {
     <<Schema>>
     <<abstract>>
-    credentials  : UserCredential[]
-    permissions  : UserPermission[]
-    roles        : Role[]
+    credentials  : [id] ➞ UserCredential
+    permissions  : [id] ➞ UserPermission
+    roles        : [id] ➞ Role
 }
 UserStore *-- "0..*" UserCredential : credentials
 UserStore *-- "0..*" UserPermission : permissions
@@ -44,13 +44,13 @@ UserStore *-- "0..*" Role : roles
 class UserCredential:::cssEntity {
     <<Entity · id>>
     id     : string
-    token? : string | null
+    token? : string
 }
 
 class UserPermission:::cssEntity {
     <<Entity · id>>
     id     : string
-    roles? : string[] | null
+    roles? : string[]
 }
 UserPermission o.. "0..*" Role : roles
 
@@ -58,25 +58,25 @@ class Role:::cssEntity {
     <<Entity · id>>
     id           : string
     rights       : Right[]
-    description? : string | null
+    description? : string
 }
 Role *-- "0..*" Right : rights
 
 class Right {
     <<abstract>>
-    description? : string | null
+    description? : string
 }
 
 Right <|-- AllowRight
 class AllowRight {
     type         : "allow"
-    database?    : string | null
+    database?    : string
 }
 
 Right <|-- TaskRight
 class TaskRight {
     type         : "task"
-    database?    : string | null
+    database?    : string
     types        : TaskType[]
 }
 TaskRight *-- "0..*" TaskType : types
@@ -84,28 +84,28 @@ TaskRight *-- "0..*" TaskType : types
 Right <|-- SendMessageRight
 class SendMessageRight {
     type         : "sendMessage"
-    database?    : string | null
+    database?    : string
     names        : string[]
 }
 
 Right <|-- SubscribeMessageRight
 class SubscribeMessageRight {
     type         : "subscribeMessage"
-    database?    : string | null
+    database?    : string
     names        : string[]
 }
 
 Right <|-- OperationRight
 class OperationRight {
     type         : "operation"
-    database?    : string | null
-    containers   : ContainerAccess[]
+    database?    : string
+    containers   : string ➞ ContainerAccess
 }
 OperationRight *-- "0..*" ContainerAccess : containers
 
 class ContainerAccess {
-    operations?       : OperationType[] | null
-    subscribeChanges? : Change[] | null
+    operations?       : OperationType[]
+    subscribeChanges? : Change[]
 }
 ContainerAccess *-- "0..*" OperationType : operations
 ContainerAccess *-- "0..*" Change : subscribeChanges

@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 // var fieldDoc    = GetDoc(field.doc, "    ");
                 // sb.Append(fieldDoc);
                 bool required   = field.required;
-                var fieldType   = GetFieldType(field, context, required);
+                var fieldType   = GetFieldType(field, context, true); // required);
                 var indent      = Indent(maxFieldName, field.name);
                 var optStr      = required ? " ": "?";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}");
@@ -235,9 +235,10 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return $"{elementTypeName}[]{nullStr}";
             }
             if (field.isDictionary) {
+                var key = field.type.isEntity ? $"[{field.type.KeyField}]" : "string";
                 var valueTypeName = GetElementType(field, context);
-                // return $"{{ [key: string]: {valueTypeName} }}{nullStr}";
-                return $"{valueTypeName}[]{nullStr}"; // todo
+                return $"{key} ➞ {valueTypeName}{nullStr}";
+                // return $"{valueTypeName}[]{nullStr}";
             }
             return $"{GetTypeName(field.type, context)}{nullStr}";
         }

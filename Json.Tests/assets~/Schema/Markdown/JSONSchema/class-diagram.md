@@ -3,29 +3,29 @@ classDiagram
 direction LR
 
 class JSONSchema {
-    $ref?        : string | null
-    definitions? : JsonType[] | null
-    openAPI?     : OpenApi | null
+    $ref?        : string
+    definitions? : string ➞ JsonType
+    openAPI?     : OpenApi
 }
 JSONSchema *-- "0..*" JsonType : definitions
 JSONSchema *-- "0..1" OpenApi : openAPI
 
 class JsonType {
-    extends?              : TypeRef | null
-    discriminator?        : string | null
-    oneOf?                : FieldType[] | null
-    isAbstract?           : boolean | null
-    type?                 : string | null
-    key?                  : string | null
-    properties?           : FieldType[] | null
-    commands?             : MessageType[] | null
-    messages?             : MessageType[] | null
-    isStruct?             : boolean | null
-    required?             : string[] | null
+    extends?              : TypeRef
+    discriminator?        : string
+    oneOf?                : FieldType[]
+    isAbstract?           : boolean
+    type?                 : string
+    key?                  : string
+    properties?           : string ➞ FieldType
+    commands?             : string ➞ MessageType
+    messages?             : string ➞ MessageType
+    isStruct?             : boolean
+    required?             : string[]
     additionalProperties  : boolean
-    enum?                 : string[] | null
-    descriptions?         : string[] | null
-    description?          : string | null
+    enum?                 : string[]
+    descriptions?         : string ➞ string
+    description?          : string
 }
 JsonType *-- "0..1" TypeRef : extends
 JsonType *-- "0..*" FieldType : oneOf
@@ -38,62 +38,62 @@ class TypeRef {
 }
 
 class FieldType {
-    type?                 : any | null
-    enum?                 : string[] | null
-    items?                : FieldType | null
-    oneOf?                : FieldType[] | null
-    minimum?              : int64 | null
-    maximum?              : int64 | null
-    pattern?              : string | null
-    format?               : string | null
-    $ref?                 : string | null
-    additionalProperties? : FieldType | null
-    isAutoIncrement?      : boolean | null
-    relation?             : string | null
-    description?          : string | null
+    type?                 : any
+    enum?                 : string[]
+    items?                : FieldType
+    oneOf?                : FieldType[]
+    minimum?              : int64
+    maximum?              : int64
+    pattern?              : string
+    format?               : string
+    $ref?                 : string
+    additionalProperties? : FieldType
+    isAutoIncrement?      : boolean
+    relation?             : string
+    description?          : string
 }
 FieldType *-- "0..1" FieldType : items
 FieldType *-- "0..*" FieldType : oneOf
 FieldType *-- "0..1" FieldType : additionalProperties
 
 class MessageType {
-    param?       : FieldType | null
-    result?      : FieldType | null
-    description? : string | null
+    param?       : FieldType
+    result?      : FieldType
+    description? : string
 }
 MessageType *-- "0..1" FieldType : param
 MessageType *-- "0..1" FieldType : result
 
 class OpenApi {
-    version?        : string | null
-    termsOfService? : string | null
-    info?           : OpenApiInfo | null
-    servers?        : OpenApiServer[] | null
+    version?        : string
+    termsOfService? : string
+    info?           : OpenApiInfo
+    servers?        : OpenApiServer[]
 }
 OpenApi *-- "0..1" OpenApiInfo : info
 OpenApi *-- "0..*" OpenApiServer : servers
 
 class OpenApiInfo {
-    contact? : OpenApiContact | null
-    license? : OpenApiLicense | null
+    contact? : OpenApiContact
+    license? : OpenApiLicense
 }
 OpenApiInfo *-- "0..1" OpenApiContact : contact
 OpenApiInfo *-- "0..1" OpenApiLicense : license
 
 class OpenApiContact {
-    name?  : string | null
-    url?   : string | null
-    email? : string | null
+    name?  : string
+    url?   : string
+    email? : string
 }
 
 class OpenApiLicense {
-    name? : string | null
-    url?  : string | null
+    name? : string
+    url?  : string
 }
 
 class OpenApiServer {
-    url?         : string | null
-    description? : string | null
+    url?         : string
+    description? : string
 }
 
 

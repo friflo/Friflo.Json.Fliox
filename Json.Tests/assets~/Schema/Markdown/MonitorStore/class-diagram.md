@@ -5,10 +5,10 @@ direction LR
 class MonitorStore:::cssSchema {
     <<Schema>>
     <<abstract>>
-    hosts      : HostHits[]
-    users      : UserHits[]
-    clients    : ClientHits[]
-    histories  : HistoryHits[]
+    hosts      : [id] ➞ HostHits
+    users      : [id] ➞ UserHits
+    clients    : [id] ➞ ClientHits
+    histories  : [id] ➞ HistoryHits
 }
 MonitorStore *-- "0..*" HostHits : hosts
 MonitorStore *-- "0..*" UserHits : users
@@ -26,7 +26,7 @@ class UserHits:::cssEntity {
     <<Entity · id>>
     id       : string
     clients  : string[]
-    counts?  : RequestCount[] | null
+    counts?  : RequestCount[]
 }
 UserHits o.. "0..*" ClientHits : clients
 UserHits *-- "0..*" RequestCount : counts
@@ -35,8 +35,8 @@ class ClientHits:::cssEntity {
     <<Entity · id>>
     id      : string
     user    : string
-    counts? : RequestCount[] | null
-    event?  : EventDelivery | null
+    counts? : RequestCount[]
+    event?  : EventDelivery
 }
 ClientHits o.. "1" UserHits : user
 ClientHits *-- "0..*" RequestCount : counts
@@ -50,7 +50,7 @@ class HistoryHits:::cssEntity {
 }
 
 class RequestCount {
-    db?       : string | null
+    db?       : string
     requests  : int32
     tasks     : int32
 }
@@ -58,15 +58,15 @@ class RequestCount {
 class EventDelivery {
     seq          : int32
     queued       : int32
-    messageSubs? : string[] | null
-    changeSubs?  : ChangeSubscription[] | null
+    messageSubs? : string[]
+    changeSubs?  : ChangeSubscription[]
 }
 EventDelivery *-- "0..*" ChangeSubscription : changeSubs
 
 class ChangeSubscription {
     container  : string
     changes    : Change[]
-    filter?    : string | null
+    filter?    : string
 }
 ChangeSubscription *-- "0..*" Change : changes
 

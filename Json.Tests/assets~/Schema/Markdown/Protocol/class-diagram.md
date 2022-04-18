@@ -9,53 +9,53 @@ class ProtocolMessage {
 ProtocolMessage <|-- ProtocolRequest
 class ProtocolRequest {
     <<abstract>>
-    req? : int32 | null
-    clt? : string | null
+    req? : int32
+    clt? : string
 }
 
 ProtocolRequest <|-- SyncRequest
 class SyncRequest {
     msg       : "sync"
-    user?     : string | null
-    token?    : string | null
-    ack?      : int32 | null
+    user?     : string
+    token?    : string
+    ack?      : int32
     tasks     : SyncRequestTask[]
-    database? : string | null
-    info?     : any | null
+    database? : string
+    info?     : any
 }
 SyncRequest *-- "0..*" SyncRequestTask : tasks
 
 ProtocolMessage <|-- ProtocolResponse
 class ProtocolResponse {
     <<abstract>>
-    req? : int32 | null
-    clt? : string | null
+    req? : int32
+    clt? : string
 }
 
 ProtocolResponse <|-- SyncResponse
 class SyncResponse {
     msg         : "resp"
-    database?   : string | null
-    tasks?      : SyncTaskResult[] | null
-    containers? : ContainerEntities[] | null
-    info?       : any | null
+    database?   : string
+    tasks?      : SyncTaskResult[]
+    containers? : ContainerEntities[]
+    info?       : any
 }
 SyncResponse *-- "0..*" SyncTaskResult : tasks
 SyncResponse *-- "0..*" ContainerEntities : containers
 
 class ContainerEntities {
     container  : string
-    count?     : int32 | null
+    count?     : int32
     entities   : any[]
-    notFound?  : string[] | null
-    errors?    : EntityError[] | null
+    notFound?  : string[]
+    errors?    : EntityError[]
 }
 ContainerEntities *-- "0..*" EntityError : errors
 
 ProtocolResponse <|-- ErrorResponse
 class ErrorResponse {
     msg      : "error"
-    message? : string | null
+    message? : string
     type     : ErrorResponseType
 }
 ErrorResponse *-- "1" ErrorResponseType : type
@@ -79,29 +79,29 @@ class ProtocolEvent {
 ProtocolEvent <|-- EventMessage
 class EventMessage {
     msg    : "ev"
-    tasks? : SyncRequestTask[] | null
+    tasks? : SyncRequestTask[]
 }
 EventMessage *-- "0..*" SyncRequestTask : tasks
 
 class ReadEntitiesSet {
     ids         : string[]
-    references? : References[] | null
+    references? : References[]
 }
 ReadEntitiesSet *-- "0..*" References : references
 
 class References {
     selector    : string
     container   : string
-    keyName?    : string | null
-    isIntKey?   : boolean | null
-    references? : References[] | null
+    keyName?    : string
+    isIntKey?   : boolean
+    references? : References[]
 }
 References *-- "0..*" References : references
 
 class EntityError {
     id       : string
     type     : EntityErrorType
-    message? : string | null
+    message? : string
 }
 EntityError *-- "1" EntityErrorType : type
 
@@ -117,30 +117,30 @@ class EntityErrorType:::cssEnum {
 
 
 class ReadEntitiesSetResult {
-    references? : ReferencesResult[] | null
+    references? : ReferencesResult[]
 }
 ReadEntitiesSetResult *-- "0..*" ReferencesResult : references
 
 class ReferencesResult {
-    error?      : string | null
-    container?  : string | null
-    count?      : int32 | null
+    error?      : string
+    container?  : string
+    count?      : int32
     ids         : string[]
-    references? : ReferencesResult[] | null
+    references? : ReferencesResult[]
 }
 ReferencesResult *-- "0..*" ReferencesResult : references
 
 class SyncRequestTask {
     <<abstract>>
-    info? : any | null
+    info? : any
 }
 
 SyncRequestTask <|-- CreateEntities
 class CreateEntities {
     task           : "create"
     container      : string
-    reservedToken? : Guid | null
-    keyName?       : string | null
+    reservedToken? : Guid
+    keyName?       : string
     entities       : any[]
 }
 
@@ -148,7 +148,7 @@ SyncRequestTask <|-- UpsertEntities
 class UpsertEntities {
     task       : "upsert"
     container  : string
-    keyName?   : string | null
+    keyName?   : string
     entities   : any[]
 }
 
@@ -156,8 +156,8 @@ SyncRequestTask <|-- ReadEntities
 class ReadEntities {
     task       : "read"
     container  : string
-    keyName?   : string | null
-    isIntKey?  : boolean | null
+    keyName?   : string
+    isIntKey?  : boolean
     sets       : ReadEntitiesSet[]
 }
 ReadEntities *-- "0..*" ReadEntitiesSet : sets
@@ -166,14 +166,14 @@ SyncRequestTask <|-- QueryEntities
 class QueryEntities {
     task        : "query"
     container   : string
-    keyName?    : string | null
-    isIntKey?   : boolean | null
-    filterTree? : any | null
-    filter?     : string | null
-    references? : References[] | null
-    limit?      : int32 | null
-    maxCount?   : int32 | null
-    cursor?     : string | null
+    keyName?    : string
+    isIntKey?   : boolean
+    filterTree? : any
+    filter?     : string
+    references? : References[]
+    limit?      : int32
+    maxCount?   : int32
+    cursor?     : string
 }
 QueryEntities *-- "0..*" References : references
 
@@ -182,8 +182,8 @@ class AggregateEntities {
     task        : "aggregate"
     container   : string
     type        : AggregateType
-    filterTree? : any | null
-    filter?     : string | null
+    filterTree? : any
+    filter?     : string
 }
 AggregateEntities *-- "1" AggregateType : type
 
@@ -197,8 +197,8 @@ SyncRequestTask <|-- PatchEntities
 class PatchEntities {
     task       : "patch"
     container  : string
-    keyName?   : string | null
-    patches    : EntityPatch[]
+    keyName?   : string
+    patches    : string ➞ EntityPatch
 }
 PatchEntities *-- "0..*" EntityPatch : patches
 
@@ -211,15 +211,15 @@ SyncRequestTask <|-- DeleteEntities
 class DeleteEntities {
     task       : "delete"
     container  : string
-    ids?       : string[] | null
-    all?       : boolean | null
+    ids?       : string[]
+    all?       : boolean
 }
 
 SyncRequestTask <|-- SyncMessageTask
 class SyncMessageTask {
     <<abstract>>
     name   : string
-    param? : any | null
+    param? : any
 }
 
 SyncMessageTask <|-- SendMessage
@@ -236,7 +236,7 @@ SyncRequestTask <|-- CloseCursors
 class CloseCursors {
     task       : "closeCursors"
     container  : string
-    cursors?   : string[] | null
+    cursors?   : string[]
 }
 
 SyncRequestTask <|-- SubscribeChanges
@@ -244,7 +244,7 @@ class SubscribeChanges {
     task       : "subscribeChanges"
     container  : string
     changes    : Change[]
-    filter?    : any | null
+    filter?    : any
 }
 SubscribeChanges *-- "0..*" Change : changes
 
@@ -261,7 +261,7 @@ SyncRequestTask <|-- SubscribeMessage
 class SubscribeMessage {
     task    : "subscribeMessage"
     name    : string
-    remove? : boolean | null
+    remove? : boolean
 }
 
 SyncRequestTask <|-- ReserveKeys
@@ -278,14 +278,14 @@ class SyncTaskResult {
 SyncTaskResult <|-- CreateEntitiesResult
 class CreateEntitiesResult {
     task    : "create"
-    errors? : EntityError[] | null
+    errors? : EntityError[]
 }
 CreateEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- UpsertEntitiesResult
 class UpsertEntitiesResult {
     task    : "upsert"
-    errors? : EntityError[] | null
+    errors? : EntityError[]
 }
 UpsertEntitiesResult *-- "0..*" EntityError : errors
 
@@ -299,32 +299,32 @@ ReadEntitiesResult *-- "0..*" ReadEntitiesSetResult : sets
 SyncTaskResult <|-- QueryEntitiesResult
 class QueryEntitiesResult {
     task        : "query"
-    container?  : string | null
-    cursor?     : string | null
-    count?      : int32 | null
+    container?  : string
+    cursor?     : string
+    count?      : int32
     ids         : string[]
-    references? : ReferencesResult[] | null
+    references? : ReferencesResult[]
 }
 QueryEntitiesResult *-- "0..*" ReferencesResult : references
 
 SyncTaskResult <|-- AggregateEntitiesResult
 class AggregateEntitiesResult {
     task       : "aggregate"
-    container? : string | null
-    value?     : double | null
+    container? : string
+    value?     : double
 }
 
 SyncTaskResult <|-- PatchEntitiesResult
 class PatchEntitiesResult {
     task    : "patch"
-    errors? : EntityError[] | null
+    errors? : EntityError[]
 }
 PatchEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- DeleteEntitiesResult
 class DeleteEntitiesResult {
     task    : "delete"
-    errors? : EntityError[] | null
+    errors? : EntityError[]
 }
 DeleteEntitiesResult *-- "0..*" EntityError : errors
 
@@ -341,7 +341,7 @@ class SendMessageResult {
 SyncMessageResult <|-- SendCommandResult
 class SendCommandResult {
     task    : "command"
-    result? : any | null
+    result? : any
 }
 
 SyncTaskResult <|-- CloseCursorsResult
@@ -363,7 +363,7 @@ class SubscribeMessageResult {
 SyncTaskResult <|-- ReserveKeysResult
 class ReserveKeysResult {
     task  : "reserveKeys"
-    keys? : ReservedKeys | null
+    keys? : ReservedKeys
 }
 ReserveKeysResult *-- "0..1" ReservedKeys : keys
 
@@ -377,8 +377,8 @@ SyncTaskResult <|-- TaskErrorResult
 class TaskErrorResult {
     task        : "error"
     type        : TaskErrorResultType
-    message?    : string | null
-    stacktrace? : string | null
+    message?    : string
+    stacktrace? : string
 }
 TaskErrorResult *-- "1" TaskErrorResultType : type
 
@@ -425,21 +425,21 @@ JsonPatch <|-- PatchCopy
 class PatchCopy {
     op    : "copy"
     path  : string
-    from? : string | null
+    from? : string
 }
 
 JsonPatch <|-- PatchMove
 class PatchMove {
     op    : "move"
     path  : string
-    from? : string | null
+    from? : string
 }
 
 JsonPatch <|-- PatchTest
 class PatchTest {
     op     : "test"
     path   : string
-    value? : any | null
+    value? : any
 }
 
 
