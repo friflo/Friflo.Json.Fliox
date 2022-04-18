@@ -14,21 +14,21 @@ ClusterStore *-- "0..*" DbMessages : messages
 ClusterStore *-- "0..*" DbSchema : schemas
 
 class DbContainers:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id          : string
     storage     : string
     containers  : string[]
 }
 
 class DbMessages:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id        : string
     commands  : string[]
     messages  : string[]
 }
 
 class DbSchema:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id           : string
     schemaName   : string
     schemaPath   : string

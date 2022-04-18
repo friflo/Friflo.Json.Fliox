@@ -14,20 +14,20 @@ UserStore *-- "0..*" UserPermission : permissions
 UserStore *-- "0..*" Role : roles
 
 class UserCredential:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id     : string
     token? : string | null
 }
 
 class UserPermission:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id     : string
     roles? : string[] | null
 }
 UserPermission o.. "0..*" Role : roles
 
 class Role:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id           : string
     rights       : Right[]
     description? : string | null

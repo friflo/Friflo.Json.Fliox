@@ -20,7 +20,7 @@ PocStore *-- "0..*" Employee : employees
 PocStore *-- "0..*" TestType : types
 
 class Order:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id        : string
     customer? : string | null
     created   : DateTime
@@ -30,13 +30,13 @@ Order o.. "0..1" Customer : customer
 Order *-- "0..*" OrderItem : items
 
 class Customer:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id    : string
     name  : string
 }
 
 class Article:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id        : string
     name      : string
     producer? : string | null
@@ -44,7 +44,7 @@ class Article:::cssEntity {
 Article o.. "0..1" Producer : producer
 
 class Producer:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id         : string
     name       : string
     employees? : string[] | null
@@ -52,7 +52,7 @@ class Producer:::cssEntity {
 Producer o.. "0..*" Employee : employees
 
 class Employee:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     id         : string
     firstName  : string
     lastName?  : string | null
@@ -65,7 +65,7 @@ class PocEntity {
 
 PocEntity <|-- TestType
 class TestType:::cssEntity {
-    <<Entity>>
+    <<Entity · id>>
     dateTime          : DateTime
     dateTimeNull?     : DateTime | null
     bigInt            : BigInteger

@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.AppendLine($"class {type.Name}{cssType} {{");
                 if (type.IsSchema)      sb.AppendLine("    <<Schema>>");
                 if (type.IsAbstract)    sb.AppendLine("    <<abstract>>");
-                if (type.IsEntity)      sb.AppendLine("    <<Entity>>");
+                if (type.IsEntity)      sb.AppendLine($"    <<Entity · {type.KeyField}>>");
             } else {
                 sb.AppendLine($"class {type.Name}{Union}{cssType} {{");
                 sb.AppendLine("    <<abstract>>");
