@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     <meta charset='UTF-8'>
     <meta name='viewport'     content='width=device-width, initial-scale=1'>
     <meta name='description'  content='Class Diagram: Schema - {{schemaName}}'>
+    <meta name='color-scheme' content='dark light'>
     <meta name='generated-by' content='{{generatedByLink}}'>
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
     <title>{{schemaName}} - Class Diagram</title>
@@ -48,8 +49,11 @@ namespace Friflo.Json.Fliox.Schema.Language
         div.innerHTML = mermaidContent;
         document.body.append(div);
         mermaid.initialize({ startOnLoad: true}); */
-
-        mermaid.mermaidAPI.initialize({ startOnLoad: false, logLevel: 4 });
+        let theme = 'default';
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+        }
+        mermaid.mermaidAPI.initialize({ startOnLoad: false, logLevel: 4, theme: theme });
         const mermaidEl = document.getElementById('graphDiv');
         const insertSvg = function (svgCode, bindFunctions) {
             mermaidEl.innerHTML = svgCode;
