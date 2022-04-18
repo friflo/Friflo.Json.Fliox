@@ -1,3 +1,5 @@
+[generated-by]: https://github.com/friflo/Friflo.Json.Fliox#schema
+
 ```mermaid
 classDiagram
 direction LR

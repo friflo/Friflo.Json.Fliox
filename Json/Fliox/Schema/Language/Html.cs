@@ -332,9 +332,10 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
             var htmlFile        = template ?? Template;
             var navigation      = sbNav.ToString();
             var documentation   = sb.ToString();
-            htmlFile            = htmlFile.Replace("{{schemaName}}",    schemaName);
-            htmlFile            = htmlFile.Replace("{{navigation}}",    navigation);
-            htmlFile            = htmlFile.Replace("{{documentation}}", documentation);
+            htmlFile            = htmlFile.Replace("{{schemaName}}",        schemaName);
+            htmlFile            = htmlFile.Replace("{{documentation}}",     documentation);
+            htmlFile            = htmlFile.Replace("{{navigation}}",        navigation);
+            htmlFile            = htmlFile.Replace("{{generatedByLink}}",   Link);
             generator.files.Add("schema.html", htmlFile);
         }
         
@@ -347,6 +348,7 @@ $@"            <li><a href='#{ns}.{typeName}'><div><span>{typeName}</span>{discT
             
             htmlFile                = htmlFile.Replace("{{schemaName}}",            schemaName);
             htmlFile                = htmlFile.Replace("{{mermaidClassDiagram}}",   mermaidFile);
+            htmlFile                = htmlFile.Replace("{{generatedByLink}}",       Link);
             
             generator.files.Add("class-diagram.html", htmlFile);
         }

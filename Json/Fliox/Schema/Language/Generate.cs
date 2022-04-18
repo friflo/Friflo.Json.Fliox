@@ -131,7 +131,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
     }
     
-    public sealed partial class MarkdownGenerator
+    public partial class MarkdownGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
             var schema      = new NativeTypeSchema(options.types, options.rootType);

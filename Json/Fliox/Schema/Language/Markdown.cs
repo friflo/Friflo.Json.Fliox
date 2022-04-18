@@ -6,7 +6,7 @@ using System.Text;
 // Allowed namespaces: .Schema.Definition, .Schema.Doc, .Schema.Utils
 namespace Friflo.Json.Fliox.Schema.Language
 {
-    public partial class MarkdownGenerator
+    public static partial class MarkdownGenerator
     {
         public static void Generate(Generator generator) {
             EmitHtmlMermaidER(generator);
@@ -17,6 +17,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             var mermaidGenerator   = new Generator(generator.typeSchema, ".mmd");
             MermaidClassDiagramGenerator.Generate(mermaidGenerator);
             var mermaidFile   = mermaidGenerator.files["class-diagram.mmd"];
+            sb.AppendLine($"[generated-by]: {Generator.Link}");
+            sb.AppendLine();
             sb.AppendLine("```mermaid");
             sb.AppendLine(mermaidFile);
             sb.AppendLine("```");

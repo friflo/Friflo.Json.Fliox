@@ -10,8 +10,9 @@ namespace Friflo.Json.Fliox.Schema.Language
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name='description' content='Class Diagram: Schema - {{schemaName}}'>
+    <meta name='viewport'     content='width=device-width, initial-scale=1'>
+    <meta name='description'  content='Class Diagram: Schema - {{schemaName}}'>
+    <meta name='generated-by' content='{{generatedByLink}}'>
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
     <title>{{schemaName}} - Class Diagram</title>
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>

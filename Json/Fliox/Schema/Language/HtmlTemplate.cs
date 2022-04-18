@@ -10,9 +10,10 @@ namespace Friflo.Json.Fliox.Schema.Language
 <html lang='en'>
 <head>
     <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <meta name='description' content='Schema - {{schemaName}}'>
+    <meta name='viewport'     content='width=device-width, initial-scale=1'>
+    <meta name='description'  content='Schema - {{schemaName}}'>
     <meta name='color-scheme' content='dark light'>
+    <meta name='generated-by' content='{{generatedByLink}}'>
     <link rel='icon' href='../../../explorer/img/Json-Fliox-53x43.svg' type='image/x-icon'>
     <title>{{schemaName}} - schema</title>
     <style>
