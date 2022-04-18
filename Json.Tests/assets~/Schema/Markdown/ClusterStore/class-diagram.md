@@ -9,9 +9,9 @@ class ClusterStore:::cssSchema {
     messages    : DbMessages[]
     schemas     : DbSchema[]
 }
-ClusterStore "*" --> "1" DbContainers : containers
-ClusterStore "*" --> "1" DbMessages : messages
-ClusterStore "*" --> "1" DbSchema : schemas
+ClusterStore *-- "0..*" DbContainers : containers
+ClusterStore *-- "0..*" DbMessages : messages
+ClusterStore *-- "0..*" DbSchema : schemas
 
 class DbContainers:::cssEntity {
     id          : string

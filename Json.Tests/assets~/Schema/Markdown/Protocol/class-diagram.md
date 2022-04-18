@@ -23,7 +23,7 @@ class SyncRequest {
     database? : string | null
     info?     : any | null
 }
-SyncRequest "*" --> "1" SyncRequestTask : tasks
+SyncRequest *-- "0..*" SyncRequestTask : tasks
 
 ProtocolMessage <|-- ProtocolResponse
 class ProtocolResponse {
@@ -40,8 +40,8 @@ class SyncResponse {
     containers? : ContainerEntities[] | null
     info?       : any | null
 }
-SyncResponse "*" --> "1" SyncTaskResult : tasks
-SyncResponse "*" --> "1" ContainerEntities : containers
+SyncResponse *-- "0..*" SyncTaskResult : tasks
+SyncResponse *-- "0..*" ContainerEntities : containers
 
 class ContainerEntities {
     container  : string
@@ -50,7 +50,7 @@ class ContainerEntities {
     notFound?  : string[] | null
     errors?    : EntityError[] | null
 }
-ContainerEntities "*" --> "1" EntityError : errors
+ContainerEntities *-- "0..*" EntityError : errors
 
 ProtocolResponse <|-- ErrorResponse
 class ErrorResponse {
@@ -58,7 +58,7 @@ class ErrorResponse {
     message? : string | null
     type     : ErrorResponseType
 }
-ErrorResponse "*" --> "1" ErrorResponseType : type
+ErrorResponse *-- "1" ErrorResponseType : type
 
 class ErrorResponseType:::cssEnum {
     <<enumeration>>
@@ -81,13 +81,13 @@ class EventMessage {
     msg    : "ev"
     tasks? : SyncRequestTask[] | null
 }
-EventMessage "*" --> "1" SyncRequestTask : tasks
+EventMessage *-- "0..*" SyncRequestTask : tasks
 
 class ReadEntitiesSet {
     ids         : string[]
     references? : References[] | null
 }
-ReadEntitiesSet "*" --> "1" References : references
+ReadEntitiesSet *-- "0..*" References : references
 
 class References {
     selector    : string
@@ -96,14 +96,14 @@ class References {
     isIntKey?   : boolean | null
     references? : References[] | null
 }
-References "*" --> "1" References : references
+References *-- "0..*" References : references
 
 class EntityError {
     id       : string
     type     : EntityErrorType
     message? : string | null
 }
-EntityError "*" --> "1" EntityErrorType : type
+EntityError *-- "1" EntityErrorType : type
 
 class EntityErrorType:::cssEnum {
     <<enumeration>>
@@ -119,7 +119,7 @@ class EntityErrorType:::cssEnum {
 class ReadEntitiesSetResult {
     references? : ReferencesResult[] | null
 }
-ReadEntitiesSetResult "*" --> "1" ReferencesResult : references
+ReadEntitiesSetResult *-- "0..*" ReferencesResult : references
 
 class ReferencesResult {
     error?      : string | null
@@ -128,7 +128,7 @@ class ReferencesResult {
     ids         : string[]
     references? : ReferencesResult[] | null
 }
-ReferencesResult "*" --> "1" ReferencesResult : references
+ReferencesResult *-- "0..*" ReferencesResult : references
 
 class SyncRequestTask {
     <<abstract>>
@@ -160,7 +160,7 @@ class ReadEntities {
     isIntKey?  : boolean | null
     sets       : ReadEntitiesSet[]
 }
-ReadEntities "*" --> "1" ReadEntitiesSet : sets
+ReadEntities *-- "0..*" ReadEntitiesSet : sets
 
 SyncRequestTask <|-- QueryEntities
 class QueryEntities {
@@ -175,7 +175,7 @@ class QueryEntities {
     maxCount?   : int32 | null
     cursor?     : string | null
 }
-QueryEntities "*" --> "1" References : references
+QueryEntities *-- "0..*" References : references
 
 SyncRequestTask <|-- AggregateEntities
 class AggregateEntities {
@@ -185,7 +185,7 @@ class AggregateEntities {
     filterTree? : any | null
     filter?     : string | null
 }
-AggregateEntities "*" --> "1" AggregateType : type
+AggregateEntities *-- "1" AggregateType : type
 
 class AggregateType:::cssEnum {
     <<enumeration>>
@@ -200,12 +200,12 @@ class PatchEntities {
     keyName?   : string | null
     patches    : EntityPatch[]
 }
-PatchEntities "*" --> "1" EntityPatch : patches
+PatchEntities *-- "0..*" EntityPatch : patches
 
 class EntityPatch {
     patches  : JsonPatch[]
 }
-EntityPatch "*" --> "1" JsonPatch : patches
+EntityPatch *-- "0..*" JsonPatch : patches
 
 SyncRequestTask <|-- DeleteEntities
 class DeleteEntities {
@@ -246,7 +246,7 @@ class SubscribeChanges {
     changes    : Change[]
     filter?    : any | null
 }
-SubscribeChanges "*" --> "1" Change : changes
+SubscribeChanges *-- "0..*" Change : changes
 
 class Change:::cssEnum {
     <<enumeration>>
@@ -280,21 +280,21 @@ class CreateEntitiesResult {
     task    : "create"
     errors? : EntityError[] | null
 }
-CreateEntitiesResult "*" --> "1" EntityError : errors
+CreateEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- UpsertEntitiesResult
 class UpsertEntitiesResult {
     task    : "upsert"
     errors? : EntityError[] | null
 }
-UpsertEntitiesResult "*" --> "1" EntityError : errors
+UpsertEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- ReadEntitiesResult
 class ReadEntitiesResult {
     task  : "read"
     sets  : ReadEntitiesSetResult[]
 }
-ReadEntitiesResult "*" --> "1" ReadEntitiesSetResult : sets
+ReadEntitiesResult *-- "0..*" ReadEntitiesSetResult : sets
 
 SyncTaskResult <|-- QueryEntitiesResult
 class QueryEntitiesResult {
@@ -305,7 +305,7 @@ class QueryEntitiesResult {
     ids         : string[]
     references? : ReferencesResult[] | null
 }
-QueryEntitiesResult "*" --> "1" ReferencesResult : references
+QueryEntitiesResult *-- "0..*" ReferencesResult : references
 
 SyncTaskResult <|-- AggregateEntitiesResult
 class AggregateEntitiesResult {
@@ -319,14 +319,14 @@ class PatchEntitiesResult {
     task    : "patch"
     errors? : EntityError[] | null
 }
-PatchEntitiesResult "*" --> "1" EntityError : errors
+PatchEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- DeleteEntitiesResult
 class DeleteEntitiesResult {
     task    : "delete"
     errors? : EntityError[] | null
 }
-DeleteEntitiesResult "*" --> "1" EntityError : errors
+DeleteEntitiesResult *-- "0..*" EntityError : errors
 
 SyncTaskResult <|-- SyncMessageResult
 class SyncMessageResult {
@@ -365,7 +365,7 @@ class ReserveKeysResult {
     task  : "reserveKeys"
     keys? : ReservedKeys | null
 }
-ReserveKeysResult "*" --> "1" ReservedKeys : keys
+ReserveKeysResult *-- "0..1" ReservedKeys : keys
 
 class ReservedKeys {
     start  : int64
@@ -380,7 +380,7 @@ class TaskErrorResult {
     message?    : string | null
     stacktrace? : string | null
 }
-TaskErrorResult "*" --> "1" TaskErrorResultType : type
+TaskErrorResult *-- "1" TaskErrorResultType : type
 
 class TaskErrorResultType:::cssEnum {
     <<enumeration>>

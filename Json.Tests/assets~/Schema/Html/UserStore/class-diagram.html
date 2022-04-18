@@ -37,9 +37,9 @@ class UserStore:::cssSchema {
     permissions  : UserPermission[]
     roles        : Role[]
 }
-UserStore "*" --> "1" UserCredential : credentials
-UserStore "*" --> "1" UserPermission : permissions
-UserStore "*" --> "1" Role : roles
+UserStore *-- "0..*" UserCredential : credentials
+UserStore *-- "0..*" UserPermission : permissions
+UserStore *-- "0..*" Role : roles
 
 class UserCredential:::cssEntity {
     id     : string
@@ -50,14 +50,14 @@ class UserPermission:::cssEntity {
     id     : string
     roles? : string[] | null
 }
-UserPermission "*" ..> "1" Role : roles
+UserPermission o.. "0..*" Role : roles
 
 class Role:::cssEntity {
     id           : string
     rights       : Right[]
     description? : string | null
 }
-Role "*" --> "1" Right : rights
+Role *-- "0..*" Right : rights
 
 class Right {
     <<abstract>>
@@ -76,7 +76,7 @@ class TaskRight {
     database?    : string | null
     types        : TaskType[]
 }
-TaskRight "*" --> "1" TaskType : types
+TaskRight *-- "0..*" TaskType : types
 
 Right <|-- SendMessageRight
 class SendMessageRight {
@@ -98,14 +98,14 @@ class OperationRight {
     database?    : string | null
     containers   : ContainerAccess[]
 }
-OperationRight "*" --> "1" ContainerAccess : containers
+OperationRight *-- "0..*" ContainerAccess : containers
 
 class ContainerAccess {
     operations?       : OperationType[] | null
     subscribeChanges? : Change[] | null
 }
-ContainerAccess "*" --> "1" OperationType : operations
-ContainerAccess "*" --> "1" Change : subscribeChanges
+ContainerAccess *-- "0..*" OperationType : operations
+ContainerAccess *-- "0..*" Change : subscribeChanges
 
 class OperationType:::cssEnum {
     <<enumeration>>

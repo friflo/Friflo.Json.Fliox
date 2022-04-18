@@ -10,24 +10,24 @@ class MonitorStore:::cssSchema {
     clients    : ClientHits[]
     histories  : HistoryHits[]
 }
-MonitorStore "*" --> "1" HostHits : hosts
-MonitorStore "*" --> "1" UserHits : users
-MonitorStore "*" --> "1" ClientHits : clients
-MonitorStore "*" --> "1" HistoryHits : histories
+MonitorStore *-- "0..*" HostHits : hosts
+MonitorStore *-- "0..*" UserHits : users
+MonitorStore *-- "0..*" ClientHits : clients
+MonitorStore *-- "0..*" HistoryHits : histories
 
 class HostHits:::cssEntity {
     id      : string
     counts  : RequestCount
 }
-HostHits "*" --> "1" RequestCount : counts
+HostHits *-- "1" RequestCount : counts
 
 class UserHits:::cssEntity {
     id       : string
     clients  : string[]
     counts?  : RequestCount[] | null
 }
-UserHits "*" ..> "1" ClientHits : clients
-UserHits "*" --> "1" RequestCount : counts
+UserHits o.. "0..*" ClientHits : clients
+UserHits *-- "0..*" RequestCount : counts
 
 class ClientHits:::cssEntity {
     id      : string
@@ -35,9 +35,9 @@ class ClientHits:::cssEntity {
     counts? : RequestCount[] | null
     event?  : EventDelivery | null
 }
-ClientHits "*" ..> "1" UserHits : user
-ClientHits "*" --> "1" RequestCount : counts
-ClientHits "*" --> "1" EventDelivery : event
+ClientHits o.. "1" UserHits : user
+ClientHits *-- "0..*" RequestCount : counts
+ClientHits *-- "0..1" EventDelivery : event
 
 class HistoryHits:::cssEntity {
     id          : int32
@@ -57,14 +57,14 @@ class EventDelivery {
     messageSubs? : string[] | null
     changeSubs?  : ChangeSubscription[] | null
 }
-EventDelivery "*" --> "1" ChangeSubscription : changeSubs
+EventDelivery *-- "0..*" ChangeSubscription : changeSubs
 
 class ChangeSubscription {
     container  : string
     changes    : Change[]
     filter?    : string | null
 }
-ChangeSubscription "*" --> "1" Change : changes
+ChangeSubscription *-- "0..*" Change : changes
 
 class Change:::cssEnum {
     <<enumeration>>

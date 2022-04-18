@@ -40,12 +40,12 @@ class PocStore:::cssSchema {
     employees  : Employee[]
     types      : TestType[]
 }
-PocStore "*" --> "1" Order : orders
-PocStore "*" --> "1" Customer : customers
-PocStore "*" --> "1" Article : articles
-PocStore "*" --> "1" Producer : producers
-PocStore "*" --> "1" Employee : employees
-PocStore "*" --> "1" TestType : types
+PocStore *-- "0..*" Order : orders
+PocStore *-- "0..*" Customer : customers
+PocStore *-- "0..*" Article : articles
+PocStore *-- "0..*" Producer : producers
+PocStore *-- "0..*" Employee : employees
+PocStore *-- "0..*" TestType : types
 
 class Order:::cssEntity {
     id        : string
@@ -53,8 +53,8 @@ class Order:::cssEntity {
     created   : DateTime
     items?    : OrderItem[] | null
 }
-Order "*" ..> "1" Customer : customer
-Order "*" --> "1" OrderItem : items
+Order o.. "0..1" Customer : customer
+Order *-- "0..*" OrderItem : items
 
 class Customer:::cssEntity {
     id    : string
@@ -66,14 +66,14 @@ class Article:::cssEntity {
     name      : string
     producer? : string | null
 }
-Article "*" ..> "1" Producer : producer
+Article o.. "0..1" Producer : producer
 
 class Producer:::cssEntity {
     id         : string
     name       : string
     employees? : string[] | null
 }
-Producer "*" ..> "1" Employee : employees
+Producer o.. "0..*" Employee : employees
 
 class Employee:::cssEntity {
     id         : string
@@ -115,17 +115,17 @@ class TestType:::cssEntity {
     derivedClass      : DerivedClass
     derivedClassNull? : DerivedClass | null
 }
-TestType "*" --> "1" PocStruct : pocStruct
-TestType "*" --> "1" PocStruct : pocStructNull
-TestType "*" --> "1" DerivedClass : derivedClass
-TestType "*" --> "1" DerivedClass : derivedClassNull
+TestType *-- "1" PocStruct : pocStruct
+TestType *-- "0..1" PocStruct : pocStructNull
+TestType *-- "1" DerivedClass : derivedClass
+TestType *-- "0..1" DerivedClass : derivedClassNull
 
 class OrderItem {
     article  : string
     amount   : int32
     name?    : string | null
 }
-OrderItem "*" ..> "1" Article : article
+OrderItem o.. "1" Article : article
 
 class PocStruct {
     value  : int32

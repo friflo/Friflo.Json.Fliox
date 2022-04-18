@@ -168,14 +168,16 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (field.IsDerivedField)
                     continue;
                 // var fieldDoc    = GetDoc(field.doc, "    ");
-                // sb.Append(fieldDoc);
-                var fieldType =  field.type;
+                var fieldType   = field.type;
+                var cardinality = GetFieldCardinality(field);
                 if (!standardTypes.ContainsKey(fieldType)) {
-                    sb.AppendLine($"{type.Name} \"*\" --> \"1\" {fieldType.Name} : {field.name}");
+                    // ◆⎯⎯⎯  Relationship: Composition - the lifetime of item(s) is bound to its owner instance
+                    sb.AppendLine($"{type.Name} *-- \"{cardinality}\" {fieldType.Name} : {field.name}");
                 }
                 var relationType = field.RelationType;
                 if (relationType != null) {
-                    sb.AppendLine($"{type.Name} \"*\" ..> \"1\" {relationType.Name} : {field.name}");
+                    // ◇⎯⎯⎯  Relationship: Aggregation - the lifetime of referenced entities are independent from its owner instance
+                    sb.AppendLine($"{type.Name} o.. \"{cardinality}\" {relationType.Name} : {field.name}");
                 }
             }
             if (EmitMessagesFlag && type.IsSchema) {
@@ -262,6 +264,13 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (type.UnionType != null)
                 return $"{type.Name}{Union}";
             return type.Name;
+        }
+        
+        private static string GetFieldCardinality(FieldDef field) {
+            if (field.isArray || field.isDictionary) {
+                return "0..*";
+            }
+            return field.required ? "1" : "0..1";
         }
         
         private static string GetDoc(string docs, string indent) {

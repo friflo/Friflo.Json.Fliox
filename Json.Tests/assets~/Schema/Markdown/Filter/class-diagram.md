@@ -17,8 +17,8 @@ class BinaryBoolOp {
     left   : Operation
     right  : Operation
 }
-BinaryBoolOp "*" --> "1" Operation : left
-BinaryBoolOp "*" --> "1" Operation : right
+BinaryBoolOp *-- "1" Operation : left
+BinaryBoolOp *-- "1" Operation : right
 
 BinaryBoolOp <|-- Equal
 class Equal {
@@ -79,7 +79,7 @@ class UnaryArithmeticOp {
     <<abstract>>
     value  : Operation
 }
-UnaryArithmeticOp "*" --> "1" Operation : value
+UnaryArithmeticOp *-- "1" Operation : value
 
 UnaryArithmeticOp <|-- Abs
 class Abs {
@@ -122,8 +122,8 @@ class BinaryArithmeticOp {
     left   : Operation
     right  : Operation
 }
-BinaryArithmeticOp "*" --> "1" Operation : left
-BinaryArithmeticOp "*" --> "1" Operation : right
+BinaryArithmeticOp *-- "1" Operation : left
+BinaryArithmeticOp *-- "1" Operation : right
 
 BinaryArithmeticOp <|-- Add
 class Add {
@@ -157,8 +157,8 @@ class BinaryAggregateOp {
     arg    : string
     array  : Operation
 }
-BinaryAggregateOp "*" --> "1" Field : field
-BinaryAggregateOp "*" --> "1" Operation : array
+BinaryAggregateOp *-- "1" Field : field
+BinaryAggregateOp *-- "1" Operation : array
 
 BinaryAggregateOp <|-- Min
 class Min {
@@ -185,7 +185,7 @@ class UnaryAggregateOp {
     <<abstract>>
     field  : Field
 }
-UnaryAggregateOp "*" --> "1" Field : field
+UnaryAggregateOp *-- "1" Field : field
 
 UnaryAggregateOp <|-- Count
 class Count {
@@ -222,7 +222,7 @@ class BinaryLogicalOp {
     <<abstract>>
     operands  : FilterOperation[]
 }
-BinaryLogicalOp "*" --> "1" FilterOperation : operands
+BinaryLogicalOp *-- "0..*" FilterOperation : operands
 
 BinaryLogicalOp <|-- And
 class And {
@@ -249,7 +249,7 @@ class UnaryLogicalOp {
     <<abstract>>
     operand  : FilterOperation
 }
-UnaryLogicalOp "*" --> "1" FilterOperation : operand
+UnaryLogicalOp *-- "1" FilterOperation : operand
 
 UnaryLogicalOp <|-- Not
 class Not {
@@ -262,7 +262,7 @@ class Lambda {
     arg   : string
     body  : Operation
 }
-Lambda "*" --> "1" Operation : body
+Lambda *-- "1" Operation : body
 
 FilterOperation <|-- Filter
 class Filter {
@@ -270,7 +270,7 @@ class Filter {
     arg   : string
     body  : FilterOperation
 }
-Filter "*" --> "1" FilterOperation : body
+Filter *-- "1" FilterOperation : body
 
 FilterOperation <|-- BinaryQuantifyOp
 class BinaryQuantifyOp {
@@ -279,8 +279,8 @@ class BinaryQuantifyOp {
     arg        : string
     predicate  : FilterOperation
 }
-BinaryQuantifyOp "*" --> "1" Field : field
-BinaryQuantifyOp "*" --> "1" FilterOperation : predicate
+BinaryQuantifyOp *-- "1" Field : field
+BinaryQuantifyOp *-- "1" FilterOperation : predicate
 
 BinaryQuantifyOp <|-- Any
 class Any {
@@ -299,8 +299,8 @@ class CountWhere {
     arg        : string
     predicate  : FilterOperation
 }
-CountWhere "*" --> "1" Field : field
-CountWhere "*" --> "1" FilterOperation : predicate
+CountWhere *-- "1" Field : field
+CountWhere *-- "1" FilterOperation : predicate
 
 BinaryBoolOp <|-- Contains
 class Contains {
