@@ -10,6 +10,7 @@ COPY Json/Fliox/*.csproj                ./Json/Fliox/
 COPY Json/Fliox.Hub/*.csproj            ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/*.csproj ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/*.csproj   ./Json/Fliox.Hub.Explorer/
+COPY Json/Fliox.Hub.GraphQL/*.csproj    ./Json/Fliox.Hub.GraphQL/
 COPY DemoHub/*.csproj                   ./DemoHub/
 #
 RUN dotnet restore DemoHub/Fliox.DemoHub.csproj
@@ -20,6 +21,7 @@ COPY Json/Fliox/.                       ./Json/Fliox/
 COPY Json/Fliox.Hub/.                   ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/.        ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/.          ./Json/Fliox.Hub.Explorer/
+COPY Json/Fliox.Hub.GraphQL/.           ./Json/Fliox.Hub.GraphQL/
 COPY DemoHub/.                          ./DemoHub/
 #
 WORKDIR /app/DemoHub
