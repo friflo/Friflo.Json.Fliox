@@ -18,6 +18,14 @@ namespace Friflo.Json.Fliox.Schema.Language
     <title>{{schemaName}} - Class Diagram</title>
     <script src='https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'></script>
     <style>
+        :root {
+            --enum-fill:   #f8f8f8;
+            --enum-stroke: #d0d0d0;
+        }
+        [data-theme='dark'] {
+            --enum-fill:   #3e3e3e;
+            --enum-stroke: #606060;
+        }
         .mermaid {            
             width: 1440px;  /** Enable zooming in Mermaid svg **/
         }
@@ -32,8 +40,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             rx: 8;
         }
         .cssEnum > rect {
-            fill:#f8f8f8 !important;
-            stroke:#d0d0d0 !important;
+            fill:  var(--enum-fill)   !important;
+            stroke:var(--enum-stroke) !important;
         }
     </style>
 </head>
@@ -52,6 +60,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         let theme = 'default';
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             theme = 'dark';
+            document.documentElement.setAttribute('data-theme', 'dark');
         }
         mermaid.mermaidAPI.initialize({ startOnLoad: false, logLevel: 4, theme: theme });
         const mermaidEl = document.getElementById('graphDiv');
