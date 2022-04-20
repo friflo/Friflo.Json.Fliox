@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("ids",   Gql.List(Gql.String(), true, true)),
                     },
-                    type = Gql.String() // todo return errors
+                    type = Gql.List(Gql.Scalar("EntityError"), false, true)
                 };
                 mutations.Add(query);
             }
@@ -335,7 +335,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("entities",   list),
                     },
-                    type = Gql.String() // todo return errors
+                    type = Gql.List(Gql.Scalar("EntityError"), false, true)
                 };
                 mutations.Add(query);
             }
@@ -371,6 +371,18 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var type            = new GqlObject { name = resultType, fields = resultFields };
                 types.Add(type);
             }
+            var entityErrorType = EntityErrorType();
+            types.Add(entityErrorType);
+        }
+        
+        // represent Friflo.Json.Fliox.Hub.Protocol.Models.EntityError
+        private static GqlType EntityErrorType() {
+            var fields = new List<GqlField> {
+                new GqlField { name = "id",         type = Gql.Type(Gql.String(), true) },
+                new GqlField { name = "type",       type = Gql.Type(Gql.String(), true) },
+                new GqlField { name = "message",    type = Gql.Type(Gql.String(), true) },
+            };
+            return new GqlObject { name = "EntityError", fields = fields };
         }
     }
     

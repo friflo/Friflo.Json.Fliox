@@ -57,19 +57,25 @@ type QueryHistoriesResult {
     items  : [HistoryHits!]!
 }
 
+type EntityError {
+    id      : String!
+    type    : String!
+    message : String!
+}
+
 type Mutation {
-    createHosts    (entities: [HostHitsInput!]!) : String
-    createUsers    (entities: [UserHitsInput!]!) : String
-    createClients  (entities: [ClientHitsInput!]!) : String
-    createHistories(entities: [HistoryHitsInput!]!) : String
-    upsertHosts    (entities: [HostHitsInput!]!) : String
-    upsertUsers    (entities: [UserHitsInput!]!) : String
-    upsertClients  (entities: [ClientHitsInput!]!) : String
-    upsertHistories(entities: [HistoryHitsInput!]!) : String
-    deleteHosts    (ids: [String!]!) : String
-    deleteUsers    (ids: [String!]!) : String
-    deleteClients  (ids: [String!]!) : String
-    deleteHistories(ids: [String!]!) : String
+    createHosts    (entities: [HostHitsInput!]!) : [EntityError!]
+    createUsers    (entities: [UserHitsInput!]!) : [EntityError!]
+    createClients  (entities: [ClientHitsInput!]!) : [EntityError!]
+    createHistories(entities: [HistoryHitsInput!]!) : [EntityError!]
+    upsertHosts    (entities: [HostHitsInput!]!) : [EntityError!]
+    upsertUsers    (entities: [UserHitsInput!]!) : [EntityError!]
+    upsertClients  (entities: [ClientHitsInput!]!) : [EntityError!]
+    upsertHistories(entities: [HistoryHitsInput!]!) : [EntityError!]
+    deleteHosts    (ids: [String!]!) : [EntityError!]
+    deleteUsers    (ids: [String!]!) : [EntityError!]
+    deleteClients  (ids: [String!]!) : [EntityError!]
+    deleteHistories(ids: [String!]!) : [EntityError!]
 }
 
 type MonitorStore {

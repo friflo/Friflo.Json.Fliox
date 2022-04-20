@@ -88,25 +88,31 @@ type QueryTypesResult {
     items  : [TestType!]!
 }
 
+type EntityError {
+    id      : String!
+    type    : String!
+    message : String!
+}
+
 type Mutation {
-    createOrders   (entities: [OrderInput!]!) : String
-    createCustomers(entities: [CustomerInput!]!) : String
-    createArticles (entities: [ArticleInput!]!) : String
-    createProducers(entities: [ProducerInput!]!) : String
-    createEmployees(entities: [EmployeeInput!]!) : String
-    createTypes    (entities: [TestTypeInput!]!) : String
-    upsertOrders   (entities: [OrderInput!]!) : String
-    upsertCustomers(entities: [CustomerInput!]!) : String
-    upsertArticles (entities: [ArticleInput!]!) : String
-    upsertProducers(entities: [ProducerInput!]!) : String
-    upsertEmployees(entities: [EmployeeInput!]!) : String
-    upsertTypes    (entities: [TestTypeInput!]!) : String
-    deleteOrders   (ids: [String!]!) : String
-    deleteCustomers(ids: [String!]!) : String
-    deleteArticles (ids: [String!]!) : String
-    deleteProducers(ids: [String!]!) : String
-    deleteEmployees(ids: [String!]!) : String
-    deleteTypes    (ids: [String!]!) : String
+    createOrders   (entities: [OrderInput!]!) : [EntityError!]
+    createCustomers(entities: [CustomerInput!]!) : [EntityError!]
+    createArticles (entities: [ArticleInput!]!) : [EntityError!]
+    createProducers(entities: [ProducerInput!]!) : [EntityError!]
+    createEmployees(entities: [EmployeeInput!]!) : [EntityError!]
+    createTypes    (entities: [TestTypeInput!]!) : [EntityError!]
+    upsertOrders   (entities: [OrderInput!]!) : [EntityError!]
+    upsertCustomers(entities: [CustomerInput!]!) : [EntityError!]
+    upsertArticles (entities: [ArticleInput!]!) : [EntityError!]
+    upsertProducers(entities: [ProducerInput!]!) : [EntityError!]
+    upsertEmployees(entities: [EmployeeInput!]!) : [EntityError!]
+    upsertTypes    (entities: [TestTypeInput!]!) : [EntityError!]
+    deleteOrders   (ids: [String!]!) : [EntityError!]
+    deleteCustomers(ids: [String!]!) : [EntityError!]
+    deleteArticles (ids: [String!]!) : [EntityError!]
+    deleteProducers(ids: [String!]!) : [EntityError!]
+    deleteEmployees(ids: [String!]!) : [EntityError!]
+    deleteTypes    (ids: [String!]!) : [EntityError!]
 }
 
 type PocStore {

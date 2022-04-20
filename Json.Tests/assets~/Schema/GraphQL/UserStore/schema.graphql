@@ -48,16 +48,22 @@ type QueryRolesResult {
     items  : [Role!]!
 }
 
+type EntityError {
+    id      : String!
+    type    : String!
+    message : String!
+}
+
 type Mutation {
-    createCredentials(entities: [UserCredentialInput!]!) : String
-    createPermissions(entities: [UserPermissionInput!]!) : String
-    createRoles      (entities: [RoleInput!]!) : String
-    upsertCredentials(entities: [UserCredentialInput!]!) : String
-    upsertPermissions(entities: [UserPermissionInput!]!) : String
-    upsertRoles      (entities: [RoleInput!]!) : String
-    deleteCredentials(ids: [String!]!) : String
-    deletePermissions(ids: [String!]!) : String
-    deleteRoles      (ids: [String!]!) : String
+    createCredentials(entities: [UserCredentialInput!]!) : [EntityError!]
+    createPermissions(entities: [UserPermissionInput!]!) : [EntityError!]
+    createRoles      (entities: [RoleInput!]!) : [EntityError!]
+    upsertCredentials(entities: [UserCredentialInput!]!) : [EntityError!]
+    upsertPermissions(entities: [UserPermissionInput!]!) : [EntityError!]
+    upsertRoles      (entities: [RoleInput!]!) : [EntityError!]
+    deleteCredentials(ids: [String!]!) : [EntityError!]
+    deletePermissions(ids: [String!]!) : [EntityError!]
+    deleteRoles      (ids: [String!]!) : [EntityError!]
 }
 
 type UserStore {

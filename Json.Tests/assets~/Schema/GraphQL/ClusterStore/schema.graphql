@@ -47,16 +47,22 @@ type QuerySchemasResult {
     items  : [DbSchema!]!
 }
 
+type EntityError {
+    id      : String!
+    type    : String!
+    message : String!
+}
+
 type Mutation {
-    createContainers(entities: [DbContainersInput!]!) : String
-    createMessages  (entities: [DbMessagesInput!]!) : String
-    createSchemas   (entities: [DbSchemaInput!]!) : String
-    upsertContainers(entities: [DbContainersInput!]!) : String
-    upsertMessages  (entities: [DbMessagesInput!]!) : String
-    upsertSchemas   (entities: [DbSchemaInput!]!) : String
-    deleteContainers(ids: [String!]!) : String
-    deleteMessages  (ids: [String!]!) : String
-    deleteSchemas   (ids: [String!]!) : String
+    createContainers(entities: [DbContainersInput!]!) : [EntityError!]
+    createMessages  (entities: [DbMessagesInput!]!) : [EntityError!]
+    createSchemas   (entities: [DbSchemaInput!]!) : [EntityError!]
+    upsertContainers(entities: [DbContainersInput!]!) : [EntityError!]
+    upsertMessages  (entities: [DbMessagesInput!]!) : [EntityError!]
+    upsertSchemas   (entities: [DbSchemaInput!]!) : [EntityError!]
+    deleteContainers(ids: [String!]!) : [EntityError!]
+    deleteMessages  (ids: [String!]!) : [EntityError!]
+    deleteSchemas   (ids: [String!]!) : [EntityError!]
 }
 
 type ClusterStore {

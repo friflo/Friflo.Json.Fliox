@@ -90,17 +90,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue CreateEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
             var createResult    = (CreateEntitiesResult)result;
-            return new JsonValue("{}"); // todo return errors
+            var json            = new JsonValue(writer.WriteAsArray(createResult.errors));
+            var projector       = new JsonProjector();
+            return projector.Project(query.selection, json);
         }
         
         private static JsonValue UpsertEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
             var upsertResult    = (UpsertEntitiesResult)result;
-            return new JsonValue("{}"); // todo return errors
+            var json            = new JsonValue(writer.WriteAsArray(upsertResult.errors));
+            var projector       = new JsonProjector();
+            return projector.Project(query.selection, json);
         }
         
         private static JsonValue DeleteEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer) {
-            var deleteTask      = (DeleteEntities)query.task;
-            return new JsonValue("{}"); // todo return errors
+            var deleteResult    = (DeleteEntitiesResult)result;
+            var json            = new JsonValue(writer.WriteAsArray(deleteResult.errors));
+            var projector       = new JsonProjector();
+            return projector.Project(query.selection, json);
         }
         
         private static JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
