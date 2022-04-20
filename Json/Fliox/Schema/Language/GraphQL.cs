@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 Gql.Any(),
                 query
             };
-            CreateResultTypes (types, schemaType, generator);
+            CreateResultTypes (types, schemaType);
             if (mutations != null) {
                 var mutation = new GqlObject { name = "Mutation", fields = mutations };
                 types.Add(mutation);
@@ -348,7 +348,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return name;
         }
         
-        private static void CreateResultTypes(List<GqlType> types, TypeDef schemaType, Generator generator) {
+        private static void CreateResultTypes(List<GqlType> types, TypeDef schemaType) {
             if (schemaType == null)
                 return;
             var fields = schemaType.Fields;
