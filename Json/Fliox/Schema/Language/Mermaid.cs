@@ -245,6 +245,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             return field.required ? "1" : "0..1";
         }
         
+        // ReSharper disable once UnusedMember.Local
         private static string GetDoc(string docs, string indent) {
             return TypeDoc.HtmlToDoc(docs, indent, "/**", " * ", " */");
         }
