@@ -172,16 +172,28 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             MapperCache.Add(clientType, mappers);
             return mappers;
         }
+        
+        private static readonly IDictionary<string, SyncSet> EmptySynSet = new EmptyDictionary<string, SyncSet>();
 
-        internal Dictionary<string, SyncSet> CreateSyncSets() {
-            var syncSets = new Dictionary<string, SyncSet>(setByName.Count);
+        internal IDictionary<string, SyncSet> CreateSyncSets() {
+            var count = 0;
             foreach (var pair in setByName) {
-                string      container   = pair.Key;
-                EntitySet   set         = pair.Value;
-                SyncSet     syncSet     = set.SyncSet;
-                if (syncSet != null) {
-                    syncSets.Add(container, set.SyncSet);
-                }
+                SyncSet syncSet = pair.Value.SyncSet;
+                if (syncSet == null)
+                    continue;
+                count++;
+            }
+            if (count == 0) {
+                return EmptySynSet;
+            }
+            // create Dictionary<,> only if required
+            var syncSets = new Dictionary<string, SyncSet>(count);
+            foreach (var pair in setByName) {
+                SyncSet syncSet = pair.Value.SyncSet;
+                if (syncSet == null)
+                    continue;
+                string container = pair.Key;
+                syncSets.Add(container, syncSet);
             }
             return syncSets;
         }
