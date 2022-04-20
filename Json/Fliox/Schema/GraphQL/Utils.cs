@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 
+using System.Collections.Generic;
+
 namespace Friflo.Json.Fliox.Schema.GraphQL
 {
     public static class Gql
@@ -15,6 +17,14 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
                 return new GqlNonNull { ofType = listType };
             }
             return listType;
+        }
+        
+        public static GqlObject Object (string name, List<GqlField> fields) {
+            return new GqlObject { name = name, fields = fields };
+        }
+        
+        public static GqlField Field (string name, GqlType type) {
+            return new GqlField { name = name, type = type };
         }
         
         public static GqlScalar Scalar (string name) {
@@ -38,11 +48,11 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
             return new GqlInputValue { name = name, type = type };
         }
         
-        public static GqlType String    () =>   new GqlScalar { name = "String"   };
-        public static GqlType Int       () =>   new GqlScalar { name = "Int"      };
-        public static GqlType Float     () =>   new GqlScalar { name = "Float"    };
-        public static GqlType Boolean   () =>   new GqlScalar { name = "Boolean"  };
-        public static GqlType Any       () =>   new GqlScalar { name = "Any"      };
+        public static GqlType String    () =>   Scalar("String");
+        public static GqlType Int       () =>   Scalar("Int");
+        public static GqlType Float     () =>   Scalar("Float");
+        public static GqlType Boolean   () =>   Scalar("Boolean");
+        public static GqlType Any       () =>   Scalar("Any");
         
         public static string MethodName (string methodType, string container) {
             return methodType + char.ToUpper(container[0]) + container.Substring(1);

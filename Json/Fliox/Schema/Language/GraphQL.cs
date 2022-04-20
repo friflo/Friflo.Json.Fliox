@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var schemaType  = generator.FindSchemaType();
             var queries     = CreateQueries  (schemaType, generator);
             var mutations   = CreateMutations(schemaType);
-            var query       = new GqlObject { name = "Query", fields = queries };
+            var query       = Gql.Object("Query", queries);
             var types   = new List<GqlType> {
                 Gql.String(),
                 Gql.Int(),
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             };
             CreateResultTypes (types, schemaType);
             if (mutations != null) {
-                var mutation = new GqlObject { name = "Mutation", fields = mutations };
+                var mutation = Gql.Object("Mutation", mutations);
                 types.Add(mutation);
             }
             foreach (var type in generator.types) {
@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             var unionType = type.UnionType;
             if (unionType == null) {
                 if (kind == Kind.Output) {
-                    gqlType = new GqlObject      { fields       = gqlFields };
+                    gqlType = Gql.Object(null, gqlFields);
                 } else {
                     gqlType = new GqlInputObject { inputFields  = gqlFields };
                 }
@@ -253,8 +253,8 @@ namespace Friflo.Json.Fliox.Schema.Language
             context.imports.Add(type);
             var name = GetName(type, kind);
             if (type.UnionType != null)
-                return new GqlScalar { name = name };
-            return new GqlScalar { name = name };
+                return Gql.Scalar(name);
+            return Gql.Scalar(name);
         }
         
         // todo remove indent and Typescript comment syntax
@@ -355,20 +355,11 @@ namespace Friflo.Json.Fliox.Schema.Language
             foreach (var field in fields) {
                 var resultType      = $"{Gql.MethodName("Query", field.name)}Result";
                 var containerType   = Gql.Scalar(field.type.Name);
-                var count   = new GqlField {
-                    name = "count",
-                    type = Gql.Type(Gql.Int(), true)
-                };
-                var cursor   = new GqlField {
-                    name = "cursor",
-                    type = Gql.String()
-                };
-                var items   = new GqlField {
-                    name = "items",
-                    type = Gql.List(containerType, true, true)
-                };
+                var count           = Gql.Field("count",    Gql.Type(Gql.Int(), true));
+                var cursor          = Gql.Field("cursor",   Gql.String());
+                var items           = Gql.Field("items",    Gql.List(containerType, true, true));
                 var resultFields    = new List<GqlField> { count, cursor, items };
-                var type            = new GqlObject { name = resultType, fields = resultFields };
+                var type            = Gql.Object(resultType, resultFields);
                 types.Add(type);
             }
             var entityErrorType = EntityErrorType();
@@ -378,11 +369,11 @@ namespace Friflo.Json.Fliox.Schema.Language
         // represent Friflo.Json.Fliox.Hub.Protocol.Models.EntityError
         private static GqlType EntityErrorType() {
             var fields = new List<GqlField> {
-                new GqlField { name = "id",         type = Gql.Type(Gql.String(), true) },
-                new GqlField { name = "type",       type = Gql.Type(Gql.String(), true) },
-                new GqlField { name = "message",    type = Gql.Type(Gql.String(), true) },
+                Gql.Field("id",         Gql.Type(Gql.String(), true)),
+                Gql.Field("type",       Gql.Type(Gql.String(), true)),
+                Gql.Field("message",    Gql.Type(Gql.String(), true))
             };
-            return new GqlObject { name = "EntityError", fields = fields };
+            return Gql.Object("EntityError", fields);
         }
     }
     
