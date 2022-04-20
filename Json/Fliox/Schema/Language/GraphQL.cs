@@ -49,6 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 Gql.Any(),
                 query
             };
+            CreateResultTypes (types, schemaType, generator);
             if (mutations != null) {
                 var mutation = new GqlObject { name = "Mutation", fields = mutations };
                 types.Add(mutation);
@@ -267,14 +268,14 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return queries;
             var fields = schemaType.Fields;
             foreach (var field in fields) {
-                var containerType = Gql.Scalar(field.type.Name);
+                var resultType = $"{Gql.MethodName("Query", field.name)}Result";
                 var query = new GqlField {
                     name = Gql.MethodName("query", field.name),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("filter",   Gql.String()),
                         Gql.InputValue ("limit",    Gql.Int())
                     },
-                    type = Gql.List(containerType, true, true)
+                    type = Gql.Type(Gql.Scalar(resultType), true)
                 };
                 queries.Add(query);
             }
@@ -345,6 +346,31 @@ namespace Friflo.Json.Fliox.Schema.Language
             if (kind == Kind.Input && !type.IsEnum)
                 return name + "Input";
             return name;
+        }
+        
+        private static void CreateResultTypes(List<GqlType> types, TypeDef schemaType, Generator generator) {
+            if (schemaType == null)
+                return;
+            var fields = schemaType.Fields;
+            foreach (var field in fields) {
+                var resultType      = $"{Gql.MethodName("Query", field.name)}Result";
+                var containerType   = Gql.Scalar(field.type.Name);
+                var count   = new GqlField {
+                    name = "count",
+                    type = Gql.Type(Gql.Int(), true)
+                };
+                var cursor   = new GqlField {
+                    name = "cursor",
+                    type = Gql.String()
+                };
+                var items   = new GqlField {
+                    name = "items",
+                    type = Gql.List(containerType, true, true)
+                };
+                var resultFields    = new List<GqlField> { count, cursor, items };
+                var type            = new GqlObject { name = resultType, fields = resultFields };
+                types.Add(type);
+            }
         }
     }
     

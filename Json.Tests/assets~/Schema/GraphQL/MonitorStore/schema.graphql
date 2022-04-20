@@ -11,10 +11,10 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryHosts    (filter: String, limit: Int) : [HostHits!]!
-    queryUsers    (filter: String, limit: Int) : [UserHits!]!
-    queryClients  (filter: String, limit: Int) : [ClientHits!]!
-    queryHistories(filter: String, limit: Int) : [HistoryHits!]!
+    queryHosts    (filter: String, limit: Int) : QueryHostsResult!
+    queryUsers    (filter: String, limit: Int) : QueryUsersResult!
+    queryClients  (filter: String, limit: Int) : QueryClientsResult!
+    queryHistories(filter: String, limit: Int) : QueryHistoriesResult!
     readHosts     (ids: [String!]!) : [HostHits]!
     readUsers     (ids: [String!]!) : [UserHits]!
     readClients   (ids: [String!]!) : [ClientHits]!
@@ -31,6 +31,30 @@ type Query {
     std_Stats     (param: String) : DbStats!
     std_Details    : HostDetails!
     std_Cluster    : HostCluster!
+}
+
+type QueryHostsResult {
+    count  : Int!
+    cursor : String
+    items  : [HostHits!]!
+}
+
+type QueryUsersResult {
+    count  : Int!
+    cursor : String
+    items  : [UserHits!]!
+}
+
+type QueryClientsResult {
+    count  : Int!
+    cursor : String
+    items  : [ClientHits!]!
+}
+
+type QueryHistoriesResult {
+    count  : Int!
+    cursor : String
+    items  : [HistoryHits!]!
 }
 
 type Mutation {

@@ -11,9 +11,9 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryCredentials(filter: String, limit: Int) : [UserCredential!]!
-    queryPermissions(filter: String, limit: Int) : [UserPermission!]!
-    queryRoles      (filter: String, limit: Int) : [Role!]!
+    queryCredentials(filter: String, limit: Int) : QueryCredentialsResult!
+    queryPermissions(filter: String, limit: Int) : QueryPermissionsResult!
+    queryRoles      (filter: String, limit: Int) : QueryRolesResult!
     readCredentials (ids: [String!]!) : [UserCredential]!
     readPermissions (ids: [String!]!) : [UserPermission]!
     readRoles       (ids: [String!]!) : [Role]!
@@ -28,6 +28,24 @@ type Query {
     std_Stats       (param: String) : DbStats!
     std_Details      : HostDetails!
     std_Cluster      : HostCluster!
+}
+
+type QueryCredentialsResult {
+    count  : Int!
+    cursor : String
+    items  : [UserCredential!]!
+}
+
+type QueryPermissionsResult {
+    count  : Int!
+    cursor : String
+    items  : [UserPermission!]!
+}
+
+type QueryRolesResult {
+    count  : Int!
+    cursor : String
+    items  : [Role!]!
 }
 
 type Mutation {

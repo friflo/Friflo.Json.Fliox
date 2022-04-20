@@ -11,9 +11,9 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryContainers(filter: String, limit: Int) : [DbContainers!]!
-    queryMessages  (filter: String, limit: Int) : [DbMessages!]!
-    querySchemas   (filter: String, limit: Int) : [DbSchema!]!
+    queryContainers(filter: String, limit: Int) : QueryContainersResult!
+    queryMessages  (filter: String, limit: Int) : QueryMessagesResult!
+    querySchemas   (filter: String, limit: Int) : QuerySchemasResult!
     readContainers (ids: [String!]!) : [DbContainers]!
     readMessages   (ids: [String!]!) : [DbMessages]!
     readSchemas    (ids: [String!]!) : [DbSchema]!
@@ -27,6 +27,24 @@ type Query {
     std_Stats      (param: String) : DbStats!
     std_Details     : HostDetails!
     std_Cluster     : HostCluster!
+}
+
+type QueryContainersResult {
+    count  : Int!
+    cursor : String
+    items  : [DbContainers!]!
+}
+
+type QueryMessagesResult {
+    count  : Int!
+    cursor : String
+    items  : [DbMessages!]!
+}
+
+type QuerySchemasResult {
+    count  : Int!
+    cursor : String
+    items  : [DbSchema!]!
 }
 
 type Mutation {

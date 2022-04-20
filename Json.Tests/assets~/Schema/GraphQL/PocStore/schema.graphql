@@ -16,12 +16,12 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryOrders      (filter: String, limit: Int) : [Order!]!
-    queryCustomers   (filter: String, limit: Int) : [Customer!]!
-    queryArticles    (filter: String, limit: Int) : [Article!]!
-    queryProducers   (filter: String, limit: Int) : [Producer!]!
-    queryEmployees   (filter: String, limit: Int) : [Employee!]!
-    queryTypes       (filter: String, limit: Int) : [TestType!]!
+    queryOrders      (filter: String, limit: Int) : QueryOrdersResult!
+    queryCustomers   (filter: String, limit: Int) : QueryCustomersResult!
+    queryArticles    (filter: String, limit: Int) : QueryArticlesResult!
+    queryProducers   (filter: String, limit: Int) : QueryProducersResult!
+    queryEmployees   (filter: String, limit: Int) : QueryEmployeesResult!
+    queryTypes       (filter: String, limit: Int) : QueryTypesResult!
     readOrders       (ids: [String!]!) : [Order]!
     readCustomers    (ids: [String!]!) : [Customer]!
     readArticles     (ids: [String!]!) : [Article]!
@@ -50,6 +50,42 @@ type Query {
     Message1         (param: String) : Any
     AsyncMessage     (param: String) : Any
     test_Message2    (param: String) : Any
+}
+
+type QueryOrdersResult {
+    count  : Int!
+    cursor : String
+    items  : [Order!]!
+}
+
+type QueryCustomersResult {
+    count  : Int!
+    cursor : String
+    items  : [Customer!]!
+}
+
+type QueryArticlesResult {
+    count  : Int!
+    cursor : String
+    items  : [Article!]!
+}
+
+type QueryProducersResult {
+    count  : Int!
+    cursor : String
+    items  : [Producer!]!
+}
+
+type QueryEmployeesResult {
+    count  : Int!
+    cursor : String
+    items  : [Employee!]!
+}
+
+type QueryTypesResult {
+    count  : Int!
+    cursor : String
+    items  : [TestType!]!
 }
 
 type Mutation {

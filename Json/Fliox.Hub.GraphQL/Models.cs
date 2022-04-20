@@ -20,6 +20,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         public  Dictionary <string, JsonValue>  data;
     }
     
+    internal class GqlQueryResult {
+        public  int             count;
+        public  string          cursor;
+        public  List<JsonValue> items;
+    }
+    
     internal static class ModelUtils
     {
         internal static JsonValue CreateSchemaResponse(ObjectPool<ObjectMapper> mapper, GqlSchema gqlSchema) {
