@@ -17,7 +17,7 @@ namespace Friflo.Json.Burst
         internal  readonly  int         start;
         internal  readonly  int         len;
 
-        public    override  string      ToString()  => GetName();
+        public    override  string      ToString()  => AsString();
         public              bool        IsNull      => buffer?.Buf == null;
 
         internal Utf8String (Utf8Buffer buffer, int start, int len) {
@@ -64,11 +64,11 @@ namespace Friflo.Json.Burst
 #endif
         }
         
-        public string GetName() {
+        public string AsString() {
             var buf = buffer?.Buf;
             if (buf == null)
                 return null;
-            return Utf8Buffer.Utf8.GetString(buffer.Buf, start, len);  
+            return Utf8Buffer.Utf8.GetString(buf, start, len);  
         }
     }
     
