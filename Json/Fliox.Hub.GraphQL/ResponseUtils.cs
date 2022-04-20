@@ -11,11 +11,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class ResponseUtils
     {
-        internal static SelectionNode CreateSelection (GraphQLField query, IUtf8Buffer buffer) {
-            return CreateNode(null, query.SelectionSet, buffer);
+        internal static SelectionNode CreateSelection (GraphQLField query, IUtf8Buffer buffer, in SelectionType type) {
+            return CreateNode(null, query.SelectionSet, buffer, type);
         }
         
-        private static SelectionNode CreateNode (GraphQLName name, GraphQLSelectionSet selectionSet, IUtf8Buffer buffer) {
+        private static SelectionNode CreateNode (GraphQLName name, GraphQLSelectionSet selectionSet, IUtf8Buffer buffer, in SelectionType type) {
             Utf8String nameUtf8;
             if (name == (object)null) {
                 nameUtf8            = new Utf8String();
@@ -31,10 +31,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 nodes = new SelectionNode[selections.Count];
                 for (int n = 0; n < selections.Count; n++) {
                     var selection   = (GraphQLField)selections[n];
-                    nodes[n]        = CreateNode(selection.Name, selection.SelectionSet, buffer);
+                    nodes[n]        = CreateNode(selection.Name, selection.SelectionSet, buffer, default);
                 }
             }
-            return new SelectionNode(nameUtf8, nodes);
+            return new SelectionNode(nameUtf8, type.name, nodes);
         }
     }
 }

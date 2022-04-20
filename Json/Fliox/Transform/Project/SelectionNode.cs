@@ -9,12 +9,14 @@ namespace Friflo.Json.Fliox.Transform.Project
     {
         private   readonly      SelectionNode[] nodes;
         private   readonly      Utf8String      name;
+        private   readonly      Utf8String      typeName;
 
         public override         string          ToString() => FormatToString();
 
-        public SelectionNode  (in Utf8String name, SelectionNode[] nodes) {
-            this.name           = name;
-            this.nodes          = nodes;
+        public SelectionNode  (in Utf8String name, in Utf8String typeName, SelectionNode[] nodes) {
+            this.name       = name;
+            this.typeName   = typeName;
+            this.nodes      = nodes;
         }
         
         private string FormatToString() {
@@ -34,6 +36,15 @@ namespace Friflo.Json.Fliox.Transform.Project
             }
             result = default;
             return false;
+        }
+    }
+    
+    public readonly struct SelectionType
+    {
+        public   readonly   Utf8String  name;
+            
+        public SelectionType (in Utf8String  name) {
+            this.name = name;
         }
     }
 }

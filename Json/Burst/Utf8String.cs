@@ -27,6 +27,7 @@ namespace Friflo.Json.Burst
             // hashCode    = ComputeHash(buffer.Buf, start, start + len);
         }
 
+        // ReSharper disable once UnusedMember.Local
         // using as resulted in 20% less performance - not convinced to use it
         private static int ComputeHash(byte[] array, int start, int end) {
             var result  = 0;
@@ -63,7 +64,7 @@ namespace Friflo.Json.Burst
 #endif
         }
         
-        private string GetName() {
+        public string GetName() {
             var buf = buffer?.Buf;
             if (buf == null)
                 return null;

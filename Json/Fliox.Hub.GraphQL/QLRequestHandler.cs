@@ -25,12 +25,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var schemaType  = typeSchema.RootType;
             foreach (var field in schemaType.Fields) {
                 var container   = field.name;
-                var query       = new QueryResolver("query",    QueryType.Query,    container, null);
-                var count       = new QueryResolver("count",    QueryType.Count,    container, null);
-                var readById    = new QueryResolver("read",     QueryType.ReadById, container, null);
-                var create      = new QueryResolver("create",   QueryType.Create,   container, null);
-                var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null);
-                var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null);
+                var fieldType   = field.type;
+                var query       = new QueryResolver("query",    QueryType.Query,    container, null, fieldType);
+                var count       = new QueryResolver("count",    QueryType.Count,    container, null, null);
+                var readById    = new QueryResolver("read",     QueryType.ReadById, container, null, fieldType);
+                var create      = new QueryResolver("create",   QueryType.Create,   container, null, null);
+                var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null, null);
+                var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null, null);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(count.name,       count);
                 resolvers.Add(readById.name,    readById);
@@ -47,7 +48,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             foreach (var message in messages) {
                 var name    = message.name.Replace(".", "_");
-                var query   = new QueryResolver(message.name, messageType, null, message.param);
+                var type    = message.result.type;
+                var query   = new QueryResolver(message.name, messageType, null, message.param, type);
                 resolvers.Add(name,             query);
             }
         }
@@ -97,8 +99,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var task = CreateQueryTask(resolver, graphQLQuery, docStr, out string error);
                 if (error != null)
                     return error;
-                var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer);
-                var query           = new Query(name, resolver.type, resolver.container, task, selectionNode);
+                var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.type);
+                var query           = new Query(name, resolver.queryType, resolver.container, task, selectionNode);
                 queries.Add(query);
             }
             return null;
@@ -110,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             string              docStr,
             out string          error)
         {
-            switch(resolver.type) {
+            switch(resolver.queryType) {
                 case QueryType.Query:       return QueryEntities    (resolver, query,           out error);
                 case QueryType.Count:       return CountEntities    (resolver, query,           out error);
                 case QueryType.ReadById:    return ReadEntities     (resolver, query,           out error);
@@ -120,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.Command:     return SendCommand      (resolver, query, docStr,   out error);
                 case QueryType.Message:     return SendMessage      (resolver, query, docStr,   out error);
             }
-            throw new InvalidOperationException($"unexpected resolver type: {resolver.type}");
+            throw new InvalidOperationException($"unexpected resolver type: {resolver.queryType}");
         }
 
         private static QueryEntities QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)

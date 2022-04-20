@@ -29,8 +29,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     
     internal readonly struct QueryResolver
     {
-        internal  readonly  string      name;
-        internal  readonly  QueryType   type;
+        internal  readonly  string          name;
+        internal  readonly  QueryType       queryType;
+        internal  readonly  SelectionType   type;
+        
         /// <summary> only: <see cref="QueryType.Query"/> and <see cref="QueryType.ReadById"/> </summary>
         internal  readonly  string      container;
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
@@ -38,14 +40,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
         internal  readonly  bool        paramRequired;  // message / command only
 
-        public    override  string      ToString() => $"{type}: {name}";
+        public    override  string      ToString() => $"{queryType}: {name}";
 
-        internal QueryResolver(string name, QueryType type, string container, FieldDef param) {
+        internal QueryResolver(string name, QueryType queryType, string container, FieldDef param, TypeDef type) {
             this.name       = container != null ? Gql.MethodName(name, container) : name;
-            this.type       = type;
+            this.queryType  = queryType;
             this.container  = container;
             hasParam        = param != null;
             paramRequired   = param != null && param.required;
+            var typeName    = type?.nameUtf8 ?? default;
+            this.type       = new SelectionType(typeName);
         }
     }
     

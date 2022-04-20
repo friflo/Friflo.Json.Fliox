@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         internal readonly   JSONSchema          schema;
 
         public JsonTypeDef (JsonType type, string name, string ns, JSONSchema schema, IUtf8Buffer buffer) :
-            base (name, ns, type.description)
+            base (name, ns, type.description, buffer.Add(name))
         {
             this.name   = name;
             this.type   = type;
@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
             EnumValues  = EnumValue.CreateEnumValues(type.enums, type.descriptions, buffer);
         }
         
-        public JsonTypeDef (string name) :
-            base (name, null, null)
+        public JsonTypeDef (string name, IUtf8Buffer buffer) :
+            base (name, null, null, buffer.Add(name))
         {
             this.name = name;
         }

@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// </summary>
     public abstract class TypeDef {
         public              string                      Name            { get; }
+        public   readonly   Utf8String                  nameUtf8;
         /// <summary>
         /// Namespace of a type. Depending on the generated language / schema is has the following meaning:
         /// <list type="bullet">
@@ -73,11 +74,13 @@ namespace Friflo.Json.Fliox.Schema.Definition
         internal            bool                        isEntity;
 
         
-        protected TypeDef (string name, string @namespace, string doc) {
-            fullName    = @namespace + "#" + name;
-            Name        = name;
-            Namespace   = @namespace;
-            this.doc    = doc;
+        protected TypeDef (string name, string @namespace, string doc, in Utf8String nameUtf8) {
+            fullName        = @namespace + "#" + name;
+            Name            = name;
+            this.nameUtf8   = nameUtf8;
+            Namespace       = @namespace;
+            this.doc        = doc;
+            // if (nameUtf8.GetName() != name) throw new InvalidOperationException($"invalid UTF-8 name. Expect: {name}, was: {nameUtf8.ToString()}");
         }
         
         internal FieldDef FindField(string name) {

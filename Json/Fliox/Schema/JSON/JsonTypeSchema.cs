@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 }
             }
             
-            var standardTypes   = new JsonStandardTypes(typeMap);
+            var standardTypes   = new JsonStandardTypes(typeMap, Utf8Buffer);
             StandardTypes       = standardTypes;
             
             using (var typeStore    = new TypeStore())
