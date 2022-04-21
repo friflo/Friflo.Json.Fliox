@@ -31,10 +31,10 @@ namespace Friflo.Json.Fliox.Transform.Project
         public bool FindField(ref Bytes key, out SelectionNode result) {
             for (int n = 0; n < nodes.Length; n++) {
                 var node  = nodes[n];
-                if (node.fieldName.IsEqual(ref key)) {
-                    result = node;
-                    return true;
-                }
+                if (!node.fieldName.IsEqual(ref key))
+                    continue;
+                result = node;
+                return true;
             }
             result = default;
             return false;

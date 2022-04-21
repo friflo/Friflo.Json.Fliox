@@ -34,9 +34,9 @@ namespace Friflo.Json.Fliox.Transform.Project
             }
             for (int n = 0; n < fields.Length; n++) {
                 var node  = fields[n];
-                if (node.name.AsSpan().SequenceEqual(name)) {
-                    return node;
-                }
+                if (!node.name.AsSpan().SequenceEqual(name))
+                    continue;
+                return node;
             }
             return default;
         }
