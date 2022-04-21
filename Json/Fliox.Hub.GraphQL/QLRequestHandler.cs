@@ -23,15 +23,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal QLRequestHandler(TypeSchema typeSchema, string database) {
             this.database   = database;
             var schemaType  = typeSchema.RootType;
+            var utf8Buffer  = new Utf8Buffer();
             foreach (var field in schemaType.Fields) {
                 var container   = field.name;
-                var fieldType   = field.type;
-                var query       = new QueryResolver("query",    QueryType.Query,    container, null, fieldType);
-                var count       = new QueryResolver("count",    QueryType.Count,    container, null, null);
-                var readById    = new QueryResolver("read",     QueryType.ReadById, container, null, fieldType);
-                var create      = new QueryResolver("create",   QueryType.Create,   container, null, null);
-                var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null, null);
-                var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null, null);
+                var entityType  = field.type;
+                var query       = new QueryResolver("query",    QueryType.Query,    container, entityType,  utf8Buffer);
+                var count       = new QueryResolver("count",    QueryType.Count,    container, null,        utf8Buffer);
+                var readById    = new QueryResolver("read",     QueryType.ReadById, container, entityType,  utf8Buffer);
+                var create      = new QueryResolver("create",   QueryType.Create,   container, null,        utf8Buffer);
+                var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null,        utf8Buffer);
+                var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null,        utf8Buffer);
                 resolvers.Add(query.name,       query);
                 resolvers.Add(count.name,       count);
                 resolvers.Add(readById.name,    readById);
@@ -49,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var message in messages) {
                 var name    = message.name.Replace(".", "_");
                 var type    = message.result.type;
-                var query   = new QueryResolver(message.name, messageType, null, message.param, type);
+                var query   = new QueryResolver(message.name, messageType, message.param, type);
                 resolvers.Add(name,             query);
             }
         }
@@ -99,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var task = CreateQueryTask(resolver, graphQLQuery, docStr, out string error);
                 if (error != null)
                     return error;
-                var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.type);
+                var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.objectType);
                 var query           = new Query(name, resolver.queryType, resolver.container, task, selectionNode);
                 queries.Add(query);
             }

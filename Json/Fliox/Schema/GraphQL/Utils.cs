@@ -3,6 +3,7 @@
 
 
 using System.Collections.Generic;
+using System.Text;
 
 namespace Friflo.Json.Fliox.Schema.GraphQL
 {
@@ -55,7 +56,23 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public static GqlType Any       () =>   Scalar("Any");
         
         public static string MethodName (string methodType, string container) {
-            return methodType + char.ToUpper(container[0]) + container.Substring(1);
+            var sb = new StringBuilder();
+            sb.Append(methodType);
+            AppendPascalCase(sb, container);
+            return sb.ToString();
+        }
+        
+        public static string MethodResult (string methodType, string container) {
+            var sb = new StringBuilder();
+            AppendPascalCase(sb, methodType);
+            AppendPascalCase(sb, container);
+            sb.Append("Result");
+            return sb.ToString();
+        }
+        
+        private static void AppendPascalCase (StringBuilder sb, string name) {
+            sb.Append(char.ToUpper(name[0]));
+            sb.Append(name, 1, name.Length - 1);
         }
     }
 }

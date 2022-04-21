@@ -268,7 +268,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return queries;
             var fields = schemaType.Fields;
             foreach (var field in fields) {
-                var resultType = $"{Gql.MethodName("Query", field.name)}Result";
+                var resultType = Gql.MethodResult("query", field.name);
                 var query = new GqlField {
                     name = Gql.MethodName("query", field.name),
                     args = new List<GqlInputValue> {
@@ -353,7 +353,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 return;
             var fields = schemaType.Fields;
             foreach (var field in fields) {
-                var resultType      = $"{Gql.MethodName("Query", field.name)}Result";
+                var resultType      = Gql.MethodResult("query", field.name);
                 var containerType   = Gql.Scalar(field.type.Name);
                 var count           = Gql.Field("count",    Gql.Type(Gql.Int(), true));
                 var cursor          = Gql.Field("cursor",   Gql.String());
