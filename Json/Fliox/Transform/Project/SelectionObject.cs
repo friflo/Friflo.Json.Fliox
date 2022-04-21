@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Transform.Project
     public readonly struct SelectionObject
     {
         public   readonly   Utf8String          name;
-        public   readonly   SelectionField[]    fields;
+        private  readonly   SelectionField[]    fields;
 
         public   override   string              ToString() {
             if (name.IsNull)

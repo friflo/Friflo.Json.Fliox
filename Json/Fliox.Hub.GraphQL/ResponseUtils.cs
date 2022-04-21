@@ -17,37 +17,28 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static SelectionNode CreateNode (
-            GraphQLName         name,
+            GraphQLName         fieldName,
             GraphQLSelectionSet selectionSet,
             IUtf8Buffer         buffer,
             in SelectionObject  objectType)
         {
-            Utf8String nameUtf8;
-            if (name == (object)null) {
-                nameUtf8    = default;
+            Utf8String fieldNameUtf8;
+            if (fieldName == (object)null) {
+                fieldNameUtf8   = default;
             } else {
-                var span    = name.Value.Span;
-                nameUtf8    = buffer.Add(span);
+                var span        = fieldName.Value.Span;
+                fieldNameUtf8   = buffer.Add(span);
             }
             if (selectionSet == null) {
-                return new SelectionNode(nameUtf8, objectType.name, false, null);
+                return new SelectionNode(fieldNameUtf8, objectType.name, false, null);
             }
             var selections      = selectionSet.Selections;
             var count           = selections.Count;
             var emitTypeName    = ContainsTypename(selections);
             if (emitTypeName)   count--;
             var nodes   = new SelectionNode[count];
-            var i       = 0;
-            foreach (var selection in selections) {
-                var gqlField   = (GraphQLField)selection;
-                var fieldName  = gqlField.Name;
-                if (fieldName == "__typename")
-                    continue;
-                var fieldNameSpan   = fieldName.Value.Span;
-                var selectionField  = objectType.FindField(fieldNameSpan);
-                nodes[i++]          = CreateNode(fieldName, gqlField.SelectionSet, buffer, selectionField.objectType);
-            }
-            return new SelectionNode(nameUtf8, objectType.name, emitTypeName, nodes);
+            AddSelectionFields(nodes, selections, buffer, objectType);
+            return new SelectionNode(fieldNameUtf8, objectType.name, emitTypeName, nodes);
         }
         
         private static bool ContainsTypename(List<ASTNode> selections) {
@@ -57,6 +48,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return true;
             }
             return false;
+        }
+        
+        private static void AddSelectionFields(
+            SelectionNode[]     nodes,
+            List<ASTNode>       selections,
+            IUtf8Buffer         buffer,
+            in SelectionObject  objectType)
+        {
+            int i = 0;
+            foreach (var selection in selections) {
+                var gqlField   = (GraphQLField)selection;
+                var fieldName  = gqlField.Name;
+                if (fieldName == "__typename")
+                    continue;
+                var fieldNameSpan   = fieldName.Value.Span;
+                var selectionField  = objectType.FindField(fieldNameSpan);
+                nodes[i++]          = CreateNode(fieldName, gqlField.SelectionSet, buffer, selectionField.objectType);
+            }
         }
     }
 }

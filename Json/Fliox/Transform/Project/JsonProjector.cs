@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Transform.Project
         
         private bool TraceObject(in SelectionNode node) {
             while (Utf8JsonWriter.NextObjectMember(ref parser)) {
-                if (!node.FindNode(ref parser.key, out var subNode)) {
+                if (!node.FindField(ref parser.key, out var subNode)) {
                     parser.SkipEvent();
                     continue;
                 }
