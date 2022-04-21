@@ -74,6 +74,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return new [] {
                         new SelectionField("items", itemsType)
                     };
+                case QueryType.ReadById:
+                    itemsType = CreateSelectionObject(entityType.nameUtf8, entityType);
+                    return new [] {
+                        new SelectionField("items", itemsType)
+                    };
             }
             return null;
         }

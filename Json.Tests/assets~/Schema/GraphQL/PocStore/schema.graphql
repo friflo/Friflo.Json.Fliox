@@ -22,12 +22,12 @@ type Query {
     queryProducers   (filter: String, limit: Int) : QueryProducersResult!
     queryEmployees   (filter: String, limit: Int) : QueryEmployeesResult!
     queryTypes       (filter: String, limit: Int) : QueryTypesResult!
-    readOrders       (ids: [String!]!) : [Order]!
-    readCustomers    (ids: [String!]!) : [Customer]!
-    readArticles     (ids: [String!]!) : [Article]!
-    readProducers    (ids: [String!]!) : [Producer]!
-    readEmployees    (ids: [String!]!) : [Employee]!
-    readTypes        (ids: [String!]!) : [TestType]!
+    readOrders       (ids: [String!]!) : ReadOrdersResult!
+    readCustomers    (ids: [String!]!) : ReadCustomersResult!
+    readArticles     (ids: [String!]!) : ReadArticlesResult!
+    readProducers    (ids: [String!]!) : ReadProducersResult!
+    readEmployees    (ids: [String!]!) : ReadEmployeesResult!
+    readTypes        (ids: [String!]!) : ReadTypesResult!
     countOrders      (filter: String) : Int
     countCustomers   (filter: String) : Int
     countArticles    (filter: String) : Int
@@ -86,6 +86,30 @@ type QueryTypesResult {
     count  : Int!
     cursor : String
     items  : [TestType!]!
+}
+
+type ReadOrdersResult {
+    items : [Order]!
+}
+
+type ReadCustomersResult {
+    items : [Customer]!
+}
+
+type ReadArticlesResult {
+    items : [Article]!
+}
+
+type ReadProducersResult {
+    items : [Producer]!
+}
+
+type ReadEmployeesResult {
+    items : [Employee]!
+}
+
+type ReadTypesResult {
+    items : [TestType]!
 }
 
 type EntityError {

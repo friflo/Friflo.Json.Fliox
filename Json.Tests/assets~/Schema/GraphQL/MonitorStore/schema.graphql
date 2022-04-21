@@ -15,10 +15,10 @@ type Query {
     queryUsers    (filter: String, limit: Int) : QueryUsersResult!
     queryClients  (filter: String, limit: Int) : QueryClientsResult!
     queryHistories(filter: String, limit: Int) : QueryHistoriesResult!
-    readHosts     (ids: [String!]!) : [HostHits]!
-    readUsers     (ids: [String!]!) : [UserHits]!
-    readClients   (ids: [String!]!) : [ClientHits]!
-    readHistories (ids: [String!]!) : [HistoryHits]!
+    readHosts     (ids: [String!]!) : ReadHostsResult!
+    readUsers     (ids: [String!]!) : ReadUsersResult!
+    readClients   (ids: [String!]!) : ReadClientsResult!
+    readHistories (ids: [String!]!) : ReadHistoriesResult!
     countHosts    (filter: String) : Int
     countUsers    (filter: String) : Int
     countClients  (filter: String) : Int
@@ -55,6 +55,22 @@ type QueryHistoriesResult {
     count  : Int!
     cursor : String
     items  : [HistoryHits!]!
+}
+
+type ReadHostsResult {
+    items : [HostHits]!
+}
+
+type ReadUsersResult {
+    items : [UserHits]!
+}
+
+type ReadClientsResult {
+    items : [ClientHits]!
+}
+
+type ReadHistoriesResult {
+    items : [HistoryHits]!
 }
 
 type EntityError {

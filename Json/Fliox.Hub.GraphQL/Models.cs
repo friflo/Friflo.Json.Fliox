@@ -26,6 +26,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         public  List<JsonValue> items;
     }
     
+    internal class GqlReadResult {
+        public  List<JsonValue> items;
+    }
+    
     internal static class ModelUtils
     {
         internal static JsonValue CreateSchemaResponse(ObjectPool<ObjectMapper> mapper, GqlSchema gqlSchema) {

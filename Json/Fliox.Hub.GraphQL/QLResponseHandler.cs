@@ -78,12 +78,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var readTask        = (ReadEntities)query.task;
             var entities        = synResponse.resultMap[query.container].entityMap;
             var ids             = readTask.sets[0].ids;
-            var list            = new List<JsonValue>(ids.Count);
+            var items           = new List<JsonValue>(ids.Count);
+            var gqlReadResult   = new GqlReadResult { items = items  };
             foreach (var id in ids) {
                 var entity = entities[id].Json;
-                list.Add(entity);
+                items.Add(entity);
             }
-            var json            = new JsonValue(writer.WriteAsArray(list));
+            var json            = new JsonValue(writer.WriteAsArray(gqlReadResult));
             var projector       = new JsonProjector();
             return projector.Project(query.selection, json);
         }
