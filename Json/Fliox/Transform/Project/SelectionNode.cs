@@ -9,8 +9,8 @@ namespace Friflo.Json.Fliox.Transform.Project
     {
         private   readonly      SelectionNode[] nodes;
         private   readonly      Utf8String      name;
-        private   readonly      bool            emitTypeName;
-        private   readonly      Utf8String      typeName;
+        internal  readonly      bool            emitTypeName;
+        internal  readonly      Utf8String      typeName;
 
         public override         string          ToString() => FormatToString();
 

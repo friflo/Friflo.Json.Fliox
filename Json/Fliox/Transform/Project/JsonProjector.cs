@@ -5,18 +5,27 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Transform.Project
 {
     public class JsonProjector: IDisposable
     {
         private             Utf8JsonWriter          serializer;
             
-        private             Bytes                   targetJson = new Bytes(128);
+        private             Bytes                   targetJson  = new Bytes(128);
         private             Utf8JsonParser          parser;
+        private             Bytes                   valueBuf    = new Bytes(1);
+        private             Bytes                   __typename;
         
         public              string                  ErrorMessage => parser.error.msg.AsString();
+        
+        public JsonProjector() {
+            __typename   = new Bytes("__typename");
+        }
 
         public void Dispose() {
+            __typename.Dispose();
+            valueBuf.Dispose();
             parser.Dispose();
             targetJson.Dispose();
             serializer.Dispose();
@@ -70,6 +79,10 @@ namespace Friflo.Json.Fliox.Transform.Project
                     case JsonEvent.EOF:
                         throw new InvalidOperationException("WriteObject() unreachable"); // because of behaviour of ContinueObject()
                 }
+            }
+            if (node.emitTypeName) {
+                node.typeName.CopyTo(ref valueBuf);
+                serializer.MemberStr(__typename, valueBuf);
             }
             serializer.ObjectEnd();
             return true;

@@ -36,6 +36,18 @@ namespace Friflo.Json.Burst
             }
             return result;
         }
+        
+        public void CopyTo(ref Bytes dest) {
+            int l = len;
+            dest.EnsureCapacityAbs(l);
+            dest.start  = 0;
+            dest.end    = l;
+            dest.hc     = BytesConst.notHashed;
+            var dst = dest.buffer.array;
+            var src = buffer.Buf;
+            for (int n = 0; n < l; n++)
+                dst[n] = src[n + start];
+        }
 
 #if UNITY_5_3_OR_NEWER
         public static bool ArraysEqual(byte[] left, int leftStart, byte[] right, int len) {
