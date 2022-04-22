@@ -16,12 +16,12 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryOrders      (filter: String, limit: Int) : QueryOrdersResult!
-    queryCustomers   (filter: String, limit: Int) : QueryCustomersResult!
-    queryArticles    (filter: String, limit: Int) : QueryArticlesResult!
-    queryProducers   (filter: String, limit: Int) : QueryProducersResult!
-    queryEmployees   (filter: String, limit: Int) : QueryEmployeesResult!
-    queryTypes       (filter: String, limit: Int) : QueryTypesResult!
+    queryOrders      (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryOrdersResult!
+    queryCustomers   (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryCustomersResult!
+    queryArticles    (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryArticlesResult!
+    queryProducers   (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryProducersResult!
+    queryEmployees   (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryEmployeesResult!
+    queryTypes       (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryTypesResult!
     readOrders       (ids: [String!]!) : ReadOrdersResult!
     readCustomers    (ids: [String!]!) : ReadCustomersResult!
     readArticles     (ids: [String!]!) : ReadArticlesResult!

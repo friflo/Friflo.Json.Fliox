@@ -273,7 +273,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                     name = Gql.MethodName("query", field.name),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("filter",   Gql.String()),
-                        Gql.InputValue ("limit",    Gql.Int())
+                        Gql.InputValue ("limit",    Gql.Int()),
+                        Gql.InputValue ("maxCount", Gql.Int()),
+                        Gql.InputValue ("cursor",   Gql.String())
                     },
                     type = Gql.Type(Gql.Scalar(resultType), true)
                 };

@@ -11,9 +11,9 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryCredentials(filter: String, limit: Int) : QueryCredentialsResult!
-    queryPermissions(filter: String, limit: Int) : QueryPermissionsResult!
-    queryRoles      (filter: String, limit: Int) : QueryRolesResult!
+    queryCredentials(filter: String, limit: Int, maxCount: Int, cursor: String) : QueryCredentialsResult!
+    queryPermissions(filter: String, limit: Int, maxCount: Int, cursor: String) : QueryPermissionsResult!
+    queryRoles      (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryRolesResult!
     readCredentials (ids: [String!]!) : ReadCredentialsResult!
     readPermissions (ids: [String!]!) : ReadPermissionsResult!
     readRoles       (ids: [String!]!) : ReadRolesResult!

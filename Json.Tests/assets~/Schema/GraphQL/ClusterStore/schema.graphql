@@ -11,9 +11,9 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryContainers(filter: String, limit: Int) : QueryContainersResult!
-    queryMessages  (filter: String, limit: Int) : QueryMessagesResult!
-    querySchemas   (filter: String, limit: Int) : QuerySchemasResult!
+    queryContainers(filter: String, limit: Int, maxCount: Int, cursor: String) : QueryContainersResult!
+    queryMessages  (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryMessagesResult!
+    querySchemas   (filter: String, limit: Int, maxCount: Int, cursor: String) : QuerySchemasResult!
     readContainers (ids: [String!]!) : ReadContainersResult!
     readMessages   (ids: [String!]!) : ReadMessagesResult!
     readSchemas    (ids: [String!]!) : ReadSchemasResult!

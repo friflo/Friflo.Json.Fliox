@@ -11,10 +11,10 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryHosts    (filter: String, limit: Int) : QueryHostsResult!
-    queryUsers    (filter: String, limit: Int) : QueryUsersResult!
-    queryClients  (filter: String, limit: Int) : QueryClientsResult!
-    queryHistories(filter: String, limit: Int) : QueryHistoriesResult!
+    queryHosts    (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryHostsResult!
+    queryUsers    (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryUsersResult!
+    queryClients  (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryClientsResult!
+    queryHistories(filter: String, limit: Int, maxCount: Int, cursor: String) : QueryHistoriesResult!
     readHosts     (ids: [String!]!) : ReadHostsResult!
     readUsers     (ids: [String!]!) : ReadUsersResult!
     readClients   (ids: [String!]!) : ReadClientsResult!

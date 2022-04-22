@@ -128,13 +128,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
         private static QueryEntities QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
-            string  filter  = RequestArgs.GetString (query, "filter", out error);
+            string  filter      = RequestArgs.GetString (query, "filter",   out error);
             if (error != null)
                 return null;
-            int?    limit   = RequestArgs.GetInt    (query, "limit", out error);
+            int?    limit       = RequestArgs.GetInt    (query, "limit",    out error);
             if (error != null)
                 return null;
-            return new QueryEntities { container = resolver.container, filter = filter, limit = limit };
+            int?    maxCount    = RequestArgs.GetInt    (query, "maxCount", out error);
+            if (error != null)
+                return null;
+            string  cursor      = RequestArgs.GetString (query, "cursor",   out error);
+            if (error != null)
+                return null;
+            return new QueryEntities {
+                container = resolver.container, filter = filter, limit = limit,
+                maxCount = maxCount, cursor = cursor
+            };
         }
         
         private static AggregateEntities CountEntities(in QueryResolver resolver, GraphQLField query, out string error)
