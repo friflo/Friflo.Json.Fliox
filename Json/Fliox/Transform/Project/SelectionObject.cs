@@ -28,7 +28,8 @@ namespace Friflo.Json.Fliox.Transform.Project
             this.fields = fields;
         }
         
-        public SelectionField FindField(ReadOnlySpan<char> name) {
+#if !UNITY_5_3_OR_NEWER
+        public SelectionField FindField(in ReadOnlySpan<char> name) {
             if (fields == null) {
                 return default;
             }
@@ -40,6 +41,7 @@ namespace Friflo.Json.Fliox.Transform.Project
             }
             return default;
         }
+#endif
     }
     
     public readonly struct SelectionField
