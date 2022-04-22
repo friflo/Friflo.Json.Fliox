@@ -13,16 +13,26 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class QLResponseHandler
     {
-        internal static JsonValue Process(ObjectPool<ObjectMapper> mapper, List<Query> queries, SyncResponse syncResponse)
+        internal static JsonValue Process(
+            ObjectPool<ObjectMapper>    mapper,
+            ObjectPool<JsonProjector>   projectorPool,
+            List<Query>                 queries,
+            SyncResponse                syncResponse)
         {
-            using (var pooled = mapper.Get()) {
-                var writer              = pooled.instance.writer;
+            using (var pooledProjector = projectorPool.Get())
+            using (var pooledMapper     = mapper.Get()) {
+                var projector           = pooledProjector.instance;
+                var writer              = pooledMapper.instance.writer;
                 writer.Pretty           = false;
                 writer.WriteNullMembers = false;
-                return ProcessQueries(writer, queries, syncResponse);
+                return ProcessQueries(writer, projector, queries, syncResponse);
             }
         }
-        private static JsonValue ProcessQueries(ObjectWriter writer, List<Query> queries, SyncResponse syncResponse)
+        private static JsonValue ProcessQueries(
+            ObjectWriter    writer,
+            JsonProjector   projector,
+            List<Query>     queries,
+            SyncResponse    syncResponse)
         {
             var             data        = new Dictionary<string, JsonValue>(queries.Count);
             List<GqlError>  errors      = null;
@@ -33,7 +43,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var taskResult  = taskResults[n];
                 if (!(taskResult is TaskErrorResult taskError)) {
                     // --- success
-                    var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
+                    var context     = new ResultContext (query, taskResult, writer, projector, syncResponse);
+                    var queryResult = ProcessTaskResult(context);
                     data.Add(query.name, queryResult);
                     continue;
                 }
@@ -49,23 +60,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new JsonValue(writer.WriteAsArray(response));
         }
         
-        private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
-            switch (query.type) {
-                case QueryType.Query:   return QueryEntitiesResult  (query, result, writer, synResponse);
-                case QueryType.Count:   return CountEntitiesResult  (query, result, writer);
-                case QueryType.Read:    return ReadEntitiesResult   (query, result, writer, synResponse);
-                case QueryType.Create:  return CreateEntitiesResult (query, result, writer);
-                case QueryType.Upsert:  return UpsertEntitiesResult (query, result, writer);
-                case QueryType.Delete:  return DeleteEntitiesResult (query, result, writer);
-                case QueryType.Command: return SendCommandResult    (query, result, writer);
-                case QueryType.Message: return SendMessageResult    (query, result, writer);
+        private static JsonValue ProcessTaskResult(in ResultContext context) {
+            switch (context.query.type) {
+                case QueryType.Query:   return QueryEntitiesResult  (context);
+                case QueryType.Count:   return CountEntitiesResult  (context);
+                case QueryType.Read:    return ReadEntitiesResult   (context);
+                case QueryType.Create:  return CreateEntitiesResult (context);
+                case QueryType.Upsert:  return UpsertEntitiesResult (context);
+                case QueryType.Delete:  return DeleteEntitiesResult (context);
+                case QueryType.Command: return SendCommandResult    (context);
+                case QueryType.Message: return SendMessageResult    (context);
             }
-            throw new InvalidOperationException($"unexpected query type: {query.type}");
+            throw new InvalidOperationException($"unexpected query type: {context.query.type}");
         }
         
-        private static JsonValue QueryEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
-            var queryResult     = (QueryEntitiesResult)result;
-            var entities        = synResponse.resultMap[query.container].entityMap;
+        private static JsonValue QueryEntitiesResult(in ResultContext cx) {
+            var queryResult     = (QueryEntitiesResult)cx.result;
+            var entities        = cx.synResponse.resultMap[cx.query.container].entityMap;
             var ids             = queryResult.ids;
             var items           = new List<JsonValue>(ids.Count);
             var gqlQueryResult  = new GqlQueryResult { count = ids.Count, cursor = queryResult.cursor, items = items  };
@@ -73,60 +84,79 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var entity = entities[id].Json;
                 items.Add(entity);
             }
-            var json            = new JsonValue(writer.WriteAsArray(gqlQueryResult));
+            var json            = new JsonValue(cx.writer.WriteAsArray(gqlQueryResult));
             var projector       = new JsonProjector();
-            return projector.Project(query.selection, json);
+            return projector.Project(cx.query.selection, json);
         }
         
-        private static JsonValue CountEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
-            var countTask        = (AggregateEntitiesResult)result;
+        private static JsonValue CountEntitiesResult(in ResultContext cx) {
+            var countTask        = (AggregateEntitiesResult)cx.result;
             var count = countTask.value.ToString();
             return new JsonValue(count);
         }
         
-        private static JsonValue ReadEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
-            var readTask        = (ReadEntities)query.task;
-            var entities        = synResponse.resultMap[query.container].entityMap;
+        private static JsonValue ReadEntitiesResult (in ResultContext cx) {
+            var readTask        = (ReadEntities)cx.query.task;
+            var entities        = cx.synResponse.resultMap[cx.query.container].entityMap;
             var ids             = readTask.sets[0].ids;
             var list            = new List<JsonValue>(ids.Count);
             foreach (var id in ids) {
                 var entity = entities[id].Json;
                 list.Add(entity);
             }
-            var json            = new JsonValue(writer.WriteAsArray(list));
+            var json            = new JsonValue(cx.writer.WriteAsArray(list));
             var projector       = new JsonProjector();
-            return projector.Project(query.selection, json);
+            return projector.Project(cx.query.selection, json);
         }
         
-        private static JsonValue CreateEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
-            var createResult    = (CreateEntitiesResult)result;
-            var json            = new JsonValue(writer.WriteAsArray(createResult.errors));
+        private static JsonValue CreateEntitiesResult(in ResultContext cx) {
+            var createResult    = (CreateEntitiesResult)cx.result;
+            var json            = new JsonValue(cx.writer.WriteAsArray(createResult.errors));
             var projector       = new JsonProjector();
-            return projector.Project(query.selection, json);
+            return projector.Project(cx.query.selection, json);
         }
         
-        private static JsonValue UpsertEntitiesResult(in Query query, SyncTaskResult result, ObjectWriter writer) {
-            var upsertResult    = (UpsertEntitiesResult)result;
-            var json            = new JsonValue(writer.WriteAsArray(upsertResult.errors));
+        private static JsonValue UpsertEntitiesResult(in ResultContext cx) {
+            var upsertResult    = (UpsertEntitiesResult)cx.result;
+            var json            = new JsonValue(cx.writer.WriteAsArray(upsertResult.errors));
             var projector       = new JsonProjector();
-            return projector.Project(query.selection, json);
+            return projector.Project(cx.query.selection, json);
         }
         
-        private static JsonValue DeleteEntitiesResult (in Query query, SyncTaskResult result, ObjectWriter writer) {
-            var deleteResult    = (DeleteEntitiesResult)result;
-            var json            = new JsonValue(writer.WriteAsArray(deleteResult.errors));
+        private static JsonValue DeleteEntitiesResult (in ResultContext cx) {
+            var deleteResult    = (DeleteEntitiesResult)cx.result;
+            var json            = new JsonValue(cx.writer.WriteAsArray(deleteResult.errors));
             var projector       = new JsonProjector();
-            return projector.Project(query.selection, json);
+            return projector.Project(cx.query.selection, json);
         }
         
-        private static JsonValue SendCommandResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
-            var commandResult   = (SendCommandResult)result;
+        private static JsonValue SendCommandResult  (in ResultContext cx) {
+            var commandResult   = (SendCommandResult)cx.result;
             var projector       = new JsonProjector();
-            return projector.Project(query.selection, commandResult.result);
+            return projector.Project(cx.query.selection, commandResult.result);
         }
         
-        private static JsonValue SendMessageResult  (in Query query, SyncTaskResult result, ObjectWriter writer) {
+        private static JsonValue SendMessageResult  (in ResultContext cx) {
             return new JsonValue("{}");
+        }
+    }
+    
+    internal readonly struct ResultContext
+    {
+        internal  readonly  Query           query;
+        internal  readonly  SyncTaskResult  result;
+        internal  readonly  ObjectWriter    writer;
+        internal  readonly  JsonProjector   projector;
+        internal  readonly  SyncResponse    synResponse;
+
+        public    override  string          ToString() => query.name;
+
+        internal ResultContext(Query query, SyncTaskResult result, ObjectWriter writer, JsonProjector projector, SyncResponse synResponse) {
+            this.query          = query;
+            this.result         = result;
+            this.writer         = writer;
+            this.projector      = projector;
+            this.synResponse    = synResponse;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Language;
+using Friflo.Json.Fliox.Transform.Project;
 using Friflo.Json.Fliox.Utils;
 using GraphQLParser;
 using GraphQLParser.AST;
@@ -18,10 +19,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     public class GraphQLHandler: IRequestHandler
     {
-        private readonly    Dictionary<string, QLDatabaseSchema>    dbSchemas       = new Dictionary<string, QLDatabaseSchema>();
+        private readonly    Dictionary<string, QLDatabaseSchema>    dbSchemas;
+        private readonly    ObjectPool<JsonProjector>               projectorPool;                
         private const       string                                  GraphQLRoute    = "/graphql";
         
         public string[]     Routes => new [] { GraphQLRoute };
+        
+        public GraphQLHandler() {
+            dbSchemas       = new Dictionary<string, QLDatabaseSchema>();
+            projectorPool   = new SharedPool<JsonProjector>(() => new JsonProjector());
+        }
         
         public bool IsMatch(RequestContext context) {
             var method = context.method;
@@ -87,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     context.WriteError("execution error", syncResult.error.message, 500);
                     return;
                 }
-                var opResponse      = QLResponseHandler.Process(mapper, request.queries, syncResult.success);
+                var opResponse = QLResponseHandler.Process(mapper, projectorPool, request.queries, syncResult.success);
                 context.Write(opResponse, 0, "application/json", 200);
                 return;
             }
