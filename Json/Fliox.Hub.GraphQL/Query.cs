@@ -115,7 +115,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var result  = new  SelectionUnion[types.Count];
             for (int n = 0; n < types.Count; n++) {
                 var unionItem   = types[n];
-                result[n]       = new SelectionUnion (unionItem.discriminantUtf8, unionItem.typeDef.nameUtf8);
+                var unionObject = CreateSelectionObject(unionItem.typeDef.nameUtf8, unionItem.typeDef);
+                result[n]       = new SelectionUnion (unionItem.discriminantUtf8, unionObject);
             }
             return result;
         }

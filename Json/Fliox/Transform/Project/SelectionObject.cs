@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Transform.Project
             foreach (var union in unions) {
                 if (!union.discriminant.IsEqual(ref discriminant))
                     continue;
-                return union.typename;
+                return union.unionObject.name;
             }
             return default;
         }
@@ -78,13 +78,13 @@ namespace Friflo.Json.Fliox.Transform.Project
     public readonly struct SelectionUnion
     {
         public   readonly   Utf8String      discriminant;
-        public   readonly   Utf8String      typename;
+        public   readonly   SelectionObject unionObject;
 
         public   override   string          ToString() => discriminant.AsString();
 
-        public SelectionUnion (Utf8String discriminant, Utf8String typename) {
+        public SelectionUnion (Utf8String discriminant, in SelectionObject unionObject) {
             this.discriminant   = discriminant;
-            this.typename       = typename;
+            this.unionObject    = unionObject;
         }
     }
 }
