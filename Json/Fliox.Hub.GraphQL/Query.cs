@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.GraphQL;
@@ -77,10 +78,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.ReadById:
                     return CreateSelectionObject(entityType.nameUtf8, entityType);
                 case QueryType.Count:
+                    return default;
                 case QueryType.Create:
                 case QueryType.Upsert:
                 case QueryType.Delete:
-                    return default;
+                    var errorType = buffer.GetOrAdd(nameof(EntityError));
+                    return new SelectionObject(errorType, null);
                 default:
                     throw new InvalidOperationException($"unknown queryType: {queryType}");
             }
