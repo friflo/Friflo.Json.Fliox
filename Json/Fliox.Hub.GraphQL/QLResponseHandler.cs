@@ -18,8 +18,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             List<Query>                 queries,
             SyncResponse                syncResponse)
         {
-            var data        = new Dictionary<string, JsonValue>(queries.Count);
-            var taskResults = syncResponse.tasks;
+            var             data        = new Dictionary<string, JsonValue>(queries.Count);
+            List<GqlError>  errors      = null;
+            var             taskResults = syncResponse.tasks;
             using (var pooled = mapper.Get()) {
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = false;
@@ -27,19 +28,26 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 for (int n = 0; n < queries.Count; n++) {
                     var query       = queries[n];
                     var taskResult  = taskResults[n];
+                    if (taskResult is TaskErrorResult taskError) {
+                        if (errors == null) {
+                            errors = new List<GqlError>();
+                        }
+                        var path    = new List<string> { query.name };
+                        var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
+                        var error   = new GqlError { message = taskError.message, path = path, extensions = ext };
+                        errors.Add(error);
+                        continue;
+                    }
                     var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
                     data.Add(query.name, queryResult);
                 }
-                var response            = new GqlResponse { data = data };
+                var response            = new GqlResponse { data = data, errors = errors };
                 writer.Pretty           = true;
                 return new JsonValue(writer.WriteAsArray(response));
             }
         }
         
         private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
-            if (result is TaskErrorResult taskError) {
-                return new JsonValue(writer.WriteAsArray(taskError));
-            }
             switch (query.type) {
                 case QueryType.Query:       return QueryEntitiesResult  (query, result, writer, synResponse);
                 case QueryType.Count:       return CountEntitiesResult  (query, result, writer);
