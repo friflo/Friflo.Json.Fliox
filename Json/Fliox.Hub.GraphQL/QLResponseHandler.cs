@@ -85,8 +85,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 items.Add(entity);
             }
             var json            = new JsonValue(cx.writer.WriteAsArray(gqlQueryResult));
-            var projector       = new JsonProjector();
-            return projector.Project(cx.query.selection, json);
+            return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue CountEntitiesResult(in ResultContext cx) {
@@ -105,35 +104,30 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(cx.writer.WriteAsArray(list));
-            var projector       = new JsonProjector();
-            return projector.Project(cx.query.selection, json);
+            return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue CreateEntitiesResult(in ResultContext cx) {
             var createResult    = (CreateEntitiesResult)cx.result;
             var json            = new JsonValue(cx.writer.WriteAsArray(createResult.errors));
-            var projector       = new JsonProjector();
-            return projector.Project(cx.query.selection, json);
+            return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue UpsertEntitiesResult(in ResultContext cx) {
             var upsertResult    = (UpsertEntitiesResult)cx.result;
             var json            = new JsonValue(cx.writer.WriteAsArray(upsertResult.errors));
-            var projector       = new JsonProjector();
-            return projector.Project(cx.query.selection, json);
+            return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue DeleteEntitiesResult (in ResultContext cx) {
             var deleteResult    = (DeleteEntitiesResult)cx.result;
             var json            = new JsonValue(cx.writer.WriteAsArray(deleteResult.errors));
-            var projector       = new JsonProjector();
-            return projector.Project(cx.query.selection, json);
+            return cx.projector.Project(cx.query.selection, json);
         }
         
         private static JsonValue SendCommandResult  (in ResultContext cx) {
             var commandResult   = (SendCommandResult)cx.result;
-            var projector       = new JsonProjector();
-            return projector.Project(cx.query.selection, commandResult.result);
+            return cx.projector.Project(cx.query.selection, commandResult.result);
         }
         
         private static JsonValue SendMessageResult  (in ResultContext cx) {
