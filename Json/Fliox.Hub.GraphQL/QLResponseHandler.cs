@@ -51,14 +51,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
             switch (query.type) {
-                case QueryType.Query:       return QueryEntitiesResult  (query, result, writer, synResponse);
-                case QueryType.Count:       return CountEntitiesResult  (query, result, writer);
-                case QueryType.ReadById:    return ReadEntitiesResult   (query, result, writer, synResponse);
-                case QueryType.Create:      return CreateEntitiesResult (query, result, writer);
-                case QueryType.Upsert:      return UpsertEntitiesResult (query, result, writer);
-                case QueryType.Delete:      return DeleteEntitiesResult (query, result, writer);
-                case QueryType.Command:     return SendCommandResult    (query, result, writer);
-                case QueryType.Message:     return SendMessageResult    (query, result, writer);
+                case QueryType.Query:   return QueryEntitiesResult  (query, result, writer, synResponse);
+                case QueryType.Count:   return CountEntitiesResult  (query, result, writer);
+                case QueryType.Read:    return ReadEntitiesResult   (query, result, writer, synResponse);
+                case QueryType.Create:  return CreateEntitiesResult (query, result, writer);
+                case QueryType.Upsert:  return UpsertEntitiesResult (query, result, writer);
+                case QueryType.Delete:  return DeleteEntitiesResult (query, result, writer);
+                case QueryType.Command: return SendCommandResult    (query, result, writer);
+                case QueryType.Message: return SendMessageResult    (query, result, writer);
             }
             throw new InvalidOperationException($"unexpected query type: {query.type}");
         }

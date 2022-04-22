@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  QueryType       queryType;
         internal  readonly  SelectionObject objectType;
         
-        /// <summary> only: <see cref="QueryType.Query"/> and <see cref="QueryType.ReadById"/> </summary>
+        /// <summary> only: <see cref="QueryType.Query"/> and <see cref="QueryType.Read"/> </summary>
         internal  readonly  string      container;
         /// <summary> only: <see cref="QueryType.Message"/> and <see cref="QueryType.Command"/> </summary>
         internal  readonly  bool        hasParam;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return new SelectionObject(resultNameUtf8, new [] {
                         new SelectionField("items", itemsType)
                     });
-                case QueryType.ReadById:
+                case QueryType.Read:
                     return CreateSelectionObject(entityType.nameUtf8, entityType);
                 case QueryType.Count:
                     return default;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     internal enum QueryType {
         Query,
         Count,
-        ReadById,
+        Read,
         Create,
         Upsert,
         Delete,

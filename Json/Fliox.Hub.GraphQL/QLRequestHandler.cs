@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var entityType  = field.type;
                 var query       = new QueryResolver("query",    QueryType.Query,    container, entityType,  utf8Buffer);
                 var count       = new QueryResolver("count",    QueryType.Count,    container, null,        utf8Buffer);
-                var readById    = new QueryResolver("read",     QueryType.ReadById, container, entityType,  utf8Buffer);
+                var readById    = new QueryResolver("read",     QueryType.Read,     container, entityType,  utf8Buffer);
                 var create      = new QueryResolver("create",   QueryType.Create,   container, null,        utf8Buffer);
                 var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null,        utf8Buffer);
                 var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null,        utf8Buffer);
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             switch(resolver.queryType) {
                 case QueryType.Query:       return QueryEntities    (resolver, query,           out error);
                 case QueryType.Count:       return CountEntities    (resolver, query,           out error);
-                case QueryType.ReadById:    return ReadEntities     (resolver, query,           out error);
+                case QueryType.Read:        return ReadEntities     (resolver, query,           out error);
                 case QueryType.Create:      return CreateEntities   (resolver, query, docStr,   out error);
                 case QueryType.Upsert:      return UpsertEntities   (resolver, query, docStr,   out error);
                 case QueryType.Delete:      return DeleteEntities   (resolver, query,           out error);
