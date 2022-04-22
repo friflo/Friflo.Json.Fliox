@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -56,7 +57,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return;
                 }
                 var docStr          = postBody.query;
-                var query           = Parser.Parse(docStr);
+                var query           = ParseGraphQL(docStr, out error);
+                if (error != null) {
+                    context.WriteError("invalid GraphQL query", error, 400);
+                    return;
+                }
                 var operationName   = postBody.operationName;
                 
                 // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
@@ -100,6 +105,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 error = null;
                 return result;
             }
+        }
+        
+        private static GraphQLDocument ParseGraphQL(string docStr, out string error) {
+            try {
+                error = null;
+                return Parser.Parse(docStr);    
+            }
+            catch(Exception ex) {
+                error = ex.Message;
+            }
+            return null;
         }
         
         private QLDatabaseSchema GetSchema (RequestContext context, string dbName, out string error) {
