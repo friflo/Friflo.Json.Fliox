@@ -47,7 +47,14 @@ namespace Friflo.Json.Fliox.Transform.Project
         }
         
         private bool TraceObject(in SelectionNode node) {
+            bool        setUnionType    = node.emitTypeName && node.unions != null;
+            Utf8String  unionType       = default;
             while (Utf8JsonWriter.NextObjectMember(ref parser)) {
+                // Expect discriminator as first property
+                if (setUnionType && parser.Event == JsonEvent.ValueString) {
+                    unionType = node.FindUnionType(ref parser.value);
+                }
+                setUnionType = false;
                 if (!node.FindField(ref parser.key, out var subNode)) {
                     parser.SkipEvent();
                     continue;
@@ -81,7 +88,11 @@ namespace Friflo.Json.Fliox.Transform.Project
                 }
             }
             if (node.emitTypeName) {
-                node.typeName.CopyTo(ref valueBuf);
+                if (node.unions == null) { 
+                    node.typeName.CopyTo(ref valueBuf);
+                } else {
+                    unionType.CopyTo    (ref valueBuf);
+                }
                 serializer.MemberStr(__typename, valueBuf);
             }
             serializer.ObjectEnd();

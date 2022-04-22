@@ -7,17 +7,24 @@ namespace Friflo.Json.Fliox.Transform.Project
 {
     public readonly struct SelectionNode
     {
-        private   readonly      SelectionNode[] nodes;
-        private   readonly      Utf8String      fieldName;
-        internal  readonly      bool            emitTypeName;
-        internal  readonly      Utf8String      typeName;
+        private   readonly      SelectionNode[]     nodes;
+        private   readonly      Utf8String          fieldName;
+        internal  readonly      bool                emitTypeName;
+        internal  readonly      SelectionUnion[]    unions;
+        internal  readonly      Utf8String          typeName;
 
-        public override         string          ToString() => FormatToString();
+        public override         string              ToString() => FormatToString();
 
-        public SelectionNode  (in Utf8String fieldName, in Utf8String typeName, bool emitTypeName, SelectionNode[] nodes) {
+        public SelectionNode  (
+            in Utf8String       fieldName,
+            in SelectionObject  objectType,
+            bool                emitTypeName,
+            SelectionNode[]     nodes)
+        {
             this.fieldName      = fieldName;
-            this.typeName       = typeName;
+            this.typeName       = objectType.name;
             this.emitTypeName   = emitTypeName;
+            this.unions         = objectType.unions;
             this.nodes          = nodes;
         }
         
@@ -38,6 +45,19 @@ namespace Friflo.Json.Fliox.Transform.Project
             }
             result = default;
             return false;
+        }
+        
+                
+        public Utf8String FindUnionType (ref Bytes discriminant) {
+            if (unions == null) {
+                return default;
+            }
+            foreach (var union in unions) {
+                if (!union.discriminant.IsEqual(ref discriminant))
+                    continue;
+                return union.typename;
+            }
+            return default;
         }
     }
 }

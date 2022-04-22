@@ -30,15 +30,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 fieldNameUtf8   = buffer.Add(span);
             }
             if (selectionSet == null) {
-                return new SelectionNode(fieldNameUtf8, objectType.name, false, null);
+                return new SelectionNode(fieldNameUtf8, objectType, false, null);
             }
             var selections      = selectionSet.Selections;
             var count           = selections.Count;
             var emitTypeName    = ContainsTypename(selections);
-            if (emitTypeName)   count--;
+            if (emitTypeName)   { count--; }
             var nodes   = new SelectionNode[count];
             AddSelectionFields(nodes, selections, buffer, objectType);
-            return new SelectionNode(fieldNameUtf8, objectType.name, emitTypeName, nodes);
+            return new SelectionNode(fieldNameUtf8, objectType, emitTypeName, nodes);
         }
         
         private static bool ContainsTypename(List<ASTNode> selections) {
