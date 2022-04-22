@@ -265,7 +265,9 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public   readonly   TypeDef     typeDef;
         public   readonly   string      discriminant;
         public   readonly   Utf8String  discriminantUtf8;
-        
+
+        public   override   string      ToString() => discriminant;
+
         public UnionItem (TypeDef typeDef, string discriminant, IUtf8Buffer buffer) {
             this.typeDef            = typeDef;
             this.discriminant       = discriminant ?? throw new ArgumentNullException(nameof(discriminant));

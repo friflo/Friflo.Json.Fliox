@@ -71,10 +71,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.Query:
                     var resultName      = Gql.MethodResult("query", container);
                     var resultNameUtf8  = buffer.Add(resultName);
-                    var itemsType = CreateSelectionObject(entityType.nameUtf8, entityType);
-                    return new SelectionObject(resultNameUtf8, new [] {
-                        new SelectionField("items", itemsType)
-                    });
+                    var itemsType       = CreateSelectionObject(entityType.nameUtf8, entityType);
+                    var fields          = new [] { new SelectionField("items", itemsType) };
+                    var unions          = CreateUnionsOfType (entityType);
+                    return new SelectionObject(resultNameUtf8, fields, unions);
                 case QueryType.Read:
                     return CreateSelectionObject(entityType.nameUtf8, entityType);
                 case QueryType.Count:
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case QueryType.Upsert:
                 case QueryType.Delete:
                     var errorType = buffer.GetOrAdd(nameof(EntityError));
-                    return new SelectionObject(errorType, null);
+                    return new SelectionObject(errorType, null, null);
                 default:
                     throw new InvalidOperationException($"unknown queryType: {queryType}");
             }
@@ -103,7 +103,21 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 selectionFields.Add(new SelectionField(fieldDef.name, fieldSelectionType));
             }
             var selectionFieldsArray = selectionFields.Count == 0 ? null : selectionFields.ToArray();
-            return new SelectionObject(typeName, selectionFieldsArray);
+            var unions = CreateUnionsOfType (type);
+            return new SelectionObject(typeName, selectionFieldsArray, unions);
+        }
+        
+        private static SelectionUnion[] CreateUnionsOfType(TypeDef type) {
+            var unionType = type.UnionType;
+            if (unionType == null)
+                return null;
+            var types   = unionType.types;
+            var result  = new  SelectionUnion[types.Count];
+            for (int n = 0; n < types.Count; n++) {
+                var unionItem   = types[n];
+                result[n]       = new SelectionUnion (unionItem.discriminantUtf8, unionItem.typeDef.nameUtf8);
+            }
+            return result;
         }
     }
     

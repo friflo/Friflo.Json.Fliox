@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Project
     {
         public   readonly   Utf8String          name;
         private  readonly   SelectionField[]    fields;
+        private  readonly   SelectionUnion[]    unions;
 
         public   override   string              ToString() {
             if (name.IsNull)
@@ -23,9 +24,10 @@ namespace Friflo.Json.Fliox.Transform.Project
             return $"name: {name.AsString()}, fields: {fields.Length}";
         }
 
-        public  SelectionObject (in Utf8String typeName, SelectionField[] fields) {
+        public  SelectionObject (in Utf8String typeName, SelectionField[] fields, SelectionUnion[] unions) {
             this.name   = typeName;
             this.fields = fields;
+            this.unions = unions;
         }
         
 #if !UNITY_5_3_OR_NEWER
@@ -42,6 +44,18 @@ namespace Friflo.Json.Fliox.Transform.Project
             return default;
         }
 #endif
+        
+        public Utf8String FindUnionType (ref Bytes discriminant) {
+            if (unions == null) {
+                return default;
+            }
+            foreach (var union in unions) {
+                if (!union.discriminant.IsEqual(ref discriminant))
+                    continue;
+                return union.typename;
+            }
+            return default;
+        }
     }
     
     public readonly struct SelectionField
@@ -58,6 +72,19 @@ namespace Friflo.Json.Fliox.Transform.Project
         public SelectionField (string fieldName, in SelectionObject objectType) {
             this.name       = fieldName;
             this.objectType = objectType;
+        }
+    }
+    
+    public readonly struct SelectionUnion
+    {
+        public   readonly   Utf8String      discriminant;
+        public   readonly   Utf8String      typename;
+
+        public   override   string          ToString() => discriminant.AsString();
+
+        public SelectionUnion (Utf8String discriminant, Utf8String typename) {
+            this.discriminant   = discriminant;
+            this.typename       = typename;
         }
     }
 }
