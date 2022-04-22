@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     context.WriteError("execution error", syncResult.error.message, 500);
                     return;
                 }
-                var opResponse      = QLResponseHandler.ProcessResponse(mapper, request.queries, syncResult.success);
+                var opResponse      = QLResponseHandler.Process(mapper, request.queries, syncResult.success);
                 context.Write(opResponse, 0, "application/json", 200);
                 return;
             }

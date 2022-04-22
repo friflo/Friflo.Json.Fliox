@@ -13,38 +13,40 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class QLResponseHandler
     {
-        internal static JsonValue ProcessResponse(
-            ObjectPool<ObjectMapper>    mapper,
-            List<Query>                 queries,
-            SyncResponse                syncResponse)
+        internal static JsonValue Process(ObjectPool<ObjectMapper> mapper, List<Query> queries, SyncResponse syncResponse)
         {
-            var             data        = new Dictionary<string, JsonValue>(queries.Count);
-            List<GqlError>  errors      = null;
-            var             taskResults = syncResponse.tasks;
             using (var pooled = mapper.Get()) {
                 var writer              = pooled.instance.writer;
                 writer.Pretty           = false;
                 writer.WriteNullMembers = false;
-                for (int n = 0; n < queries.Count; n++) {
-                    var query       = queries[n];
-                    var taskResult  = taskResults[n];
-                    if (!(taskResult is TaskErrorResult taskError)) {
-                        // --- success
-                        var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
-                        data.Add(query.name, queryResult);
-                        continue;
-                    }
-                    // --- error
-                    if (errors == null) { errors = new List<GqlError>(); }
-                    var path    = new List<string> { query.name };
-                    var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
-                    var error   = new GqlError { message = taskError.message, path = path, extensions = ext };
-                    errors.Add(error);
-                }
-                var response            = new GqlResponse { data = data, errors = errors };
-                writer.Pretty           = true;
-                return new JsonValue(writer.WriteAsArray(response));
+                return ProcessQueries(writer, queries, syncResponse);
             }
+        }
+        private static JsonValue ProcessQueries(ObjectWriter writer, List<Query> queries, SyncResponse syncResponse)
+        {
+            var             data        = new Dictionary<string, JsonValue>(queries.Count);
+            List<GqlError>  errors      = null;
+            var             taskResults = syncResponse.tasks;
+
+            for (int n = 0; n < queries.Count; n++) {
+                var query       = queries[n];
+                var taskResult  = taskResults[n];
+                if (!(taskResult is TaskErrorResult taskError)) {
+                    // --- success
+                    var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
+                    data.Add(query.name, queryResult);
+                    continue;
+                }
+                // --- error
+                if (errors == null) { errors = new List<GqlError>(); }
+                var path    = new List<string> { query.name };
+                var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
+                var error   = new GqlError { message = taskError.message, path = path, extensions = ext };
+                errors.Add(error);
+            }
+            var response            = new GqlResponse { data = data, errors = errors };
+            writer.Pretty           = true;
+            return new JsonValue(writer.WriteAsArray(response));
         }
         
         private static JsonValue ProcessTaskResult(in Query query, SyncTaskResult result, ObjectWriter writer, SyncResponse synResponse) {
