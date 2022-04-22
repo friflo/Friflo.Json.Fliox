@@ -282,13 +282,13 @@ namespace Friflo.Json.Fliox.Schema.Language
                 queries.Add(query);
             }
             foreach (var field in fields) {
-                var resultType = Gql.MethodResult("read", field.name);
+                var containerType = Gql.Scalar(field.type.Name);
                 var queryById = new GqlField {
                     name = Gql.MethodName("read", field.name),
                     args = new List<GqlInputValue> {
                         Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
                     },
-                    type = Gql.Type(Gql.Scalar(resultType), true)
+                    type = Gql.List(containerType, true, false)
                 };
                 queries.Add(queryById);
             }
@@ -361,14 +361,6 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var cursor          = Gql.Field("cursor",   Gql.String());
                 var items           = Gql.Field("items",    Gql.List(containerType, true, true));
                 var resultFields    = new List<GqlField> { count, cursor, items };
-                var type            = Gql.Object(resultType, resultFields);
-                types.Add(type);
-            }
-            foreach (var field in fields) {
-                var resultType      = Gql.MethodResult("read", field.name);
-                var containerType   = Gql.Scalar(field.type.Name);
-                var items           = Gql.Field("items",    Gql.List(containerType, true, false));
-                var resultFields    = new List<GqlField> { items };
                 var type            = Gql.Object(resultType, resultFields);
                 types.Add(type);
             }

@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -61,26 +62,28 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             this.container      = container;
             hasParam            = false;
             paramRequired       = false;
-            var resultName      = Gql.MethodResult(name, container);
-            var resultNameUtf8  = buffer.Add(resultName);
-            var fields          = CreateMethodFields(queryType, entityType);
-            objectType          = new SelectionObject(resultNameUtf8, fields);
+            objectType          = CreateResultType(queryType, container, entityType, buffer);
         }
         
-        private static SelectionField[] CreateMethodFields(QueryType queryType, TypeDef entityType) {
+        private static SelectionObject CreateResultType(QueryType queryType, string container, TypeDef entityType, IUtf8Buffer buffer) {
             switch (queryType) {
                 case QueryType.Query:
+                    var resultName      = Gql.MethodResult("query", container);
+                    var resultNameUtf8  = buffer.Add(resultName);
                     var itemsType = CreateSelectionObject(entityType.nameUtf8, entityType);
-                    return new [] {
+                    return new SelectionObject(resultNameUtf8, new [] {
                         new SelectionField("items", itemsType)
-                    };
+                    });
                 case QueryType.ReadById:
-                    itemsType = CreateSelectionObject(entityType.nameUtf8, entityType);
-                    return new [] {
-                        new SelectionField("items", itemsType)
-                    };
+                    return CreateSelectionObject(entityType.nameUtf8, entityType);
+                case QueryType.Count:
+                case QueryType.Create:
+                case QueryType.Upsert:
+                case QueryType.Delete:
+                    return default;
+                default:
+                    throw new InvalidOperationException($"unknown queryType: {queryType}");
             }
-            return null;
         }
         
         private static SelectionObject CreateSelectionObject(in Utf8String typeName, TypeDef type) {
