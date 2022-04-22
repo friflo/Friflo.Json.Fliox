@@ -28,18 +28,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 for (int n = 0; n < queries.Count; n++) {
                     var query       = queries[n];
                     var taskResult  = taskResults[n];
-                    if (taskResult is TaskErrorResult taskError) {
-                        if (errors == null) {
-                            errors = new List<GqlError>();
-                        }
-                        var path    = new List<string> { query.name };
-                        var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
-                        var error   = new GqlError { message = taskError.message, path = path, extensions = ext };
-                        errors.Add(error);
+                    if (!(taskResult is TaskErrorResult taskError)) {
+                        // --- success
+                        var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
+                        data.Add(query.name, queryResult);
                         continue;
                     }
-                    var queryResult = ProcessTaskResult(query, taskResult, writer, syncResponse);
-                    data.Add(query.name, queryResult);
+                    // --- error
+                    if (errors == null) { errors = new List<GqlError>(); }
+                    var path    = new List<string> { query.name };
+                    var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
+                    var error   = new GqlError { message = taskError.message, path = path, extensions = ext };
+                    errors.Add(error);
                 }
                 var response            = new GqlResponse { data = data, errors = errors };
                 writer.Pretty           = true;
