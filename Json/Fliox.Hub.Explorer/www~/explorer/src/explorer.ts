@@ -215,7 +215,7 @@ export class Explorer
         catalogSchema.innerHTML  = docLink;
         explorerTools.innerHTML  = Explorer.selectAllHtml;
         readEntitiesDB.innerHTML = `${App.getDatabaseLink(p.database)}/`;
-        const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}/</a>`;
+        const containerLink      = `<a title="open container in new tab" href="./rest/${p.database}/${p.container}?limit=1000" target="_blank" rel="noopener noreferrer">${p.container}</a>`;
         const apiLinks           = App.getApiLinks(p.database, `open ${p.container} API`, `#/${p.container}`);
         readEntities.innerHTML   = `${containerLink} ${apiLinks}<span class="spinner"></span>`;
 
