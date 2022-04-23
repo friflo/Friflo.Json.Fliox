@@ -94,17 +94,17 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (!resolvers.TryGetValue(name, out var resolver)) {
                     continue;
                 }
-                var task = CreateQueryTask(resolver, graphQLQuery, docStr, out string error);
+                var queryRequest = CreateQueryTask(resolver, graphQLQuery, docStr, out string error);
                 if (error != null)
                     return error;
                 var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.objectType);
-                var query           = new Query(name, resolver.queryType, resolver.container, task, selectionNode);
+                var query           = new Query(name, resolver.queryType, resolver.container, queryRequest, selectionNode);
                 queries.Add(query);
             }
             return null;
         }
         
-        private static SyncRequestTask CreateQueryTask(
+        private static QueryRequest CreateQueryTask(
             in QueryResolver    resolver,
             GraphQLField        query,
             string              docStr,
@@ -123,77 +123,101 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             throw new InvalidOperationException($"unexpected resolver type: {resolver.queryType}");
         }
 
-        private static QueryEntities QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)
+        private static QueryRequest QueryEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             string  filter      = RequestArgs.GetString (query, "filter",   out error);
             if (error != null)
-                return null;
+                return default;
             int?    limit       = RequestArgs.GetInt    (query, "limit",    out error);
             if (error != null)
-                return null;
+                return default;
             int?    maxCount    = RequestArgs.GetInt    (query, "maxCount", out error);
             if (error != null)
-                return null;
+                return default;
             string  cursor      = RequestArgs.GetString (query, "cursor",   out error);
             if (error != null)
-                return null;
-            return new QueryEntities {
+                return default;
+            bool?   selectAll   = RequestArgs.GetBoolean(query, "selectAll",out error);
+            if (error != null)
+                return default;
+            var task = new QueryEntities {
                 container = resolver.container, filter = filter, limit = limit,
                 maxCount = maxCount, cursor = cursor
             };
+            return new QueryRequest(task, selectAll);
         }
         
-        private static AggregateEntities CountEntities(in QueryResolver resolver, GraphQLField query, out string error)
+        private static QueryRequest CountEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             string  filter  = RequestArgs.GetString (query, "filter", out error);
             if (error != null)
-                return null;
-            return new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
+                return default;
+            var task = new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
+            return new QueryRequest(task);
         }
         
-        private static ReadEntities ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
+        private static QueryRequest ReadEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             var ids = RequestArgs.GetIds(query, out error);
             if (error != null)
-                return null;
+                return default;
+            bool?   selectAll   = RequestArgs.GetBoolean(query, "selectAll",out error);
+            if (error != null)
+                return default;
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
-            return new ReadEntities { container = resolver.container, sets = sets };
+            var task    = new ReadEntities { container = resolver.container, sets = sets };
+            return new QueryRequest(task, selectAll);
         }
         
-        private static CreateEntities CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        private static QueryRequest CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
             var entities = RequestArgs.GetEntities(query, docStr, out error);
             if (error != null)
-                return null;
-            return new CreateEntities { container = resolver.container, entities = entities };
+                return default;
+            var task = new CreateEntities { container = resolver.container, entities = entities };
+            return new QueryRequest(task);
         }
         
-        private static UpsertEntities UpsertEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        private static QueryRequest UpsertEntities(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
             var entities = RequestArgs.GetEntities(query, docStr, out error);
             if (error != null)
-                return null;
-            return new UpsertEntities { container = resolver.container, entities = entities };
+                return default;
+            var task = new UpsertEntities { container = resolver.container, entities = entities };
+            return new QueryRequest(task);
         }
         
-        private static DeleteEntities DeleteEntities(in QueryResolver resolver, GraphQLField query, out string error)
+        private static QueryRequest DeleteEntities(in QueryResolver resolver, GraphQLField query, out string error)
         {
             var ids = RequestArgs.GetIds(query, out error);
             if (error != null)
-                return null;
-            return new DeleteEntities { container = resolver.container, ids = ids };
+                return default;
+            var task = new DeleteEntities { container = resolver.container, ids = ids };
+            return new QueryRequest(task);
         }
         
-        private static SendCommand SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        private static QueryRequest SendCommand(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
-            var param       = RequestArgs.GetParam(query, docStr, resolver, out error);
-            return new SendCommand { name = resolver.name, param = param };
+            var param   = RequestArgs.GetParam(query, docStr, resolver, out error);
+            var task    = new SendCommand { name = resolver.name, param = param };
+            return new QueryRequest(task);
         }
         
-        private static SendMessage SendMessage(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
+        private static QueryRequest SendMessage(in QueryResolver resolver, GraphQLField query, string docStr, out string error)
         {
-            var param       = RequestArgs.GetParam(query, docStr, resolver, out error);
-            return new SendMessage { name = resolver.name, param = param };
+            var param   = RequestArgs.GetParam(query, docStr, resolver, out error);
+            var task    = new SendMessage { name = resolver.name, param = param };
+            return new QueryRequest(task);
+        }
+    }
+    
+    internal readonly struct QueryRequest {
+        internal  readonly  SyncRequestTask task;
+        internal  readonly  bool            selectAll;
+        
+        internal QueryRequest (SyncRequestTask task, bool? selectAll = false) {
+            this.task       = task;
+            this.selectAll  = selectAll.HasValue && selectAll.Value;
         }
     }
 }

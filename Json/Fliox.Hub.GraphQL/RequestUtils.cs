@@ -41,6 +41,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return intValue;
         }
         
+        internal static bool? TryGetBooleanArg(GraphQLValue gqlValue, out string error) {
+            var gqlBooleanValue = gqlValue as GraphQLBooleanValue;
+            if (gqlBooleanValue == null) {
+                error = "expect boolean argument";
+                return null;
+            }
+            error = null;
+            return gqlBooleanValue.BoolValue;
+        }
+        
         internal static List<JsonKey> TryGetIdList(GraphQLArgument arg, out string error) {
             var gqlList = arg.Value as GraphQLListValue;
             if (gqlList == null) {

@@ -272,10 +272,11 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var query = new GqlField {
                     name = Gql.MethodName("query", field.name),
                     args = new List<GqlInputValue> {
-                        Gql.InputValue ("filter",   Gql.String()),
-                        Gql.InputValue ("limit",    Gql.Int()),
-                        Gql.InputValue ("maxCount", Gql.Int()),
-                        Gql.InputValue ("cursor",   Gql.String())
+                        Gql.InputValue ("filter",       Gql.String()),
+                        Gql.InputValue ("limit",        Gql.Int()),
+                        Gql.InputValue ("maxCount",     Gql.Int()),
+                        Gql.InputValue ("cursor",       Gql.String()),
+                        Gql.InputValue ("selectAll",    Gql.Boolean())
                     },
                     type = Gql.Type(Gql.Scalar(resultType), true)
                 };
@@ -286,7 +287,8 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var queryById = new GqlField {
                     name = Gql.MethodName("read", field.name),
                     args = new List<GqlInputValue> {
-                        Gql.InputValue ("ids",      Gql.List(Gql.String(), true, true))
+                        Gql.InputValue ("ids",          Gql.List(Gql.String(), true, true)),
+                        Gql.InputValue ("selectAll",    Gql.Boolean())
                     },
                     type = Gql.List(containerType, true, false)
                 };

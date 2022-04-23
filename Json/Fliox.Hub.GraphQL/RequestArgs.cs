@@ -52,6 +52,26 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
+        internal static bool? GetBoolean(GraphQLField query, string name, out string error)
+        {
+            var arguments   = query.Arguments;
+            if (arguments == null) {
+                error = null;
+                return null;
+            }
+            bool? result = null;
+            foreach (var argument in arguments) {
+                var argName = argument.Name.Value.Span;
+                if  (argName.SequenceEqual(name)) {
+                    result  = RequestUtils.TryGetBooleanArg(argument.Value, out error);
+                    if (error != null)
+                        return null;
+                }
+            }
+            error = null;
+            return result;
+        }
+        
         internal static HashSet<JsonKey> GetIds(GraphQLField query, out string error) {
             var arguments = query.Arguments;
             if (arguments == null) {
@@ -63,11 +83,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("ids")) {
                     idList  = RequestUtils.TryGetIdList (argument, out error);
-                } else {
-                    error   = RequestUtils.UnknownArgument(argName);
                 }
-                if (error != null)
-                    return null;
             }
             if (idList == null) {
                 error = "missing parameter: ids";

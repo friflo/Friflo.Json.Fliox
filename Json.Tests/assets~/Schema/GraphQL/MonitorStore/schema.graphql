@@ -11,14 +11,14 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryHosts    (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryHostsResult!
-    queryUsers    (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryUsersResult!
-    queryClients  (filter: String, limit: Int, maxCount: Int, cursor: String) : QueryClientsResult!
-    queryHistories(filter: String, limit: Int, maxCount: Int, cursor: String) : QueryHistoriesResult!
-    readHosts     (ids: [String!]!) : [HostHits]!
-    readUsers     (ids: [String!]!) : [UserHits]!
-    readClients   (ids: [String!]!) : [ClientHits]!
-    readHistories (ids: [String!]!) : [HistoryHits]!
+    queryHosts    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryHostsResult!
+    queryUsers    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryUsersResult!
+    queryClients  (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryClientsResult!
+    queryHistories(filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryHistoriesResult!
+    readHosts     (ids: [String!]!, selectAll: Boolean) : [HostHits]!
+    readUsers     (ids: [String!]!, selectAll: Boolean) : [UserHits]!
+    readClients   (ids: [String!]!, selectAll: Boolean) : [ClientHits]!
+    readHistories (ids: [String!]!, selectAll: Boolean) : [HistoryHits]!
     countHosts    (filter: String) : Int
     countUsers    (filter: String) : Int
     countClients  (filter: String) : Int

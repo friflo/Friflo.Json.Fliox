@@ -85,6 +85,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 items.Add(entity);
             }
             var json            = new JsonValue(cx.writer.WriteAsArray(gqlQueryResult));
+            if (cx.query.selectAll)
+                return json;
             return cx.projector.Project(cx.query.selection, json);
         }
         
@@ -104,6 +106,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 list.Add(entity);
             }
             var json            = new JsonValue(cx.writer.WriteAsArray(list));
+            if (cx.query.selectAll)
+                return json;
             return cx.projector.Project(cx.query.selection, json);
         }
         
