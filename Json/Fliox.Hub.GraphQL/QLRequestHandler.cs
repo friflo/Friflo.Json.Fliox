@@ -80,10 +80,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var query in queries) {
                 tasks.Add(query.task);   
             }
-            var syncRequest = new SyncRequest {
-                database    = database,
-                tasks       = tasks
-            };
+            var syncRequest = new SyncRequest { database = database, tasks = tasks };
             return new QLRequestContext(syncRequest, queries);
         }
         

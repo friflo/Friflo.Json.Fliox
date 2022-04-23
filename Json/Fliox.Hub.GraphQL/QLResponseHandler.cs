@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             List<Query>                 queries,
             SyncResponse                syncResponse)
         {
-            using (var pooledProjector = projectorPool.Get())
+            using (var pooledProjector  = projectorPool.Get())
             using (var pooledMapper     = mapper.Get()) {
                 var projector           = pooledProjector.instance;
                 var writer              = pooledMapper.instance.writer;
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var entities        = cx.synResponse.resultMap[cx.query.container].entityMap;
             var ids             = queryResult.ids;
             var items           = new List<JsonValue>(ids.Count);
-            var gqlQueryResult  = new GqlQueryResult { count = ids.Count, cursor = queryResult.cursor, items = items  };
+            var gqlQueryResult  = new GqlQueryResult { count = ids.Count, cursor = queryResult.cursor, items = items };
             foreach (var id in ids) {
                 var entity = entities[id].Json;
                 items.Add(entity);
