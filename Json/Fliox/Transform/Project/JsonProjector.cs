@@ -32,8 +32,6 @@ namespace Friflo.Json.Fliox.Transform.Project
         }
 
         public JsonValue Project(in SelectionNode node, in JsonValue value) {
-            if (node.allFields)
-                return value;
             targetJson.Clear();
             targetJson.AppendArray(value);
             parser.InitParser(targetJson);

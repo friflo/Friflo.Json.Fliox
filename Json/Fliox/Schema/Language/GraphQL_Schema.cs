@@ -57,11 +57,9 @@ namespace Friflo.Json.Fliox.Schema.Language
         }
         
         private static void EmitObject(GqlObject type, StringBuilder sb) {
-            int maxFieldName    = type.fields.MaxLength(field => field.name == "__all" ? 0 : field.name.Length);
+            int maxFieldName    = type.fields.MaxLength(field => field.name.Length);
             sb.AppendLine($"type {type.name} {{");
             foreach (var field in type.fields) {
-                if (field.name == "__all")
-                    continue;
                 var fieldType   = GetType(field.type);
                 var indent      = Indent(maxFieldName, field.name);
                 var args        = GetArgs(field.args);
