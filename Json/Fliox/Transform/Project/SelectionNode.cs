@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Project
         internal  readonly      bool                emitTypeName;
         internal  readonly      SelectionUnion[]    unions;
         internal  readonly      Utf8String          typeName;
+        internal  readonly      bool                allFields;
 
         public override         string              ToString() => FormatToString();
 
@@ -19,13 +20,15 @@ namespace Friflo.Json.Fliox.Transform.Project
             in Utf8String       fieldName,
             in SelectionObject  objectType,
             bool                emitTypeName,
-            SelectionNode[]     nodes)
+            SelectionNode[]     nodes,
+            bool                allFields)
         {
             this.fieldName      = fieldName;
             this.typeName       = objectType.name;
             this.emitTypeName   = emitTypeName;
             this.unions         = objectType.unions;
             this.nodes          = nodes;
+            this.allFields      = allFields;
         }
         
         private string FormatToString() {

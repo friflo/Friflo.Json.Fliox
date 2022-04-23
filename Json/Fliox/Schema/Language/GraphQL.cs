@@ -186,6 +186,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 bool required           = field.required;
                 gqlField.type           = GetFieldType(field, context, required, kind);
             }
+            if (kind == Kind.Output) {
+                gqlFields.Add(new GqlField { name = "__all", type = Gql.Any() });
+            }
             return new EmitTypeGql(type, gqlType, imports, dependencies);
         }
         

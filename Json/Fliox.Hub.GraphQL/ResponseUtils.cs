@@ -34,21 +34,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 fieldNameUtf8   = buffer.Add(span);
             }
             if (selectionSet == null) {
-                return new SelectionNode(fieldNameUtf8, objectType, false, null);
+                return new SelectionNode(fieldNameUtf8, objectType, false, null, false);
             }
             var selections      = selectionSet.Selections;
             var count           = selections.Count;
-            var emitTypeName    = ContainsTypename(selections);
+            var emitTypeName    = ContainsField(selections, "__typename");
             if (emitTypeName)   { count--; }
+            var allFields       = ContainsField(selections, "__all");
             var nodes   = new SelectionNode[count];
             AddSelectionFields(nodes, selections, buffer, objectType);
-            return new SelectionNode(fieldNameUtf8, objectType, emitTypeName, nodes);
+            return new SelectionNode(fieldNameUtf8, objectType, emitTypeName, nodes, allFields);
         }
         
-        private static bool ContainsTypename(List<ASTNode> selections) {
+        private static bool ContainsField(List<ASTNode> selections, string fieldName) {
             foreach (var selection in selections) {
                 var gqlField    = (GraphQLField)selection;
-                if (gqlField.Name == "__typename")
+                if (gqlField.Name == fieldName)
                     return true;
             }
             return false;
@@ -64,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var selection in selections) {
                 var gqlField   = (GraphQLField)selection;
                 var fieldName  = gqlField.Name;
-                if (fieldName == "__typename")
+                if (fieldName == "__typename" || fieldName == "__all")
                     continue;
                 var fieldNameSpan   = fieldName.Value.Span;
                 var selectionField  = objectType.FindField(fieldNameSpan);
