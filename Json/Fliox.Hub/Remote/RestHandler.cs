@@ -103,7 +103,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     JsonKey[] keys;
                     using (var pooled = pool.ObjectMapper.Get()) {
                         var reader  = pooled.instance.reader;
-                        keys    = reader.Read<JsonKey[]>(context.body);
+                        var body    = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                        keys        = reader.Read<JsonKey[]>(body);
                         if (reader.Error.ErrSet) {
                             context.WriteError("invalid id list", reader.Error.ToString(), 400);
                             return;
