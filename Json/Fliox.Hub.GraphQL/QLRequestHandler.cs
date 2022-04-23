@@ -23,22 +23,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal QLRequestHandler(TypeSchema typeSchema, string database) {
             this.database   = database;
             var schemaType  = typeSchema.RootType;
-            var utf8Buffer  = new Utf8Buffer();
+            var buffer      = new Utf8Buffer();
             foreach (var field in schemaType.Fields) {
                 var container   = field.name;
                 var entityType  = field.type;
-                var query       = new QueryResolver("query",    QueryType.Query,    container, entityType,  utf8Buffer);
-                var count       = new QueryResolver("count",    QueryType.Count,    container, null,        utf8Buffer);
-                var readById    = new QueryResolver("read",     QueryType.Read,     container, entityType,  utf8Buffer);
-                var create      = new QueryResolver("create",   QueryType.Create,   container, null,        utf8Buffer);
-                var upsert      = new QueryResolver("upsert",   QueryType.Upsert,   container, null,        utf8Buffer);
-                var delete      = new QueryResolver("delete",   QueryType.Delete,   container, null,        utf8Buffer);
-                resolvers.Add(query.name,       query);
-                resolvers.Add(count.name,       count);
-                resolvers.Add(readById.name,    readById);
-                resolvers.Add(create.name,      create);
-                resolvers.Add(upsert.name,      upsert);
-                resolvers.Add(delete.name,      delete);
+                var query   = new QueryResolver("query",    QueryType.Query,    container, entityType,  buffer);
+                var count   = new QueryResolver("count",    QueryType.Count,    container, null,        buffer);
+                var read    = new QueryResolver("read",     QueryType.Read,     container, entityType,  buffer);
+                var create  = new QueryResolver("create",   QueryType.Create,   container, null,        buffer);
+                var upsert  = new QueryResolver("upsert",   QueryType.Upsert,   container, null,        buffer);
+                var delete  = new QueryResolver("delete",   QueryType.Delete,   container, null,        buffer);
+                resolvers.Add(query.name,   query);
+                resolvers.Add(count.name,   count);
+                resolvers.Add(read.name,    read);
+                resolvers.Add(create.name,  create);
+                resolvers.Add(upsert.name,  upsert);
+                resolvers.Add(delete.name,  delete);
             }
             AddMessages(schemaType.Commands, QueryType.Command);
             AddMessages(schemaType.Messages, QueryType.Message);
@@ -114,14 +114,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             out string          error)
         {
             switch(resolver.queryType) {
-                case QueryType.Query:       return QueryEntities    (resolver, query,           out error);
-                case QueryType.Count:       return CountEntities    (resolver, query,           out error);
-                case QueryType.Read:        return ReadEntities     (resolver, query,           out error);
-                case QueryType.Create:      return CreateEntities   (resolver, query, docStr,   out error);
-                case QueryType.Upsert:      return UpsertEntities   (resolver, query, docStr,   out error);
-                case QueryType.Delete:      return DeleteEntities   (resolver, query,           out error);
-                case QueryType.Command:     return SendCommand      (resolver, query, docStr,   out error);
-                case QueryType.Message:     return SendMessage      (resolver, query, docStr,   out error);
+                case QueryType.Query:   return QueryEntities    (resolver, query,           out error);
+                case QueryType.Count:   return CountEntities    (resolver, query,           out error);
+                case QueryType.Read:    return ReadEntities     (resolver, query,           out error);
+                case QueryType.Create:  return CreateEntities   (resolver, query, docStr,   out error);
+                case QueryType.Upsert:  return UpsertEntities   (resolver, query, docStr,   out error);
+                case QueryType.Delete:  return DeleteEntities   (resolver, query,           out error);
+                case QueryType.Command: return SendCommand      (resolver, query, docStr,   out error);
+                case QueryType.Message: return SendMessage      (resolver, query, docStr,   out error);
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.queryType}");
         }
