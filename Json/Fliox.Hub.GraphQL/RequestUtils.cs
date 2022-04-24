@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static List<JsonValue> TryGetAnyList(GraphQLValue value, string name, string doc, out QueryError? error) {
+        internal static List<JsonValue> TryGetAnyList(GraphQLValue value, string name, out QueryError? error, string doc) {
             var gqlList = value as GraphQLListValue;
             if (gqlList == null) {
                 error = QueryError(name, "expect list", value, doc);
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static JsonValue TryGetAny(GraphQLValue value, string name, string doc, out QueryError? error) {
+        internal static JsonValue TryGetAny(GraphQLValue value, string name, out QueryError? error, string doc) {
             var sb          = new StringBuilder();
             var astError    = GetAny(value, sb);
             if (astError != null) {

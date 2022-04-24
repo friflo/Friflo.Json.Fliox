@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("entities")) {
-                    entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", doc, out error);
+                    entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", out error, doc);
                 } else {
                     error       = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("param")) {
-                    result  = RequestUtils.TryGetAny(argument.Value, "param", doc, out error);
+                    result  = RequestUtils.TryGetAny(argument.Value, "param", out error, doc);
                 } else {
                     error   = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
