@@ -63,8 +63,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     context.WriteError("invalid request body", error, 400);
                     return;
                 }
-                var docStr          = postBody.query;
-                var query           = ParseGraphQL(docStr, out error);
+                var doc             = postBody.query;
+                var query           = ParseGraphQL(doc, out error);
                 if (error != null) {
                     context.WriteError("invalid GraphQL query", error, 400);
                     return;
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return;
                 }
                 // --------------    POST           /graphql/{database}     case: any other "operationName"
-                var request         = schema.requestHandler.CreateRequest(operationName, query, docStr);
+                var request         = schema.requestHandler.CreateRequest(operationName, query, doc);
                 var syncRequest     = request.syncRequest; 
                 var cookies         = context.cookies;
                 syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 

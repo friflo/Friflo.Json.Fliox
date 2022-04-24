@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal QLRequestContext CreateRequest(string operationName, GraphQLDocument document, string docStr)
+        internal QLRequestContext CreateRequest(string operationName, GraphQLDocument document, string doc)
         {
             var definitions = document.Definitions;
             var queries     = new List<Query> ();
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (operation.Name != operationName)
                     continue;
                 var selections  = operation.SelectionSet.Selections;
-                AddQueries(selections, docStr, queries, tasks, utf8Buffer);
+                AddQueries(selections, doc, queries, tasks, utf8Buffer);
             }
             var syncRequest = new SyncRequest { database = database, tasks = tasks };
             return new QLRequestContext(syncRequest, queries);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private void AddQueries(
             List<ASTNode>           selections,
-            string                  docStr,
+            string                  doc,
             List<Query>             queries,
             List<SyncRequestTask>   tasks,
             IUtf8Buffer             buffer)
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var query = new Query(name, resolver.queryType, resolver.container, default, -1, queryRequest);
                     queries.Add(query);
                 } else {
-                    var queryRequest    = CreateQueryTask(resolver, graphQLQuery, docStr);
+                    var queryRequest    = CreateQueryTask(resolver, graphQLQuery, doc);
                     var task            = queryRequest.task;
                     var taskIndex       = task == null ? -1 : tasks.Count;
                     if (task != null) {
@@ -107,29 +107,29 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static QueryRequest CreateQueryTask(
             in QueryResolver    resolver,
             GraphQLField        query,
-            string              docStr)
+            string              doc)
         {
             switch(resolver.queryType) {
-                case QueryType.Query:   return QueryEntities    (resolver, query);
-                case QueryType.Count:   return CountEntities    (resolver, query);
-                case QueryType.Read:    return ReadEntities     (resolver, query);
-                case QueryType.Create:  return CreateEntities   (resolver, query, docStr);
-                case QueryType.Upsert:  return UpsertEntities   (resolver, query, docStr);
-                case QueryType.Delete:  return DeleteEntities   (resolver, query);
-                case QueryType.Command: return SendCommand      (resolver, query, docStr);
-                case QueryType.Message: return SendMessage      (resolver, query, docStr);
+                case QueryType.Query:   return QueryEntities    (resolver, query, doc);
+                case QueryType.Count:   return CountEntities    (resolver, query, doc);
+                case QueryType.Read:    return ReadEntities     (resolver, query, doc);
+                case QueryType.Create:  return CreateEntities   (resolver, query, doc);
+                case QueryType.Upsert:  return UpsertEntities   (resolver, query, doc);
+                case QueryType.Delete:  return DeleteEntities   (resolver, query, doc);
+                case QueryType.Command: return SendCommand      (resolver, query, doc);
+                case QueryType.Message: return SendMessage      (resolver, query, doc);
             }
             throw new InvalidOperationException($"unexpected resolver type: {resolver.queryType}");
         }
 
-        private static QueryRequest QueryEntities(in QueryResolver resolver, GraphQLField query)
+        private static QueryRequest QueryEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
             QueryError? error;
-            if (!RequestArgs.TryGetString (query, "filter",     out var filter,     out error)) return error;
-            if (!RequestArgs.TryGetInt    (query, "limit",      out var limit,      out error)) return error;
-            if (!RequestArgs.TryGetInt    (query, "maxCount",   out var maxCount,   out error)) return error;
-            if (!RequestArgs.TryGetString (query, "cursor",     out var cursor,     out error)) return error;
-            if (!RequestArgs.TryGetBool   (query, "selectAll",  out var selectAll,  out error)) return error;
+            if (!RequestArgs.TryGetString (query, "filter",     out var filter,     out error, doc)) return error;
+            if (!RequestArgs.TryGetInt    (query, "limit",      out var limit,      out error, doc)) return error;
+            if (!RequestArgs.TryGetInt    (query, "maxCount",   out var maxCount,   out error, doc)) return error;
+            if (!RequestArgs.TryGetString (query, "cursor",     out var cursor,     out error, doc)) return error;
+            if (!RequestArgs.TryGetBool   (query, "selectAll",  out var selectAll,  out error, doc)) return error;
             
             var task = new QueryEntities {
                 container = resolver.container, filter = filter, limit = limit,
@@ -138,64 +138,64 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new QueryRequest(task, selectAll);
         }
         
-        private static QueryRequest CountEntities(in QueryResolver resolver, GraphQLField query)
+        private static QueryRequest CountEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
             QueryError? error;
-            if (!RequestArgs.TryGetString (query, "filter", out string filter,  out error)) return error;
+            if (!RequestArgs.TryGetString (query, "filter", out string filter,  out error, doc)) return error;
             
             var task = new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
             return new QueryRequest(task);
         }
         
-        private static QueryRequest ReadEntities(in QueryResolver resolver, GraphQLField query)
+        private static QueryRequest ReadEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
             QueryError? error;
-            if (!RequestArgs.TryGetIds  (query, "ids",       out var ids,        out error)) return error;
-            if (!RequestArgs.TryGetBool (query, "selectAll", out var selectAll,  out error)) return error;
+            if (!RequestArgs.TryGetIds  (query, "ids",       out var ids,       out error, doc)) return error;
+            if (!RequestArgs.TryGetBool (query, "selectAll", out var selectAll, out error, doc)) return error;
             
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
             var task    = new ReadEntities { container = resolver.container, sets = sets };
             return new QueryRequest(task, selectAll);
         }
         
-        private static QueryRequest CreateEntities(in QueryResolver resolver, GraphQLField query, string docStr)
+        private static QueryRequest CreateEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
-            var entities = RequestArgs.GetEntities(query, docStr, out var error);
+            var entities = RequestArgs.GetEntities(query, out var error, doc);
             if (error != null)
                 return error;
             var task = new CreateEntities { container = resolver.container, entities = entities };
             return new QueryRequest(task);
         }
         
-        private static QueryRequest UpsertEntities(in QueryResolver resolver, GraphQLField query, string docStr)
+        private static QueryRequest UpsertEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
-            var entities = RequestArgs.GetEntities(query, docStr, out var error);
+            var entities = RequestArgs.GetEntities(query, out var error, doc);
             if (error != null)
                 return error;
             var task = new UpsertEntities { container = resolver.container, entities = entities };
             return new QueryRequest(task);
         }
         
-        private static QueryRequest DeleteEntities(in QueryResolver resolver, GraphQLField query)
+        private static QueryRequest DeleteEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
-            if (!RequestArgs.TryGetIds(query, "ids", out var ids, out var error))
+            if (!RequestArgs.TryGetIds(query, "ids", out var ids, out var error, doc))
                 return error;
             var task = new DeleteEntities { container = resolver.container, ids = ids };
             return new QueryRequest(task);
         }
         
-        private static QueryRequest SendCommand(in QueryResolver resolver, GraphQLField query, string docStr)
+        private static QueryRequest SendCommand(in QueryResolver resolver, GraphQLField query, string doc)
         {
-            var param   = RequestArgs.GetParam(query, docStr, resolver, out var error);
+            var param   = RequestArgs.GetParam(query, resolver, out var error, doc);
             if (error != null)
                 return error;
             var task    = new SendCommand { name = resolver.name, param = param };
             return new QueryRequest(task);
         }
         
-        private static QueryRequest SendMessage(in QueryResolver resolver, GraphQLField query, string docStr)
+        private static QueryRequest SendMessage(in QueryResolver resolver, GraphQLField query, string doc)
         {
-            var param   = RequestArgs.GetParam(query, docStr, resolver, out var error);
+            var param   = RequestArgs.GetParam(query, resolver, out var error, doc);
             if (error != null)
                 return error;
             var task    = new SendMessage { name = resolver.name, param = param };
