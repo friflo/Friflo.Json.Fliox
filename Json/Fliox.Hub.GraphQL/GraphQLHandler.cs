@@ -145,8 +145,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
 
         private static JsonValue IntrospectionQuery (ObjectPool<ObjectMapper> mapper, GraphQLDocument query, JsonValue schemaResponse) {
-            // schemaResponse = TestAPI.CreateTestSchema(mapper);
-            
             // var queryString = query.Source.ToString();
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);
