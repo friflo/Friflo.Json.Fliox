@@ -12,73 +12,82 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class RequestArgs
     {
-        internal static string GetString(GraphQLField query, string name, out QueryError? error)
+        internal static bool TryGetString(GraphQLField query, string name, out string value, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error))
-                return null;
-            string result = null;
+            if (!GetArguments(query, out var arguments, out error)) {
+                value = null;
+                return true;
+            }
+            value = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual(name)) {
-                    result  = RequestUtils.TryGetStringArg (argument.Value, name, out error);
+                    value = RequestUtils.TryGetStringArg (argument.Value, name, out error);
                     if (error != null)
-                        return null;
+                        return false;
                 }
             }
-            return result;
+            return true;
         }
         
-        internal static int? GetInt(GraphQLField query, string name, out QueryError? error)
+        internal static bool TryGetInt(GraphQLField query, string name, out int? value, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error))
-                return null;
-            int? result = null;
+            if (!GetArguments(query, out var arguments, out error)) {
+                value = null;
+                return true;
+            }
+            value = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if  (argName.SequenceEqual(name)) {
-                    result  = RequestUtils.TryGetIntArg(argument.Value, name, out error);
+                    value  = RequestUtils.TryGetIntArg(argument.Value, name, out error);
                     if (error != null)
-                        return null;
+                        return false;
                 }
             }
-            return result;
+            return true;
         }
         
-        internal static bool? GetBoolean(GraphQLField query, string name, out QueryError? error)
+        internal static bool TryGetBool(GraphQLField query, string name, out bool? value, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error))
-                return null;
-            bool? result = null;
+            if (!GetArguments(query, out var arguments, out error)) {
+                value = null;
+                return true;
+            }
+            value = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if  (argName.SequenceEqual(name)) {
-                    result  = RequestUtils.TryGetBooleanArg(argument.Value, name, out error);
+                    value = RequestUtils.TryGetBooleanArg(argument.Value, name, out error);
                     if (error != null)
-                        return null;
+                        return false;
                 }
             }
-            return result;
+            return true;
         }
         
-        internal static HashSet<JsonKey> GetIds(GraphQLField query, out QueryError? error) {
-            if (!GetArguments(query, out var arguments, out error))
-                return null;
+        internal static bool TryGetIds(GraphQLField query, string name, out HashSet<JsonKey> value, out QueryError? error) {
+            if (!GetArguments(query, out var arguments, out error)) {
+                value = null;
+                return true;
+            }
             List<JsonKey> idList = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
-                if (argName.SequenceEqual("ids")) {
-                    idList  = RequestUtils.TryGetStringList (argument, "ids", out error);
+                if (argName.SequenceEqual(name)) {
+                    idList  = RequestUtils.TryGetStringList (argument, name, out error);
                 }
             }
             if (idList == null) {
-                error = new QueryError(null, "missing parameter: ids");
-                return null;
+                error = new QueryError(name, "missing parameter");
+                value = null;
+                return false;
             }
-            var ids     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
+            value     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
             foreach (var id in idList) {
-                ids.Add(id);
+                value.Add(id);
             }
-            return ids;
+            return true;
         }
 
         internal static List<JsonValue> GetEntities(GraphQLField query, string docStr, out QueryError? error)
@@ -91,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (argName.SequenceEqual("entities")) {
                     entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", docStr, out error);
                 } else {
-                    error       = new QueryError(null, RequestUtils.UnknownArgument(argName));
+                    error       = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
                 if (error != null)
                     return null;
@@ -115,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (argName.SequenceEqual("param")) {
                     result  = RequestUtils.TryGetAny(argument.Value, "param", docStr, out error);
                 } else {
-                    error   = new QueryError(null, RequestUtils.UnknownArgument(argName));
+                    error   = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
                 if (error != null)
                     return new JsonValue();

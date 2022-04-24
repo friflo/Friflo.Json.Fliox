@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Schema.Definition;
 using GraphQLParser.AST;
 
+// ReSharper disable InlineOutVariableDeclaration
 // ReSharper disable PossibleNullReferenceException
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
@@ -120,21 +121,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
         private static QueryRequest QueryEntities(in QueryResolver resolver, GraphQLField query)
         {
-            string  filter      = RequestArgs.GetString (query, "filter",   out var error);
-            if (error != null)
-                return error;
-            int?    limit       = RequestArgs.GetInt    (query, "limit",    out error);
-            if (error != null)
-                return error;
-            int?    maxCount    = RequestArgs.GetInt    (query, "maxCount", out error);
-            if (error != null)
-                return error;
-            string  cursor      = RequestArgs.GetString (query, "cursor",   out error);
-            if (error != null)
-                return error;
-            bool?   selectAll   = RequestArgs.GetBoolean(query, "selectAll",out error);
-            if (error != null)
-                return error;
+            QueryError? error;
+            if (!RequestArgs.TryGetString (query, "filter",     out var filter,     out error)) return error;
+            if (!RequestArgs.TryGetInt    (query, "limit",      out var limit,      out error)) return error;
+            if (!RequestArgs.TryGetInt    (query, "maxCount",   out var maxCount,   out error)) return error;
+            if (!RequestArgs.TryGetString (query, "cursor",     out var cursor,     out error)) return error;
+            if (!RequestArgs.TryGetBool   (query, "selectAll",  out var selectAll,  out error)) return error;
+            
             var task = new QueryEntities {
                 container = resolver.container, filter = filter, limit = limit,
                 maxCount = maxCount, cursor = cursor
@@ -144,21 +137,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static QueryRequest CountEntities(in QueryResolver resolver, GraphQLField query)
         {
-            string  filter  = RequestArgs.GetString (query, "filter", out var error);
-            if (error != null)
-                return error;
+            QueryError? error;
+            if (!RequestArgs.TryGetString (query, "filter", out string filter,  out error)) return error;
+            
             var task = new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
             return new QueryRequest(task);
         }
         
         private static QueryRequest ReadEntities(in QueryResolver resolver, GraphQLField query)
         {
-            var ids = RequestArgs.GetIds(query, out var error);
-            if (error != null)
-                return error;
-            bool?   selectAll   = RequestArgs.GetBoolean(query, "selectAll",out error);
-            if (error != null)
-                return error;
+            QueryError? error;
+            if (!RequestArgs.TryGetIds  (query, "ids",       out var ids,        out error)) return error;
+            if (!RequestArgs.TryGetBool (query, "selectAll", out var selectAll,  out error)) return error;
+            
             var sets    = new List<ReadEntitiesSet> { new ReadEntitiesSet { ids = ids } };
             var task    = new ReadEntities { container = resolver.container, sets = sets };
             return new QueryRequest(task, selectAll);
@@ -184,8 +175,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         private static QueryRequest DeleteEntities(in QueryResolver resolver, GraphQLField query)
         {
-            var ids = RequestArgs.GetIds(query, out var error);
-            if (error != null)
+            if (!RequestArgs.TryGetIds(query, "ids", out var ids, out var error))
                 return error;
             var task = new DeleteEntities { container = resolver.container, ids = ids };
             return new QueryRequest(task);

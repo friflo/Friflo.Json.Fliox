@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
@@ -14,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class RequestUtils
     {
-        internal static string UnknownArgument(ReadOnlySpan<char> argName) => $"unknown argument: {argName.ToString()}";
+        internal static string UnknownArgument = "unknown argument";
 
         internal static string TryGetStringArg(GraphQLValue gqlValue, string name, out QueryError? error) {
             var strVal = gqlValue as GraphQLStringValue;
