@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class RequestArgs
     {
-        internal static string GetString(GraphQLField query, string name, out string error)
+        internal static string GetString(GraphQLField query, string name, out QueryError? error)
         {
             var arguments   = query.Arguments;
             if (arguments == null) {
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static int? GetInt(GraphQLField query, string name, out string error)
+        internal static int? GetInt(GraphQLField query, string name, out QueryError? error)
         {
             var arguments   = query.Arguments;
             if (arguments == null) {
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static bool? GetBoolean(GraphQLField query, string name, out string error)
+        internal static bool? GetBoolean(GraphQLField query, string name, out QueryError? error)
         {
             var arguments   = query.Arguments;
             if (arguments == null) {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static HashSet<JsonKey> GetIds(GraphQLField query, out string error) {
+        internal static HashSet<JsonKey> GetIds(GraphQLField query, out QueryError? error) {
             var arguments = query.Arguments;
             if (arguments == null) {
                 error = null;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 }
             }
             if (idList == null) {
-                error = "missing parameter: ids";
+                error = new QueryError("missing parameter: ids");
                 return null;
             }
             var ids     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return ids;
         }
         
-        internal static List<JsonValue> GetEntities(GraphQLField query, string docStr, out string error)
+        internal static List<JsonValue> GetEntities(GraphQLField query, string docStr, out QueryError? error)
         {
             List<JsonValue> entities = null;
             var arguments = query.Arguments;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     if (argName.SequenceEqual("entities")) {
                         entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);
                     } else {
-                        error       = RequestUtils.UnknownArgument(argName);
+                        error       = new QueryError(RequestUtils.UnknownArgument(argName));
                     }
                     if (error != null)
                         return null;
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return entities;
         }
         
-        internal static JsonValue GetParam(GraphQLField query, string docStr, in QueryResolver resolver, out string error) {
+        internal static JsonValue GetParam(GraphQLField query, string docStr, in QueryResolver resolver, out QueryError? error) {
             var args = query.Arguments;
             if (args == null) {
                 if (!resolver.hasParam) {
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return new JsonValue();
                 }
                 if (resolver.paramRequired) {
-                    error = "Expect argument: param";
+                    error = new QueryError("Expect argument: param");
                 } else {
                     error = null;
                 }
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (argName.SequenceEqual("param")) {
                     result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);
                 } else {
-                    error   = RequestUtils.UnknownArgument(argName);
+                    error   = new QueryError(RequestUtils.UnknownArgument(argName));
                 }
                 if (error != null)
                     return new JsonValue();

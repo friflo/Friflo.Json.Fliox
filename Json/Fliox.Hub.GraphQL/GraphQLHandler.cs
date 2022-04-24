@@ -78,11 +78,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return;
                 }
                 // --------------    POST           /graphql/{database}     case: any other "operationName"
-                var request = schema.requestHandler.CreateRequest(operationName, query, docStr, out error);
-                if (error != null) {
-                    context.WriteError("invalid GraphQL query", error, 400);
-                    return;
-                }
+                var request         = schema.requestHandler.CreateRequest(operationName, query, docStr);
                 var syncRequest     = request.syncRequest; 
                 var cookies         = context.cookies;
                 syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 

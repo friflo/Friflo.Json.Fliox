@@ -17,19 +17,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  string          name;
         internal  readonly  QueryType       type;
         internal  readonly  string          container;
-        internal  readonly  SyncRequestTask task;
         internal  readonly  SelectionNode   selection;
+        internal  readonly  int             taskIndex;
+        internal  readonly  SyncRequestTask task;
         internal  readonly  bool            selectAll;
+        internal  readonly  QueryError?     error;
 
         public    override  string          ToString() => $"{type}: {name}";
 
-        internal Query(string name, QueryType type, string container, in QueryRequest queryRequest, in SelectionNode selection) {
+        internal Query(string name, QueryType type, string container, in SelectionNode selection, int taskIndex, in QueryRequest queryRequest) {
             this.name       = name;
             this.type       = type;
             this.container  = container;
+            this.selection  = selection;
+            this.taskIndex  = taskIndex;
             this.task       = queryRequest.task;
             this.selectAll  = queryRequest.selectAll;
-            this.selection  = selection;
+            this.error      = queryRequest.error;
         }
     }
     

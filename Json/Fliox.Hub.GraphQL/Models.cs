@@ -36,6 +36,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         public  List<GqlErrorLocation>  locations;
         public  List<string>            path;
         public  GqlErrorExtensions      extensions;
+
+        public  override string         ToString() => message;
     }
     
     internal struct GqlErrorLocation {
