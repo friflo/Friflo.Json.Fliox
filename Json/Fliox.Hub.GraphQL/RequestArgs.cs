@@ -14,11 +14,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     {
         internal static string GetString(GraphQLField query, string name, out QueryError? error)
         {
-            var arguments   = query.Arguments;
-            if (arguments == null) {
-                error = null;
+            if (!GetArguments(query, out var arguments, out error))
                 return null;
-            }
             string result = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
@@ -28,17 +25,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         return null;
                 }
             }
-            error = null;
             return result;
         }
         
         internal static int? GetInt(GraphQLField query, string name, out QueryError? error)
         {
-            var arguments   = query.Arguments;
-            if (arguments == null) {
-                error = null;
+            if (!GetArguments(query, out var arguments, out error))
                 return null;
-            }
             int? result = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
@@ -48,17 +41,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         return null;
                 }
             }
-            error = null;
             return result;
         }
         
         internal static bool? GetBoolean(GraphQLField query, string name, out QueryError? error)
         {
-            var arguments   = query.Arguments;
-            if (arguments == null) {
-                error = null;
+            if (!GetArguments(query, out var arguments, out error))
                 return null;
-            }
             bool? result = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
@@ -68,16 +57,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         return null;
                 }
             }
-            error = null;
             return result;
         }
         
         internal static HashSet<JsonKey> GetIds(GraphQLField query, out QueryError? error) {
-            var arguments = query.Arguments;
-            if (arguments == null) {
-                error = null;
+            if (!GetArguments(query, out var arguments, out error))
                 return null;
-            }
             List<JsonKey> idList = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
@@ -93,46 +78,39 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var id in idList) {
                 ids.Add(id);
             }
-            error = null;
             return ids;
         }
-        
+
         internal static List<JsonValue> GetEntities(GraphQLField query, string docStr, out QueryError? error)
         {
+            if (!GetArguments(query, out var arguments, out error))
+                return null;
             List<JsonValue> entities = null;
-            var arguments = query.Arguments;
-            if (arguments != null) {
-                foreach (var argument in arguments) {
-                    var argName = argument.Name.Value.Span;
-                    if (argName.SequenceEqual("entities")) {
-                        entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);
-                    } else {
-                        error       = new QueryError(RequestUtils.UnknownArgument(argName));
-                    }
-                    if (error != null)
-                        return null;
+            foreach (var argument in arguments) {
+                var argName = argument.Name.Value.Span;
+                if (argName.SequenceEqual("entities")) {
+                    entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);
+                } else {
+                    error       = new QueryError(RequestUtils.UnknownArgument(argName));
                 }
+                if (error != null)
+                    return null;
             }
-            error = null;
             return entities;
         }
         
         internal static JsonValue GetParam(GraphQLField query, string docStr, in QueryResolver resolver, out QueryError? error) {
-            var args = query.Arguments;
-            if (args == null) {
+            if (!GetArguments(query, out var arguments, out error)) {
                 if (!resolver.hasParam) {
-                    error = null;
                     return new JsonValue();
                 }
                 if (resolver.paramRequired) {
                     error = new QueryError("Expect argument: param");
-                } else {
-                    error = null;
                 }
                 return new JsonValue();
             }
             JsonValue result;
-            foreach (var argument in args) {
+            foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("param")) {
                     result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);
@@ -142,8 +120,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (error != null)
                     return new JsonValue();
             }
-            error = null;
             return result;
+        }
+        
+        private static bool GetArguments (GraphQLField query, out GraphQLArguments args, out QueryError? error) {
+            error = null;
+            args = query.Arguments;
+            return args != null;
         }
     }
 }
