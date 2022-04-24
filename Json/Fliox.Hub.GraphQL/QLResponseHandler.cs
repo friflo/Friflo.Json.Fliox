@@ -39,14 +39,16 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var             taskResults = syncResponse.tasks;
 
             for (int n = 0; n < queries.Count; n++) {
-                var query       = queries[n];
+                var query = queries[n];
                 if (query.error != null) {
+                    // --- request error
                     var queryError  = query.error.Value;
                     if (errors == null) { errors = new List<GqlError>(); }
-                    var path    = new List<string> { query.name };
+                    var path    = new List<string>(2) { query.name };
                     if (queryError.argName != null)
                         path.Add(queryError.argName);
-                    var error   = new GqlError { message = queryError.message, path = path };
+                    var ext     = new GqlErrorExtensions { type =  TaskErrorResultType.InvalidTask };
+                    var error   = new GqlError { message = queryError.message, path = path, extensions = ext };
                     errors.Add(error);
                     continue;
                 }
@@ -57,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var queryResult = ProcessTaskResult(context);
                     data.Add(query.name, queryResult);
                 } else {
-                    // --- error
+                    // --- response error
                     if (errors == null) { errors = new List<GqlError>(); }
                     var path    = new List<string> { query.name };
                     var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
@@ -65,8 +67,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     errors.Add(error);
                 }
             }
-            var response            = new GqlResponse { data = data, errors = errors };
-            writer.Pretty           = true;
+            var response    = new GqlResponse { data = data, errors = errors };
+            writer.Pretty   = true;
             return new JsonValue(writer.WriteAsArray(response));
         }
         

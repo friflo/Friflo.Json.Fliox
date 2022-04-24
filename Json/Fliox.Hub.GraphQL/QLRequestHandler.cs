@@ -87,17 +87,20 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     continue;
                 var name = graphQLQuery.Name.StringValue;
                 if (!resolvers.TryGetValue(name, out var resolver)) {
-                    continue;
+                    QueryRequest queryRequest = new QueryError(null, "unknown query / mutation");
+                    var query = new Query(name, resolver.queryType, resolver.container, default, -1, queryRequest);
+                    queries.Add(query);
+                } else {
+                    var queryRequest    = CreateQueryTask(resolver, graphQLQuery, docStr);
+                    var task            = queryRequest.task;
+                    var taskIndex       = task == null ? -1 : tasks.Count;
+                    if (task != null) {
+                        tasks.Add(queryRequest.task);
+                    }
+                    var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.objectType);
+                    var query           = new Query(name, resolver.queryType, resolver.container, selectionNode, taskIndex, queryRequest);
+                    queries.Add(query);
                 }
-                var queryRequest    = CreateQueryTask(resolver, graphQLQuery, docStr);
-                var task            = queryRequest.task;
-                var taskIndex       = task == null ? -1 : tasks.Count;
-                if (task != null) {
-                    tasks.Add(queryRequest.task);
-                }
-                var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.objectType);
-                var query           = new Query(name, resolver.queryType, resolver.container, selectionNode, taskIndex, queryRequest);
-                queries.Add(query);
             }
         }
         
