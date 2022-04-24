@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual(name)) {
-                    result  = RequestUtils.TryGetStringArg (argument.Value, out error);
+                    result  = RequestUtils.TryGetStringArg (argument.Value, name, out error);
                     if (error != null)
                         return null;
                 }
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if  (argName.SequenceEqual(name)) {
-                    result  = RequestUtils.TryGetIntArg(argument.Value, out error);
+                    result  = RequestUtils.TryGetIntArg(argument.Value, name, out error);
                     if (error != null)
                         return null;
                 }
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if  (argName.SequenceEqual(name)) {
-                    result  = RequestUtils.TryGetBooleanArg(argument.Value, out error);
+                    result  = RequestUtils.TryGetBooleanArg(argument.Value, name, out error);
                     if (error != null)
                         return null;
                 }
@@ -67,11 +67,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("ids")) {
-                    idList  = RequestUtils.TryGetIdList (argument, out error);
+                    idList  = RequestUtils.TryGetStringList (argument, "ids", out error);
                 }
             }
             if (idList == null) {
-                error = new QueryError("missing parameter: ids");
+                error = new QueryError(null, "missing parameter: ids");
                 return null;
             }
             var ids     = new HashSet<JsonKey>(idList.Count, JsonKey.Equality);
@@ -89,9 +89,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("entities")) {
-                    entities    = RequestUtils.TryGetAnyList(argument.Value, docStr, out error);
+                    entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", docStr, out error);
                 } else {
-                    error       = new QueryError(RequestUtils.UnknownArgument(argName));
+                    error       = new QueryError(null, RequestUtils.UnknownArgument(argName));
                 }
                 if (error != null)
                     return null;
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return new JsonValue();
                 }
                 if (resolver.paramRequired) {
-                    error = new QueryError("Expect argument: param");
+                    error = new QueryError(null, "Expect argument: param");
                 }
                 return new JsonValue();
             }
@@ -113,9 +113,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("param")) {
-                    result  = RequestUtils.TryGetAny(argument.Value, docStr, out error);
+                    result  = RequestUtils.TryGetAny(argument.Value, "param", docStr, out error);
                 } else {
-                    error   = new QueryError(RequestUtils.UnknownArgument(argName));
+                    error   = new QueryError(null, RequestUtils.UnknownArgument(argName));
                 }
                 if (error != null)
                     return new JsonValue();

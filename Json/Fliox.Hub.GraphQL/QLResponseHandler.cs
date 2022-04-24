@@ -40,11 +40,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
             for (int n = 0; n < queries.Count; n++) {
                 var query       = queries[n];
-                var queryError  = query.error;
-                if (queryError != null) {
+                if (query.error != null) {
+                    var queryError  = query.error.Value;
                     if (errors == null) { errors = new List<GqlError>(); }
                     var path    = new List<string> { query.name };
-                    var error   = new GqlError { message = queryError.Value.message, path = path };
+                    if (queryError.argName != null)
+                        path.Add(queryError.argName);
+                    var error   = new GqlError { message = queryError.message, path = path };
                     errors.Add(error);
                     continue;
                 }

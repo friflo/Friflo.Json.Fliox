@@ -38,11 +38,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     }
     
     internal readonly struct QueryError {
+        internal  readonly  string      argName;
         internal  readonly  string      message;
 
         public    override  string      ToString() => message;
-
-        internal QueryError (string message) {
+        
+        internal QueryError (string argName, string message) {
+            this.argName    = argName;
             this.message    = message;
         }
     }
