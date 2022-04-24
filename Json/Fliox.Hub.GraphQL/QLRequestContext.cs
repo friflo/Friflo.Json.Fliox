@@ -4,8 +4,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
 
-#if !UNITY_5_3_OR_NEWER
-
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal readonly struct QLRequestContext
@@ -20,4 +18,4 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     }
 }
 
-#endif
+
