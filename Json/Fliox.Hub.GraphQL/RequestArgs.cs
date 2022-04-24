@@ -19,13 +19,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return true;
             }
             value = null;
-            foreach (var argument in arguments) {
-                var argName = argument.Name.Value.Span;
-                if (argName.SequenceEqual(name)) {
-                    value = RequestUtils.TryGetStringArg (argument.Value, name, out error);
-                    if (error != null)
-                        return false;
-                }
+            if (FindArgument(arguments, name, out var argument)) {
+                value = RequestUtils.TryGetStringArg (argument.Value, name, out error);
+                if (error != null)
+                    return false;
             }
             return true;
         }
@@ -37,13 +34,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return true;
             }
             value = null;
-            foreach (var argument in arguments) {
-                var argName = argument.Name.Value.Span;
-                if  (argName.SequenceEqual(name)) {
-                    value  = RequestUtils.TryGetIntArg(argument.Value, name, out error);
-                    if (error != null)
-                        return false;
-                }
+            if (FindArgument(arguments, name, out var argument)) {
+                value  = RequestUtils.TryGetIntArg(argument.Value, name, out error);
+                if (error != null)
+                    return false;
             }
             return true;
         }
@@ -55,13 +49,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return true;
             }
             value = null;
-            foreach (var argument in arguments) {
-                var argName = argument.Name.Value.Span;
-                if  (argName.SequenceEqual(name)) {
-                    value = RequestUtils.TryGetBooleanArg(argument.Value, name, out error);
-                    if (error != null)
-                        return false;
-                }
+            if (FindArgument(arguments, name, out var argument)) {
+                value = RequestUtils.TryGetBooleanArg(argument.Value, name, out error);
+                if (error != null)
+                    return false;
             }
             return true;
         }
@@ -72,11 +63,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return true;
             }
             List<JsonKey> idList = null;
-            foreach (var argument in arguments) {
-                var argName = argument.Name.Value.Span;
-                if (argName.SequenceEqual(name)) {
-                    idList  = RequestUtils.TryGetStringList (argument, name, out error);
-                }
+            if (FindArgument(arguments, name, out var argument)) {
+                idList  = RequestUtils.TryGetStringList (argument, name, out error);
             }
             if (idList == null) {
                 error = new QueryError(name, "missing parameter");
@@ -132,10 +120,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
+        // ------------------------------------------ utils ------------------------------------------ 
         private static bool GetArguments (GraphQLField query, out GraphQLArguments args, out QueryError? error) {
             error = null;
             args = query.Arguments;
             return args != null;
+        }
+        
+        private static bool FindArgument (GraphQLArguments arguments, string name, out GraphQLArgument argument) {
+            foreach (var args in arguments) {
+                var argName = args.Name.Value.Span;
+                if (!argName.SequenceEqual(name))
+                    continue;
+                argument = args;
+                return true;
+            }
+            argument = null;
+            return false;
         }
     }
 }
