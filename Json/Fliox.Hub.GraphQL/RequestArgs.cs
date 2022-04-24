@@ -65,6 +65,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             List<JsonKey> idList = null;
             if (FindArgument(arguments, name, out var argument)) {
                 idList  = RequestUtils.TryGetStringList (argument, name, out error);
+                if (error != null) {
+                    value = null;
+                    return false;
+                }
             }
             if (idList == null) {
                 error = new QueryError(name, "missing parameter");
