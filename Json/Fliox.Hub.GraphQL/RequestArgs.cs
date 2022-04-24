@@ -6,12 +6,35 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Transform.Query.Parser;
 using GraphQLParser.AST;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal static class RequestArgs
     {
+        private const string DefaultParam   = "o";
+        
+        internal static bool TryGetFilter(GraphQLField query, string name, out string value, out QueryError? error, string doc)
+        {
+            if (!TryGetString(query, name, out value, out error, doc))
+                return false;
+            if (value == null)
+                return true;
+            var env   = new QueryEnv(DefaultParam); 
+            var op    = Operation.Parse(value, out var filterError, env);
+            if (filterError != null) {
+                error = new QueryError(name, filterError);
+                return false;
+            }
+            if (op is FilterOperation _) {
+                return true;
+            }
+            error = new QueryError(name, "expect predicate expression");
+            return false;
+        }
+        
         internal static bool TryGetString(GraphQLField query, string name, out string value, out QueryError? error, string doc)
         {
             if (!GetArguments(query, out var arguments, out error)) {

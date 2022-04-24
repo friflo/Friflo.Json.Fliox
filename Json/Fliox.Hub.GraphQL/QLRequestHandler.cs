@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static QueryRequest QueryEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
             QueryError? error;
-            if (!RequestArgs.TryGetString (query, "filter",     out var filter,     out error, doc)) return error;
+            if (!RequestArgs.TryGetFilter (query, "filter",     out var filter,     out error, doc)) return error;
             if (!RequestArgs.TryGetInt    (query, "limit",      out var limit,      out error, doc)) return error;
             if (!RequestArgs.TryGetInt    (query, "maxCount",   out var maxCount,   out error, doc)) return error;
             if (!RequestArgs.TryGetString (query, "cursor",     out var cursor,     out error, doc)) return error;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private static QueryRequest CountEntities(in QueryResolver resolver, GraphQLField query, string doc)
         {
             QueryError? error;
-            if (!RequestArgs.TryGetString (query, "filter", out string filter,  out error, doc)) return error;
+            if (!RequestArgs.TryGetFilter (query, "filter", out string filter,  out error, doc)) return error;
             
             var task = new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
             return new QueryRequest(task);
