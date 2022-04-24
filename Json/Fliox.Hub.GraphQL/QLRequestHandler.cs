@@ -209,44 +209,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new QueryRequest(task);
         }
     }
-    
-    internal readonly struct QueryRequest {
-        internal  readonly  SyncRequestTask task;
-        internal  readonly  bool            selectAll;
-        internal  readonly  QueryError?     error;
-
-        public override string ToString() {
-            if (error != null)
-                return error.Value.message;
-            return task.ToString();
-        }
-
-        internal QueryRequest (SyncRequestTask task, bool? selectAll = false) {
-            this.task       = task;
-            this.selectAll  = selectAll.HasValue && selectAll.Value;
-            this.error      = null;
-        }
-        
-        private QueryRequest (in QueryError? error) {
-            this.task       = null;
-            this.selectAll  = false;
-            this.error      = error;
-        }
-        
-        public static implicit operator QueryRequest(QueryError? error) {
-            return new QueryRequest(error);
-        }
-    }
-    
-    internal readonly struct QueryError {
-        internal  readonly  string      message;
-
-        public    override  string      ToString() => message;
-
-        internal QueryError (string message) {
-            this.message    = message;
-        }
-    }
 }
 
 #endif
