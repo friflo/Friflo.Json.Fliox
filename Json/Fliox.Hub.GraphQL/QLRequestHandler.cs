@@ -81,7 +81,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             List<SyncRequestTask>   tasks,
             IUtf8Buffer             buffer)
         {
-            queries.Capacity = queries.Count + selections.Count;
+            queries.Capacity    = queries.Count + selections.Count;
+            tasks.Capacity      = tasks.Count   + selections.Count;
             foreach (var selection in selections) {
                 if (!(selection is GraphQLField graphQLQuery))
                     continue;
@@ -132,8 +133,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (!RequestArgs.TryGetBool   (query, "selectAll",  out var selectAll,  out error, doc)) return error;
             
             var task = new QueryEntities {
-                container = resolver.container, filter = filter, limit = limit,
-                maxCount = maxCount, cursor = cursor
+                container = resolver.container, filter = filter, limit = limit, maxCount = maxCount, cursor = cursor
             };
             return new QueryRequest(task, selectAll);
         }
@@ -143,7 +143,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             QueryError? error;
             if (!RequestArgs.TryGetFilter (query, "filter", out string filter,  out error, doc)) return error;
             
-            var task = new AggregateEntities { container = resolver.container, type = AggregateType.count, filter = filter };
+            var task = new AggregateEntities {
+                container = resolver.container, type = AggregateType.count, filter = filter
+            };
             return new QueryRequest(task);
         }
         
