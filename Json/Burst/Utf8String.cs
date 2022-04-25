@@ -58,23 +58,24 @@ namespace Friflo.Json.Burst
             }
             return true;
         }
-#else
-        public ReadOnlySpan<byte> ReadOnlySpan () {
-            return new ReadOnlySpan<byte> (buffer.Buf, start, len);
-        }
         
         public bool IsEqual (in Utf8String value) {
-            return ReadOnlySpan().SequenceEqual(value.ReadOnlySpan());
+            throw new NotImplementedException();
+        }
+#else
+        public ReadOnlySpan<byte> ReadOnlySpan => new ReadOnlySpan<byte> (buffer.Buf, start, len);
+
+        public bool IsEqual (in Utf8String value) {
+            return ReadOnlySpan.SequenceEqual(value.ReadOnlySpan);
         }
 #endif
-        
         public bool IsEqual (ref Bytes value) {
             if (len != value.Len)
                 return false;
 #if UNITY_5_3_OR_NEWER
             return ArraysEqual(buffer.Buf, start, value.buffer.array, len);
 #else
-            var left   = ReadOnlySpan();
+            var left   = ReadOnlySpan;
             var right  = new ReadOnlySpan<byte> (value.buffer.array, value.start, value.Len);
             return left.SequenceEqual(right);
 #endif
@@ -154,7 +155,7 @@ namespace Friflo.Json.Burst
             Span<byte> temp = stackalloc byte[len];
             Utf8.GetBytes(value, temp);
             foreach (var str in strings) {
-                if (temp.SequenceEqual(str.ReadOnlySpan()))
+                if (temp.SequenceEqual(str.ReadOnlySpan))
                     return str;
             }
             return Add(value);
