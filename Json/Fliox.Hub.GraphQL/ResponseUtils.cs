@@ -30,34 +30,28 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return new SelectionNode(fieldName, objectType, false, null, null);
             }
             var selections      = selectionSet.Selections;
-            var emitTypeName    = ContainsTypename(selections);
-            AddSelectionFields(selections, buffer, objectType, out var nodes, out var fragments);
+            AddSelectionFields(selections, buffer, objectType, out var emitTypeName, out var nodes, out var fragments);
             return new SelectionNode(fieldName, objectType, emitTypeName, nodes, fragments);
         }
-        
-        private static bool ContainsTypename(List<ASTNode> selections) {
-            foreach (var selection in selections) {
-                var gqlField    = (GraphQLField)selection;
-                if (gqlField.Name == "__typename")
-                    return true;
-            }
-            return false;
-        }
-        
+
         private static void AddSelectionFields(
             List<ASTNode>           selections,
             IUtf8Buffer             buffer,
             in SelectionObject      objectType,
+            out bool                emitTypeName,    
             out SelectionNode[]     nodes,
             out SelectionNode[]     fragments)
         {
+            emitTypeName        = false;
             var nodeList        = new List<SelectionNode>();
-            var fragmentList    = new List<SelectionNode>();
+            List<SelectionNode> fragmentList = null;
             foreach (var selection in selections) {
                 if      (selection is GraphQLField gqlField) {
                     var fieldName  = gqlField.Name;
-                    if (fieldName == "__typename")
+                    if (fieldName == "__typename") {
+                        emitTypeName = true;
                         continue;
+                    }
                     var fieldNameSpan   = fieldName.Value.Span;
                     var selectionField  = objectType.FindField(fieldNameSpan);
                     var span            = fieldName.Value.Span;
@@ -73,11 +67,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var conditionName       = condition.Type.Name;
                     var union               = objectType.FindUnion(conditionName.Value.Span);
                     var fragmentNode        = CreateNode(union.typenameUtf8, fragmentSelection, buffer, union.unionObject);
+                    if (fragmentList == null) { fragmentList = new List<SelectionNode>(); }
                     fragmentList.Add(fragmentNode);
                 }
             }
             nodes       = nodeList.ToArray();
-            fragments   = fragmentList.Count > 0 ? fragmentList.ToArray() : null;
+            fragments   = fragmentList?.ToArray();
         }
     }
 }

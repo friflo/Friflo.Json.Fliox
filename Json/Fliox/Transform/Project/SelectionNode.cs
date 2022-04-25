@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Project
@@ -13,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Project
         internal  readonly      bool                emitTypeName;
         internal  readonly      SelectionUnion[]    unions;     // can be null
         internal  readonly      Utf8String          typeName;
-        private   readonly      SelectionNode[]     fragments;  // can be null
+        internal  readonly      SelectionNode[]     fragments;  // can be null
 
         public override         string              ToString() => FormatToString();
 

@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Transform.Project
         }
         
         private bool TraceObject(in SelectionNode node) {
-            bool            setUnionType    = node.emitTypeName && node.unions != null;
+            bool            setUnionType    = (node.emitTypeName && node.unions != null) || node.fragments != null;
             Utf8String      unionType       = default;
             SelectionNode[] fragmentNodes   = null;
             while (Utf8JsonWriter.NextObjectMember(ref parser)) {
