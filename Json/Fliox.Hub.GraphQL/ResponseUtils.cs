@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             out SelectionNode[]     fragments)
         {
             emitTypeName        = false;
-            var nodeList        = new List<SelectionNode>();
+            var nodeList        = new List<SelectionNode>(selections.Count);
             List<SelectionNode> fragmentList = null;
             foreach (var selection in selections) {
                 if      (selection is GraphQLField gqlField) {
