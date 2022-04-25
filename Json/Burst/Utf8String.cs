@@ -62,6 +62,10 @@ namespace Friflo.Json.Burst
         public ReadOnlySpan<byte> ReadOnlySpan () {
             return new ReadOnlySpan<byte> (buffer.Buf, start, len);
         }
+        
+        public bool IsEqual (in Utf8String value) {
+            return ReadOnlySpan().SequenceEqual(value.ReadOnlySpan());
+        }
 #endif
         
         public bool IsEqual (ref Bytes value) {

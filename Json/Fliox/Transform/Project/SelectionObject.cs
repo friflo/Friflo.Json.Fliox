@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Project
     {
         public    readonly  Utf8String          name;
         private   readonly  SelectionField[]    fields;
-        internal  readonly  SelectionUnion[]    unions;
+        internal  readonly  SelectionUnion[]    unions; // can be null
 
         public   override   string              ToString() {
             if (name.IsNull)
@@ -43,6 +43,19 @@ namespace Friflo.Json.Fliox.Transform.Project
             }
             return default;
         }
+        
+        public SelectionUnion FindUnion(in ReadOnlySpan<char> name) {
+            if (unions == null) {
+                return default;
+            }
+            for (int n = 0; n < unions.Length; n++) {
+                var union  = unions[n];
+                if (!union.typename.AsSpan().SequenceEqual(name))
+                    continue;
+                return union;
+            }
+            return default;
+        }
 #endif
     }
     
@@ -66,13 +79,17 @@ namespace Friflo.Json.Fliox.Transform.Project
     public readonly struct SelectionUnion
     {
         public   readonly   Utf8String      discriminant;
-        public   readonly   Utf8String      typename;
+        public   readonly   Utf8String      typenameUtf8;
+        public   readonly   string          typename;
+        public   readonly   SelectionObject unionObject;
 
         public   override   string          ToString() => discriminant.AsString();
 
-        public SelectionUnion (in Utf8String discriminant, in Utf8String typename) {
+        public SelectionUnion (in Utf8String discriminant, in Utf8String typenameUtf8, string typename, in SelectionObject unionObject) {
             this.discriminant   = discriminant;
+            this.typenameUtf8   = typenameUtf8;
             this.typename       = typename;
+            this.unionObject    = unionObject;
         }
     }
 }

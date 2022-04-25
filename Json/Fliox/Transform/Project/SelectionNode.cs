@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Transform.Project
@@ -10,8 +11,9 @@ namespace Friflo.Json.Fliox.Transform.Project
         private   readonly      SelectionNode[]     nodes;
         private   readonly      Utf8String          fieldName;
         internal  readonly      bool                emitTypeName;
-        internal  readonly      SelectionUnion[]    unions;
+        internal  readonly      SelectionUnion[]    unions;     // can be null
         internal  readonly      Utf8String          typeName;
+        private   readonly      SelectionNode[]     fragments;  // can be null
 
         public override         string              ToString() => FormatToString();
 
@@ -19,13 +21,15 @@ namespace Friflo.Json.Fliox.Transform.Project
             in Utf8String       fieldName,
             in SelectionObject  objectType,
             bool                emitTypeName,
-            SelectionNode[]     nodes)
+            SelectionNode[]     nodes,
+            SelectionNode[]     fragments)
         {
             this.fieldName      = fieldName;
             this.typeName       = objectType.name;
             this.emitTypeName   = emitTypeName;
             this.unions         = objectType.unions;
             this.nodes          = nodes;
+            this.fragments      = fragments;
         }
         
         private string FormatToString() {
@@ -47,7 +51,18 @@ namespace Friflo.Json.Fliox.Transform.Project
             return false;
         }
         
-                
+        public static bool FindFragment(SelectionNode[] fragmentNodes, ref Bytes key, out SelectionNode result) {
+            for (int n = 0; n < fragmentNodes.Length; n++) {
+                var node  = fragmentNodes[n];
+                if (!node.fieldName.IsEqual(ref key))
+                    continue;
+                result = node;
+                return true;
+            }
+            result = default;
+            return false;
+        }
+
         public Utf8String FindUnionType (ref Bytes discriminant) {
             if (unions == null) {
                 return default;
@@ -55,9 +70,21 @@ namespace Friflo.Json.Fliox.Transform.Project
             foreach (var union in unions) {
                 if (!union.discriminant.IsEqual(ref discriminant))
                     continue;
-                return union.typename;
+                return union.typenameUtf8;
             }
             return default;
+        }
+        
+        public SelectionNode[] FindFragmentNodes (in Utf8String typename) {
+            if (fragments == null) {
+                return null;
+            }
+            foreach (var fragment in fragments) {
+                if (!fragment.typeName.IsEqual(typename))
+                    continue;
+                return fragment.nodes;
+            }
+            return null;
         }
     }
 }

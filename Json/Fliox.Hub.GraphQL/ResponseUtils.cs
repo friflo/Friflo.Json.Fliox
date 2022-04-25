@@ -17,32 +17,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             IUtf8Buffer         buffer,
             in SelectionObject  objectType)
         {
-            return CreateNode(null, query.SelectionSet, buffer, objectType);
+            return CreateNode(default, query.SelectionSet, buffer, objectType);
         }
         
         private static SelectionNode CreateNode (
-            GraphQLName         fieldName,
+            in Utf8String       fieldName,
             GraphQLSelectionSet selectionSet,
             IUtf8Buffer         buffer,
             in SelectionObject  objectType)
         {
-            Utf8String fieldNameUtf8;
-            if (fieldName == (object)null) {
-                fieldNameUtf8   = default;
-            } else {
-                var span        = fieldName.Value.Span;
-                fieldNameUtf8   = buffer.Add(span);
-            }
             if (selectionSet == null) {
-                return new SelectionNode(fieldNameUtf8, objectType, false, null);
+                return new SelectionNode(fieldName, objectType, false, null, null);
             }
             var selections      = selectionSet.Selections;
-            var count           = selections.Count;
             var emitTypeName    = ContainsTypename(selections);
-            if (emitTypeName)   { count--; }
-            var nodes   = new SelectionNode[count];
-            AddSelectionFields(nodes, selections, buffer, objectType);
-            return new SelectionNode(fieldNameUtf8, objectType, emitTypeName, nodes);
+            AddSelectionFields(selections, buffer, objectType, out var nodes, out var fragments);
+            return new SelectionNode(fieldName, objectType, emitTypeName, nodes, fragments);
         }
         
         private static bool ContainsTypename(List<ASTNode> selections) {
@@ -55,21 +45,39 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static void AddSelectionFields(
-            SelectionNode[]     nodes,
-            List<ASTNode>       selections,
-            IUtf8Buffer         buffer,
-            in SelectionObject  objectType)
+            List<ASTNode>           selections,
+            IUtf8Buffer             buffer,
+            in SelectionObject      objectType,
+            out SelectionNode[]     nodes,
+            out SelectionNode[]     fragments)
         {
-            int i = 0;
+            var nodeList        = new List<SelectionNode>();
+            var fragmentList    = new List<SelectionNode>();
             foreach (var selection in selections) {
-                var gqlField   = (GraphQLField)selection;
-                var fieldName  = gqlField.Name;
-                if (fieldName == "__typename")
-                    continue;
-                var fieldNameSpan   = fieldName.Value.Span;
-                var selectionField  = objectType.FindField(fieldNameSpan);
-                nodes[i++]          = CreateNode(fieldName, gqlField.SelectionSet, buffer, selectionField.objectType);
+                if      (selection is GraphQLField gqlField) {
+                    var fieldName  = gqlField.Name;
+                    if (fieldName == "__typename")
+                        continue;
+                    var fieldNameSpan   = fieldName.Value.Span;
+                    var selectionField  = objectType.FindField(fieldNameSpan);
+                    var span            = fieldName.Value.Span;
+                    var fieldNameUtf8   = buffer.Add(span);
+                    var node            = CreateNode(fieldNameUtf8, gqlField.SelectionSet, buffer, selectionField.objectType);
+                    nodeList.Add(node);
+                }
+                else if (selection is GraphQLInlineFragment gqlFragment) {
+                    var condition           = gqlFragment.TypeCondition;
+                    if (condition == null)
+                        continue;
+                    var fragmentSelection   = gqlFragment.SelectionSet;
+                    var conditionName       = condition.Type.Name;
+                    var union               = objectType.FindUnion(conditionName.Value.Span);
+                    var fragmentNode        = CreateNode(union.typenameUtf8, fragmentSelection, buffer, union.unionObject);
+                    fragmentList.Add(fragmentNode);
+                }
             }
+            nodes       = nodeList.ToArray();
+            fragments   = fragmentList.Count > 0 ? fragmentList.ToArray() : null;
         }
     }
 }
