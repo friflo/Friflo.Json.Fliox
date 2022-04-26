@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public partial class TestRemote
     {
-        // [Test]
+        [Test]
         public static async Task TestQueries() {
             var query       = File.ReadAllText(TestFolder + "query.graphql");
 
