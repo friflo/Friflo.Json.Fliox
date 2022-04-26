@@ -14,8 +14,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public static partial class TestRemote
     {
-        private static readonly string TestFolder = CommonUtils.GetBasePath() + "assets~/GraphQL/";
-        
         private static  HttpHostHub     _hostHub;   // todo - UserDB is bottleneck as it uses a file-system DB
         private static  ObjectMapper    _mapper;
         private static  SharedEnv       _env;
