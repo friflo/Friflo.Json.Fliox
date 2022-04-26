@@ -14,8 +14,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public partial class TestRemote
     {
-        private static readonly string GraphQLAssets = CommonUtils.GetBasePath() + "assets~/GraphQL/";
-        
         /// <summary>
         /// use name <see cref="GraphQL__Init"/> to run as first test.
         /// This forces loading all required <see cref="Friflo.Json.Fliox.Hub.GraphQL.GraphQLHandler"/> code
@@ -23,20 +21,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         /// </summary>
         [Test]
         public static async Task GraphQL__Init() {
-            var query       = File.ReadAllText(GraphQLAssets + "queries.graphql");
+            var query       = ReadGraphQLQuery ("queries.graphql");
             await GraphQLRequest("/graphql/main_db", query);
         }
         
         [Test]
         public static async Task GraphQL_IntrospectionQuery() {
-            var query       = File.ReadAllText(GraphQLAssets + "introspection.graphql");
+            var query       = ReadGraphQLQuery ("introspection.graphql");
             var request     = await GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
             WriteGraphQLResponse(request, "introspection.json");
         }
         
         [Test]
         public static async Task GraphQL_queries() {
-            var query       = File.ReadAllText(GraphQLAssets + "queries.graphql");
+            var query       = ReadGraphQLQuery ("queries.graphql");
             var request     = await GraphQLRequest("/graphql/main_db", query);
             // for (int n = 0; n < 10_000; n++) { await GraphQLRequest("/graphql/main_db", query); }
             WriteGraphQLResponse(request, "queries.json");
@@ -47,6 +45,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var query   = "{ std_Echo (param: 123) }";
             var request = await GraphQLRequest("/graphql/main_db", query);
             WriteGraphQLResponse(request, "std_Echo.json");
+        }
+        
+        // --------------------------------------- utils ---------------------------------------
+        private static readonly string GraphQLAssets = CommonUtils.GetBasePath() + "assets~/GraphQL/";
+
+        private static string ReadGraphQLQuery(string path) {
+            return File.ReadAllText(GraphQLAssets + path);
         }
         
         private static void WriteGraphQLResponse(RequestContext request, string path) {

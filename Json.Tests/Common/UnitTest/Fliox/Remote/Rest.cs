@@ -15,8 +15,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public partial class TestRemote
     {
-        private static readonly string RestAssets = CommonUtils.GetBasePath() + "assets~/Rest/";
-        
         /// <summary>
         /// use name <see cref="Rest__Init"/> to run as first test.
         /// This forces loading all required RestHandler code and subsequent tests show the real execution time
@@ -36,7 +34,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         [Test]
         public static async Task Rest_GetEntity() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
-            WriteRestResponse(request, "main_db.articles.json");
+            WriteRestResponse(request, "GET-main_db.articles.json");
+        }
+        
+        [Test]
+        public static async Task Rest_PutEntities() {
+            var body = ReadRestRequest ("PUT-main_db.articles.json");
+            var request = await RestRequest("PUT", "/rest/main_db/articles", "", body);
+            AssertRequest(request, 200, "text/plain", "PUT successful");
+        }
+        
+        
+        // --------------------------------------- utils ---------------------------------------
+        private static readonly string RestAssets = CommonUtils.GetBasePath() + "assets~/Rest/";
+        
+        private static string ReadRestRequest(string path) {
+            return File.ReadAllText(RestAssets + path);
         }
 
         private static void WriteRestResponse(RequestContext request, string path) {

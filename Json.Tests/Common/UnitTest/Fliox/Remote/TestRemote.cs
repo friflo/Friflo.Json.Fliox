@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Main;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
@@ -72,6 +73,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
                 map = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
             };
         }
+        
+        private static void AssertRequest(RequestContext request, int status, string contentType) {
+            AreEqual(status,        request.StatusCode);
+            AreEqual(contentType,   request.ResponseContentType);
+        }
+
+        private static void AssertRequest(RequestContext request, int status, string contentType, string response) {
+            AreEqual(status,        request.StatusCode);
+            AreEqual(contentType,   request.ResponseContentType);
+            AreEqual(response,      request.Response.AsString());
+        }
+
     }
     
     internal class GraphQLRequest {
