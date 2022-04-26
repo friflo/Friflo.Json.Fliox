@@ -25,15 +25,15 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public sealed class MemoryDatabase : EntityDatabase
     {
-        private  readonly   bool                pretty;
-        private  readonly   MemoryContainerType containerType;
-        public   override   string              StorageName => "in-memory";
+        private  readonly   bool        pretty;
+        private  readonly   MemoryType  containerType;
+        public   override   string      StorageName => "in-memory";
 
-        public MemoryDatabase(TaskHandler handler = null, MemoryContainerType? type = null, DbOpt opt = null, bool pretty = false)
+        public MemoryDatabase(TaskHandler handler = null, MemoryType? type = null, DbOpt opt = null, bool pretty = false)
             : base(handler, opt)
         {
             this.pretty     = pretty;
-            containerType   = type ?? MemoryContainerType.Concurrent;
+            containerType   = type ?? MemoryType.Concurrent;
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    public enum MemoryContainerType {
+    public enum MemoryType {
         Concurrent,
         /// used to preserve insertion order of entities in ClusterDB and MonitorDB
         NonConcurrent
@@ -56,10 +56,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public    override  string  ToString()  => $"{base.ToString()}, Count: {keyValues.Count}";
 
-        public MemoryContainer(string name, EntityDatabase database, MemoryContainerType type, bool pretty)
+        public MemoryContainer(string name, EntityDatabase database, MemoryType type, bool pretty)
             : base(name, database)
         {
-            if (type == MemoryContainerType.Concurrent) {
+            if (type == MemoryType.Concurrent) {
                 keyValuesConcurrent = new ConcurrentDictionary<JsonKey, JsonValue>(JsonKey.Equality);
                 keyValues           = keyValuesConcurrent;
             } else {

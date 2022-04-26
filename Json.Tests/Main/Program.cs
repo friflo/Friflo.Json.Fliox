@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserName
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
-            var hostHub = CreateHttpHost();
+            var hostHub = CreateHttpHost(new Config());
         //  var hostHub = CreateMiniHost();
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
@@ -40,45 +40,49 @@ namespace Friflo.Json.Tests.Main
         /// Blueprint method showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
         /// via HTTP and WebSockets.
         /// </summary>
-        public static HttpHostHub CreateHttpHost(string rootPath = "", SharedEnv env = null, bool useMemoryDb = false ) {
-            var c                   = new Config(rootPath, useMemoryDb);
+        public static HttpHostHub CreateHttpHost(Config c) {
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema, new PocHandler());
             
-            var hub                 = new FlioxHub(database, env);
+            var hub                 = new FlioxHub(database, c.env);
             hub.Info.projectName    = "Test Hub";                                                               // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main";  // optional
             hub.Info.envName        = "dev"; hub.Info.envColor = "rgb(34 140 0)";                               // optional
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info of hosted databases. Required by Hub Explorer
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
-            hub.EventBroker         = new EventBroker(true, env);       // optional - enables sending events for subscriptions
+            hub.EventBroker         = new EventBroker(true, c.env);       // optional - enables sending events for subscriptions
             
             var userDB              = new FileDatabase(c.UserDbPath, new UserDBHandler(), null, false);
-            hub.Authenticator       = new UserAuthenticator(userDB, env);    // optional - otherwise all request tasks are authorized
+            hub.Authenticator       = new UserAuthenticator(userDB, c.env);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var hostHub             = new HttpHostHub(hub, "/fliox/", env).CacheControl(c.cache);
+            var hostHub             = new HttpHostHub(hub, "/fliox/", c.env).CacheControl(c.cache);
             hostHub.AddHandler       (new GraphQLHandler());
             hostHub.AddHandler       (new StaticFileHandler(c.Www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
             hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
             return hostHub;
         }
         
-        private class Config {
-            private  readonly   string  rootPath;
-            internal            string  DbPath      => rootPath + "./Json.Tests/assets~/DB/PocStore";
-            internal            string  UserDbPath  => rootPath + "./Json.Tests/assets~/DB/UserStore";
-            internal            string  Www         => rootPath + "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
-            internal readonly   string  cache       = null; // "max-age=600"; // HTTP Cache-Control
-            internal readonly   bool    useMemoryDb;
+        public class Config {
+            internal readonly   SharedEnv   env; 
+            private  readonly   string      rootPath;
+            internal            string      DbPath      => rootPath + "./Json.Tests/assets~/DB/PocStore";
+            internal            string      UserDbPath  => rootPath + "./Json.Tests/assets~/DB/UserStore";
+            internal            string      Www         => rootPath + "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
+            internal readonly   string      cache       = null; // "max-age=600"; // HTTP Cache-Control
+            internal readonly   bool        useMemoryDb;
+            internal readonly   MemoryType  memoryType  = MemoryType.Concurrent;
             
-            internal Config(string rootPath, bool useMemoryDb) { this.rootPath = rootPath; this.useMemoryDb = useMemoryDb; }
+            internal Config() { }
+            internal Config(SharedEnv env, string rootPath, bool useMemoryDb, MemoryType memoryType) {
+                this.env = env; this.rootPath = rootPath; this.useMemoryDb = useMemoryDb; this.memoryType = memoryType;
+            }
         }
         
         private static HttpHostHub CreateMiniHost() {
-            var c                   = new Config("", false);
+            var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
             var database            = CreateDatabase(c, null, new PocHandler());
             var hub          	    = new FlioxHub(database);
@@ -92,7 +96,7 @@ namespace Friflo.Json.Tests.Main
             fileDb.Schema = schema;
             if (!c.useMemoryDb)
                 return fileDb;
-            var memoryDB = new MemoryDatabase(handler);
+            var memoryDB = new MemoryDatabase(handler, c.memoryType);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;

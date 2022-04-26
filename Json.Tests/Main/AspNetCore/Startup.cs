@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Main
             {
                 app.UseDeveloperExceptionPage();
             }
-            var hostHub = Program.CreateHttpHost();
+            var hostHub = Program.CreateHttpHost(new Program.Config());
             hostHub.sharedEnv.Logger = new HubLoggerAspNetCore(loggerFactory);
 
             app.UseRouting();

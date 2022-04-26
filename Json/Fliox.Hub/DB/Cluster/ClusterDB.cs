@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             this.name       = name ?? Name;
             typeSchema      = new NativeTypeSchema(typeof(ClusterStore));
             Schema          = new DatabaseSchema(typeSchema);
-            stateDB         = new MemoryDatabase(null, MemoryContainerType.NonConcurrent);
+            stateDB         = new MemoryDatabase(null, MemoryType.NonConcurrent);
             clusterHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
 

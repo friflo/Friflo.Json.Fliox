@@ -24,7 +24,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var baseFolder  = CommonUtils.GetBasePath("../");
             _env            = new SharedEnv();
             _mapper         = new ObjectMapper(_env.TypeStore);
-            _hostHub        = Program.CreateHttpHost(baseFolder, _env, true);
+            // use NonConcurrent in-memory DB to preserve entity order
+            var config      = new Program.Config(_env, baseFolder, true, MemoryType.NonConcurrent);
+            _hostHub        = Program.CreateHttpHost(config);
         }
         [OneTimeTearDown] public static void  Dispose() {
             _hostHub.Dispose();
