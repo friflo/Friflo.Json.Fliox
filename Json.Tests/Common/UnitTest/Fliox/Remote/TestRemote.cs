@@ -11,6 +11,7 @@ using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Main;
 using NUnit.Framework;
 
+// ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public static partial class TestRemote
@@ -38,7 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var request         = new GraphQLRequest { query = query, operationName = operationName };
             var jsonBody        = _mapper.writer.WriteAsArray(request);
             var body            = new MemoryStream();
-            await body.WriteAsync(jsonBody);
+            body.Write(jsonBody, 0, jsonBody.Length);
+            body.Flush();
             body.Position       = 0;
             
             var headers         = new TestHttpHeaders();
@@ -53,8 +55,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         {
             var bodyStream      = new MemoryStream();
             var writer          = new StreamWriter(bodyStream);
-            await writer.WriteAsync(jsonBody);
-            await writer.FlushAsync();
+            writer.Write(jsonBody);
+            writer.Flush();
             bodyStream.Position   = 0;
             
             var headers         = new TestHttpHeaders();

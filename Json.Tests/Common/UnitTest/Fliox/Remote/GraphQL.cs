@@ -1,8 +1,11 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+#if !UNITY_5_3_OR_NEWER
+
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -28,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static async Task GraphQL_IntrospectionQuery() {
             var query       = File.ReadAllText(GraphQLAssets + "introspection.graphql");
             var request     = await GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
-            File.WriteAllBytes(GraphQLAssets + "introspection.json", request.Response.AsByteArray());
+            WriteGraphQLResponse(request, "introspection.json");
         }
         
         [Test]
@@ -36,15 +39,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var query       = File.ReadAllText(GraphQLAssets + "queries.graphql");
             var request     = await GraphQLRequest("/graphql/main_db", query);
             // for (int n = 0; n < 10_000; n++) { await GraphQLRequest("/graphql/main_db", query); }
-            File.WriteAllBytes(GraphQLAssets + "queries.json", request.Response.AsByteArray());
+            WriteGraphQLResponse(request, "queries.json");
         }
 
         [Test]
         public static async Task GraphQL_std_Echo() {
             var query   = "{ std_Echo (param: 123) }";
             var request = await GraphQLRequest("/graphql/main_db", query);
-            
-            File.WriteAllBytes(GraphQLAssets + "std_Echo.json", request.Response.AsByteArray());
+            WriteGraphQLResponse(request, "std_Echo.json");
+        }
+        
+        private static void WriteGraphQLResponse(RequestContext request, string path) {
+            File.WriteAllBytes(GraphQLAssets + path, request.Response.AsByteArray());
         }
     }
 }
+
+#endif

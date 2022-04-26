@@ -1,8 +1,11 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+#if !UNITY_5_3_OR_NEWER
+
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -33,8 +36,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         [Test]
         public static async Task Rest_GetEntity() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
-            File.WriteAllBytes(RestAssets + "main_db.articles.json", request.Response.AsByteArray());
+            WriteRestResponse(request, "main_db.articles.json");
         }
 
+        private static void WriteRestResponse(RequestContext request, string path) {
+            File.WriteAllBytes(RestAssets + path, request.Response.AsByteArray());
+        }
     }
 }
+
+#endif
