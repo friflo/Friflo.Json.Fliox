@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         {
             var request         = new GraphQLRequest { query = query, operationName = operationName };
             var jsonBody        = _mapper.writer.WriteAsArray(request);
-            var body            = new System.IO.MemoryStream();
+            var body            = new MemoryStream();
             await body.WriteAsync(jsonBody);
             body.Position       = 0;
             
