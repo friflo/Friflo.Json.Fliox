@@ -19,13 +19,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test]
+        public static async Task GraphQL_IntrospectionQuery() {
+            var query       = File.ReadAllText(TestFolder + "introspection.graphql");
+            var request     = await GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
+            File.WriteAllBytes(TestFolder + "introspection.json", request.Response.AsByteArray());
+        }
+        
+        [Test]
         public static async Task GraphQL_queries() {
             var query       = File.ReadAllText(TestFolder + "queries.graphql");
-
             var request     = await GraphQLRequest("/graphql/main_db", query);
-            
             // for (int n = 0; n < 10_000; n++) { await GraphQLRequest("/graphql/main_db", query); }
-            
             File.WriteAllBytes(TestFolder + "queries.json", request.Response.AsByteArray());
         }
 

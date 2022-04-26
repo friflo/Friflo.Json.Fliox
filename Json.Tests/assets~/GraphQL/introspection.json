@@ -1,0 +1,4014 @@
+{
+    "data": {
+        "__schema": {
+    "queryType": {
+        "name": "Query"
+    },
+    "mutationType": {
+        "name": "Mutation"
+    },
+    "types": [
+        {
+            "kind":"SCALAR",
+            "name": "String"
+        },
+        {
+            "kind":"SCALAR",
+            "name": "Int"
+        },
+        {
+            "kind":"SCALAR",
+            "name": "Float"
+        },
+        {
+            "kind":"SCALAR",
+            "name": "Boolean"
+        },
+        {
+            "kind":"SCALAR",
+            "name": "Any"
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Query",
+            "fields": [
+                {
+                    "name": "queryOrders",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryOrdersResult"
+                        }
+                    }
+                },
+                {
+                    "name": "queryCustomers",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryCustomersResult"
+                        }
+                    }
+                },
+                {
+                    "name": "queryArticles",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryArticlesResult"
+                        }
+                    }
+                },
+                {
+                    "name": "queryProducers",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryProducersResult"
+                        }
+                    }
+                },
+                {
+                    "name": "queryEmployees",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryEmployeesResult"
+                        }
+                    }
+                },
+                {
+                    "name": "queryTypes",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "maxCount",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        },
+                        {
+                            "name": "cursor",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "QueryTypesResult"
+                        }
+                    }
+                },
+                {
+                    "name": "readOrders",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Order"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "readCustomers",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Customer"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "readArticles",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Article"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "readProducers",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Producer"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "readEmployees",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Employee"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "readTypes",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "selectAll",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "Boolean"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "TestType"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "countOrders",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countCustomers",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countArticles",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countProducers",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countEmployees",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "countTypes",
+                    "args": [
+                        {
+                            "name": "filter",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "TestCommand",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "TestCommandInput"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "SyncCommand",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "AsyncCommand",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "Command1",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "test_Command2",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "test_CommandHello",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Echo",
+                    "description": "/** echos the given parameter to assure the database is working appropriately. */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Any"
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Any"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Containers",
+                    "description": "/** list all database containers */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "DbContainers"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Messages",
+                    "description": "/** list all database commands and messages */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "DbMessages"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Schema",
+                    "description": "/** return the Schema assigned to the database */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "DbSchema"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Stats",
+                    "description": "/** return the number of entities of all containers (or the given container) of the database */\n",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "DbStats"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Details",
+                    "description": "/** returns general information about the Hub like version, host, project and environment name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "HostDetails"
+                        }
+                    }
+                },
+                {
+                    "name": "std_Cluster",
+                    "description": "/** list all databases and their containers hosted by the Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "HostCluster"
+                        }
+                    }
+                },
+                {
+                    "name": "Message1",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "AsyncMessage",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "test_Message2",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "param",
+                            "type": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "QueryOrdersResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Order"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "QueryCustomersResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Customer"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "QueryArticlesResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Article"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "QueryProducersResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Producer"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "QueryEmployeesResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Employee"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "QueryTypesResult",
+            "fields": [
+                {
+                    "name": "count",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "cursor",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "items",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "TestType"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "EntityError",
+            "fields": [
+                {
+                    "name": "id",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "type",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "message",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Mutation",
+            "fields": [
+                {
+                    "name": "createOrders",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "OrderInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "createCustomers",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "CustomerInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "createArticles",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "ArticleInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "createProducers",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "ProducerInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "createEmployees",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "EmployeeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "createTypes",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "TestTypeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertOrders",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "OrderInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertCustomers",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "CustomerInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertArticles",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "ArticleInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertProducers",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "ProducerInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertEmployees",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "EmployeeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "upsertTypes",
+                    "args": [
+                        {
+                            "name": "entities",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "TestTypeInput"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "deleteOrders",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "deleteCustomers",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "deleteArticles",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "deleteProducers",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "deleteEmployees",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "deleteTypes",
+                    "args": [
+                        {
+                            "name": "ids",
+                            "type": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"LIST",
+                                    "ofType": {
+                                        "kind":"NON_NULL",
+                                        "ofType": {
+                                            "kind":"SCALAR",
+                                            "name": "String"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "EntityError"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "PocStore",
+            "description": "/**\n * The **PocStore** offer two functionalities:   \n * 1. Defines a database **schema** by declaring its containers, commands and messages  \n * 2. Is a database **client** providing type-safe access to its containers, commands and messages   \n */\n",
+            "fields": [
+                {
+                    "name": "orders",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "customers",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "articles",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "producers",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "employees",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "types",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Order",
+            "description": "/**\n * Some useful class documentation :)\n * ```\n * multiline line\n * code documentation\n * ```\n * Test type reference '**OrderItem**'\n */\n",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "customer",
+                    "description": "    /**\n     * Some **useful** field documentation 🙂\n     * Check some new lines\n     * in documentation\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "created",
+                    "description": "    /** single line documentation */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "items",
+                    "description": "    /** `single line code documentation` */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "OrderItem"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "OrderInput",
+            "description": "/**\n * Some useful class documentation :)\n * ```\n * multiline line\n * code documentation\n * ```\n * Test type reference '**OrderItem**'\n */\n",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "customer",
+                    "description": "    /**\n     * Some **useful** field documentation 🙂\n     * Check some new lines\n     * in documentation\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "created",
+                    "description": "    /** single line documentation */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "items",
+                    "description": "    /** `single line code documentation` */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "OrderItemInput"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Customer",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "CustomerInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Article",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "producer",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "ArticleInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "producer",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Producer",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "employees",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "ProducerInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "employees",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "String"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "Employee",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "firstName",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "lastName",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "EmployeeInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "firstName",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "lastName",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "TestType",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "dateTime",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "dateTimeNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "bigInt",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "bigIntNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "boolean",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "booleanNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                },
+                {
+                    "name": "uint8",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint8Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "int16",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int16Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "int32",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int32Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "int64",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int64Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "float32",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Float"
+                        }
+                    }
+                },
+                {
+                    "name": "float32Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Float"
+                    }
+                },
+                {
+                    "name": "float64",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Float"
+                        }
+                    }
+                },
+                {
+                    "name": "float64Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Float"
+                    }
+                },
+                {
+                    "name": "pocStruct",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "PocStruct"
+                        }
+                    }
+                },
+                {
+                    "name": "pocStructNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "PocStruct"
+                    }
+                },
+                {
+                    "name": "intArray",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Int"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "intArrayNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "intNullArray",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "jsonValue",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "derivedClass",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "DerivedClass"
+                        }
+                    }
+                },
+                {
+                    "name": "derivedClassNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "DerivedClass"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "TestTypeInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "dateTime",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "dateTimeNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "bigInt",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "bigIntNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "boolean",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Boolean"
+                        }
+                    }
+                },
+                {
+                    "name": "booleanNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Boolean"
+                    }
+                },
+                {
+                    "name": "uint8",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "uint8Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "int16",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int16Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "int32",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int32Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "int64",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "int64Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Int"
+                    }
+                },
+                {
+                    "name": "float32",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Float"
+                        }
+                    }
+                },
+                {
+                    "name": "float32Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Float"
+                    }
+                },
+                {
+                    "name": "float64",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Float"
+                        }
+                    }
+                },
+                {
+                    "name": "float64Null",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Float"
+                    }
+                },
+                {
+                    "name": "pocStruct",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "PocStructInput"
+                        }
+                    }
+                },
+                {
+                    "name": "pocStructNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "PocStructInput"
+                    }
+                },
+                {
+                    "name": "intArray",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "Int"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "intArrayNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "Int"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "intNullArray",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "jsonValue",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                },
+                {
+                    "name": "derivedClass",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "DerivedClassInput"
+                        }
+                    }
+                },
+                {
+                    "name": "derivedClassNull",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "DerivedClassInput"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "OrderItem",
+            "description": "",
+            "fields": [
+                {
+                    "name": "article",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "amount",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "OrderItemInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "article",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "amount",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "PocEntity",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "PocEntityInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "PocStruct",
+            "description": "",
+            "fields": [
+                {
+                    "name": "value",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "PocStructInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "value",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "DerivedClass",
+            "description": "",
+            "fields": [
+                {
+                    "name": "derivedVal",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "article",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "amount",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "DerivedClassInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "derivedVal",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "article",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "amount",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
+                    "name": "name",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "TestCommand",
+            "description": "",
+            "fields": [
+                {
+                    "name": "text",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "TestCommandInput",
+            "description": "",
+            "inputFields": [
+                {
+                    "name": "text",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "DbContainers",
+            "description": "/** **containers** and **storage** type of a database */\n",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "storage",
+                    "description": "    /** **storage** type. e.g. memory, file-system, ... */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "containers",
+                    "description": "    /** list of database **containers** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "DbContainersInput",
+            "description": "/** **containers** and **storage** type of a database */\n",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "storage",
+                    "description": "    /** **storage** type. e.g. memory, file-system, ... */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "containers",
+                    "description": "    /** list of database **containers** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "DbMessages",
+            "description": "/** **commands** and **messages** of a database */\n",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "commands",
+                    "description": "    /** list of database **commands** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "messages",
+                    "description": "    /** list of database **messages** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "DbMessagesInput",
+            "description": "/** **commands** and **messages** of a database */\n",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "commands",
+                    "description": "    /** list of database **commands** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "messages",
+                    "description": "    /** list of database **messages** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "DbSchema",
+            "description": "/**\n * A **DbSchema** can be assigned to a database to specify its **containers**, **commands** and **messages**.  \n * The types used by the Schema are declared within **jsonSchemas**.  \n * The type referenced by the tuple **schemaName** / **schemaPath** specify the\n * database containers, commands and messages.\n */\n",
+            "fields": [
+                {
+                    "name": "id",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "schemaName",
+                    "description": "    /** refer a type definition of the JSON Schema referenced with **schemaPath** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "schemaPath",
+                    "description": "    /** refer a JSON Schema in **jsonSchemas** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "jsonSchemas",
+                    "description": "    /**\n     * map of **JSON Schemas** each containing a set of type definitions.  \n     * Each JSON Schema is identified by its unique path\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "DbSchemaInput",
+            "description": "/**\n * A **DbSchema** can be assigned to a database to specify its **containers**, **commands** and **messages**.  \n * The types used by the Schema are declared within **jsonSchemas**.  \n * The type referenced by the tuple **schemaName** / **schemaPath** specify the\n * database containers, commands and messages.\n */\n",
+            "inputFields": [
+                {
+                    "name": "id",
+                    "description": "    /** database name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "schemaName",
+                    "description": "    /** refer a type definition of the JSON Schema referenced with **schemaPath** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "schemaPath",
+                    "description": "    /** refer a JSON Schema in **jsonSchemas** */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "jsonSchemas",
+                    "description": "    /**\n     * map of **JSON Schemas** each containing a set of type definitions.  \n     * Each JSON Schema is identified by its unique path\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "Any"
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "DbStats",
+            "description": "/** list of container statistics. E.g. the number of entities per container */\n",
+            "fields": [
+                {
+                    "name": "containers",
+                    "description": "    /** list of container statistics - number of entities per container */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "ContainerStats"
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "DbStatsInput",
+            "description": "/** list of container statistics. E.g. the number of entities per container */\n",
+            "inputFields": [
+                {
+                    "name": "containers",
+                    "description": "    /** list of container statistics - number of entities per container */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"LIST",
+                        "ofType": {
+                            "kind":"NON_NULL",
+                            "ofType": {
+                                "kind":"SCALAR",
+                                "name": "ContainerStatsInput"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "ContainerStats",
+            "description": "/** statistics of a single container. E.g. the number of entities in a container */\n",
+            "fields": [
+                {
+                    "name": "name",
+                    "description": "    /** container name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "count",
+                    "description": "    /** number of entities / records within a container */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "ContainerStatsInput",
+            "description": "/** statistics of a single container. E.g. the number of entities in a container */\n",
+            "inputFields": [
+                {
+                    "name": "name",
+                    "description": "    /** container name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "count",
+                    "description": "    /** number of entities / records within a container */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "HostDetails",
+            "description": "/** general information about a Hub */\n",
+            "fields": [
+                {
+                    "name": "version",
+                    "description": "    /** host version */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "hostName",
+                    "description": "    /**\n     * host name. Used as **id** in\n     * **hosts** of database **monitor**\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "projectName",
+                    "description": "    /** project name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "projectWebsite",
+                    "description": "    /** link to a website describing project and Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "envName",
+                    "description": "    /** environment name. e.g. 'dev', 'test', 'staging', 'prod' */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "envColor",
+                    "description": "    /**\n     * the color used to display the environment name in GUI's using CSS color format.  \n     * E.g. using red for a production environment: \"#ff0000\" or \"rgb(255 0 0)\"\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "routes",
+                    "description": "    /** routes configures by **HttpHostHub** - commonly below /fliox */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "HostDetailsInput",
+            "description": "/** general information about a Hub */\n",
+            "inputFields": [
+                {
+                    "name": "version",
+                    "description": "    /** host version */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "String"
+                        }
+                    }
+                },
+                {
+                    "name": "hostName",
+                    "description": "    /**\n     * host name. Used as **id** in\n     * **hosts** of database **monitor**\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "projectName",
+                    "description": "    /** project name */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "projectWebsite",
+                    "description": "    /** link to a website describing project and Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "envName",
+                    "description": "    /** environment name. e.g. 'dev', 'test', 'staging', 'prod' */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "envColor",
+                    "description": "    /**\n     * the color used to display the environment name in GUI's using CSS color format.  \n     * E.g. using red for a production environment: \"#ff0000\" or \"rgb(255 0 0)\"\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "routes",
+                    "description": "    /** routes configures by **HttpHostHub** - commonly below /fliox */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "String"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "kind":"OBJECT",
+            "name": "HostCluster",
+            "description": "/** All **databases** hosted by Hub */\n",
+            "fields": [
+                {
+                    "name": "databases",
+                    "description": "    /** list of **databases** hosted by Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "DbContainers"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "interfaces": [
+            ]
+        },
+        {
+            "kind":"INPUT_OBJECT",
+            "name": "HostClusterInput",
+            "description": "/** All **databases** hosted by Hub */\n",
+            "inputFields": [
+                {
+                    "name": "databases",
+                    "description": "    /** list of **databases** hosted by Hub */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"LIST",
+                            "ofType": {
+                                "kind":"NON_NULL",
+                                "ofType": {
+                                    "kind":"SCALAR",
+                                    "name": "DbContainersInput"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "directives": [
+    ]
+}
+    }
+}

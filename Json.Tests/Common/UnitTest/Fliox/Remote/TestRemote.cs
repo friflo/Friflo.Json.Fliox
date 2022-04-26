@@ -34,9 +34,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _env.Dispose();
         }
             
-        private static async Task<RequestContext> GraphQLRequest(string route, string query)
+        private static async Task<RequestContext> GraphQLRequest(string route, string query, string operationName = null)
         {
-            var request     = new GraphQLRequest { query = query };
+            var request     = new GraphQLRequest { query = query, operationName = operationName };
             var jsonBody    = _mapper.writer.WriteAsArray(request);
             var body        = new System.IO.MemoryStream();
             await body.WriteAsync(jsonBody);
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     
     internal class GraphQLRequest {
         public  string                      query;
-    //  public  string                      operationName;
+        public  string                      operationName;
     //  public  Dictionary<string,string>   variables;
     }
     
