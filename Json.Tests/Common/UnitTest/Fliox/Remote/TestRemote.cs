@@ -39,15 +39,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var request     = new GraphQLRequest { query = query };
             var jsonBody    = _mapper.writer.WriteAsArray(request);
             var body        = new System.IO.MemoryStream();
-            await body.WriteAsync(jsonBody, 0, jsonBody.Length);
+            await body.WriteAsync(jsonBody);
             body.Position   = 0;
             
             var headers = new TestHttpHeaders();
             var cookies = new TestHttpCookies {
-                map = {
-                    ["fliox-user"]  = "admin",
-                    ["fliox-token"] = "admin",
-                }
+                map = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
             };
             var requestContext = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
             await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
