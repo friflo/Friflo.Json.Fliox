@@ -34,16 +34,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _mapper.Dispose();
             _env.Dispose();
         }
-            
+        
+        
+        // ----------------------------------------- GraphQL -----------------------------------------
         private static async Task<RequestContext> GraphQLRequest(string route, string query, string operationName = null)
         {
-            var request         = new GraphQLRequest { query = query, operationName = operationName };
-            var jsonBody        = _mapper.writer.WriteAsArray(request);
-            var body            = new MemoryStream();
-            body.Write(jsonBody, 0, jsonBody.Length);
-            body.Flush();
-            body.Position       = 0;
-            
+            var body            = QueryToStream(query, operationName);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
@@ -52,20 +48,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             return requestContext;
         }
         
+        private static Stream QueryToStream(string query, string operationName) {
+            var request         = new GraphQLRequest { query = query, operationName = operationName };
+            var jsonBody        = _mapper.writer.WriteAsArray(request);
+            var body            = new MemoryStream();
+            body.Write(jsonBody, 0, jsonBody.Length);
+            body.Flush();
+            body.Position       = 0;
+            return body;
+        }
+        
+        
+        // ------------------------------------------ REST ------------------------------------------
         private static async Task<RequestContext> RestRequest(string method, string route, string query = "", string jsonBody = null)
         {
-            var bodyStream      = new MemoryStream();
-            var writer          = new StreamWriter(bodyStream);
-            writer.Write(jsonBody);
-            writer.Flush();
-            bodyStream.Position   = 0;
-            
+            var bodyStream      = BodyToStream(jsonBody);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, method, route, query, bodyStream, headers, cookies);
             await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             
             return requestContext;
+        }
+        
+        private static Stream BodyToStream(string jsonBody) {
+            var bodyStream      = new MemoryStream();
+            var writer          = new StreamWriter(bodyStream);
+            writer.Write(jsonBody);
+            writer.Flush();
+            bodyStream.Position   = 0;
+            return bodyStream;
         }
         
         private static IHttpCookies CreateCookies() {
