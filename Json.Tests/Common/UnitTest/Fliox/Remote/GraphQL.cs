@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 
             var request     = await GraphQLRequest("/graphql/main_db", query);
             
-            // for (int n = 0; n < 100000; n++) { await GraphQLRequest("/graphql/main_db", query); }
+            // for (int n = 0; n < 10_000; n++) { await GraphQLRequest("/graphql/main_db", query); }
             
             File.WriteAllBytes(TestFolder + "queries.json", request.Response.AsByteArray());
         }

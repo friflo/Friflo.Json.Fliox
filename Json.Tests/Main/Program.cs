@@ -40,8 +40,8 @@ namespace Friflo.Json.Tests.Main
         /// Blueprint method showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
         /// via HTTP and WebSockets.
         /// </summary>
-        public static HttpHostHub CreateHttpHost(string rootPath = "", SharedEnv env = null ) {
-            var c                   = new Config(rootPath);
+        public static HttpHostHub CreateHttpHost(string rootPath = "", SharedEnv env = null, bool useMemoryDb = false ) {
+            var c                   = new Config(rootPath, useMemoryDb);
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
@@ -72,13 +72,13 @@ namespace Friflo.Json.Tests.Main
             internal            string  UserDbPath  => rootPath + "./Json.Tests/assets~/DB/UserStore";
             internal            string  Www         => rootPath + "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly   string  cache       = null; // "max-age=600"; // HTTP Cache-Control
-            internal readonly   bool    useMemoryDbClone    = false;
+            internal readonly   bool    useMemoryDb;
             
-            internal Config(string rootPath) { this.rootPath = rootPath; }
+            internal Config(string rootPath, bool useMemoryDb) { this.rootPath = rootPath; this.useMemoryDb = useMemoryDb; }
         }
         
         private static HttpHostHub CreateMiniHost() {
-            var c                   = new Config("");
+            var c                   = new Config("", false);
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
             var database            = CreateDatabase(c, null, new PocHandler());
             var hub          	    = new FlioxHub(database);
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Main
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
             var fileDb = new FileDatabase(c.DbPath, handler, null, false);
             fileDb.Schema = schema;
-            if (!c.useMemoryDbClone)
+            if (!c.useMemoryDb)
                 return fileDb;
             var memoryDB = new MemoryDatabase(handler);
             memoryDB.Schema = schema;

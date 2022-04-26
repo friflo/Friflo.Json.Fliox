@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         private static readonly string TestFolder = CommonUtils.GetBasePath() + "assets~/GraphQL/";
         
-        private static  HttpHostHub     _hostHub;
+        private static  HttpHostHub     _hostHub;   // todo - UserDB is bottleneck as it uses a file-system DB
         private static  ObjectMapper    _mapper;
         private static  SharedEnv       _env;
         
@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var baseFolder  = CommonUtils.GetBasePath("../");
             _env            = new SharedEnv();
             _mapper         = new ObjectMapper(_env.TypeStore);
-            _hostHub        = Program.CreateHttpHost(baseFolder, _env);
+            _hostHub        = Program.CreateHttpHost(baseFolder, _env, true);
         }
         [OneTimeTearDown] public static void  Dispose() {
             _hostHub.Dispose();
