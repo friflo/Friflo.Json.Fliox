@@ -13,8 +13,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         private static readonly string GraphQLAssets = CommonUtils.GetBasePath() + "assets~/GraphQL/";
         
-        /// <summary> use name <see cref="GraphQL__Init"/> to run as first test.
-        /// This forces loading all required GraphQL code and subsequent tests show the real execution time</summary>
+        /// <summary>
+        /// use name <see cref="GraphQL__Init"/> to run as first test.
+        /// This forces loading all required <see cref="Friflo.Json.Fliox.Hub.GraphQL.GraphQLHandler"/> code
+        /// and subsequent tests show the real execution time
+        /// </summary>
         [Test]
         public static async Task GraphQL__Init() {
             var query       = File.ReadAllText(GraphQLAssets + "queries.graphql");

@@ -1,0 +1,25 @@
+[{
+    "id": "article-1",
+    "name": "Changed name",
+    "producer": "producer-canon"
+},{
+    "id": "article-2",
+    "name": "Smartphone",
+    "producer": null
+},{
+    "id": "article-galaxy",
+    "name": "Galaxy S10",
+    "producer": "producer-samsung"
+},{
+    "id": "article-ipad",
+    "name": "iPad Pro",
+    "producer": "producer-apple"
+},{
+    "id": "article-notebook-💻-unicode",
+    "name": "Galaxy Book",
+    "producer": "producer-samsung"
+},{
+    "id": "log-create-read-error",
+    "name": "used for successful read",
+    "producer": null
+}]

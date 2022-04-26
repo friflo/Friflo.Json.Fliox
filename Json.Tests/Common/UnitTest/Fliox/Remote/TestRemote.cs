@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -34,20 +35,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             
         private static async Task<RequestContext> GraphQLRequest(string route, string query, string operationName = null)
         {
-            var request     = new GraphQLRequest { query = query, operationName = operationName };
-            var jsonBody    = _mapper.writer.WriteAsArray(request);
-            var body        = new System.IO.MemoryStream();
+            var request         = new GraphQLRequest { query = query, operationName = operationName };
+            var jsonBody        = _mapper.writer.WriteAsArray(request);
+            var body            = new System.IO.MemoryStream();
             await body.WriteAsync(jsonBody);
-            body.Position   = 0;
+            body.Position       = 0;
             
-            var headers = new TestHttpHeaders();
-            var cookies = new TestHttpCookies {
-                map = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
-            };
-            var requestContext = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
+            var headers         = new TestHttpHeaders();
+            var cookies         = CreateCookies();
+            var requestContext  = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
             await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             
             return requestContext;
+        }
+        
+        private static async Task<RequestContext> RestRequest(string method, string route, string query = "", string jsonBody = null)
+        {
+            var bodyStream      = new MemoryStream();
+            var writer          = new StreamWriter(bodyStream);
+            await writer.WriteAsync(jsonBody);
+            await writer.FlushAsync();
+            bodyStream.Position   = 0;
+            
+            var headers         = new TestHttpHeaders();
+            var cookies         = CreateCookies();
+            var requestContext  = new RequestContext(_hostHub, method, route, query, bodyStream, headers, cookies);
+            await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
+            
+            return requestContext;
+        }
+        
+        private static IHttpCookies CreateCookies() {
+            return new TestHttpCookies {
+                map = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
+            };
         }
     }
     
