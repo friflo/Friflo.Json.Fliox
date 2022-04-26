@@ -78,13 +78,13 @@ namespace Friflo.Json.Tests.Common.Utils
     
     public static class CommonUtils
     {
-        public static string GetBasePath() {
+        public static string GetBasePath(string folder = "") {
 #if UNITY_5_3_OR_NEWER
             string baseDir = UnityUtils.GetProjectFolder();
 #else
             string baseDir = Directory.GetCurrentDirectory() + "/../../../";
 #endif
-            baseDir = Path.GetFullPath(baseDir);
+            baseDir = Path.GetFullPath(baseDir + folder);
             return baseDir;
         }
         

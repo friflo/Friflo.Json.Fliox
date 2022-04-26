@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             foreach (var message in messages) {
                 var name    = message.name.Replace(".", "_");
-                var type    = message.result.type;
+                var type    = message.result?.type;
                 var query   = new QueryResolver(message.name, messageType, message.param, type);
                 resolvers.Add(name,             query);
             }

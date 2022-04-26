@@ -1,0 +1,43 @@
+{
+  countArticles(filter: "o.name == 'Smartphone'")
+  readArticles(ids: ["xxx", "article-1"], selectAll: true) {
+    __typename
+  }
+  queryArticles(selectAll: true) {
+    count
+    items {
+      __typename
+    }
+  }
+  queryOrders(filter: "true", limit: 2) {
+    count
+    items {
+      id
+      customer
+      created
+    }
+  }
+  std_Echo(param: {})
+  std_Containers {
+    containers
+  }
+  std_Stats {
+    containers {
+      name
+      count
+    }
+  }
+  std_Messages {
+    commands
+    messages
+  }
+  std_Details {
+    version
+    hostName
+    projectName
+    projectWebsite
+    envName
+    envColor
+    routes
+  }
+}

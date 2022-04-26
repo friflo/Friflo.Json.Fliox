@@ -1,0 +1,128 @@
+{
+    "data": {
+        "countArticles": 1,
+        "readArticles": [null,{
+    "id": "article-1",
+    "name": "Changed name",
+    "producer": "producer-canon"
+}],
+        "queryArticles": {"count":6,"items":[{
+    "id": "article-1",
+    "name": "Changed name",
+    "producer": "producer-canon"
+},{
+    "id": "article-2",
+    "name": "Smartphone",
+    "producer": null
+},{
+    "id": "article-galaxy",
+    "name": "Galaxy S10",
+    "producer": "producer-samsung"
+},{
+    "id": "article-ipad",
+    "name": "iPad Pro",
+    "producer": "producer-apple"
+},{
+    "id": "article-notebook-💻-unicode",
+    "name": "Galaxy Book",
+    "producer": "producer-samsung"
+},{
+    "id": "log-create-read-error",
+    "name": "used for successful read",
+    "producer": null
+}]},
+        "queryOrders": {
+    "count": 2,
+    "items": [
+        {
+            "id": "order-1",
+            "customer": "customer-1",
+            "created": "2021-07-22T06:00:00.000Z"
+        },
+        {
+            "id": "order-2",
+            "customer": "read-task-error",
+            "created": "2021-07-22T06:01:00.000Z"
+        }
+    ]
+},
+        "std_Echo": {
+},
+        "std_Containers": {
+    "containers": [
+        "orders",
+        "customers",
+        "articles",
+        "producers",
+        "employees",
+        "types"
+    ]
+},
+        "std_Stats": {
+    "containers": [
+        {
+            "name": "orders",
+            "count": 2
+        },
+        {
+            "name": "customers",
+            "count": 6
+        },
+        {
+            "name": "articles",
+            "count": 6
+        },
+        {
+            "name": "producers",
+            "count": 3
+        },
+        {
+            "name": "employees",
+            "count": 1
+        },
+        {
+            "name": "types",
+            "count": 1
+        }
+    ]
+},
+        "std_Messages": {
+    "commands": [
+        "TestCommand",
+        "SyncCommand",
+        "AsyncCommand",
+        "Command1",
+        "test.Command2",
+        "test.CommandHello",
+        "std.Echo",
+        "std.Containers",
+        "std.Messages",
+        "std.Schema",
+        "std.Stats",
+        "std.Details",
+        "std.Cluster"
+    ],
+    "messages": [
+        "Message1",
+        "AsyncMessage",
+        "test.Message2"
+    ]
+},
+        "std_Details": {
+    "version": "0.0.1",
+    "hostName": "host",
+    "projectName": "Test Hub",
+    "projectWebsite": "https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Main",
+    "envName": "dev",
+    "envColor": "rgb(34 140 0)",
+    "routes": [
+        "/rest",
+        "/schema",
+        "/graphql",
+        "/explorer",
+        "/graphiql",
+        "/swagger"
+    ]
+}
+    }
+}

@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             this.container  = null;
             hasParam        = param != null;
             paramRequired   = param != null && param.required;
-            objectType      = CreateSelectionObject(type.nameUtf8, type);
+            objectType      = type != null ? CreateSelectionObject(type.nameUtf8, type) : default;
         }
         
         /// <summary> constructor for container methods </summary>
