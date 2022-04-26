@@ -99,6 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 
     }
     
+    
     internal class GraphQLRequest {
         public  string                      query;
         public  string                      operationName;
