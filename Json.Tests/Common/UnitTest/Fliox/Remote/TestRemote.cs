@@ -16,23 +16,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         private static readonly string TestFolder = CommonUtils.GetBasePath() + "assets~/GraphQL/";
         
-        private static  HttpHostHub _hostHub;
-        private static  SharedEnv   _env;
+        private static  HttpHostHub     _hostHub;
+        private static  ObjectMapper    _mapper;
+        private static  SharedEnv       _env;
         
         [OneTimeSetUp]    public static void  Init() {
             var baseFolder  = CommonUtils.GetBasePath("../");
             _env            = new SharedEnv();
+            _mapper         = new ObjectMapper(_env.TypeStore);
             _hostHub        = Program.CreateHttpHost(baseFolder, _env);
         }
         [OneTimeTearDown] public static void  Dispose() {
             _hostHub.Dispose();
+            _mapper.Dispose();
             _env.Dispose();
         }
             
         private static async Task<RequestContext> GraphQLRequest(string route, string query)
         {
             var request     = new GraphQLRequest { query = query };
-            var jsonBody    = Serialize(request);
+            var jsonBody    = _mapper.writer.WriteAsArray(request);
             var body        = new System.IO.MemoryStream();
             await body.WriteAsync(jsonBody, 0, jsonBody.Length);
             body.Position   = 0;
@@ -48,12 +51,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             
             return requestContext;
-        }
-        
-        private static JsonValue Serialize<T> (T value) {
-            using (var writer = new ObjectWriter(_env.TypeStore)) {
-                return new JsonValue(writer.WriteAsArray(value));
-            }
         }
     }
     
