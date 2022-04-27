@@ -31,6 +31,7 @@
                 "CommandInt":        { "param": { "$ref": "./Standard.json#/definitions/int32" }, "result": { "$ref": "./Standard.json#/definitions/int32" } },
                 "test.Command2":     { "result": { "type": "string" } },
                 "test.CommandHello": { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
+                "test.CommandError": { "result": { "$ref": "./Standard.json#/definitions/int32" } },
                 "std.Echo":          { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately." },
                 "std.Containers":    { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },

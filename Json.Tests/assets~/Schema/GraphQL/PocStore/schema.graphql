@@ -41,6 +41,7 @@ type Query {
     CommandInt       (param: Int!) : Int!
     test_Command2     : String!
     test_CommandHello(param: String) : String!
+    test_CommandError : Int!
     std_Echo         (param: Any!) : Any!
     std_Containers    : DbContainers!
     std_Messages      : DbMessages!

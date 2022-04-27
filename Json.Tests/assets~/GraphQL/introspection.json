@@ -768,6 +768,19 @@
                     }
                 },
                 {
+                    "name": "test_CommandError",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"NON_NULL",
+                        "ofType": {
+                            "kind":"SCALAR",
+                            "name": "Int"
+                        }
+                    }
+                },
+                {
                     "name": "std_Echo",
                     "description": "/** echos the given parameter to assure the database is working appropriately. */\n",
                     "args": [

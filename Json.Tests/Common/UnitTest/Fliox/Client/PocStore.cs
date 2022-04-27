@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>  ("SyncCommand", param);
         public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>  ("AsyncCommand",param);
         public CommandTask<string>      Command1 ()                 => SendCommand<string>          ("Command1");
-        public CommandTask<int>         CommandInt (int param)      => SendCommand<int>             ("CommandInt"); // test required param (value type)
+        public CommandTask<int>         CommandInt (int param)      => SendCommand<int>             ("CommandInt");     // test required param (value type)
         
         // --- messages
         public MessageTask              Message1    (string param)  => SendMessage  ("Message1",        param);
@@ -191,6 +191,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         // --- commands
         public CommandTask<string>  Command2 ()                 => SendCommand<string>          ("test.Command2");
         public CommandTask<string>  CommandHello (string param) => SendCommand<string, string>  ("test.CommandHello", param);
+        
+        public CommandTask<int>     CommandError ()             => SendCommand<int>             ("test.CommandError");   // test returning an error
+
         
         // --- messages
         public MessageTask          Message2 (string param)     => SendMessage                  ("test.Message2",  param);

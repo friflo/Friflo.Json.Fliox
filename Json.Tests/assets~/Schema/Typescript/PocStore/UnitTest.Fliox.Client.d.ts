@@ -37,6 +37,7 @@ export interface PocStore {
     ["CommandInt"]            (param: int32) : int32;
     ["test.Command2"]         () : string;
     ["test.CommandHello"]     (param: string | null) : string;
+    ["test.CommandError"]     () : int32;
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]              (param: any) : any;
     /** list all database containers */
