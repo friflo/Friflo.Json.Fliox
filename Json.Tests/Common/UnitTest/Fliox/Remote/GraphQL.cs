@@ -49,12 +49,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             await GraphQLRequest("/graphql/main_db", query);
         }
         
-        // [Test, Order(0)]
-        public static Task GraphQL__main_db_get_HTML() {
-            // var query       = ReadGraphQLQuery ("main_db/queries.graphql");
-            //await GraphQLRequest("/graphql/main_db", query);
-        }
-        
         [Test, Order(1)]
         public static async Task GraphQL_main_db_IntrospectionQuery() {
             var query   = ReadGraphQLQuery ("main_db/introspection.graphql");
