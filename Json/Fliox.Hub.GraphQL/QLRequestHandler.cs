@@ -86,10 +86,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var selection in selections) {
                 if (!(selection is GraphQLField graphQLQuery))
                     continue;
-                var name = graphQLQuery.Name.StringValue;
+                var name    = graphQLQuery.Name.StringValue;
+                var alias   = graphQLQuery.Alias?.Name.StringValue;
                 if (!resolvers.TryGetValue(name, out var resolver)) {
                     QueryRequest queryRequest = new QueryError(null, "unknown query / mutation");
-                    var query = new Query(name, resolver.queryType, resolver.container, default, -1, queryRequest);
+                    var query = new Query(name, alias, resolver.queryType, resolver.container, default, -1, queryRequest);
                     queries.Add(query);
                 } else {
                     var queryRequest    = CreateQueryTask(resolver, graphQLQuery, doc);
@@ -99,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                         tasks.Add(queryRequest.task);
                     }
                     var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.objectType);
-                    var query           = new Query(name, resolver.queryType, resolver.container, selectionNode, taskIndex, queryRequest);
+                    var query           = new Query(name, alias, resolver.queryType, resolver.container, selectionNode, taskIndex, queryRequest);
                     queries.Add(query);
                 }
             }

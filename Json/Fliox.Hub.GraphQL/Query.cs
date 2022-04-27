@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     internal readonly struct Query
     {
         internal  readonly  string          name;
+        private   readonly  string          resolverName; // debug only
         internal  readonly  QueryType       type;
         internal  readonly  string          container;
         internal  readonly  SelectionNode   selection;
@@ -22,18 +23,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  SyncRequestTask task;
         internal  readonly  bool            selectAll;
         internal  readonly  QueryError?     error;
+        
+        public    override  string          ToString()  => $"{type}: {name}";
 
-        public    override  string          ToString() => $"{type}: {name}";
-
-        internal Query(string name, QueryType type, string container, in SelectionNode selection, int taskIndex, in QueryRequest queryRequest) {
-            this.name       = name;
-            this.type       = type;
-            this.container  = container;
-            this.selection  = selection;
-            this.taskIndex  = taskIndex;
-            this.task       = queryRequest.task;
-            this.selectAll  = queryRequest.selectAll;
-            this.error      = queryRequest.error;
+        internal Query(string resolverName, string alias, QueryType type, string container, in SelectionNode selection, int taskIndex, in QueryRequest queryRequest) {
+            this.name           = alias ?? resolverName;
+            this.resolverName   = resolverName;
+            this.type           = type;
+            this.container      = container;
+            this.selection      = selection;
+            this.taskIndex      = taskIndex;
+            this.task           = queryRequest.task;
+            this.selectAll      = queryRequest.selectAll;
+            this.error          = queryRequest.error;
         }
     }
     

@@ -39,12 +39,13 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var             taskResults = syncResponse.tasks;
 
             for (int n = 0; n < queries.Count; n++) {
-                var query = queries[n];
+                var query   = queries[n];
+                var name    = query.name; 
                 if (query.error != null) {
                     // --- request error
                     var queryError  = query.error.Value;
                     if (errors == null) { errors = new List<GqlError>(); }
-                    var path    = new List<string>(2) { query.name };
+                    var path    = new List<string>(2) { name };
                     if (queryError.argName != null)
                         path.Add(queryError.argName);
                     var ext     = new GqlErrorExtensions { type =  TaskErrorResultType.InvalidTask };
@@ -57,11 +58,11 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     // --- success
                     var context     = new ResultContext (query, taskResult, writer, projector, syncResponse);
                     var queryResult = ProcessTaskResult(context);
-                    data.Add(query.name, queryResult);
+                    data.Add(name, queryResult);
                 } else {
                     // --- response error
                     if (errors == null) { errors = new List<GqlError>(); }
-                    var path    = new List<string> { query.name };
+                    var path    = new List<string> { name };
                     var ext     = new GqlErrorExtensions { type = taskError.type, stacktrace = taskError.stacktrace};
                     var error   = new GqlError { message = taskError.message, path = path, extensions = ext };
                     errors.Add(error);
