@@ -1,6 +1,26 @@
 {
     "data": {
-        "std_Echo": 
-123
+        "std_Echo": {
+    "null": null,
+    "bool": true,
+    "int": 42,
+    "string": "abc",
+    "array": [
+        null,
+        true,
+        false,
+        43,
+        "abc",
+        [
+            1,
+            2,
+            3
+        ],
+        {
+            "a": 44,
+            "b": "xyz"
+        }
+    ]
+}
     }
 }

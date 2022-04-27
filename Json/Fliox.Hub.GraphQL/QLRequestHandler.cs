@@ -49,9 +49,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (messages == null)
                 return;
             foreach (var message in messages) {
-                var name    = message.name.Replace(".", "_");
-                var type    = message.result?.type;
-                var query   = new QueryResolver(message.name, messageType, message.param, type);
+                var name        = message.name.Replace(".", "_");
+                var resultType  = message.result?.type;
+                var query       = new QueryResolver(message.name, messageType, message.param, resultType);
                 resolvers.Add(name,             query);
             }
         }
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     if (task != null) {
                         tasks.Add(queryRequest.task);
                     }
-                    var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.objectType);
+                    var selectionNode   = ResponseUtils.CreateSelection(graphQLQuery, buffer, resolver.resultObject);
                     var query           = new Query(name, alias, resolver.queryType, resolver.container, selectionNode, taskIndex, queryRequest);
                     queries.Add(query);
                 }

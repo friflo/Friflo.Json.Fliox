@@ -27,29 +27,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         [Test]
         public static async Task GraphQL_IntrospectionQuery() {
-            var query       = ReadGraphQLQuery ("introspection.graphql");
-            var request     = await GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
+            var query   = ReadGraphQLQuery ("introspection.graphql");
+            var request = await GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
             WriteGraphQLResponse(request, "introspection.json");
         }
         
         [Test]
         public static async Task GraphQL_queries() {
-            var query       = ReadGraphQLQuery ("queries.graphql");
-            var request     = await GraphQLRequest("/graphql/main_db", query);
+            var query   = ReadGraphQLQuery ("queries.graphql");
+            var request = await GraphQLRequest("/graphql/main_db", query);
             // for (int n = 0; n < 10_000; n++) { await GraphQLRequest("/graphql/main_db", query); }
             WriteGraphQLResponse(request, "queries.json");
         }
         
         [Test]
         public static async Task GraphQL_errors() {
-            var query       = ReadGraphQLQuery ("errors.graphql");
-            var request     = await GraphQLRequest("/graphql/main_db", query);
+            var query   = ReadGraphQLQuery ("errors.graphql");
+            var request = await GraphQLRequest("/graphql/main_db", query);
             WriteGraphQLResponse(request, "errors.json");
         }
 
         [Test]
         public static async Task GraphQL_std_Echo() {
-            var query   = "{ std_Echo (param: 123) }";
+            var query   = ReadGraphQLQuery ("std_Echo.graphql");
             var request = await GraphQLRequest("/graphql/main_db", query);
             WriteGraphQLResponse(request, "std_Echo.json");
         }

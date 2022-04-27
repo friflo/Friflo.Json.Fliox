@@ -15,7 +15,6 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     internal readonly struct Query
     {
         internal  readonly  string          name;
-        private   readonly  string          resolverName; // debug only
         internal  readonly  QueryType       type;
         internal  readonly  string          container;
         internal  readonly  SelectionNode   selection;
@@ -23,6 +22,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  SyncRequestTask task;
         internal  readonly  bool            selectAll;
         internal  readonly  QueryError?     error;
+        // ReSharper disable once NotAccessedField.Local
+        private   readonly  string          resolverName; // debug only
         
         public    override  string          ToString()  => $"{type}: {name}";
 
@@ -43,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     {
         internal  readonly  string          name;
         internal  readonly  QueryType       queryType;
-        internal  readonly  SelectionObject objectType;
+        internal  readonly  SelectionObject resultObject;
         
         /// <summary> only: <see cref="QueryType.Query"/> and <see cref="QueryType.Read"/> </summary>
         internal  readonly  string      container;
@@ -55,23 +56,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         public    override  string      ToString() => $"{queryType}: {name}";
         
         /// <summary> constructor for database messages / commands </summary>
-        internal QueryResolver(string name, QueryType queryType, FieldDef param, TypeDef type) {
+        internal QueryResolver(string name, QueryType queryType, FieldDef param, TypeDef resultType) {
             this.name       = name;
             this.queryType  = queryType;
             this.container  = null;
             hasParam        = param != null;
             paramRequired   = param != null && param.required;
-            objectType      = type != null ? CreateSelectionObject(type.nameUtf8, type) : default;
+            resultObject    = resultType != null ? CreateSelectionObject(resultType.nameUtf8, resultType) : default;
         }
         
         /// <summary> constructor for container methods </summary>
         internal QueryResolver(string name, QueryType queryType, string container, TypeDef entityType, IUtf8Buffer buffer) {
-            this.name           = Gql.MethodName(name, container);
-            this.queryType      = queryType;
-            this.container      = container;
-            hasParam            = false;
-            paramRequired       = false;
-            objectType          = CreateResultType(queryType, container, entityType, buffer);
+            this.name       = Gql.MethodName(name, container);
+            this.queryType  = queryType;
+            this.container  = container;
+            hasParam        = false;
+            paramRequired   = false;
+            resultObject    = CreateResultType(queryType, container, entityType, buffer);
         }
         
         private static SelectionObject CreateResultType(QueryType queryType, string container, TypeDef entityType, IUtf8Buffer buffer) {
@@ -98,7 +99,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         private static SelectionObject CreateSelectionObject(in Utf8String typeName, TypeDef type) {
-            if (type == null || !type.IsClass) {
+            if (type == null) {
+                return default;
+            }
+            if (!type.IsClass) {
                 return default;
             }
             var typeFields      = type.Fields;

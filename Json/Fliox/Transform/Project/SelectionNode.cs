@@ -13,8 +13,9 @@ namespace Friflo.Json.Fliox.Transform.Project
         internal  readonly      SelectionUnion[]    unions;     // can be null
         internal  readonly      Utf8String          typeName;
         internal  readonly      SelectionNode[]     fragments;  // can be null
-
-        public override         string              ToString() => FormatToString();
+        
+        internal                bool                HasNodes    => nodes != null;
+        public override         string              ToString()  => FormatToString();
 
         public SelectionNode  (
             in Utf8String       fieldName,
