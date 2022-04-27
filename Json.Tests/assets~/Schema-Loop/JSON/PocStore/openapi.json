@@ -233,7 +233,7 @@
         }
       }
     },
-    "/?command=test.CommandError": {
+    "/?command=test.CommandExecutionError": {
       "post": {
         "summary":    "",
         "tags":       ["commands"],

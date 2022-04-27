@@ -101,7 +101,7 @@
         "CommandInt",
         "test.Command2",
         "test.CommandHello",
-        "test.CommandError",
+        "test.CommandExecutionError",
         "std.Echo",
         "std.Containers",
         "std.Messages",

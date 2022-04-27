@@ -119,6 +119,15 @@
             "extensions": {
                 "type": "InvalidTask"
             }
+        },
+        {
+            "message": "test command execution error",
+            "path": [
+                "commandError"
+            ],
+            "extensions": {
+                "type": "CommandError"
+            }
         }
     ]
 }

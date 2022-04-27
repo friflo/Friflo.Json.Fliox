@@ -56,8 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             return result;
         }
         
-        private static int CommandError(Param<string> param, MessageContext command) {
-            command.Error("test command error");
+        private static int CommandExecutionError(Param<string> param, MessageContext command) {
+            command.Error("test command execution error");
             return -1;
         }
     }

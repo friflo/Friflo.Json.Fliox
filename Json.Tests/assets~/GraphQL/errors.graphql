@@ -15,4 +15,5 @@
     
   unknownArg:       std_Echo(xxx: {})
   missingArg:       CommandInt
+  commandError:     test_CommandExecutionError
 }

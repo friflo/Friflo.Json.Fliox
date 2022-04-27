@@ -16,42 +16,42 @@ scalar Boolean
 scalar Any
 
 type Query {
-    queryOrders      (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryOrdersResult!
-    queryCustomers   (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCustomersResult!
-    queryArticles    (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryArticlesResult!
-    queryProducers   (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryProducersResult!
-    queryEmployees   (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryEmployeesResult!
-    queryTypes       (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTypesResult!
-    readOrders       (ids: [String!]!, selectAll: Boolean) : [Order]!
-    readCustomers    (ids: [String!]!, selectAll: Boolean) : [Customer]!
-    readArticles     (ids: [String!]!, selectAll: Boolean) : [Article]!
-    readProducers    (ids: [String!]!, selectAll: Boolean) : [Producer]!
-    readEmployees    (ids: [String!]!, selectAll: Boolean) : [Employee]!
-    readTypes        (ids: [String!]!, selectAll: Boolean) : [TestType]!
-    countOrders      (filter: String) : Int
-    countCustomers   (filter: String) : Int
-    countArticles    (filter: String) : Int
-    countProducers   (filter: String) : Int
-    countEmployees   (filter: String) : Int
-    countTypes       (filter: String) : Int
-    TestCommand      (param: TestCommandInput) : Boolean!
-    SyncCommand      (param: String) : String!
-    AsyncCommand     (param: String) : String!
-    Command1          : String!
-    CommandInt       (param: Int!) : Int!
-    test_Command2     : String!
-    test_CommandHello(param: String) : String!
-    test_CommandError : Int!
-    std_Echo         (param: Any!) : Any!
-    std_Containers    : DbContainers!
-    std_Messages      : DbMessages!
-    std_Schema        : DbSchema!
-    std_Stats        (param: String) : DbStats!
-    std_Details       : HostDetails!
-    std_Cluster       : HostCluster!
-    Message1         (param: String) : Any
-    AsyncMessage     (param: String) : Any
-    test_Message2    (param: String) : Any
+    queryOrders               (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryOrdersResult!
+    queryCustomers            (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryCustomersResult!
+    queryArticles             (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryArticlesResult!
+    queryProducers            (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryProducersResult!
+    queryEmployees            (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryEmployeesResult!
+    queryTypes                (filter: String, limit: Int, maxCount: Int, cursor: String, selectAll: Boolean) : QueryTypesResult!
+    readOrders                (ids: [String!]!, selectAll: Boolean) : [Order]!
+    readCustomers             (ids: [String!]!, selectAll: Boolean) : [Customer]!
+    readArticles              (ids: [String!]!, selectAll: Boolean) : [Article]!
+    readProducers             (ids: [String!]!, selectAll: Boolean) : [Producer]!
+    readEmployees             (ids: [String!]!, selectAll: Boolean) : [Employee]!
+    readTypes                 (ids: [String!]!, selectAll: Boolean) : [TestType]!
+    countOrders               (filter: String) : Int
+    countCustomers            (filter: String) : Int
+    countArticles             (filter: String) : Int
+    countProducers            (filter: String) : Int
+    countEmployees            (filter: String) : Int
+    countTypes                (filter: String) : Int
+    TestCommand               (param: TestCommandInput) : Boolean!
+    SyncCommand               (param: String) : String!
+    AsyncCommand              (param: String) : String!
+    Command1                   : String!
+    CommandInt                (param: Int!) : Int!
+    test_Command2              : String!
+    test_CommandHello         (param: String) : String!
+    test_CommandExecutionError : Int!
+    std_Echo                  (param: Any!) : Any!
+    std_Containers             : DbContainers!
+    std_Messages               : DbMessages!
+    std_Schema                 : DbSchema!
+    std_Stats                 (param: String) : DbStats!
+    std_Details                : HostDetails!
+    std_Cluster                : HostCluster!
+    Message1                  (param: String) : Any
+    AsyncMessage              (param: String) : Any
+    test_Message2             (param: String) : Any
 }
 
 type QueryOrdersResult {
