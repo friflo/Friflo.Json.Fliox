@@ -34,12 +34,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         [Test, Order(1)]
         public static async Task Rest_main_db_GetEntity() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
-            WriteRestResponse(request, "main_db/GET-main_db.articles.json");
+            WriteRestResponse(request, "main_db/GET-articles.json");
         }
         
         [Test, Order(2)]
         public static async Task Rest_main_db_PutEntities() {
-            var body = ReadRestRequest ("main_db/PUT-main_db.articles.json");
+            var body = ReadRestRequest ("main_db/PUT-articles.json");
             var request = await RestRequest("PUT", "/rest/main_db/articles", "", body);
             AssertRequest(request, 200, "text/plain", "PUT successful");
         }
