@@ -4,7 +4,10 @@
     "null": null,
     "bool": true,
     "int": 42,
+    "float": 12.34,
     "string": "abc",
+    "arrayEmpty": [
+    ],
     "array": [
         null,
         true,

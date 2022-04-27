@@ -4,6 +4,9 @@
   readAll: readArticles(ids: ["xxx", "article-1"], selectAll: true) {
     __typename
   }
+  readEmpty: readArticles(ids: []) {
+    __typename
+  }
   readArticles (ids: ["xxx", "article-2"]) {
     id
   }

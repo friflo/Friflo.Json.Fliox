@@ -6,6 +6,8 @@
     "name": "Changed name",
     "producer": "producer-canon"
 }],
+        "readEmpty": [
+],
         "readArticles": [
     null,
     {

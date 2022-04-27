@@ -1,9 +1,11 @@
 {
   std_Echo(param: {
-      null: null,
-      bool: true,
-      int:  42
-      string: "abc"
-      array: [null, true, false, 43, "abc", [1,2,3], {a: 44, b: "xyz"}]
+      null:     null,
+      bool:     true,
+      int:      42
+      float:    12.34
+      string:   "abc"
+      arrayEmpty:   []
+      array:        [null, true, false, 43, "abc", [1,2,3], {a: 44, b: "xyz"}]
   })
 }
