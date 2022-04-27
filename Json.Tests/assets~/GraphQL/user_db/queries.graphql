@@ -1,0 +1,33 @@
+{
+  queryRoles {
+    count
+    items {
+      id
+      rights {
+        __typename
+        ... on AllowRight {
+          database
+        }
+        ... on TaskRight {
+          database
+          types
+        }
+        ... on SendMessageRight {
+          database
+          names
+        }
+        ... on SubscribeMessageRight {
+          database
+          names
+        }
+        ... on OperationRight {
+          database
+          containers
+        }
+        ... on PredicateRight {
+          names
+        }
+      }
+    }
+  }
+}

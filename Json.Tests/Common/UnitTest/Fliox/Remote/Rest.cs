@@ -16,30 +16,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     public partial class TestRemote
     {
         /// <summary>
-        /// use name <see cref="Rest__Init"/> to run as first test.
+        /// use name <see cref="Rest__main_db_init"/> to run as first test.
         /// This forces loading all required RestHandler code and subsequent tests show the real execution time
         /// </summary>
         [Test, Order(0)]
-        public static async Task Rest__Init() {
+        public static async Task Rest__main_db_init() {
             var request = await RestRequest("POST", "/rest/main_db/", "?command=std.Echo");
             AreEqual ("null", request.Response.AsString());
         }
         
         [Test, Order(1)]
-        public static async Task Rest_std_Echo() {
+        public static async Task Rest_main_db_std_Echo() {
             var request = await RestRequest("POST", "/rest/main_db/", "?command=std.Echo", "{}");
             AreEqual ("{}", request.Response.AsString());
         }
         
         [Test, Order(1)]
-        public static async Task Rest_GetEntity() {
+        public static async Task Rest_main_db_GetEntity() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
-            WriteRestResponse(request, "GET-main_db.articles.json");
+            WriteRestResponse(request, "main_db/GET-main_db.articles.json");
         }
         
         [Test, Order(2)]
-        public static async Task Rest_PutEntities() {
-            var body = ReadRestRequest ("PUT-main_db.articles.json");
+        public static async Task Rest_main_db_PutEntities() {
+            var body = ReadRestRequest ("main_db/PUT-main_db.articles.json");
             var request = await RestRequest("PUT", "/rest/main_db/articles", "", body);
             AssertRequest(request, 200, "text/plain", "PUT successful");
         }

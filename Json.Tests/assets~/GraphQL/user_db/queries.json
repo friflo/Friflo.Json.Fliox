@@ -1,0 +1,185 @@
+{
+    "data": {
+        "queryRoles": {
+    "count": 12,
+    "items": [
+        {
+            "id": "all-allow",
+            "rights": [
+                {
+                    "database": "*",
+                    "__typename": "AllowRight"
+                }
+            ]
+        },
+        {
+            "id": "cluster-allow",
+            "rights": [
+                {
+                    "database": "cluster",
+                    "__typename": "AllowRight"
+                }
+            ]
+        },
+        {
+            "id": "main_db-allow",
+            "rights": [
+                {
+                    "__typename": "AllowRight"
+                }
+            ]
+        },
+        {
+            "id": "main_db-deny",
+            "rights": [
+            ]
+        },
+        {
+            "id": "main_db-message",
+            "rights": [
+                {
+                    "names": [
+                        "test-mess*"
+                    ],
+                    "__typename": "SendMessageRight"
+                },
+                {
+                    "names": [
+                        "test-sub*"
+                    ],
+                    "__typename": "SubscribeMessageRight"
+                }
+            ]
+        },
+        {
+            "id": "main_db-operation",
+            "rights": [
+                {
+                    "containers": {
+                        "articles": {
+                            "operations": [
+                                "read",
+                                "upsert"
+                            ],
+                            "subscribeChanges": [
+                                "upsert"
+                            ]
+                        }
+                    },
+                    "__typename": "OperationRight"
+                }
+            ]
+        },
+        {
+            "id": "main_db-predicate",
+            "rights": [
+                {
+                    "names": [
+                        "TestPredicate"
+                    ],
+                    "__typename": "PredicateRight"
+                }
+            ]
+        },
+        {
+            "id": "main_db-readonly",
+            "rights": [
+                {
+                    "types": [
+                        "read",
+                        "query",
+                        "subscribeChanges",
+                        "subscribeMessage"
+                    ],
+                    "__typename": "TaskRight"
+                },
+                {
+                    "names": [
+                        "std.*"
+                    ],
+                    "__typename": "SendMessageRight"
+                }
+            ]
+        },
+        {
+            "id": "main_db-task",
+            "rights": [
+                {
+                    "types": [
+                        "read"
+                    ],
+                    "__typename": "TaskRight"
+                }
+            ]
+        },
+        {
+            "id": "monitor-allow",
+            "rights": [
+                {
+                    "database": "monitor",
+                    "__typename": "AllowRight"
+                }
+            ]
+        },
+        {
+            "id": "user_db-allow",
+            "rights": [
+                {
+                    "database": "user_db",
+                    "containers": {
+                        "permissions": {
+                            "operations": [
+                                "full"
+                            ]
+                        },
+                        "roles": {
+                            "operations": [
+                                "full"
+                            ]
+                        }
+                    },
+                    "__typename": "OperationRight"
+                },
+                {
+                    "database": "user_db",
+                    "names": [
+                        "std.*"
+                    ],
+                    "__typename": "SendMessageRight"
+                }
+            ]
+        },
+        {
+            "id": "user_db-readonly",
+            "rights": [
+                {
+                    "database": "user_db",
+                    "containers": {
+                        "permissions": {
+                            "operations": [
+                                "read",
+                                "query"
+                            ]
+                        },
+                        "roles": {
+                            "operations": [
+                                "read",
+                                "query"
+                            ]
+                        }
+                    },
+                    "__typename": "OperationRight"
+                },
+                {
+                    "database": "user_db",
+                    "names": [
+                        "std.*"
+                    ],
+                    "__typename": "SendMessageRight"
+                }
+            ]
+        }
+    ]
+}
+    }
+}
