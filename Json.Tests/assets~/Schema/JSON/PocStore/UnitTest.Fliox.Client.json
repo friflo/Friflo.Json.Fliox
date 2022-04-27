@@ -28,6 +28,7 @@
                 "SyncCommand":       { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "AsyncCommand":      { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "Command1":          { "result": { "type": "string" } },
+                "CommandInt":        { "param": { "$ref": "./Standard.json#/definitions/int32" }, "result": { "$ref": "./Standard.json#/definitions/int32" } },
                 "test.Command2":     { "result": { "type": "string" } },
                 "test.CommandHello": { "param": { "type": ["string", "null"] }, "result": { "type": "string" } },
                 "std.Echo":          { "param": {  }, "result": {  },

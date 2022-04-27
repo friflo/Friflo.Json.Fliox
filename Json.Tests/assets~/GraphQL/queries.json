@@ -92,6 +92,7 @@
         "SyncCommand",
         "AsyncCommand",
         "Command1",
+        "CommandInt",
         "test.Command2",
         "test.CommandHello",
         "std.Echo",

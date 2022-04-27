@@ -38,6 +38,7 @@ type Query {
     SyncCommand      (param: String) : String!
     AsyncCommand     (param: String) : String!
     Command1          : String!
+    CommandInt       (param: Int!) : Int!
     test_Command2     : String!
     test_CommandHello(param: String) : String!
     std_Echo         (param: Any!) : Any!
