@@ -8,6 +8,8 @@
   readAll: 	        readArticles(ids: ["article-1"], selectAll: "err")  { id }
   
   queryFilter:      queryArticles(filter: "y")      { count }
+  queryExpression:  queryArticles(filter: "+1")     { count }
+  queryFilterArg:   queryArticles(filter: 333)      { count }
   queryLimit:       queryArticles(limit: "12")      { count }
   queryMaxCount:    queryArticles(maxCount: "13")   { count }
   queryCursor:      queryArticles(cursor: 14)       { count }

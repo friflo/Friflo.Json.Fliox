@@ -62,6 +62,26 @@
             }
         },
         {
+            "message": "expect predicate expression",
+            "path": [
+                "queryExpression",
+                "filter"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect string. was: 333",
+            "path": [
+                "queryFilterArg",
+                "filter"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
             "message": "expect int. was: \"12\"",
             "path": [
                 "queryLimit",
