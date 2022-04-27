@@ -1,9 +1,13 @@
 {
+  # --- container queries
   countArticles(filter: "o.name == 'Smartphone'")
-  readArticles(ids: ["xxx", "article-1"], selectAll: true) {
+  readAll: readArticles(ids: ["xxx", "article-1"], selectAll: true) {
     __typename
   }
-  queryArticles(selectAll: true) {
+  readArticles (ids: ["xxx", "article-2"]) {
+    id
+  }
+  queryAll: queryArticles(selectAll: true) {
     count
     items {
       __typename
@@ -17,6 +21,8 @@
       created
     }
   }
+
+  # --- std commands
   std_Echo(param: {})
   std_Containers {
     containers
@@ -40,4 +46,7 @@
     envColor
     routes
   }
+  
+  # --- database messages
+  Message1 (param: "test")  
 }

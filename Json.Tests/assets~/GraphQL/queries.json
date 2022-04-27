@@ -1,12 +1,18 @@
 {
     "data": {
         "countArticles": 1,
-        "readArticles": [null,{
+        "readAll": [null,{
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
 }],
-        "queryArticles": {"count":6,"items":[{
+        "readArticles": [
+    null,
+    {
+        "id": "article-2"
+    }
+],
+        "queryAll": {"count":6,"items":[{
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
@@ -124,6 +130,7 @@
         "/graphiql",
         "/swagger"
     ]
-}
+},
+        "Message1": {}
     }
 }

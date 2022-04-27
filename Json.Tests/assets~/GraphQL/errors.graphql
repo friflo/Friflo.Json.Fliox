@@ -3,13 +3,15 @@
   
   countFilter:      countArticles(filter: "x.name == 'Smartphone'")
   
-  readIds: 			readArticles(ids: 10) { id }
-  readIdsList: 	    readArticles(ids: [11]) { id }
+  readIds: 			readArticles(ids: 10)                               { id }
+  readIdsList: 	    readArticles(ids: [11])                             { id }
+  readAll: 	        readArticles(ids: ["article-1"], selectAll: "err")  { id }
   
-  queryFilter:      queryArticles(filter: "y") { count }
-  queryLimit:       queryArticles(limit: "12") { count }
-  queryMaxCount:    queryArticles(maxCount: "13") { count }
-  queryCursor:      queryArticles(cursor: 14) { count }
+  queryFilter:      queryArticles(filter: "y")      { count }
+  queryLimit:       queryArticles(limit: "12")      { count }
+  queryMaxCount:    queryArticles(maxCount: "13")   { count }
+  queryCursor:      queryArticles(cursor: 14)       { count }
+  queryAll:         queryArticles(selectAll: "err") { count }
     
   unknownArg:       std_Echo(xxx: {})
   missingArg:       CommandInt
