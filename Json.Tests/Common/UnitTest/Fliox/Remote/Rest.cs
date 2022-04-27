@@ -19,25 +19,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         /// use name <see cref="Rest__Init"/> to run as first test.
         /// This forces loading all required RestHandler code and subsequent tests show the real execution time
         /// </summary>
-        [Test]
+        [Test, Order(0)]
         public static async Task Rest__Init() {
             var request = await RestRequest("POST", "/rest/main_db/", "?command=std.Echo");
             AreEqual ("null", request.Response.AsString());
         }
         
-        [Test]
+        [Test, Order(1)]
         public static async Task Rest_std_Echo() {
             var request = await RestRequest("POST", "/rest/main_db/", "?command=std.Echo", "{}");
             AreEqual ("{}", request.Response.AsString());
         }
         
-        [Test]
+        [Test, Order(1)]
         public static async Task Rest_GetEntity() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
             WriteRestResponse(request, "GET-main_db.articles.json");
         }
         
-        [Test]
+        [Test, Order(2)]
         public static async Task Rest_PutEntities() {
             var body = ReadRestRequest ("PUT-main_db.articles.json");
             var request = await RestRequest("PUT", "/rest/main_db/articles", "", body);

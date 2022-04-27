@@ -1,0 +1,36 @@
+{
+    "data": {
+    },
+    "errors": [
+        {
+            "message": "missing parameter",
+            "path": [
+                "deleteArticles",
+                "ids"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "unknown argument",
+            "path": [
+                "createArg",
+                "foo"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "unknown argument",
+            "path": [
+                "upsertArg",
+                "foo"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        }
+    ]
+}

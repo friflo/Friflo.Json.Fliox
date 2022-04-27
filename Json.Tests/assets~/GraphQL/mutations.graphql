@@ -1,0 +1,17 @@
+mutation {
+  deleteArticles(ids: ["31"]) {
+    id
+    type
+    message
+  }
+  createArticles(entities: [{id: "mutate-create", name: "test create", producer: "producer-samsung"}]) {
+    id
+    type
+    message
+  }
+  upsertArticles(entities: [{id: "mutate-upsert", name: "test upsert", producer: "producer-samsung"}]) {
+    id
+    type
+    message
+  }
+}

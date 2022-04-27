@@ -19,20 +19,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         /// This forces loading all required <see cref="Friflo.Json.Fliox.Hub.GraphQL.GraphQLHandler"/> code
         /// and subsequent tests show the real execution time
         /// </summary>
-        [Test]
+        [Test, Order(0)]
         public static async Task GraphQL__Init() {
             var query       = ReadGraphQLQuery ("queries.graphql");
             await GraphQLRequest("/graphql/main_db", query);
         }
         
-        [Test]
+        [Test, Order(1)]
         public static async Task GraphQL_IntrospectionQuery() {
             var query   = ReadGraphQLQuery ("introspection.graphql");
             var request = await GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
             WriteGraphQLResponse(request, "introspection.json");
         }
         
-        [Test]
+        [Test, Order(1)]
         public static async Task GraphQL_queries() {
             var query   = ReadGraphQLQuery ("queries.graphql");
             var request = await GraphQLRequest("/graphql/main_db", query);
@@ -40,18 +40,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             WriteGraphQLResponse(request, "queries.json");
         }
         
-        [Test]
+        [Test, Order(1)]
         public static async Task GraphQL_errors() {
             var query   = ReadGraphQLQuery ("errors.graphql");
             var request = await GraphQLRequest("/graphql/main_db", query);
             WriteGraphQLResponse(request, "errors.json");
         }
-
-        [Test]
+        
+        [Test, Order(1)]
         public static async Task GraphQL_std_Echo() {
             var query   = ReadGraphQLQuery ("std_Echo.graphql");
             var request = await GraphQLRequest("/graphql/main_db", query);
             WriteGraphQLResponse(request, "std_Echo.json");
+        }
+        
+        [Test, Order(2)]
+        public static async Task GraphQL_mutationErrors() {
+            var query   = ReadGraphQLQuery ("mutationErrors.graphql");
+            var request = await GraphQLRequest("/graphql/main_db", query);
+            WriteGraphQLResponse(request, "mutationErrors.json");
+        }
+        
+        [Test, Order(2)]
+        public static async Task GraphQL_mutations() {
+            var query   = ReadGraphQLQuery ("mutations.graphql");
+            var request = await GraphQLRequest("/graphql/main_db", query);
+            WriteGraphQLResponse(request, "mutations.json");
         }
         
         // --------------------------------------- utils ---------------------------------------
