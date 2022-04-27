@@ -39,6 +39,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             // for (int n = 0; n < 10_000; n++) { await GraphQLRequest("/graphql/main_db", query); }
             WriteGraphQLResponse(request, "queries.json");
         }
+        
+        [Test]
+        public static async Task GraphQL_errors() {
+            var query       = ReadGraphQLQuery ("errors.graphql");
+            var request     = await GraphQLRequest("/graphql/main_db", query);
+            WriteGraphQLResponse(request, "errors.json");
+        }
 
         [Test]
         public static async Task GraphQL_std_Echo() {

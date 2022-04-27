@@ -1,0 +1,95 @@
+{
+    "data": {
+    },
+    "errors": [
+        {
+            "message": "unknown query / mutation: xxx",
+            "path": [
+                "unknown_query"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "variable not found: x at pos 0",
+            "path": [
+                "countFilter",
+                "filter"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect string array. was: 10",
+            "path": [
+                "readIds",
+                "ids"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect string. was: 11",
+            "path": [
+                "readIdsList",
+                "ids"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "variable not found: y at pos 0",
+            "path": [
+                "queryFilter",
+                "filter"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect int. was: \"12\"",
+            "path": [
+                "queryLimit",
+                "limit"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect int. was: \"13\"",
+            "path": [
+                "queryMaxCount",
+                "maxCount"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect string. was: 14",
+            "path": [
+                "queryCursor",
+                "cursor"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "unknown argument",
+            "path": [
+                "std_Echo",
+                "xxx"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        }
+    ]
+}

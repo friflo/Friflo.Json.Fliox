@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var name    = graphQLQuery.Name.StringValue;
                 var alias   = graphQLQuery.Alias?.Name.StringValue;
                 if (!resolvers.TryGetValue(name, out var resolver)) {
-                    QueryRequest queryRequest = new QueryError(null, "unknown query / mutation");
+                    QueryRequest queryRequest = new QueryError(null, $"unknown query / mutation: {name}");
                     var query = new Query(name, alias, resolver.queryType, resolver.container, default, -1, queryRequest);
                     queries.Add(query);
                 } else {
