@@ -4,6 +4,7 @@
     items {
       id
       rights {
+        # test: use inline fragments to access data on the underlying concrete types
         __typename
         ... on AllowRight {
           database
@@ -22,7 +23,7 @@
         }
         ... on OperationRight {
           database
-          containers
+          containers  # is a map. So it is represented as a GraphQL scalar
         }
         ... on PredicateRight {
           names
