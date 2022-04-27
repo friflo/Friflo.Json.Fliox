@@ -11,5 +11,6 @@
   queryMaxCount:    queryArticles(maxCount: "13") { count }
   queryCursor:      queryArticles(cursor: 14) { count }
     
-  std_Echo(xxx: {})
+  unknownArg:       std_Echo(xxx: {})
+  missingArg:       CommandInt
 }

@@ -84,8 +84,17 @@
         {
             "message": "unknown argument",
             "path": [
-                "std_Echo",
+                "unknownArg",
                 "xxx"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "Expect argument: param",
+            "path": [
+                "missingArg"
             ],
             "extensions": {
                 "type": "InvalidTask"
