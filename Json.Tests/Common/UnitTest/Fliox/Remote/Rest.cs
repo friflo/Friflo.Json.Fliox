@@ -29,24 +29,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static async Task Rest_main_db_std_Echo() {
             var request = await RestRequest("POST", "/rest/main_db/", "?command=std.Echo", "{}");
             AreEqual ("{}", request.Response.AsString());
+            AssertRequest(request, 200, "application/json");
         }
         
         [Test, Order(1)]
         public static async Task Rest_main_db_GET_Entity() {
             var request = await RestRequest("GET", "/rest/main_db/articles/article-1");
             WriteRestResponse(request, "main_db/GET.article.json");
+            AssertRequest(request, 200, "application/json");
         }
         
         [Test, Order(1)]
         public static async Task Rest_main_db_GET_Entities() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
             WriteRestResponse(request, "main_db/GET.articles.json");
+            AssertRequest(request, 200, "application/json");
         }
         
-        // [Test, Order(1)]
+        [Test, Order(1)]
         public static async Task Rest_main_db_POST_bulk_get() {
-            var request = await RestRequest("POST", "/rest/main_db/articles");
+            var body    = "[\"article-1\",\"article-2\"]";
+            var request = await RestRequest("POST", "/rest/main_db/articles/bulk-get", "", body);
             WriteRestResponse(request, "main_db/POST.bulk-get.articles.json");
+            AssertRequest(request, 200, "application/json");
         }
         
         [Test, Order(2)]
@@ -54,6 +59,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var body = ReadRestRequest ("main_db/PUT.articles.json");
             var request = await RestRequest("PUT", "/rest/main_db/articles", "", body);
             AssertRequest(request, 200, "text/plain", "PUT successful");
+        }
+        
+        [Test, Order(2)]
+        public static async Task Rest_main_db_DELETE_article() {
+            var request = await RestRequest("DELETE", "/rest/main_db/articles/article-1");
+            AssertRequest(request, 200, "text/plain", "deleted successful");
+        }
+        
+        [Test, Order(2)]
+        public static async Task Rest_main_db_POST_bulk_delete() {
+            var body    = "[\"article-2\"]";
+            var request = await RestRequest("POST", "/rest/main_db/articles/bulk-delete", "", body);
+            AssertRequest(request, 200, "text/plain", "deleted successful");
         }
         
         
