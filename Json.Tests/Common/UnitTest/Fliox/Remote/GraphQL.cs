@@ -14,6 +14,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public partial class TestRemote
     {
+        // ------------------------------------ general errors -----------------------------------
+        [Test, Order(0)]
+        public static async Task GraphQL__error_invalid_path() {
+            var query   = "{ __typename }";
+            var request = await GraphQLRequest("/graphql", query);
+            AssertRequest(request, 400, "text/plain", "invalid path > expect: graphql/database");
+        }
+        
+        [Test, Order(0)]
+        public static async Task GraphQL__error_database_not_found() {
+            var query   = "{ __typename }";
+            var request = await GraphQLRequest("/graphql/unknown_db", query);
+            AssertRequest(request, 404, "text/plain", "error: database not found, database: unknown_db");
+        }
+        
+        [Test, Order(0)]
+        public static async Task GraphQL__error_invalid_query() {
+            var query   = "{";
+            var request = await GraphQLRequest("/graphql/main_db", query);
+            WriteGraphQLResponse(request, "invalid_query.txt");
+            AssertRequest(request, 400, "text/plain");
+        }
+        
         // --------------------------------------- main_db ---------------------------------------
         /// <summary>
         /// use name <see cref="GraphQL__main_db_init"/> to run as first test.
@@ -24,6 +47,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static async Task GraphQL__main_db_init() {
             var query       = ReadGraphQLQuery ("main_db/queries.graphql");
             await GraphQLRequest("/graphql/main_db", query);
+        }
+        
+        // [Test, Order(0)]
+        public static Task GraphQL__main_db_get_HTML() {
+            // var query       = ReadGraphQLQuery ("main_db/queries.graphql");
+            //await GraphQLRequest("/graphql/main_db", query);
         }
         
         [Test, Order(1)]

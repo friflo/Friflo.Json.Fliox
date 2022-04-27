@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             var dbName  = context.route.Substring(GraphQLRoute.Length + 1);
             var schema  = GetSchema(context, dbName, out string error);
             if (schema == null) {
-                context.WriteString($"error: {error}, database: {dbName}", "text/html", 400);
+                context.WriteString($"error: {error}, database: {dbName}", "text/plain", 404);
                 return;
             }
             var method  = context.method;
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         private QLDatabaseSchema GetSchema (RequestContext context, string dbName, out string error) {
             var hub         = context.hub;
             if (!hub.TryGetDatabase(dbName, out var database)) {
-                error = $"database not found: {dbName}";
+                error = $"database not found";
                 return default;
             }
             if (dbSchemas.TryGetValue(dbName, out var schema)) {
