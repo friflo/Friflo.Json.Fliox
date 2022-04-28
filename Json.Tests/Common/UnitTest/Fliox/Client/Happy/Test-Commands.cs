@@ -18,26 +18,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestHappy
     {
-        [Test] public async Task TestCommandsSchema()   { await InitDatabaseSchema  (async (store) => await AssertCommandsSchema (store)); }
-        [Test] public async Task TestCommands()         { await InitDatabase        (async (store) => await AssertCommands       (store)); }
+        [Test] public async Task TestCommandsSchema()   { await InitDatabaseSchema  (async (store, handler) => await AssertCommandsSchema (store)); }
+        [Test] public async Task TestCommands()         { await InitDatabase        (async (store, handler) => await AssertCommands       (store, handler)); }
         
-        private static async Task InitDatabaseSchema(Func<PocStore, Task> test) {
+        private static async Task InitDatabaseSchema(Func<PocStore, PocHandler, Task> test) {
+            var messageHandler      = new PocHandler();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(new PocHandler()))
+            using (var database     = new MemoryDatabase(messageHandler))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new PocStore(hub) { UserId = "createStore"})
             using (var nativeSchema = new NativeTypeSchema(typeof(PocStore))) {
                 database.Schema  = new DatabaseSchema(nativeSchema); 
-                await test(store);
+                await test(store, messageHandler);
             }
         }
         
-        private static async Task InitDatabase(Func<PocStore, Task> test) {
+        private static async Task InitDatabase(Func<PocStore, PocHandler, Task> test) {
+            var messageHandler      = new PocHandler();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(new PocHandler()))
+            using (var database     = new MemoryDatabase(messageHandler))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new PocStore(hub) { UserId = "createStore"}) {
-                await test(store);
+                await test(store, messageHandler);
             }
         }
         
@@ -68,12 +70,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(3,                 commandsResult.messages.Length);
         }
         
-        private static async Task AssertCommands(PocStore store) {
+        private static async Task AssertCommands(PocStore store, PocHandler handler) {
             store.articles.Create(new Article { id = "test"});
             await store.SyncTasks();
             var message1        = store.Message1("test message1");
             var message2        = store.test.Message2("test message2");
-            var messageAsync    = store.AsyncMessage("foo");
+            var messageAsync    = store.AsyncMessage("async message param");
 
             var command1        = store.Command1();
             var command2        = store.test.Command2();
@@ -88,6 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsTrue(message1.Success);
             IsTrue(message2.Success);
             IsTrue(messageAsync.Success);
+            AreEqual("async message param", handler.manual.AsyncMessageParam);
             
             AreEqual("test message1",   command1.Result);
             AreEqual("test message2",   command2.Result);

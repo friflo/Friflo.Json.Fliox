@@ -10,9 +10,9 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public class PocHandler : TaskHandler {
-        private readonly TestHandlerScan        test    = new TestHandlerScan();
-        private readonly TestHandlerManual      manual  = new TestHandlerManual();
-        private readonly EmptyHandler           empty   = new EmptyHandler();
+        private   readonly  TestHandlerScan        test    = new TestHandlerScan();
+        internal  readonly  TestHandlerManual      manual  = new TestHandlerManual();
+        private   readonly  EmptyHandler           empty   = new EmptyHandler();
         
         public PocHandler() {
             // add all command handlers of the passed handler classes
@@ -67,7 +67,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// or <see cref="TaskHandler.AddCommandHandlerAsync{TParam,TResult}"/>
     /// </summary>
     public class TestHandlerManual {
-        private string message1 = "nothing received";
+        private     string  message1Param     = "nothing received";
+        private     string  asyncMessageParam = "nothing received";
+        
+        public      string  AsyncMessageParam => asyncMessageParam;
         
         public static string SyncCommand(Param<string> param, MessageContext command) {
             return "hello SyncCommand";
@@ -78,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         public string Command1(Param<string> param, MessageContext command) {
-            return message1;
+            return message1Param;
         }
         
         public int CommandInt(Param<int> param, MessageContext command) {
@@ -88,11 +91,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         public void Message1(Param<string> param, MessageContext command) {
-            param.Get(out message1, out _);
+            param.Get(out message1Param, out _);
         }
         
         public Task AsyncMessage(Param<string> param, MessageContext command) {
-            param.Get(out _, out _);
+            param.Get(out asyncMessageParam, out _);
             return Task.CompletedTask;
         }
     }
