@@ -20,21 +20,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public class StaticFileHandler : IRequestHandler
     {
         private readonly    IFileHandler                    fileHandler;
-        private readonly    Dictionary<string, CacheEntry>  cache = new Dictionary<string, CacheEntry>();
-        private             string                          cacheControl    = HttpHostHub.DefaultCacheControl;
+        private readonly    Dictionary<string, CacheEntry>  cache;
+        private             string                          cacheControl;
+        private readonly    List<FileExt>                   fileExtensions;
         
-        private readonly    List<FileExt>                   fileExtensions  = DefaultFileExtensions();
+        private StaticFileHandler() {
+            cache           = new Dictionary<string, CacheEntry>();
+            cacheControl    = HttpHostHub.DefaultCacheControl;
+            fileExtensions  = DefaultFileExtensions();
+        }
         
-        public StaticFileHandler (string rootFolder) {
+        public StaticFileHandler (string rootFolder) : this() {
             fileHandler         = new FileHandler(rootFolder);
         }
 
         // e.g. new StaticFileHandler(wwwPath + ".zip", "www~"));
-        public StaticFileHandler (string zipPath, string baseFolder) {
+        public StaticFileHandler (string zipPath, string baseFolder) : this() {
             fileHandler = ZipFileHandler.Create(zipPath, baseFolder);
         }
         
-        public StaticFileHandler (Stream zipStream, string baseFolder) {
+        public StaticFileHandler (Stream zipStream, string baseFolder) : this() {
             fileHandler = new ZipFileHandler(zipStream, baseFolder);
         }
         

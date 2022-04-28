@@ -76,8 +76,8 @@ namespace Friflo.Json.Tests.Main
             internal readonly   MemoryType  memoryType  = MemoryType.Concurrent;
             
             internal Config() { }
-            internal Config(SharedEnv env, string rootPath, bool useMemoryDb, MemoryType memoryType) {
-                this.env = env; this.rootPath = rootPath; this.useMemoryDb = useMemoryDb; this.memoryType = memoryType;
+            internal Config(SharedEnv env, string rootPath, bool useMemoryDb, MemoryType memoryType, string cache) {
+                this.env = env; this.rootPath = rootPath; this.useMemoryDb = useMemoryDb; this.memoryType = memoryType; this.cache = cache;
             }
         }
         

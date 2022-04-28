@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _env            = new SharedEnv();
             _mapper         = new ObjectMapper(_env.TypeStore);
             // use NonConcurrent in-memory DB to preserve entity order of query results
-            var config      = new Program.Config(_env, baseFolder, true, MemoryType.NonConcurrent);
+            var config      = new Program.Config(_env, baseFolder, true, MemoryType.NonConcurrent, "max-age=600");
             _hostHub        = Program.CreateHttpHost(config);
         }
         [OneTimeTearDown] public static void  Dispose() {

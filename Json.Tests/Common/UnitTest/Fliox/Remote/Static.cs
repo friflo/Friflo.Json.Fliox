@@ -24,10 +24,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var requestIndex = await RestRequest("GET", "/index.html");
             AssertRequest(requestIndex, 200, "text/html; charset=UTF-8");
             
+            var requestCached = await RestRequest("GET", "/index.html");
+            AssertRequest(requestCached, 200, "text/html; charset=UTF-8");
+            
             var root        = request.Response.AsString();
             var indexHtml   = requestIndex.Response.AsString();
+            var cachedHtml  = requestIndex.Response.AsString();
             
             AreEqual(root, indexHtml);
+            AreEqual(root, cachedHtml);
         }
         
         [Test]
