@@ -42,6 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
+            // execute synchronous to enable tests running in Unity Test Runner
             _hostHub.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
@@ -65,6 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, method, route, query, bodyStream, headers, cookies);
+            // execute synchronous to enable tests running in Unity Test Runner
             _hostHub.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
