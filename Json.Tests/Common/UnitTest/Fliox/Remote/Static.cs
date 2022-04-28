@@ -4,7 +4,6 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.IO;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -16,14 +15,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     public partial class TestRemote
     {
         [Test]
-        public static async Task Static_index() {
-            var request     = await RestRequest("GET", "/");
+        public static void Static_index() {
+            var request         = RestRequest("GET", "/");
             AssertRequest(request, 200, "text/html; charset=UTF-8");
             
-            var requestIndex = await RestRequest("GET", "/index.html");
+            var requestIndex    = RestRequest("GET", "/index.html");
             AssertRequest(requestIndex, 200, "text/html; charset=UTF-8");
             
-            var requestCached = await RestRequest("GET", "/index.html");
+            var requestCached   = RestRequest("GET", "/index.html");
             AssertRequest(requestCached, 200, "text/html; charset=UTF-8");
             
             var root        = request.Response.AsString();
@@ -35,27 +34,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test]
-        public static async Task Static_explorer() {
-            var request = await RestRequest("GET", "/explorer");
+        public static void Static_explorer() {
+            var request = RestRequest("GET", "/explorer");
             AssertRequest(request, 200, "application/json", "[\n]");
         }
         
         [Test]
-        public static async Task Static_explorer_example_requests() {
-            var request = await RestRequest("GET", "/explorer/example-requests");
+        public static void Static_explorer_example_requests() {
+            var request = RestRequest("GET", "/explorer/example-requests");
             WriteStaticResponse(request, "example-requests.json");
             AssertRequest(request, 200, "application/json");
         }
         
         [Test]
-        public static async Task Static_swagger() {
-            var request = await RestRequest("GET", "/swagger");
+        public static void Static_swagger() {
+            var request = RestRequest("GET", "/swagger");
             AssertRequest(request, 200, "application/json");
         }
         
         [Test]
-        public static async Task Static_folder_unknown() {
-            var request = await RestRequest("GET", "/folder_unknown");
+        public static void Static_folder_unknown() {
+            var request = RestRequest("GET", "/folder_unknown");
             AssertRequest(request, 404, "text/plain", "list directory > folder not found: /folder_unknown");
         }
         

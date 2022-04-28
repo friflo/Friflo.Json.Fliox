@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -37,13 +36,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         
         // ----------------------------------------- GraphQL -----------------------------------------
-        private static async Task<RequestContext> GraphQLRequest(string route, string query, string operationName = null)
+        private static RequestContext GraphQLRequest(string route, string query, string operationName = null)
         {
             var body            = QueryToStream(query, operationName);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
-            await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
+            _hostHub.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
         }
@@ -60,13 +59,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         
         // ------------------------------------------ REST ------------------------------------------
-        private static async Task<RequestContext> RestRequest(string method, string route, string query = "", string jsonBody = null)
+        private static RequestContext RestRequest(string method, string route, string query = "", string jsonBody = null)
         {
             var bodyStream      = BodyToStream(jsonBody);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, method, route, query, bodyStream, headers, cookies);
-            await _hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
+            _hostHub.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
         }
