@@ -1,8 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
-
 using NUnit.Framework;
 
 // ReSharper disable MethodHasAsyncOverload
@@ -53,5 +51,3 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
     }
 }
-
-#endif

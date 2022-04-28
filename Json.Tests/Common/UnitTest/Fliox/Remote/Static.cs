@@ -1,8 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-#if !UNITY_5_3_OR_NEWER
-
 using System.IO;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.Utils;
@@ -66,5 +64,3 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
     }
 }
-
-#endif
