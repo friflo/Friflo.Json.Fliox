@@ -3,12 +3,8 @@
 
 #if !UNITY_5_3_OR_NEWER
 
-using System.IO;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-using static NUnit.Framework.Assert;
 
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
