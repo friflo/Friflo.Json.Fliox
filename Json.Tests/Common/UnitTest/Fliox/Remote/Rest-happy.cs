@@ -33,6 +33,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(1)]
+        public static async Task Rest_main_db_message() {
+            var request = await RestRequest("POST", "/rest/main_db/", "?message=Message1", "\"foo\"");
+            AreEqual ("\"received\"", request.Response.AsString());
+            AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test, Order(1)]
         public static async Task Rest_main_db_GET_root() {
             var request = await RestRequest("GET", "/rest");
             WriteRestResponse(request, "main_db/GET.root.json");
@@ -50,6 +57,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static async Task Rest_main_db_GET_Entities() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
             WriteRestResponse(request, "main_db/GET.articles.json");
+            AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test, Order(1)]
+        public static async Task Rest_main_db_GET_Entities_filter() {
+            var request = await RestRequest("GET", "/rest/main_db/articles", "filter=o.producer=='producer-samsung'");
+            WriteRestResponse(request, "main_db/GET.articles-filter.json");
             AssertRequest(request, 200, "application/json");
         }
         
