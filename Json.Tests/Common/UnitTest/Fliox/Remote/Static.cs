@@ -3,7 +3,10 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
 // ReSharper disable MethodHasAsyncOverload
@@ -24,9 +27,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test]
+        public static async Task Static_explorer_example_requests() {
+            var request = await RestRequest("GET", "/explorer/example-requests");
+            WriteStaticResponse(request, "example-requests.json");
+            AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test]
         public static async Task Static_swagger() {
             var request = await RestRequest("GET", "/swagger");
             AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test]
+        public static async Task Static_folder_unknown() {
+            var request = await RestRequest("GET", "/folder_unknown");
+            AssertRequest(request, 404, "text/plain", "list directory > folder not found: /folder_unknown");
+        }
+        
+        // --------------------------------------- utils ---------------------------------------
+        private static readonly string StaticAssets = CommonUtils.GetBasePath() + "assets~/Static/";
+
+        private static void WriteStaticResponse(RequestContext request, string path) {
+            File.WriteAllBytes(StaticAssets + path, request.Response.AsByteArray());
         }
     }
 }

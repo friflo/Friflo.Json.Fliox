@@ -110,9 +110,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("list directory", msg, 404);
                 return;
             }
-            var options = new SerializerOptions{ Pretty = true };
-            var jsonList = JsonSerializer.Serialize(fileNames, options);
-            context.WriteString(jsonList, "application/json", 200);
+            using (var mapper = context.Pool.ObjectMapper.Get()) {
+                var writer      = mapper.instance.writer;
+                writer.Pretty   = true;
+                var jsonList    = writer.Write(fileNames);
+                context.WriteString(jsonList, "application/json", 200);
+            }
         }
         
         private string ContentTypeFromPath(string path) {
