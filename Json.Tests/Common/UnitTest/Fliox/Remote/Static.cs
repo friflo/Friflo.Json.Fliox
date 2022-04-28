@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
 
 // ReSharper disable MethodHasAsyncOverload
