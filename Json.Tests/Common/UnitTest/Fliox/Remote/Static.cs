@@ -9,6 +9,8 @@ using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
+using static NUnit.Framework.Assert;
+
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
@@ -16,8 +18,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         [Test]
         public static async Task Static_index() {
-            var request = await RestRequest("GET", "/");
+            var request     = await RestRequest("GET", "/");
             AssertRequest(request, 200, "text/html; charset=UTF-8");
+            
+            var requestIndex = await RestRequest("GET", "/index.html");
+            AssertRequest(requestIndex, 200, "text/html; charset=UTF-8");
+            
+            var root        = request.Response.AsString();
+            var indexHtml   = requestIndex.Response.AsString();
+            
+            AreEqual(root, indexHtml);
         }
         
         [Test]

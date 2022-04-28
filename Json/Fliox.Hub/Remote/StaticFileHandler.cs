@@ -23,14 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private readonly    Dictionary<string, CacheEntry>  cache = new Dictionary<string, CacheEntry>();
         private             string                          cacheControl    = HttpHostHub.DefaultCacheControl;
         
-        private readonly List<FileExt>  fileExtensions = new List<FileExt> {
-            new FileExt(".html",  "text/html; charset=UTF-8"),
-            new FileExt(".js",    "application/javascript"),
-            new FileExt(".png",   "image/png"),
-            new FileExt(".css",   "text/css"),
-            new FileExt(".svg",   "image/svg+xml"),
-            new FileExt(".ico",   "image/x-icon"),
-        };
+        private readonly    List<FileExt>                   fileExtensions  = DefaultFileExtensions();
         
         public StaticFileHandler (string rootFolder) {
             fileHandler         = new FileHandler(rootFolder);
@@ -48,6 +41,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public StaticFileHandler CacheControl(string cacheControl) {
             this.cacheControl   = cacheControl;
             return this;
+        }
+        
+        private static List<FileExt> DefaultFileExtensions() {
+            var result = new List<FileExt> {
+                new FileExt(".html",  "text/html; charset=UTF-8"),
+                new FileExt(".js",    "application/javascript"),
+                new FileExt(".png",   "image/png"),
+                new FileExt(".css",   "text/css"),
+                new FileExt(".svg",   "image/svg+xml"),
+                new FileExt(".ico",   "image/x-icon"),
+            };
+            return result;
         }
 
         public void AddFileExtension(string  extension, string  mediaType) {
