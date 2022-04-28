@@ -6,7 +6,6 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-
 // ReSharper disable MethodHasAsyncOverload
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
