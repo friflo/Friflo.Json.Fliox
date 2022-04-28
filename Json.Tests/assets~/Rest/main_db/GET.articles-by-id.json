@@ -1,0 +1,9 @@
+[{
+    "id": "article-1",
+    "name": "Changed name",
+    "producer": "producer-canon"
+},{
+    "id": "article-2",
+    "name": "Smartphone",
+    "producer": null
+}]

@@ -33,9 +33,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(1)]
-        public static async Task Rest_main_db_GET_Entity() {
-            var request = await RestRequest("GET", "/rest/main_db/articles/article-1");
-            WriteRestResponse(request, "main_db/GET.article.json");
+        public static async Task Rest_main_db_GET_root() {
+            var request = await RestRequest("GET", "/rest");
+            WriteRestResponse(request, "main_db/GET.root.json");
+            AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test, Order(1)]
+        public static async Task Rest_main_db_GET_database() {
+            var request = await RestRequest("GET", "/rest/main_db");
+            WriteRestResponse(request, "main_db/GET.database.json");
             AssertRequest(request, 200, "application/json");
         }
         
@@ -43,6 +50,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static async Task Rest_main_db_GET_Entities() {
             var request = await RestRequest("GET", "/rest/main_db/articles");
             WriteRestResponse(request, "main_db/GET.articles.json");
+            AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test, Order(1)]
+        public static async Task Rest_main_db_GET_Entities_by_id() {
+            var request = await RestRequest("GET", "/rest/main_db/articles", "ids=article-1,article-2");
+            WriteRestResponse(request, "main_db/GET.articles-by-id.json");
+            AssertRequest(request, 200, "application/json");
+        }
+        
+        [Test, Order(1)]
+        public static async Task Rest_main_db_GET_Entity() {
+            var request = await RestRequest("GET", "/rest/main_db/articles/article-1");
+            WriteRestResponse(request, "main_db/GET.article.json");
             AssertRequest(request, 200, "application/json");
         }
         
@@ -55,10 +76,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(2)]
+        public static async Task Rest_main_db_PUT_Entity() {
+            var body    = ReadRestRequest ("main_db/PUT.article.json");
+            var request = await RestRequest("PUT", "/rest/main_db/articles/article-PUT-single", "", body);
+            AssertRequest(request, 200, "text/plain", "PUT successful");
+        }
+        
+        [Test, Order(2)]
         public static async Task Rest_main_db_PUT_Entities() {
-            var body = ReadRestRequest ("main_db/PUT.articles.json");
+            var body    = ReadRestRequest ("main_db/PUT.articles.json");
             var request = await RestRequest("PUT", "/rest/main_db/articles", "", body);
             AssertRequest(request, 200, "text/plain", "PUT successful");
+        }
+        
+        [Test, Order(2)]
+        public static async Task Rest_main_db_PATCH_article() {
+            var body    = ReadRestRequest ("main_db/PATCH.article.json");
+            var request = await RestRequest("PATCH", "/rest/main_db/articles/article-ipad", "", body);
+            AssertRequest(request, 200, "text/plain", "PATCH successful");
         }
         
         [Test, Order(2)]

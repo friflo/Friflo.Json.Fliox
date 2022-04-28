@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         case "bulk-delete":
                             break;
                         default:
-                            context.WriteError($"post failed", "invalid bulk parameter: {bulk}", 400);
+                            context.WriteError($"post failed", "invalid POST path", 400);
                             return;
                     }
                     JsonKey[] keys;
