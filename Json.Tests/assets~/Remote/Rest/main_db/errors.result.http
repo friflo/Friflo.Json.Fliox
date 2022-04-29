@@ -63,3 +63,59 @@ POST {{base}}/rest/main_db/articles/bulk-get
 
 invalid id list > JsonReader/error: Expect string as JsonKey. ValueNumber path: '[0]' at position: 2
 
+###
+GET {{base}}/rest/main_db/articles/article-1/invalid
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid request > expect: /database/container/id
+
+###
+DELETE {{base}}/rest/main_db/articles
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid request > expect: /database/container/id
+
+###
+PUT {{base}}/rest/main_db
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid PUT > expect: /database/container or /database/container/id
+
+###
+PUT {{base}}/rest/main_db/articles
+# StatusCode:   400
+# Content-Type: text/plain
+
+PUT failed > JsonParser/JSON error: unexpected character while reading value. Found: I path: '(root)' at position: 1
+
+###
+PUT {{base}}/rest/main_db/articles?create=invalid
+# StatusCode:   400
+# Content-Type: text/plain
+
+PUT failed > invalid boolean query parameter value: invalid, parameter: create
+
+###
+PATCH {{base}}/rest/main_db/articles
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid PATCH > expect: /database/container/id
+
+###
+PATCH {{base}}/rest/main_db/articles/article-1
+# StatusCode:   400
+# Content-Type: text/plain
+
+PATCH failed > JsonParser/JSON error: unexpected character while reading value. Found: I path: '(root)' at position: 1
+
+###
+HEAD {{base}}/rest/main_db
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid path/method > /rest/main_db
+

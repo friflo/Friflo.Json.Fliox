@@ -41,4 +41,44 @@ Cookie: {{auth}}
 
 [1,2]
 
+###
+GET {{base}}/rest/main_db/articles/article-1/invalid
+Cookie: {{auth}}
+
+###
+DELETE {{base}}/rest/main_db/articles
+Cookie: {{auth}}
+
+###
+PUT {{base}}/rest/main_db
+Cookie: {{auth}}
+
+###
+PUT {{base}}/rest/main_db/articles
+Cookie: {{auth}}
+
+Invalid Json
+
+###
+PUT {{base}}/rest/main_db/articles?create=invalid
+Cookie: {{auth}}
+
+{ }
+
+###
+PATCH {{base}}/rest/main_db/articles
+Cookie: {{auth}}
+
+{}
+
+###
+PATCH {{base}}/rest/main_db/articles/article-1
+Cookie: {{auth}}
+
+Invalid Patch
+
+###
+HEAD {{base}}/rest/main_db
+Cookie: {{auth}}
+
 
