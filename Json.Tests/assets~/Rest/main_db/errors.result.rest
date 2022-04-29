@@ -1,8 +1,16 @@
 @base = http://localhost:8010/fliox
 
 ###
+PUT {{base}}/rest
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid request > access to root only applicable with GET
+
+###
 GET {{base}}/rest/main_db//article-1
-# status: 400
+# StatusCode:   400
+# Content-Type: text/plain
 
 invalid path /database/container/id > empty container path
 

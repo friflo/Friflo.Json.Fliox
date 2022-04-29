@@ -3,6 +3,10 @@
 @base = http://localhost:8010/fliox
 
 ###
+PUT {{base}}/rest
+Cookie: {{auth}}
+
+###
 GET {{base}}/rest/main_db//article-1
 Cookie: {{auth}}
 

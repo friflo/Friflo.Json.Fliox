@@ -2,7 +2,8 @@
 
 ###
 GET {{base}}/rest/main_db/articles/article-1
-# status: 200
+# StatusCode:   200
+# Content-Type: application/json
 
 {
     "id": "article-1",
@@ -12,7 +13,8 @@ GET {{base}}/rest/main_db/articles/article-1
 
 ###
 GET {{base}}/rest/main_db?command=std.Messages
-# status: 200
+# StatusCode:   200
+# Content-Type: application/json
 
 {
     "id": "main_db",
