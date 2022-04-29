@@ -14,3 +14,45 @@ GET {{base}}/rest/main_db//article-1
 
 invalid path /database/container/id > empty container path
 
+###
+GET {{base}}/rest/main_db/foo/?command=bar
+# StatusCode:   400
+# Content-Type: text/plain
+
+command error > messages & commands operate on database. was: main_db/foo/
+
+###
+POST {{base}}/rest/main_db/foo/?command=bar
+# StatusCode:   400
+# Content-Type: text/plain
+
+command error > messages & commands operate on database. was: main_db/foo/
+
+###
+GET {{base}}/rest/main_db/foo/?message=bar
+# StatusCode:   400
+# Content-Type: text/plain
+
+message error > messages & commands operate on database. was: main_db/foo/
+
+###
+POST {{base}}/rest/main_db/foo/?message=bar
+# StatusCode:   400
+# Content-Type: text/plain
+
+message error > messages & commands operate on database. was: main_db/foo/
+
+###
+GET {{base}}/rest/main_db/?command=std.Echo&param=invalid
+# StatusCode:   400
+# Content-Type: text/plain
+
+command error > invalid param - JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1
+
+###
+POST {{base}}/rest/main_db/articles/invalidOperation
+# StatusCode:   400
+# Content-Type: text/plain
+
+post failed > invalid container operation: invalidOperation
+

@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         param = new JsonValue();
                     } else {
                         if (!IsValidJson(pool, param, out string error)) {
-                            context.WriteError(GetErrorType(command), error, 400);
+                            context.WriteError(GetErrorType(command), $"invalid param - {error}", 400);
                             return;
                         }
                     }
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         case "bulk-delete":
                             break;
                         default:
-                            context.WriteError($"post failed", "invalid POST path", 400);
+                            context.WriteError($"post failed", $"invalid container operation: {bulk}", 400);
                             return;
                     }
                     JsonKey[] keys;
