@@ -1,0 +1,24 @@
+
+@auth = fliox-user=admin; fliox-token=admin
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/explorer
+Cookie: {{auth}}
+
+###
+GET {{base}}/swagger
+Cookie: {{auth}}
+
+###
+GET {{base}}/graphiql
+Cookie: {{auth}}
+
+
+###
+GET {{base}}/explorer/example-requests
+Cookie: {{auth}}
+
+
+
+

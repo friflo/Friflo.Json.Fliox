@@ -31,29 +31,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             AreEqual(root, cachedHtml);
         }
         
-        [Test]
-        public static void Static_explorer() {
-            var request = RestRequest("GET", "/explorer");
-            AssertRequest(request, 200, "application/json", "[\n]");
+        [Test, Order(1)]
+        public static void Static_happy_read() {
+            ExecuteRestFile("Static/happy.http", "Static/happy.result.http");
         }
         
-        [Test]
-        public static void Static_explorer_example_requests() {
-            var request = RestRequest("GET", "/explorer/example-requests");
-            WriteStaticResponse(request, "example-requests.json");
-            AssertRequest(request, 200, "application/json");
+        [Test, Order(1)]
+        public static void Static_errors() {
+            ExecuteRestFile("Static/errors.http", "Static/errors.result.http");
         }
         
         [Test]
         public static void Static_swagger() {
             var request = RestRequest("GET", "/swagger");
             AssertRequest(request, 200, "application/json");
-        }
-        
-        [Test]
-        public static void Static_folder_unknown() {
-            var request = RestRequest("GET", "/folder_unknown");
-            AssertRequest(request, 404, "text/plain", "list directory > folder not found: /folder_unknown");
         }
         
         // --------------------------------------- utils ---------------------------------------

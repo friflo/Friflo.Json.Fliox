@@ -1,0 +1,9 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/folder_unknown
+# StatusCode:   404
+# Content-Type: text/plain
+
+list directory > folder not found: /folder_unknown
+

@@ -1,3 +1,46 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/explorer
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+]
+
+###
+GET {{base}}/swagger
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    "favicon-16x16.png",
+    "favicon-32x32.png",
+    "index.css",
+    "index.html",
+    "swagger-initializer.js",
+    "swagger-ui-bundle.js",
+    "swagger-ui-standalone-preset.js",
+    "swagger-ui.css"
+]
+
+###
+GET {{base}}/graphiql
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    "favicon.ico",
+    "graphiql.css",
+    "graphiql.min.js",
+    "index.html"
+]
+
+###
+GET {{base}}/explorer/example-requests
+# StatusCode:   200
+# Content-Type: application/json
+
 [
     ".post-config",
     "00-empty.sync.json",
@@ -23,3 +66,4 @@
     "60-reserveKeys.sync.json",
     "61-create-reservedKeys.sync.json"
 ]
+
