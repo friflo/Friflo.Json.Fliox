@@ -10,9 +10,3 @@ Cookie: {{auth}}
 ###
 GET {{base}}/rest/main_db?command=std.Messages
 Cookie: {{auth}}
-
-
-
-
-
-
