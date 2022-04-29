@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -60,13 +61,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         
         // ------------------------------------------ REST ------------------------------------------
-        private static void ExecuteRestFile (string path) {
-            var fullPath    = CommonUtils.GetBasePath() + "assets~/" + path;
-            var restFile    = RestFile.Read(fullPath);
-            restFile.Execute();
+        private static void ExecuteRestFile (string requestPath, string resultPath) {
+            var fullRequest     = CommonUtils.GetBasePath() + "assets~/" + requestPath;
+            var restFile        = RestFile.Read(fullRequest);
+            var sb              = new StringBuilder();
+            restFile.Execute(sb);
+            
+            var fullResult      = CommonUtils.GetBasePath() + "assets~/" + resultPath;
+            var result          = sb.ToString();
+            File.WriteAllText(fullResult, result);
         }
         
-        private static RequestContext RestRequest(string method, string route, string query = "", string jsonBody = null)
+        internal static RequestContext RestRequest(string method, string route, string query = "", string jsonBody = null)
         {
             var bodyStream      = BodyToStream(jsonBody);
             var headers         = new TestHttpHeaders();

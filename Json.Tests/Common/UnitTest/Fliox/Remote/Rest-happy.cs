@@ -23,6 +23,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(1)]
+        public static void Rest_main_db_happy() {
+            ExecuteRestFile("Rest/main_db/happy-read.rest", "Rest/main_db/happy-read.result.rest");
+        }
+        
+        [Test, Order(1)]
         public static void Rest_main_db_std_Echo() {
             var request = RestRequest("POST", "/rest/main_db/", "?command=std.Echo", "{}");
             AreEqual ("{}", request.Response.AsString());

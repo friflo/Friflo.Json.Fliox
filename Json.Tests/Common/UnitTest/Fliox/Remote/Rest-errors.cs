@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         [Test, Order(1)]
         public static void Rest_main_db_errors() {
-            ExecuteRestFile("Rest/main_db/errors.rest");
+            ExecuteRestFile("Rest/main_db/errors.rest", "Rest/main_db/errors.result.rest");
         }
     }
 }

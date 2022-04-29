@@ -5,8 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-// ReSharper disable MemberCanBePrivate.Global
+using System.Text;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public class RestFile
@@ -34,9 +35,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             return new RestFile(path, content);
         }
         
-        public void Execute() {
-            foreach (var request in requests) {
+        public void Execute(StringBuilder sb) {
+            sb.AppendLine("@base = http://localhost:8010/fliox");
+            sb.AppendLine();
+            foreach (var req in requests) {
+                var context = TestRemote.RestRequest(req.method, req.path, req.query, req.body);
                 
+                sb.AppendLine("###");
+                // --- request line
+                sb.Append(req.method);
+                sb.Append(' ');
+                sb.Append("{{base}}");
+                sb.Append(req.path);
+                if (req.query != "") {
+                    sb.Append('?');
+                    sb.Append(req.query);
+                }
+                sb.AppendLine();
+                
+                // --- status
+                sb.Append("# status: ");
+                sb.Append(context.StatusCode);
+                sb.AppendLine();
+                
+                // --- response body
+                sb.AppendLine();
+                var responseBody = context.Response.AsString();
+                sb.AppendLine(responseBody);
+                sb.AppendLine();
             }
         }
     }

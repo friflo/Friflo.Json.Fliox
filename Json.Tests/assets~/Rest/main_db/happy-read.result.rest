@@ -1,0 +1,42 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/rest/main_db/articles/article-1
+# status: 200
+
+{
+    "id": "article-1",
+    "name": "Changed name",
+    "producer": "producer-canon"
+}
+
+###
+GET {{base}}/rest/main_db?command=std.Messages
+# status: 200
+
+{
+    "id": "main_db",
+    "commands": [
+        "TestCommand",
+        "SyncCommand",
+        "AsyncCommand",
+        "Command1",
+        "CommandInt",
+        "test.Command2",
+        "test.CommandHello",
+        "test.CommandExecutionError",
+        "std.Echo",
+        "std.Containers",
+        "std.Messages",
+        "std.Schema",
+        "std.Stats",
+        "std.Details",
+        "std.Cluster"
+    ],
+    "messages": [
+        "Message1",
+        "AsyncMessage",
+        "test.Message2"
+    ]
+}
+
