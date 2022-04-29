@@ -24,8 +24,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(1)]
-        public static void Rest_main_db_errors() {
-            ExecuteRestFile("Rest/main_db/errors.http", "Rest/main_db/errors.result.http");
+        public static void Rest_main_db_errors_handler() {
+            ExecuteRestFile("Rest/main_db/errors-handler.http", "Rest/main_db/errors-handler.result.http");
+        }
+        
+        [Test, Order(1)]
+        public static void Rest_main_db_errors_task() {
+            ExecuteRestFile("Rest/main_db/errors-task.http", "Rest/main_db/errors-task.result.http");
         }
         
         [Test, Order(2)]
