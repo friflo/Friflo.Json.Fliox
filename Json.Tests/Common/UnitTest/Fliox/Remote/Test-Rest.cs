@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         // --------------------------------------- utils ---------------------------------------
-        private static readonly string RestAssets = CommonUtils.GetBasePath() + "assets~/Rest/";
+        private static readonly string RestAssets = CommonUtils.GetBasePath() + "assets~/Remote/Rest/";
         
         private static string ReadRestRequest(string path) {
             return File.ReadAllText(RestAssets + path);

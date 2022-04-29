@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         // --------------------------------------- utils ---------------------------------------
-        private static readonly string StaticAssets = CommonUtils.GetBasePath() + "assets~/Static/";
+        private static readonly string StaticAssets = CommonUtils.GetBasePath() + "assets~/Remote/Static/";
 
         private static void WriteStaticResponse(RequestContext request, string path) {
             File.WriteAllBytes(StaticAssets + path, request.Response.AsByteArray());
