@@ -48,3 +48,19 @@ Cookie: {{auth}}
 ###
 GET {{base}}/rest/main_db/articles?filter-tree={"op":"equal","left":{"op":"field","name":"xxx.name"},"right":{"op":"string","value":"Smartphone"}}
 Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?maxCount=invalid
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?limit=invalid
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?cursor=unknown
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?maxCount=1
+Cookie: {{auth}}

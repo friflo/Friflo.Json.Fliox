@@ -77,3 +77,35 @@ GET {{base}}/rest/main_db/articles?filter-tree={"op":"equal","left":{"op":"field
 
 invalid filter > symbol 'xxx' not found
 
+###
+GET {{base}}/rest/main_db/articles?maxCount=invalid
+# StatusCode:   400
+# Content-Type: text/plain
+
+url parameter error > expect maxCount as integer. was: invalid
+
+###
+GET {{base}}/rest/main_db/articles?limit=invalid
+# StatusCode:   400
+# Content-Type: text/plain
+
+url parameter error > expect limit as integer. was: invalid
+
+###
+GET {{base}}/rest/main_db/articles?cursor=unknown
+# StatusCode:   400
+# Content-Type: text/plain
+
+InvalidTask > cursor 'unknown' not found
+
+###
+GET {{base}}/rest/main_db/articles?maxCount=1
+# StatusCode:   200
+# Content-Type: application/json
+
+[{
+    "id": "article-1",
+    "name": "Changed name",
+    "producer": "producer-canon"
+}]
+
