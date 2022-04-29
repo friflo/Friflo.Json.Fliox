@@ -267,6 +267,24 @@
         }
       }
     },
+    "/?command=test.CommandExecutionException": {
+      "post": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Standard.json#/definitions/int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?command=std.Echo": {
       "post": {
         "summary":    "echos the given parameter to assure the database is working appropriately.",

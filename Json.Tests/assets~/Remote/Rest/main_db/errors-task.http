@@ -3,4 +3,29 @@
 @base = http://localhost:8010/fliox
 
 
+###
+PUT {{base}}/rest/cluster/articles
+Cookie: {{auth}}
+
+[]
+
+###
+PUT {{base}}/rest/main_db/articles
+Cookie: {{auth}}
+
+[{ "id": "xxx" }]
+
+###
+POST {{base}}/rest/main_db?command=UnknownCommand
+Cookie: {{auth}}
+
+###
+POST {{base}}/rest/main_db?command=test.CommandExecutionError
+Cookie: {{auth}}
+
+###
+POST {{base}}/rest/main_db?command=test.CommandExecutionException
+Cookie: {{auth}}
+
+
 

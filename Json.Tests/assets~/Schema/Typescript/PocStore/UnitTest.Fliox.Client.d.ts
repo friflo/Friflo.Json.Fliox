@@ -30,28 +30,29 @@ export interface PocStore {
     types      : { [key: string]: TestType };
 
     // --- commands
-    ["TestCommand"]                    (param: TestCommand | null) : boolean;
-    ["SyncCommand"]                    (param: string | null) : string;
-    ["AsyncCommand"]                   (param: string | null) : string;
-    ["Command1"]                       () : string;
-    ["CommandInt"]                     (param: int32) : int32;
-    ["test.Command2"]                  () : string;
-    ["test.CommandHello"]              (param: string | null) : string;
-    ["test.CommandExecutionError"]     () : int32;
+    ["TestCommand"]                        (param: TestCommand | null) : boolean;
+    ["SyncCommand"]                        (param: string | null) : string;
+    ["AsyncCommand"]                       (param: string | null) : string;
+    ["Command1"]                           () : string;
+    ["CommandInt"]                         (param: int32) : int32;
+    ["test.Command2"]                      () : string;
+    ["test.CommandHello"]                  (param: string | null) : string;
+    ["test.CommandExecutionError"]         () : int32;
+    ["test.CommandExecutionException"]     () : int32;
     /** echos the given parameter to assure the database is working appropriately. */
-    ["std.Echo"]                       (param: any) : any;
+    ["std.Echo"]                           (param: any) : any;
     /** list all database containers */
-    ["std.Containers"]                 () : DbContainers;
+    ["std.Containers"]                     () : DbContainers;
     /** list all database commands and messages */
-    ["std.Messages"]                   () : DbMessages;
+    ["std.Messages"]                       () : DbMessages;
     /** return the Schema assigned to the database */
-    ["std.Schema"]                     () : DbSchema;
+    ["std.Schema"]                         () : DbSchema;
     /** return the number of entities of all containers (or the given container) of the database */
-    ["std.Stats"]                      (param: string | null) : DbStats;
+    ["std.Stats"]                          (param: string | null) : DbStats;
     /** returns general information about the Hub like version, host, project and environment name */
-    ["std.Details"]                    () : HostDetails;
+    ["std.Details"]                        () : HostDetails;
     /** list all databases and their containers hosted by the Hub */
-    ["std.Cluster"]                    () : HostCluster;
+    ["std.Cluster"]                        () : HostCluster;
 
     // --- messages
     ["Message1"]          (param: string | null) : void;

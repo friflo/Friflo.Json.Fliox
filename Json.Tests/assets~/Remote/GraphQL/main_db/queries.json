@@ -104,6 +104,7 @@
         "test.Command2",
         "test.CommandHello",
         "test.CommandExecutionError",
+        "test.CommandExecutionException",
         "std.Echo",
         "std.Containers",
         "std.Messages",

@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using static NUnit.Framework.Assert;
@@ -59,6 +60,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private static int CommandExecutionError(Param<string> param, MessageContext command) {
             command.Error("test command execution error");
             return -1;
+        }
+        
+        private static int CommandExecutionException(Param<string> param, MessageContext command) {
+            throw new InvalidOperationException("test command throw exception");
         }
     }
     

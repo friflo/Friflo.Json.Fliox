@@ -192,7 +192,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public CommandTask<string>  Command2 ()                 => SendCommand<string>          ("test.Command2");
         public CommandTask<string>  CommandHello (string param) => SendCommand<string, string>  ("test.CommandHello", param);
         
-        public CommandTask<int>     CommandExecutionError ()    => SendCommand<int>             ("test.CommandExecutionError");   // test returning an error
+        public CommandTask<int>     CommandExecutionError ()    => SendCommand<int>             ("test.CommandExecutionError");     // test returning an error
+        public CommandTask<int>     CommandExecutionException() => SendCommand<int>             ("test.CommandExecutionException"); // test throwing exception
 
         
         // --- messages

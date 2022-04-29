@@ -196,6 +196,7 @@ GET {{base}}/rest/main_db?command=std.Messages
         "test.Command2",
         "test.CommandHello",
         "test.CommandExecutionError",
+        "test.CommandExecutionException",
         "std.Echo",
         "std.Containers",
         "std.Messages",
