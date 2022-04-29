@@ -27,6 +27,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             ExecuteRestFile("Rest/main_db/happy-read.http", "Rest/main_db/happy-read.result.http");
         }
         
+        [Test, Order(1)]
+        public static void Rest_main_db_errors() {
+            ExecuteRestFile("Rest/main_db/errors.http", "Rest/main_db/errors.result.http");
+        }
+        
         [Test, Order(2)]
         public static void Rest_main_db_happy_mutate() {
             ExecuteRestFile("Rest/main_db/happy-mutate.http", "Rest/main_db/happy-mutate.result.http");
