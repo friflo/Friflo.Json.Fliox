@@ -1,9 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.IO;
-using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -45,13 +42,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static void Static_swagger() {
             var request = RestRequest("GET", "/swagger");
             AssertRequest(request, 200, "application/json");
-        }
-        
-        // --------------------------------------- utils ---------------------------------------
-        private static readonly string StaticAssets = CommonUtils.GetBasePath() + "assets~/Remote/Static/";
-
-        private static void WriteStaticResponse(RequestContext request, string path) {
-            File.WriteAllBytes(StaticAssets + path, request.Response.AsByteArray());
         }
     }
 }
