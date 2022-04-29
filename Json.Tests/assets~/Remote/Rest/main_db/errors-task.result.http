@@ -42,3 +42,38 @@ UnhandledException > InvalidOperationException: test command throw exception
    at Friflo.Json.Fliox.Hub.Host.FlioxHub.ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) in G:\_dev\Unity\HoverLab\Assets\Friflo\Json\Fliox.Hub\Host\FlioxHub.cs:line 201
 
 
+###
+GET {{base}}/rest/main_db/articles?filter=abc
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid filter > variable not found: abc at pos 0
+
+###
+GET {{base}}/rest/main_db/articles?filter=1-2
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid filter > filter must be boolean operation
+
+###
+GET {{base}}/rest/main_db/articles?filter-tree=invalid
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid filter > unexpected character while reading value. Found: i at FilterOperation > (root), pos: 1
+
+###
+GET {{base}}/rest/main_db/articles?filter-tree={"op":"false"}
+# StatusCode:   200
+# Content-Type: application/json
+
+[]
+
+###
+GET {{base}}/rest/main_db/articles?filter-tree={"op":"equal","left":{"op":"field","name":"xxx.name"},"right":{"op":"string","value":"Smartphone"}}
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid filter > symbol 'xxx' not found
+

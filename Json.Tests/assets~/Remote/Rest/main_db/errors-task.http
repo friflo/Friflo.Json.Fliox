@@ -29,3 +29,22 @@ Cookie: {{auth}}
 
 
 
+###
+GET {{base}}/rest/main_db/articles?filter=abc
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?filter=1-2
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?filter-tree=invalid
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?filter-tree={"op":"false"}
+Cookie: {{auth}}
+
+###
+GET {{base}}/rest/main_db/articles?filter-tree={"op":"equal","left":{"op":"field","name":"xxx.name"},"right":{"op":"string","value":"Smartphone"}}
+Cookie: {{auth}}
