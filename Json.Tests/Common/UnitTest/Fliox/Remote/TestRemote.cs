@@ -60,6 +60,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         
         // ------------------------------------------ REST ------------------------------------------
+        private static void ExecuteRestFile (string path) {
+            var fullPath    = CommonUtils.GetBasePath() + "assets~/" + path;
+            var restFile    = RestFile.Read(fullPath);
+            restFile.Execute();
+        }
+        
         private static RequestContext RestRequest(string method, string route, string query = "", string jsonBody = null)
         {
             var bodyStream      = BodyToStream(jsonBody);

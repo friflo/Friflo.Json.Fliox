@@ -1,0 +1,29 @@
+
+@auth = fliox-user=admin; fliox-token=admin
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/rest/main_db?command=std.Messages
+Cookie: {{auth}}
+
+
+###
+GET {{base}}/rest/main_db/articles/article-1
+Cookie: {{auth}}
+
+###
+PUT {{base}}/rest/main_db/articles/article-PUT-single
+Cookie: {{auth}}
+
+{
+    "id": "article-PUT-single",
+    "name": "PUT new Article",
+    "producer": "producer-samsung"
+}
+
+
+###
+GET {{base}}/rest/main_db//article-1
+Cookie: {{auth}}
+
+

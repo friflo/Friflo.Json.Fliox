@@ -13,5 +13,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var request = RestRequest("PUT", "/rest");
             AssertRequest(request, 400, "text/plain", "invalid request > access to root only applicable with GET");
         }
+        
+        [Test, Order(1)]
+        public static void Rest_main_db_errors() {
+            ExecuteRestFile("Rest/main_db/errors.rest");
+        }
     }
 }
