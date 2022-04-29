@@ -1,0 +1,9 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/schema/main_db/typescript/unknown
+# StatusCode:   404
+# Content-Type: text/plain
+
+schema error > file not found: 'unknown'
+

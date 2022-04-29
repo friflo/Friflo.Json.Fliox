@@ -1,0 +1,11 @@
+
+@auth = fliox-user=admin; fliox-token=admin
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/schema/main_db/typescript/unknown
+Cookie: {{auth}}
+
+
+
+

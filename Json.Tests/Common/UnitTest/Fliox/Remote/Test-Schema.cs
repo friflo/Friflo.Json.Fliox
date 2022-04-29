@@ -9,11 +9,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     public partial class TestRemote
     {
         [Test]
+        public static void Schema_errors() {
+            ExecuteRestFile("Schema/errors.http", "Schema/errors.result.http");
+        }
+
+        [Test]
         public static void Schema_main_db_index() {
             var request = RestRequest("GET", "/schema/main_db/index.html");
             AssertRequest(request, 200, "text/html");
         }
-        
+
         [Test]
         public static void Schema_main_db_json_schema_index() {
             var request = RestRequest("GET", "/schema/main_db/json-schema/index.html");
@@ -42,12 +47,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public static void Schema_main_db_open_api() {
             var request = RestRequest("GET", "/schema/main_db/open-api.html");
             AssertRequest(request, 200, "text/html");
-        }
-        
-        [Test]
-        public static void Schema_main_db_typescript_schema() {
-            var request = RestRequest("GET", "/schema/main_db/typescript/unknown");
-            AssertRequest(request, 404, "text/plain", "schema error > file not found: 'unknown'");
         }
     }
 }
