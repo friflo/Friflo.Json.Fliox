@@ -10,14 +10,14 @@ using System.Text;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
-    public class RestFile
+    public class HttpFile
     {
         private  readonly   string              path;
         private  readonly   List <HttpRequest>  requests;
 
         public  override    string              ToString() => path;
 
-        public RestFile(string path, string content) {
+        public HttpFile(string path, string content) {
             this.path   = path;
             requests    = new List <HttpRequest>();
             
@@ -30,9 +30,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             }
         }
         
-        public static RestFile Read(string path) {
+        public static HttpFile Read(string path) {
             var content = File.ReadAllText(path);
-            return new RestFile(path, content);
+            return new HttpFile(path, content);
         }
         
         public void Execute(StringBuilder sb) {
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public HttpRequest (string request) {
             var parts       = request.Split(new [] { "\r\n\r\n" }, StringSplitOptions.None);
             var head        = parts[0];
-            body            = parts.Length > 0 ? parts[1] : null;
+            body            = parts.Length > 1 ? parts[1] : null;
             var headers     = head.Split("\r\n");
             var requestLine = headers[0];
             

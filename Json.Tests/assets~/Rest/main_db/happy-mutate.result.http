@@ -1,0 +1,37 @@
+@base = http://localhost:8010/fliox
+
+###
+PUT {{base}}/rest/main_db/articles/article-PUT-single
+# StatusCode:   200
+# Content-Type: text/plain
+
+PUT successful
+
+###
+PUT {{base}}/rest/main_db/articles
+# StatusCode:   200
+# Content-Type: text/plain
+
+PUT successful
+
+###
+PATCH {{base}}/rest/main_db/articles/article-ipad
+# StatusCode:   200
+# Content-Type: text/plain
+
+PATCH successful
+
+###
+DELETE {{base}}/rest/main_db/articles/article-1
+# StatusCode:   200
+# Content-Type: text/plain
+
+deleted successful
+
+###
+POST {{base}}/rest/main_db/articles/bulk-delete
+# StatusCode:   200
+# Content-Type: text/plain
+
+deleted successful
+
