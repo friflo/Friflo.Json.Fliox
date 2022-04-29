@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     success = true;
                     return new JsonKey(ref parser.value, ref parser.valueParser);
                 default:
-                    throw new InvalidOperationException($"JsonKey - unexpected event: {ev}");
+                    return reader.ErrorMsg<JsonKey>("Expect string as JsonKey. ", ev, out success);
             }
         }
     }
