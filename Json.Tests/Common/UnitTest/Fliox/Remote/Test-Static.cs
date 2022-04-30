@@ -11,13 +11,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         [Test]
         public static void Static_index() {
-            var request         = RestRequest("GET", "/");
+            var request         = HttpRequest("GET", "/");
             AssertRequest(request, 200, "text/html; charset=UTF-8");
             
-            var requestIndex    = RestRequest("GET", "/index.html");
+            var requestIndex    = HttpRequest("GET", "/index.html");
             AssertRequest(requestIndex, 200, "text/html; charset=UTF-8");
             
-            var requestCached   = RestRequest("GET", "/index.html");
+            var requestCached   = HttpRequest("GET", "/index.html");
             AssertRequest(requestCached, 200, "text/html; charset=UTF-8");
             
             var root        = request.Response.AsString();
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         [Test]
         public static void Static_swagger() {
-            var request = RestRequest("GET", "/swagger");
+            var request = HttpRequest("GET", "/swagger");
             AssertRequest(request, 200, "application/json");
         }
     }

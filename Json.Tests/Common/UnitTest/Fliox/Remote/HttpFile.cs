@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
@@ -27,20 +28,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     /// </summary>
     public class HttpFile
     {
-        private  readonly   string              path;
-        private  readonly   List <HttpRequest>  requests;
+        private  readonly   string                  path;
+        public   readonly   List <HttpFileRequest>  requests;
 
-        public  override    string              ToString() => path;
+        public  override    string                  ToString() => path;
 
         public HttpFile(string path, string content) {
             this.path   = path;
-            requests    = new List <HttpRequest>();
+            requests    = new List <HttpFileRequest>();
             
             var sections = content.Split(new [] {"###\r\n"}, StringSplitOptions.None);
             // skip first entry containing variables
             for (int n = 1; n < sections.Length; n++) {
                 var section = sections[n];
-                var request = new HttpRequest(section);
+                var request = new HttpFileRequest(section);
                 requests.Add(request);
             }
         }
@@ -50,44 +51,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             return new HttpFile(path, content);
         }
         
-        public void Execute(StringBuilder sb) {
-            sb.AppendLine("@base = http://localhost:8010/fliox");
-            sb.AppendLine();
-            foreach (var req in requests) {
-                var context = TestRemote.RestRequest(req.method, req.path, req.query, req.body);
-                
-                sb.AppendLine("###");
-                // --- request line
-                sb.Append(req.method);
-                sb.Append(' ');
-                sb.Append("{{base}}");
-                sb.Append(req.path);
-                if (req.query != "") {
-                    sb.Append('?');
-                    sb.Append(req.query);
-                }
-                sb.AppendLine();
-                
-                // --- StatusCode
-                sb.Append("# StatusCode:   ");
-                sb.Append(context.StatusCode);
-                sb.AppendLine();
-                
-                // --- Content-Type
-                sb.Append("# Content-Type: ");
-                sb.Append(context.ResponseContentType);
-                sb.AppendLine();
-                
-                // --- response body
-                sb.AppendLine();
-                var responseBody = context.Response.AsString();
-                sb.AppendLine(responseBody);
-                sb.AppendLine();
+        public static void AppendRequest(StringBuilder sb, RequestContext context)
+        {
+            sb.AppendLine("###");
+            // --- request line
+            sb.Append(context.method);
+            sb.Append(' ');
+            sb.Append("{{base}}");
+            sb.Append(context.route);
+            if (context.query != "") {
+                sb.Append('?');
+                sb.Append(context.query);
             }
+            sb.AppendLine();
+            
+            // --- StatusCode
+            sb.Append("# StatusCode:   ");
+            sb.Append(context.StatusCode);
+            sb.AppendLine();
+            
+            // --- Content-Type
+            sb.Append("# Content-Type: ");
+            sb.Append(context.ResponseContentType);
+            sb.AppendLine();
+            
+            // --- response body
+            sb.AppendLine();
+            var responseBody = context.Response.AsString();
+            sb.AppendLine(responseBody);
+            sb.AppendLine();
         }
     }
     
-    public class HttpRequest
+    public class HttpFileRequest
     {
         public  readonly    string  method;
         public  readonly    string  path;
@@ -102,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 
         private const   string  BaseVariable = "{{base}}";
         
-        public HttpRequest (string request) {
+        public HttpFileRequest (string request) {
             var parts       = request.Split(new [] { "\r\n\r\n" }, StringSplitOptions.None);
             var head        = parts[0];
             body            = parts.Length > 1 ? parts[1] : null;

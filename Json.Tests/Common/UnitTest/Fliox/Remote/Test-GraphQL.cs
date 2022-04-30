@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         /// </summary>
         [Test, Order(0)]
         public static void GraphQL__main_db_index() {
-            var request = RestRequest("GET", "/graphql/main_db");
+            var request = HttpRequest("GET", "/graphql/main_db");
             AssertRequest(request, 200, "text/html");
         }
         

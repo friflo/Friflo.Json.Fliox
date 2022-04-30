@@ -65,14 +65,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var fullRequest     = CommonUtils.GetBasePath() + "assets~/Remote/" + requestPath;
             var restFile        = HttpFile.Read(fullRequest);
             var sb              = new StringBuilder();
-            restFile.Execute(sb);
-            
+            sb.AppendLine("@base = http://localhost:8010/fliox");
+            sb.AppendLine();
+            foreach (var req in restFile.requests) {
+                var context = HttpRequest(req.method, req.path, req.query, req.body);
+                HttpFile.AppendRequest(sb, context);
+            }
             var fullResult      = CommonUtils.GetBasePath() + "assets~/Remote/" + resultPath;
             var result          = sb.ToString();
             File.WriteAllText(fullResult, result);
         }
-        
-        internal static RequestContext RestRequest(string method, string route, string query = "", string jsonBody = null)
+
+        private static RequestContext HttpRequest(string method, string route, string query = "", string jsonBody = null)
         {
             var bodyStream      = BodyToStream(jsonBody);
             var headers         = new TestHttpHeaders();
