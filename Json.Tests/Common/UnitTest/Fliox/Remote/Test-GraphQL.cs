@@ -21,33 +21,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         [Test, Order(0)]
-        public static void GraphQL__handler_errors() {
-            var request = RestRequest("POST", "/graphql/main_db", "", "\"invalid operation\"");
-            AssertRequest(request, 400, "text/plain", "invalid request body > JsonReader/error: Cannot assign string to class GqlRequest. got: 'invalid operation' path: '(root)' at position: 19");
+        public static void GraphQL__errors() {
+            ExecuteRestFile("GraphQL/errors.http", "GraphQL/errors.result.http");
         }
-        
-        [Test, Order(0)]
-        public static void GraphQL__error_invalid_path() {
-            var query   = "{ __typename }";
-            var request = GraphQLRequest("/graphql", query);
-            AssertRequest(request, 400, "text/plain", "invalid path > expect: graphql/database");
-        }
-        
-        [Test, Order(0)]
-        public static void GraphQL__error_database_not_found() {
-            var query   = "{ __typename }";
-            var request = GraphQLRequest("/graphql/unknown_db", query);
-            AssertRequest(request, 404, "text/plain", "error: database not found, database: unknown_db");
-        }
-        
-        [Test, Order(0)]
-        public static void GraphQL__error_invalid_query() {
-            var query   = "{";
-            var request = GraphQLRequest("/graphql/main_db", query);
-            WriteGraphQLResponse(request, "invalid_query.txt");
-            AssertRequest(request, 400, "text/plain");
-        }
-        
+ 
         // --------------------------------------- main_db ---------------------------------------
         /// <summary>
         /// use name <see cref="GraphQL__main_db_init"/> to run as first test.

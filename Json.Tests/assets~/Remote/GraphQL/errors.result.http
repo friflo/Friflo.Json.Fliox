@@ -1,0 +1,33 @@
+@base = http://localhost:8010/fliox
+
+###
+POST {{base}}/graphql
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid path > expect: graphql/database
+
+###
+POST {{base}}/graphql/unknown_db
+# StatusCode:   404
+# Content-Type: text/plain
+
+error: database not found, database: unknown_db
+
+###
+POST {{base}}/graphql/main_db
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid request body > JsonReader/error: Cannot assign string to class GqlRequest. got: 'invalid operation' path: '(root)' at position: 19
+
+###
+POST {{base}}/graphql/main_db
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid GraphQL query > Syntax Error GraphQL (1:1) Expected "query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive", found Name "invalid"
+1: invalid query
+   ^
+
+

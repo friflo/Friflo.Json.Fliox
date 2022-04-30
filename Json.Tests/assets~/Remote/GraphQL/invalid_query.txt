@@ -1,3 +1,0 @@
-invalid GraphQL query > Syntax Error GraphQL (1:2) Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#Field
-1: {
-    ^

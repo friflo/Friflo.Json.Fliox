@@ -1,0 +1,34 @@
+
+@auth = fliox-user=admin; fliox-token=admin
+@base = http://localhost:8010/fliox
+
+###
+POST {{base}}/graphql
+Cookie: {{auth}}
+
+{ __typename }
+
+
+###
+POST {{base}}/graphql/unknown_db
+Cookie: {{auth}}
+
+{ __typename }
+
+###
+POST {{base}}/graphql/main_db
+Cookie: {{auth}}
+
+"invalid operation"
+
+###
+POST {{base}}/graphql/main_db
+Cookie: {{auth}}
+
+{
+    "query": "invalid query"
+}
+
+
+
+
