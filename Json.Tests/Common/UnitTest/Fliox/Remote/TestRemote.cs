@@ -109,7 +109,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             AreEqual(contentType,   request.ResponseContentType);
             AreEqual(response,      request.Response.AsString());
         }
-
     }
     
     

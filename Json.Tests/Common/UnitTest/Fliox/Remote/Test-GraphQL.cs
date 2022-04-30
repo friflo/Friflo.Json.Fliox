@@ -13,9 +13,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public partial class TestRemote
     {
-        // ------------------------------------ general errors -----------------------------------
+        /// <summary>
+        /// use name <see cref="GraphQL__main_db_index"/> to run as first test.
+        /// This forces loading all required <see cref="Friflo.Json.Fliox.Hub.GraphQL.GraphQLHandler"/> code
+        /// and subsequent tests show the real execution time
+        /// </summary>
         [Test, Order(0)]
-        public static void GraphQL__index() {
+        public static void GraphQL__main_db_index() {
             var request = RestRequest("GET", "/graphql/main_db");
             AssertRequest(request, 200, "text/html");
         }
@@ -26,17 +30,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
  
         // --------------------------------------- main_db ---------------------------------------
-        /// <summary>
-        /// use name <see cref="GraphQL__main_db_init"/> to run as first test.
-        /// This forces loading all required <see cref="Friflo.Json.Fliox.Hub.GraphQL.GraphQLHandler"/> code
-        /// and subsequent tests show the real execution time
-        /// </summary>
-        [Test, Order(0)]
-        public static void GraphQL__main_db_init() {
-            var query       = ReadGraphQLQuery ("main_db/queries.graphql");
-            GraphQLRequest("/graphql/main_db", query);
-        }
-        
         [Test, Order(1)]
         public static void GraphQL_main_db_IntrospectionQuery() {
             var query   = ReadGraphQLQuery ("main_db/introspection.graphql");

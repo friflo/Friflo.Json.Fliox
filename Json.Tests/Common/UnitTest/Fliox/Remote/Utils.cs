@@ -53,12 +53,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
                 }
                 sb.AppendLine();
                 
-                // --- status
+                // --- StatusCode
                 sb.Append("# StatusCode:   ");
                 sb.Append(context.StatusCode);
                 sb.AppendLine();
                 
-                // --- status
+                // --- Content-Type
                 sb.Append("# Content-Type: ");
                 sb.Append(context.ResponseContentType);
                 sb.AppendLine();
