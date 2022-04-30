@@ -15,16 +15,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     /// The text file format is compatible to:
     /// <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client - Visual Studio Marketplace</a>
     /// <br/>
-    /// This approach enables request execution:
-    /// - automated by unit tests
-    /// - individually using an IDE - e.g. the mentioned REST Client
-    /// <br/>
-    /// Another benefit of this approach is to avoid flooding the test suite with primitive tests.
-    /// <br/>
+    /// This approach enables request execution in multiple ways:
+    /// <list type="bullet">
+    ///   <item> automated by unit tests </item>
+    ///   <item> individually using an IDE - e.g. the mentioned REST Client or Rider </item>
+    /// </list>
+    /// Other benefits using this approach:
+    /// <list type="bullet">
+    ///   <item> avoid flooding the test suite with primitive tests </item>
+    ///   <item> simplify adjusting test results in case of behavior change. E.g. bugfix or enhancements </item>
+    ///   <item> avoid writing test assertions using difficult string literals caused by escaped characters or line feeds </item>
+    /// </list>
     /// This class is utilized by <see cref="TestRemote.ExecuteHttpFile"/> and create a single output file for the given request file.
     /// The output files are added to version control. The expectation is that after running the tests the output files are
     /// "unmodified" in version control (Git). <br/>
-    /// If an output file is "modified" its new version have to be added to version control in case the response meets the expectation. 
+    /// In case an output file is "modified" its new version have to be added to version control if the modifications meets expectation. 
     /// </summary>
     public class HttpFile
     {
