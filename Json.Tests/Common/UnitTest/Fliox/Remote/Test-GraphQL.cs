@@ -15,6 +15,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         // ------------------------------------ general errors -----------------------------------
         [Test, Order(0)]
+        public static void GraphQL__index() {
+            var request = RestRequest("GET", "/graphql/main_db");
+            AssertRequest(request, 200, "text/html");
+        }
+        
+        [Test, Order(0)]
+        public static void GraphQL__handler_errors() {
+            var request = RestRequest("POST", "/graphql/main_db", "", "\"invalid operation\"");
+            AssertRequest(request, 400, "text/plain", "invalid request body > JsonReader/error: Cannot assign string to class GqlRequest. got: 'invalid operation' path: '(root)' at position: 19");
+        }
+        
+        [Test, Order(0)]
         public static void GraphQL__error_invalid_path() {
             var query   = "{ __typename }";
             var request = GraphQLRequest("/graphql", query);

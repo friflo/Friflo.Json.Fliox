@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public Task HandleRequest(RequestContext context) {
             if (context.route.Length == SchemaBase.Length) {
-                context.WriteError("invalid schema path", "missing database", 400);
+                context.WriteError("invalid schema path", "missing database / protocol name", 400);
                 return Task.CompletedTask;
             }
             var hub         = context.hub;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         internal void AddGenerator(string type, string name, SchemaGenerator schemaGenerator) {
-            if (name == null) throw new NullReferenceException(nameof(name));
+            if (name == null) throw new ArgumentNullException(nameof(name));
             var generator = new CustomGenerator(type, name, schemaGenerator);
             generators.Add(generator);
         }

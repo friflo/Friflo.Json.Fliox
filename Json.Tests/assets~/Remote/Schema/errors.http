@@ -3,9 +3,14 @@
 @base = http://localhost:8010/fliox
 
 ###
-GET {{base}}/schema/main_db/typescript/unknown
+GET {{base}}/schema
 Cookie: {{auth}}
 
+###
+GET {{base}}/schema/unknown
+Cookie: {{auth}}
 
-
+###
+GET {{base}}/schema/main_db/typescript/unknown
+Cookie: {{auth}}
 

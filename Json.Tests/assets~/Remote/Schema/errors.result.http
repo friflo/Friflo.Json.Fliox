@@ -1,6 +1,20 @@
 @base = http://localhost:8010/fliox
 
 ###
+GET {{base}}/schema
+# StatusCode:   400
+# Content-Type: text/plain
+
+invalid schema path > missing database / protocol name
+
+###
+GET {{base}}/schema/unknown
+# StatusCode:   404
+# Content-Type: text/plain
+
+schema not found > unknown
+
+###
 GET {{base}}/schema/main_db/typescript/unknown
 # StatusCode:   404
 # Content-Type: text/plain
