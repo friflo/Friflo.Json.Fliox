@@ -7,6 +7,8 @@
 
         <LangVersion>7.3</LangVersion>
 		<GenerateProgramFile>false</GenerateProgramFile>
+        <!-- EnableDefaultContentItems: false - default content files (*.json) are visible in IDE's -->
+        <EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -46,8 +48,8 @@
 	
     <ItemGroup>
       <None Remove="**/*.meta" />
-      <!-- exclude folders: assets~ & www~ from build; keep them in IDEs -->
-      <Content Remove="assets~\**;www~\**" />
+      <!-- exclude folder: assets~ from build (copied to ouput path) -->
+      <Content Remove="assets~/**/*" />
       <None Include="..\LICENSE">
         <Pack>True</Pack>
         <PackagePath></PackagePath>
