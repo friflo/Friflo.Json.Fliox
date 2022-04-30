@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Text;
 
@@ -117,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             path            = queryPos == -1 ? urlPath : urlPath.Substring(0, queryPos);
             var baseEnd     = path.IndexOf(BaseVariable, StringComparison.InvariantCulture);
             if (baseEnd == -1) {
-                throw new InvalidEnumArgumentException("expect {{base}} in url. was: " +  urlPath);
+                throw new InvalidOperationException("expect {{base}} in url. was: " +  urlPath);
             }
             path            = path.Substring(BaseVariable.Length);
             query           = queryPos == -1 ? "" : urlPath.Substring(queryPos + 1);
