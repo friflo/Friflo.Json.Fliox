@@ -20,22 +20,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         [Test, Order(1)]
         public static void Rest_main_db_happy_read() {
-            ExecuteRestFile("Rest/main_db/happy-read.http", "Rest/main_db/happy-read.result.http");
+            ExecuteHttpFile("Rest/main_db/happy-read.http", "Rest/main_db/happy-read.result.http");
         }
         
         [Test, Order(1)]
         public static void Rest_main_db_handler_errors() {
-            ExecuteRestFile("Rest/main_db/handler-errors.http", "Rest/main_db/handler-errors.result.http");
+            ExecuteHttpFile("Rest/main_db/handler-errors.http", "Rest/main_db/handler-errors.result.http");
         }
         
         [Test, Order(1)]
         public static void Rest_main_db_task_coverage() {
-            ExecuteRestFile("Rest/main_db/task-coverage.http", "Rest/main_db/task-coverage.result.http");
+            ExecuteHttpFile("Rest/main_db/task-coverage.http", "Rest/main_db/task-coverage.result.http");
         }
         
         [Test, Order(2)]
         public static void Rest_main_db_happy_mutate() {
-            ExecuteRestFile("Rest/main_db/happy-mutate.http", "Rest/main_db/happy-mutate.result.http");
+            ExecuteHttpFile("Rest/main_db/happy-mutate.http", "Rest/main_db/happy-mutate.result.http");
         }
     }
 }

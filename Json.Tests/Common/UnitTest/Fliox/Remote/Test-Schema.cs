@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     {
         [Test]
         public static void Schema_errors() {
-            ExecuteRestFile("Schema/errors.http", "Schema/errors.result.http");
+            ExecuteHttpFile("Schema/errors.http", "Schema/errors.result.http");
         }
 
         [Test]

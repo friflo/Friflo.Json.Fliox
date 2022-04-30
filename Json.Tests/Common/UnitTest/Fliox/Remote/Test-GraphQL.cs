@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         [Test, Order(0)]
         public static void GraphQL__errors() {
-            ExecuteRestFile("GraphQL/errors.http", "GraphQL/errors.result.http");
+            ExecuteHttpFile("GraphQL/errors.http", "GraphQL/errors.result.http");
         }
  
         // --------------------------------------- main_db ---------------------------------------

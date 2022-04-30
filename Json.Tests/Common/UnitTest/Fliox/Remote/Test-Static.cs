@@ -30,12 +30,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         [Test, Order(1)]
         public static void Static_happy_read() {
-            ExecuteRestFile("Static/happy.http", "Static/happy.result.http");
+            ExecuteHttpFile("Static/happy.http", "Static/happy.result.http");
         }
         
         [Test, Order(1)]
         public static void Static_errors() {
-            ExecuteRestFile("Static/errors.http", "Static/errors.result.http");
+            ExecuteHttpFile("Static/errors.http", "Static/errors.result.http");
         }
         
         [Test]
