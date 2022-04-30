@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             this.path   = path;
             requests    = new List <HttpRequest>();
             
-            var sections = content.Split("###\r\n");
+            var sections = content.Split(new [] {"###\r\n"}, StringSplitOptions.None);
             // skip first entry containing variables
             for (int n = 1; n < sections.Length; n++) {
                 var section = sections[n];
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var parts       = request.Split(new [] { "\r\n\r\n" }, StringSplitOptions.None);
             var head        = parts[0];
             body            = parts.Length > 1 ? parts[1] : null;
-            var headers     = head.Split("\r\n");
+            var headers     = head.Split(new [] {"\r\n"}, StringSplitOptions.None);
             var requestLine = headers[0];
             
             var spacePos    = requestLine.IndexOf(' ');
