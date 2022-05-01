@@ -1,4 +1,4 @@
-query Test ($invalidLimit: Int, $invalidBool: Boolean) {
+query Test ($invalidLimit: Int, $invalidFilter: String, $invalidBool: Boolean) {
   unknown_query:	xxx
   
   countFilter:      countArticles(filter: "x.name == 'Smartphone'")
@@ -21,6 +21,6 @@ query Test ($invalidLimit: Int, $invalidBool: Boolean) {
 
   countArticlesUnknownVar:       countArticles (filter:     $unknown)
   queryArticlesInvalidIntVar:    queryArticles (limit:      $invalidLimit) {  count }
-  countArticlesInvalidStringVar: countArticles (filter:     invalidFilter)
+  countArticlesInvalidStringVar: countArticles (filter:     $invalidFilter)
   queryArticlesInvalidBoolVar:   queryArticles (selectAll:  $invalidBool)
 }

@@ -170,7 +170,7 @@
             }
         },
         {
-            "message": "expect string. was: invalidFilter",
+            "message": "Cannot assign number to string. got: 777. was: $invalidFilter",
             "path": [
                 "countArticlesInvalidStringVar",
                 "filter"
