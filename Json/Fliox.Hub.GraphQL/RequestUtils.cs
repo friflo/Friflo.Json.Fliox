@@ -15,45 +15,45 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     {
         internal static string UnknownArgument = "unknown argument";
 
-        internal static string TryGetStringArg(GraphQLValue gqlValue, string name, out QueryError? error, string doc) {
+        internal static string TryGetStringArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
             var strVal = gqlValue as GraphQLStringValue;
             if (strVal == null) {
-                error = QueryError(name, "expect string", gqlValue, doc);
+                error = QueryError(name, "expect string", gqlValue, cx.doc);
                 return null;
             }
             error = null;
             return strVal.Value.ToString();
         }
         
-        internal static int? TryGetIntArg(GraphQLValue gqlValue, string name, out QueryError? error, string doc) {
+        internal static int? TryGetIntArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
             var gqlIntValue = gqlValue as GraphQLIntValue;
             if (gqlIntValue == null) {
-                error = QueryError(name, "expect int", gqlValue, doc);
+                error = QueryError(name, "expect int", gqlValue, cx.doc);
                 return null;
             }
             var strVal = gqlIntValue.Value.Span;
             if (!int.TryParse(strVal, out var intValue)) {
-                error = QueryError(name, "invalid int", gqlValue, doc);
+                error = QueryError(name, "invalid int", gqlValue, cx.doc);
                 return null;
             }
             error = null;
             return intValue;
         }
         
-        internal static bool? TryGetBooleanArg(GraphQLValue gqlValue, string name, out QueryError? error, string doc) {
+        internal static bool? TryGetBooleanArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
             var gqlBooleanValue = gqlValue as GraphQLBooleanValue;
             if (gqlBooleanValue == null) {
-                error = QueryError(name, "expect boolean", gqlValue, doc);
+                error = QueryError(name, "expect boolean", gqlValue, cx.doc);
                 return null;
             }
             error = null;
             return gqlBooleanValue.BoolValue;
         }
         
-        internal static List<JsonKey> TryGetStringList(GraphQLArgument arg, string name, out QueryError? error, string doc) {
+        internal static List<JsonKey> TryGetStringList(in QueryContext cx, GraphQLArgument arg, string name, out QueryError? error) {
             var gqlList = arg.Value as GraphQLListValue;
             if (gqlList == null) {
-                error = QueryError(name, "expect string array", arg.Value, doc);
+                error = QueryError(name, "expect string array", arg.Value, cx.doc);
                 return null;
             }
             var values = gqlList.Values;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             var result = new List<JsonKey>(values.Count);
             foreach (var item in values) {
-                var stringValue = TryGetStringArg(item, name, out error, doc);
+                var stringValue = TryGetStringArg(cx, item, name, out error);
                 if (error != null)
                     return null;
                 result.Add(new JsonKey(stringValue));
@@ -72,10 +72,10 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static List<JsonValue> TryGetAnyList(GraphQLValue value, string name, out QueryError? error, string doc) {
+        internal static List<JsonValue> TryGetAnyList(in QueryContext cx, GraphQLValue value, string name, out QueryError? error) {
             var gqlList = value as GraphQLListValue;
             if (gqlList == null) {
-                error = QueryError(name, "expect list", value, doc);
+                error = QueryError(name, "expect list", value, cx.doc);
                 return null;
             }
             var values = gqlList.Values;
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 var astError    = GetAny(item, sb);
                 if (astError != null) {
                     var loc         = astError.location;
-                    var astValue    = doc.Substring(loc.Start, loc.End - loc.Start);
+                    var astValue    = cx.doc.Substring(loc.Start, loc.End - loc.Start);
                     error           = new QueryError(name, $"invalid value at position {loc.Start}. kind: {astError.kind}, value: {astValue}");
                     return null;
                 }
@@ -100,12 +100,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return result;
         }
         
-        internal static JsonValue TryGetAny(GraphQLValue value, string name, out QueryError? error, string doc) {
+        internal static JsonValue TryGetAny(in QueryContext cx, GraphQLValue value, string name, out QueryError? error) {
             var sb          = new StringBuilder();
             var astError    = GetAny(value, sb);
             if (astError != null) {
                 var loc         = astError.location;
-                var astValue    = doc.Substring(loc.Start, loc.End - loc.Start);
+                var astValue    = cx.doc.Substring(loc.Start, loc.End - loc.Start);
                 error           = new QueryError(name, $"invalid value at position {loc.Start}. kind: {astError.kind}, value: {astValue}");
                 return new JsonValue();
             }

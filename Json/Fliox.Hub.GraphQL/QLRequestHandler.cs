@@ -208,12 +208,20 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal  readonly  QueryResolver   resolver;
         internal  readonly  GraphQLField    query;
         internal  readonly  string          doc;
-        
+
+        public    override  string          ToString() => resolver.ToString();
+
         internal QueryContext (QueryResolver resolver, GraphQLField query, string doc) {
             this.resolver   = resolver;
             this.query      = query;
             this.doc        = doc;
         }
+        
+        // ReSharper disable once UnusedMember.Local
+        private string Full { get {
+            var loc = query.Location;
+            return doc.Substring(loc.Start, loc.End - loc.Start);
+        } } 
     }
 }
 

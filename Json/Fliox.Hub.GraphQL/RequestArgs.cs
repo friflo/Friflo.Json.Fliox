@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             value = null;
             if (FindArgument(arguments, name, out var argument)) {
-                value = RequestUtils.TryGetStringArg (argument.Value, name, out error, cx.doc);
+                value = RequestUtils.TryGetStringArg (cx, argument.Value, name, out error);
                 if (error != null)
                     return false;
             }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             value = null;
             if (FindArgument(arguments, name, out var argument)) {
-                value  = RequestUtils.TryGetIntArg(argument.Value, name, out error, cx.doc);
+                value  = RequestUtils.TryGetIntArg(cx, argument.Value, name, out error);
                 if (error != null)
                     return false;
             }
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             value = null;
             if (FindArgument(arguments, name, out var argument)) {
-                value = RequestUtils.TryGetBooleanArg(argument.Value, name, out error, cx.doc);
+                value = RequestUtils.TryGetBooleanArg(cx, argument.Value, name, out error);
                 if (error != null)
                     return false;
             }
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
             List<JsonKey> idList = null;
             if (FindArgument(arguments, name, out var argument)) {
-                idList  = RequestUtils.TryGetStringList (argument, name, out error, cx.doc);
+                idList  = RequestUtils.TryGetStringList (cx, argument, name, out error);
                 if (error != null) {
                     value = null;
                     return false;
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("entities")) {
-                    entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", out error, cx.doc);
+                    entities    = RequestUtils.TryGetAnyList(cx, argument.Value, "entities", out error);
                 } else {
                     error       = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("param")) {
-                    result  = RequestUtils.TryGetAny(argument.Value, "param", out error, cx.doc);
+                    result  = RequestUtils.TryGetAny(cx, argument.Value, "param", out error);
                 } else {
                     error   = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
