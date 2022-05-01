@@ -1,17 +1,20 @@
-query Test ($testLimit: Int, $countFilter: String, $allFields: Boolean) {
+query Test ($testLimit: Int, $countFilter: String, $allFields: Boolean, $ids: [String!]!) {
   # --- container queries
   countArticles(filter: "o.name == 'Smartphone'")
   countArticleWithVariable: countArticles(filter: $countFilter)
   readAll: readArticles(ids: ["xxx", "article-1"], selectAll: true) {
     __typename
   }
-  readAllWithVariable: readArticles(ids: ["article-2"], selectAll: $allFields) {
+  readArticlesWithSelectAllVar: readArticles(ids: ["article-2"], selectAll: $allFields) {
     __typename
   }
   readEmpty: readArticles(ids: []) {
     __typename
   }
   readArticles (ids: ["xxx", "article-2"]) {
+    id
+  }
+  readArticlesWithIdsVar: readArticles (ids: $ids) {
     id
   }
   queryAll: queryArticles(selectAll: true) {

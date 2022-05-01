@@ -7,7 +7,7 @@
     "name": "Changed name",
     "producer": "producer-canon"
 }],
-        "readAllWithVariable": [{
+        "readArticlesWithSelectAllVar": [{
     "id": "article-2",
     "name": "Smartphone",
     "producer": null
@@ -18,6 +18,11 @@
     null,
     {
         "id": "article-2"
+    }
+],
+        "readArticlesWithIdsVar": [
+    {
+        "id": "article-galaxy"
     }
 ],
         "queryAll": {"count":6,"items":[{

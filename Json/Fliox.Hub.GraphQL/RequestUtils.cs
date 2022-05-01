@@ -57,25 +57,28 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         internal static List<JsonKey> TryGetStringList(in QueryContext cx, GraphQLArgument arg, string name, out QueryError? error) {
-            var gqlList = arg.Value as GraphQLListValue;
-            if (gqlList == null) {
-                error = QueryError(name, "expect string array", arg.Value, cx.doc);
-                return null;
-            }
-            var values = gqlList.Values;
-            if (values == null) {
+            var value = arg.Value;
+            if (value is GraphQLListValue gqlList) {
+                var values = gqlList.Values;
+                if (values == null) {
+                    error = null;
+                    return new List<JsonKey>();
+                }
+                var result = new List<JsonKey>(values.Count);
+                foreach (var item in values) {
+                    var stringValue = TryGetStringArg(cx, item, name, out error);
+                    if (error != null)
+                        return null;
+                    result.Add(new JsonKey(stringValue));
+                }
                 error = null;
-                return new List<JsonKey>();
+                return result;
             }
-            var result = new List<JsonKey>(values.Count);
-            foreach (var item in values) {
-                var stringValue = TryGetStringArg(cx, item, name, out error);
-                if (error != null)
-                    return null;
-                result.Add(new JsonKey(stringValue));
+            if (value is GraphQLVariable gqlVariable) {
+                return cx.ReadVariable<List<JsonKey>>(cx, gqlVariable, name, out error);
             }
-            error = null;
-            return result;
+            error = QueryError(name, "expect string array", arg.Value, cx.doc);
+            return null;
         }
         
         internal static List<JsonValue> TryGetAnyList(in QueryContext cx, GraphQLValue value, string name, out QueryError? error) {
