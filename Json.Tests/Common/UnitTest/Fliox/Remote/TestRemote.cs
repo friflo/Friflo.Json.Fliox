@@ -37,9 +37,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         
         // ----------------------------------------- GraphQL -----------------------------------------
-        private static RequestContext GraphQLRequest(string route, string query, string operationName = null)
+        private static RequestContext GraphQLRequest(string route, string query, string vars = null, string operationName = null)
         {
-            var body            = QueryToStream(query, operationName);
+            var body            = QueryToStream(query, operationName, vars);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
             var requestContext  = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
@@ -49,8 +49,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             return requestContext;
         }
         
-        private static Stream QueryToStream(string query, string operationName) {
-            var request         = new GraphQLRequest { query = query, operationName = operationName };
+        private static Stream QueryToStream(string query, string operationName, string vars) {
+            var variables       = vars == null ? null : _mapper.reader.Read<Dictionary<string,JsonValue>>(vars);
+            var request         = new GraphQLRequest { query = query, operationName = operationName, variables = variables };
             var jsonBody        = _mapper.writer.WriteAsArray(request);
             var body            = new MemoryStream();
             body.Write(jsonBody, 0, jsonBody.Length);
@@ -117,9 +118,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     
     
     internal class GraphQLRequest {
-        public  string                      query;
-        public  string                      operationName;
-    //  public  Dictionary<string,string>   variables;
+        public  string                          query;
+        public  string                          operationName;
+        public  Dictionary<string, JsonValue>   variables;
     }
     
     internal class TestHttpHeaders : IHttpHeaders {

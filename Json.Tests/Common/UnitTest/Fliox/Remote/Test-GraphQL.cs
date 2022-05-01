@@ -32,45 +32,46 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         // --------------------------------------- main_db ---------------------------------------
         [Test, Order(1)]
         public static void GraphQL_main_db_IntrospectionQuery() {
-            var query   = ReadGraphQLQuery ("main_db/introspection.graphql");
-            var request = GraphQLRequest("/graphql/main_db", query, "IntrospectionQuery");
-            WriteGraphQLResponse(request, "main_db/introspection.json");
+            var query   = ReadGraphQLAsset ("main_db/introspection.graphql");
+            var request = GraphQLRequest("/graphql/main_db", query, null, "IntrospectionQuery");
+            WriteGraphQLResponse(request, "main_db/introspection.result.json");
         }
         
         [Test, Order(1)]
         public static void GraphQL_main_db_queries() {
-            var query   = ReadGraphQLQuery ("main_db/queries.graphql");
-            var request = GraphQLRequest("/graphql/main_db", query);
+            var query   = ReadGraphQLAsset ("main_db/queries.graphql");
+            //var vars    = ReadGraphQLAsset ("main_db/queries.vars.json");
+            var request = GraphQLRequest("/graphql/main_db", query, null, "Test");
             // for (int n = 0; n < 10_000; n++) { GraphQLRequest("/graphql/main_db", query); }
-            WriteGraphQLResponse(request, "main_db/queries.json");
+            WriteGraphQLResponse(request, "main_db/queries.result.json");
         }
         
         [Test, Order(1)]
         public static void GraphQL_main_db_errors() {
-            var query   = ReadGraphQLQuery ("main_db/errors.graphql");
+            var query   = ReadGraphQLAsset ("main_db/errors.graphql");
             var request = GraphQLRequest("/graphql/main_db", query);
-            WriteGraphQLResponse(request, "main_db/errors.json");
+            WriteGraphQLResponse(request, "main_db/errors.result.json");
         }
         
         [Test, Order(1)]
         public static void GraphQL_main_db_std_Echo() {
-            var query   = ReadGraphQLQuery ("main_db/std_Echo.graphql");
+            var query   = ReadGraphQLAsset ("main_db/std_Echo.graphql");
             var request = GraphQLRequest("/graphql/main_db", query);
-            WriteGraphQLResponse(request, "main_db/std_Echo.json");
+            WriteGraphQLResponse(request, "main_db/std_Echo.result.json");
         }
         
         [Test, Order(2)]
         public static void GraphQL_main_db_mutationErrors() {
-            var query   = ReadGraphQLQuery ("main_db/mutationErrors.graphql");
+            var query   = ReadGraphQLAsset ("main_db/mutationErrors.graphql");
             var request = GraphQLRequest("/graphql/main_db", query);
-            WriteGraphQLResponse(request, "main_db/mutationErrors.json");
+            WriteGraphQLResponse(request, "main_db/mutationErrors.result.json");
         }
         
         [Test, Order(2)]
         public static void GraphQL_main_db_mutations() {
-            var query   = ReadGraphQLQuery ("main_db/mutations.graphql");
+            var query   = ReadGraphQLAsset ("main_db/mutations.graphql");
             var request = GraphQLRequest("/graphql/main_db", query);
-            WriteGraphQLResponse(request, "main_db/mutations.json");
+            WriteGraphQLResponse(request, "main_db/mutations.result.json");
         }
         
         // --------------------------------------- user_db ---------------------------------------
@@ -81,22 +82,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         /// </summary>
         [Test, Order(0)]
         public static void GraphQL__user_db_init() {
-            var query   = ReadGraphQLQuery ("user_db/std_Echo.graphql");
+            var query   = ReadGraphQLAsset ("user_db/std_Echo.graphql");
             var request = GraphQLRequest("/graphql/user_db", query);
-            WriteGraphQLResponse(request, "user_db/std_Echo.json");
+            WriteGraphQLResponse(request, "user_db/std_Echo.result.json");
         }
         
         [Test, Order(1)]
         public static void GraphQL_user_db_queries() {
-            var query   = ReadGraphQLQuery ("user_db/queries.graphql");
+            var query   = ReadGraphQLAsset ("user_db/queries.graphql");
             var request = GraphQLRequest("/graphql/user_db", query);
-            WriteGraphQLResponse(request, "user_db/queries.json");
+            WriteGraphQLResponse(request, "user_db/queries.result.json");
         }
         
         // --------------------------------------- utils ---------------------------------------
         private static readonly string GraphQLAssets = CommonUtils.GetBasePath() + "assets~/Remote/GraphQL/";
 
-        private static string ReadGraphQLQuery(string path) {
+        private static string ReadGraphQLAsset(string path) {
             return File.ReadAllText(GraphQLAssets + path);
         }
         
