@@ -1,4 +1,4 @@
-query Test {
+query Test ($testLimit: Int) {
   # --- container queries
   countArticles(filter: "o.name == 'Smartphone'")
   readAll: readArticles(ids: ["xxx", "article-1"], selectAll: true) {

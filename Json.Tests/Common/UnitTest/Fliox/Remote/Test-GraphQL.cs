@@ -40,8 +40,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         [Test, Order(1)]
         public static void GraphQL_main_db_queries() {
             var query   = ReadGraphQLAsset ("main_db/queries.graphql");
-            //var vars    = ReadGraphQLAsset ("main_db/queries.vars.json");
-            var request = GraphQLRequest("/graphql/main_db", query, null, "Test");
+            var vars    = ReadGraphQLAsset ("main_db/queries.json");
+            var request = GraphQLRequest("/graphql/main_db", query, vars, "Test");
             // for (int n = 0; n < 10_000; n++) { GraphQLRequest("/graphql/main_db", query); }
             WriteGraphQLResponse(request, "main_db/queries.result.json");
         }
