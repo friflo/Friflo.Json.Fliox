@@ -39,6 +39,9 @@
     "name": "used for successful read",
     "producer": null
 }]},
+        "queryAllVariable": {
+    "count": 3
+},
         "queryOrders": {
     "count": 2,
     "items": [

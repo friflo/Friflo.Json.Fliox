@@ -56,58 +56,58 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return;
             }
             if (method == "POST") {
-                var mapper          = context.ObjectMapper;
-                var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                var gqlRequest      = ReadRequestBody(mapper, body, out error);
-                if (error != null) {
-                    context.WriteError("invalid request body", error, 400);
-                    return;
-                }
-                var doc             = gqlRequest.query;
-                var query           = ParseGraphQL(doc, out error);
-                if (error != null) {
-                    context.WriteError("invalid GraphQL query", error, 400);
-                    return;
-                }
-                var operationName   = gqlRequest.operationName;
-                
-                // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
-                if (operationName == "IntrospectionQuery") {
-                    var schemaResponse = IntrospectionQuery(mapper, query, schema.schemaResponse);
-                    context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
-                    return;
-                }
-                // --------------    POST           /graphql/{database}     case: any other "operationName"
-                var request         = schema.requestHandler.CreateRequest(gqlRequest, query, doc);
-                var syncRequest     = request.syncRequest; 
-                var cookies         = context.cookies;
-                syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 
-                syncRequest.token   = cookies["fliox-token"];
-                var executeContext  = context.CreateExecuteContext(null);
-                var syncResult      = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+                using (var pooled = context.ObjectMapper.Get()) {
+                    var mapper          = pooled.instance;
+                    var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    var gqlRequest      = ReadRequestBody(mapper, body, out error);
+                    if (error != null) {
+                        context.WriteError("invalid request body", error, 400);
+                        return;
+                    }
+                    var doc             = gqlRequest.query;
+                    var query           = ParseGraphQL(doc, out error);
+                    if (error != null) {
+                        context.WriteError("invalid GraphQL query", error, 400);
+                        return;
+                    }
+                    var operationName   = gqlRequest.operationName;
+                    
+                    // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
+                    if (operationName == "IntrospectionQuery") {
+                        var schemaResponse = IntrospectionQuery(mapper, query, schema.schemaResponse);
+                        context.Write(schemaResponse, schemaResponse.Length, "application/json", 200);
+                        return;
+                    }
+                    // --------------    POST           /graphql/{database}     case: any other "operationName"
+                    var request         = schema.requestHandler.CreateRequest(mapper, gqlRequest, query, doc);
+                    var syncRequest     = request.syncRequest; 
+                    var cookies         = context.cookies;
+                    syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 
+                    syncRequest.token   = cookies["fliox-token"];
+                    var executeContext  = context.CreateExecuteContext(null);
+                    var syncResult      = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
 
-                if (syncResult.error != null) {
-                    context.WriteError("execution error", syncResult.error.message, 500);
+                    if (syncResult.error != null) {
+                        context.WriteError("execution error", syncResult.error.message, 500);
+                        return;
+                    }
+                    var opResponse = QLResponseHandler.Process(mapper, projectorPool, request.queries, syncResult.success);
+                    context.Write(opResponse, 0, "application/json", 200);
                     return;
                 }
-                var opResponse = QLResponseHandler.Process(mapper, projectorPool, request.queries, syncResult.success);
-                context.Write(opResponse, 0, "application/json", 200);
-                return;
             }
             context.WriteError("invalid request", context.ToString(), 400);
         }
         
-        private static GqlRequest ReadRequestBody(ObjectPool<ObjectMapper> mapper, JsonValue body, out string error) {
-            using (var pooled = mapper.Get()) {
-                var reader  = pooled.instance.reader;
-                var result = reader.Read<GqlRequest>(body);
-                if (reader.Error.ErrSet) {
-                    error = reader.Error.msg.ToString();
-                    return null;
-                }
-                error = null;
-                return result;
+        private static GqlRequest ReadRequestBody(ObjectMapper mapper, JsonValue body, out string error) {
+            var reader  = mapper.reader;
+            var result = reader.Read<GqlRequest>(body);
+            if (reader.Error.ErrSet) {
+                error = reader.Error.msg.ToString();
+                return null;
             }
+            error = null;
+            return result;
         }
         
         private static GraphQLDocument ParseGraphQL(string docStr, out string error) {
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return schema;
         }
 
-        private static JsonValue IntrospectionQuery (ObjectPool<ObjectMapper> mapper, GraphQLDocument query, JsonValue schemaResponse) {
+        private static JsonValue IntrospectionQuery (ObjectMapper mapper, GraphQLDocument query, JsonValue schemaResponse) {
             // var queryString = query.Source.ToString();
             // Console.WriteLine("-------------------------------- query --------------------------------");
             // Console.WriteLine(queryString);

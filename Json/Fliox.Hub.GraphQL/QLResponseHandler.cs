@@ -14,15 +14,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     internal static class QLResponseHandler
     {
         internal static JsonValue Process(
-            ObjectPool<ObjectMapper>    mapper,
+            ObjectMapper                mapper,
             ObjectPool<JsonProjector>   projectorPool,
             List<Query>                 queries,
             SyncResponse                syncResponse)
         {
-            using (var pooledProjector  = projectorPool.Get())
-            using (var pooledMapper     = mapper.Get()) {
+            using (var pooledProjector  = projectorPool.Get()) {
                 var projector           = pooledProjector.instance;
-                var writer              = pooledMapper.instance.writer;
+                var writer              = mapper.writer;
                 writer.Pretty           = false;
                 writer.WriteNullMembers = false;
                 return ProcessQueries(writer, projector, queries, syncResponse);

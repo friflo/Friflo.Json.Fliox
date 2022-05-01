@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal QLRequestContext CreateRequest(GqlRequest gqlRequest, GraphQLDocument document, string doc)
+        internal QLRequestContext CreateRequest(ObjectMapper mapper, GqlRequest gqlRequest, GraphQLDocument document, string doc)
         {
             var definitions = document.Definitions;
             var queries     = new List<Query> ();
@@ -69,13 +69,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (operation.Name != gqlRequest.operationName)
                     continue;
                 var selections  = operation.SelectionSet.Selections;
-                AddQueries(selections, doc, gqlRequest.variables, queries, tasks, utf8Buffer);
+                AddQueries(mapper, selections, doc, gqlRequest.variables, queries, tasks, utf8Buffer);
             }
             var syncRequest = new SyncRequest { database = database, tasks = tasks };
             return new QLRequestContext(syncRequest, queries);
         }
         
         private void AddQueries(
+            ObjectMapper                    mapper,
             List<ASTNode>                   selections,
             string                          doc,
             Dictionary<string, JsonValue>   variables,
@@ -95,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var query = new Query(name, alias, resolver.queryType, resolver.container, default, -1, queryRequest);
                     queries.Add(query);
                 } else {
-                    var cx              = new QueryContext(resolver, graphQLQuery, doc, variables);
+                    var cx              = new QueryContext(mapper, resolver, graphQLQuery, doc, variables);
                     var queryRequest    = CreateQueryTask(cx);
                     var task            = queryRequest.task;
                     var taskIndex       = task == null ? -1 : tasks.Count;
@@ -207,6 +208,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     }
     
     internal readonly struct QueryContext {
+        internal  readonly  ObjectMapper                    mapper;
         internal  readonly  QueryResolver                   resolver;
         internal  readonly  GraphQLField                    query;
         internal  readonly  string                          doc;
@@ -214,7 +216,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
 
         public    override  string          ToString() => resolver.ToString();
 
-        internal QueryContext (QueryResolver resolver, GraphQLField query, string doc, Dictionary<string, JsonValue> variables) {
+        internal QueryContext (ObjectMapper mapper, QueryResolver resolver, GraphQLField query, string doc, Dictionary<string, JsonValue> variables) {
+            this.mapper     = mapper;
             this.resolver   = resolver;
             this.query      = query;
             this.doc        = doc;

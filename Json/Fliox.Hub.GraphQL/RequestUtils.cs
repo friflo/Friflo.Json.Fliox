@@ -38,8 +38,14 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (gqlValue is GraphQLVariable gqlVariable) {
                 if (!cx.TryGetVariable(cx, gqlVariable, name, out var value, out error))
                     return null;
+                var reader = cx.mapper.reader;
+                var result = reader.Read<int>(value);
+                if (reader.Error.ErrSet) {
+                    error = QueryError(name, reader.Error.GetMessageBody(), gqlValue, cx.doc);
+                    return null;
+                }
                 error = null;
-                return null;
+                return result;
             }
             error = QueryError(name, "expect int", gqlValue, cx.doc);
             return null;

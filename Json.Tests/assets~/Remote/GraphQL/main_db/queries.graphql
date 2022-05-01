@@ -16,6 +16,9 @@ query Test ($testLimit: Int) {
       __typename
     }
   }
+  queryAllVariable: queryArticles(limit: $testLimit) {
+    count
+  }
   queryOrders(filter: "true", limit: 2) {
     count
     items {
