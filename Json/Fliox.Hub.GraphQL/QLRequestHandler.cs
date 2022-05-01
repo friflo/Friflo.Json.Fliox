@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     }
     
     internal readonly struct QueryContext {
-        internal  readonly  ObjectMapper                    mapper;
+        private   readonly  ObjectMapper                    mapper;
         internal  readonly  QueryResolver                   resolver;
         internal  readonly  GraphQLField                    query;
         internal  readonly  string                          doc;
