@@ -226,12 +226,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         internal T ReadVariable<T>(in QueryContext cx, GraphQLVariable variable, string name, out QueryError? error) {
             if (variables == null) {
-                error = RequestUtils.QueryError(name, $"variable not found", variable, cx.doc);
+                error = RequestUtils.QueryError(name, "variable not found", variable, cx.doc);
                 return default;
             }
             var varName = variable.Name.StringValue;
             if (!variables.TryGetValue(varName, out var jsonValue)) {
-                error = RequestUtils.QueryError(name, $"variable not found", variable, cx.doc);
+                error = RequestUtils.QueryError(name, "variable not found", variable, cx.doc);
                 return default;
             }
             var reader = cx.mapper.reader;
