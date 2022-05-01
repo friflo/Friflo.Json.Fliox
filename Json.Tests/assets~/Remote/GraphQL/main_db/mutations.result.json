@@ -5,6 +5,8 @@ null,
         "createArticles": 
 null,
         "upsertArticles": 
+null,
+        "createWithVar": 
 null
     }
 }

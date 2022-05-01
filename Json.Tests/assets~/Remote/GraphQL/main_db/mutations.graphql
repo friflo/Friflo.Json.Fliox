@@ -1,4 +1,4 @@
-mutation {
+mutation Test($creates: [ArticleInput!]!) {
   deleteArticles(ids: ["31"]) {
     id
     type
@@ -10,6 +10,11 @@ mutation {
     message
   }
   upsertArticles(entities: [{id: "mutate-upsert", name: "test upsert", producer: "producer-samsung"}]) {
+    id
+    type
+    message
+  }
+  createWithVar: createArticles(entities: $creates) {
     id
     type
     message

@@ -71,7 +71,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         [Test, Order(2)]
         public static void GraphQL_main_db_mutations() {
             var query   = ReadGraphQLAsset ("main_db/mutations.graphql");
-            var request = GraphQLRequest("/graphql/main_db", query);
+            var vars    = ReadGraphQLAsset ("main_db/mutations.json");
+            var request = GraphQLRequest("/graphql/main_db", query, vars, "Test");
             WriteGraphQLResponse(request, "main_db/mutations.result.json");
         }
         
