@@ -12,9 +12,9 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
     internal class GqlRequest {
-        public  string                      query;
-        public  string                      operationName;
-        public  Dictionary<string,string>   variables;
+        public  string                          query;
+        public  string                          operationName;
+        public  Dictionary<string, JsonValue>   variables;
     }
         
     internal class GqlResponse {

@@ -58,18 +58,18 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             if (method == "POST") {
                 var mapper          = context.ObjectMapper;
                 var body            = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                var postBody        = ReadRequestBody(mapper, body, out error);
+                var gqlRequest      = ReadRequestBody(mapper, body, out error);
                 if (error != null) {
                     context.WriteError("invalid request body", error, 400);
                     return;
                 }
-                var doc             = postBody.query;
+                var doc             = gqlRequest.query;
                 var query           = ParseGraphQL(doc, out error);
                 if (error != null) {
                     context.WriteError("invalid GraphQL query", error, 400);
                     return;
                 }
-                var operationName   = postBody.operationName;
+                var operationName   = gqlRequest.operationName;
                 
                 // --------------    POST           /graphql/{database}     case: "operationName" == "IntrospectionQuery"
                 if (operationName == "IntrospectionQuery") {
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return;
                 }
                 // --------------    POST           /graphql/{database}     case: any other "operationName"
-                var request         = schema.requestHandler.CreateRequest(operationName, query, doc);
+                var request         = schema.requestHandler.CreateRequest(gqlRequest, query, doc);
                 var syncRequest     = request.syncRequest; 
                 var cookies         = context.cookies;
                 syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 

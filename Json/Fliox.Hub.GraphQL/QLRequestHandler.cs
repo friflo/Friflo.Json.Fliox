@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             }
         }
         
-        internal QLRequestContext CreateRequest(string operationName, GraphQLDocument document, string doc)
+        internal QLRequestContext CreateRequest(GqlRequest gqlRequest, GraphQLDocument document, string doc)
         {
             var definitions = document.Definitions;
             var queries     = new List<Query> ();
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var definition in definitions) {
                 if (!(definition is GraphQLOperationDefinition operation))
                     continue;
-                if (operation.Name != operationName)
+                if (operation.Name != gqlRequest.operationName)
                     continue;
                 var selections  = operation.SelectionSet.Selections;
                 AddQueries(selections, doc, queries, tasks, utf8Buffer);
