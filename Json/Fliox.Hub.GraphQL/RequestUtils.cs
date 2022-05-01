@@ -26,18 +26,23 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         internal static int? TryGetIntArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
-            var gqlIntValue = gqlValue as GraphQLIntValue;
-            if (gqlIntValue == null) {
-                error = QueryError(name, "expect int", gqlValue, cx.doc);
+            if (gqlValue is GraphQLIntValue gqlIntValue) {
+                var strVal = gqlIntValue.Value.Span;
+                if (!int.TryParse(strVal, out var intValue)) {
+                    error = QueryError(name, "invalid int", gqlValue, cx.doc);
+                    return null;
+                }
+                error = null;
+                return intValue;
+            }
+            if (gqlValue is GraphQLVariable gqlVariable) {
+                if (!cx.TryGetVariable(cx, gqlVariable, name, out var value, out error))
+                    return null;
+                error = null;
                 return null;
             }
-            var strVal = gqlIntValue.Value.Span;
-            if (!int.TryParse(strVal, out var intValue)) {
-                error = QueryError(name, "invalid int", gqlValue, cx.doc);
-                return null;
-            }
-            error = null;
-            return intValue;
+            error = QueryError(name, "expect int", gqlValue, cx.doc);
+            return null;
         }
         
         internal static bool? TryGetBooleanArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
@@ -113,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new JsonValue(sb.ToString());
         }
         
-        private static QueryError QueryError(string name, string message, GraphQLValue was, string doc) {
+        internal static QueryError QueryError(string name, string message, GraphQLValue was, string doc) {
             var sb = new StringBuilder();
             sb.Append(message);
             sb.Append(". was: ");

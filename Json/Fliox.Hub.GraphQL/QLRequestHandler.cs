@@ -9,6 +9,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using GraphQLParser.AST;
 
@@ -68,18 +69,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 if (operation.Name != gqlRequest.operationName)
                     continue;
                 var selections  = operation.SelectionSet.Selections;
-                AddQueries(selections, doc, queries, tasks, utf8Buffer);
+                AddQueries(selections, doc, gqlRequest.variables, queries, tasks, utf8Buffer);
             }
             var syncRequest = new SyncRequest { database = database, tasks = tasks };
             return new QLRequestContext(syncRequest, queries);
         }
         
         private void AddQueries(
-            List<ASTNode>           selections,
-            string                  doc,
-            List<Query>             queries,
-            List<SyncRequestTask>   tasks,
-            IUtf8Buffer             buffer)
+            List<ASTNode>                   selections,
+            string                          doc,
+            Dictionary<string, JsonValue>   variables,
+            List<Query>                     queries,
+            List<SyncRequestTask>           tasks,
+            IUtf8Buffer                     buffer)
         {
             queries.Capacity    = queries.Count + selections.Count;
             tasks.Capacity      = tasks.Count   + selections.Count;
@@ -93,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var query = new Query(name, alias, resolver.queryType, resolver.container, default, -1, queryRequest);
                     queries.Add(query);
                 } else {
-                    var cx              = new QueryContext(resolver, graphQLQuery, doc);
+                    var cx              = new QueryContext(resolver, graphQLQuery, doc, variables);
                     var queryRequest    = CreateQueryTask(cx);
                     var task            = queryRequest.task;
                     var taskIndex       = task == null ? -1 : tasks.Count;
@@ -205,16 +207,32 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     }
     
     internal readonly struct QueryContext {
-        internal  readonly  QueryResolver   resolver;
-        internal  readonly  GraphQLField    query;
-        internal  readonly  string          doc;
+        internal  readonly  QueryResolver                   resolver;
+        internal  readonly  GraphQLField                    query;
+        internal  readonly  string                          doc;
+        private   readonly  Dictionary<string, JsonValue>   variables;
 
         public    override  string          ToString() => resolver.ToString();
 
-        internal QueryContext (QueryResolver resolver, GraphQLField query, string doc) {
+        internal QueryContext (QueryResolver resolver, GraphQLField query, string doc, Dictionary<string, JsonValue> variables) {
             this.resolver   = resolver;
             this.query      = query;
             this.doc        = doc;
+            this.variables  = variables;
+        }
+        
+        internal bool TryGetVariable(in QueryContext cx, GraphQLVariable variable, string name, out JsonValue value, out QueryError? error) {
+            if (variables == null) {
+                error = RequestUtils.QueryError(name, $"variable not found", variable, cx.doc);
+                return false;
+            }
+            var varName = variable.Name.StringValue;
+            if (!variables.TryGetValue(varName, out value)) {
+                error = RequestUtils.QueryError(name, $"variable not found", variable, cx.doc);
+                return false;
+            }
+            error = null;
+            return true;
         }
         
         // ReSharper disable once UnusedMember.Local
