@@ -224,18 +224,24 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             this.variables  = variables;
         }
         
-        internal bool TryGetVariable(in QueryContext cx, GraphQLVariable variable, string name, out JsonValue value, out QueryError? error) {
+        internal T ReadVariable<T>(in QueryContext cx, GraphQLVariable variable, string name, out QueryError? error) {
             if (variables == null) {
                 error = RequestUtils.QueryError(name, $"variable not found", variable, cx.doc);
-                return false;
+                return default;
             }
             var varName = variable.Name.StringValue;
-            if (!variables.TryGetValue(varName, out value)) {
+            if (!variables.TryGetValue(varName, out var jsonValue)) {
                 error = RequestUtils.QueryError(name, $"variable not found", variable, cx.doc);
-                return false;
+                return default;
+            }
+            var reader = cx.mapper.reader;
+            var result = reader.Read<T>(jsonValue);
+            if (reader.Error.ErrSet) {
+                error = RequestUtils.QueryError(name, reader.Error.GetMessageBody(), variable, cx.doc);
+                return default;
             }
             error = null;
-            return true;
+            return result;
         }
         
         // ReSharper disable once UnusedMember.Local

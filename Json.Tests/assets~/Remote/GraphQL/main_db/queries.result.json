@@ -1,10 +1,16 @@
 {
     "data": {
         "countArticles": 1,
+        "countArticleWithVariable": 2,
         "readAll": [null,{
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
+}],
+        "readAllWithVariable": [{
+    "id": "article-2",
+    "name": "Smartphone",
+    "producer": null
 }],
         "readEmpty": [
 ],

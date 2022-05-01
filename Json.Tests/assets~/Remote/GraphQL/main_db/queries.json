@@ -1,3 +1,5 @@
 {
-    "testLimit": 3
+    "testLimit":    3,
+    "countFilter":  "o.producer == 'producer-samsung'",
+    "allFields":    true
 }

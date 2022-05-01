@@ -16,13 +16,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         internal static string UnknownArgument = "unknown argument";
 
         internal static string TryGetStringArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
-            var strVal = gqlValue as GraphQLStringValue;
-            if (strVal == null) {
-                error = QueryError(name, "expect string", gqlValue, cx.doc);
-                return null;
+            if (gqlValue is GraphQLStringValue strVal) {
+                error = null;
+                return strVal.Value.ToString();
             }
-            error = null;
-            return strVal.Value.ToString();
+            if (gqlValue is GraphQLVariable gqlVariable) {
+                return cx.ReadVariable<string>(cx, gqlVariable, name, out error);
+            }
+            error = QueryError(name, "expect string", gqlValue, cx.doc);
+            return null;
         }
         
         internal static int? TryGetIntArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
@@ -36,29 +38,22 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 return intValue;
             }
             if (gqlValue is GraphQLVariable gqlVariable) {
-                if (!cx.TryGetVariable(cx, gqlVariable, name, out var value, out error))
-                    return null;
-                var reader = cx.mapper.reader;
-                var result = reader.Read<int>(value);
-                if (reader.Error.ErrSet) {
-                    error = QueryError(name, reader.Error.GetMessageBody(), gqlValue, cx.doc);
-                    return null;
-                }
-                error = null;
-                return result;
+                return cx.ReadVariable<int?>(cx, gqlVariable, name, out error);
             }
             error = QueryError(name, "expect int", gqlValue, cx.doc);
             return null;
         }
         
         internal static bool? TryGetBooleanArg(in QueryContext cx, GraphQLValue gqlValue, string name, out QueryError? error) {
-            var gqlBooleanValue = gqlValue as GraphQLBooleanValue;
-            if (gqlBooleanValue == null) {
-                error = QueryError(name, "expect boolean", gqlValue, cx.doc);
-                return null;
+            if (gqlValue is GraphQLBooleanValue gqlBooleanValue) {
+                error = null;
+                return gqlBooleanValue.BoolValue;
             }
-            error = null;
-            return gqlBooleanValue.BoolValue;
+            if (gqlValue is GraphQLVariable gqlVariable) {
+                return cx.ReadVariable<bool?>(cx, gqlVariable, name, out error);
+            }
+            error = QueryError(name, "expect boolean", gqlValue, cx.doc);
+            return null;
         }
         
         internal static List<JsonKey> TryGetStringList(in QueryContext cx, GraphQLArgument arg, string name, out QueryError? error) {
