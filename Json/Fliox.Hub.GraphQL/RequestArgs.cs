@@ -16,9 +16,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
     {
         private const string DefaultParam   = "o";
         
-        internal static bool TryGetFilter(GraphQLField query, string name, out string value, out QueryError? error, string doc)
+        internal static bool TryGetFilter(in QueryContext cx, string name, out string value, out QueryError? error)
         {
-            if (!TryGetString(query, name, out value, out error, doc))
+            if (!TryGetString(cx, name, out value, out error))
                 return false;
             if (value == null)
                 return true;
@@ -35,59 +35,59 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return false;
         }
         
-        internal static bool TryGetString(GraphQLField query, string name, out string value, out QueryError? error, string doc)
+        internal static bool TryGetString(in QueryContext cx, string name, out string value, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error)) {
+            if (!GetArguments(cx, out var arguments, out error)) {
                 value = null;
                 return true;
             }
             value = null;
             if (FindArgument(arguments, name, out var argument)) {
-                value = RequestUtils.TryGetStringArg (argument.Value, name, out error, doc);
+                value = RequestUtils.TryGetStringArg (argument.Value, name, out error, cx.doc);
                 if (error != null)
                     return false;
             }
             return true;
         }
         
-        internal static bool TryGetInt(GraphQLField query, string name, out int? value, out QueryError? error, string doc)
+        internal static bool TryGetInt(in QueryContext cx, string name, out int? value, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error)) {
+            if (!GetArguments(cx, out var arguments, out error)) {
                 value = null;
                 return true;
             }
             value = null;
             if (FindArgument(arguments, name, out var argument)) {
-                value  = RequestUtils.TryGetIntArg(argument.Value, name, out error, doc);
+                value  = RequestUtils.TryGetIntArg(argument.Value, name, out error, cx.doc);
                 if (error != null)
                     return false;
             }
             return true;
         }
         
-        internal static bool TryGetBool(GraphQLField query, string name, out bool? value, out QueryError? error, string doc)
+        internal static bool TryGetBool(in QueryContext cx, string name, out bool? value, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error)) {
+            if (!GetArguments(cx, out var arguments, out error)) {
                 value = null;
                 return true;
             }
             value = null;
             if (FindArgument(arguments, name, out var argument)) {
-                value = RequestUtils.TryGetBooleanArg(argument.Value, name, out error, doc);
+                value = RequestUtils.TryGetBooleanArg(argument.Value, name, out error, cx.doc);
                 if (error != null)
                     return false;
             }
             return true;
         }
         
-        internal static bool TryGetIds(GraphQLField query, string name, out HashSet<JsonKey> value, out QueryError? error, string doc) {
-            if (!GetArguments(query, out var arguments, out error)) {
+        internal static bool TryGetIds(in QueryContext cx, string name, out HashSet<JsonKey> value, out QueryError? error) {
+            if (!GetArguments(cx, out var arguments, out error)) {
                 value = null;
                 return true;
             }
             List<JsonKey> idList = null;
             if (FindArgument(arguments, name, out var argument)) {
-                idList  = RequestUtils.TryGetStringList (argument, name, out error, doc);
+                idList  = RequestUtils.TryGetStringList (argument, name, out error, cx.doc);
                 if (error != null) {
                     value = null;
                     return false;
@@ -105,15 +105,15 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return true;
         }
 
-        internal static List<JsonValue> GetEntities(GraphQLField query, out QueryError? error, string doc)
+        internal static List<JsonValue> GetEntities(in QueryContext cx, out QueryError? error)
         {
-            if (!GetArguments(query, out var arguments, out error))
+            if (!GetArguments(cx, out var arguments, out error))
                 return null;
             List<JsonValue> entities = null;
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("entities")) {
-                    entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", out error, doc);
+                    entities    = RequestUtils.TryGetAnyList(argument.Value, "entities", out error, cx.doc);
                 } else {
                     error       = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
@@ -123,12 +123,12 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return entities;
         }
         
-        internal static JsonValue GetParam(GraphQLField query, in QueryResolver resolver, out QueryError? error, string doc) {
-            if (!GetArguments(query, out var arguments, out error)) {
-                if (!resolver.hasParam) {
+        internal static JsonValue GetParam(in QueryContext cx, out QueryError? error) {
+            if (!GetArguments(cx, out var arguments, out error)) {
+                if (!cx.resolver.hasParam) {
                     return new JsonValue();
                 }
-                if (resolver.paramRequired) {
+                if (cx.resolver.paramRequired) {
                     error = new QueryError(null, "Expect argument: param");
                 }
                 return new JsonValue();
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             foreach (var argument in arguments) {
                 var argName = argument.Name.Value.Span;
                 if (argName.SequenceEqual("param")) {
-                    result  = RequestUtils.TryGetAny(argument.Value, "param", out error, doc);
+                    result  = RequestUtils.TryGetAny(argument.Value, "param", out error, cx.doc);
                 } else {
                     error   = new QueryError(argument.Name.StringValue, RequestUtils.UnknownArgument);
                 }
@@ -148,9 +148,9 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         }
         
         // ------------------------------------------ utils ------------------------------------------ 
-        private static bool GetArguments (GraphQLField query, out GraphQLArguments args, out QueryError? error) {
+        private static bool GetArguments (in QueryContext cx, out GraphQLArguments args, out QueryError? error) {
             error = null;
-            args = query.Arguments;
+            args = cx.query.Arguments;
             return args != null;
         }
         
