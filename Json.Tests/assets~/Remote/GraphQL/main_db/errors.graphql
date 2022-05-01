@@ -1,4 +1,4 @@
-{
+query Test ($invalidLimit: Int, $invalidBool: Boolean) {
   unknown_query:	xxx
   
   countFilter:      countArticles(filter: "x.name == 'Smartphone'")
@@ -18,4 +18,9 @@
   unknownArg:       std_Echo(xxx: {})
   missingArg:       CommandInt
   commandError:     test_CommandExecutionError
+
+  countArticlesUnknownVar:       countArticles (filter:     $unknown)
+  queryArticlesInvalidIntVar:    queryArticles (limit:      $invalidLimit) {  count }
+  countArticlesInvalidStringVar: countArticles (filter:     invalidFilter)
+  queryArticlesInvalidBoolVar:   queryArticles (selectAll:  $invalidBool)
 }

@@ -1,0 +1,5 @@
+{
+    "invalidLimit":     "noInt",
+    "invalidFilter":    777,
+    "invalidBool":      "noBool"
+}

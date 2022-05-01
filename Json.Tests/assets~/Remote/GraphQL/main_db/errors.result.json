@@ -148,6 +148,46 @@
             "extensions": {
                 "type": "CommandError"
             }
+        },
+        {
+            "message": "variable not found. was: $unknown",
+            "path": [
+                "countArticlesUnknownVar",
+                "filter"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "Cannot assign string to int?. got: 'noInt'. was: $invalidLimit",
+            "path": [
+                "queryArticlesInvalidIntVar",
+                "limit"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "expect string. was: invalidFilter",
+            "path": [
+                "countArticlesInvalidStringVar",
+                "filter"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "Cannot assign string to bool?. got: 'noBool'. was: $invalidBool",
+            "path": [
+                "queryArticlesInvalidBoolVar",
+                "selectAll"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
         }
     ]
 }
