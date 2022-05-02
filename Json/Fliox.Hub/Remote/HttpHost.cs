@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.handled = true;
                 return context;
             }
-            var message = $"Expect context path matching HttpHostHub.endpoint: {endpoint}, path: {path}";
+            var message = $"Expect context path matching HttpHost.endpoint: {endpoint}, path: {path}";
             sharedEnv.hubLogger.Log(HubLog.Error, message);
             return null;
         }

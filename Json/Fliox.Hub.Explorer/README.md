@@ -27,9 +27,9 @@ available via the `HubExplorer.Path`
 For integration to a **HTTP Fliox Hub** server call:
 
 ```csharp
-     HttpHostHub hostHub;
+     HttpHost httpHost;
      ...
-     hostHub.AddHandler(new StaticFileHandler(HubExplorer.Path));
+     httpHost.AddHandler(new StaticFileHandler(HubExplorer.Path));
 ```
 
 ![Fliox Hub Explorer - screenshot](../../docs/images/Fliox-Hub-Explorer.png)
