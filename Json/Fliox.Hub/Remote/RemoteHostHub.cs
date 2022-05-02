@@ -12,26 +12,23 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class RemoteHostHub : FlioxHub
+    public class RemoteHostHub : IDisposable
     {
         private   readonly  FlioxHub    localHub;
+        public   readonly   SharedEnv   sharedEnv;
         
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool        fakeOpenClosedSockets;
         
         internal            FlioxHub    LocalHub => localHub;
 
-        protected RemoteHostHub(FlioxHub hub, SharedEnv env, string hostName) : base(hub.database, env, hostName) {
-            localHub = hub;
+        protected RemoteHostHub(FlioxHub hub, SharedEnv env) {
+            sharedEnv   = env  ?? SharedEnv.Default;
+            localHub    = hub;
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var response    = await localHub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
-            SetContainerResults(response.success);
-            response.Result.reqId       = syncRequest.reqId;
-            return response;
-        }
-
+        public void Dispose() { }
+        
         internal async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, ExecuteContext executeContext) {
             try {
                 var request = RemoteUtils.ReadProtocolMessage(jsonRequest, executeContext.ObjectMapper, out string error);
@@ -39,8 +36,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case null:
                         return JsonResponse.CreateError(executeContext, error, ErrorResponseType.BadResponse);
                     case SyncRequest syncRequest:
-                        var         response        = await ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
-                        JsonValue   jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, executeContext.ObjectMapper);
+                        var response = await localHub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+                        
+                        SetContainerResults(response.success);
+                        response.Result.reqId   = syncRequest.reqId;
+                        JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, executeContext.ObjectMapper);
                         return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";
@@ -108,5 +108,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             resultMap.Clear();
         }
+
     }
 }

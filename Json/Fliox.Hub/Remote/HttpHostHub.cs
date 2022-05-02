@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// In detail:
     /// <list type="bullet">
     ///   <item>hosted databases are given by the <see cref="FlioxHub"/> passed via its constructor
-    ///     <see cref="HttpHostHub(FlioxHub, string, SharedEnv, string)"/>
+    ///     <see cref="HttpHostHub(FlioxHub, string, SharedEnv)"/>
     ///   </item>
     ///   <item>exposed schemas are retrieved from the hosted databases</item>
     ///   <item>static web files are exposed by adding a <see cref="StaticFileHandler"/> using <see cref="AddHandler"/></item>
@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
-        public HttpHostHub(FlioxHub hub, string endpoint, SharedEnv env = null, string hostName = null)
-            : base(hub, env, hostName)
+        public HttpHostHub(FlioxHub hub, string endpoint, SharedEnv env = null)
+            : base(hub, env)
         {
             hubRoutes = hub.routes;
             hubRoutes.AddRange(restHandler.Routes);
