@@ -103,8 +103,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 container   = container,
                 sets        = new List<ReadEntitiesSet> { readEntitiesSet }
             };
-            var restResult = await ExecuteTask(context, database, readEntities).ConfigureAwait(false);
+            var syncRequest = CreateSyncRequest(context, database, readEntities, out var executeContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
+            var restResult  = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
@@ -139,8 +141,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             var cursor          = queryParams["cursor"];
             var queryEntities   = new QueryEntities{ container = container, filterTree = filter, maxCount = maxCount, cursor = cursor, limit = limit };
-            var restResult      = await ExecuteTask(context, database, queryEntities).ConfigureAwait(false);
+            var syncRequest     = CreateSyncRequest(context, database, queryEntities, out var executeContext);
+            var syncResult      = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
+            var restResult      = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
             var queryResult     = (QueryEntitiesResult)restResult.taskResult;
@@ -239,8 +243,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 container   = container,
                 sets        = new List<ReadEntitiesSet> { readEntitiesSet }
             };
-            var restResult = await ExecuteTask(context, database, readEntities).ConfigureAwait(false);
+            var syncRequest = CreateSyncRequest(context, database, readEntities, out var executeContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
+            var restResult  = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
@@ -268,8 +274,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             foreach (var key in keys) {
                 deleteEntities.ids.Add(key);
             }
-            var restResult  = await ExecuteTask(context, database, deleteEntities).ConfigureAwait(false);
+            var syncRequest     = CreateSyncRequest(context, database, deleteEntities, out var executeContext);
+            var syncResult      = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
+            var restResult      = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
             var deleteResult    = (DeleteEntitiesResult)restResult.taskResult;
@@ -329,12 +337,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 default:
                     throw new InvalidOperationException($"Invalid PUT type: {type}");
             }
-            var result = await ExecuteTask(context, database, task).ConfigureAwait(false);
+            var syncRequest = CreateSyncRequest(context, database, task, out var executeContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
-            if (result.taskResult == null)
+            var restResult  = CreateRestResult(context, syncResult);
+            if (restResult.taskResult == null)
                 return;
-            var taskResult      = (ICommandResult)result.taskResult;
-            var resultError     = taskResult.Error;
+            var taskResult  = (ICommandResult)restResult.taskResult;
+            var resultError = taskResult.Error;
             if (resultError != null) {
                 context.WriteError("PUT error", resultError.message, 500);
                 return;
@@ -372,12 +382,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var entityPatch = new EntityPatch { patches = patches };
             var task        = new PatchEntities { container = container, keyName = keyName };
             task.patches.Add(entityId, entityPatch);
-            var result = await ExecuteTask(context, database, task).ConfigureAwait(false);
+            var syncRequest = CreateSyncRequest(context, database, task, out var executeContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
-            if (result.taskResult == null)
+            var restResult  = CreateRestResult(context, syncResult);
+            if (restResult.taskResult == null)
                 return;
-            var patchResult     = (PatchEntitiesResult)result.taskResult;
-            var resultError     = patchResult.Error;
+            var patchResult = (PatchEntitiesResult)restResult.taskResult;
+            var resultError = patchResult.Error;
             if (resultError != null) {
                 context.WriteError("PATCH error", resultError.message, 500);
                 return;
@@ -406,8 +418,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // ----------------------------------------- command / message -----------------------------------------
         private static async Task Command(RequestContext context, string database, string command, JsonValue param) {
             var sendCommand = new SendCommand { name = command, param = param };
-            var restResult  = await ExecuteTask(context, database, sendCommand).ConfigureAwait(false);
+            var syncRequest = CreateSyncRequest(context, database, sendCommand, out var executeContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
+            var restResult  = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
             var sendResult  = (SendCommandResult)restResult.taskResult;
@@ -421,8 +435,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private static async Task Message(RequestContext context, string database, string message, JsonValue param) {
             var sendMessage = new SendMessage { name = message, param = param };
-            var restResult  = await ExecuteTask(context, database, sendMessage).ConfigureAwait(false);
+            var syncRequest = CreateSyncRequest(context, database, sendMessage, out var executeContext);
+            var syncResult  = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
             
+            var restResult  = CreateRestResult(context, syncResult);
             if (restResult.taskResult == null)
                 return;
             var sendResult  = (SendMessageResult)restResult.taskResult;
@@ -436,7 +452,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
 
         // ----------------------------------------- utils -----------------------------------------
-        private static async Task<RestResult> ExecuteTask (RequestContext context, string database, SyncRequestTask task) {
+        private static SyncRequest CreateSyncRequest (RequestContext context, string database, SyncRequestTask task, out ExecuteContext executeContext) {
             var tasks   = new List<SyncRequestTask> { task };
             var userId  = context.cookies["fliox-user"];
             var token   = context.cookies["fliox-token"];
@@ -446,12 +462,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 userId      = new JsonKey(userId),
                 token       = token
             };
-            var hub             = context.hub;
-            var sharedCache     = context.SharedCache;
-            var localPool       = new Pool(hub.sharedEnv);
-            var executeContext  = new ExecuteContext(localPool, null, sharedCache);
-            var result          = await hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
-            
+            var hub         = context.hub;
+            var sharedCache = context.SharedCache;
+            var localPool   = new Pool(hub.sharedEnv);
+            executeContext  = new ExecuteContext(localPool, null, sharedCache);
+            return syncRequest;
+        }
+        
+        private static RestResult CreateRestResult (RequestContext context, ExecuteSyncResult result)
+        {
             var error = result.error;
             if (error != null) {
                 var status = error.type == ErrorResponseType.BadRequest ? 400 : 500;
