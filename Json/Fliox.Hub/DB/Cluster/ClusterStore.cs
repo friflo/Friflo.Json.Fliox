@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
         /// </summary>
                 public  string                          envColor;
-        /// <summary>routes configures by <see cref="Remote.HttpHostHub"/> - commonly below <c>/fliox</c></summary>
+        /// <summary>routes configures by <see cref="Remote.HttpHost"/> - commonly below <c>/fliox</c></summary>
         [Req]   public  List<string>                    routes; 
     }
     

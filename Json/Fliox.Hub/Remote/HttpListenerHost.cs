@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// <br/>
     /// lifecycle methods:
     /// <list type="bullet">
-    ///     <item>Create an instance: <see cref="HttpListenerHost(string, HttpHostHub)"/></item>
+    ///     <item>Create an instance: <see cref="HttpListenerHost(string, HttpHost)"/></item>
     ///     <item>Start server: <see cref="Start"/></item>
     ///     <item>Run server loop for incoming connections: <see cref="Run"/></item>
     ///     <item>Stop server: <see cref="Stop"/></item>
@@ -35,17 +35,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   HttpListener        listener;
         private             bool                runServer;
         private             int                 requestCount;
-        private  readonly   HttpHostHub         hostHub;
+        private  readonly   HttpHost            httpHost;
         private  readonly   HubLogger           hubLogger;
         
-        public HttpListenerHost(HttpListener httpListener, HttpHostHub hostHub) {
-            this.hostHub    = hostHub;
+        public HttpListenerHost(HttpListener httpListener, HttpHost httpHost) {
+            this.httpHost   = httpHost;
             listener        = httpListener;
-            hubLogger       = hostHub.sharedEnv.hubLogger;
+            hubLogger       = httpHost.sharedEnv.hubLogger;
         }
         
-        public HttpListenerHost(string endpoint, HttpHostHub hostHub)
-            : this (CreateHttpListener(new []{endpoint}), hostHub)
+        public HttpListenerHost(string endpoint, HttpHost httpHost)
+            : this (CreateHttpListener(new []{endpoint}), httpHost)
         { }
         
         // Note: Http server may require a permission to listen to the given host/port on Windows.
@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         //     netsh http add urlacl url=http://+:8010/ user=<DOMAIN>\<USER> listen=yes
         //     netsh http delete urlacl http://+:8010/
         // Get DOMAIN\USER via  PowerShell > $env:UserName / $env:UserDomain 
-        public static void RunHost(string endpoint, HttpHostHub hostHub) {
-            var server = new HttpListenerHost(endpoint, hostHub);
+        public static void RunHost(string endpoint, HttpHost httpHost) {
+            var server = new HttpListenerHost(endpoint, httpHost);
             server.Start();
             server.Run();
         }
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task HandleIncomingConnections()
         {
             runServer       = true;
-            var endpoint    = hostHub.endpoint;
+            var endpoint    = httpHost.endpoint;
 
             while (runServer) {
                 try {
@@ -90,8 +90,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                                 LogInfo(reqMsg);
                             }
                             var path = context.Request.Url.LocalPath;
-                            if (hostHub.IsMatch(path)) {
-                                var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false); // handle incoming requests parallel
+                            if (httpHost.IsMatch(path)) {
+                                var response = await context.ExecuteFlioxRequest(httpHost).ConfigureAwait(false); // handle incoming requests parallel
                                 
                                 await context.WriteFlioxResponse(response).ConfigureAwait(false);
                                 return;

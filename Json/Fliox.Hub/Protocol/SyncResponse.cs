@@ -68,18 +68,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class ContainerEntities
     {
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
-        /// Required only by <see cref="RemoteHostHub"/> for serialization
+        /// Required only by <see cref="RemoteHost"/> for serialization
         [Fri.Required]  public  string                              container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                                count;
         /// <summary>all <see cref="entities"/> as results from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/></summary>
-        /// Required only by <see cref="RemoteHostHub"/> for serialization
+        /// Required only by <see cref="RemoteHost"/> for serialization
         [Fri.Required]  public  List<JsonValue>                     entities;
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
-        /// Required only by <see cref="RemoteHostHub"/> for serialization
+        /// Required only by <see cref="RemoteHost"/> for serialization
                         public  List<JsonKey>                       notFound;
         /// <summary>list of entity errors read from <see cref="container"/></summary>
-        /// Required only by <see cref="RemoteHostHub"/> for serialization
+        /// Required only by <see cref="RemoteHost"/> for serialization
                         public  List<EntityError>                   errors;
         
         [Fri.Ignore]

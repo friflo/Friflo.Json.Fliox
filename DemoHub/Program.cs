@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Fliox.DemoHub
 {
-    /// <summary>Bootstrapping of databases hosted by <see cref="HttpHostHub"/></summary> 
+    /// <summary>Bootstrapping of databases hosted by <see cref="HttpHost"/></summary> 
     internal  static class  Program
     {
         public static void Main(string[] args) {
@@ -24,18 +24,18 @@ namespace Fliox.DemoHub
         }
 
         /// <summary>
-        /// This method is a blueprint showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
+        /// This method is a blueprint showing how to setup a <see cref="HttpHost"/> utilizing all features available
         /// via HTTP and WebSockets. The Hub can be integrated by two different HTTP servers:
         /// <list type="bullet">
         ///   <item> By <see cref="System.Net.HttpListener"/> see <see cref="HttpListenerHost.RunHost"/> </item>
         ///   <item> By <a href="https://docs.microsoft.com/en-us/aspnet/core/">ASP.NET Core / Kestrel</a> see <see cref="Startup.Configure"/></item>
         /// </list>
-        /// The features of a <see cref="HttpHostHub"/> instance utilized by this blueprint method are listed at
+        /// The features of a <see cref="HttpHost"/> instance utilized by this blueprint method are listed at
         /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub">Host README.md</a><br/>
         /// <i>Note</i>: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
-        /// additional <see cref="HttpHostHub"/> instance only accessible from Intranet as they contains sensitive data.
+        /// additional <see cref="HttpHost"/> instance only accessible from Intranet as they contains sensitive data.
         /// </summary>
-        internal static HttpHostHub CreateHttpHost() {
+        internal static HttpHost CreateHttpHost() {
             var c                   = new Config();
             var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
@@ -53,10 +53,10 @@ namespace Fliox.DemoHub
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var hostHub             = new HttpHostHub(hub, "/fliox/").CacheControl(c.cache);
-            hostHub.AddHandler       (new GraphQLHandler());
-            hostHub.AddHandler       (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
-            return hostHub;
+            var httpHost            = new HttpHost(hub, "/fliox/").CacheControl(c.cache);
+            httpHost.AddHandler      (new GraphQLHandler());
+            httpHost.AddHandler      (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
+            return httpHost;
         }
         
         private class Config {

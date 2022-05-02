@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         internal  readonly  CreateZip                           zip;
         private   readonly  Dictionary<string, SchemaResource>  schemas         = new Dictionary<string, SchemaResource>();
         private   readonly  List<CustomGenerator>               generators      = new List<CustomGenerator>();
-        private             string                              cacheControl    = HttpHostHub.DefaultCacheControl;
+        private             string                              cacheControl    = HttpHost.DefaultCacheControl;
         
         internal            ICollection<CustomGenerator>        Generators      => generators;
 

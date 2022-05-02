@@ -37,10 +37,10 @@ namespace Friflo.Json.Tests.Main
         }
         
         /// <summary>
-        /// Blueprint method showing how to setup a <see cref="HttpHostHub"/> utilizing all features available
+        /// Blueprint method showing how to setup a <see cref="HttpHost"/> utilizing all features available
         /// via HTTP and WebSockets.
         /// </summary>
-        public static HttpHostHub CreateHttpHost(Config c) {
+        public static HttpHost CreateHttpHost(Config c) {
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
@@ -58,11 +58,11 @@ namespace Friflo.Json.Tests.Main
             hub.Authenticator       = new UserAuthenticator(userDB, c.env);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var hostHub             = new HttpHostHub(hub, "/fliox/", c.env).CacheControl(c.cache);
-            hostHub.AddHandler       (new GraphQLHandler());
-            hostHub.AddHandler       (new StaticFileHandler(c.Www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
-            hostHub.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
-            return hostHub;
+            var httpHost            = new HttpHost(hub, "/fliox/", c.env).CacheControl(c.cache);
+            httpHost.AddHandler      (new GraphQLHandler());
+            httpHost.AddHandler      (new StaticFileHandler(c.Www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer
+            httpHost.AddSchemaGenerator("jtd", "JSON Type Definition", JsonTypeDefinition.GenerateJTD);  // optional - add code generator
+            return httpHost;
         }
         
         public class Config {
@@ -81,14 +81,14 @@ namespace Friflo.Json.Tests.Main
             }
         }
         
-        private static HttpHostHub CreateMiniHost() {
+        private static HttpHost CreateMiniHost() {
             var c                   = new Config();
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
             var database            = CreateDatabase(c, null, new PocHandler());
             var hub          	    = new FlioxHub(database);
-            var hostHub             = new HttpHostHub(hub, "/fliox/");
-            hostHub.AddHandler       (new StaticFileHandler(c.Www, c.cache));   // optional - serve static web files of Hub Explorer
-            return hostHub;
+            var httpHost            = new HttpHost(hub, "/fliox/");
+            httpHost.AddHandler      (new StaticFileHandler(c.Www, c.cache));   // optional - serve static web files of Hub Explorer
+            return httpHost;
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {

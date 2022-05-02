@@ -151,8 +151,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
-            using (var hostHub          = new HttpHostHub(hub, "/"))
-            using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
+            using (var httpHost         = new HttpHost(hub, "/"))
+            using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
             using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/", TestGlobals.Shared)) {
                 await RunServer(server, async () => {
                     await remoteHub.Connect();

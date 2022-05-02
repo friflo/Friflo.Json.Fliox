@@ -19,25 +19,25 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
 {
     public static class AspNetCoreExtensions
     {
-        public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHostHub hostHub) {
+        public static async Task<RequestContext> ExecuteFlioxRequest(this HttpContext context, HttpHost httpHost) {
             var httpRequest = context.Request;
             var path        = httpRequest.Path.Value;
-            if (!hostHub.GetRoute(path, out string route)) {
-                return hostHub.GetRequestContext(path, httpRequest.Method);
+            if (!httpHost.GetRoute(path, out string route)) {
+                return httpHost.GetRequestContext(path, httpRequest.Method);
             }
             var isWebSocket = context.WebSockets.IsWebSocketRequest;
             if (isWebSocket) {
                 WebSocket ws        = await context.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
                 var httpConnection  = context.Features.Get<IHttpConnectionFeature>();
                 var remoteEndPoint  = new IPEndPoint(httpConnection.RemoteIpAddress, httpConnection.RemotePort);
-                await WebSocketHost.SendReceiveMessages(ws, remoteEndPoint, hostHub).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages(ws, remoteEndPoint, httpHost).ConfigureAwait(false);
                 return null;
             }
             var headers     = new HttpContextHeaders(httpRequest.Headers);
             var cookies     = new HttpContextCookies(httpRequest.Cookies);
-            var reqCtx      = new RequestContext(hostHub, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
+            var reqCtx      = new RequestContext(httpHost, httpRequest.Method, route, httpRequest.QueryString.Value, httpRequest.Body, headers, cookies);
 
-            await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
+            await httpHost.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
             return reqCtx;
         }

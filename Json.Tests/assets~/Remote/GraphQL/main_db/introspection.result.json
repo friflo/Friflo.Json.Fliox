@@ -3891,7 +3891,7 @@
                 },
                 {
                     "name": "routes",
-                    "description": "    /** routes configures by **HttpHostHub** - commonly below /fliox */\n",
+                    "description": "    /** routes configures by **HttpHost** - commonly below /fliox */\n",
                     "args": [
                     ],
                     "type": {
@@ -3982,7 +3982,7 @@
                 },
                 {
                     "name": "routes",
-                    "description": "    /** routes configures by **HttpHostHub** - commonly below /fliox */\n",
+                    "description": "    /** routes configures by **HttpHost** - commonly below /fliox */\n",
                     "args": [
                     ],
                     "type": {

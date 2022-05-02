@@ -12,9 +12,9 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class RemoteHostHub : IDisposable
+    public class RemoteHost : IDisposable
     {
-        private   readonly  FlioxHub    localHub;
+        private  readonly   FlioxHub    localHub;
         public   readonly   SharedEnv   sharedEnv;
         
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal            FlioxHub    LocalHub => localHub;
 
-        protected RemoteHostHub(FlioxHub hub, SharedEnv env) {
+        protected RemoteHost(FlioxHub hub, SharedEnv env) {
             sharedEnv   = env  ?? SharedEnv.Default;
             localHub    = hub;
         }
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        /// Required only by <see cref="RemoteHostHub"/>
+        /// Required only by <see cref="RemoteHost"/>
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.

@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.Schema"/> the JSON payloads of all
     /// entities used in write operations (create, upsert and patch) are validated against their expected container types.
     /// <br/>
-    /// It is intended to be used for <see cref="RemoteHostHub"/> instances to ensure that the entities
+    /// It is intended to be used for <see cref="RemoteHost"/> instances to ensure that the entities
     /// (records) in an <see cref="EntityContainer"/> always meet the expected type. So only successful validated JSON
     /// payloads are written to an <see cref="EntityContainer"/>.
     /// 

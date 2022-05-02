@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public static partial class TestRemote
     {
-        private static  HttpHostHub     _hostHub;   // todo - UserDB is bottleneck as it uses a file-system DB
+        private static  HttpHost        _httpHost;   // todo - UserDB is bottleneck as it uses a file-system DB
         private static  ObjectMapper    _mapper;
         private static  SharedEnv       _env;
         
@@ -27,10 +27,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _mapper         = new ObjectMapper(_env.TypeStore);
             // use NonConcurrent in-memory DB to preserve entity order of query results
             var config      = new Program.Config(_env, baseFolder, true, MemoryType.NonConcurrent, "max-age=600");
-            _hostHub        = Program.CreateHttpHost(config);
+            _httpHost       = Program.CreateHttpHost(config);
         }
         [OneTimeTearDown] public static void  Dispose() {
-            _hostHub.Dispose();
+            _httpHost.Dispose();
             _mapper.Dispose();
             _env.Dispose();
         }
@@ -42,9 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var body            = QueryToStream(query, operationName, vars);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
-            var requestContext  = new RequestContext(_hostHub, "POST", route, "", body, headers, cookies);
+            var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, headers, cookies);
             // execute synchronous to enable tests running in Unity Test Runner
-            _hostHub.ExecuteHttpRequest(requestContext).Wait();
+            _httpHost.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
         }
@@ -82,9 +82,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var bodyStream      = BodyToStream(jsonBody);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateCookies();
-            var requestContext  = new RequestContext(_hostHub, method, route, query, bodyStream, headers, cookies);
+            var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, headers, cookies);
             // execute synchronous to enable tests running in Unity Test Runner
-            _hostHub.ExecuteHttpRequest(requestContext).Wait();
+            _httpHost.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
         }

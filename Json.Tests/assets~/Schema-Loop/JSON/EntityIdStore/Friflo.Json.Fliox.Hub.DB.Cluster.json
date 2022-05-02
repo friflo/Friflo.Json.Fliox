@@ -80,7 +80,7 @@
                 "projectWebsite": { "type": ["string", "null"], "description": "link to a website describing project and Hub" },
                 "envName":        { "type": ["string", "null"], "description": "environment name. e.g. 'dev', 'test', 'staging', 'prod'" },
                 "envColor":       { "type": ["string", "null"], "description": "the color used to display the environment name in GUI's using CSS color format.<br/>\nE.g. using red for a production environment: '#ff0000' or 'rgb(255 0 0)'" },
-                "routes":         { "type": "array", "items": { "type": "string" }, "description": "routes configures by <b>HttpHostHub</b> - commonly below <c>/fliox</c>" }
+                "routes":         { "type": "array", "items": { "type": "string" }, "description": "routes configures by <b>HttpHost</b> - commonly below <c>/fliox</c>" }
             },
             "required": [
                 "version",

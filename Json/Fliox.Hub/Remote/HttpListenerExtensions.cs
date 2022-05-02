@@ -12,12 +12,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public static class HttpListenerExtensions
     {
-        public static async Task<RequestContext> ExecuteFlioxRequest (this HttpListenerContext context, HttpHostHub hostHub) {
+        public static async Task<RequestContext> ExecuteFlioxRequest (this HttpListenerContext context, HttpHost httpHost) {
             var request = context.Request;
             var url     = request.Url;
             var path    = url.LocalPath;
-            if (!hostHub.GetRoute(path, out string route)) {
-                return hostHub.GetRequestContext(path, request.HttpMethod);
+            if (!httpHost.GetRoute(path, out string route)) {
+                return httpHost.GetRequestContext(path, request.HttpMethod);
             }
             // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
             // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
@@ -36,13 +36,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var wsContext       = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket       = wsContext.WebSocket;
                 var remoteEndPoint  = request.RemoteEndPoint;
-                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, hostHub).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages (websocket, remoteEndPoint, httpHost).ConfigureAwait(false);
                 return null;
             }
             var headers         = new HttpListenerHeaders(request.Headers);
             var cookies         = new HttpListenerCookies(request.Cookies);
-            var requestContext  = new RequestContext(hostHub, request.HttpMethod, route, url.Query, req.InputStream, headers, cookies);
-            await hostHub.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
+            var requestContext  = new RequestContext(httpHost, request.HttpMethod, route, url.Query, req.InputStream, headers, cookies);
+            await httpHost.ExecuteHttpRequest(requestContext).ConfigureAwait(false);
             return requestContext;
         }
         

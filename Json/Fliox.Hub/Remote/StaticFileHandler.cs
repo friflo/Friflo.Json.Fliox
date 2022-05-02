@@ -12,8 +12,8 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// A <see cref="StaticFileHandler"/> is used to serve static files by a <see cref="HttpHostHub"/>.<br/>
-    /// Therefore add an instance of <see cref="StaticFileHandler"/> with <see cref="HttpHostHub.AddHandler"/> to the Hub.<br/>
+    /// A <see cref="StaticFileHandler"/> is used to serve static files by a <see cref="HttpHost"/>.<br/>
+    /// Therefore add an instance of <see cref="StaticFileHandler"/> with <see cref="HttpHost.AddHandler"/> to the Hub.<br/>
     /// The <b>Media Type</b> assigned to the response <c>Content-Type</c> header is derived from the file name extension.<br/>
     /// Add additional mappings for <b>file name extension</b> to <b>MediaType</b> with <see cref="AddFileExtension"/>. 
     /// </summary>
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private StaticFileHandler() {
             cache           = new Dictionary<string, CacheEntry>();
-            cacheControl    = HttpHostHub.DefaultCacheControl;
+            cacheControl    = HttpHost.DefaultCacheControl;
             fileExtensions  = DefaultFileExtensions();
         }
         

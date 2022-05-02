@@ -15,30 +15,30 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     /// <summary>
-    /// A <see cref="HttpHostHub"/> enables remote access to databases, schemas and static web files via
+    /// A <see cref="HttpHost"/> enables remote access to databases, schemas and static web files via
     /// <b>HTTP</b> or <b>WebSockets</b>. <br/>
     /// The full feature set is listed at:
     /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub">Host README.md</a><br/>
     /// In detail:
     /// <list type="bullet">
     ///   <item>hosted databases are given by the <see cref="FlioxHub"/> passed via its constructor
-    ///     <see cref="HttpHostHub(FlioxHub, string, SharedEnv)"/>
+    ///     <see cref="HttpHost(FlioxHub, string, SharedEnv)"/>
     ///   </item>
     ///   <item>exposed schemas are retrieved from the hosted databases</item>
     ///   <item>static web files are exposed by adding a <see cref="StaticFileHandler"/> using <see cref="AddHandler"/></item>
     /// </list>
     /// 
-    /// A <see cref="HttpHostHub"/> can be integrated by any HTTP server like like <b>ASP.NET Core / Kestrel</b>
+    /// A <see cref="HttpHost"/> can be integrated by any HTTP server like like <b>ASP.NET Core / Kestrel</b>
     /// or the <see cref="System.Net.HttpListener"/> part of the .NET Base Class library (BCL). <br/>
     /// <br/>
-    /// A <see cref="HttpHostHub"/> can be accessed remotely by: <br/>
+    /// A <see cref="HttpHost"/> can be accessed remotely by: <br/>
     /// <list type="bullet">
     ///   <item>HTTP POST via a single path ./ enabling batching multiple tasks in a single request </item>
     ///   <item>Send batch requests containing multiple tasks via a WebSocket </item>
     ///   <item>Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id </item>
     /// </list>
     /// </summary>
-    public class HttpHostHub : RemoteHostHub
+    public class HttpHost : RemoteHost
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public   const      string                  DefaultCacheControl = "max-age=600";
 
-        public HttpHostHub(FlioxHub hub, string endpoint, SharedEnv env = null)
+        public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
         {
             hubRoutes = hub.routes;
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return null;
         }
 
-        public HttpHostHub CacheControl(string cacheControl) {
+        public HttpHost CacheControl(string cacheControl) {
             schemaHandler.CacheControl(cacheControl);
             return this;
         }

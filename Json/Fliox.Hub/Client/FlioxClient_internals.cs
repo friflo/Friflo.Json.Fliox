@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
-        /// These properties are set by <see cref="RemoteHostHub.SetContainerResults"/>.
+        /// These properties are set by <see cref="RemoteHost.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
             var containers      = response.containers;
             response.containers = null;
