@@ -32,7 +32,7 @@ This class provide two fundamental functionalities:
 
 
 ## Features
-The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub) are:
+The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost) are:
 - provide JSON based Web APIs - **RESTful**, **HTTP** & **WebSocket Batch** - to access **key-value** or **document** databases.
 - assign a **database schema** to each databases as they typically don't have a build-in solution for schemas
 - aim for near optimal request performance regarding **low latency** and **high throughput**

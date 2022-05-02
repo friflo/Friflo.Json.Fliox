@@ -13,12 +13,12 @@ There are two general ways to access a database using a [`FlioxClient`](../../..
   This approach is very similar to [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
   or [Dapper](https://github.com/DapperLib/Dapper)
 
-- **remote** access a database via `HTTPHostHub` which by itself access a specific `EntityDatabase` directly.  
+- **remote** access a database via `HttpHost` which by itself access a specific `EntityDatabase` directly.  
   Remote access support **HTTP** and **WebSockets**.
 
 ``` 
-    direct:    FlioxClient                  -> FlioxHub(database)
-    remote:    FlioxClient  ->  HTTPHostHub -> FlioxHub(database)
+    direct:    FlioxClient                ->  FlioxHub(database)
+    remote:    FlioxClient  ->  HttpHost  ->  FlioxHub(database)
                            HTTP
 ```
 
@@ -46,15 +46,15 @@ The ownership of this setup looks like this:
 
 
 
-## `HTTPHostHub`
+## `HttpHost`
 namespace **`Friflo.Json.Fliox.Hub.Remote`**
 
-A `HTTPHostHub` extends `FlioxHub` by two main features:
-- provide access to its databases via **HTTP**
+A `HttpHost` provide two main features:
+- offer access to its databases via **HTTP**
 - enables hosting **multiple** databases
 
 
-A `HTTPHostHub` can be integrated by two different HTTP servers:
+A `HttpHost` can be integrated by two different HTTP servers:
 - [**ASP.NET Core**](https://docs.microsoft.com/en-us/aspnet/core/) /
   [**Kestrel**](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel)
 - [`HttpListener`](https://docs.microsoft.com/en-us/dotnet/api/system.net.httplistener) - part of the
@@ -66,7 +66,7 @@ A `HTTPHostHub` can be integrated by two different HTTP servers:
 The HTTP Web API is designed to be used by arbitrary HTTP clients.
 
 A generic Web client utilizing all HTTP features is the [**Hub Explorer**](../../../Json/Fliox.Hub.Explorer/README.md).  
-The Explorer is a set of static web files - an SPA - which can be hosted by an `HTTPHostHub`.
+The Explorer is a set of static web files - an SPA - which can be hosted by an `HttpHost`.
 
 
 HTTP features in detail:

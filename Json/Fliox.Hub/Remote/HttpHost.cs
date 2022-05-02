@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// A <see cref="HttpHost"/> enables remote access to databases, schemas and static web files via
     /// <b>HTTP</b> or <b>WebSockets</b>. <br/>
     /// The full feature set is listed at:
-    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphosthub">Host README.md</a><br/>
+    /// <a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json/Fliox.Hub/Host/README.md#httphost">Host README.md</a><br/>
     /// In detail:
     /// <list type="bullet">
     ///   <item>hosted databases are given by the <see cref="FlioxHub"/> passed via its constructor
