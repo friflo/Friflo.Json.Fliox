@@ -6,6 +6,19 @@ import CustomSerializer.*
 import java.util.*
 
 @Serializable
+abstract class EntityIdStore {
+    abstract  val guidEntities      : HashMap<String, GuidEntity>
+    abstract  val intEntities       : HashMap<String, IntEntity>
+    abstract  val intEntitiesAuto   : HashMap<String, AutoIntEntity>
+    abstract  val longEntities      : HashMap<String, LongEntity>
+    abstract  val shortEntities     : HashMap<String, ShortEntity>
+    abstract  val byteEntities      : HashMap<String, ByteEntity>
+    abstract  val customIdEntities  : HashMap<String, CustomIdEntity>
+    abstract  val entityRefs        : HashMap<String, EntityRefs>
+    abstract  val customIdEntities2 : HashMap<String, CustomIdEntity2>
+}
+
+@Serializable
 data class GuidEntity (
               @Serializable(with = UUIDSerializer::class)
               val id : UUID,

@@ -48,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(UserStoreTypes) {
-                replacements = new [] { new Replace("Friflo.Json.Fliox.", "UserStore2.") }
+            var options     = new NativeTypeOptions(typeof(UserStore)) {
+                replacements    = new [] { new Replace("Friflo.Json.Fliox.", "UserStore2.") }
             };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/UserStore2");
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(UserStoreTypes) {
+            var options     = new NativeTypeOptions(typeof(UserStore)) {
                 replacements = new [] { new Replace("Friflo.Json.Fliox.", "UserStore.") }
             };
             var generator = KotlinGenerator.Generate(options);
@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var options     = new NativeTypeOptions(UserStoreTypes);
+            var options     = new NativeTypeOptions(typeof(UserStore));
             var generator = JsonTypeDefinition.Generate(options, "UserStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }

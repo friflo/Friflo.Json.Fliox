@@ -59,9 +59,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             // requires individual replacements. Otherwise the generated CS classes will result in name clashes, as
             // their namespace / class names are equal to the original ones.
             var replacements = new [] {
-                new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2")
+                new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",  "PocStore2"),
+                new Replace("Friflo.Json.Fliox.Hub.DB.Cluster",         "PocStore2.Cluster")
             };
-            var options     = new NativeTypeOptions(PocStoreTypes) { replacements = replacements };
+            var options     = new NativeTypeOptions(typeof(PocStore)) { replacements = replacements };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/PocStore2");
         }
@@ -69,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(PocStoreTypes) { replacements = Replacements };
+            var options     = new NativeTypeOptions(typeof(PocStore)) { replacements = Replacements };
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/PocStore");
         }
@@ -77,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var options     = new NativeTypeOptions(PocStoreTypes);
+            var options     = new NativeTypeOptions(typeof(PocStore));
             var generator   = JsonTypeDefinition.Generate(options, "PocStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }

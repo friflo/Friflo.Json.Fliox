@@ -7,6 +7,15 @@ using UserStore2.Hub.Host.Auth.Rights;
 
 namespace UserStore2.Hub.DB.UserAuth {
 
+public abstract class UserStore {
+    [Fri.Required]
+    Dictionary<string, UserCredential>  credentials;
+    [Fri.Required]
+    Dictionary<string, UserPermission>  permissions;
+    [Fri.Required]
+    Dictionary<string, Role>            roles;
+}
+
 public class UserCredential {
     [Fri.Required]
     string  id;
@@ -25,6 +34,17 @@ public class Role {
     [Fri.Required]
     List<Right>  rights;
     string       description;
+}
+
+public class Credentials {
+    [Fri.Required]
+    string  userId;
+    [Fri.Required]
+    string  token;
+}
+
+public class AuthResult {
+    bool  isValid;
 }
 
 }

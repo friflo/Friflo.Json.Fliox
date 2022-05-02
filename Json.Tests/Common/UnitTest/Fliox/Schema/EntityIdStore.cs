@@ -42,8 +42,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(EntityIdStoreTypes) { // call constructor with two params
-                replacements = new [] {new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox", "EntityIdStore2") }
+            var options     = new NativeTypeOptions(typeof(EntityIdStore)) { // call constructor with two params
+                replacements = new [] {
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox", "EntityIdStore2"),
+                    new Replace("Friflo.Json.Fliox.Hub.DB.Cluster",        "EntityIdStore2.Cluster")
+                }
             };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/EntityIdStore2");
@@ -52,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(EntityIdStoreTypes) {
+            var options     = new NativeTypeOptions(typeof(EntityIdStore)) {
                 replacements = new [] {
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "EntityIdStore") }
             };

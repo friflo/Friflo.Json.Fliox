@@ -7,6 +7,27 @@ using System;
 
 namespace EntityIdStore2.Client {
 
+public abstract class EntityIdStore {
+    [Fri.Required]
+    Dictionary<string, GuidEntity>       guidEntities;
+    [Fri.Required]
+    Dictionary<string, IntEntity>        intEntities;
+    [Fri.Required]
+    Dictionary<string, AutoIntEntity>    intEntitiesAuto;
+    [Fri.Required]
+    Dictionary<string, LongEntity>       longEntities;
+    [Fri.Required]
+    Dictionary<string, ShortEntity>      shortEntities;
+    [Fri.Required]
+    Dictionary<string, ByteEntity>       byteEntities;
+    [Fri.Required]
+    Dictionary<string, CustomIdEntity>   customIdEntities;
+    [Fri.Required]
+    Dictionary<string, EntityRefs>       entityRefs;
+    [Fri.Required]
+    Dictionary<string, CustomIdEntity2>  customIdEntities2;
+}
+
 public class GuidEntity {
     Guid  id;
 }

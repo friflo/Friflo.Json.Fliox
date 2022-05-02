@@ -8,6 +8,21 @@ using System.Numerics;
 
 namespace PocStore2.Client {
 
+public abstract class PocStore {
+    [Fri.Required]
+    Dictionary<string, Order>     orders;
+    [Fri.Required]
+    Dictionary<string, Customer>  customers;
+    [Fri.Required]
+    Dictionary<string, Article>   articles;
+    [Fri.Required]
+    Dictionary<string, Producer>  producers;
+    [Fri.Required]
+    Dictionary<string, Employee>  employees;
+    [Fri.Required]
+    Dictionary<string, TestType>  types;
+}
+
 public class Order {
     [Fri.Required]
     string           id;
@@ -20,13 +35,6 @@ public class Customer {
     [Fri.Required]
     string  id;
     [Fri.Required]
-    string  name;
-}
-
-public class OrderItem {
-    [Fri.Required]
-    string  article;
-    int     amount;
     string  name;
 }
 
@@ -85,6 +93,13 @@ public class TestType : PocEntity {
     DerivedClass  derivedClassNull;
 }
 
+public class OrderItem {
+    [Fri.Required]
+    string  article;
+    int     amount;
+    string  name;
+}
+
 public abstract class PocEntity {
     [Fri.Required]
     string  id;
@@ -96,6 +111,10 @@ public struct PocStruct {
 
 public class DerivedClass : OrderItem {
     int  derivedVal;
+}
+
+public class TestCommand {
+    string  text;
 }
 
 }

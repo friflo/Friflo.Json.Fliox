@@ -8,6 +8,16 @@ import java.math.*
 import kotlinx.serialization.json.*
 
 @Serializable
+abstract class PocStore {
+    abstract  val orders    : HashMap<String, Order>
+    abstract  val customers : HashMap<String, Customer>
+    abstract  val articles  : HashMap<String, Article>
+    abstract  val producers : HashMap<String, Producer>
+    abstract  val employees : HashMap<String, Employee>
+    abstract  val types     : HashMap<String, TestType>
+}
+
+@Serializable
 data class Order (
               val id       : String,
               val customer : String? = null,
@@ -19,13 +29,6 @@ data class Order (
 data class Customer (
               val id   : String,
               val name : String,
-)
-
-@Serializable
-data class OrderItem (
-              val article : String,
-              val amount  : Int,
-              val name    : String? = null,
 )
 
 @Serializable
@@ -83,6 +86,13 @@ data class TestType (
 ) : PocEntity()
 
 @Serializable
+data class OrderItem (
+              val article : String,
+              val amount  : Int,
+              val name    : String? = null,
+)
+
+@Serializable
 abstract class PocEntity {
     abstract  val id : String
 }
@@ -98,5 +108,10 @@ data class DerivedClass (
               val article    : String,
               val amount     : Int,
               val name       : String? = null,
+)
+
+@Serializable
+data class TestCommand (
+              val text : String? = null,
 )
 

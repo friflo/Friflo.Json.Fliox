@@ -19,7 +19,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     public class PocStoreValidation : LeakTestsFixture
     {
         private static readonly string  JsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
-        private static readonly Type[]  PocStoreTypes       = FlioxClient.GetEntityTypes<PocStore>();
         
         [Test]
         public static void ValidateByJsonSchema() {
@@ -39,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema = new NativeTypeSchema(PocStoreTypes))
+            using (var nativeSchema = new NativeTypeSchema(typeof(PocStore)))
             using (var validator    = new TypeValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
                 var validationSet   = new ValidationSet(nativeSchema);
                 validator.qualifiedTypeErrors = false; // ensure API available

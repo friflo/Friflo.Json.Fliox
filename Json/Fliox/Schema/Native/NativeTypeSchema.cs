@@ -32,6 +32,9 @@ namespace Friflo.Json.Fliox.Schema.Native
         }
 
         public NativeTypeSchema (ICollection<Type> typeList, Type rootType = null) {
+          if (typeList.Count != 1)
+              throw new InvalidOperationException("API change - expect now: 1 entry");
+                
           using (var typeStore = new TypeStore()) {
             typeStore.AddMappers(typeList);
             var typeMappers = typeStore.GetTypeMappers();

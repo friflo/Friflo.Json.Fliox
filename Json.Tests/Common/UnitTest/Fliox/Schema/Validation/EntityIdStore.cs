@@ -18,7 +18,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     public class EntityIdStoreValidation : LeakTestsFixture
     {
         private static readonly string  JsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/EntityIdStore";
-        private static readonly Type[]  EntityIdStoreTypes  = FlioxClient.GetEntityTypes<EntityIdStore>();
         
         [Test]
         public static void ValidateByJsonSchema() {
@@ -36,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema = new NativeTypeSchema(EntityIdStoreTypes))
+            using (var nativeSchema = new NativeTypeSchema(typeof(EntityIdStore)))
             using (var validator    = new TypeValidator()) {
                 var validationSet   = new ValidationSet(nativeSchema);
                 var test = new TestTypes {
