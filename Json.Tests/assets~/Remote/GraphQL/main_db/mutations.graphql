@@ -14,6 +14,11 @@ mutation Test($creates: [ArticleInput!]!) {
     type
     message
   }
+  upsertEmptyEntities: upsertArticles(entities: []) {
+    id
+    type
+    message
+  }
   createWithVar: createArticles(entities: $creates) {
     id
     type

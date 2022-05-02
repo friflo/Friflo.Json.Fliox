@@ -122,6 +122,16 @@
             }
         },
         {
+            "message": "invalid int. was: 9999999999999999999999999999999999999999",
+            "path": [
+                "queryInvalidInt",
+                "limit"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
             "message": "unknown argument",
             "path": [
                 "unknownArg",

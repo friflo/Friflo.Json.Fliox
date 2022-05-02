@@ -8,6 +8,9 @@ mutation Test ($upserts: [ArticleInput!]!) {
   upsertUnknownArg: upsertArticles(foo: 444) {
     id
   }
+  upsertInvalidArg: upsertArticles(entities: "no array") {
+    id
+  }
   upsertWithInvalidVar: upsertArticles(entities: $upserts) {
     id
   }

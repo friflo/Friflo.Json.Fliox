@@ -14,6 +14,7 @@ query Test ($invalidLimit: Int, $invalidFilter: String, $invalidBool: Boolean) {
   queryMaxCount:    queryArticles(maxCount: "13")   { count }
   queryCursor:      queryArticles(cursor: 14)       { count }
   queryAll:         queryArticles(selectAll: "err") { count }
+  queryInvalidInt:  queryArticles(limit: 9999999999999999999999999999999999999999)      { count }
     
   unknownArg:       std_Echo(xxx: {})
   missingArg:       CommandInt

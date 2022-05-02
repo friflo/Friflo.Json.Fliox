@@ -33,6 +33,16 @@
             }
         },
         {
+            "message": "expect list. was: \"no array\"",
+            "path": [
+                "upsertInvalidArg",
+                "entities"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
             "message": "Cannot assign string to List<JsonValue>. got: 'noArray'. was: $upserts",
             "path": [
                 "upsertWithInvalidVar",
