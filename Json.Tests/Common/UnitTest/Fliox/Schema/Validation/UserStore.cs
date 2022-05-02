@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema = new NativeTypeSchema(typeof(UserStore)))
+            using (var nativeSchema = NativeTypeSchema.Create(typeof(UserStore)))
             using (var validator    = new TypeValidator()) {
                 var validationSet   = new ValidationSet(nativeSchema);
                 var test = new TestTypes {

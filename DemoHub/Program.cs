@@ -37,7 +37,7 @@ namespace Fliox.DemoHub
         /// </summary>
         internal static HttpHost CreateHttpHost() {
             var c                   = new Config();
-            var typeSchema          = new NativeTypeSchema(typeof(DemoStore)); // optional - create TypeSchema from Type
+            var typeSchema          = NativeTypeSchema.Create(typeof(DemoStore)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema, new MessageHandler());
 

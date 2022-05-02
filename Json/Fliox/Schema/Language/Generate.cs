@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed partial class TypescriptGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootType);
+            var schema      = NativeTypeSchema.Create(options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".d.ts", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed partial class HtmlGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootType);
+            var schema      = NativeTypeSchema.Create(options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".html", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed partial class JsonSchemaGenerator
     {
         public static Generator Generate (NativeTypeOptions o) {
-            var schema      = new NativeTypeSchema(o.rootType);
+            var schema      = NativeTypeSchema.Create(o.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(o.separateTypes);
             var generator   = new Generator(schema, o.fileExt ?? ".json", o.replacements, sepTypes, o.getPath, o.databaseUrl);
             Generate(generator);
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed partial class CSharpGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootType);
+            var schema      = NativeTypeSchema.Create(options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".cs", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public partial class KotlinGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootType);
+            var schema      = NativeTypeSchema.Create(options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".kt", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed partial class GraphQLGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootType);
+            var schema      = NativeTypeSchema.Create(options.rootType);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
             var generator   = new Generator(schema, options.fileExt ?? ".d.ts", options.replacements, sepTypes, options.getPath);
             Generate(generator);
@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Schema.Language
     public partial class MarkdownGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
-            var schema      = new NativeTypeSchema(options.rootType);
+            var schema      = NativeTypeSchema.Create(options.rootType);
             var generator   = new Generator(schema, options.fileExt ?? ".md", options.replacements, null, options.getPath);
             Generate(generator);
             return generator;

@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_Typescript () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(typeof(PocStore));
+            var schema      = NativeTypeSchema.Create(typeof(PocStore));
             var generator   = new Generator(schema, ".d.ts", Replacements);
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/PocStore");
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_HTML () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(typeof(PocStore));
+            var schema      = NativeTypeSchema.Create(typeof(PocStore));
             var generator   = new Generator(schema, ".html");
             HtmlGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Html/PocStore");
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test, Order(1)]
         public static void CS_JsonSchema () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(typeof(PocStore));
+            var schema      = NativeTypeSchema.Create(typeof(PocStore));
             var sepTypes    = schema.TypesAsTypeDefs(PocStoreTypes);
             var generator   = new Generator(schema, ".json", Replacements, sepTypes);
             JsonSchemaGenerator.Generate(generator);
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> GraphQL
         [Test]
         public static void CS_GraphQL () {
-            var typeSchema  = new NativeTypeSchema(typeof(PocStore));
+            var typeSchema  = NativeTypeSchema.Create(typeof(PocStore));
             var generator   = new Generator(typeSchema, ".graphql");
             GraphQLGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/PocStore");
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Markdown / Mermaid Class Diagram
         [Test]
         public static void CS_Markdown () {
-            var typeSchema  = new NativeTypeSchema(typeof(PocStore));
+            var typeSchema  = NativeTypeSchema.Create(typeof(PocStore));
             var generator   = new Generator(typeSchema, ".md");
             MarkdownGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/PocStore");

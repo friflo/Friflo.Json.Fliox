@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_HTML () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(typeof(UserStore));
+            var schema      = NativeTypeSchema.Create(typeof(UserStore));
             var generator   = new Generator(schema, ".html");
             HtmlGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Html/UserStore");
@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> GraphQL
         [Test]
         public static void CS_GraphQL () {
-            var typeSchema  = new NativeTypeSchema(typeof(UserStore));
+            var typeSchema  = NativeTypeSchema.Create(typeof(UserStore));
             var generator   = new Generator(typeSchema, ".graphql");
             GraphQLGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/GraphQL/UserStore");
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Markdown / Mermaid Class Diagram
         [Test]
         public static void CS_Markdown () {
-            var typeSchema  = new NativeTypeSchema(typeof(UserStore));
+            var typeSchema  = NativeTypeSchema.Create(typeof(UserStore));
             var generator   = new Generator(typeSchema, ".md");
             MarkdownGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/UserStore");

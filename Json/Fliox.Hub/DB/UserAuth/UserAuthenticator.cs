@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
-            typeSchema              = new NativeTypeSchema(typeof(UserStore));
+            typeSchema              = NativeTypeSchema.Create(typeof(UserStore));
             userDatabase.Schema     = new DatabaseSchema(typeSchema);
             userHub        	        = new FlioxHub(userDatabase, env);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase

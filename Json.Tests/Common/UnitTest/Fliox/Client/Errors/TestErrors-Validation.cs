@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var modifierHub      = new WriteModifierHub(hub))
             using (var createStore      = new PocStore(modifierHub) { UserId = "createStore" })
-            using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore))) {
+            using (var nativeSchema     = NativeTypeSchema.Create(typeof(PocStore))) {
                 database.Schema  = new DatabaseSchema(nativeSchema);
                 await AssertValidation(createStore, modifierHub);
             }

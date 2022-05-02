@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new MemoryDatabase(messageHandler))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new PocStore(hub) { UserId = "createStore"})
-            using (var nativeSchema = new NativeTypeSchema(typeof(PocStore))) {
+            using (var nativeSchema = NativeTypeSchema.Create(typeof(PocStore))) {
                 database.Schema  = new DatabaseSchema(nativeSchema); 
                 await test(store, messageHandler);
             }

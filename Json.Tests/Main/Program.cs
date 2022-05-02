@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Main
         /// via HTTP and WebSockets.
         /// </summary>
         public static HttpHost CreateHttpHost(Config c) {
-            var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - create TypeSchema from Type 
+            var typeSchema          = NativeTypeSchema.Create(typeof(PocStore)); // optional - create TypeSchema from Type 
         //  var typeSchema          = CreateTypeSchema();               // alternatively create TypeSchema from JSON Schema
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema, new PocHandler());

@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema = new NativeTypeSchema(typeof(PocStore)))
+            using (var nativeSchema = NativeTypeSchema.Create(typeof(PocStore)))
             using (var validator    = new TypeValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
                 var validationSet   = new ValidationSet(nativeSchema);
                 validator.qualifiedTypeErrors = false; // ensure API available

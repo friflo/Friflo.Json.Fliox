@@ -62,16 +62,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!endpoint.EndsWith("/"))    throw new ArgumentException("endpoint requires '/' as last character");
             this.endpoint           = endpoint;
             endpointRoot            = this.endpoint.Substring(0, this.endpoint.Length - 1);
-            var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
+            var protocolSchema      = NativeTypeSchema.Create(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
             schemaHandler.AddSchema ("protocol", protocolSchema, sepTypes);
             //
-            var filterSchema        = new NativeTypeSchema(typeof(FilterOperation));
+            var filterSchema        = NativeTypeSchema.Create(typeof(FilterOperation));
             var filterRoot          = filterSchema.TypesAsTypeDefs(new [] {typeof(FilterOperation)});
             schemaHandler.AddSchema ("filter", filterSchema, filterRoot);
             //
-            var jsonSchema          = new NativeTypeSchema(typeof(JSONSchema));
+            var jsonSchema          = NativeTypeSchema.Create(typeof(JSONSchema));
             var jsonSchemaRoot      = jsonSchema.TypesAsTypeDefs(new [] {typeof(JSONSchema)});
             schemaHandler.AddSchema ("json-schema", jsonSchema, jsonSchemaRoot);
         }

@@ -21,7 +21,7 @@ namespace Fliox.TodoHub
         /// </summary>
         internal static HttpHost CreateHttpHost() {
             var c                   = new Config();
-            var typeSchema          = new NativeTypeSchema(typeof(TodoStore)); // optional - create TypeSchema from Type
+            var typeSchema          = NativeTypeSchema.Create(typeof(TodoStore)); // optional - create TypeSchema from Type
             var databaseSchema      = new DatabaseSchema(typeSchema);
             var database            = CreateDatabase(c, databaseSchema, null);
 

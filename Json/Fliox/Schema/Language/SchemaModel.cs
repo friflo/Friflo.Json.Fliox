@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         /// and languages that are generated via the passed <paramref name="generators"/>
         /// </summary>
         public static List<SchemaModel> GenerateSchemaModels(Type rootType, IEnumerable<CustomGenerator> generators = null, string databaseUrl = null) {
-            var typeSchema      = new NativeTypeSchema(rootType);
+            var typeSchema      = NativeTypeSchema.Create(rootType);
             var entityTypeMap   = typeSchema.GetEntityTypes();
             var entityTypes     = entityTypeMap.Values;
             return GenerateSchemaModels(typeSchema, entityTypes, generators, databaseUrl);

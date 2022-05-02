@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             this.name       = name ?? Name;
-            typeSchema      = new NativeTypeSchema(typeof(MonitorStore));
+            typeSchema      = NativeTypeSchema.Create(typeof(MonitorStore));
             Schema          = new DatabaseSchema(typeSchema);
             stateDB         = new MemoryDatabase(null, MemoryType.NonConcurrent);
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
