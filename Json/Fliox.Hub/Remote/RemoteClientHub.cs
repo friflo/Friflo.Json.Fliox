@@ -18,8 +18,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   SharedCache                         sharedCache;
 
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientHub(EntityDatabase database, SharedEnv env, string hostName = null)
-            : base(database, env, hostName)
+        protected RemoteClientHub(EntityDatabase database, SharedEnv env)
+            : base(database, env)
         {
             pool        = new Pool(sharedEnv.Pool);
             sharedCache = sharedEnv.sharedCache;

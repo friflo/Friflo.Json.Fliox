@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   string          endpoint;
         private  readonly   HttpClient      httpClient;
 
-        public HttpClientHub(string endpoint, SharedEnv env = null, string hostName = null) : base(null, env, hostName) {
+        public HttpClientHub(string endpoint, SharedEnv env = null) : base(null, env) {
             this.endpoint = endpoint;
             httpClient = new HttpClient();
         }

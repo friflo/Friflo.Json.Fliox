@@ -21,8 +21,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         public readonly    FlioxHub  host;
 
-        public LoopbackHub(FlioxHub hub, string hostName = null)
-            : base(hub.database, hub.sharedEnv, hostName)
+        public LoopbackHub(FlioxHub hub)
+            : base(hub.database, hub.sharedEnv)
         {
             host = hub;
         }
