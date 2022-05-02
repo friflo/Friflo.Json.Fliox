@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.Schema.Language
     
     /// <summary>
     /// <see cref="NativeTypeOptions"/> contains the configuration used by schema and code generators using the
-    /// .NET type system - typically C# model classes - as input. These types are given via a the <see cref="types"/>.
-    /// <br></br>
+    /// .NET type system.
+    /// <br/>
     /// All other properties are optional (can be null) and enable customization of the generated output: a schema or code.
     /// </summary>
     public sealed class NativeTypeOptions
