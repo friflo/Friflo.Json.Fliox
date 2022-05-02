@@ -41,7 +41,7 @@ namespace Fliox.TodoHub
             internal readonly string  dbPath              = "./DB~/TodoStore";
             internal readonly string  www                 = HubExplorer.Path;
             internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
-            internal readonly bool    useMemoryDbClone    = true;
+            internal readonly bool    useMemoryDbClone    = false;
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {

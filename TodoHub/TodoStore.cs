@@ -26,7 +26,9 @@ namespace Fliox.TodoHub
     // ------------------------------ entity models ------------------------------
     public class Todo {
         [Req]   public  long                id { get; set; }
-        [Req]   public  string              name;
+        [Req]   public  string              title;
+                public  string              description;
+                public  bool?               completed;
                 public  DateTime?           created;
     }
 }
