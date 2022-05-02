@@ -18,7 +18,7 @@ namespace Fliox.TodoHub
     /// </remarks>
     public class TodoStore : FlioxClient {
         // --- containers
-        public readonly EntitySet <long, Todo>        articles;
+        public readonly EntitySet <long, Todo>        todos;
 
         public TodoStore(FlioxHub hub) : base (hub) { }
     }
