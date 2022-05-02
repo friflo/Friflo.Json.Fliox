@@ -89,8 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (validationFields.TryGetValue(type, out var validationField))
                 return validationField;
             
-            var types = new [] { type };
-            using (var nativeSchema = new NativeTypeSchema(types)) {
+            using (var nativeSchema = new NativeTypeSchema(type)) {
                 var validationSet   = new ValidationSet(nativeSchema);
                 validationField     = validationSet.GetValidationField(nativeSchema, type);
                 validationFields.Add(type, validationField);

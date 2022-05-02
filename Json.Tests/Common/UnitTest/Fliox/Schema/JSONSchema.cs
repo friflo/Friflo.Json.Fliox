@@ -15,14 +15,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     /// </summary>
     public static class JsonSchemaGen
     {
-        private static readonly Type[] JsonFlowSchemaTypes        = { typeof(JSONSchema) };
+        private static readonly Type JsonFlowSchemaType        = typeof(JSONSchema);
 
         // -------------------------------------- input: C# --------------------------------------
         
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var options     = new NativeTypeOptions(JsonFlowSchemaTypes);
+            var options     = new NativeTypeOptions(JsonFlowSchemaType);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/JSONSchema");
         }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(JsonFlowSchemaTypes) {
+            var options     = new NativeTypeOptions(JsonFlowSchemaType) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Markdown / Mermaid Class Diagram
         [Test]
         public static void CS_Markdown () {
-            var options     = new NativeTypeOptions(JsonFlowSchemaTypes);
+            var options     = new NativeTypeOptions(JsonFlowSchemaType);
             var generator   = MarkdownGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/JSONSchema");
         }

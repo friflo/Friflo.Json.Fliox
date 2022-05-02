@@ -143,6 +143,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
         protected static List<TypeDef> OrderTypes(TypeDef rootType, List<TypeDef> types) {
             if (rootType == null)
                 return types;
+            if (!rootType.IsClass)
+                return types;
             var typeMap = new Dictionary<string, TypeDef>(types.Count);
             typeMap.Add(rootType.fullName, rootType);
             foreach (var entityField in rootType.Fields) {

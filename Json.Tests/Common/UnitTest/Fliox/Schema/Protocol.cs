@@ -16,14 +16,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     /// </summary>
     public static class ProtocolGen
     {
-        private static readonly Type[] ProtocolTypes        = { typeof(ProtocolMessage) };
+        private static readonly Type ProtocolType        = typeof(ProtocolMessage);
 
         // -------------------------------------- input: C# --------------------------------------
         
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var options     = new NativeTypeOptions(ProtocolTypes);
+            var options     = new NativeTypeOptions(ProtocolType);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Protocol");
         }
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_JSON () {
             var types       = ProtocolMessage.Types;
-            var options     = new NativeTypeOptions(ProtocolTypes) {separateTypes = types };
+            var options     = new NativeTypeOptions(ProtocolType) {separateTypes = types };
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Protocol");
         }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(ProtocolTypes) {
+            var options     = new NativeTypeOptions(ProtocolType) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(ProtocolTypes) {
+            var options     = new NativeTypeOptions(ProtocolType) {
                 replacements = new [] {
                     new Replace("Friflo.Json.Fliox.",                        "Fliox."),
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "Fliox") }
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var options     = new NativeTypeOptions(ProtocolTypes);
+            var options     = new NativeTypeOptions(ProtocolType);
             var generator   = JsonTypeDefinition.Generate(options, "Fliox");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Markdown / Mermaid Class Diagram
         [Test]
         public static void CS_Markdown () {
-            var options     = new NativeTypeOptions(ProtocolTypes);
+            var options     = new NativeTypeOptions(ProtocolType);
             var generator   = MarkdownGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/Protocol");
         }

@@ -28,14 +28,12 @@ namespace Friflo.Json.Fliox.Schema.Native
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
 
-        public NativeTypeSchema (Type rootType) : this (new [] { rootType }, rootType){
-        }
 
-        public NativeTypeSchema (ICollection<Type> typeList, Type rootType = null) {
-          if (typeList.Count != 1)
-              throw new InvalidOperationException("API change - expect now: 1 entry");
-                
+        public NativeTypeSchema (Type rootType) {
+          var typeList = new List<Type> {rootType};
+
           using (var typeStore = new TypeStore()) {
+              
             typeStore.AddMappers(typeList);
             var typeMappers = typeStore.GetTypeMappers();
             TypeMapper rootTypeMapper = rootType == null ? null : typeMappers[rootType];
@@ -166,8 +164,6 @@ namespace Friflo.Json.Fliox.Schema.Native
                 var rootTypeDef = TypeAsTypeDef(rootType);
                 if (rootTypeDef == null)
                     throw new InvalidOperationException($"rootType not found: {rootType}");
-                if (!rootTypeDef.IsClass)
-                    throw new InvalidOperationException($"rootType must be a class: {rootType}");
                 SetKeyField(rootTypeDef);
                 SetRelationTypes(rootTypeDef, types);
                 RootType = rootTypeDef;

@@ -44,7 +44,6 @@ namespace Friflo.Json.Fliox.Schema.Language
     public sealed class NativeTypeOptions
     {
         public  readonly    Type                    rootType;
-        public  readonly    ICollection<Type>       types;
         /// <summary>the file extension of the generated files</summary>
         public              string                  fileExt;
         /// <summary>replace the namespaces / packages by the given <see cref="replacements"/></summary>
@@ -58,10 +57,7 @@ namespace Friflo.Json.Fliox.Schema.Language
         public              string                  databaseUrl;
         
         
-        public NativeTypeOptions (Type rootType) : this (new List<Type> { rootType }, rootType) { }
-        
-        public NativeTypeOptions (ICollection<Type> types, Type rootType = null) {
-            this.types      = types ?? throw new ArgumentException("rootTypes must not be null");
+        public NativeTypeOptions (Type rootType) {
             this.rootType   = rootType;
         }
     }

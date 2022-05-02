@@ -15,14 +15,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     /// </summary>
     public static class FilterGen
     {
-        private static readonly Type[] FilterTypes        = { typeof(FilterOperation) };
+        private static readonly Type FilterType        = typeof(FilterOperation);
 
         // -------------------------------------- input: C# --------------------------------------
         
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var options     = new NativeTypeOptions(FilterTypes);
+            var options     = new NativeTypeOptions(FilterType);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Filter");
         }
@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema / OpenAPI
         [Test]
         public static void CS_JSON () {
-            var options     = new NativeTypeOptions(FilterTypes);
+            var options     = new NativeTypeOptions(FilterType);
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Filter");
         }
@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(FilterTypes) {
+            var options     = new NativeTypeOptions(FilterType) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(FilterTypes);
+            var options     = new NativeTypeOptions(FilterType);
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/Filter");
         }
@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Markdown / Mermaid Class Diagram
         [Test]
         public static void CS_Markdown () {
-            var options     = new NativeTypeOptions(FilterTypes);
+            var options     = new NativeTypeOptions(FilterType);
             var generator   = MarkdownGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Markdown/Filter");
         }
