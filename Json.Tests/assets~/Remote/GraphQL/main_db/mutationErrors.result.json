@@ -5,7 +5,7 @@
         {
             "message": "missing parameter",
             "path": [
-                "deleteArticles",
+                "deleteMissingArg",
                 "ids"
             ],
             "extensions": {
@@ -15,7 +15,7 @@
         {
             "message": "unknown argument",
             "path": [
-                "createArg",
+                "createUnknownArg",
                 "foo"
             ],
             "extensions": {
@@ -25,8 +25,18 @@
         {
             "message": "unknown argument",
             "path": [
-                "upsertArg",
+                "upsertUnknownArg",
                 "foo"
+            ],
+            "extensions": {
+                "type": "InvalidTask"
+            }
+        },
+        {
+            "message": "Cannot assign string to List<JsonValue>. got: 'noArray'. was: $upserts",
+            "path": [
+                "upsertWithInvalidVar",
+                "entities"
             ],
             "extensions": {
                 "type": "InvalidTask"

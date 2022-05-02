@@ -1,11 +1,14 @@
-mutation {
-  deleteArticles(foo: 222) {
+mutation Test ($upserts: [ArticleInput!]!) {
+  deleteMissingArg: deleteArticles(foo: 222) {
     id
   }
-  createArg: createArticles(foo: 333) {
+  createUnknownArg: createArticles(foo: 333) {
     id
   }
-  upsertArg: upsertArticles(foo: 444) {
+  upsertUnknownArg: upsertArticles(foo: 444) {
+    id
+  }
+  upsertWithInvalidVar: upsertArticles(entities: $upserts) {
     id
   }
 }
