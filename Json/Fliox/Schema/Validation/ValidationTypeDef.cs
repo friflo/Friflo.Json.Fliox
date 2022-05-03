@@ -46,14 +46,14 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private   readonly  TypeDef             typeDef;    // only for debugging
         private   readonly  string              qualifiedName;
         internal  readonly  TypeId              typeId;
-        private   readonly  ValidationField[]   fields;
+        private   readonly  ValidationType[]    fields;
         internal  readonly  int                 requiredFieldsCount;
-        private   readonly  ValidationField[]   requiredFields;
+        private   readonly  ValidationType[]    requiredFields;
         internal  readonly  ValidationUnion     unionType;
         private   readonly  Utf8String[]        enumValues;
         
-        public              IEnumerable<ValidationField>    Fields      => fields;
-        public   override   string                          ToString()  => qualifiedName;
+        public              IEnumerable<ValidationType> Fields      => fields;
+        public   override   string                      ToString()  => qualifiedName;
         
         internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef) {
             this.typeId         = typeId;
@@ -74,13 +74,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     requiredCount++;
             }
             requiredFieldsCount = requiredCount;
-            requiredFields      = new ValidationField[requiredCount];
-            fields              = new ValidationField[fieldDefs.Count];
+            requiredFields      = new ValidationType[requiredCount];
+            fields              = new ValidationType[fieldDefs.Count];
             int n = 0;
             int requiredPos = 0;
             foreach (var field in fieldDefs) {
                 var reqPos = field.required ? requiredPos++ : -1;
-                var validationField = new ValidationField(field, reqPos);
+                var validationField = new ValidationType(field, reqPos);
                 fields[n++] = validationField;
                 if (reqPos >= 0)
                     requiredFields[reqPos] = validationField;
@@ -140,26 +140,26 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return validator.ErrorType("Invalid enum value.", value.AsString(), true, typeDef.name, typeDef.@namespace, parent);
         }
         
-        internal static bool FindField (ValidationTypeDef typeDef, TypeValidator validator, out ValidationField field, bool[] foundFields) {
+        internal static bool FindField (ValidationTypeDef typeDef, TypeValidator validator, out ValidationType fieldType, bool[] foundFields) {
             ref var parser = ref validator.parser;
-            foreach (var typeField in typeDef.fields) {
-                if (!typeField.name.IsEqual(ref parser.key))
+            foreach (var field in typeDef.fields) {
+                if (!field.name.IsEqual(ref parser.key))
                     continue;
-                field   = typeField;
-                var reqPos = field.requiredPos;
+                fieldType   = field;
+                var reqPos  = fieldType.requiredPos;
                 if (reqPos >= 0) {
                     foundFields[reqPos] = true;
                 }
                 var ev = parser.Event; 
-                if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
+                if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && fieldType.isArray) {
                     var value       = GetValue(ref parser, out bool isString);
-                    validator.ErrorType("Incorrect type.", value, isString, field.typeName, field.typeDef.@namespace, typeDef);
+                    validator.ErrorType("Incorrect type.", value, isString, fieldType.typeName, fieldType.typeDef.@namespace, typeDef);
                     return false;
                 }
                 return true;
             }
             validator.ErrorValue("Unknown property:", parser.key.AsString(), true, typeDef);
-            field = null;
+            fieldType = null;
             return false;
         }
         

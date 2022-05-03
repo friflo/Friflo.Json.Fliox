@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             }
         }
         
-        private static ValidationField CreateValidationField(Type type) {
+        private static ValidationType CreateValidationField(Type type) {
             var schema          = NativeTypeSchema.Create(type);
             var validationSet   = new ValidationSet(schema);
             var field           = validationSet.GetValidationField(schema, type);

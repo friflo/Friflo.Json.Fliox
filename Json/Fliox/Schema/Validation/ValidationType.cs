@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 namespace Friflo.Json.Fliox.Schema.Validation
 {
     // could by a struct 
-    public sealed class ValidationField  {
+    public sealed class ValidationType  {
         public    readonly  string              fieldName;
         internal  readonly  Utf8String          name;
         public    readonly  bool                required;
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
 
         public  override    string              ToString() => fieldName;
         
-        internal ValidationField(FieldDef fieldDef, int requiredPos) {
+        internal ValidationType(FieldDef fieldDef, int requiredPos) {
             type                = fieldDef.type;
             typeName            = fieldDef.isArray ? $"{type.Name}[]" : type.Name; 
             fieldName           = fieldDef.name;
