@@ -27,9 +27,10 @@ namespace Friflo.Json.Fliox.Schema.Native
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
-        private static readonly Dictionary<Type, NativeTypeSchema> Schemas = new Dictionary<Type, NativeTypeSchema>(); 
+        private static readonly Dictionary<Type, NativeTypeSchema> Schemas = new Dictionary<Type, NativeTypeSchema>();
         
-        public static NativeTypeSchema Create (Type rootType) {
+        public  static  void                ClearCache () => Schemas.Clear();
+        public  static  NativeTypeSchema    Create     (Type rootType) {
             if (!Schemas.TryGetValue(rootType, out var schema)) {
                 schema = new NativeTypeSchema(rootType);
                 Schemas.Add(rootType, schema);
