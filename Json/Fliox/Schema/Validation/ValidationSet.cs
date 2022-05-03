@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         public ValidationType               TypeDefAsValidationType(TypeDef type) => typeMap[type];
-        
+
         public ICollection<ValidationType>  TypeDefsAsValidationTypes(ICollection<TypeDef> types) {
             var list = new List<ValidationType>(this.types.Count);
             foreach (var typeDef in types) {
@@ -124,10 +124,16 @@ namespace Friflo.Json.Fliox.Schema.Validation
         
         public ValidationField  GetValidationField(NativeTypeSchema nativeSchema, Type type) {
             var attr                = nativeSchema.GetArgAttributes(type);
-            var isArray             = attr.typeDef.mapper.IsArray;
-            var fieldDef            = new FieldDef("param", attr.required, false, false, attr.typeDef, isArray, false, false, null, null, null, nativeSchema.Utf8Buffer);
+            var typeDef             = attr.typeDef;
+            var fieldDef            = new FieldDef("param", attr.required, false, false, typeDef, attr.isArray, attr.isDictionary, false, null, null, null, nativeSchema.Utf8Buffer);
             var validationField     = new ValidationField(fieldDef, -1);
-            validationField.type    = TypeDefAsValidationType(attr.typeDef);
+            if (attr.isArray || attr.isDictionary) {
+                var elementMapper       = typeDef.mapper.GetElementMapper();
+                var elementTypeDef      = nativeSchema.GetArgAttributes(elementMapper.type);
+                validationField.type    = TypeDefAsValidationType(elementTypeDef.typeDef);
+            } else {
+                validationField.type    = TypeDefAsValidationType(typeDef);
+            }
             return validationField;
         }
     }
