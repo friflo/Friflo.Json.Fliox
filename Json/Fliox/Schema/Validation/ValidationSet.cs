@@ -15,12 +15,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// </summary>
     public sealed class ValidationSet
     {
-        private  readonly   List<ValidationType>                types;
-        private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
-        private  readonly   TypeDef                             rootType;
+        private  readonly   List<ValidationTypeDef>                 types;
+        private  readonly   Dictionary<TypeDef, ValidationTypeDef>  typeMap;
+        private  readonly   TypeDef                                 rootType;
 
-        public ValidationType GetValidationType (TypeDef type) {
-            if (typeMap.TryGetValue(type, out var validationType))
+        public ValidationTypeDef GetValidationType (TypeDef typeDef) {
+            if (typeMap.TryGetValue(typeDef, out var validationType))
                 return validationType;
             return null;
         }
@@ -34,8 +34,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
             rootType        = schema.RootType;
             var schemaTypes = schema.Types;
             var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
-            types           = new List<ValidationType>                  (typeCount);
-            typeMap         = new Dictionary<TypeDef, ValidationType>   (typeCount);
+            types           = new List<ValidationTypeDef>                  (typeCount);
+            typeMap         = new Dictionary<TypeDef, ValidationTypeDef>   (typeCount);
             
             var standardType = schema.StandardTypes;
             AddStandardType(TypeId.Boolean,     standardType.Boolean);
@@ -55,11 +55,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
             foreach (var type in schemaTypes) {
                 if (typeMap.ContainsKey(type))
                     continue;
-                var validationType = ValidationType.Create(type);
-                if (validationType == null)
+                var validationTypeDef = ValidationTypeDef.Create(type);
+                if (validationTypeDef == null)
                     continue;
-                types.Add(validationType);
-                typeMap.Add(type, validationType);
+                types.Add(validationTypeDef);
+                typeMap.Add(type, validationTypeDef);
             }
             // set ValidationType references
             foreach (var type in types) {
@@ -69,11 +69,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        public ICollection<ValidationType>  GetEntityTypes() {
+        public ICollection<ValidationTypeDef>  GetEntityTypes() {
             if (rootType == null) {
                 throw new InvalidOperationException("GetEntityTypes() requires a TypeSchema with a TypeSchema.RootType");
             }
-            var entityTypes = new List<ValidationType>();
+            var entityTypes = new List<ValidationTypeDef>();
             foreach (var field in rootType.Fields) {
                 var validationType = typeMap[field.type];
                 entityTypes.Add(validationType);
@@ -81,10 +81,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return entityTypes;
         }
         
-        public ValidationType               TypeDefAsValidationType(TypeDef type) => typeMap[type];
+        public ValidationTypeDef               TypeDefAsValidationType(TypeDef type) => typeMap[type];
 
-        public ICollection<ValidationType>  TypeDefsAsValidationTypes(ICollection<TypeDef> types) {
-            var list = new List<ValidationType>(this.types.Count);
+        public ICollection<ValidationTypeDef>  TypeDefsAsValidationTypes(ICollection<TypeDef> types) {
+            var list = new List<ValidationTypeDef>(this.types.Count);
             foreach (var typeDef in types) {
                 var validationType = TypeDefAsValidationType(typeDef);
                 list.Add(validationType);
@@ -96,9 +96,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
             if (typeDef == null)
                 return;
             var typeName = GetTypeName(typeId);
-            var type = new ValidationType(typeId, typeName, typeDef);
-            types.Add(type);
-            typeMap.Add(typeDef, type);
+            var validationTypeDef = new ValidationTypeDef(typeId, typeName, typeDef);
+            types.Add(validationTypeDef);
+            typeMap.Add(typeDef, validationTypeDef);
         }
         
         private static string GetTypeName (TypeId typeId) {

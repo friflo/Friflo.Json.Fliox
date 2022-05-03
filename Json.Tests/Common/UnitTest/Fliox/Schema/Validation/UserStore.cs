@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         }
         
         private class TestTypes {
-            internal    ValidationType  roleType;
+            internal    ValidationTypeDef    roleType;
             
             internal    readonly JsonValue   roleDeny;
             internal    readonly JsonValue   roleDenyArray;

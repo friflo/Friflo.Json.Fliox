@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             parser.InitParser(jsonBytes);
         }
         
-        private bool Return(ValidationType type, bool success, out string error) {
+        private bool Return(ValidationTypeDef typeDef, bool success, out string error) {
             if (!success) {
                 error = validationError.AsString(sb, qualifiedTypeErrors);
                 return false;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 error = null;
                 return true;
             }
-            return RootError(type, "Expected EOF after reading JSON", out error);
+            return RootError(typeDef, "Expected EOF after reading JSON", out error);
         }
         
         public bool ValidateJson(JsonValue json, out string error) {
@@ -115,109 +115,109 @@ namespace Friflo.Json.Fliox.Schema.Validation
             throw new InvalidOperationException($"Unexpected JSON event: {ev}");
         }
         
-        public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
+        public bool ValidateObject (JsonValue json, ValidationTypeDef typeDef, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateObjectIntern(type, 0);
-                return Return(type, success, out error);    
+                bool success = ValidateObjectIntern(typeDef, 0);
+                return Return(typeDef, success, out error);    
             }
-            return RootError(type, "expect object. was:", out error);
+            return RootError(typeDef, "expect object. was:", out error);
         }
         
-        public bool ValidateObjectMap (JsonValue json, ValidationType type, out string error) {
+        public bool ValidateObjectMap (JsonValue json, ValidationTypeDef typeDef, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateElement(type, false, null, 0);
-                return Return(type, success, out error);    
+                bool success = ValidateElement(typeDef, false, null, 0);
+                return Return(typeDef, success, out error);    
             }
-            return RootError(type, "expect object. was:", out error);
+            return RootError(typeDef, "expect object. was:", out error);
         }
         
-        public bool ValidateArray (JsonValue json, ValidationType type, out string error) {
+        public bool ValidateArray (JsonValue json, ValidationTypeDef typeDef, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {
-                bool success = ValidateElement(type, false, null, 0);
-                return Return(type, success, out error);    
+                bool success = ValidateElement(typeDef, false, null, 0);
+                return Return(typeDef, success, out error);    
             }
-            return RootError(type, "expect array. was:", out error);
+            return RootError(typeDef, "expect array. was:", out error);
         }
         
-        private bool ValidateObjectIntern (ValidationType type, int depth)
+        private bool ValidateObjectIntern (ValidationTypeDef typeDef, int depth)
         {
-            if (type.typeId == TypeId.Union) {
+            if (typeDef.typeId == TypeId.Union) {
                 var ev      = parser.NextEvent();
-                var unionType = type.unionType;
+                var unionType = typeDef.unionType;
                 if (ev != JsonEvent.ValueString) {
-                    return ErrorType("Expect discriminator as first member.", ev.ToString(), false, unionType.discriminatorStr, null, type);
+                    return ErrorType("Expect discriminator as first member.", ev.ToString(), false, unionType.discriminatorStr, null, typeDef);
                 }
                 if (!unionType.discriminator.IsEqual(ref parser.key)) {
-                    return ErrorType("Invalid discriminator.", parser.key.AsString(), true, unionType.discriminatorStr, null, type);
+                    return ErrorType("Invalid discriminator.", parser.key.AsString(), true, unionType.discriminatorStr, null, typeDef);
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
                     var expect = unionType.TypesAsString;
-                    return ErrorType("Invalid discriminant.", parser.value.AsString(), true, expect, null, type);
+                    return ErrorType("Invalid discriminant.", parser.value.AsString(), true, expect, null, typeDef);
                 }
-                type = newType;
+                typeDef = newType;
             }
-            if (type.typeId != TypeId.Class) {
-                return ErrorType("Incorrect type.", "object", false, type.name, type.@namespace, type);
+            if (typeDef.typeId != TypeId.Class) {
+                return ErrorType("Incorrect type.", "object", false, typeDef.name, typeDef.@namespace, typeDef);
             }
-            var foundFields = GetFoundFields(type, foundFieldsCache, depth);
+            var foundFields = GetFoundFields(typeDef, foundFieldsCache, depth);
 
             while (true) {
                 var             ev = parser.NextEvent();
                 ValidationField field;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (!ValidationType.FindField(type, this, out field, foundFields))
+                        if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
-                        if (ValidateString (ref parser.value, field.type, type))
+                        if (ValidateString (ref parser.value, field.type, typeDef))
                             continue;
                         return false;
                         
                     case JsonEvent.ValueNumber:
-                        if (!ValidationType.FindField(type, this, out field, foundFields))
+                        if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
-                        if (ValidateNumber(field.type, type))
+                        if (ValidateNumber(field.type, typeDef))
                             continue;
                         return false;
                         
                     case JsonEvent.ValueBool:
-                        if (!ValidationType.FindField(type, this, out field, foundFields))
+                        if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
-                        if (ValidateBoolean(field.type, type))
+                        if (ValidateBoolean(field.type, typeDef))
                             continue;
                         return false;
                     
                     case JsonEvent.ValueNull:
-                        if (!ValidationType.FindField(type, this, out field, foundFields))
+                        if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
                         if (!field.required)
                             continue;
-                        return Error("Required property must not be null.", type);
+                        return Error("Required property must not be null.", typeDef);
                     
                     case JsonEvent.ArrayStart:
-                        if (!ValidationType.FindField(type, this, out field, foundFields))
+                        if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
                         if (field.isArray) {
-                            if (ValidateElement (field.type, field.isNullableElement, type, depth))
+                            if (ValidateElement (field.type, field.isNullableElement, typeDef, depth))
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "array", false, field.typeName, field.type.@namespace, type);
+                        return ErrorType("Incorrect type.", "array", false, field.typeName, field.type.@namespace, typeDef);
                     
                     case JsonEvent.ObjectStart:
-                        if (!ValidationType.FindField(type, this, out field, foundFields))
+                        if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
                         if (field.typeId == TypeId.JsonValue) {
                             parser.SkipTree();
                             continue;
                         }
                         if (field.isDictionary) {
-                            if (ValidateElement (field.type, field.isNullableElement, type, depth))
+                            if (ValidateElement (field.type, field.isNullableElement, typeDef, depth))
                                 continue;
                             return false;
                         }
@@ -226,39 +226,39 @@ namespace Friflo.Json.Fliox.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "object", false, field.typeName, field.type.@namespace, type);
+                        return ErrorType("Incorrect type.", "object", false, field.typeName, field.type.@namespace, typeDef);
                     
                     case JsonEvent.ObjectEnd:
-                        if (type.HasMissingFields(foundFields, sb)) {
-                            return ErrorValue("Missing required fields:", sb.ToString(), false, type);
+                        if (typeDef.HasMissingFields(foundFields, sb)) {
+                            return ErrorValue("Missing required fields:", sb.ToString(), false, typeDef);
                         }
                         return true;
                     
                     case JsonEvent.Error:
-                        return Error(parser.error.GetMessageBody(), type);
+                        return Error(parser.error.GetMessageBody(), typeDef);
 
                     default:
-                        return Error($"Unexpected JSON event in object: {ev}", type);
+                        return Error($"Unexpected JSON event in object: {ev}", typeDef);
                 }
             }
         }
         
-        private bool ValidateElement (ValidationType type, bool isNullableElement, ValidationType parent, int depth) {
+        private bool ValidateElement (ValidationTypeDef typeDef, bool isNullableElement, ValidationTypeDef parent, int depth) {
             while (true) {
                 var     ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (ValidateString(ref parser.value, type, parent))
+                        if (ValidateString(ref parser.value, typeDef, parent))
                             continue;
                         return false;
                         
                     case JsonEvent.ValueNumber:
-                        if (ValidateNumber(type, parent))
+                        if (ValidateNumber(typeDef, parent))
                             continue;
                         return false;
                         
                     case JsonEvent.ValueBool:
-                        if (ValidateBoolean(type, parent))
+                        if (ValidateBoolean(typeDef, parent))
                             continue;
                         return false;
                     
@@ -268,17 +268,17 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         return Error("Element must not be null.", parent);
                     
                     case JsonEvent.ArrayStart:
-                        var expect = ValidationType.GetName(type, qualifiedTypeErrors);
+                        var expect = ValidationTypeDef.GetName(typeDef, qualifiedTypeErrors);
                         return Error($"Found array as array item. expect: {expect}", parent); // todo
                     
                     case JsonEvent.ObjectStart:
-                        if (type.typeId == TypeId.Class || type.typeId == TypeId.Union) {
+                        if (typeDef.typeId == TypeId.Class || typeDef.typeId == TypeId.Union) {
                             // in case of a dictionary the key is not relevant
-                            if (ValidateObjectIntern(type, depth + 1))
+                            if (ValidateObjectIntern(typeDef, depth + 1))
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "object", false, type.name, type.@namespace, parent);
+                        return ErrorType("Incorrect type.", "object", false, typeDef.name, typeDef.@namespace, parent);
                     
                     case JsonEvent.ObjectEnd:
                         return true;
@@ -295,12 +295,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        private bool RootError (ValidationType type, string msg, out string error) {
+        private bool RootError (ValidationTypeDef typeDef, string msg, out string error) {
             if (parser.Event == JsonEvent.Error) {
-                Error(parser.error.GetMessageBody(), type);
+                Error(parser.error.GetMessageBody(), typeDef);
             } else {
                 string errorValue = GetErrorValue();
-                ErrorValue(msg, errorValue, false, type);
+                ErrorValue(msg, errorValue, false, typeDef);
             }
             error = validationError.AsString(sb, qualifiedTypeErrors);
             return false;
@@ -319,33 +319,33 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        internal bool ErrorType (string msg, string was, bool isString, string expect, string expectNamespace, ValidationType type) {
+        internal bool ErrorType (string msg, string was, bool isString, string expect, string expectNamespace, ValidationTypeDef typeDef) {
             if (validationError.msg != null) {
                 throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            validationError = new ValidationError(msg, was, isString, expect, expectNamespace, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, was, isString, expect, expectNamespace, typeDef, parser.GetPath(), parser.Position);
             return false;         
         }
         
-        private bool Error(string msg, ValidationType type) {
+        private bool Error(string msg, ValidationTypeDef typeDef) {
             if (validationError.msg != null) {
                 throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            validationError = new ValidationError(msg, null, false, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, null, false, typeDef, parser.GetPath(), parser.Position);
             return false;
         }
 
-        internal bool ErrorValue(string msg, string value, bool isString, ValidationType type) {
+        internal bool ErrorValue(string msg, string value, bool isString, ValidationTypeDef typeDef) {
             if (validationError.msg != null) {
                 throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            validationError = new ValidationError(msg, value, isString, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, value, isString, typeDef, parser.GetPath(), parser.Position);
             return false;
         }
         
         // --- helper methods
-        private bool ValidateString (ref Bytes value, ValidationType type, ValidationType parent) {
-            switch (type.typeId) {
+        private bool ValidateString (ref Bytes value, ValidationTypeDef typeDef, ValidationTypeDef parent) {
+            switch (typeDef.typeId) {
                 case TypeId.String:
                     return true;
                 
@@ -371,10 +371,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return ErrorValue("Invalid Guid:", str, true, parent);
                 
                 case TypeId.Enum:
-                    return ValidationType.FindEnum(type, ref value, this, parent);
+                    return ValidationTypeDef.FindEnum(typeDef, ref value, this, parent);
                 
                 default:
-                    return ErrorType("Incorrect type.", Truncate(ref value), true, type.name, type.@namespace, parent);
+                    return ErrorType("Incorrect type.", Truncate(ref value), true, typeDef.name, typeDef.@namespace, parent);
             }
         }
         
@@ -385,26 +385,26 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return str.Substring(20) + "...";
         }
         
-        private bool ValidateBoolean (ValidationType type, ValidationType owner) {
-            if (type.typeId == TypeId.Boolean)
+        private bool ValidateBoolean (ValidationTypeDef typeDef, ValidationTypeDef owner) {
+            if (typeDef.typeId == TypeId.Boolean)
                 return true;
             var value = parser.boolValue ? "true" : "false";
-            return ErrorType("Incorrect type.", value, false, type.name, type.@namespace, owner);
+            return ErrorType("Incorrect type.", value, false, typeDef.name, typeDef.@namespace, owner);
         }
         
-        private bool ValidateNumber (ValidationType type, ValidationType owner) {
-            var typeId = type.typeId; 
+        private bool ValidateNumber (ValidationTypeDef typeDef, ValidationTypeDef owner) {
+            var typeId = typeDef.typeId; 
             switch (typeId) {
                 case TypeId.Uint8:
                 case TypeId.Int16:
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        return ErrorType("Invalid integer.", parser.value.AsString(), false, type.name, type.@namespace, owner);
+                        return ErrorType("Invalid integer.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
                     }
                     var value = parser.ValueAsLong(out bool success);
                     if (!success) {
-                        return ErrorType("Invalid integer.", parser.value.AsString(), false, type.name, type.@namespace, owner);
+                        return ErrorType("Invalid integer.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
                     }
                     switch (typeId) {
                         case TypeId.Uint8: if (          0 <= value && value <=        255) { return true; } break;   
@@ -414,21 +414,21 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
-                    return ErrorType("Integer out of range.", parser.value.AsString(), false, type.name, type.@namespace, owner);
+                    return ErrorType("Integer out of range.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
                 
                 case TypeId.Float:
                 case TypeId.Double:
                     return true;
                 default:
-                    return ErrorType("Incorrect type.", parser.value.AsString(), false, type.name, type.@namespace, owner);
+                    return ErrorType("Incorrect type.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);
             }
         }
         
-        private static bool[] GetFoundFields(ValidationType type, List<bool[]> foundFieldsCache, int depth) {
+        private static bool[] GetFoundFields(ValidationTypeDef typeDef, List<bool[]> foundFieldsCache, int depth) {
             while (foundFieldsCache.Count <= depth) {
                 foundFieldsCache.Add(null);
             }
-            int requiredCount = type.requiredFieldsCount;
+            int requiredCount = typeDef.requiredFieldsCount;
             bool[] foundFields = foundFieldsCache[depth];
             if (foundFields == null || foundFields.Length < requiredCount) {
                 foundFields = foundFieldsCache[depth] = new bool[requiredCount];

@@ -121,9 +121,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         }
         
         private class TestTypes {
-            internal    ValidationType  testType;
-            internal    ValidationType  orderType;
-            internal    ValidationType  articleType;
+            internal    ValidationTypeDef  testType;
+            internal    ValidationTypeDef  orderType;
+            internal    ValidationTypeDef  articleType;
             
             internal    readonly string orderValid      = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
             

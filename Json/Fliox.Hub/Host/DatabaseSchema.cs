@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class DatabaseSchema
     {
         public   readonly   TypeSchema                          typeSchema;
-        private  readonly   Dictionary<string, ValidationType>  containerTypes  = new Dictionary<string, ValidationType>();
+        private  readonly   Dictionary<string, ValidationTypeDef>  containerTypes  = new Dictionary<string, ValidationTypeDef>();
         private             Dictionary<string, JsonValue>       jsonSchemas; // cache schemas after creation
         
         internal            string                              Name        => typeSchema.RootType.Name;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var validationSet   = new ValidationSet(typeSchema);
             var validationRoot = validationSet.GetValidationType(rootType);
             foreach (var field in validationRoot.Fields) {
-                containerTypes.Add(field.fieldName, field.Type);
+                containerTypes.Add(field.fieldName, field.TypeDef);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ref List<EntityError>   validationErrors
         ) {
             EntityContainer.AssertEntityCounts(entityKeys, entities);
-            if (!containerTypes.TryGetValue(container, out ValidationType type)) {
+            if (!containerTypes.TryGetValue(container, out ValidationTypeDef type)) {
                 return $"No Schema definition for container Type: {container}";
             }
             using (var pooled = executeContext.pool.TypeValidator.Get()) {

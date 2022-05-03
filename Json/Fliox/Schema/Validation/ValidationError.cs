@@ -7,35 +7,35 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     internal readonly struct ValidationError
     {
-        public   readonly   string          msg;
-        private  readonly   string          value;
-        private  readonly   bool            isString;
-        private  readonly   string          expect;
-        private  readonly   string          expectNamespace;
-        private  readonly   ValidationType  type;
-        private  readonly   string          path;
-        private  readonly   int             pos;
+        public   readonly   string              msg;
+        private  readonly   string              value;
+        private  readonly   bool                isString;
+        private  readonly   string              expect;
+        private  readonly   string              expectNamespace;
+        private  readonly   ValidationTypeDef   typeDef;
+        private  readonly   string              path;
+        private  readonly   int                 pos;
 
-        public  override    string          ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
+        public  override    string              ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
 
-        internal ValidationError (string msg, string value, bool isString, string expect, string expectNamespace, ValidationType type, string path, int pos) {
+        internal ValidationError (string msg, string value, bool isString, string expect, string expectNamespace, ValidationTypeDef typeDef, string path, int pos) {
             this.msg            = msg;
             this.value          = value;
             this.isString       = isString;
             this.expect         = expect;
             this.expectNamespace= expectNamespace;
-            this.type           = type;
+            this.typeDef           = typeDef;
             this.path           = path;
             this.pos            = pos;
         }
         
-        internal ValidationError (string msg, string value, bool isString, ValidationType type, string path, int pos) {
+        internal ValidationError (string msg, string value, bool isString, ValidationTypeDef typeDef, string path, int pos) {
             this.msg            = msg;
             this.value          = value;
             this.isString       = isString;
             this.expect         = null;
             this.expectNamespace= null;
-            this.type           = type;
+            this.typeDef        = typeDef;
             this.path           = path;
             this.pos            = pos;
         }
@@ -71,13 +71,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 }
             }
             sb.Append(" ");
-            if (type != null) {
+            if (typeDef != null) {
                 sb.Append("at ");
                 if (qualifiedTypeErrors) {
-                    sb.Append(type.@namespace);
+                    sb.Append(typeDef.@namespace);
                     sb.Append('.');
                 }
-                sb.Append(type.name);
+                sb.Append(typeDef.name);
                 sb.Append(" > ");
             }
             sb.Append(path);

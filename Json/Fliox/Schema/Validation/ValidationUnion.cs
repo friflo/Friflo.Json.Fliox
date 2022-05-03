@@ -25,25 +25,25 @@ namespace Friflo.Json.Fliox.Schema.Validation
             types               = new UnionItem[union.types.Count];
         }
 
-        internal void SetUnionTypes(Dictionary<TypeDef, ValidationType> typeMap) {
+        internal void SetUnionTypes(Dictionary<TypeDef, ValidationTypeDef> typeMap) {
             int n = 0;
             foreach (var unionItem in unionType.types) {
-                ValidationType validationType = typeMap[unionItem.typeDef];
+                ValidationTypeDef validationType = typeMap[unionItem.typeDef];
                 var item = new UnionItem(unionItem.discriminant, unionItem.discriminantUtf8, validationType);
                 types[n++] = item;
             }
             TypesAsString       = GetTypesAsString();
         }
         
-        internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
+        internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationTypeDef typeDef) {
             var types = union.types;
             for (int n = 0; n < types.Length; n++) {
                 if (types[n].discriminant.IsEqual(ref discriminant)) {
-                    type    = types[n].type;
+                    typeDef    = types[n].type;
                     return true;
                 }
             }
-            type    = null;
+            typeDef    = null;
             return false;
         }
         
@@ -67,13 +67,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
     
     internal readonly struct UnionItem
     {
-        internal  readonly  string          discriminantStr;
-        internal  readonly  Utf8String      discriminant;
-        internal  readonly  ValidationType  type;
+        internal  readonly  string              discriminantStr;
+        internal  readonly  Utf8String          discriminant;
+        internal  readonly  ValidationTypeDef   type;
 
-        public    override  string          ToString() => discriminantStr;
+        public    override  string              ToString() => discriminantStr;
 
-        internal UnionItem (string discriminant, in Utf8String discriminantUtf8, ValidationType type) {
+        internal UnionItem (string discriminant, in Utf8String discriminantUtf8, ValidationTypeDef type) {
             discriminantStr     = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
             this.discriminant   = discriminantUtf8;
             this.type           = type;

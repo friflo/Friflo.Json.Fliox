@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// Similar to <see cref="Definition.TypeDef"/> but operates on byte arrays instead of strings to gain
     /// performance.
     /// </summary>
-    public sealed class ValidationType  {
+    public sealed class ValidationTypeDef  {
         public    readonly  string              name;
         public    readonly  string              @namespace;
         
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public              IEnumerable<ValidationField>    Fields      => fields;
         public   override   string                          ToString()  => qualifiedName;
         
-        internal ValidationType (TypeId typeId, string typeName, TypeDef typeDef) {
+        internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef) {
             this.typeId         = typeId;
             this.typeDef        = typeDef;
             this.name           = typeName;
@@ -63,11 +63,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.qualifiedName  = $"{@namespace}.{name}";
         }
         
-        private ValidationType (TypeDef typeDef, UnionType union)               : this (TypeId.Union, typeDef.Name, typeDef) {
+        private ValidationTypeDef (TypeDef typeDef, UnionType union)               : this (TypeId.Union, typeDef.Name, typeDef) {
             unionType       = new ValidationUnion(union);
         }
         
-        private ValidationType (TypeDef typeDef, IReadOnlyList<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef.Name, typeDef) {
+        private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef.Name, typeDef) {
             int requiredCount = 0;
             foreach (var field in fieldDefs) {
                 if (field.required)
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        private ValidationType (TypeDef typeDef, IReadOnlyList<EnumValue> typeEnums) : this (TypeId.Enum, typeDef.Name, typeDef) {
+        private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<EnumValue> typeEnums) : this (TypeId.Enum, typeDef.Name, typeDef) {
             enumValues = new Utf8String[typeEnums.Count];
             int n = 0;
             foreach (var enumValue in typeEnums) {
@@ -95,32 +95,32 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
 
-        internal static ValidationType Create (TypeDef typeDef) {
+        internal static ValidationTypeDef Create (TypeDef typeDef) {
             var union = typeDef.UnionType;
             if (union != null) {
-                return new ValidationType(typeDef, union);
+                return new ValidationTypeDef(typeDef, union);
             }
             if (typeDef.IsClass) {
-                return new ValidationType(typeDef, typeDef.Fields);
+                return new ValidationTypeDef(typeDef, typeDef.Fields);
             }
             if (typeDef.IsEnum) {
-                return new ValidationType(typeDef, typeDef.EnumValues);
+                return new ValidationTypeDef(typeDef, typeDef.EnumValues);
             }
             return null;
         }
         
-        internal static string GetName (ValidationType type, bool qualified) {
-            var typeId = type.typeId; 
+        internal static string GetName (ValidationTypeDef typeDef, bool qualified) {
+            var typeId = typeDef.typeId; 
             if (typeId == TypeId.Class || typeId == TypeId.Union|| typeId == TypeId.Enum) {
                 if (qualified) {
-                    return type.qualifiedName;
+                    return typeDef.qualifiedName;
                 }
-                return type.name;
+                return typeDef.name;
             }
-            return type.name;
+            return typeDef.name;
         }
 
-        internal void SetFields(Dictionary<TypeDef, ValidationType> typeMap) {
+        internal void SetFields(Dictionary<TypeDef, ValidationTypeDef> typeMap) {
             if (fields != null) {
                 foreach (var field in fields) {
                     var fieldType   = typeMap[field.typeDef];
@@ -130,19 +130,19 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        internal static bool FindEnum (ValidationType type, ref Bytes value, TypeValidator validator, ValidationType parent) {
-            var enumValues = type.enumValues;
+        internal static bool FindEnum (ValidationTypeDef typeDef, ref Bytes value, TypeValidator validator, ValidationTypeDef parent) {
+            var enumValues = typeDef.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
                 if (enumValues[n].IsEqual(ref value)) {
                     return true;
                 }
             }
-            return validator.ErrorType("Invalid enum value.", value.AsString(), true, type.name, type.@namespace, parent);
+            return validator.ErrorType("Invalid enum value.", value.AsString(), true, typeDef.name, typeDef.@namespace, parent);
         }
         
-        internal static bool FindField (ValidationType type, TypeValidator validator, out ValidationField field, bool[] foundFields) {
+        internal static bool FindField (ValidationTypeDef typeDef, TypeValidator validator, out ValidationField field, bool[] foundFields) {
             ref var parser = ref validator.parser;
-            foreach (var typeField in type.fields) {
+            foreach (var typeField in typeDef.fields) {
                 if (!typeField.name.IsEqual(ref parser.key))
                     continue;
                 field   = typeField;
@@ -153,12 +153,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 var ev = parser.Event; 
                 if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
                     var value       = GetValue(ref parser, out bool isString);
-                    validator.ErrorType("Incorrect type.", value, isString, field.typeName, field.type.@namespace, type);
+                    validator.ErrorType("Incorrect type.", value, isString, field.typeName, field.type.@namespace, typeDef);
                     return false;
                 }
                 return true;
             }
-            validator.ErrorValue("Unknown property:", parser.key.AsString(), true, type);
+            validator.ErrorValue("Unknown property:", parser.key.AsString(), true, typeDef);
             field = null;
             return false;
         }

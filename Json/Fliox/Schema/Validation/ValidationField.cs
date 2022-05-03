@@ -8,22 +8,22 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     // could by a struct 
     public sealed class ValidationField  {
-        public    readonly  string          fieldName;
-        internal  readonly  Utf8String      name;
-        public    readonly  bool            required;
-        public    readonly  bool            isArray;
-        public    readonly  bool            isDictionary;
-        public    readonly  bool            isNullableElement;  
-        public    readonly  int             requiredPos;
-        public              ValidationType  Type => type;
+        public    readonly  string              fieldName;
+        internal  readonly  Utf8String          name;
+        public    readonly  bool                required;
+        public    readonly  bool                isArray;
+        public    readonly  bool                isDictionary;
+        public    readonly  bool                isNullableElement;  
+        public    readonly  int                 requiredPos;
+        public              ValidationTypeDef   TypeDef => type;
     
         // --- internal
-        internal            ValidationType  type;
-        internal            TypeId          typeId;
-        internal readonly   TypeDef         typeDef;
-        internal readonly   string          typeName;
+        internal            ValidationTypeDef   type;
+        internal            TypeId              typeId;
+        internal readonly   TypeDef             typeDef;
+        internal readonly   string              typeName;
 
-        public  override    string          ToString() => fieldName;
+        public  override    string              ToString() => fieldName;
         
         internal ValidationField(FieldDef fieldDef, int requiredPos) {
             typeDef             = fieldDef.type;
