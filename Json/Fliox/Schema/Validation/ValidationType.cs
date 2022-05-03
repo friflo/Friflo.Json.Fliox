@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
@@ -204,109 +203,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
             sb.Append(']');
             return true;
-        }
-    }
-    
-    // could by a struct 
-    public sealed class ValidationField  {
-        public    readonly  string          fieldName;
-        internal  readonly  Utf8String      name;
-        public    readonly  bool            required;
-        public    readonly  bool            isArray;
-        public    readonly  bool            isDictionary;
-        public    readonly  bool            isNullableElement;  
-        public    readonly  int             requiredPos;
-        public              ValidationType  Type => type;
-    
-        // --- internal
-        internal            ValidationType  type;
-        internal            TypeId          typeId;
-        internal readonly   TypeDef         typeDef;
-        internal readonly   string          typeName;
-
-        public  override    string          ToString() => fieldName;
-        
-        internal ValidationField(FieldDef fieldDef, int requiredPos) {
-            typeDef             = fieldDef.type;
-            typeName            = fieldDef.isArray ? $"{typeDef.Name}[]" : typeDef.Name; 
-            fieldName           = fieldDef.name;
-            name                = fieldDef.nameUtf8;
-            required            = fieldDef.required;
-            isArray             = fieldDef.isArray;
-            isDictionary        = fieldDef.isDictionary;
-            isNullableElement   = fieldDef.isNullableElement;
-            this.requiredPos    = requiredPos;
-        }
-    }
-
-    internal sealed class ValidationUnion  {
-        private   readonly  UnionType   unionType;
-        public    readonly  string      discriminatorStr;
-        internal  readonly  Utf8String  discriminator;
-        private   readonly  UnionItem[] types;
-        public              string      TypesAsString { get; private set; }
-
-        public   override   string      ToString()      => discriminatorStr;
-
-        public ValidationUnion(UnionType union) {
-            unionType           = union;
-            discriminatorStr    = $"'{union.discriminator}'";
-            discriminator       = union.discriminatorUtf8;
-            types               = new UnionItem[union.types.Count];
-        }
-
-        internal void SetUnionTypes(Dictionary<TypeDef, ValidationType> typeMap) {
-            int n = 0;
-            foreach (var unionItem in unionType.types) {
-                ValidationType validationType = typeMap[unionItem.typeDef];
-                var item = new UnionItem(unionItem.discriminant, unionItem.discriminantUtf8, validationType);
-                types[n++] = item;
-            }
-            TypesAsString       = GetTypesAsString();
-        }
-        
-        internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
-            var types = union.types;
-            for (int n = 0; n < types.Length; n++) {
-                if (types[n].discriminant.IsEqual(ref discriminant)) {
-                    type    = types[n].type;
-                    return true;
-                }
-            }
-            type    = null;
-            return false;
-        }
-        
-        private string GetTypesAsString() {
-            var sb = new StringBuilder();
-            bool first = true;
-            sb.Clear();
-            sb.Append('[');
-            foreach (var type in types) {
-                if (first) {
-                    first = false;
-                } else {
-                    sb.Append(", ");
-                }
-                sb.Append(type.discriminantStr);
-            }
-            sb.Append(']');
-            return sb.ToString();
-        }
-    }
-    
-    internal readonly struct UnionItem
-    {
-        internal readonly   string          discriminantStr;
-        internal readonly   Utf8String      discriminant;
-        public   readonly   ValidationType  type;
-
-        public   override   string          ToString() => discriminantStr;
-
-        public UnionItem (string discriminant, in Utf8String discriminantUtf8, ValidationType type) {
-            discriminantStr     = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
-            this.discriminant   = discriminantUtf8;
-            this.type           = type;
         }
     }
 }
