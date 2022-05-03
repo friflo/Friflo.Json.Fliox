@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public bool ValidateField (JsonValue json, ValidationField field, out string error) {
             Init(json);
             var ev      = parser.NextEvent();
-            var type    = field.type;
+            var type    = field.typeDef;
             switch (ev) {
                 case JsonEvent.ValueNull:
                     if (field.required) {
@@ -174,21 +174,21 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     case JsonEvent.ValueString:
                         if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
-                        if (ValidateString (ref parser.value, field.type, typeDef))
+                        if (ValidateString (ref parser.value, field.typeDef, typeDef))
                             continue;
                         return false;
                         
                     case JsonEvent.ValueNumber:
                         if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
-                        if (ValidateNumber(field.type, typeDef))
+                        if (ValidateNumber(field.typeDef, typeDef))
                             continue;
                         return false;
                         
                     case JsonEvent.ValueBool:
                         if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
-                        if (ValidateBoolean(field.type, typeDef))
+                        if (ValidateBoolean(field.typeDef, typeDef))
                             continue;
                         return false;
                     
@@ -203,11 +203,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
                             return false;
                         if (field.isArray) {
-                            if (ValidateElement (field.type, field.isNullableElement, typeDef, depth))
+                            if (ValidateElement (field.typeDef, field.isNullableElement, typeDef, depth))
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "array", false, field.typeName, field.type.@namespace, typeDef);
+                        return ErrorType("Incorrect type.", "array", false, field.typeName, field.typeDef.@namespace, typeDef);
                     
                     case JsonEvent.ObjectStart:
                         if (!ValidationTypeDef.FindField(typeDef, this, out field, foundFields))
@@ -217,16 +217,16 @@ namespace Friflo.Json.Fliox.Schema.Validation
                             continue;
                         }
                         if (field.isDictionary) {
-                            if (ValidateElement (field.type, field.isNullableElement, typeDef, depth))
+                            if (ValidateElement (field.typeDef, field.isNullableElement, typeDef, depth))
                                 continue;
                             return false;
                         }
                         if (field.typeId == TypeId.Class || field.typeId == TypeId.Union) {
-                            if (ValidateObjectIntern (field.type, depth + 1))
+                            if (ValidateObjectIntern (field.typeDef, depth + 1))
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "object", false, field.typeName, field.type.@namespace, typeDef);
+                        return ErrorType("Incorrect type.", "object", false, field.typeName, field.typeDef.@namespace, typeDef);
                     
                     case JsonEvent.ObjectEnd:
                         if (typeDef.HasMissingFields(foundFields, sb)) {

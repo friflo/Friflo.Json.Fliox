@@ -123,8 +123,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal void SetFields(Dictionary<TypeDef, ValidationTypeDef> typeMap) {
             if (fields != null) {
                 foreach (var field in fields) {
-                    var fieldType   = typeMap[field.typeDef];
-                    field.type      = fieldType;
+                    var fieldType   = typeMap[field.type];
+                    field.typeDef   = fieldType;
                     field.typeId    = fieldType.typeId;
                 }
             }
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 var ev = parser.Event; 
                 if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
                     var value       = GetValue(ref parser, out bool isString);
-                    validator.ErrorType("Incorrect type.", value, isString, field.typeName, field.type.@namespace, typeDef);
+                    validator.ErrorType("Incorrect type.", value, isString, field.typeName, field.typeDef.@namespace, typeDef);
                     return false;
                 }
                 return true;

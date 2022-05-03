@@ -15,19 +15,19 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public    readonly  bool                isDictionary;
         public    readonly  bool                isNullableElement;  
         public    readonly  int                 requiredPos;
-        public              ValidationTypeDef   TypeDef => type;
+        public              ValidationTypeDef   TypeDef => typeDef;
     
         // --- internal
-        internal            ValidationTypeDef   type;
+        internal            ValidationTypeDef   typeDef;
         internal            TypeId              typeId;
-        internal readonly   TypeDef             typeDef;
+        internal readonly   TypeDef             type;
         internal readonly   string              typeName;
 
         public  override    string              ToString() => fieldName;
         
         internal ValidationField(FieldDef fieldDef, int requiredPos) {
-            typeDef             = fieldDef.type;
-            typeName            = fieldDef.isArray ? $"{typeDef.Name}[]" : typeDef.Name; 
+            type                = fieldDef.type;
+            typeName            = fieldDef.isArray ? $"{type.Name}[]" : type.Name; 
             fieldName           = fieldDef.name;
             name                = fieldDef.nameUtf8;
             required            = fieldDef.required;

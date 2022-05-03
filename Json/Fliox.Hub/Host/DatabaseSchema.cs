@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             ref List<EntityError>   validationErrors
         ) {
             EntityContainer.AssertEntityCounts(entityKeys, entities);
-            if (!containerTypes.TryGetValue(container, out ValidationTypeDef type)) {
+            if (!containerTypes.TryGetValue(container, out ValidationTypeDef typeDef)) {
                 return $"No Schema definition for container Type: {container}";
             }
             using (var pooled = executeContext.pool.TypeValidator.Get()) {
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
                     // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                    if (!validator.ValidateObject(entity, type, out string error)) {
+                    if (!validator.ValidateObject(entity, typeDef, out string error)) {
                         var key = entityKeys[n];
                         if (validationErrors == null) {
                             validationErrors = new List<EntityError>();
