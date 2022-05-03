@@ -5,20 +5,20 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
-    public readonly struct ValidationError
+    internal readonly struct ValidationError
     {
-        public  readonly    string          msg;
-        public  readonly    string          value;
-        public  readonly    bool            isString;
-        public  readonly    string          expect;
-        public  readonly    string          expectNamespace;
-        public  readonly    ValidationType  type;
-        public  readonly    string          path;
-        public  readonly    int             pos;
+        public   readonly   string          msg;
+        private  readonly   string          value;
+        private  readonly   bool            isString;
+        private  readonly   string          expect;
+        private  readonly   string          expectNamespace;
+        private  readonly   ValidationType  type;
+        private  readonly   string          path;
+        private  readonly   int             pos;
 
         public  override    string          ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
 
-        public ValidationError (string msg, string value, bool isString, string expect, string expectNamespace, ValidationType type, string path, int pos) {
+        internal ValidationError (string msg, string value, bool isString, string expect, string expectNamespace, ValidationType type, string path, int pos) {
             this.msg            = msg;
             this.value          = value;
             this.isString       = isString;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.pos            = pos;
         }
         
-        public ValidationError (string msg, string value, bool isString, ValidationType type, string path, int pos) {
+        internal ValidationError (string msg, string value, bool isString, ValidationType type, string path, int pos) {
             this.msg            = msg;
             this.value          = value;
             this.isString       = isString;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.pos            = pos;
         }
         
-        public string AsString (StringBuilder sb, bool qualifiedTypeErrors) {
+        internal string AsString (StringBuilder sb, bool qualifiedTypeErrors) {
             sb.Clear();
             sb.Append(msg);
             if (value != null) {

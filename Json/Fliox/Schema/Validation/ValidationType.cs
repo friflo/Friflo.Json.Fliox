@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
-    public enum TypeId
+    internal enum TypeId
     {
         None,
         // --- object types
@@ -39,21 +39,22 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// performance.
     /// </summary>
     public sealed class ValidationType  {
+        public    readonly  string              name;
+        public    readonly  string              @namespace;
+        
+        // --- intern / private
         // ReSharper disable once NotAccessedField.Local
-        private  readonly   TypeDef             typeDef;    // only for debugging
-        public   readonly   string              name;
-        private  readonly   string              qualifiedName;
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        public   readonly   string              @namespace;
-        public   readonly   TypeId              typeId;
-        private  readonly   ValidationField[]   fields;
-        public   readonly   int                 requiredFieldsCount;
-        private  readonly   ValidationField[]   requiredFields;
-        internal readonly   ValidationUnion     unionType;
-        private  readonly   Utf8String[]        enumValues;
+        private   readonly  TypeDef             typeDef;    // only for debugging
+        private   readonly  string              qualifiedName;
+        internal  readonly  TypeId              typeId;
+        private   readonly  ValidationField[]   fields;
+        internal  readonly  int                 requiredFieldsCount;
+        private   readonly  ValidationField[]   requiredFields;
+        internal  readonly  ValidationUnion     unionType;
+        private   readonly  Utf8String[]        enumValues;
         
         public              IEnumerable<ValidationField>    Fields      => fields;
-        public  override    string                          ToString()  => qualifiedName;
+        public   override   string                          ToString()  => qualifiedName;
         
         internal ValidationType (TypeId typeId, string typeName, TypeDef typeDef) {
             this.typeId         = typeId;
