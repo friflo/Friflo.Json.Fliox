@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DemoHub - HttpListener" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/DemoHub/.bin/Debug/netcoreapp3.1/Friflo.Json.Fliox.DemoHub.exe" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/DemoHub/.bin/Debug/netcoreapp3.1/Fliox.DemoHub.exe" />
     <option name="PROGRAM_PARAMETERS" value="HttpListener" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DemoHub" />
     <option name="PASS_PARENT_ENVS" value="1" />
