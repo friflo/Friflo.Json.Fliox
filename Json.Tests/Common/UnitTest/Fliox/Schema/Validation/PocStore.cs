@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
@@ -38,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var nativeSchema = NativeTypeSchema.Create(typeof(PocStore)))
+            var nativeSchema = NativeTypeSchema.Create(typeof(PocStore));
             using (var validator    = new TypeValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
                 var validationSet   = new ValidationSet(nativeSchema);
                 validator.qualifiedTypeErrors = false; // ensure API available

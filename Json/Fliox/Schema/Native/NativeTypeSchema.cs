@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Schema.Native
     /// <see cref="NativeTypeSchema"/> is used to create an immutable <see cref="TypeSchema"/> instance
     /// from a C# .NET <see cref="Type"/> passed to its constructor <see cref="NativeTypeSchema(Type)"/>
     /// </summary>
-    public sealed class NativeTypeSchema : TypeSchema, IDisposable
+    public sealed class NativeTypeSchema : TypeSchema
     {
         public   override   IReadOnlyList<TypeDef>  Types           { get; }
         public   override   StandardTypes           StandardTypes   { get; }
@@ -184,8 +184,6 @@ namespace Friflo.Json.Fliox.Schema.Native
             Types = OrderTypes(RootType, types);
           }
         }
-        
-        public void Dispose() { }
         
         private void AddMessages(NativeTypeDef typeDef, MessageInfo[] messageInfos) {
             if (messageInfos == null || messageInfos.Length == 0)

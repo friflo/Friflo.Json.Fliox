@@ -29,7 +29,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         private  readonly   FlioxHub            monitorHub;
         private  readonly   FlioxHub            hub;
         private  readonly   string              name;
-        private  readonly   NativeTypeSchema    typeSchema;     // not really required as db is readonly - but enables exposing schema
 
         public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
@@ -41,15 +40,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             this.name       = name ?? Name;
-            typeSchema      = NativeTypeSchema.Create(typeof(MonitorStore));
+            var typeSchema  = NativeTypeSchema.Create(typeof(MonitorStore));
             Schema          = new DatabaseSchema(typeSchema);
             stateDB         = new MemoryDatabase(null, MemoryType.NonConcurrent);
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
-        }
-
-        public override void Dispose() {
-            base.Dispose();
-            typeSchema.Dispose();
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {

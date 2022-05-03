@@ -89,11 +89,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (validationFields.TryGetValue(type, out var validationField))
                 return validationField;
             
-            using (var nativeSchema = NativeTypeSchema.Create(type)) {
-                var validationSet   = new ValidationSet(nativeSchema);
-                validationField     = validationSet.GetValidationField(nativeSchema, type);
-                validationFields.Add(type, validationField);
-            }
+            var nativeSchema    = NativeTypeSchema.Create(type);
+            var validationSet   = new ValidationSet(nativeSchema);
+            validationField     = validationSet.GetValidationField(nativeSchema, type);
+            validationFields.Add(type, validationField);
+
             return validationField;
         }
     }
