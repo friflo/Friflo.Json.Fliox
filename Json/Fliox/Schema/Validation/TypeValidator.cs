@@ -162,6 +162,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 }
                 type = newType;
             }
+            if (type.typeId != TypeId.Class) {
+                return ErrorType("Incorrect type.", "object", false, type.name, type.@namespace, type);
+            }
             var foundFields = GetFoundFields(type, foundFieldsCache, depth);
 
             while (true) {

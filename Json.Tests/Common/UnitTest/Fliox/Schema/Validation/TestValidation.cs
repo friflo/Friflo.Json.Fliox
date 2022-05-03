@@ -15,10 +15,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     public static class TestValidation
     {
         [Test]
-        public static void ValidateNullableValue() {
+        public static void ValidateArguments() {
             var intArrayArg     = CreateValidationField(typeof(int[]));
             var intArg          = CreateValidationField(typeof(int));
             var intNullArg      = CreateValidationField(typeof(int?));
+            var stringArg       = CreateValidationField(typeof(string));
 
             using (var validator = new TypeValidator()) {
                 bool success;
@@ -30,6 +31,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 success = validator.ValidateField(new JsonValue("null"), intArg, out error);
                 IsFalse(success);
                 AreEqual("expect non null value. was null", error);
+                
+                success = validator.ValidateField(new JsonValue("{}"), intArg, out error);
+                IsFalse(success);
+                AreEqual("Incorrect type. was: object, expect: int32 at int32 > (root), pos: 1", error);
+                
+                success = validator.ValidateField(new JsonValue("xxx"), intArg, out error);
+                IsFalse(success);
+                AreEqual("unexpected character while reading value. Found: x", error);
                 
                 // --- int?
                 success = validator.ValidateField(new JsonValue("456"), intNullArg, out error);
@@ -52,6 +61,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 success = validator.ValidateField(new JsonValue("[\"abc\"]"), intArrayArg, out error);
                 IsFalse(success);
                 AreEqual("Incorrect type. was: 'abc', expect: int32 [0], pos: 6", error);
+                
+                // --- string
+                success = validator.ValidateField(new JsonValue("\"xyz\""), stringArg, out error);
+                IsTrue(success);
+                
+                success = validator.ValidateField(new JsonValue("null"), stringArg, out error);
+                IsTrue(success);
+                
+                success = validator.ValidateField(new JsonValue("42"), stringArg, out error);
+                IsFalse(success);
+                AreEqual("Incorrect type. was: 42, expect: string (root), pos: 2", error);
             }
         }
         
