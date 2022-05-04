@@ -17,7 +17,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
     {
         private  readonly   List<ValidationTypeDef>                 types;      // todo rename -> typeDefs
         private  readonly   Dictionary<TypeDef, ValidationTypeDef>  typeMap;    // todo rename -> typeDefMap
-        private  readonly   TypeDef                                 rootType;
 
         public ValidationType GetValidationType (TypeDef typeDef) {
             if (typeMap.TryGetValue(typeDef, out var validationTypeDef))
@@ -31,7 +30,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
         /// <see cref="TypeValidator"/> to validate JSON payloads by <see cref="TypeValidator.ValidateObject"/>. 
         /// </summary>
         public ValidationSet (TypeSchema schema) {
-            rootType        = schema.RootType;
             var schemaTypes = schema.Types;
             var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
             types           = new List<ValidationTypeDef>               (typeCount);
@@ -67,18 +65,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 var union = type.unionType;
                 union?.SetUnionTypes(typeMap);
             }
-        }
-        
-        public ICollection<ValidationType>  GetEntityTypes() {
-            if (rootType == null) {
-                throw new InvalidOperationException("GetEntityTypes() requires a TypeSchema with a TypeSchema.RootType");
-            }
-            var entityTypes = new List<ValidationType>();
-            foreach (var field in rootType.Fields) {
-                var validationType = typeMap[field.type].validationType;
-                entityTypes.Add(validationType);
-            }
-            return entityTypes;
         }
         
         public ValidationType               TypeDefAsValidationType(TypeDef typeDef) => typeMap[typeDef].validationType;
