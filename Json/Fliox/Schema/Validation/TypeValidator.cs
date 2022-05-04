@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return Return(typeDef, success, out error);
                 }
                 case JsonEvent.ObjectStart: {
-                    bool success = ValidateObjectIntern(typeDef, 0);    
+                    bool success = ValidateObjectIntern(typeDef, 0);
                     return Return(typeDef, success, out error);
                 }
                 case JsonEvent.ArrayStart: {
@@ -115,9 +115,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
             throw new InvalidOperationException($"Unexpected JSON event: {ev}");
         }
         
-        public bool ValidateObject (JsonValue json, ValidationTypeDef typeDef, out string error) {
+        public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
+            var typeDef = type.typeDef;
             if (ev == JsonEvent.ObjectStart) {
                 bool success = ValidateObjectIntern(typeDef, 0);
                 return Return(typeDef, success, out error);    
@@ -125,9 +126,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(typeDef, "expect object. was:", out error);
         }
         
-        public bool ValidateObjectMap (JsonValue json, ValidationTypeDef typeDef, out string error) {
+        public bool ValidateObjectMap (JsonValue json, ValidationType type, out string error) {
             Init(json);
-            var ev = parser.NextEvent();
+            var ev      = parser.NextEvent();
+            var typeDef = type.typeDef;
             if (ev == JsonEvent.ObjectStart) {
                 bool success = ValidateElement(typeDef, false, null, 0);
                 return Return(typeDef, success, out error);    
@@ -135,9 +137,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(typeDef, "expect object. was:", out error);
         }
         
-        public bool ValidateArray (JsonValue json, ValidationTypeDef typeDef, out string error) {
+        public bool ValidateArray (JsonValue json, ValidationType type, out string error) {
             Init(json);
-            var ev = parser.NextEvent();
+            var ev      = parser.NextEvent();
+            var typeDef = type.typeDef;
             if (ev == JsonEvent.ArrayStart) {
                 bool success = ValidateElement(typeDef, false, null, 0);
                 return Return(typeDef, success, out error);    

@@ -16,10 +16,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     {
         [Test]
         public static void ValidateArguments() {
-            var intArrayArg     = CreateValidationField(typeof(int[]));
-            var intArg          = CreateValidationField(typeof(int));
-            var intNullArg      = CreateValidationField(typeof(int?));
-            var stringArg       = CreateValidationField(typeof(string));
+            var intArrayArg     = CreateValidationType(typeof(int[]));
+            var intArg          = CreateValidationType(typeof(int));
+            var intNullArg      = CreateValidationType(typeof(int?));
+            var stringArg       = CreateValidationType(typeof(string));
 
             using (var validator = new TypeValidator()) {
                 bool success;
@@ -75,11 +75,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             }
         }
         
-        private static ValidationType CreateValidationField(Type type) {
+        private static ValidationType CreateValidationType(Type type) {
             var schema          = NativeTypeSchema.Create(type);
             var validationSet   = new ValidationSet(schema);
-            var field           = validationSet.GetValidationField(schema, type);
-            return field;
+            var validationType  = validationSet.GetValidationType(schema, type);
+            return validationType;
         }
     }
 }

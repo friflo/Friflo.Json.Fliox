@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
@@ -37,13 +38,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// Similar to <see cref="Definition.TypeDef"/> but operates on byte arrays instead of strings to gain
     /// performance.
     /// </summary>
-    public sealed class ValidationTypeDef  {
-        public    readonly  string              name;
-        public    readonly  string              @namespace;
+    internal sealed class ValidationTypeDef  {
+        internal  readonly  string              name;
+        internal  readonly  string              @namespace;
         
         // --- intern / private
-        // ReSharper disable once NotAccessedField.Local
-        private   readonly  TypeDef             typeDef;    // only for debugging
+
+        internal  readonly  TypeDef             typeDef;    // only for debugging
         private   readonly  string              qualifiedName;
         internal  readonly  TypeId              typeId;
         private   readonly  ValidationType[]    fields;
@@ -51,9 +52,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private   readonly  ValidationType[]    requiredFields;
         internal  readonly  ValidationUnion     unionType;
         private   readonly  Utf8String[]        enumValues;
+        internal  readonly  ValidationType      validationType;
         
-        public              IEnumerable<ValidationType> Fields      => fields;
-        public   override   string                      ToString()  => qualifiedName;
+        internal            IEnumerable<ValidationType> Fields      => fields;
+        public    override  string                      ToString()  => qualifiedName;
         
         internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef) {
             this.typeId         = typeId;
@@ -61,6 +63,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.name           = typeName;
             this.@namespace     = typeDef.Namespace;
             this.qualifiedName  = $"{@namespace}.{name}";
+            validationType      = new ValidationType(this);
         }
         
         private ValidationTypeDef (TypeDef typeDef, UnionType union)               : this (TypeId.Union, typeDef.Name, typeDef) {
@@ -79,11 +82,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
             int n = 0;
             int requiredPos = 0;
             foreach (var field in fieldDefs) {
-                var reqPos = field.required ? requiredPos++ : -1;
-                var validationField = new ValidationType(field, reqPos);
-                fields[n++] = validationField;
+                var reqPos      = field.required ? requiredPos++ : -1;
+                var fieldType   = new ValidationType(field, reqPos);
+                fields[n++] = fieldType;
                 if (reqPos >= 0)
-                    requiredFields[reqPos] = validationField;
+                    requiredFields[reqPos] = fieldType;
             }
         }
         
@@ -126,6 +129,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     var fieldType   = typeMap[field.type];
                     field.typeDef   = fieldType;
                     field.typeId    = fieldType.typeId;
+                    if (fieldType.typeId == TypeId.None) throw new InvalidOperationException("TypeId.None");
                 }
             }
         }

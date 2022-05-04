@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var filterValidation    = sharedCache.GetValidationType(typeof(FilterOperation));
             using (var pooled = context.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
-                var filter = CreateFilter(context, queryParams, mapper, filterValidation.TypeDef);
+                var filter = CreateFilter(context, queryParams, mapper, filterValidation);
                 if (filter == null)
                     return new JsonValue();
                 var filterJson = mapper.writer.Write(filter);
@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private static FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams, ObjectMapper mapper, ValidationTypeDef filterValidation) {
+        private static FilterOperation CreateFilter(RequestContext context, NameValueCollection queryParams, ObjectMapper mapper, ValidationType filterValidation) {
             // --- handle filter expression
             var filter = queryParams["filter"];
             if (filter != null) {

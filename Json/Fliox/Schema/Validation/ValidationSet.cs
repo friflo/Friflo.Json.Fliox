@@ -15,13 +15,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// </summary>
     public sealed class ValidationSet
     {
-        private  readonly   List<ValidationTypeDef>                 types;
-        private  readonly   Dictionary<TypeDef, ValidationTypeDef>  typeMap;
+        private  readonly   List<ValidationTypeDef>                 types;      // todo rename -> typeDefs
+        private  readonly   Dictionary<TypeDef, ValidationTypeDef>  typeMap;    // todo rename -> typeDefMap
         private  readonly   TypeDef                                 rootType;
 
-        public ValidationTypeDef GetValidationType (TypeDef typeDef) {
-            if (typeMap.TryGetValue(typeDef, out var validationType))
-                return validationType;
+        public ValidationType GetValidationType (TypeDef typeDef) {
+            if (typeMap.TryGetValue(typeDef, out var validationTypeDef))
+                return validationTypeDef.validationType;
             return null;
         }
         
@@ -34,8 +34,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
             rootType        = schema.RootType;
             var schemaTypes = schema.Types;
             var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
-            types           = new List<ValidationTypeDef>                  (typeCount);
-            typeMap         = new Dictionary<TypeDef, ValidationTypeDef>   (typeCount);
+            types           = new List<ValidationTypeDef>               (typeCount);
+            typeMap         = new Dictionary<TypeDef,ValidationTypeDef> (typeCount);
             
             var standardType = schema.StandardTypes;
             AddStandardType(TypeId.Boolean,     standardType.Boolean);
@@ -69,22 +69,22 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        public ICollection<ValidationTypeDef>  GetEntityTypes() {
+        public ICollection<ValidationType>  GetEntityTypes() {
             if (rootType == null) {
                 throw new InvalidOperationException("GetEntityTypes() requires a TypeSchema with a TypeSchema.RootType");
             }
-            var entityTypes = new List<ValidationTypeDef>();
+            var entityTypes = new List<ValidationType>();
             foreach (var field in rootType.Fields) {
-                var validationType = typeMap[field.type];
+                var validationType = typeMap[field.type].validationType;
                 entityTypes.Add(validationType);
             }
             return entityTypes;
         }
         
-        public ValidationTypeDef               TypeDefAsValidationType(TypeDef typeDef) => typeMap[typeDef];
+        public ValidationType               TypeDefAsValidationType(TypeDef typeDef) => typeMap[typeDef].validationType;
 
-        public ICollection<ValidationTypeDef>  TypeDefsAsValidationTypes(ICollection<TypeDef> types) {
-            var list = new List<ValidationTypeDef>(this.types.Count);
+        public ICollection<ValidationType>  TypeDefsAsValidationTypes(ICollection<TypeDef> types) {
+            var list = new List<ValidationType>(this.types.Count);
             foreach (var typeDef in types) {
                 var validationType = TypeDefAsValidationType(typeDef);
                 list.Add(validationType);
@@ -95,8 +95,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private void AddStandardType (TypeId typeId, TypeDef typeDef) {
             if (typeDef == null)
                 return;
-            var typeName = GetTypeName(typeId);
-            var validationTypeDef = new ValidationTypeDef(typeId, typeName, typeDef);
+            var typeName            = GetTypeName(typeId);
+            var validationTypeDef   = new ValidationTypeDef(typeId, typeName, typeDef);
             types.Add(validationTypeDef);
             typeMap.Add(typeDef, validationTypeDef);
         }
@@ -122,19 +122,19 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        public ValidationType  GetValidationField(NativeTypeSchema nativeSchema, Type type) {
-            var attr                = nativeSchema.GetArgAttributes(type);
-            var typeDef             = attr.typeDef;
-            var fieldDef            = new FieldDef("param", attr.required, false, false, typeDef, attr.isArray, attr.isDictionary, false, null, null, null, nativeSchema.Utf8Buffer);
-            var validationField     = new ValidationType(fieldDef, -1);
+        public ValidationType  GetValidationType(NativeTypeSchema nativeSchema, Type type) {
+            var attr            = nativeSchema.GetArgAttributes(type);
+            var typeDef         = attr.typeDef;
+            var fieldDef        = new FieldDef("param", attr.required, false, false, typeDef, attr.isArray, attr.isDictionary, false, null, null, null, nativeSchema.Utf8Buffer);
+            var validationType  = new ValidationType(fieldDef, -1);
             if (attr.isArray || attr.isDictionary) {
                 var elementMapper       = typeDef.mapper.GetElementMapper();
                 var elementTypeDef      = nativeSchema.GetArgAttributes(elementMapper.type);
-                validationField.typeDef = TypeDefAsValidationType(elementTypeDef.typeDef);
+                validationType.typeDef = typeMap[elementTypeDef.typeDef];
             } else {
-                validationField.typeDef = TypeDefAsValidationType(typeDef);
+                validationType.typeDef = typeMap[typeDef];
             }
-            return validationField;
+            return validationType;
         }
     }
 }

@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         }
         
         private class TestTypes {
-            internal    ValidationTypeDef  guidEntityType;
+            internal    ValidationType  guidEntityType;
         }
     }
 }
