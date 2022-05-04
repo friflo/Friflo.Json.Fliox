@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     internal readonly struct ValidationError
     {
-        public   readonly   string              msg;
+        internal readonly   string              msg;
         private  readonly   string              value;
         private  readonly   bool                isString;
         private  readonly   string              expect;

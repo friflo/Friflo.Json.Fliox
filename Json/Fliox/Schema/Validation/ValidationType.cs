@@ -11,11 +11,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
     public sealed class ValidationType  {
         public    readonly  string                      fieldName;
         internal  readonly  Utf8String                  name;
-        public    readonly  bool                        required;
-        public    readonly  bool                        isArray;
-        public    readonly  bool                        isDictionary;
-        public    readonly  bool                        isNullableElement;  
-        public    readonly  int                         requiredPos;
+        internal  readonly  bool                        required;
+        internal  readonly  bool                        isArray;
+        internal  readonly  bool                        isDictionary;
+        internal  readonly  bool                        isNullableElement;  
+        internal  readonly  int                         requiredPos;
         public              IEnumerable<ValidationType> Fields  => typeDef.Fields;
     
         // --- internal
