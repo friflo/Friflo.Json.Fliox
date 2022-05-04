@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        public ValidationType  GetValidationType(NativeTypeSchema nativeSchema, Type type) {
+        internal ValidationType  GetValidationType(NativeTypeSchema nativeSchema, Type type) {
             var attr            = nativeSchema.GetArgAttributes(type);
             var typeDef         = attr.typeDef;
             var fieldDef        = new FieldDef("param", attr.required, false, false, typeDef, attr.isArray, attr.isDictionary, false, null, null, null, nativeSchema.Utf8Buffer);

@@ -1,9 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -16,10 +14,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     {
         [Test]
         public static void ValidateArguments() {
-            var intArrayArg     = CreateValidationType(typeof(int[]));
-            var intArg          = CreateValidationType(typeof(int));
-            var intNullArg      = CreateValidationType(typeof(int?));
-            var stringArg       = CreateValidationType(typeof(string));
+            var validationSet   = new NativeValidationSet();
+            var intArrayArg     = validationSet.GetValidationType(typeof(int[]));
+            var intArg          = validationSet.GetValidationType(typeof(int));
+            var intNullArg      = validationSet.GetValidationType(typeof(int?));
+            var stringArg       = validationSet.GetValidationType(typeof(string));
 
             using (var validator = new TypeValidator()) {
                 bool success;
@@ -73,13 +72,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 IsFalse(success);
                 AreEqual("Incorrect type. was: 42, expect: string (root), pos: 2", error);
             }
-        }
-        
-        private static ValidationType CreateValidationType(Type type) {
-            var schema          = NativeTypeSchema.Create(type);
-            var validationSet   = new ValidationSet(schema);
-            var validationType  = validationSet.GetValidationType(schema, type);
-            return validationType;
         }
     }
 }

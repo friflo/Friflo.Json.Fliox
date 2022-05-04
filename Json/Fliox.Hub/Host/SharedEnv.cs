@@ -2,11 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
 
 // ReSharper disable ConvertToAutoProperty
@@ -82,19 +80,11 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     internal sealed class SharedCache
     {
-        private readonly    Dictionary<Type, ValidationType> validationTypes = new Dictionary<Type, ValidationType>();
+        private readonly    NativeValidationSet validationTypes = new NativeValidationSet();
         
         /// <summary> Return an immutable <see cref="ValidationType"/> instance for the given <param name="type"></param></summary>
         public ValidationType GetValidationType(Type type) {
-            if (validationTypes.TryGetValue(type, out var validationType))
-                return validationType;
-            
-            var nativeSchema    = NativeTypeSchema.Create(type);
-            var validationSet   = new ValidationSet(nativeSchema);
-            validationType      = validationSet.GetValidationType(nativeSchema, type);
-            validationTypes.Add(type, validationType);
-
-            return validationType;
+            return validationTypes.GetValidationType(type);
         }
     }
 }
