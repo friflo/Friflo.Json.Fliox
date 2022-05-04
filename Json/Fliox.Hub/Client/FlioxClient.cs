@@ -88,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, this, eventTarget);
             std     = new StdCommands  (this);
+            hub.sharedEnv.sharedCache.AddRootType(GetType());
         }
         
         public virtual void Dispose() {

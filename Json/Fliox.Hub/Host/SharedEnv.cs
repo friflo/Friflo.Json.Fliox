@@ -86,5 +86,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         public ValidationType GetValidationType(Type type) {
             return validationTypes.GetValidationType(type);
         }
+        
+        internal void AddRootType(Type rootType) {
+            validationTypes.AddRootType(rootType);
+        }
     }
 }

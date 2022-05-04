@@ -16,6 +16,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
     {
         private  readonly   List<ValidationTypeDef>                 types;      // todo rename -> typeDefs
         private  readonly   Dictionary<TypeDef, ValidationTypeDef>  typeMap;    // todo rename -> typeDefMap
+        
+        internal            IEnumerable<ValidationTypeDef>          TypeDefs => types;
 
         public ValidationType GetValidationType (TypeDef typeDef) {
             if (typeMap.TryGetValue(typeDef, out var validationTypeDef))

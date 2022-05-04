@@ -10,68 +10,84 @@ using static NUnit.Framework.Assert;
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
 {
-    public static class TestValidation
+    public class TestValidation
     {
+        private             TypeValidator       validator;
+        private   readonly  NativeValidationSet validationSet   = new NativeValidationSet();
+        private             bool                success;
+        private             string              error;
+        
+        [OneTimeSetUp]
+        public void  Init() {
+            validator = new TypeValidator();
+        }
+        [OneTimeTearDown]
+        public void  Dispose() {
+            validator.Dispose();
+        }
+        
         [Test]
-        public static void ValidateArguments() {
-            var validationSet   = new NativeValidationSet();
-            var intArrayArg     = validationSet.GetValidationType(typeof(int[]));
-            var intArg          = validationSet.GetValidationType(typeof(int));
-            var intNullArg      = validationSet.GetValidationType(typeof(int?));
-            var stringArg       = validationSet.GetValidationType(typeof(string));
+        public void ValidateInt() {
+            var validation = validationSet.GetValidationType(typeof(int));
+            
+            success = validator.ValidateField(new JsonValue("123"),         validation, out error);
+            IsTrue(success);
+                
+            success = validator.ValidateField(new JsonValue("null"),        validation, out error);
+            IsFalse(success);
+            AreEqual("expect non null value. was null", error);
+                
+            success = validator.ValidateField(new JsonValue("{}"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: object, expect: int32 at int32 > (root), pos: 1", error);
+                
+            success = validator.ValidateField(new JsonValue("xxx"),         validation, out error);
+            IsFalse(success);
+            AreEqual("unexpected character while reading value. Found: x", error);
+        }
+        
+        [Test]
+        public void ValidateIntArray() {
+            var validation = validationSet.GetValidationType(typeof(int[]));
+            
+            success = validator.ValidateField(new JsonValue("[1,2,3]"),     validation, out error);
+            IsTrue(success);
+                
+            success = validator.ValidateField(new JsonValue("null"),        validation, out error);
+            IsTrue(success);
+                
+            success = validator.ValidateField(new JsonValue("[\"abc\"]"),   validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: 'abc', expect: int32 [0], pos: 6", error);
+        }
 
-            using (var validator = new TypeValidator()) {
-                bool success;
-                string error;
-                // --- int
-                success = validator.ValidateField(new JsonValue("123"), intArg, out error);
-                IsTrue(success);
+        [Test]
+        public void ValidateIntNull() {
+            var validation = validationSet.GetValidationType(typeof(int?));
+            
+            success = validator.ValidateField(new JsonValue("456"),         validation, out error);
+            IsTrue(success);
                 
-                success = validator.ValidateField(new JsonValue("null"), intArg, out error);
-                IsFalse(success);
-                AreEqual("expect non null value. was null", error);
-                
-                success = validator.ValidateField(new JsonValue("{}"), intArg, out error);
-                IsFalse(success);
-                AreEqual("Incorrect type. was: object, expect: int32 at int32 > (root), pos: 1", error);
-                
-                success = validator.ValidateField(new JsonValue("xxx"), intArg, out error);
-                IsFalse(success);
-                AreEqual("unexpected character while reading value. Found: x", error);
-                
-                // --- int?
-                success = validator.ValidateField(new JsonValue("456"), intNullArg, out error);
-                IsTrue(success);
-                
-                success = validator.ValidateField(new JsonValue("null"), intNullArg, out error);
-                IsTrue(success);
+            success = validator.ValidateField(new JsonValue("null"),        validation, out error);
+            IsTrue(success);
 
-                success = validator.ValidateField(new JsonValue("true"), intNullArg, out error);
-                IsFalse(success);
-                AreEqual("Incorrect type. was: true, expect: int32 (root), pos: 4", error);
+            success = validator.ValidateField(new JsonValue("true"),        validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: true, expect: int32 (root), pos: 4", error);
+        }
+        
+        [Test]
+        public void ValidateString() {
+            var validation       = validationSet.GetValidationType(typeof(string));
+            success = validator.ValidateField(new JsonValue("\"xyz\""),     validation, out error);
+            IsTrue(success);
                 
-                // --- int[]
-                success = validator.ValidateField(new JsonValue("[1,2,3]"), intArrayArg, out error);
-                IsTrue(success);
+            success = validator.ValidateField(new JsonValue("null"),        validation, out error);
+            IsTrue(success);
                 
-                success = validator.ValidateField(new JsonValue("null"), intArrayArg, out error);
-                IsTrue(success);
-                
-                success = validator.ValidateField(new JsonValue("[\"abc\"]"), intArrayArg, out error);
-                IsFalse(success);
-                AreEqual("Incorrect type. was: 'abc', expect: int32 [0], pos: 6", error);
-                
-                // --- string
-                success = validator.ValidateField(new JsonValue("\"xyz\""), stringArg, out error);
-                IsTrue(success);
-                
-                success = validator.ValidateField(new JsonValue("null"), stringArg, out error);
-                IsTrue(success);
-                
-                success = validator.ValidateField(new JsonValue("42"), stringArg, out error);
-                IsFalse(success);
-                AreEqual("Incorrect type. was: 42, expect: string (root), pos: 2", error);
-            }
+            success = validator.ValidateField(new JsonValue("42"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: 42, expect: string (root), pos: 2", error);
         }
     }
 }
