@@ -73,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                         GetSyncCount()  => _intern.syncCount;
         
+        [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [DebuggerBrowsable(Never)]  internal    HubLogger                   HubLogger       => _intern.hubLogger;
 
@@ -85,10 +86,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
+            type    = GetType();
             var eventTarget = new EventTarget(this);
             _intern = new ClientIntern(this, hub, database, this, eventTarget);
             std     = new StdCommands  (this);
-            hub.sharedEnv.sharedCache.AddRootType(GetType());
+            hub.sharedEnv.sharedCache.AddRootType(type);
         }
         
         public virtual void Dispose() {

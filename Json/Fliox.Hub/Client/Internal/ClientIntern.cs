@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
-            var entityInfos             = ClientEntityUtils.GetEntityInfos (client.GetType());
+            var entityInfos             = ClientEntityUtils.GetEntityInfos (client.type);
             var sharedEnv               = hub.sharedEnv;
             
             // --- readonly
@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private void InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
-            var mappers = GetEntitySetMappers (client.GetType(), entityInfos);
+            var mappers = GetEntitySetMappers (client.type, entityInfos);
             for (int n = 0; n < entityInfos.Length; n++) {
                 var entityInfo  = entityInfos[n];
                 var name        = entityInfo.container;
