@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.Definition;
-using Friflo.Json.Fliox.Schema.Native;
 
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Schema.Validation
@@ -21,6 +20,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public ValidationType GetValidationType (TypeDef typeDef) {
             if (typeMap.TryGetValue(typeDef, out var validationTypeDef))
                 return validationTypeDef.validationType;
+            return null;
+        }
+        
+        internal ValidationTypeDef GetValidationTypeDef (TypeDef typeDef) {
+            if (typeMap.TryGetValue(typeDef, out var validationTypeDef))
+                return validationTypeDef;
             return null;
         }
         
@@ -106,21 +111,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
             }
-        }
-        
-        internal ValidationType  GetValidationType(NativeTypeSchema nativeSchema, Type type) {
-            var attr            = nativeSchema.GetArgAttributes(type);
-            var typeDef         = attr.typeDef;
-            var fieldDef        = new FieldDef("param", attr.required, false, false, typeDef, attr.isArray, attr.isDictionary, false, null, null, null, nativeSchema.Utf8Buffer);
-            var validationType  = new ValidationType(fieldDef, -1);
-            if (attr.isArray || attr.isDictionary) {
-                var elementMapper       = typeDef.mapper.GetElementMapper();
-                var elementTypeDef      = nativeSchema.GetArgAttributes(elementMapper.type);
-                validationType.typeDef = typeMap[elementTypeDef.typeDef];
-            } else {
-                validationType.typeDef = typeMap[typeDef];
-            }
-            return validationType;
         }
     }
 }
