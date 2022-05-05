@@ -82,6 +82,12 @@ namespace Friflo.Json.Burst.Utils
             array = null;
         }
         
+        public void Dispose(Untracked _) {
+            if (array == null)
+                throw new InvalidOperationException("Friflo.Json.Burst.Utils.ByteList has been disposed. Mimic NativeArray behavior");
+            array = null;
+        }
+        
         public bool IsCreated() {
             return array != null;
         }

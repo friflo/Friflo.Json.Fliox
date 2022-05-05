@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
         public override void Dispose() {
             base.Dispose();
             foreach (var entry in stringToIntegral) {
-                entry.Key.value.Dispose();
+                entry.Key.value.Dispose(Untracked.Bytes);
             }
         }
 

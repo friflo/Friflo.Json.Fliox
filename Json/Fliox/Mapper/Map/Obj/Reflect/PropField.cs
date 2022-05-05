@@ -45,9 +45,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             this.key        = new JsonKey(name);
             this.jsonName   = jsonName;
             this.fieldType  = fieldType;
-            this.nameBytes  = new Bytes(jsonName);
-            firstMember     = new Bytes($"{'{'}\"{jsonName}\":");
-            subSeqMember    = new Bytes($",\"{jsonName}\":");
+            this.nameBytes  = new Bytes(jsonName,                   Untracked.Bytes);
+            firstMember     = new Bytes($"{'{'}\"{jsonName}\":",    Untracked.Bytes);
+            subSeqMember    = new Bytes($",\"{jsonName}\":",        Untracked.Bytes);
             //
             this.field      = field;
             this.property   = property;
@@ -79,9 +79,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         } }
 
         public void Dispose() {
-            subSeqMember.Dispose();
-            firstMember.Dispose();
-            nameBytes.Dispose();
+            subSeqMember.Dispose(Untracked.Bytes);
+            firstMember.Dispose(Untracked.Bytes);
+            nameBytes.Dispose(Untracked.Bytes);
         }
         
         private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect

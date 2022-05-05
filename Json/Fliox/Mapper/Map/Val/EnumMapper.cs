@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override void Dispose() {
             foreach (var key in stringToEnum.Keys)
-                key.value.Dispose();
+                key.value.Dispose(Untracked.Bytes);
         }
         
         public override  List<string>    GetEnumValues() {

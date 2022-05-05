@@ -18,21 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public static void Init() {
             SharedTypeStore.Init();
-            // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
             Shared        = new SharedEnv();
-            RegisterTypeMatcher(Shared.TypeStore);
-            RegisterTypeMatcher(JsonSerializer.DebugTypeStore);
-        }
-        
-        private static void RegisterTypeMatcher(TypeStore typeStore) {
-            // create all TypeMappers required by PocStore model classes before leak tracking of LeakTestsFixture starts.
-            typeStore.GetTypeMapper(typeof(PocStore));
-            typeStore.GetTypeMapper(typeof(PocEntity)); // todo necessary?
-            typeStore.GetTypeMapper(typeof(SimpleStore));
-            //
-            typeStore.GetTypeMapper(typeof(MonitorStore));
-            
-            SharedTypeStore.AddHostTypes(typeStore);
         }
         
         public static void Dispose() {

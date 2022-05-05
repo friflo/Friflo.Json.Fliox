@@ -58,6 +58,11 @@ namespace Friflo.Json.Burst
                 buffer.Dispose();
         }
         
+        public void Dispose(Untracked _) {
+            if (buffer.IsCreated())
+                buffer.Dispose(Untracked.Bytes);
+        }
+        
         public Bytes SwapWithDefault() {
             Bytes ret = this;
             this = default(Bytes);
@@ -84,6 +89,28 @@ namespace Friflo.Json.Burst
             end = 0;
             buffer = new ByteList(0, AllocType.Persistent);
             FromString(str);
+        }
+        
+        /// <summary> <see cref="Bytes32.FromBytes"/> expect capacity + 32</summary>
+        public Bytes (string str, Untracked _) {
+            int byteLen =  utf8.GetByteCount(str);
+           
+            buffer.array = new byte[byteLen + 32];
+#if JSON_BURST
+            int byteLen = 0;
+            unsafe {
+                byte* arrPtr = (byte*)Unity.Collections.LowLevel.Unsafe.NativeListUnsafeUtility.GetUnsafePtr(buffer.array);
+                fixed (char* strPtr = str) {
+                    if (arrPtr != null)
+                        Encoding.UTF8.GetBytes(strPtr, str.Length, arrPtr, buffer.array.Length);
+                }
+            }
+#else
+            utf8.GetBytes(str, 0, str.Length, buffer.array, 0);
+#endif
+            start = 0;
+            end     = byteLen;
+            hc      = BytesConst.notHashed;
         }
         
         public Bytes (ref Bytes src) {

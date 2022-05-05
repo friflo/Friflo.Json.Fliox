@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             objCount        = query.objCount;
             var fieldList   = query.fieldList;
             num             = fieldList. Count;
-            removedKey      = new Bytes("__REMOVED");
+            removedKey      = new Bytes("__REMOVED", Untracked.Bytes);
             fieldMap        = new HashMapOpen<Bytes, PropField>(11, removedKey);
             
             fields          = new PropField [num];
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public void Dispose() {
             for (int i = 0; i < fields.Length; i++)
                 fields[i].Dispose();
-            removedKey.Dispose();
+            removedKey.Dispose(Untracked.Bytes);
         }
     }
 }

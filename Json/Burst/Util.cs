@@ -59,6 +59,9 @@ namespace Friflo.Json.Burst
     }
 #endif
 
+    public enum Untracked {
+        Bytes
+    }
 
     public static class DebugUtils
     {

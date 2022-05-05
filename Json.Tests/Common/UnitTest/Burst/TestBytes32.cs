@@ -15,22 +15,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestBytes32Assignment() {
             var bytes32 = new Bytes32();
             
-            var str0 = new Bytes("");
+            var str0 = new Bytes("", Untracked.Bytes);
             bytes32.FromBytes(ref str0);
-            str0.Dispose();
+            str0.Dispose(Untracked.Bytes);
             
-            var str1 = new Bytes("1");
+            var str1 = new Bytes("1", Untracked.Bytes);
             bytes32.FromBytes(ref str1);
-            str1.Dispose();
+            str1.Dispose(Untracked.Bytes);
             
-            var str8 = new Bytes("12345678");
+            var str8 = new Bytes("12345678", Untracked.Bytes);
             bytes32.FromBytes(ref str8);
-            str8.Dispose();
+            str8.Dispose(Untracked.Bytes);
                 
-            var src = new Bytes("");
-            var dst = new Bytes("");
+            var src = new Bytes("", Untracked.Bytes);
+            var dst = new Bytes("", Untracked.Bytes);
 
-            var builder = new StringBuilder();
+            /* var builder = new StringBuilder();
             for (int n = 0; n <= 32; n++) {
                 var refStr = builder.ToString();
                 src.Clear();
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(refStr, dst.AsString());
                 
                 builder.Append((char)('@' + n));
-            }
+            } */
             
             src.Clear();
             // for (int n = 0; n <= 50_000_000; n++)
@@ -51,8 +51,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             //     bytes32.IsEqual(ref bytes32);
             
             
-            src.Dispose();
-            dst.Dispose();
+            src.Dispose(Untracked.Bytes);
+            dst.Dispose(Untracked.Bytes);
         }
     }
 

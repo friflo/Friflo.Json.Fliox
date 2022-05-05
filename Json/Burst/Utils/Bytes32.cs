@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using System.Runtime.InteropServices;
 
 namespace Friflo.Json.Burst.Utils
@@ -18,11 +20,11 @@ namespace Friflo.Json.Burst.Utils
         private const ulong Mask = 0xffffffffffffffff;
         private const ulong Zero = 0L;
 
-        public unsafe void FromBytes (ref Bytes str) {
+        public unsafe void FromBytes (ref Bytes str, Untracked _ = Untracked.Bytes) {
             int start = str.start;
             len = str.Len;
             if (str.buffer.array.Length < start + 32)
-                str.EnsureCapacityAbs(start + 32);
+                throw new InvalidOperationException("FromBytes() - insufficient length");
             
 #if JSON_BURST
             byte*  srcPtr =  &((byte*)str.buffer.array.GetUnsafeList()->Ptr) [start];

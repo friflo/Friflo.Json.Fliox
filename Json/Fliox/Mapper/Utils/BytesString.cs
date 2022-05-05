@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         }
 
         public BytesString(string str) {
-            value = new Bytes(str);
+            value = new Bytes(str, Untracked.Bytes);
         }
 
         public override bool Equals(object obj) {
