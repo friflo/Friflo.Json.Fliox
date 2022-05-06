@@ -36,6 +36,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("null"),        validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: null, expect: int32 (root), pos: 4", error);
+            
+            success = validator.Validate(new JsonValue("\"noInt\""),        validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: 'noInt', expect: int32 (root), pos: 7", error);
                 
             success = validator.Validate(new JsonValue("{}"),          validation, out error);
             IsFalse(success);
@@ -48,6 +52,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("xxx"),         validation, out error);
             IsFalse(success);
             AreEqual("unexpected character while reading value. Found: x", error);
+        }
+        
+        [Test]
+        public void ValidateBool() {
+            var validation = validationSet.GetValidationType(typeof(bool));
+            
+            success = validator.Validate(new JsonValue("true"),         validation, out error);
+            IsTrue(success);
+                
+            success = validator.Validate(new JsonValue("null"),        validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: null, expect: boolean (root), pos: 4", error);
+            
+            success = validator.Validate(new JsonValue("555"),        validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: 555, expect: boolean (root), pos: 3", error);
+
+            success = validator.Validate(new JsonValue("\"noBool\""),        validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: 'noBool', expect: boolean (root), pos: 8", error);
+                
+            success = validator.Validate(new JsonValue("{}"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: object, expect: boolean at boolean > (root), pos: 1", error);
+            
+            success = validator.Validate(new JsonValue("[]"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: array, expect: boolean [], pos: 1", error);
+                
+            success = validator.Validate(new JsonValue("yyy"),         validation, out error);
+            IsFalse(success);
+            AreEqual("unexpected character while reading value. Found: y", error);
         }
         
         [Test]
@@ -100,6 +136,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("42"),          validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: 42, expect: string (root), pos: 2", error);
+
+            success = validator.Validate(new JsonValue("[]"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: array, expect: string [], pos: 1", error);
+            
+            success = validator.Validate(new JsonValue("{}"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: object, expect: string at string > (root), pos: 1", error);
         }
         
         [Test]
