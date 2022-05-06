@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return success;
         }
         
-        public bool ValidateField (JsonValue json, ValidationType type, out string error) {
+        public bool Validate (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev      = parser.NextEvent();
             var typeDef = type.typeDef;
