@@ -1,11 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
-using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 using Friflo.Json.Tests.Common.Utils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
