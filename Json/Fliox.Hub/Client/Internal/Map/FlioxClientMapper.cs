@@ -12,7 +12,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
     internal sealed class FlioxClientMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (!type.IsSubclassOf(typeof(FlioxClient)))
+            bool isSameOrSubclass = type == typeof(FlioxClient) || type.IsSubclassOf(typeof(FlioxClient));
+            if (!isSameOrSubclass)
                 return null;
 
             object[] constructorParams = {config, type };

@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             return list;
         }
         
-        internal ArgAttributes GetArgAttributes(Type type) {
+        private ArgAttributes GetArgAttributes(Type type) {
             var underlyingType  = Nullable.GetUnderlyingType(type);
             if (underlyingType != null) {
                 var typeDef     = nativeTypes[underlyingType];
@@ -298,14 +298,10 @@ namespace Friflo.Json.Fliox.Schema.Native
     internal readonly struct ArgAttributes
     {
         internal  readonly  bool            required;
-        internal  readonly  bool            isArray;
-        internal  readonly  bool            isDictionary;
         internal  readonly  NativeTypeDef   typeDef;
         
         internal ArgAttributes (bool required, NativeTypeDef typeDef) {
             this.required       = required;
-            this.isArray        = typeDef.mapper.IsArray;
-            this.isDictionary   = typeDef.mapper.IsDictionary;
             this.typeDef        = typeDef;
         }
     }

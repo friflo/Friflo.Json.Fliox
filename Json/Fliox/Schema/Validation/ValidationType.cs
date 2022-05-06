@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public              IEnumerable<ValidationType> Fields  => typeDef.Fields;
     
         // --- internal
-        internal            ValidationTypeDef   typeDef;
-        internal            TypeId              typeId;
-        internal readonly   TypeDef             type;
-        internal readonly   string              typeName;
+        internal            ValidationTypeDef           typeDef;
+        internal            TypeId                      typeId;
+        internal readonly   TypeDef                     type;
+        internal readonly   string                      typeName;
 
-        public  override    string              ToString() => fieldName;
+        public  override    string                      ToString() => fieldName == null ? typeDef.name : $"{fieldName} : {typeDef.name}";
         
         internal ValidationType(FieldDef fieldDef, int requiredPos) {
             type                = fieldDef.type;
@@ -38,16 +38,16 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.requiredPos    = requiredPos;
         }
         
-        internal ValidationType(ValidationTypeDef typeDef) {
+        internal ValidationType(ValidationTypeDef typeDef, bool isNullable, bool isArray, bool isDictionary) {
             this.typeDef        = typeDef;
             typeId              = typeDef.typeId;
             type                = typeDef.typeDef;
             typeName            = type.Name; 
-            fieldName           = "<unnamed>";
+            fieldName           = null;
             name                = default;
-            required            = true;
-            isArray             = false;
-            isDictionary        = false;
+            this.required       = !isNullable;
+            this.isArray        = isArray;
+            this.isDictionary   = isDictionary;
             isNullableElement   = false;
             requiredPos         = -1;
         }

@@ -88,28 +88,28 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private void AddStandardType (TypeId typeId, TypeDef typeDef) {
             if (typeDef == null)
                 return;
-            var typeName            = GetTypeName(typeId);
-            var validationTypeDef   = new ValidationTypeDef(typeId, typeName, typeDef);
+            var typeName            = GetTypeName(typeId, out bool isNullable);
+            var validationTypeDef   = new ValidationTypeDef(typeId, typeName, isNullable, typeDef);
             types.Add(validationTypeDef);
             typeMap.Add(typeDef, validationTypeDef);
         }
         
-        private static string GetTypeName (TypeId typeId) {
+        private static string GetTypeName (TypeId typeId, out bool isNullable) {
             switch (typeId) {
-                case TypeId.Uint8:      return "uint8";
-                case TypeId.Int16:      return "int16";
-                case TypeId.Int32:      return "int32";
-                case TypeId.Int64:      return "int64";
-                case TypeId.Float:      return "float";
-                case TypeId.Double:     return "double";
+                case TypeId.Uint8:      isNullable = false;     return "uint8";
+                case TypeId.Int16:      isNullable = false;     return "int16";
+                case TypeId.Int32:      isNullable = false;     return "int32";
+                case TypeId.Int64:      isNullable = false;     return "int64";
+                case TypeId.Float:      isNullable = false;     return "float";
+                case TypeId.Double:     isNullable = false;     return "double";
                 // --- boolean type
-                case TypeId.Boolean:    return "boolean";
+                case TypeId.Boolean:    isNullable = false;     return "boolean";
                 // --- string types        
-                case TypeId.String:     return "string";
-                case TypeId.BigInteger: return "BigInteger";
-                case TypeId.DateTime:   return "DateTime";
-                case TypeId.Guid:       return "Guid";
-                case TypeId.JsonValue:  return "JSON";
+                case TypeId.String:     isNullable = true;      return "string";
+                case TypeId.BigInteger: isNullable = false;     return "BigInteger";
+                case TypeId.DateTime:   isNullable = false;     return "DateTime";
+                case TypeId.Guid:       isNullable = false;     return "Guid";
+                case TypeId.JsonValue:  isNullable = true;      return "JSON";
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
             }

@@ -52,6 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         public virtual void Dispose () {
+            sharedCache.Dispose();
             Pool.Dispose();
             TypeStore.Dispose();
         }
@@ -78,17 +79,25 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// Cached instances created and returned by <see cref="SharedCache"/> must me immutable to enable
     /// concurrent and / or parallel usage.
     /// </summary>
-    internal sealed class SharedCache
+    internal sealed class SharedCache : IDisposable
     {
-        private readonly    NativeValidationSet validationTypes = new NativeValidationSet();
+        private readonly    NativeValidationSet validationSet;
         
+        internal SharedCache() {
+            validationSet = new NativeValidationSet();
+        }
+
+        public void Dispose() {
+            validationSet.Dispose();
+        }
+
         /// <summary> Return an immutable <see cref="ValidationType"/> instance for the given <param name="type"></param></summary>
         public ValidationType GetValidationType(Type type) {
-            return validationTypes.GetValidationType(type);
+            return validationSet.GetValidationType(type);
         }
         
         internal void AddRootType(Type rootType) {
-            validationTypes.AddRootType(rootType);
+            validationSet.AddRootType(rootType);
         }
     }
 }

@@ -4,24 +4,30 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
-    public class NativeValidationSet
+    public class NativeValidationSet : IDisposable
     {
-        private readonly    HashSet<Type>                       clientTypes;
-        private readonly    Dictionary<Type, ValidationType>    validationTypes;
-        private readonly    Dictionary<Type, ValidationTypeDef> validationTypeDefs;
+        private  readonly   HashSet<Type>                       clientTypes;
+        private  readonly   Dictionary<Type, ValidationType>    validationTypes;
+        private  readonly   Dictionary<Type, ValidationTypeDef> validationTypeDefs;
+        private  readonly   TypeStore                           typeStore;
         
         public NativeValidationSet() {
             clientTypes         = new HashSet<Type>();
             validationTypes     = new Dictionary<Type, ValidationType>();
             validationTypeDefs  = new Dictionary<Type, ValidationTypeDef>();
+            typeStore           = new TypeStore();
             AddRootType(typeof(StandardTypes));
         }
-        
+
+        public void Dispose() {
+            typeStore.Dispose();
+        }
+
         public ValidationType GetValidationType(Type type) {
             if (validationTypes.TryGetValue(type, out var validationType)) {
                 return validationType;
@@ -36,25 +42,28 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return validationType;
         }
         
-        private static ValidationType  GetValidationTypeInternal(Type type) {
-            var nativeSchema    = NativeTypeSchema.Create(type);
-            var validationSet   = new ValidationSet(nativeSchema);
-            var attr            = nativeSchema.GetArgAttributes(type);
-            var typeDef         = attr.typeDef;
-            var fieldDef        = new FieldDef("param", attr.required, false, false, typeDef, attr.isArray, attr.isDictionary, false, null, null, null, nativeSchema.Utf8Buffer);
-            var validationType  = new ValidationType(fieldDef, -1);
-            if (attr.isArray || attr.isDictionary) {
-                var elementMapper       = typeDef.mapper.GetElementMapper();
-                var elementTypeDef      = nativeSchema.GetArgAttributes(elementMapper.type);
-                validationType.typeDef  = validationSet.GetValidationTypeDef(elementTypeDef.typeDef);
-            } else {
-                validationType.typeDef  = validationSet.GetValidationTypeDef(typeDef);
+        private ValidationType  GetValidationTypeInternal(Type type) {
+            var mapper          = typeStore.GetTypeMapper(type);
+            var isNullable      = mapper.isNullable;
+            if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
+                mapper = typeStore.GetTypeMapper(mapper.nullableUnderlyingType);
             }
-            return validationType;
+            var isArray         = mapper.IsArray;
+            var isDictionary    = mapper.IsDictionary;
+            if (isArray || isDictionary) {
+                mapper = mapper.GetElementMapper();
+            }
+            var nativeSchema        = NativeTypeSchema.Create(mapper.type);
+            var validationSet       = new ValidationSet(nativeSchema);
+            var typeDef             = nativeSchema.GetNativeType(mapper.type);
+            var validationTypeDef   = validationSet.GetValidationTypeDef(typeDef);
+            return new ValidationType(validationTypeDef, isNullable, isArray, isDictionary);
         }
         
+        /// <summary>
+        /// Create <see cref="ValidationTypeDef"/> instances for the given <param name="rootType"/> and all its dependent types.
+        /// </summary>
         public void AddRootType (Type rootType) {
-            return;
             if (!clientTypes.Add(rootType))
                 return;
             var nativeSchema    = NativeTypeSchema.Create(rootType);
@@ -64,21 +73,21 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 validationTypeDefs.TryAdd(nativeTypeDef.native, typeDef);
             }
         }
-        
+    }
+    
 #pragma warning disable CS0649
-        private class StandardTypes
-        {
-            public  bool        stdBool;
-            public  byte        stdByte;
-            public  short       stdShort;
-            public  int         stdInt;
-            public  long        stdLong;
-            public  float       stdFloat;
-            public  double      stdDouble;
-            public  string      stdString;
-            public  DateTime    stdDateTime;
-            public  Guid        stdGuid;
-            public  BigInteger  stdBigInteger;
-        }
+    internal class StandardTypes
+    {
+        public  bool        stdBool;
+        public  byte        stdByte;
+        public  short       stdShort;
+        public  int         stdInt;
+        public  long        stdLong;
+        public  float       stdFloat;
+        public  double      stdDouble;
+        public  string      stdString;
+        public  DateTime    stdDateTime;
+        public  Guid        stdGuid;
+        public  BigInteger  stdBigInteger;
     }
 }
