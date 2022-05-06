@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Schema.Validation
 {
     public sealed class TypeValidator : IDisposable

@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     } 
                 }
             }
-            sb.Append(" ");
+            sb.Append(' ');
             if (typeDef != null) {
                 sb.Append("at ");
                 if (qualifiedTypeErrors) {

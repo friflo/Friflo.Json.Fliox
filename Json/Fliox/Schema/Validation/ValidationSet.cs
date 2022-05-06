@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.Definition;
 
+// ReSharper disable LoopCanBeConvertedToQuery
+// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Schema.Validation
 {
