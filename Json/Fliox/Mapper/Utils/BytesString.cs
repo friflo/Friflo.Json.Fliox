@@ -8,18 +8,18 @@ namespace Friflo.Json.Fliox.Mapper.Utils
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class BytesString
+    internal sealed class BytesString
     {
-        public Bytes value;
+        internal Bytes value;
         
-        public BytesString() {
+        internal BytesString() {
         }
         
-        public BytesString(ref Bytes str) {
+        internal BytesString(ref Bytes str) {
             value = new Bytes(ref str);
         }
 
-        public BytesString(string str) {
+        internal BytesString(string str) {
             value = new Bytes(str, Untracked.Bytes);
         }
 

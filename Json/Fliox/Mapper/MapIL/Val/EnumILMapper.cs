@@ -14,14 +14,14 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.MapIL.Val
 {
-    public struct EnumString {
-        public  BytesString name;
-        public  object      value;
+    internal struct EnumString {
+        internal    BytesString name;
+        internal    object      value;
     }
     
-    public struct EnumIntegral {
-        public  long    integral;
-        public  object  value;
+    internal struct EnumIntegral {
+        internal    long        integral;
+        internal    object      value;
     }
     
    

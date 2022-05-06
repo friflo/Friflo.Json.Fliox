@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              object[]            setMethodParams;
         /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
         /// without creating a string on the heap.</summary>
-        public readonly     BytesString         keyRef;
-        public readonly     TypeCache           typeCache;
+        internal readonly   BytesString         keyRef;
+        public   readonly   TypeCache           typeCache;
         public              ITracerContext      tracerContext;
         public              Utf8JsonWriterStub  jsonWriterStub;
 #if !UNITY_5_3_OR_NEWER
