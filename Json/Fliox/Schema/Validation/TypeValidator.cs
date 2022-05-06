@@ -83,8 +83,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
             switch (ev) {
                 case JsonEvent.ValueNull:
                     if (type.required) {
-                        error = "expect non null value. was null";
-                        return false;
+                        ErrorType("Incorrect type.", "null", false, typeDef.name, typeDef.@namespace, null);
+                        return Return(typeDef, false, out error);
                     }
                     error = null;
                     return true;
@@ -105,6 +105,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return Return(typeDef, success, out error);
                 }
                 case JsonEvent.ArrayStart: {
+                    if (!type.isArray) {
+                        ErrorType("Incorrect type.", "array", false, typeDef.name, typeDef.@namespace, null);
+                        return Return(typeDef, false, out error);
+                    }
                     bool success = ValidateElement(typeDef, false, null, 0);
                     return Return(typeDef, success, out error);
                 }
@@ -121,7 +125,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             var typeDef = type.typeDef;
             if (ev == JsonEvent.ObjectStart) {
                 bool success = ValidateObjectIntern(typeDef, 0);
-                return Return(typeDef, success, out error);    
+                return Return(typeDef, success, out error);
             }
             return RootError(typeDef, "expect object. was:", out error);
         }
@@ -150,6 +154,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
         
         private bool ValidateObjectIntern (ValidationTypeDef typeDef, int depth)
         {
+            if (typeDef.typeId == TypeId.JsonValue) {
+                return parser.SkipTree();
+            }
             if (typeDef.typeId == TypeId.Union) {
                 var ev      = parser.NextEvent();
                 var unionType = typeDef.unionType;
@@ -350,6 +357,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private bool ValidateString (ref Bytes value, ValidationTypeDef typeDef, ValidationTypeDef parent) {
             switch (typeDef.typeId) {
                 case TypeId.String:
+                case TypeId.JsonValue:
                     return true;
                 
                 case TypeId.BigInteger:
@@ -389,8 +397,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         private bool ValidateBoolean (ValidationTypeDef typeDef, ValidationTypeDef owner) {
-            if (typeDef.typeId == TypeId.Boolean)
-                return true;
+            switch (typeDef.typeId) {
+                case TypeId.Boolean:
+                case TypeId.JsonValue:
+                    return true;
+            }
             var value = parser.boolValue ? "true" : "false";
             return ErrorType("Incorrect type.", value, false, typeDef.name, typeDef.@namespace, owner);
         }
@@ -421,6 +432,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 
                 case TypeId.Float:
                 case TypeId.Double:
+                case TypeId.JsonValue:
                     return true;
                 default:
                     return ErrorType("Incorrect type.", parser.value.AsString(), false, typeDef.name, typeDef.@namespace, owner);

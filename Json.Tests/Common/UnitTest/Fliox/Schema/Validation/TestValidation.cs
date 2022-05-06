@@ -35,11 +35,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 
             success = validator.Validate(new JsonValue("null"),        validation, out error);
             IsFalse(success);
-            AreEqual("expect non null value. was null", error);
+            AreEqual("Incorrect type. was: null, expect: int32 (root), pos: 4", error);
                 
             success = validator.Validate(new JsonValue("{}"),          validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: object, expect: int32 at int32 > (root), pos: 1", error);
+            
+            success = validator.Validate(new JsonValue("[]"),          validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: array, expect: int32 [], pos: 1", error);
                 
             success = validator.Validate(new JsonValue("xxx"),         validation, out error);
             IsFalse(success);
@@ -59,6 +63,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("[\"abc\"]"),   validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: 'abc', expect: int32 [0], pos: 6", error);
+            
+            success = validator.Validate(new JsonValue("\"no array\""),   validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: 'no array', expect: int32 (root), pos: 10", error);
+            
+            success = validator.Validate(new JsonValue("{}"),   validation, out error);
+            IsFalse(success);
+            AreEqual("Incorrect type. was: object, expect: int32 at int32 > (root), pos: 1", error);
         }
 
         [Test]
@@ -88,6 +100,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("42"),          validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: 42, expect: string (root), pos: 2", error);
+        }
+        
+        [Test]
+        public void ValidateJsonValue() {
+            var validation       = validationSet.GetValidationType(typeof(JsonValue));
+            success = validator.Validate(new JsonValue("\"xyz\""),     validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("222"),     validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("true"),     validation, out error);
+            IsTrue(success);
+
+            // todo
+            // success = validator.Validate(new JsonValue("[]"),          validation, out error);
+            // IsTrue(success);
+            
+            // todo
+            // success = validator.Validate(new JsonValue("null"),        validation, out error);
+            // IsTrue(success);
+                
+            // todo
+            // success = validator.Validate(new JsonValue("{}"),          validation, out error);
+            // IsTrue(success);
         }
     }
 }

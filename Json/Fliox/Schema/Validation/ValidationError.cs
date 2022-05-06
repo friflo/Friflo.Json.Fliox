@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.isString       = isString;
             this.expect         = expect;
             this.expectNamespace= expectNamespace;
-            this.typeDef           = typeDef;
+            this.typeDef        = typeDef;
             this.path           = path;
             this.pos            = pos;
         }
