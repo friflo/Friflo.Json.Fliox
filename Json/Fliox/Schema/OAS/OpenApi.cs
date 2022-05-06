@@ -3,6 +3,8 @@
 
 using System.Collections.Generic;
 
+// ReSharper disable UnassignedField.Global
+// ReSharper disable ClassNeverInstantiated.Global
 namespace Friflo.Json.Fliox.Schema.OAS
 {
     /// <summary>
