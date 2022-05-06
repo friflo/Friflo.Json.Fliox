@@ -63,7 +63,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
         /// <summary>
         /// Create <see cref="ValidationTypeDef"/> instances for the given <param name="rootType"/> and all its dependent types.
         /// The <param name="rootType"></param> is typically a class type extending FlioxClient - containing all
-        /// application specific types 
+        /// application specific types. <br/>
+        /// Adding all <see cref="ValidationTypeDef"/> instances at once enable reduced memory consumption and
+        /// high memory locality as only a single <see cref="ValidationSet"/> is created for a single database schema.
         /// </summary>
         public void AddRootType (Type rootType) {
             if (!clientTypes.Add(rootType))
