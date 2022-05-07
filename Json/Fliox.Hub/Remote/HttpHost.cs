@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 
-        public   readonly   string                  endpointRoot;
+        private  readonly   string                  endpointRoot;
         private  readonly   SchemaHandler           schemaHandler   = new SchemaHandler();
         private  readonly   Rest.RestHandler        restHandler     = new Rest.RestHandler();
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
