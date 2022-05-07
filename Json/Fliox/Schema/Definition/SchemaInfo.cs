@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Schema.OAS;
 // ReSharper disable PossibleMultipleEnumeration
 namespace Friflo.Json.Fliox.Schema.Definition
 {
-    public class SchemaInfoServer {
+    public sealed class SchemaInfoServer {
         public  readonly string  url;
         public  readonly string  description;
         
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     /// The <see cref="SchemaInfo"/> contains meta data about a schema compatible to the fields <b>info</b> and <b>servers</b>
     /// in the <a href="https://spec.openapis.org/oas/v3.0.0#openapi-object">OpenAPI Specification 3.0.0</a>
     /// </summary>
-    public class SchemaInfo
+    public sealed class SchemaInfo
     {
         public  readonly    string  version;
         public  readonly    string  termsOfService;

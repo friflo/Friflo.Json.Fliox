@@ -11,18 +11,18 @@ using Friflo.Json.Fliox.Utils;
 #pragma warning disable CS0649
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class GqlRequest {
+    internal sealed class GqlRequest {
         public  string                          query;
         public  string                          operationName;
         public  Dictionary<string, JsonValue>   variables;
     }
         
-    internal class GqlResponse {
+    internal sealed class GqlResponse {
         public  Dictionary <string, JsonValue>  data;
         public  List<GqlError>                  errors;
     }
     
-    internal class GqlQueryResult {
+    internal sealed class GqlQueryResult {
         public  int             count;
         public  string          cursor;
         public  List<JsonValue> items;

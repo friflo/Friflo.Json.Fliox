@@ -207,7 +207,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
             return new Error(value.Kind, value.Location);
         }
         
-        private class Error {
+        private sealed class Error {
             internal    readonly    ASTNodeKind     kind;
             internal    readonly    GraphQLLocation location;
             

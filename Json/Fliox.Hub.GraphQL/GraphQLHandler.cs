@@ -17,7 +17,7 @@ using GraphQLParser.AST;
 // ReSharper disable ConvertIfStatementToSwitchStatement
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    public class GraphQLHandler : IRequestHandler
+    public sealed class GraphQLHandler : IRequestHandler
     {
         private readonly    Dictionary<string, QLDatabaseSchema>    dbSchemas;
         private readonly    ObjectPool<JsonProjector>               projectorPool;                

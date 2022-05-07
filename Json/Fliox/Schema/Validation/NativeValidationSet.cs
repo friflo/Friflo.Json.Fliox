@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
-    public class NativeValidationSet : IDisposable
+    public sealed class NativeValidationSet : IDisposable
     {
         private  readonly   HashSet<Type>                       clientTypes;
         private  readonly   Dictionary<Type, ValidationType>    validationTypes;

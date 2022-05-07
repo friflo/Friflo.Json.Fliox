@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Schema.GraphQL;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL
 {
-    internal class QLDatabaseSchema {
+    internal sealed class QLDatabaseSchema {
         private     readonly    string              database;
         internal    readonly    string              schemaName;
         internal    readonly    JsonValue           schemaResponse;

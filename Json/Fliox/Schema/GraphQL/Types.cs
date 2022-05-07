@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
     /// <summary>
     /// <a href ="https://spec.graphql.org/June2018/#sec-Schema-Introspection">GraphQL specification - Schema Introspection</a>
     /// </summary>
-    public class GqlSchema {
+    public sealed class GqlSchema {
         [Req]   public  GqlType             queryType;
                 public  GqlType             mutationType;
                 public  GqlType             subscriptionType;
@@ -41,15 +41,15 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public override string      ToString()  => name;
     }
     
-    public class GqlScalar      : GqlType {
+    public sealed class GqlScalar      : GqlType {
     }
     
-    public class GqlObject      : GqlType {
+    public sealed class GqlObject      : GqlType {
                 public  List<GqlField>      fields;
                 public  List<GqlType>       interfaces = new List<GqlType>();
     }
     
-    public class GqlField {
+    public sealed class GqlField {
         [Req]   public  string              name;
                 public  string              description;
         [Req]   public  List<GqlInputValue> args = new List<GqlInputValue>();
@@ -60,19 +60,19 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public override string              ToString() => name;
     }
     
-    public class GqlInterface   : GqlType {
+    public sealed class GqlInterface   : GqlType {
                 public  GqlType             ofType;
     }
     
-    public class GqlUnion       : GqlType {
+    public sealed class GqlUnion       : GqlType {
                 public  List<GqlType>       possibleTypes;
     }
     
-    public class GqlEnum        : GqlType {
+    public sealed class GqlEnum        : GqlType {
                 public  List<GqlEnumValue>  enumValues;
     }
     
-    public class GqlEnumValue {
+    public sealed class GqlEnumValue {
         [Req]   public  string      name;
                 public  string      description;
                 public  bool?       isDeprecated;
@@ -81,20 +81,20 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public override string      ToString() => name;
     }
     
-    public class GqlInputObject : GqlType {
+    public sealed class GqlInputObject : GqlType {
                 public  GqlType             type;
                 public  List<GqlField>      inputFields;
     }
     
-    public class GqlList        : GqlType {
+    public sealed class GqlList        : GqlType {
                 public  GqlType     ofType;
     }
     
-    public class GqlNonNull     : GqlType {
+    public sealed class GqlNonNull     : GqlType {
                 public  GqlType     ofType;
     }
 
-    public class GqlDirective {
+    public sealed class GqlDirective {
         [Req]   public  string                      name;
                 public  string                      description;
         [Req]   public  List<GqlDirectiveLocation>  locations;
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         public override string                      ToString() => name;
     }
     
-    public class GqlInputValue {
+    public sealed class GqlInputValue {
         [Req]   public  string      name;
                 public  string      description;
         [Req]   public  GqlType     type;
