@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public class MemberPath<T>
+    public sealed class MemberPath<T>
     {
         internal readonly string path;
 

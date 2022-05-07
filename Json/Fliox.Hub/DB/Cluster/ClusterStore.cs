@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     /// <summary><see cref="containers"/> and <see cref="storage"/> type of a database</summary>
-    public class DbContainers {
+    public sealed class DbContainers {
         /// <summary>database name</summary>
         [Req]   public  string                          id;
         /// <summary><see cref="storage"/> type. e.g. memory, file-system, ...</summary>
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     /// <summary><see cref="commands"/> and <see cref="messages"/> of a database</summary>
-    public class DbMessages {
+    public sealed class DbMessages {
         /// <summary>database name</summary>
         [Req]   public  string                          id;
         /// <summary>list of database <see cref="commands"/></summary>
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     /// The type referenced by the tuple <see cref="schemaName"/> / <see cref="schemaPath"/> specify the
     /// database containers, commands and messages. 
     /// </summary>
-    public class DbSchema {
+    public sealed class DbSchema {
         /// <summary>database name</summary>
         [Req]   public  string                          id;
         /// <summary>refer a type definition of the JSON Schema referenced with <see cref="schemaPath"/></summary>
@@ -73,13 +73,13 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     // --- commands
     /// <summary>list of container statistics. E.g. the number of entities per container</summary>
-    public class DbStats {
+    public sealed class DbStats {
         /// <summary>list of container statistics - number of entities per container</summary>
                 public  ContainerStats[]                containers;
     }
     
     /// <summary>statistics of a single container. E.g. the number of entities in a container</summary>
-    public class ContainerStats {
+    public sealed class ContainerStats {
         /// <summary>container name</summary>
         [Req]   public  string                          name;
         /// <summary>number of entities / records within a container</summary>
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     /// <summary>general information about a Hub</summary>
-    public class HostDetails {
+    public sealed class HostDetails {
         /// <summary>host version</summary>
         [Req]   public  string                          version;
         /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     }
     
     /// <summary>All <see cref="databases"/> hosted by Hub</summary>
-    public class HostCluster {
+    public sealed class HostCluster {
         /// <summary>list of <see cref="databases"/> hosted by Hub</summary>
         [Req]   public  List<DbContainers>              databases;
     }

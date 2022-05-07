@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     /// - available commands per database <br/>
     /// - the schema assigned to each database
     /// </summary>
-    public class ClusterDB : EntityDatabase
+    public sealed class ClusterDB : EntityDatabase
     {
         // --- private / internal
         internal readonly   EntityDatabase      stateDB;

@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// <summary>
     /// Contains the <see cref="patches"/> applied to an entity. Used by <see cref="PatchEntities"/>
     /// </summary>
-    public class EntityPatch
+    public sealed class EntityPatch
     {
         /// <summary>list of patches applied to an entity</summary>
         [Fri.Required]  public  List<JsonPatch>             patches;

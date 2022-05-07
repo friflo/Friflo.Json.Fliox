@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.Hub.Cosmos
 {
-    public class ResponseFeed {
+    public sealed class ResponseFeed {
         public  int             _count;
         public  List<JsonValue> Documents;
     }

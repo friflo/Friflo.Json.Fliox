@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         public ICollection<TValue>  Values  => new List<TValue>();
     }
 
-    public class EmptyDictionaryIterator<TValue> : IEnumerator<TValue>
+    public sealed class EmptyDictionaryIterator<TValue> : IEnumerator<TValue>
     {
         public bool MoveNext() {
             return false;

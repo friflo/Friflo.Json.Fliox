@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     /// - events sent to (or buffered for) clients subscribed by these clients. <br/>
     /// - aggregated access counts of the Hub in the last 30 seconds and 30 minutes.
     /// </summary>
-    public class MonitorDB : EntityDatabase
+    public sealed class MonitorDB : EntityDatabase
     {
         // --- private / internal
         internal readonly   EntityDatabase      stateDB;

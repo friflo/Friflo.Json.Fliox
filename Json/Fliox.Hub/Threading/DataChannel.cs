@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public class DataChannelReader<T> {
+    public sealed class DataChannelReader<T> {
         private readonly ChannelReader<T> reader;
         
         internal DataChannelReader(ChannelReader<T> reader) {
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Threading
         }
     }
     
-    public class DataChannelWriter<T> {
+    public sealed class DataChannelWriter<T> {
         private readonly ChannelWriter<T> writer;
         
         internal DataChannelWriter(ChannelWriter<T> writer) {

@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <see cref="UserStore"/> can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
     /// For a thread safe <see cref="IUserAuth"/> implementation use <see cref="UserAuth"/>.
     /// </remarks>
-    public class UserStore : FlioxClient, IUserAuth
+    public sealed class UserStore : FlioxClient, IUserAuth
     {
         // --- containers
         public  readonly    EntitySet <JsonKey, UserCredential>  credentials;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 
     // -------------------------------------- models ---------------------------------------
     /// <summary>contains a <see cref="token"/> assigned to a user used for authentication</summary>
-    public class UserCredential {
+    public sealed class UserCredential {
         /// <summary>user name</summary>
         [Req]   public  JsonKey         id;
         /// <summary>user token</summary>
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
     
     /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
-    public class UserPermission {
+    public sealed class UserPermission {
         /// <summary>user name</summary>
         [Req]   public  JsonKey         id;
         /// <summary>set of <see cref="roles"/> assigned to a user</summary>
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
     
     /// <summary>Contains a set of <see cref="rights"/> used for task authorization</summary>
-    public class Role {
+    public sealed class Role {
         /// <summary><see cref="Role"/> name</summary>
         [Req]   public  string          id;
         /// <summary>a set of <see cref="rights"/> used for task authorization</summary>
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     // -------------------------------------- command models -------------------------------------
     /// <summary>user <see cref="Credentials"/> used for authentication</summary>
-    public class Credentials {
+    public sealed class Credentials {
         [Req]   public  JsonKey         userId;
         [Req]   public  string          token;
 
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     }
     
     /// <summary>Result of <see cref="UserStore.AuthenticateUser"/> command</summary>
-    public class AuthResult {
+    public sealed class AuthResult {
         /// <summary>true if authentication was successful</summary>
                 public bool             isValid;
 

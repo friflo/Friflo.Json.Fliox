@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public class User {
+    public sealed class User {
         // --- public
         public   readonly   JsonKey     userId;
         public   readonly   string      token;

@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public class SubscribeMessageTask : SyncTask
+    public sealed class SubscribeMessageTask : SyncTask
     {
         internal readonly   string                  name;
         internal readonly   bool?                   remove;

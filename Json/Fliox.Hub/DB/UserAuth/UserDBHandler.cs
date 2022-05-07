@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
-    public class UserDBHandler : TaskHandler
+    public sealed class UserDBHandler : TaskHandler
     {
         public UserDBHandler() {
             AddCommandHandlerAsync<Credentials, AuthResult> (nameof(AuthenticateUser), AuthenticateUser);

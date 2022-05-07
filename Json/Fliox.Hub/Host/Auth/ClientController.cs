@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
     }
     
-    public class IncrementClientController : ClientController {
+    public sealed class IncrementClientController : ClientController {
         private long clientIdSequence;
 
         protected override JsonKey NewId() {
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
     }
     
-    public class GuidClientController : ClientController {
+    public sealed class GuidClientController : ClientController {
         protected override JsonKey NewId() {
             return new JsonKey(Guid.NewGuid());
         }

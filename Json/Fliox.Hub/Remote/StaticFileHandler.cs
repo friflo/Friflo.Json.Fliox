@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     /// The <b>Media Type</b> assigned to the response <c>Content-Type</c> header is derived from the file name extension.<br/>
     /// Add additional mappings for <b>file name extension</b> to <b>MediaType</b> with <see cref="AddFileExtension"/>. 
     /// </summary>
-    public class StaticFileHandler : IRequestHandler
+    public sealed class StaticFileHandler : IRequestHandler
     {
         private readonly    IFileHandler                    fileHandler;
         private readonly    Dictionary<string, CacheEntry>  cache;

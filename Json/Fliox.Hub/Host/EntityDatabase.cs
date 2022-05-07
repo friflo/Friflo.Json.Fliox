@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public class DbOpt {
+    public sealed class DbOpt {
         /// <see cref="EntityDatabase.customContainerName"/>
         public  readonly    CustomContainerName customContainerName;
         

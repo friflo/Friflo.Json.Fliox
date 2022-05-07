@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         }
     }
 
-    public class EntityException : Exception
+    public sealed class EntityException : Exception
     {
         public EntityException(EntityError error) : base(error.AsText(false)) { }
     }

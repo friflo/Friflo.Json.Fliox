@@ -302,7 +302,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public class ChangeInfo<T> : ChangeInfo where T : class
+    public sealed class ChangeInfo<T> : ChangeInfo where T : class
     {
         public bool IsEqual(ChangeInfo<T> other) {
             return creates == other.creates &&
@@ -314,7 +314,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class EntityChanges { }
     
-    public class EntityChanges<TKey, T> : EntityChanges where T : class {
+    public sealed class EntityChanges<TKey, T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
         // ReSharper disable once NotAccessedField.Local
         private  readonly   EntitySet<TKey, T>                  entitySet; // only for debugging ergonomics

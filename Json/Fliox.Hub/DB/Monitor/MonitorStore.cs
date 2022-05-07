@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     }
     
     /// <summary>number of requests and tasks executed by the host. Container contains always a single record</summary>
-    public class HostHits {
+    public sealed class HostHits {
         /// <summary>host name</summary>
         [Req]   public  JsonKey                         id;
         /// <summary>number of executed requests and tasks per database</summary>
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     }
     
     /// <summary>all user clients and number of executed user requests and tasks</summary>
-    public class UserHits {
+    public sealed class UserHits {
         /// <summary>user id </summary>
         [Req]   public  JsonKey                         id;
         /// <summary>list of clients owned by a user</summary>
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     }
     
     /// <summary>information about requests, tasks, events and subscriptions of a client</summary>
-    public class ClientHits {
+    public sealed class ClientHits {
         /// <summary>client id </summary>
         [Req]   public  JsonKey                         id;
         /// <summary>user owning the client</summary>
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     }
     
     /// <summary>aggregated counts of latest requests. Each record uses a specific aggregation interval.</summary>
-    public class HistoryHits {
+    public sealed class HistoryHits {
         /// <summary>time in seconds for an aggregation interval</summary>
         [Req]   public  int                             id;
         /// <summary>number of requests executed in each interval</summary>
@@ -111,6 +111,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     
     
     // --- commands
-    public class ClearStats { }
-    public class ClearStatsResult { }
+    public sealed class ClearStats { }
+    public sealed class ClearStatsResult { }
 }
