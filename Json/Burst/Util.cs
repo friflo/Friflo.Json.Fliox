@@ -15,7 +15,7 @@ namespace Friflo.Json.Burst
         Constructor // never used 
     }
 
-    public class Allocation
+    public sealed class Allocation
     {
         public          object      resource;
         public readonly StackTrace  stackTrace;

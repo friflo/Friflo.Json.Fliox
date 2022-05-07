@@ -51,7 +51,7 @@ namespace Friflo.Json.Burst
         }
     }
     
-    public class Local<TDisposable> : IDisposable where TDisposable : struct, IDisposable 
+    public sealed class Local<TDisposable> : IDisposable where TDisposable : struct, IDisposable 
     {
         public TDisposable value;
         

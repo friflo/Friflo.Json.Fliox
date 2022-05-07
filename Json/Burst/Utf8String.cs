@@ -106,7 +106,7 @@ namespace Friflo.Json.Burst
 #endif
     }
     
-    public class Utf8Buffer : IUtf8Buffer {
+    public sealed class Utf8Buffer : IUtf8Buffer {
         private             byte[]              buf;
         private             int                 pos;
         private  readonly   List<Utf8String>    strings = new List<Utf8String>();
