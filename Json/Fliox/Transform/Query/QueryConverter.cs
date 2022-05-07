@@ -332,7 +332,7 @@ namespace Friflo.Json.Fliox.Transform.Query
         }
     }
 
-    public class QueryCx
+    public sealed class QueryCx
     {
         internal readonly   string      parameter;
         internal readonly   string      path;

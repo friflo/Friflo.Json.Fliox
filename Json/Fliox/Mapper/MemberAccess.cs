@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper
     }
     
     // --- Select result ---
-    public class MemberValue
+    public sealed class MemberValue
     {
         internal    JsonValue   json;
         internal    object      value;

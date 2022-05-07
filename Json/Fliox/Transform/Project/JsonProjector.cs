@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Transform.Project
 {
-    public class JsonProjector: IDisposable
+    public sealed class JsonProjector: IDisposable
     {
         private             Utf8JsonWriter          serializer;
             

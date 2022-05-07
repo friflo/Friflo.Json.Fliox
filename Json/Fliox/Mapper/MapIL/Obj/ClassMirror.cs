@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
         public object   LoadObj     (int idx)  { return                  objects.array[idx]; }
     }
     
-    public class DbgEntry {
+    public sealed class DbgEntry {
         public string       index;
         public string       name;
         public object       value;

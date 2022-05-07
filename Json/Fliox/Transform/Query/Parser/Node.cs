@@ -9,7 +9,7 @@ using System.Text;
 // ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    public class QueryNode {
+    public sealed class QueryNode {
         private  readonly   Token           operation;
         internal readonly   int             precedence;
         internal            Arity           arity;

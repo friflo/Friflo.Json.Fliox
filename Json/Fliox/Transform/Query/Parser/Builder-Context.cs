@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Transform.Query.Parser
 {
-    public class QueryEnv
+    public sealed class QueryEnv
     {
         public readonly string                      lambdaParam;
         public readonly Dictionary<string, string>  variables;
