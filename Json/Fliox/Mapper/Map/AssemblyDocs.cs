@@ -14,7 +14,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
     /// <summary> Contains documentation of multiple assemblies </summary>
     internal sealed class AssemblyDocs
     {
-        private     readonly    Dictionary <string, AssemblyDoc>   assemblyDocs =  new Dictionary <string, AssemblyDoc >();
+        private        readonly Dictionary <string, AssemblyDoc>    assemblyDocs      =  new Dictionary <string, AssemblyDoc >();
+        private static readonly Dictionary <string, AssemblyDoc>    AssemblyDocsCache =  new Dictionary <string, AssemblyDoc >();
     
         private AssemblyDoc GetAssemblyDoc(Assembly assembly) {
             // todo: may use Assembly reference instead of Assembly name as key
@@ -22,7 +23,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (name == null)
                 return null;
             if (!assemblyDocs.TryGetValue(name, out var docs)) {
-                docs = AssemblyDoc.Load(name, assembly);
+                if (!AssemblyDocsCache.TryGetValue(name, out docs)) {
+                    docs = AssemblyDoc.Load(name, assembly);
+                    AssemblyDocsCache.Add(name, docs);
+                }
                 assemblyDocs[name] = docs;
             }
             if (!docs.Available)
