@@ -23,8 +23,10 @@ namespace Friflo.Json.Fliox.Schema.Native
         
         public              TypeDef                 TypeAsTypeDef(Type type) => nativeTypes[type];
         internal            NativeTypeDef           GetNativeType(Type type) => nativeTypes[type];
+        public   override   string                  ToString()               => nativeRootType.ToString();
 
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
+        private  readonly   Type                            nativeRootType;
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
         /// <summary> <see cref="NativeTypeSchema"/> instances are immutable so caching has no side effects </summary>
@@ -42,8 +44,8 @@ namespace Friflo.Json.Fliox.Schema.Native
 
         private NativeTypeSchema (Type rootType)
         {
-            if (rootType == null) throw new ArgumentNullException(nameof(rootType));
-            var typeList = new List<Type> {rootType};
+            nativeRootType  = rootType ?? throw new ArgumentNullException(nameof(rootType));
+            var typeList    = new List<Type> {rootType};
 
             using (var typeStore = new TypeStore()) {
               
