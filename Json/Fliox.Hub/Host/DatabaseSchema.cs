@@ -62,8 +62,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddStoreSchema<SequenceStore>();
         }
         
-        public void AddStoreSchema<TFlioxClient>() where TFlioxClient : FlioxClient {
-            var nativeSchema    = NativeTypeSchema.Create(typeof(TFlioxClient));
+        public void AddStoreSchema<TClient>() where TClient : FlioxClient {
+            var nativeSchema    = NativeTypeSchema.Create(typeof(TClient));
             AddTypeSchema(nativeSchema);
         }
         
