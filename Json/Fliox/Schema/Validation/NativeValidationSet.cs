@@ -48,16 +48,21 @@ namespace Friflo.Json.Fliox.Schema.Validation
             if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
                 mapper = typeStore.GetTypeMapper(mapper.nullableUnderlyingType);
             }
-            var isArray         = mapper.IsArray;
-            var isDictionary    = mapper.IsDictionary;
+            var isArray             = mapper.IsArray;
+            var isDictionary        = mapper.IsDictionary;
+            var isNullableElement   = false;
             if (isArray || isDictionary) {
                 mapper = mapper.GetElementMapper();
+                if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
+                    mapper = typeStore.GetTypeMapper(mapper.nullableUnderlyingType);
+                    isNullableElement = true;
+                }
             }
             var nativeSchema        = NativeTypeSchema.Create(mapper.type);
             var validationSet       = new ValidationSet(nativeSchema);
             var typeDef             = nativeSchema.GetNativeType(mapper.type);
             var validationTypeDef   = validationSet.GetValidationTypeDef(typeDef);
-            return new ValidationType(validationTypeDef, isNullable, isArray, isDictionary, false);
+            return new ValidationType(validationTypeDef, isNullable, isArray, isDictionary, isNullableElement);
         }
         
         /// <summary>
