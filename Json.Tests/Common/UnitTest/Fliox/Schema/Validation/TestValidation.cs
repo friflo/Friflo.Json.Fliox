@@ -12,14 +12,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
 {
     public class TestValidation
     {
-        private             TypeValidator       validator;
-        private   readonly  NativeValidationSet validationSet   = new NativeValidationSet();
-        private             bool                success;
-        private             string              error;
+        private     TypeValidator       validator;
+        private     NativeValidationSet validationSet;
+        private     bool                success;
+        private     string              error;
         
         [OneTimeSetUp]
         public void  Init() {
-            validator = new TypeValidator();
+            validator       = new TypeValidator();
+            validationSet   = new NativeValidationSet();
         }
         [OneTimeTearDown]
         public void  Dispose() {
@@ -158,16 +159,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("true"),         validation, out error);
             IsTrue(success);
 
+            success = validator.Validate(new JsonValue("[66,\"str\"]"), validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("null"),         validation, out error);
+            IsTrue(success);
+                
+            success = validator.Validate(new JsonValue("{}"),           validation, out error);
+            IsTrue(success);
+            
             // todo
-            // success = validator.Validate(new JsonValue("[]"),          validation, out error);
+            // success = validator.Validate(new JsonValue("[[]]"), validation, out error);
             // IsTrue(success);
             
             // todo
-            // success = validator.Validate(new JsonValue("null"),        validation, out error);
-            // IsTrue(success);
-                
-            // todo
-            // success = validator.Validate(new JsonValue("{}"),          validation, out error);
+            // success = validator.Validate(new JsonValue("[{}]"), validation, out error);
             // IsTrue(success);
         }
     }

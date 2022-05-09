@@ -90,28 +90,29 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private void AddStandardType (TypeId typeId, TypeDef typeDef) {
             if (typeDef == null)
                 return;
-            var typeName            = GetTypeName(typeId, out bool isNullable);
-            var validationTypeDef   = new ValidationTypeDef(typeId, typeName, isNullable, typeDef);
+            var validationTypeDef   = GetStandardTypeDef(typeId, typeDef);
             types.Add(validationTypeDef);
             typeMap.Add(typeDef, validationTypeDef);
         }
         
-        private static string GetTypeName (TypeId typeId, out bool isNullable) {
+        private static ValidationTypeDef GetStandardTypeDef (TypeId typeId, TypeDef typeDef) {
             switch (typeId) {
-                case TypeId.Uint8:      isNullable = false;     return "uint8";
-                case TypeId.Int16:      isNullable = false;     return "int16";
-                case TypeId.Int32:      isNullable = false;     return "int32";
-                case TypeId.Int64:      isNullable = false;     return "int64";
-                case TypeId.Float:      isNullable = false;     return "float";
-                case TypeId.Double:     isNullable = false;     return "double";
+                // --- number type
+                case TypeId.Uint8:      return new ValidationTypeDef(typeId, "uint8",       typeDef, false, false, false);
+                case TypeId.Int16:      return new ValidationTypeDef(typeId, "int16",       typeDef, false, false, false);
+                case TypeId.Int32:      return new ValidationTypeDef(typeId, "int32",       typeDef, false, false, false);
+                case TypeId.Int64:      return new ValidationTypeDef(typeId, "int64",       typeDef, false, false, false);
+                case TypeId.Float:      return new ValidationTypeDef(typeId, "float",       typeDef, false, false, false);
+                case TypeId.Double:     return new ValidationTypeDef(typeId, "double",      typeDef, false, false, false);
                 // --- boolean type
-                case TypeId.Boolean:    isNullable = false;     return "boolean";
+                case TypeId.Boolean:    return new ValidationTypeDef(typeId, "boolean",     typeDef, false, false, false);
                 // --- string types        
-                case TypeId.String:     isNullable = true;      return "string";
-                case TypeId.BigInteger: isNullable = false;     return "BigInteger";
-                case TypeId.DateTime:   isNullable = false;     return "DateTime";
-                case TypeId.Guid:       isNullable = false;     return "Guid";
-                case TypeId.JsonValue:  isNullable = true;      return "JSON";
+                case TypeId.String:     return new ValidationTypeDef(typeId, "string",      typeDef, true,  false, false);
+                case TypeId.BigInteger: return new ValidationTypeDef(typeId, "BigInteger",  typeDef, false, false, false);
+                case TypeId.DateTime:   return new ValidationTypeDef(typeId, "DateTime",    typeDef, false, false, false);
+                case TypeId.Guid:       return new ValidationTypeDef(typeId, "Guid",        typeDef, false, false, false);
+                // --- JSON: number, string, boolean, array & object
+                case TypeId.JsonValue:  return new ValidationTypeDef(typeId, "JSON",        typeDef, true,  true,  true);
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
             }

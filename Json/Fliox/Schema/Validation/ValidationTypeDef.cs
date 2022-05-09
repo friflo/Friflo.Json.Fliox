@@ -31,23 +31,34 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal            IEnumerable<ValidationType> Fields      => fields;
         public    override  string                      ToString()  => qualifiedName;
         
-        internal ValidationTypeDef (TypeId typeId, string typeName, bool isNullable, TypeDef typeDef) {
+        // constructor for standard types: byte, short, int, long, float, double, bool, string, Guid, BigInteger & JsonValue
+        internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef, bool isNullable, bool isArray, bool isDictionary) {
             this.typeId         = typeId;
             this.typeDef        = typeDef;
             this.name           = typeName;
+            this.@namespace     = typeDef.Namespace;
+            this.qualifiedName  = $"{@namespace}.{name}";
+            validationType      = new ValidationType(this, isNullable, isArray, isDictionary);
+        }
+        
+        // constructor for: Union, Class & Enum
+        private ValidationTypeDef (TypeId typeId, TypeDef typeDef, bool isNullable) {
+            this.typeId         = typeId;
+            this.typeDef        = typeDef;
+            this.name           = typeDef.Name;
             this.@namespace     = typeDef.Namespace;
             this.qualifiedName  = $"{@namespace}.{name}";
             validationType      = new ValidationType(this, isNullable, false, false);
         }
         
         private ValidationTypeDef (TypeDef typeDef, UnionType union)
-            : this (TypeId.Union, typeDef.Name, true, typeDef)
+            : this (TypeId.Union, typeDef, true)
         {
             unionType       = new ValidationUnion(union);
         }
         
         private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<FieldDef> fieldDefs)
-            : this (TypeId.Class, typeDef.Name, true, typeDef)
+            : this (TypeId.Class, typeDef, true)
         {
             int requiredCount = 0;
             foreach (var field in fieldDefs) {
@@ -69,7 +80,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<EnumValue> typeEnums)
-            : this (TypeId.Enum, typeDef.Name, false, typeDef)
+            : this (TypeId.Enum, typeDef, false)
         {
             enumValues = new Utf8String[typeEnums.Count];
             int n = 0;

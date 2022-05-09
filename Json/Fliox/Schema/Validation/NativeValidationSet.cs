@@ -95,5 +95,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public  DateTime    stdDateTime;
         public  Guid        stdGuid;
         public  BigInteger  stdBigInteger;
+        public  JsonValue   stdJsonValue;
     }
 }
