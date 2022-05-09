@@ -1,7 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using NUnit.Framework;
@@ -128,6 +130,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         }
         
         [Test]
+        public void ValidateDateTime() {
+            var validation       = validationSet.GetValidationType(typeof(DateTime));
+            success = validator.Validate(new JsonValue("\"2022-05-09T10:12:15.786Z\""),     validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("\"error-05-09T10:12:15.786Z\""),    validation, out error);
+            IsFalse(success);
+            AreEqual("Invalid DateTime: 'error-05-09T10:12:15.786Z' (root), pos: 27", error);
+        }
+        
+        [Test]
+        public void ValidateBigInteger() {
+            var validation       = validationSet.GetValidationType(typeof(BigInteger));
+            success = validator.Validate(new JsonValue("\"123456789\""),            validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("\"invalid big int\""),      validation, out error);
+            IsFalse(success);
+            AreEqual("Invalid BigInteger: 'invalid big int' (root), pos: 17", error);
+        }
+        
+        [Test]
+        public void ValidateGuid() {
+            var validation       = validationSet.GetValidationType(typeof(Guid));
+            success = validator.Validate(new JsonValue("\"11111111-2222-3333-4444-555555555555\""),      validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("\"invalid Guid\""),         validation, out error);
+            IsFalse(success);
+            AreEqual("Invalid Guid: 'invalid Guid' (root), pos: 14", error);
+        }
+        
+        [Test]
+        public void ValidateEnum() {
+            var validation       = validationSet.GetValidationType(typeof(ValidationEnum));
+            success = validator.Validate(new JsonValue("\"One\""),                  validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("\"invalid_enum_value\""),   validation, out error);
+            IsFalse(success);
+            AreEqual("Invalid enum value. was: 'invalid_enum_value', expect: ValidationEnum (root), pos: 20", error);
+        }
+        
+        [Test]
         public void ValidateJsonValue() {
             var validation       = validationSet.GetValidationType(typeof(JsonValue));
             success = validator.Validate(new JsonValue("\"xyz\""),      validation, out error);
@@ -222,4 +268,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             IsTrue(success);
         }
     }
+    
+    enum ValidationEnum { None, One, Two }
 }
