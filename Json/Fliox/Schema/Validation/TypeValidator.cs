@@ -223,16 +223,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     case JsonEvent.ObjectStart:
                         if (!ValidationTypeDef.FindField(typeDef, this, out fieldType, foundFields))
                             return false;
-                        if (fieldType.typeId == TypeId.JsonValue) {
-                            parser.SkipTree();
-                            continue;
-                        }
                         if (fieldType.isDictionary) {
                             if (ValidateElement (fieldType.typeDef, fieldType.isNullableElement, typeDef, depth))
                                 continue;
                             return false;
                         }
-                        if (fieldType.typeId == TypeId.Class || fieldType.typeId == TypeId.Union) {
+                        if (IsObject(fieldType.typeId)) {
                             if (ValidateObjectIntern (fieldType.typeDef, depth + 1))
                                 continue;
                             return false;
@@ -288,8 +284,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         return Error($"Found array as array item. expect: {expect}", parent); // todo
                     
                     case JsonEvent.ObjectStart:
-                        var typeId = typeDef.typeId;
-                        if (typeId == TypeId.Class || typeId == TypeId.Union || typeId == TypeId.JsonValue) {
+                        if (IsObject(typeDef.typeId)) {
                             // in case of a dictionary the key is not relevant
                             if (ValidateObjectIntern(typeDef, depth + 1))
                                 continue;
@@ -459,6 +454,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 foundFields[n] = false;
             }
             return foundFields;
+        }
+        
+        private static bool IsObject (TypeId typeId) {
+            return typeId == TypeId.Class || typeId == TypeId.Union || typeId == TypeId.JsonValue;    
         }
     }
 }
