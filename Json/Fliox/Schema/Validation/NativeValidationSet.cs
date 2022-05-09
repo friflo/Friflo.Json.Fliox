@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             var validationSet       = new ValidationSet(nativeSchema);
             var typeDef             = nativeSchema.GetNativeType(mapper.type);
             var validationTypeDef   = validationSet.GetValidationTypeDef(typeDef);
-            return new ValidationType(validationTypeDef, isNullable, isArray, isDictionary);
+            return new ValidationType(validationTypeDef, isNullable, isArray, isDictionary, false);
         }
         
         /// <summary>

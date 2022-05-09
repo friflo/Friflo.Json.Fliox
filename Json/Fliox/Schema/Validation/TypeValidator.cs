@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         ErrorType("Incorrect type.", "array", false, typeDef.name, typeDef.@namespace, null);
                         return Return(typeDef, false, out error);
                     }
-                    bool success = ValidateElement(typeDef, false, null, 0);
+                    bool success = ValidateElement(typeDef, type.isNullableElement, null, 0);
                     return Return(typeDef, success, out error);
                 }
                 case JsonEvent.Error:
@@ -279,11 +279,17 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         return Error("Element must not be null.", parent);
                     
                     case JsonEvent.ArrayStart:
+                        if (typeDef.typeId == TypeId.JsonValue) {
+                            if (parser.SkipTree())
+                                continue;
+                            return false;
+                        }
                         var expect = ValidationTypeDef.GetName(typeDef, qualifiedTypeErrors);
                         return Error($"Found array as array item. expect: {expect}", parent); // todo
                     
                     case JsonEvent.ObjectStart:
-                        if (typeDef.typeId == TypeId.Class || typeDef.typeId == TypeId.Union) {
+                        var typeId = typeDef.typeId;
+                        if (typeId == TypeId.Class || typeId == TypeId.Union || typeId == TypeId.JsonValue) {
                             // in case of a dictionary the key is not relevant
                             if (ValidateObjectIntern(typeDef, depth + 1))
                                 continue;

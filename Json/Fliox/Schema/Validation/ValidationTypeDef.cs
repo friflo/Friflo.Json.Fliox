@@ -31,14 +31,24 @@ namespace Friflo.Json.Fliox.Schema.Validation
         internal            IEnumerable<ValidationType> Fields      => fields;
         public    override  string                      ToString()  => qualifiedName;
         
-        // constructor for standard types: byte, short, int, long, float, double, bool, string, Guid, BigInteger & JsonValue
-        internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef, bool isNullable, bool isArray, bool isDictionary) {
+        // constructor for: byte, short, int, long, float, double, bool, string, Guid & BigInteger
+        internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef, bool isNullable) {
             this.typeId         = typeId;
             this.typeDef        = typeDef;
             this.name           = typeName;
             this.@namespace     = typeDef.Namespace;
             this.qualifiedName  = $"{@namespace}.{name}";
-            validationType      = new ValidationType(this, isNullable, isArray, isDictionary);
+            validationType      = new ValidationType(this, isNullable, false, false, false);
+        }
+        
+        // constructor for: JsonValue
+        internal ValidationTypeDef (TypeId typeId, string typeName, TypeDef typeDef) {
+            this.typeId         = typeId;
+            this.typeDef        = typeDef;
+            this.name           = typeName;
+            this.@namespace     = typeDef.Namespace;
+            this.qualifiedName  = $"{@namespace}.{name}";
+            validationType      = new ValidationType(this, true, true, true, true);
         }
         
         // constructor for: Union, Class & Enum
@@ -48,7 +58,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             this.name           = typeDef.Name;
             this.@namespace     = typeDef.Namespace;
             this.qualifiedName  = $"{@namespace}.{name}";
-            validationType      = new ValidationType(this, isNullable, false, false);
+            validationType      = new ValidationType(this, isNullable, false, false, false);
         }
         
         private ValidationTypeDef (TypeDef typeDef, UnionType union)

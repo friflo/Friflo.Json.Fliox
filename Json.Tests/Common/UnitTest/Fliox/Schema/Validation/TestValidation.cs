@@ -159,22 +159,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("true"),         validation, out error);
             IsTrue(success);
 
-            success = validator.Validate(new JsonValue("[66,\"str\"]"), validation, out error);
-            IsTrue(success);
-            
             success = validator.Validate(new JsonValue("null"),         validation, out error);
             IsTrue(success);
                 
+            // --- object
             success = validator.Validate(new JsonValue("{}"),           validation, out error);
             IsTrue(success);
             
-            // todo
-            // success = validator.Validate(new JsonValue("[[]]"), validation, out error);
-            // IsTrue(success);
+            success = validator.Validate(new JsonValue("{\"foo\": 88}"),validation, out error);
+            IsTrue(success);
             
-            // todo
-            // success = validator.Validate(new JsonValue("[{}]"), validation, out error);
-            // IsTrue(success);
+            // --- array
+            success = validator.Validate(new JsonValue("[]"),           validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("[66,\"str\"]"), validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("[null]"),       validation, out error);
+            IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("[[]]"),         validation, out error);
+            IsTrue(success);
+
+            success = validator.Validate(new JsonValue("[{}]"),         validation, out error);
+            IsTrue(success);
         }
     }
 }

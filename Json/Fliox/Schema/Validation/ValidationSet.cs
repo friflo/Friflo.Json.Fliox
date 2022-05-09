@@ -98,21 +98,21 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private static ValidationTypeDef GetStandardTypeDef (TypeId typeId, TypeDef typeDef) {
             switch (typeId) {
                 // --- number type
-                case TypeId.Uint8:      return new ValidationTypeDef(typeId, "uint8",       typeDef, false, false, false);
-                case TypeId.Int16:      return new ValidationTypeDef(typeId, "int16",       typeDef, false, false, false);
-                case TypeId.Int32:      return new ValidationTypeDef(typeId, "int32",       typeDef, false, false, false);
-                case TypeId.Int64:      return new ValidationTypeDef(typeId, "int64",       typeDef, false, false, false);
-                case TypeId.Float:      return new ValidationTypeDef(typeId, "float",       typeDef, false, false, false);
-                case TypeId.Double:     return new ValidationTypeDef(typeId, "double",      typeDef, false, false, false);
+                case TypeId.Uint8:      return new ValidationTypeDef(typeId, "uint8",       typeDef, false);
+                case TypeId.Int16:      return new ValidationTypeDef(typeId, "int16",       typeDef, false);
+                case TypeId.Int32:      return new ValidationTypeDef(typeId, "int32",       typeDef, false);
+                case TypeId.Int64:      return new ValidationTypeDef(typeId, "int64",       typeDef, false);
+                case TypeId.Float:      return new ValidationTypeDef(typeId, "float",       typeDef, false);
+                case TypeId.Double:     return new ValidationTypeDef(typeId, "double",      typeDef, false);
                 // --- boolean type
-                case TypeId.Boolean:    return new ValidationTypeDef(typeId, "boolean",     typeDef, false, false, false);
+                case TypeId.Boolean:    return new ValidationTypeDef(typeId, "boolean",     typeDef, false);
                 // --- string types        
-                case TypeId.String:     return new ValidationTypeDef(typeId, "string",      typeDef, true,  false, false);
-                case TypeId.BigInteger: return new ValidationTypeDef(typeId, "BigInteger",  typeDef, false, false, false);
-                case TypeId.DateTime:   return new ValidationTypeDef(typeId, "DateTime",    typeDef, false, false, false);
-                case TypeId.Guid:       return new ValidationTypeDef(typeId, "Guid",        typeDef, false, false, false);
+                case TypeId.String:     return new ValidationTypeDef(typeId, "string",      typeDef, true);
+                case TypeId.BigInteger: return new ValidationTypeDef(typeId, "BigInteger",  typeDef, false);
+                case TypeId.DateTime:   return new ValidationTypeDef(typeId, "DateTime",    typeDef, false);
+                case TypeId.Guid:       return new ValidationTypeDef(typeId, "Guid",        typeDef, false);
                 // --- JSON: number, string, boolean, array & object
-                case TypeId.JsonValue:  return new ValidationTypeDef(typeId, "JSON",        typeDef, true,  true,  true);
+                case TypeId.JsonValue:  return new ValidationTypeDef(typeId, "JSON",        typeDef);
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
             }
