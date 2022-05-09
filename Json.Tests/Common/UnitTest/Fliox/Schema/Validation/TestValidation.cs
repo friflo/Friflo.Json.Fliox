@@ -96,6 +96,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 
             success = validator.Validate(new JsonValue("null"),         validation, out error);
             IsTrue(success);
+            
+            success = validator.Validate(new JsonValue("[null]"),    validation, out error);
+            IsFalse(success);
+            AreEqual("Element must not be null. [0], pos: 5", error);
                 
             success = validator.Validate(new JsonValue("[\"abc\"]"),    validation, out error);
             IsFalse(success);
@@ -108,6 +112,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             success = validator.Validate(new JsonValue("{}"),           validation, out error);
             IsFalse(success);
             AreEqual("Incorrect type. was: object, expect: int32 at int32 > (root), pos: 1", error);
+        }
+        
+        // todo [Test]
+        public void ValidateIntNullArray() {
+            var validation = validationSet.GetValidationType(typeof(int?[]));
+            
+            success = validator.Validate(new JsonValue("[4,5,null]"),      validation, out error);
+            IsTrue(success);
         }
 
         [Test]
