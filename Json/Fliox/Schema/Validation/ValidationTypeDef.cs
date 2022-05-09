@@ -9,31 +9,6 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
-    internal enum TypeId
-    {
-        None,
-        // --- object types
-        Class,
-        Union,
-        // --- number types
-        Uint8,
-        Int16,
-        Int32,
-        Int64,
-        Float,
-        Double,
-        // --- boolean type
-        Boolean,   
-        // --- string types        
-        String,
-        BigInteger,
-        DateTime,
-        Guid,
-        Enum,
-        //
-        JsonValue 
-    }
-    
     /// <summary>
     /// Similar to <see cref="Definition.TypeDef"/> but operates on byte arrays instead of strings to gain
     /// performance.
@@ -65,11 +40,15 @@ namespace Friflo.Json.Fliox.Schema.Validation
             validationType      = new ValidationType(this, isNullable, false, false);
         }
         
-        private ValidationTypeDef (TypeDef typeDef, UnionType union)               : this (TypeId.Union, typeDef.Name, true, typeDef) {
+        private ValidationTypeDef (TypeDef typeDef, UnionType union)
+            : this (TypeId.Union, typeDef.Name, true, typeDef)
+        {
             unionType       = new ValidationUnion(union);
         }
         
-        private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<FieldDef> fieldDefs) : this (TypeId.Class, typeDef.Name, true, typeDef) {
+        private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<FieldDef> fieldDefs)
+            : this (TypeId.Class, typeDef.Name, true, typeDef)
+        {
             int requiredCount = 0;
             foreach (var field in fieldDefs) {
                 if (field.required)
@@ -89,7 +68,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<EnumValue> typeEnums) : this (TypeId.Enum, typeDef.Name, false, typeDef) {
+        private ValidationTypeDef (TypeDef typeDef, IReadOnlyList<EnumValue> typeEnums)
+            : this (TypeId.Enum, typeDef.Name, false, typeDef)
+        {
             enumValues = new Utf8String[typeEnums.Count];
             int n = 0;
             foreach (var enumValue in typeEnums) {
@@ -143,7 +124,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return validator.ErrorType("Invalid enum value.", value.AsString(), true, typeDef.name, typeDef.@namespace, parent);
         }
         
-        internal static bool FindField (ValidationTypeDef typeDef, TypeValidator validator, out ValidationType fieldType, bool[] foundFields) {
+        internal static bool FindField (
+            ValidationTypeDef   typeDef,
+            TypeValidator       validator,
+            out ValidationType  fieldType,
+            bool[]              foundFields)
+        {
             ref var parser = ref validator.parser;
             foreach (var field in typeDef.fields) {
                 if (!field.name.IsEqual(ref parser.key))
@@ -207,5 +193,30 @@ namespace Friflo.Json.Fliox.Schema.Validation
             sb.Append(']');
             return true;
         }
+    }
+    
+    internal enum TypeId
+    {
+        None,
+        // --- object types
+        Class,
+        Union,
+        // --- number types
+        Uint8,
+        Int16,
+        Int32,
+        Int64,
+        Float,
+        Double,
+        // --- boolean type
+        Boolean,   
+        // --- string types        
+        String,
+        BigInteger,
+        DateTime,
+        Guid,
+        Enum,
+        //
+        JsonValue 
     }
 }
