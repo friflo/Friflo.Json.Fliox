@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                                 continue;
                             return false;
                         }
-                        if (IsObject(fieldType.typeId)) {
+                        if (IsObjectType(fieldType.typeId)) {
                             if (ValidateObjectIntern (fieldType.typeDef, depth + 1))
                                 continue;
                             return false;
@@ -284,7 +284,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         return Error($"Found array as array item. expect: {expect}", parent); // todo
                     
                     case JsonEvent.ObjectStart:
-                        if (IsObject(typeDef.typeId)) {
+                        if (IsObjectType(typeDef.typeId)) {
                             // in case of a dictionary the key is not relevant
                             if (ValidateObjectIntern(typeDef, depth + 1))
                                 continue;
@@ -456,7 +456,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return foundFields;
         }
         
-        private static bool IsObject (TypeId typeId) {
+        private static bool IsObjectType (TypeId typeId) {
             return typeId == TypeId.Class || typeId == TypeId.Union || typeId == TypeId.JsonValue;    
         }
     }
