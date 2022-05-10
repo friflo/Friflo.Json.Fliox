@@ -61,6 +61,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
+        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
+
         public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             if (!authorizeDatabase.Authorize(executeContext))
                 return false;

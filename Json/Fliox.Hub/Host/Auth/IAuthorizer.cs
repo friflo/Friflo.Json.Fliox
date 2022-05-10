@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth
@@ -14,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public interface IAuthorizer
     {
-        bool Authorize(SyncRequestTask task, ExecuteContext executeContext);
+        void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases); // added as PoC - maybe removed
+        bool    Authorize               (SyncRequestTask task, ExecuteContext executeContext);
     }
 }

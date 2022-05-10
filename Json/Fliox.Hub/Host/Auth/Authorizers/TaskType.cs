@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 // ReSharper disable once CheckNamespace
@@ -16,6 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             authorizeDatabase   = new AuthorizeDatabase(database);
             this.type           = type;    
         }
+        
+        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
         
         public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             if (!authorizeDatabase.Authorize(executeContext))

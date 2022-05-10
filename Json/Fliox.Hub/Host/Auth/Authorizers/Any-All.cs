@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
@@ -14,6 +15,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.list = list;    
         }
         
+        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) {
+            foreach (var item in list) {
+                item.AddAuthorizedDatabases(databases);
+            }
+        }
+
         public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             foreach (var item in list) {
                 if (item.Authorize(task, executeContext))
@@ -28,6 +35,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public AuthorizeAll(ICollection<IAuthorizer> list) {
             this.list = list;    
+        }
+        
+        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) {
+            foreach (var item in list) {
+                item.AddAuthorizedDatabases(databases);
+            }
         }
         
         public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {

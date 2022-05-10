@@ -256,7 +256,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("read error", resultError.message, 500);
                 return;
             }
-            var content     = restResult.syncResponse.resultMap[container].entityMap[entityId];
+            var entityMap   = restResult.syncResponse.resultMap[container].entityMap;
+            var content     = entityMap[entityId];
             var entityError = content.Error;
             if (entityError != null) {
                 context.WriteError("entity error", $"{entityError.type} - {entityError.message}", 404);
