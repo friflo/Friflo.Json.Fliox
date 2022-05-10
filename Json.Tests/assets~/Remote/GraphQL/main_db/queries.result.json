@@ -149,6 +149,12 @@
         "/swagger"
     ]
 },
+        "echo_backSlash": 
+"\"",
+        "echo_doubleQuote": 
+"\\",
+        "echo_unicode": 
+"a©€😎🌍",
         "Message1": {}
     }
 }

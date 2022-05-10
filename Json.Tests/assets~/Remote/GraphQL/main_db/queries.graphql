@@ -59,6 +59,10 @@ query Test ($testLimit: Int, $countFilter: String, $allFields: Boolean, $ids: [S
     envColor
     routes
   }
+
+  echo_backSlash: 	std_Echo (param: "\"")
+  echo_doubleQuote: std_Echo (param: "\\")
+  echo_unicode: 	std_Echo (param: "a©€😎🌍")
   
   # --- database messages
   Message1 (param: "test")  

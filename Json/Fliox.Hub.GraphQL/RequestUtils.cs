@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
@@ -154,7 +155,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                 case ASTNodeKind.StringValue:
                     var strVal = (GraphQLStringValue)value;
                     sb.Append('"');
-                    sb.Append(strVal.Value.Span);
+                    AppendEscString(sb, strVal.Value.Span);
                     sb.Append('"');
                     return null;
                 case ASTNodeKind.ObjectValue:
@@ -205,6 +206,19 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     return null;
             }
             return new Error(value.Kind, value.Location);
+        }
+        
+        private static void AppendEscString(StringBuilder sb, in ReadOnlySpan<char> value) {
+            var len = value.Length;
+            for (int n = 0; n < len; n++) {
+                var c = value[n];
+                if (c == '"' || c == '\\') {
+                    sb.Append('\\');
+                    sb.Append(c);
+                } else {
+                    sb.Append(c);
+                }
+            }
         }
         
         private sealed class Error {
