@@ -29,10 +29,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringFile() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
-            using (var monitorDB        = new MonitorDB(hub)) {
-                hub.AddExtensionDB(MonitorDB.Name, monitorDB);
+            using (var monitorDB        = new MonitorDB(MonitorDB.Name, hub)) {
+                hub.AddExtensionDB(monitorDB);
                 // assert same behavior with default Authenticator or UserAuthenticator
                 await AssertNoAuthMonitoringDB  (hub);
                 await AssertAuthMonitoringDB    (hub, hub);
@@ -42,11 +42,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringLoopback() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
-            using (var monitor          = new MonitorDB(hub))
+            using (var monitor          = new MonitorDB(MonitorDB.Name, hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
-                hub.AddExtensionDB(MonitorDB.Name, monitor);
+                hub.AddExtensionDB(monitor);
                 // assert same behavior with default Authenticator or UserAuthenticator 
                 await AssertNoAuthMonitoringDB  (loopbackHub);
                 await AssertAuthMonitoringDB    (loopbackHub, hub);
@@ -56,13 +56,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringHttp() {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost)) 
-            using (var monitor      = new MonitorDB(hub))
+            using (var monitor      = new MonitorDB(MonitorDB.Name, hub))
             using (var clientHub    = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared)) {
-                hub.AddExtensionDB(MonitorDB.Name, monitor);
+                hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
                     // assert same behavior with default Authenticator or UserAuthenticator
                     await AssertNoAuthMonitoringDB  (clientHub);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertAuthMonitoringDB(FlioxHub hub, FlioxHub database) {
-            using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
+            using (var userDatabase     = new FileDatabase(MonitorDB.Name, CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
             using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared)) {
                 database.Authenticator  = authenticator;
                 await AssertAuthSuccessMonitoringDB (hub);

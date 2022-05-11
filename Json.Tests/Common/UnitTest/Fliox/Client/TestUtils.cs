@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestQueryRef() {
             using (var __       = SharedEnv.Default) // for LeakTestsFixture
-            using (var database = new MemoryDatabase())
+            using (var database = new MemoryDatabase("db"))
             using (var env      = new SharedEnv())
             using (var hub      = new FlioxHub(database, env))
             using (var store    = new PocStore(hub) { UserId = "TestQueryRef"}) {
@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestDictionaryValueIterator() {
             var env     = new SharedEnv();
-            var hub     = new FlioxHub(new MemoryDatabase(), env);
+            var hub     = new FlioxHub(new MemoryDatabase("db"), env);
             var store   = new PocStore(hub) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
@@ -228,7 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public async Task TestMemorySyncRead() {
             var env         = new SharedEnv();
-            var database    = new MemoryDatabase();
+            var database    = new MemoryDatabase("db");
             var hub         = new FlioxHub(database, env);
             var store       = new EntityIdStore(hub);
             var read = store.intEntities.Read();

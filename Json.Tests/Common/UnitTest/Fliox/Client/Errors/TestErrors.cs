@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private async Task FileUse() {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var fileDatabase = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase, TestGlobals.Shared))
             using (var useStore     = new PocStore(testHub) { UserId = "useStore"}) {
                 await TestStoresErrors(useStore, testHub);
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private async Task LoopbackUse() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var fileDatabase     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var testHub          = new TestDatabaseHub(fileDatabase, TestGlobals.Shared))
             using (var loopbackHub      = new LoopbackHub(testHub))
             using (var useStore         = new PocStore(loopbackHub) { UserId = "useStore", ClientId = "use-client"}) {
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private async Task HttpUse() {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var fileDatabase = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase, TestGlobals.Shared))
             using (var httpHost     = new HttpHost(testHub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost)) {
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private static async Task Test(Func<PocStore, TestDatabaseHub, Task> test) {
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
+            using (var fileDatabase = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase, TestGlobals.Shared))
             using (var useStore     = new PocStore(testHub) { UserId = "useStore"}) {
                 await test(useStore, testHub);

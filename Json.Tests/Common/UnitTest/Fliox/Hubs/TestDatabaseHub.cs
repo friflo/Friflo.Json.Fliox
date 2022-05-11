@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         internal readonly   Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
 
         public TestDatabase(EntityDatabase local)
-            : base (null, null)
+            : base (local.name, null, null)
         {
             this.local = local;
         }

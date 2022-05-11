@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task InitDatabaseSchema(Func<PocStore, PocHandler, Task> test) {
             var messageHandler      = new PocHandler();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(messageHandler))
+            using (var database     = new MemoryDatabase(TestGlobals.DB, messageHandler))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new PocStore(hub) { UserId = "createStore"}) {
                 var nativeSchema = NativeTypeSchema.Create(typeof(PocStore));
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task InitDatabase(Func<PocStore, PocHandler, Task> test) {
             var messageHandler      = new PocHandler();
             using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new MemoryDatabase(messageHandler))
+            using (var database     = new MemoryDatabase(TestGlobals.DB, messageHandler))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new PocStore(hub) { UserId = "createStore"}) {
                 await test(store, messageHandler);

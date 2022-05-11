@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 // ReSharper disable once CheckNamespace
@@ -21,13 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         } */
         
         internal AuthorizeDatabase (string database) {
-            if (database == null) {
-                isPrefix        = true;
-                this.database   = "";
-                dbLabel         = EntityDatabase.MainDB;
-                return;
-            }
-            dbLabel     = database;
+            dbLabel     = database ?? throw new ArgumentNullException(nameof(database));
             isPrefix    = database.EndsWith("*");
             if (isPrefix) {
                 this.database = database.Substring(0, database.Length - 1);
@@ -46,7 +41,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
         
         internal bool Authorize(ExecuteContext executeContext) {
-            return Authorize(executeContext.DatabaseName);
+            var databaseName = executeContext.DatabaseName ?? executeContext.hub.database.name;;
+            return Authorize(databaseName);
         }
     }
     

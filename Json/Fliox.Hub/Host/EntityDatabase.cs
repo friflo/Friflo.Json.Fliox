@@ -45,6 +45,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public abstract class EntityDatabase : IDisposable
     {
+        public   readonly   string              name;
+        
         /// <summary> map of of containers identified by their container name </summary>
         private  readonly   Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
@@ -77,7 +79,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
         /// </summary>
-        protected EntityDatabase(TaskHandler handler, DbOpt opt){
+        protected EntityDatabase(string name, TaskHandler handler, DbOpt opt){
+            this.name           = name ?? throw new ArgumentNullException(nameof(name));
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.handler        = handler ?? new TaskHandler();
         }

@@ -21,8 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
         private  readonly   Database    cosmosDatabase;
         private  readonly   int?        throughput;
         
-        public CosmosDatabase(Database cosmosDatabase, TaskHandler handler = null, DbOpt opt = null, int? throughput = null, bool pretty = false)
-            : base(handler, opt)
+        public CosmosDatabase(string name, Database cosmosDatabase, TaskHandler handler = null, DbOpt opt = null, int? throughput = null, bool pretty = false)
+            : base(name, handler, opt)
         {
             this.cosmosDatabase = cosmosDatabase;
             this.throughput     = throughput;

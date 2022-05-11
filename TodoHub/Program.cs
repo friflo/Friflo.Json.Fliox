@@ -29,7 +29,7 @@ namespace Fliox.TodoHub
             hub.Info.projectName    = "TodoHub";                                                        // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/TodoHub";  // optional
             hub.Info.envName        = "dev";                                                            // optional
-            hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.AddExtensionDB (new ClusterDB(ClusterDB.Name, hub));    // optional - expose info of hosted databases. Required by Hub Explorer
             hub.EventBroker         = new EventBroker(true);            // optional - enables sending events for subscriptions
             
             var httpHost            = new HttpHost(hub, "/fliox/").CacheControl(c.cache);
@@ -45,13 +45,13 @@ namespace Fliox.TodoHub
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase(c.dbPath, handler);
+            var fileDb = new FileDatabase("main_db", c.dbPath, handler);
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
             // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
             // to minimize operation cost and prevent abuse as a free persistent database.   
-            var memoryDB = new MemoryDatabase(handler);
+            var memoryDB = new MemoryDatabase("main_db", handler);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;

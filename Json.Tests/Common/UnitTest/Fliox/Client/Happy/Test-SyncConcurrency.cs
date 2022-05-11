@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var memoryDb = new MemoryDatabase())
+                    using (var memoryDb = new MemoryDatabase(TestGlobals.DB))
                     using (var hub      = new AsyncDatabaseHub(memoryDb, TestGlobals.Shared))
                     using (var store    = new PocStore(hub) { UserId = "store"}) {
                         await SyncConcurrencyInit(store);

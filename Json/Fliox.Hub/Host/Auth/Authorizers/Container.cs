@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
         {
-            authorizeDatabase   = new AuthorizeDatabase(database);
+            authorizeDatabase   = new AuthorizeDatabase(database ?? EntityDatabase.MainDB);
             this.container      = container;
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query, ref aggregate);
         }

@@ -9,19 +9,19 @@ namespace Friflo.Json.Tests.Main
     public static class Throughput
     {
         public static async Task MemoryDbThroughput() {
-            var database    = new MemoryDatabase();
+            var database    = new MemoryDatabase("test_db");
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
         public static async Task FileDbThroughput() {
-            var database    = new FileDatabase("./Json.Tests/assets~/DB/testConcurrencyDb");
+            var database    = new FileDatabase("test_db", "./Json.Tests/assets~/DB/testConcurrencyDb");
             var hub         = new FlioxHub(database);
             await TestHappy.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
         public static async Task WebsocketDbThroughput() {
-            using (var database         = new MemoryDatabase())
+            using (var database         = new MemoryDatabase("test_db"))
             using (var hub          	= new FlioxHub(database))
             using (var httpHost         = new HttpHost(hub, "/"))
             using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task HttpDbThroughput() {
-            using (var database         = new MemoryDatabase())
+            using (var database         = new MemoryDatabase("test_db"))
             using (var hub          	= new FlioxHub(database))
             using (var httpHost         = new HttpHost(hub, "/"))
             using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task LoopbackDbThroughput() {
-            var database                = new MemoryDatabase();
+            var database                = new MemoryDatabase("test_db");
             using (var hub          	= new FlioxHub(database))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 await TestHappy.ConcurrentAccess(loopbackHub, 4, 0, 1_000_000, false);

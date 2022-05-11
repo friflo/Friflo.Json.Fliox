@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             { new JsonKey(UserStore.Server),                ServerRights   },
         };
         
-        private static readonly string DbName = null; // todo replace authorizer by instance members
+        private static readonly string DbName = "*"; // todo replace authorizer by instance members
             
         public static readonly    IAuthorizer   UnknownRights    = new AuthorizeDeny();
         public static readonly    IAuthorizer   AuthUserRights   = new AuthorizeAny(new IAuthorizer[] {

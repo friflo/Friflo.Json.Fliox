@@ -82,7 +82,11 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public class FlioxHub : IDisposable
     {
-        public   readonly   EntityDatabase      database;      
+        public   readonly   EntityDatabase      database;
+        
+        public              string              DatabaseName    => database.name;
+        public   override   string              ToString()      => database.name;
+        
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. <br/>
         /// If assigned the database send push events to clients for database changes and messages these clients have subscribed. <br/>
@@ -128,6 +132,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
         [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();
+        
 
         /// <summary>
         /// Construct a <see cref="FlioxHub"/> with the given default database.
@@ -259,11 +264,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
         
         /// <summary>
-        /// Add an <paramref name="extensionDB"/> to the Hub.
-        /// This database can then be accessed via the <see cref="FlioxHub"/> by the given <paramref name="name"/>.
+        /// Add an <paramref name="extensionDB"/> to the Hub. The extension database is identified by its
+        /// <see cref="EntityDatabase.name"/>
         /// </summary>
-        public void AddExtensionDB(string name, EntityDatabase extensionDB) {
-            extensionDbs.Add(name, extensionDB);
+        public void AddExtensionDB(EntityDatabase extensionDB) {
+            extensionDbs.Add(extensionDB.name, extensionDB);
         }
         
         public bool TryGetDatabase(string name, out EntityDatabase value) {

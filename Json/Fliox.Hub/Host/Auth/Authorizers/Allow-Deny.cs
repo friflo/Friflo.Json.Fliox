@@ -13,11 +13,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public override string ToString() => $"database: {authorizeDatabase.dbLabel}";
 
         public AuthorizeAllow () {
-            authorizeDatabase = new AuthorizeDatabase(null);
+            authorizeDatabase = new AuthorizeDatabase("*");
         }
         
         public AuthorizeAllow (string database) {
-            authorizeDatabase = new AuthorizeDatabase(database);
+            authorizeDatabase = new AuthorizeDatabase(database ?? EntityDatabase.MainDB);
         }
         
         public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);

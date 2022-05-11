@@ -28,21 +28,19 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         internal readonly   EntityDatabase      stateDB;
         private  readonly   FlioxHub            monitorHub;
         private  readonly   FlioxHub            hub;
-        private  readonly   string              name;
 
         public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
 
         public const string Name = "monitor";
         
-        public MonitorDB (FlioxHub hub, string name = null, DbOpt opt = null)
-            : base (new MonitorHandler(hub), opt)
+        public MonitorDB (string name, FlioxHub hub, DbOpt opt = null)
+            : base (name, new MonitorHandler(hub), opt)
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
-            this.name       = name ?? Name;
             var typeSchema  = NativeTypeSchema.Create(typeof(MonitorStore));
             Schema          = new DatabaseSchema(typeSchema);
-            stateDB         = new MemoryDatabase(null, MemoryType.NonConcurrent);
+            stateDB         = new MemoryDatabase(name, null, MemoryType.NonConcurrent);
             monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
 

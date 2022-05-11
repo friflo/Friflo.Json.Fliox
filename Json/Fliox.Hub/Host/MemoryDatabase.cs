@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   MemoryType  containerType;
         public   override   string      StorageName => "in-memory";
 
-        public MemoryDatabase(TaskHandler handler = null, MemoryType? type = null, DbOpt opt = null, bool pretty = false)
-            : base(handler, opt)
+        public MemoryDatabase(string name, TaskHandler handler = null, MemoryType? type = null, DbOpt opt = null, bool pretty = false)
+            : base(name, handler, opt)
         {
             this.pretty     = pretty;
             containerType   = type ?? MemoryType.Concurrent;

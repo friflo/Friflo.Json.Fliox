@@ -39,8 +39,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   bool        pretty;
         public   override   string      StorageName => "file-system";
         
-        public FileDatabase(string databaseFolder, TaskHandler handler = null, DbOpt opt = null, bool pretty = true)
-            : base(handler, opt)
+        public FileDatabase(string name, string databaseFolder, TaskHandler handler = null, DbOpt opt = null, bool pretty = true)
+            : base(name, handler, opt)
         {
             this.pretty = pretty;
             this.databaseFolder = databaseFolder + "/";

@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
+                    using (var database     = new FileDatabase("test_db", CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
                     using (var hub          = new FlioxHub(database, TestGlobals.Shared))
                     {
                         await ConcurrentAccess(hub, 2, 2, 10, true);
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestConcurrentWebSocket () {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var database         = new MemoryDatabase())
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost         = new HttpHost(hub, "/"))
             using (var server           = new HttpListenerHost("http://+:8080/", httpHost))

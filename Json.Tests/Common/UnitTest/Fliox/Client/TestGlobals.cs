@@ -8,6 +8,10 @@ using Friflo.Json.Tests.Common.Utils;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public static class TestGlobals {
+        
+        public const string DB      = "main_db";
+        public const string UserDB  = "user_db";
+            
         public static readonly string PocStoreFolder = CommonUtils.GetBasePath() + "assets~/DB/PocStore";
             
         

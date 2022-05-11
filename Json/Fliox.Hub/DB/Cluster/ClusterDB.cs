@@ -25,21 +25,19 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         internal readonly   EntityDatabase      stateDB;
         private  readonly   FlioxHub            clusterHub;
         private  readonly   FlioxHub            hub;
-        private  readonly   string              name;
 
         public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
 
         public const string Name = "cluster";
         
-        public ClusterDB (FlioxHub hub, string name = null, DbOpt opt = null)
-            : base (new ClusterHandler(), opt)
+        public ClusterDB (string name, FlioxHub hub, DbOpt opt = null)
+            : base (name, new ClusterHandler(), opt)
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
-            this.name       = name ?? Name;
             var typeSchema  = NativeTypeSchema.Create(typeof(ClusterStore));
             Schema          = new DatabaseSchema(typeSchema);
-            stateDB         = new MemoryDatabase(null, MemoryType.NonConcurrent);
+            stateDB         = new MemoryDatabase(name, null, MemoryType.NonConcurrent);
             clusterHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
 

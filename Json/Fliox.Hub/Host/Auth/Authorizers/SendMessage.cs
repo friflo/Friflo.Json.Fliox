@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public   override   string              ToString() => $"database: {authorizeDatabase.dbLabel}, message: {messageLabel}";
 
         public AuthorizeSendMessage (string message, string database) {
-            authorizeDatabase   = new AuthorizeDatabase(database);
+            authorizeDatabase   = new AuthorizeDatabase(database ?? EntityDatabase.MainDB);
             messageLabel        = message;
             if (message.EndsWith("*")) {
                 prefix = true;

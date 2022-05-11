@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         {
             // tasks execution for cluster database bypass authorization - access is always allowed by intention.
             // Returned task results are filtered by AuthorizeDatabase instances assigned to the authorizers. 
-            // if (!AuthorizeTask(task, executeContext, out var error)) { return error; }
+            if (!AuthorizeTask(task, executeContext, out var error)) { return error; }
             var clusterDB = (ClusterDB)database;
             switch (task.TaskType) {
                 case TaskType.command:

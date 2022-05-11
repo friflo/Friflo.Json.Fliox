@@ -45,13 +45,13 @@ namespace Fliox.DemoHub
             hub.Info.projectName    = "DemoHub";                                                        // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/DemoHub";  // optional
             hub.Info.envName        = "dev";                                                            // optional
-            hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info of hosted databases. Required by Hub Explorer
-            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
+            hub.AddExtensionDB (new ClusterDB(ClusterDB.Name, hub));    // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.AddExtensionDB (new MonitorDB(MonitorDB.Name, hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - enables sending events for subscriptions
             
-            var userDB              = new FileDatabase(c.userDbPath, new UserDBHandler(), null, false);
+            var userDB              = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
-            hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
+            hub.AddExtensionDB(userDB);                                 // optional - expose userStore as extension database
             
             var httpHost            = new HttpHost(hub, "/fliox/").CacheControl(c.cache);
             httpHost.AddHandler      (new GraphQLHandler());
@@ -68,13 +68,13 @@ namespace Fliox.DemoHub
         }
         
         private static EntityDatabase CreateDatabase(Config c, DatabaseSchema schema, TaskHandler handler) {
-            var fileDb = new FileDatabase(c.dbPath, handler);
+            var fileDb = new FileDatabase("main_db", c.dbPath, handler);
             fileDb.Schema = schema;
             if (!c.useMemoryDbClone)
                 return fileDb;
             // As the DemoHub is also deployed as a demo service in the internet it uses a memory database
             // to minimize operation cost and prevent abuse as a free persistent database.   
-            var memoryDB = new MemoryDatabase(handler);
+            var memoryDB = new MemoryDatabase("main_db", handler);
             memoryDB.Schema = schema;
             memoryDB.SeedDatabase(fileDb).Wait();
             return memoryDB;
