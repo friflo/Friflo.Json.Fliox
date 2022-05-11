@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var typeSchema          = NativeTypeSchema.Create(typeof(UserStore));
             userDatabase.Schema     = new DatabaseSchema(typeSchema);
             userHub        	        = new FlioxHub(userDatabase, env);
-            userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
+            userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
             this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();
         }

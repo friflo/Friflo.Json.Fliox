@@ -67,6 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          StoreInfo, Tasks, ClientId & UserId
         // ReSharper disable once InconsistentNaming
         internal            ClientIntern                _intern;
+        public              string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
         public              StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         public   override   string                      ToString()      => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask>     Tasks           => _intern.syncStore.appTasks;

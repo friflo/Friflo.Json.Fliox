@@ -9,8 +9,6 @@ using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-
-// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
@@ -26,24 +24,23 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
-        public  readonly  Dictionary<JsonKey, IAuthorizer>  userRights = new Dictionary<JsonKey, IAuthorizer> (JsonKey.Equality) {
-            { new JsonKey(UserStore.AuthenticationUser),    AuthUserRights },
-            { new JsonKey(UserStore.Server),                ServerRights   },
-        };
+        private readonly        Dictionary<JsonKey, IAuthorizer>    userRights;
+        private static readonly IAuthorizer                         UnknownRights    = new AuthorizeDeny();
         
-        private static readonly string DbName = "*"; // todo replace authorizer by instance members
-            
-        public static readonly    IAuthorizer   UnknownRights    = new AuthorizeDeny();
-        public static readonly    IAuthorizer   AuthUserRights   = new AuthorizeAny(new IAuthorizer[] {
-            new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), DbName),
-            new AuthorizeContainer  (nameof(UserStore.permissions),  new []{OperationType.read}, DbName),
-            new AuthorizeContainer  (nameof(UserStore.roles),        new []{OperationType.read, OperationType.query}, DbName),
-        });
-        public static readonly    IAuthorizer   ServerRights     = new AuthorizeAny(new IAuthorizer[] {
-            new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read}, DbName)
-        });
-        
-        public UserDatabaseAuthenticator() : base (null) { }
+        public UserDatabaseAuthenticator(string userDatabaseName) : base (null) {
+            var authUserRights   = new AuthorizeAny(new IAuthorizer[] {
+                new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDatabaseName),
+                new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read }, userDatabaseName),
+                new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query}, userDatabaseName),
+            });
+            var serverRights     = new AuthorizeAny(new IAuthorizer[] {
+                new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDatabaseName)
+            });
+            userRights = new Dictionary<JsonKey, IAuthorizer> (JsonKey.Equality) {
+                { new JsonKey(UserStore.AuthenticationUser),    authUserRights },
+                { new JsonKey(UserStore.Server),                serverRights   },
+            };
+        }
 
         public override Task Authenticate(SyncRequest syncRequest, ExecuteContext executeContext) {
             ref var userId = ref syncRequest.userId;

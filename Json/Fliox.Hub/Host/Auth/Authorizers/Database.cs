@@ -15,12 +15,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 
         public     override     string  ToString()  => dbLabel;
 
-        /* protected DatabaseAuthorizer () {
-            isPrefix    = true;
-            database    = "";
-            dbLabel     = "*";
-        } */
-        
         internal AuthorizeDatabase (string database) {
             dbLabel     = database ?? throw new ArgumentNullException(nameof(database));
             isPrefix    = database.EndsWith("*");
