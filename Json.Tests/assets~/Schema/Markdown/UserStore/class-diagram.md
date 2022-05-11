@@ -44,13 +44,13 @@ class Right {
 Right <|-- AllowRight
 class AllowRight {
     type         : "allow"
-    database?    : string
+    database     : string
 }
 
 Right <|-- TaskRight
 class TaskRight {
     type         : "task"
-    database?    : string
+    database     : string
     types        : TaskType[]
 }
 TaskRight *-- "0..*" TaskType : types
@@ -58,21 +58,21 @@ TaskRight *-- "0..*" TaskType : types
 Right <|-- SendMessageRight
 class SendMessageRight {
     type         : "sendMessage"
-    database?    : string
+    database     : string
     names        : string[]
 }
 
 Right <|-- SubscribeMessageRight
 class SubscribeMessageRight {
     type         : "subscribeMessage"
-    database?    : string
+    database     : string
     names        : string[]
 }
 
 Right <|-- OperationRight
 class OperationRight {
     type         : "operation"
-    database?    : string
+    database     : string
     containers   : string ➞ ContainerAccess
 }
 OperationRight *-- "0..*" ContainerAccess : containers

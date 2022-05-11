@@ -14,14 +14,14 @@ abstract class Right  {
 @Serializable
 @SerialName("allow")
 data class AllowRight (
-              val database    : String? = null,
+              val database    : String,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
 @SerialName("task")
 data class TaskRight (
-              val database    : String? = null,
+              val database    : String,
               val types       : List<TaskType>,
     override  val description : String? = null,
 ) : Right()
@@ -29,7 +29,7 @@ data class TaskRight (
 @Serializable
 @SerialName("sendMessage")
 data class SendMessageRight (
-              val database    : String? = null,
+              val database    : String,
               val names       : List<String>,
     override  val description : String? = null,
 ) : Right()
@@ -37,7 +37,7 @@ data class SendMessageRight (
 @Serializable
 @SerialName("subscribeMessage")
 data class SubscribeMessageRight (
-              val database    : String? = null,
+              val database    : String,
               val names       : List<String>,
     override  val description : String? = null,
 ) : Right()
@@ -45,7 +45,7 @@ data class SubscribeMessageRight (
 @Serializable
 @SerialName("operation")
 data class OperationRight (
-              val database    : String? = null,
+              val database    : String,
               val containers  : HashMap<String, ContainerAccess>,
     override  val description : String? = null,
 ) : Right()

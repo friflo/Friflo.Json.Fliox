@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class TaskRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
-                        public  string          database;
-                        /// <summary>set fo task types like: create, read, upsert, delete, query, ...</summary>
-        [Fri.Required]  public  List<TaskType>  types;
+        [Req]   public      string          database;
+        /// <summary>set fo task types like: create, read, upsert, delete, query, ...</summary>
+        [Req]   public      List<TaskType>  types;
         
-        public  override        RightType       RightType => RightType.task;
+        public  override    RightType       RightType => RightType.task;
         
         public override IAuthorizer ToAuthorizer() {
             var databaseName = database;

@@ -43,13 +43,13 @@
         },
         "AllowRight": {
             "properties": {
-                "database":    { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "TaskRight": {
             "properties": {
-                "database":    { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
                 "types":       { "elements": { "ref":  "TaskType" } },
                 "description": { "type": "string", "nullable": true }
             }
@@ -74,21 +74,21 @@
         },
         "SendMessageRight": {
             "properties": {
-                "database":    { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "SubscribeMessageRight": {
             "properties": {
-                "database":    { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "OperationRight": {
             "properties": {
-                "database":    { "type": "string", "nullable": true },
+                "database":    { "type": "string" },
                 "containers":  { "values": { "ref":  "ContainerAccess" } },
                 "description": { "type": "string", "nullable": true }
             }

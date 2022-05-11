@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -13,11 +13,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class PredicateRight : Right
     {
         /// <summary>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</summary>
-        [Fri.Required]  public  List<string>    names;
+        [Req]   public  List<string>    names;
         
-        public  override        RightType       RightType => RightType.predicate;
-        public  override        IAuthorizer     ToAuthorizer() => throw new NotImplementedException();
-        
+                public  override        RightType       RightType => RightType.predicate;
+                public  override        IAuthorizer     ToAuthorizer() => throw new NotImplementedException();
     }
     
     // ReSharper disable InconsistentNaming

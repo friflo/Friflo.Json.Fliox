@@ -19,28 +19,33 @@ public abstract class Right {
 }
 
 public class AllowRight : Right {
+    [Fri.Required]
     string  database;
 }
 
 public class TaskRight : Right {
+    [Fri.Required]
     string          database;
     [Fri.Required]
     List<TaskType>  types;
 }
 
 public class SendMessageRight : Right {
+    [Fri.Required]
     string        database;
     [Fri.Required]
     List<string>  names;
 }
 
 public class SubscribeMessageRight : Right {
+    [Fri.Required]
     string        database;
     [Fri.Required]
     List<string>  names;
 }
 
 public class OperationRight : Right {
+    [Fri.Required]
     string                               database;
     [Fri.Required]
     Dictionary<string, ContainerAccess>  containers;

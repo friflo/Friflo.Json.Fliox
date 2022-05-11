@@ -36,7 +36,7 @@ export class AllowRight extends Right {
     /** right type */
     type         : "allow";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database?    : string | null;
+    database     : string;
 }
 
 /** **TaskRight** grant **database** access by a set of task **types**.    */
@@ -44,7 +44,7 @@ export class TaskRight extends Right {
     /** right type */
     type         : "task";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database?    : string | null;
+    database     : string;
     /** set fo task types like: create, read, upsert, delete, query, ... */
     types        : TaskType[];
 }
@@ -57,7 +57,7 @@ export class SendMessageRight extends Right {
     /** right type */
     type         : "sendMessage";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database?    : string | null;
+    database     : string;
     /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
     names        : string[];
 }
@@ -70,7 +70,7 @@ export class SubscribeMessageRight extends Right {
     /** right type */
     type         : "subscribeMessage";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database?    : string | null;
+    database     : string;
     /** a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*' */
     names        : string[];
 }
@@ -85,7 +85,7 @@ export class OperationRight extends Right {
     /** right type */
     type         : "operation";
     /** a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*' */
-    database?    : string | null;
+    database     : string;
     /** grant execution of operations and subscriptions on listed **containers** */
     containers   : { [key: string]: ContainerAccess };
 }

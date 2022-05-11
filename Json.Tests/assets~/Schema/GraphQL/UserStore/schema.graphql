@@ -115,23 +115,23 @@ union Right =
 scalar RightInput
 
 type AllowRight {
-    database    : String
+    database    : String!
     description : String
 }
 
 input AllowRightInput {
-    database    : String
+    database    : String!
     description : String
 }
 
 type TaskRight {
-    database    : String
+    database    : String!
     types       : [TaskType!]!
     description : String
 }
 
 input TaskRightInput {
-    database    : String
+    database    : String!
     types       : [TaskType!]!
     description : String
 }
@@ -154,37 +154,37 @@ enum TaskType {
 }
 
 type SendMessageRight {
-    database    : String
+    database    : String!
     names       : [String!]!
     description : String
 }
 
 input SendMessageRightInput {
-    database    : String
+    database    : String!
     names       : [String!]!
     description : String
 }
 
 type SubscribeMessageRight {
-    database    : String
+    database    : String!
     names       : [String!]!
     description : String
 }
 
 input SubscribeMessageRightInput {
-    database    : String
+    database    : String!
     names       : [String!]!
     description : String
 }
 
 type OperationRight {
-    database    : String
+    database    : String!
     containers  : Any
     description : String
 }
 
 input OperationRightInput {
-    database    : String
+    database    : String!
     containers  : Any
     description : String
 }
