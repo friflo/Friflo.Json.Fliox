@@ -211,21 +211,21 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static async Task<DbContainers> Containers (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
             var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
-            dbContainers.id     = context.DatabaseName ?? EntityDatabase.MainDB;
+            dbContainers.id     = context.DatabaseName;
             return dbContainers;
         }
         
         private static DbMessages Messages (Param<Empty> param, MessageContext context) {
             var database        = context.Database;  
             var dbMessages      = database.GetDbMessages();
-            dbMessages.id       = context.DatabaseName ?? EntityDatabase.MainDB;
+            dbMessages.id       = context.DatabaseName;
             return dbMessages;
         }
         
         private static DbSchema Schema (Param<Empty> param, MessageContext context) {
             context.WritePretty = false;
             var database        = context.Database;  
-            var databaseName    = context.DatabaseName ?? EntityDatabase.MainDB;
+            var databaseName    = context.DatabaseName;
             return ClusterStore.CreateCatalogSchema(database, databaseName);
         }
         

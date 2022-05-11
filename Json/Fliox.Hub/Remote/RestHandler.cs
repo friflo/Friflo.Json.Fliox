@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         return;
                     }
                     var database = res.database;
-                    if (database == EntityDatabase.MainDB)
+                    if (database == context.hub.DatabaseName)
                         database = null;
                     JsonValue param;
                     if (isPost) {

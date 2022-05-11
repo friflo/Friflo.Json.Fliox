@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
         public              FlioxHub        Hub             => executeContext.hub;
-        public              string          DatabaseName    => executeContext.DatabaseName;
-        public              EntityDatabase  Database        => executeContext.Database;
+        public              string          DatabaseName    => executeContext.DatabaseName; // not null
+        public              EntityDatabase  Database        => executeContext.Database;     // not null
         public              User            User            => executeContext.User;
         public              JsonKey         ClientId        => executeContext.clientId;
         public              UserInfo        UserInfo        => GetUserInfo();

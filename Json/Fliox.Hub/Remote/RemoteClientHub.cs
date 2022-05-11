@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -43,6 +44,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var executeContext  = new ExecuteContext(pool, eventTarget, sharedCache);
             eventTarget.ProcessEvent(ev, executeContext);
             executeContext.Release();
+        }
+    }
+    
+    internal class RemoteDatabase : EntityDatabase
+    {
+        internal RemoteDatabase(string databaseName) : base(databaseName, null, null) { }
+
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+            throw new InvalidOperationException("RemoteDatabase cannot create a container");
         }
     }
 }

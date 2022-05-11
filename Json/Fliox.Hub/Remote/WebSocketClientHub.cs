@@ -25,7 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   HubLogger                                   hubLogger;
 
 
-        public WebSocketClientHub(string endpoint, SharedEnv env = null) : base(null, env) {
+        public WebSocketClientHub(string databaseName, string endpoint, SharedEnv env = null)
+            : base(new RemoteDatabase(databaseName), env)
+        {
             this.endpoint   = endpoint;
             hubLogger       = sharedEnv.hubLogger;
         }

@@ -82,9 +82,9 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public class FlioxHub : IDisposable
     {
-        public   readonly   EntityDatabase      database;
+        public   readonly   EntityDatabase      database;       // not null
         
-        public              string              DatabaseName    => database.name;
+        public              string              DatabaseName    => database.name; // not null
         public   override   string              ToString()      => database.name;
         
         /// <summary>
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public FlioxHub (EntityDatabase database, SharedEnv env = null, string hostName = null) {
             sharedEnv       = env  ?? SharedEnv.Default;
-            this.database   = database;
+            this.database   = database ?? throw new ArgumentNullException(nameof(database));
             this.hostName   = hostName ?? "host";
         }
         
@@ -169,10 +169,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </para>
         /// </summary>
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            executeContext.hub          = this;
-            var dbName = syncRequest.database;
-            if (dbName == EntityDatabase.MainDB)
-                dbName = null;
+            executeContext.hub  = this;
+            var syncDbName      = syncRequest.database;             // is nullable
+            var hubDbName       = executeContext.hub.DatabaseName;  // not null
+            var dbName          = syncDbName ?? hubDbName;          // not null
             executeContext.DatabaseName = dbName;
             if (executeContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             executeContext.clientId = syncRequest.clientId;
@@ -185,14 +185,14 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
             }
             EntityDatabase db = database;
-            if (dbName != null) {
+            if (dbName != hubDbName) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
                 await db.ExecuteSyncPrepare(syncRequest, executeContext).ConfigureAwait(false);
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
-            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = dbName };
+            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDbName };
             var taskHandler = db.handler;
             
             for (int index = 0; index < requestTasks.Count; index++) {
@@ -249,7 +249,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         private void UpdateRequestStats(string database, SyncRequest syncRequest, ExecuteContext executeContext) {
-            if (database == null) database = EntityDatabase.MainDB;
             var user = executeContext.User;
             RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
             ref var clientId = ref executeContext.clientId;
@@ -272,7 +271,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public bool TryGetDatabase(string name, out EntityDatabase value) {
-            if (name == null || name == EntityDatabase.MainDB) {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (name == database.name) {
                 value = database;
                 return true;
             }
@@ -280,16 +280,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public EntityDatabase GetDatabase(string name) {
-            if (name == null)
+            if (name == DatabaseName)
                 return database;
             return extensionDbs[name];
         }
 
         internal Dictionary<string, EntityDatabase> GetDatabases() {
             var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1);
-            if (database != null) {
-                result.Add(EntityDatabase.MainDB, database);
-            }
+            result.Add(database.name, database);
             foreach (var extensionDB in extensionDbs) {
                 result.Add(extensionDB.Key, extensionDB.Value);
             }

@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              ClientIdValidation          clientIdValidation;
         public              User                        User            => authState.user;
         public              bool                        Authenticated   => authState.authenticated;
-        public              string                      DatabaseName    { get; internal set; }
-        public              EntityDatabase              Database        => hub.GetDatabase(DatabaseName);
+        public              string                      DatabaseName    { get; internal set; }              // not null
+        public              EntityDatabase              Database        => hub.GetDatabase(DatabaseName);   // not null
         public              ObjectPool<ObjectMapper>    ObjectMapper    => pool.ObjectMapper;
         public              ObjectPool<EntityProcessor> EntityProcessor => pool.EntityProcessor;
 

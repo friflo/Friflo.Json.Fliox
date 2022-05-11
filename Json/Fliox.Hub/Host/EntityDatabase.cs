@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public abstract class EntityDatabase : IDisposable
     {
-        public   readonly   string              name;
+        public   readonly   string              name;   // non null
         
         /// <summary> map of of containers identified by their container name </summary>
         private  readonly   Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();

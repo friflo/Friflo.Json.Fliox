@@ -152,7 +152,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void BenchmarkCreateClient() {
             var env         = new SharedEnv();
-            var hub         = new NoopDatabaseHub(env);
+            var hub         = new NoopDatabaseHub("noop_db", env);
             var _           = new PocStore(hub);
             var __          = new PocStore(hub);
             
@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void BenchmarkPooledClient() {
             var env             = new SharedEnv();
-            var hub             = new NoopDatabaseHub(env);
+            var hub             = new NoopDatabaseHub("noop_db", env);
             var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub));
             FlioxClient client;
             using (var pooled = pocStorePool.Get()) {
@@ -213,7 +213,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public async Task TestMemorySync() {
             var env         = new SharedEnv();
-            var hub         = new NoopDatabaseHub(env);
+            var hub         = new NoopDatabaseHub("noop_db", env);
             var store       = new PocStore(hub);
             await store.SyncTasks();                    // force one time allocations
             // GC.Collect();

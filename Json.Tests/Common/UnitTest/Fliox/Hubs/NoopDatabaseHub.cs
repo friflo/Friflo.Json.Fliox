@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
@@ -11,7 +12,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     public class NoopDatabaseHub : FlioxHub
     {
-        internal NoopDatabaseHub (SharedEnv env, string hostName = null) : base(null, env, hostName) { }
+        internal NoopDatabaseHub (string databaseName, SharedEnv env, string hostName = null)
+            : base(new NoopDatabase(databaseName), env, hostName)
+        { }
                 
         public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
             var result = new SyncResponse {
@@ -20,6 +23,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             };
             var response = new ExecuteSyncResult(result);
             return Task.FromResult(response);
+        }
+    }
+    
+    internal class NoopDatabase : EntityDatabase
+    {
+        internal NoopDatabase(string databaseName) : base(databaseName, null, null) { }
+
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+            throw new InvalidOperationException("NoopDatabase cannot create a container");
         }
     }
 }
