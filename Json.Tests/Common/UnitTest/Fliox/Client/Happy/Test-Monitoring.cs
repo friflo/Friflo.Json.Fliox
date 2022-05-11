@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
-            using (var monitorDB        = new MonitorDB(MonitorDB.Name, hub)) {
+            using (var monitorDB        = new MonitorDB(TestGlobals.Monitor, hub)) {
                 hub.AddExtensionDB(monitorDB);
                 // assert same behavior with default Authenticator or UserAuthenticator
                 await AssertNoAuthMonitoringDB  (hub);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
-            using (var monitor          = new MonitorDB(MonitorDB.Name, hub))
+            using (var monitor          = new MonitorDB(TestGlobals.Monitor, hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
                 // assert same behavior with default Authenticator or UserAuthenticator 
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          = new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var httpHost     = new HttpHost(hub, "/"))
             using (var server       = new HttpListenerHost("http://+:8080/", httpHost)) 
-            using (var monitor      = new MonitorDB(MonitorDB.Name, hub))
+            using (var monitor      = new MonitorDB(TestGlobals.Monitor, hub))
             using (var clientHub    = new HttpClientHub(TestGlobals.DB, "http://localhost:8080/", TestGlobals.Shared)) {
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertAuthMonitoringDB(FlioxHub hub, FlioxHub database) {
-            using (var userDatabase     = new FileDatabase(MonitorDB.Name, CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
+            using (var userDatabase     = new FileDatabase(TestGlobals.Monitor, CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
             using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared)) {
                 database.Authenticator  = authenticator;
                 await AssertAuthSuccessMonitoringDB (hub);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "monitor-admin";
             const string token      = "monitor-admin"; 
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(hub, MonitorDB.Name)) {
+            using (var monitor  = new MonitorStore(hub, TestGlobals.Monitor)) {
                 var result = await Monitor(store, monitor, userId, token);
                 AssertResult(result);
                 
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "monitor-admin";
             const string token      = "monitor-admin";
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(hub, MonitorDB.Name)) {
+            using (var monitor  = new MonitorStore(hub, TestGlobals.Monitor)) {
                 var result = await Monitor(store, monitor, userId, token);
                 AssertResult(result);
                 
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "anonymous-user";
             const string token      = "invalid";
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(hub, MonitorDB.Name)) {
+            using (var monitor  = new MonitorStore(hub, TestGlobals.Monitor)) {
                 var result = await Monitor(store, monitor, userId, token);
                 AssertAuthFailedResult(result);
                 

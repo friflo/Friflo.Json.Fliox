@@ -32,8 +32,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
 
-        public const string Name = "monitor";
-        
         public MonitorDB (string name, FlioxHub hub, DbOpt opt = null)
             : base (name, new MonitorHandler(hub), opt)
         {

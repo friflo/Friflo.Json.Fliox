@@ -11,6 +11,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public const string DB      = "main_db";
         public const string UserDB  = "user_db";
+        public const string Monitor = "monitor";
             
         public static readonly string PocStoreFolder = CommonUtils.GetBasePath() + "assets~/DB/PocStore";
             

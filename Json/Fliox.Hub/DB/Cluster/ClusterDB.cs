@@ -29,8 +29,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public   override   string              ToString()  => name;
         public   override   string              StorageName => stateDB.StorageName;
 
-        public const string Name = "cluster";
-        
         public ClusterDB (string name, FlioxHub hub, DbOpt opt = null)
             : base (name, new ClusterHandler(), opt)
         {
