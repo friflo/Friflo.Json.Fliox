@@ -72,9 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public   virtual    string              StorageName => GetType().Name;     
         
-        
-        internal const string MainDB = "main_db";
-        
         /// <summary>
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.

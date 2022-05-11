@@ -23,12 +23,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         public  override        RightType       RightType => RightType.message;
         
         public override IAuthorizer ToAuthorizer() {
+            var databaseName = database;
             if (names.Count == 1) {
-                return new AuthorizeSendMessage(names[0], database);
+                return new AuthorizeSendMessage(names[0], databaseName);
             }
             var list = new List<IAuthorizer>(names.Count);
             foreach (var message in names) {
-                list.Add(new AuthorizeSendMessage(message, database));
+                list.Add(new AuthorizeSendMessage(message, databaseName));
             }
             return new AuthorizeAny(list);
         }

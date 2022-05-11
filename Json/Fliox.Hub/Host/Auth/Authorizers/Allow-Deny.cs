@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
         
         public AuthorizeAllow (string database) {
-            authorizeDatabase = new AuthorizeDatabase(database ?? EntityDatabase.MainDB);
+            authorizeDatabase = new AuthorizeDatabase(database);
         }
         
         public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);

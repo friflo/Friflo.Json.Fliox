@@ -24,17 +24,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         public  override        RightType       RightType => RightType.task;
         
         public override IAuthorizer ToAuthorizer() {
+            var databaseName = database;
             if (types.Count == 1) {
-                return GetAuthorizer(types[0]);
+                return GetAuthorizer(databaseName, types[0]);
             }
             var list = new List<IAuthorizer>(types.Count);
             foreach (var task in types) {
-                list.Add(GetAuthorizer(task));
+                list.Add(GetAuthorizer(databaseName, task));
             }
             return new AuthorizeAny(list);
         }
         
-        private IAuthorizer GetAuthorizer(TaskType taskType) {
+        private static IAuthorizer GetAuthorizer(string database, TaskType taskType) {
             switch (taskType) {
                 case TaskType.read:                return new AuthorizeTaskType(TaskType.read,              database);
                 case TaskType.query:               return new AuthorizeTaskType(TaskType.query,             database);

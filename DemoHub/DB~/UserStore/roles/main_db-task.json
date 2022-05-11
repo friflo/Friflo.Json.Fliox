@@ -2,6 +2,6 @@
     "id": "main_db-task",
     "description": "Allow execution of the specified task types. E.g. 'read' enables reads on all containers.",
     "rights": [
-        { "type": "task", "types": ["read"] }
+        { "type": "task", "database": "main_db", "types": ["read"] }
     ]
 }

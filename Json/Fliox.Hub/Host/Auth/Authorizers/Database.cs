@@ -31,17 +31,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        internal bool Authorize(string db) {
+        internal bool Authorize(string databaseName) {
+            if (databaseName == null) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
-                if (db != null) 
-                    return db.StartsWith(database);
-                return database.Length == 0;
+                return databaseName.StartsWith(database);
             }
-            return db == database;
+            return databaseName == database;
         }
         
         internal bool Authorize(ExecuteContext executeContext) {
-            var databaseName = executeContext.DatabaseName ?? executeContext.hub.database.name;;
+            var databaseName = executeContext.DatabaseName;
             return Authorize(databaseName);
         }
     }
@@ -55,9 +54,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             return left.dbLabel == right.dbLabel;
         }
 
-        public int GetHashCode(AuthorizeDatabase other)
+        public int GetHashCode(AuthorizeDatabase obj)
         {
-            return other.GetHashCode();
+            return obj.dbLabel.GetHashCode();
         }
     }
 }

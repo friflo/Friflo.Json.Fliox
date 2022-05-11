@@ -26,17 +26,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         public  override        RightType                           RightType => RightType.operation;
         
         public override IAuthorizer ToAuthorizer() {
+            var databaseName = database;
             var list = new List<IAuthorizer>(containers.Count);
             foreach (var pair in containers) {
                 var name        = pair.Key;
                 var container   = pair.Value;
                 var access      = container.operations;
                 if (access != null && access.Count > 0) {
-                    list.Add(new AuthorizeContainer(name, access, database));
+                    list.Add(new AuthorizeContainer(name, access, databaseName));
                 }
                 var subscribeChanges   = container.subscribeChanges;
                 if (subscribeChanges != null && subscribeChanges.Count > 0) {
-                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges, database));
+                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges, databaseName));
                 }
             }
             return new AuthorizeAny(list);

@@ -25,6 +25,7 @@
             "id": "main_db-allow",
             "rights": [
                 {
+                    "database": "main_db",
                     "__typename": "AllowRight"
                 }
             ]
@@ -38,12 +39,14 @@
             "id": "main_db-message",
             "rights": [
                 {
+                    "database": "main_db",
                     "names": [
                         "test-mess*"
                     ],
                     "__typename": "SendMessageRight"
                 },
                 {
+                    "database": "main_db",
                     "names": [
                         "test-sub*"
                     ],
@@ -55,6 +58,7 @@
             "id": "main_db-operation",
             "rights": [
                 {
+                    "database": "main_db",
                     "containers": {
                         "articles": {
                             "operations": [
@@ -85,6 +89,7 @@
             "id": "main_db-readonly",
             "rights": [
                 {
+                    "database": "main_db",
                     "types": [
                         "read",
                         "query",
@@ -94,6 +99,7 @@
                     "__typename": "TaskRight"
                 },
                 {
+                    "database": "main_db",
                     "names": [
                         "std.*"
                     ],
@@ -105,6 +111,7 @@
             "id": "main_db-task",
             "rights": [
                 {
+                    "database": "main_db",
                     "types": [
                         "read"
                     ],

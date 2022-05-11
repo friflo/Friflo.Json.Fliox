@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public   override   string      ToString() => $"database: {authorizeDatabase.dbLabel}, type: {type.ToString()}";
 
         public AuthorizeTaskType(TaskType type, string database) {
-            authorizeDatabase   = new AuthorizeDatabase(database ?? EntityDatabase.MainDB);
+            authorizeDatabase   = new AuthorizeDatabase(database);
             this.type           = type;    
         }
         

@@ -2,6 +2,9 @@
     "id": "main_db-allow",
     "description": "Allow unrestricted access to default database. As 'database' is not set it defaults to main_db",
     "rights": [
-        { "type": "allow" }
+        {
+            "type": "allow",
+            "database": "main_db"
+        }
     ]
 }

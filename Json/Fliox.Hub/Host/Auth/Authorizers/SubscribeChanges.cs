@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public AuthorizeSubscribeChanges (string container, ICollection<Change> changes, string database)
         {
-            authorizeDatabase   = new AuthorizeDatabase(database ?? EntityDatabase.MainDB);
+            authorizeDatabase   = new AuthorizeDatabase(database);
             this.container      = container;
             foreach (var change in changes) {
                 switch (change) {
