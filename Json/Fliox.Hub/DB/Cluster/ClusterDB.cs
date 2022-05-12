@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -107,13 +108,20 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return schema;
         }
         
-        internal static async Task<HostCluster> GetDbList (FlioxHub hub) {
-            var databases = hub.GetDatabases();
-            var catalogs = new List<DbContainers>(databases.Count);
+        internal static async Task<HostCluster> GetDbList (MessageContext context) {
+            var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
+            var authorizer          = context.ExecuteContext.authState.authorizer;
+            authorizer.AddAuthorizedDatabases(authorizedDatabases);
+            var hub         = context.Hub;
+            var databases   = hub.GetDatabases();
+            var catalogs    = new List<DbContainers>(databases.Count);
             foreach (var pair in databases) {
+                var databaseName    = pair.Key;
+                if (!AuthorizeDatabase.IsAuthorizedDatabase(authorizedDatabases, databaseName))
+                    continue;
                 var database        = pair.Value;
                 var dbContainers    = await database.GetDbContainers().ConfigureAwait(false);
-                dbContainers.id     = pair.Key;
+                dbContainers.id     = databaseName;
                 catalogs.Add(dbContainers);
             }
             return new HostCluster{ databases = catalogs };

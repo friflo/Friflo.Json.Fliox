@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        internal bool Authorize(string databaseName) {
+        private bool Authorize(string databaseName) {
             if (databaseName == null) throw new ArgumentNullException(nameof(databaseName));
             if (isPrefix) {
                 return databaseName.StartsWith(database);
@@ -36,6 +36,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal bool Authorize(ExecuteContext executeContext) {
             var databaseName = executeContext.DatabaseName;
             return Authorize(databaseName);
+        }
+        
+        internal static bool IsAuthorizedDatabase(IEnumerable<AuthorizeDatabase> authorizeDatabases, string databaseName) {
+            foreach (var authorizeDatabase in authorizeDatabases) {
+                if (authorizeDatabase.Authorize(databaseName))
+                    return true;
+            }
+            return false;
         }
     }
     

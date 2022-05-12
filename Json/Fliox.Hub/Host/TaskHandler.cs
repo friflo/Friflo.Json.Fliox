@@ -256,8 +256,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private static async Task<HostCluster> Cluster (Param<Empty> param, MessageContext context) {
-            var hub             = context.Hub;
-            return await ClusterStore.GetDbList(hub).ConfigureAwait(false);
+            return await ClusterStore.GetDbList(context).ConfigureAwait(false);
         }
         
         // --- internal API ---

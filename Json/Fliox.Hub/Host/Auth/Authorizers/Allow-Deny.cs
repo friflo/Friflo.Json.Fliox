@@ -12,10 +12,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             
         public override string ToString() => $"database: {authorizeDatabase.dbLabel}";
 
-        public AuthorizeAllow () {
-            authorizeDatabase = new AuthorizeDatabase("*");
-        }
-        
         public AuthorizeAllow (string database) {
             authorizeDatabase = new AuthorizeDatabase(database);
         }

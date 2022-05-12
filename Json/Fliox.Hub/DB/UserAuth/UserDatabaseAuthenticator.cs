@@ -27,14 +27,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private readonly        Dictionary<JsonKey, IAuthorizer>    userRights;
         private static readonly IAuthorizer                         UnknownRights    = new AuthorizeDeny();
         
-        public UserDatabaseAuthenticator(string userDatabaseName) : base (null) {
+        public UserDatabaseAuthenticator(string userDbName) : base (null) {
             var authUserRights   = new AuthorizeAny(new IAuthorizer[] {
-                new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDatabaseName),
-                new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read }, userDatabaseName),
-                new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query}, userDatabaseName),
+                new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDbName),
+                new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read }, userDbName),
+                new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query}, userDbName),
             });
             var serverRights     = new AuthorizeAny(new IAuthorizer[] {
-                new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDatabaseName)
+                new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDbName)
             });
             userRights = new Dictionary<JsonKey, IAuthorizer> (JsonKey.Equality) {
                 { new JsonKey(UserStore.AuthenticationUser),    authUserRights },

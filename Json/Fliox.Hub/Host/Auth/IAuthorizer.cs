@@ -15,7 +15,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// </summary>
     public interface IAuthorizer
     {
-        void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases); // added as PoC - maybe removed
+        /// <summary>
+        /// Create a set of <paramref name="databases"/> used to filter
+        /// <see cref="DB.Cluster.ClusterStore"/> read and query results available to a user.
+        /// </summary>
+        void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases);
         bool    Authorize               (SyncRequestTask task, ExecuteContext executeContext);
     }
 }

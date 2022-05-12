@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal readonly   List<string>            routes      = new List<string>();
 
         [DebuggerBrowsable(Never)]  private HubInfo             info                = new HubInfo();
-        [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
+        [DebuggerBrowsable(Never)]  private Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow("*"));
         [DebuggerBrowsable(Never)]  private ClientController    clientController    = new IncrementClientController();
         
 
