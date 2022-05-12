@@ -150,7 +150,8 @@
                 {
                     "database": "user_db",
                     "names": [
-                        "std.*"
+                        "std.*",
+                        "ValidateUserDb"
                     ],
                     "__typename": "SendMessageRight"
                 }

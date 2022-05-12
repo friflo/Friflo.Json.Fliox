@@ -86,6 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public              string              DatabaseName    => database.name; // not null
         public   override   string              ToString()      => database.name;
+        public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. <br/>
@@ -268,6 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public void AddExtensionDB(EntityDatabase extensionDB) {
             extensionDbs.Add(extensionDB.name, extensionDB);
+            Logger.Log(HubLog.Info, $"{DatabaseName} - add database: {extensionDB.name}", null);
         }
         
         public bool TryGetDatabase(string name, out EntityDatabase value) {

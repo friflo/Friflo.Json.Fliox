@@ -48,11 +48,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
         
+        public              IHubLogger              Logger          => sharedEnv.hubLogger;
         public   const      string                  DefaultCacheControl = "max-age=600";
+        
 
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
         {
+            Logger.Log(HubLog.Info, $"create HttpHost - database: {hub.DatabaseName}", null);
+
             hubRoutes = hub.routes;
             hubRoutes.AddRange(restHandler.Routes);
             hubRoutes.AddRange(schemaHandler.Routes);
