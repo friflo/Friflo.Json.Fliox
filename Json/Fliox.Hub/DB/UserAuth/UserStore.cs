@@ -44,6 +44,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public CommandTask<AuthResult> AuthenticateUser(Credentials command) {
             return SendCommand<Credentials, AuthResult>(nameof(AuthenticateUser), command);
         }
+        public CommandTask<ValidateUserDbResult> ValidateUserDb() {
+            return SendCommand<ValidateUserDbResult>(nameof(ValidateUserDb));
+        }
         
         public async Task<AuthResult> Authenticate(Credentials command) {
             var commandTask = AuthenticateUser(command);
@@ -98,8 +101,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>Result of <see cref="UserStore.AuthenticateUser"/> command</summary>
     public sealed class AuthResult {
         /// <summary>true if authentication was successful</summary>
-                public bool             isValid;
+        public          bool            isValid;
 
         public override string          ToString() => $"isValid: {isValid}";
     }
+    
+    public sealed class ValidateUserDbResult {
+        public          string[]        errors;
+    }
+    
 }

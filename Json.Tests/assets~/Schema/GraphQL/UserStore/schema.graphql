@@ -21,6 +21,7 @@ type Query {
     countPermissions(filter: String) : Int
     countRoles      (filter: String) : Int
     AuthenticateUser(param: CredentialsInput) : AuthResult!
+    ValidateUserDb   : ValidateUserDbResult!
     std_Echo        (param: Any!) : Any!
     std_Containers   : DbContainers!
     std_Messages     : DbMessages!
@@ -245,6 +246,14 @@ type AuthResult {
 
 input AuthResultInput {
     isValid : Boolean!
+}
+
+type ValidateUserDbResult {
+    errors : [String!]
+}
+
+input ValidateUserDbResultInput {
+    errors : [String!]
 }
 
 type DbContainers {

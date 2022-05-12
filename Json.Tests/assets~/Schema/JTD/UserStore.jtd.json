@@ -138,6 +138,11 @@
                 "isValid": { "type": "boolean" }
             }
         },
+        "ValidateUserDbResult": {
+            "properties": {
+                "errors": { "elements": { "type": "string" }, "nullable": true }
+            }
+        },
         "DbContainers": {
             "properties": {
                 "id":         { "type": "string" },

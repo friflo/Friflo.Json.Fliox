@@ -47,5 +47,9 @@ public class AuthResult {
     bool  isValid;
 }
 
+public class ValidateUserDbResult {
+    List<string>  errors;
+}
+
 }
 

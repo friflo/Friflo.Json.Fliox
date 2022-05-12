@@ -30,9 +30,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
                         authenticator.RegisterPredicate(TestPredicate);
-                        hub.Authenticator  = authenticator;
-                        hub.EventBroker    = eventBroker;
-                        await authenticator.ValidateRoles();
+                        hub.Authenticator   = authenticator;
+                        hub.EventBroker     = eventBroker;
+                        var errors          = await authenticator.ValidateRoles();
+                        AreEqual(0, errors.Count);
                         await AssertNotAuthenticated        (hub);
                         await AssertAuthAccessOperations    (hub);
                         await AssertAuthAccessSubscriptions (hub);

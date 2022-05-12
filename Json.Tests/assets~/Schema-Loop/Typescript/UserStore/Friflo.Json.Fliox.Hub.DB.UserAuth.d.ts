@@ -23,6 +23,7 @@ export interface UserStore {
     // --- commands
     /** authenticate user **Credentials**: **userId** and **token** */
     ["AuthenticateUser"]     (param: Credentials | null) : AuthResult;
+    ["ValidateUserDb"]       () : ValidateUserDbResult;
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]             (param: any) : any;
     /** list all database containers */
@@ -49,6 +50,10 @@ export class Credentials {
 export class AuthResult {
     /** true if authentication was successful */
     isValid  : boolean;
+}
+
+export class ValidateUserDbResult {
+    errors? : string[] | null;
 }
 
 /** Contains a set of **rights** used for task authorization */

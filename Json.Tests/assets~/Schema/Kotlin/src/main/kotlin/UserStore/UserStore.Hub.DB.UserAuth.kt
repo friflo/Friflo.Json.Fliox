@@ -42,3 +42,8 @@ data class AuthResult (
               val isValid : Boolean,
 )
 
+@Serializable
+data class ValidateUserDbResult (
+              val errors : List<String>? = null,
+)
+

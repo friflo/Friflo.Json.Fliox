@@ -20,6 +20,7 @@
             "commands": {
                 "AuthenticateUser": { "param": { "oneOf": [{ "$ref": "#/definitions/Credentials" }, {"type": "null"}] }, "result": { "$ref": "#/definitions/AuthResult" },
                     "description": "authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b>" },
+                "ValidateUserDb":   { "result": { "$ref": "#/definitions/ValidateUserDbResult" } },
                 "std.Echo":         { "param": {  }, "result": {  },
                     "description": "echos the given parameter to assure the database is working appropriately." },
                 "std.Containers":   { "result": { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/DbContainers" },
@@ -58,6 +59,13 @@
             "required": [
                 "isValid"
             ],
+            "additionalProperties": false
+        },
+        "ValidateUserDbResult": {
+            "type": "object",
+            "properties": {
+                "errors": { "type": ["array", "null"], "items": { "type": "string" } }
+            },
             "additionalProperties": false
         }
     }

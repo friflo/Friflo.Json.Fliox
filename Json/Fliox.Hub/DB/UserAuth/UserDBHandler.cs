@@ -3,13 +3,15 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     public sealed class UserDBHandler : TaskHandler
     {
         public UserDBHandler() {
-            AddCommandHandlerAsync<Credentials, AuthResult> (nameof(AuthenticateUser), AuthenticateUser);
+            AddCommandHandlerAsync<Credentials, AuthResult>         (nameof(AuthenticateUser), AuthenticateUser);
+            AddCommandHandlerAsync<JsonValue, ValidateUserDbResult> (nameof(ValidateUserDb),    ValidateUserDb);
         }
         
         private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command) {
@@ -35,6 +37,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 bool            isValid = cred != null && cred.token == authenticate.token;
                 return new AuthResult { isValid = isValid };
             }
+        }
+        
+        private async Task<ValidateUserDbResult> ValidateUserDb (Param<JsonValue> param, MessageContext command) {
+            var authenticator = (UserAuthenticator)command.Hub.Authenticator;
+            var errors = await authenticator.ValidateRoles();
+            
+            return new ValidateUserDbResult { errors = errors.ToArray() };
         }
     }
 }

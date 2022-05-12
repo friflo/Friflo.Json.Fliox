@@ -77,6 +77,24 @@
         }
       }
     },
+    "/?command=ValidateUserDb": {
+      "post": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "Friflo.Json.Fliox.Hub.DB.UserAuth.json#/definitions/ValidateUserDbResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?command=std.Echo": {
       "post": {
         "summary":    "echos the given parameter to assure the database is working appropriately.",

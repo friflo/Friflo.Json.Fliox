@@ -294,6 +294,7 @@
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Role'><div><span>Role</span><key>id</key></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'><div><span>Credentials</span></div></a></li>
             <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'><div><span>AuthResult</span></div></a></li>
+            <li><a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.ValidateUserDbResult'><div><span>ValidateUserDbResult</span></div></a></li>
         </ul>
     </li>
     <li><a href='#Friflo.Json.Fliox.Hub.DB.Cluster'>Friflo.Json.Fliox.Hub.DB.Cluster</a>
@@ -379,6 +380,11 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><sig>(<keyword>param</keyword>: <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.Credentials'>Credentials</a> | null) : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.AuthResult'>AuthResult</a></sig></td>
             <td><oas><a href='../open-api.html#/commands/post__command_AuthenticateUser' target='_blank' title='open AuthenticateUser API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
             <td><docs>authenticate user <b>Credentials</b>: <b>userId</b> and <b>token</b></docs></td>
+        </tr>
+        <tr>
+            <td><cmd>ValidateUserDb</cmd></td>
+            <td><sig>() : <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.ValidateUserDbResult'>ValidateUserDbResult</a></sig></td>
+            <td><oas><a href='../open-api.html#/commands/post__command_ValidateUserDb' target='_blank' title='open ValidateUserDb API as OpenAPI specification (OAS) in new tab'>OAS</a></oas></td>
         </tr>
         <tr>
             <td><cmd>std.Echo</cmd></td>
@@ -519,6 +525,18 @@ Each <b>role</b> in container <b>roles</b> has a set of <b>rights</b> which gran
             <td><field>isValid</field></td>
             <td><type><predef>boolean</predef></type></td>
             <td><docs>true if authentication was successful</docs></td>
+        </tr>
+    </table>
+    </div>
+    <div class='type'>
+    <h3 id='Friflo.Json.Fliox.Hub.DB.UserAuth.ValidateUserDbResult'>
+        <a href='#Friflo.Json.Fliox.Hub.DB.UserAuth.ValidateUserDbResult'>ValidateUserDbResult</a>
+        <keyword>class</keyword>
+    </h3>
+    <table class='fields'>
+        <tr>
+            <td><field>errors</field></td>
+            <td><type><predef>string</predef>[] | null</type></td>
         </tr>
     </table>
     </div>

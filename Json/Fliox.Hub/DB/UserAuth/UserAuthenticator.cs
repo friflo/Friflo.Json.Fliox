@@ -58,7 +58,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub.Dispose();
         }
         
-        public async Task ValidateRoles() {
+        public async Task<List<string>> ValidateRoles() {
+            var errors = new List<string>();
             using(var userStore = new UserStore (userHub)) {
                 userStore.UserId = UserStore.AuthenticationUser;
                 var queryRoles = userStore.roles.QueryAll();
@@ -72,11 +73,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                             break;
                         foreach (var predicateName in rightPredicates.names) {
                             if (!registeredPredicates.ContainsKey(predicateName)) {
-                                throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
+                                var error = $"unknown predicate: '{predicateName}' in role: {role.id}";
+                                errors.Add(error);
                             }
                         }
                     }
                 }
+                return  errors;
             }
         }
 
@@ -224,7 +227,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     if (right is PredicateRight predicates) {
                         var result = GetPredicatesAuthorizer(predicates);
                         if (!result.Success)
-                            return result.error;
+                            return $"{result.error} in role: {newRole.id}";
                         authorizer = result.value;
                     } else {
                         authorizer = right.ToAuthorizer();
@@ -245,7 +248,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var authorizers = new List<Authorizer>(right.names.Count);
             foreach (var predicateName in right.names) {
                 if (!registeredPredicates.TryGetValue(predicateName, out var predicate)) {
-                    return $"unknown authorization predicate: {predicateName}";
+                    return $"unknown predicate: {predicateName}";
                 }
                 authorizers.Add(predicate);
             }
