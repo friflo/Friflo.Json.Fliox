@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         private async Task<ValidateUserDbResult> ValidateUserDb (Param<JsonValue> param, MessageContext command) {
             var authenticator = (UserAuthenticator)command.Hub.Authenticator;
-            var errors = await authenticator.ValidateRoles();
+            var errors = await authenticator.ValidateUserDb();
             
             return new ValidateUserDbResult { errors = errors.ToArray() };
         }

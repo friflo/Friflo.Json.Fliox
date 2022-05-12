@@ -58,28 +58,51 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub.Dispose();
         }
         
-        public async Task<List<string>> ValidateRoles() {
+        public async Task<List<string>> ValidateUserDb() {
             var errors = new List<string>();
             using(var userStore = new UserStore (userHub)) {
                 userStore.UserId = UserStore.AuthenticationUser;
-                var queryRoles = userStore.roles.QueryAll();
-                await userStore.TrySyncTasks().ConfigureAwait(false);
+                userStore.permissions.QueryAll();
+                userStore.roles.QueryAll();
+                var result = await userStore.TrySyncTasks().ConfigureAwait(false);
                 
-                Dictionary<string, Role> roles = queryRoles.Result;
-                foreach (var pair in roles) {
-                    var role = pair.Value;
-                    foreach (var right in role.rights) {
-                        if (!(right is PredicateRight rightPredicates))
-                            break;
-                        foreach (var predicateName in rightPredicates.names) {
-                            if (!registeredPredicates.ContainsKey(predicateName)) {
-                                var error = $"unknown predicate: '{predicateName}' in role: {role.id}";
-                                errors.Add(error);
-                            }
-                        }
+                if (!result.Success) {
+                    foreach (var task in result.failed) {
+                        errors.Add(task.Error.Message);
+                    }
+                    return errors;
+                }
+                ValidatePermissions (userStore, errors);
+                ValidateRoles       (userStore, errors);
+                return  errors;
+            }
+        }
+        
+        private static void ValidatePermissions(UserStore userStore, List<string> errors) {
+            var permissions = userStore.permissions.AsList();
+            foreach (var permission in permissions) {
+                foreach (var role in permission.roles) {
+                    if (userStore.roles.Contains(role))
+                        continue;
+                    var error = $"role not found. role: '{role}' in permission: {permission.id}";
+                    errors.Add(error);
+                }
+            }
+        }
+        
+        private void ValidateRoles(UserStore userStore, List<string> errors) {
+            var roles = userStore.roles.AsList();
+            foreach (var role in roles) {
+                foreach (var right in role.rights) {
+                    if (!(right is PredicateRight rightPredicates))
+                        break;
+                    foreach (var predicateName in rightPredicates.names) {
+                        if (registeredPredicates.ContainsKey(predicateName))
+                            continue;
+                        var error = $"unknown predicate: '{predicateName}' in role: {role.id}";
+                        errors.Add(error);
                     }
                 }
-                return  errors;
             }
         }
 

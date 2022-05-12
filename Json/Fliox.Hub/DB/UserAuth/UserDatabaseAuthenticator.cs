@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public UserDatabaseAuthenticator(string userDbName) : base (null) {
             var authUserRights   = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDbName),
-                new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read }, userDbName),
-                new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query}, userDbName),
+                new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read, OperationType.query }, userDbName),
+                new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query }, userDbName),
             });
             var serverRights     = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDbName)

@@ -85,6 +85,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             return false;
         }
         
+        public List<T> AsList() {
+            var peers   = Peers();
+            var result  = new List<T>(peers.Count);
+            foreach (var pair in peers) {
+                var entity = pair.Value.NullableEntity;
+                if (entity == null)
+                    continue;
+                result.Add(entity);
+            }
+            return result;
+        }
+        
         public bool Contains (TKey key) {
             var peers = Peers();
             return peers.ContainsKey(key);
