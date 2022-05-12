@@ -6,14 +6,25 @@
             "type": "operation",
             "database": "user_db",
             "containers": {
-                "permissions": { "operations": ["full"] },
-                "roles":       { "operations": ["full"] }
+                "permissions": {
+                    "operations": [
+                        "full"
+                    ]
+                },
+                "roles": {
+                    "operations": [
+                        "full"
+                    ]
+                }
             }
         },
         {
-            "type":     "sendMessage",
+            "type": "sendMessage",
             "database": "user_db",
-            "names":    ["std.*"]
+            "names": [
+                "std.*",
+                "ValidateUserDb"
+            ]
         }
     ]
 }
