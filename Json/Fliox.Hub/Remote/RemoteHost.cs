@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -21,6 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              bool        fakeOpenClosedSockets;
         
         internal            FlioxHub    LocalHub    => localHub;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger  Logger      => sharedEnv.hubLogger;
 
 

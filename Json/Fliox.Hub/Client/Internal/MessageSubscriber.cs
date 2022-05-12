@@ -48,6 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  readonly  JsonValue       param;
         internal  readonly  ObjectReader    reader;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger      Logger { get; }
 
         public    override  string          ToString() => $"{name}(param: {param.AsString()})";

@@ -86,6 +86,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public              string              DatabaseName    => database.name; // not null
         public   override   string              ToString()      => database.name;
+        
+        [DebuggerBrowsable(Never)]
         public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
         /// <summary>

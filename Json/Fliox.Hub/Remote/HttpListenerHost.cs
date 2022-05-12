@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             int                 requestCount;
         private  readonly   HttpHost            httpHost;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger          Logger { get; }
         
         public HttpListenerHost(HttpListener httpListener, HttpHost httpHost) {

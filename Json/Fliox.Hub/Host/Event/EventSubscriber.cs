@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                              Logger { get; }
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 

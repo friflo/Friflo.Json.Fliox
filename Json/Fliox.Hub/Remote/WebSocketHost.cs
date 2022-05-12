@@ -29,6 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   SharedCache                             sharedCache;
         private  readonly   IPEndPoint                              remoteEndPoint;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                              Logger { get; }
 
         
