@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class FlioxHub : IDisposable
+    public class FlioxHub : IDisposable, ILogSource
     {
         public   readonly   EntityDatabase      database;       // not null
         

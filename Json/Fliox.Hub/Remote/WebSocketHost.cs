@@ -17,7 +17,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
-    public sealed class WebSocketHost : IEventTarget
+    public sealed class WebSocketHost : IEventTarget, ILogSource
     {
         private  readonly   WebSocket                               webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubscriber.SendEvents"/> 
@@ -27,13 +27,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   Task                                    sendLoop;
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
-        private  readonly   HubLogger                               hubLogger;
         private  readonly   IPEndPoint                              remoteEndPoint;
+        
+        public              IHubLogger                              Logger { get; }
+
         
         private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
             pool                        = new Pool(env.Pool);
             sharedCache                 = env.sharedCache;
-            hubLogger                   = env.hubLogger;
+            Logger                      = env.hubLogger;
             this.webSocket              = webSocket;
             this.remoteEndPoint         = remoteEndPoint;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
@@ -106,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     }
                     continue;
                 }
-                hubLogger.Log(HubLog.Info, $"ReceiveLoop() returns. WebSocket state: {state}, remote: {remoteEndPoint}");
+                Logger.Log(HubLog.Info, $"ReceiveLoop() returns. WebSocket state: {state}, remote: {remoteEndPoint}");
                 if (state == WebSocketState.CloseReceived) {
                     await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);    
                 }

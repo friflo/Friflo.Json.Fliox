@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class RemoteHost : IDisposable
+    public class RemoteHost : IDisposable, ILogSource
     {
         private  readonly   FlioxHub    localHub;
         public   readonly   SharedEnv   sharedEnv;
@@ -20,7 +20,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool        fakeOpenClosedSockets;
         
-        internal            FlioxHub    LocalHub => localHub;
+        internal            FlioxHub    LocalHub    => localHub;
+        public              IHubLogger  Logger      => sharedEnv.hubLogger;
+
 
         protected RemoteHost(FlioxHub hub, SharedEnv env) {
             sharedEnv   = env  ?? SharedEnv.Default;

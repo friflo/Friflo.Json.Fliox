@@ -22,14 +22,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private             ClientWebSocket                             websocket;
         private  readonly   ConcurrentDictionary<int, WebsocketRequest> requests = new ConcurrentDictionary<int, WebsocketRequest>();
         private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
-        private  readonly   HubLogger                                   hubLogger;
-
-
+        
         public WebSocketClientHub(string databaseName, string endpoint, SharedEnv env = null)
             : base(new RemoteDatabase(databaseName), env)
         {
             this.endpoint   = endpoint;
-            hubLogger       = sharedEnv.hubLogger;
         }
         
         /* public override void Dispose() {
@@ -70,7 +67,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         WebSocketReceiveResult wsResult;
                         do {
                             if (websocket.State != WebSocketState.Open) {
-                                hubLogger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {websocket.State}");
+                                Logger.Log(HubLog.Info, $"Pre-ReceiveAsync. State: {websocket.State}");
                                 return;
                             }
                             wsResult = await websocket.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
@@ -79,12 +76,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                         while(!wsResult.EndOfMessage);
 
                         if (websocket.State != WebSocketState.Open) {
-                            hubLogger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {websocket.State}");
+                            Logger.Log(HubLog.Info, $"Post-ReceiveAsync. State: {websocket.State}");
                             return;
                         }
                         var messageType = wsResult.MessageType;
                         if (messageType != WebSocketMessageType.Text) {
-                            hubLogger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {messageType} {endpoint}");
+                            Logger.Log(HubLog.Error, $"Expect WebSocket message type text. type: {messageType} {endpoint}");
                             continue;
                         }
                         var requestContent  = new JsonValue(memoryStream.ToArray());
@@ -123,7 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             catch (Exception e) {
                 var message = "OnReceive failed processing WebSocket message";
-                hubLogger.Log(HubLog.Error, message, e);
+                Logger.Log(HubLog.Error, message, e);
                 Debug.Fail($"{message}, exception: {e}");
             }
         }

@@ -48,7 +48,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   List<IRequestHandler>   customHandlers  = new List<IRequestHandler>();
         private  readonly   List<string>            hubRoutes;
         
-        public              IHubLogger              Logger          => sharedEnv.hubLogger;
         public   const      string                  DefaultCacheControl = "max-age=600";
         
 
@@ -106,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return context;
             }
             var message = $"Expect context path matching HttpHost.endpoint: {endpoint}, path: {path}";
-            sharedEnv.hubLogger.Log(HubLog.Error, message);
+            Logger.Log(HubLog.Error, message);
             return null;
         }
 

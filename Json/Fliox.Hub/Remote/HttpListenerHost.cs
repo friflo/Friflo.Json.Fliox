@@ -30,18 +30,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///     <item>Shutdown server: <see cref="Dispose"/></item>
     /// </list> 
     /// </summary>
-    public sealed class HttpListenerHost : IDisposable
+    public sealed class HttpListenerHost : IDisposable, ILogSource
     {
         private  readonly   HttpListener        listener;
         private             bool                runServer;
         private             int                 requestCount;
         private  readonly   HttpHost            httpHost;
-        private  readonly   HubLogger           hubLogger;
+        
+        public              IHubLogger          Logger { get; }
         
         public HttpListenerHost(HttpListener httpListener, HttpHost httpHost) {
             this.httpHost   = httpHost;
             listener        = httpListener;
-            hubLogger       = httpHost.sharedEnv.hubLogger;
+            Logger          = httpHost.sharedEnv.hubLogger;
         }
         
         public HttpListenerHost(string endpoint, HttpHost httpHost)
@@ -174,11 +175,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
 
         private void LogException(string msg, Exception exception) {
-            hubLogger.Log(HubLog.Error, msg, exception);
+            Logger.Log(HubLog.Error, msg, exception);
         }
 
         private void LogInfo(string msg) {
-            hubLogger.Log(HubLog.Info, msg);
+            Logger.Log(HubLog.Info, msg);
         }
     }
 }

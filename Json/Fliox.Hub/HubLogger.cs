@@ -11,7 +11,12 @@ namespace Friflo.Json.Fliox.Hub
     }
 
     public interface IHubLogger {
-        void Log  (HubLog hubLog, string message, Exception exception);
+        void        Log  (HubLog hubLog, string message, Exception exception = null);
+    }
+    
+    /// <summary> Used to identify all classes generating logs </summary>
+    internal interface ILogSource {
+        IHubLogger  Logger { get; }
     }
     
     // ----------------------------------- HubLogger -----------------------------------

@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         Event
     }
     
-    internal sealed class EventSubscriber {
+    internal sealed class EventSubscriber : ILogSource {
         internal readonly   JsonKey                                 clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
@@ -30,7 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
-        private  readonly   HubLogger                               hubLogger;
+        
+        public              IHubLogger                              Logger { get; }
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
         
@@ -73,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
             pool                = new Pool(env.Pool);
             sharedCache         = env.sharedCache;
-            hubLogger           = env.hubLogger;
+            Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;
@@ -101,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (this.eventTarget == null) throw new NullReferenceException(nameof(eventTarget));
             if (this.eventTarget == eventTarget)
                 return;
-            hubLogger.Log(HubLog.Info, $"EventSubscriber: eventTarget changed. dstId: {clientId}");
+            Logger.Log(HubLog.Info, $"EventSubscriber: eventTarget changed. dstId: {clientId}");
             this.eventTarget = eventTarget;
         }
         
@@ -161,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";
-                    hubLogger.Log(HubLog.Error, message, e);
+                    Logger.Log(HubLog.Error, message, e);
                     Debug.Fail($"{message}, exception: {e}");
                 }
             }
@@ -177,12 +178,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                             await SendEvents().ConfigureAwait(false);
                             continue;
                         }
-                        hubLogger.Log(HubLog.Info, $"TriggerLoop() returns. {trigger}");
+                        Logger.Log(HubLog.Info, $"TriggerLoop() returns. {trigger}");
                         return;
                     }
                 } catch (Exception e) {
                     var message = "TriggerLoop() failed";
-                    hubLogger.Log(HubLog.Error, message, e);
+                    Logger.Log(HubLog.Error, message, e);
                     Debug.Fail(message, e.Message);
                 }
             });
