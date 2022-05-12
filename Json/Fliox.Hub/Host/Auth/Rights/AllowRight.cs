@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
 
 // ReSharper disable UnassignedField.Global
@@ -20,6 +21,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 
         public override Authorizer ToAuthorizer() {
             return new AuthorizeAllow(database);
+        }
+        
+        internal override void Validate(in RoleValidation validation) {
+            validation.ValidateDatabase(this, database);
         }
     }
 }

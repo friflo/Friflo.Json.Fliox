@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
@@ -21,8 +22,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public abstract class Right {
         /// <summary>optional description explaining the Right</summary>
         public              string      description;
-        public  abstract    RightType   RightType { get; }
+        public    abstract  RightType   RightType { get; }
 
-        public  abstract    Authorizer  ToAuthorizer();
+        public    abstract  Authorizer  ToAuthorizer();
+        internal  abstract  void        Validate(in RoleValidation validation);
     }
 }

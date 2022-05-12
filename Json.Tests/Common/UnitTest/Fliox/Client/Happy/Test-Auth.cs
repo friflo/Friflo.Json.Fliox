@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         authenticator.RegisterPredicate(TestPredicate);
                         hub.Authenticator   = authenticator;
                         hub.EventBroker     = eventBroker;
-                        var errors          = await authenticator.ValidateUserDb();
+                        var errors          = await authenticator.ValidateUserDb(null);
                         AreEqual(0, errors.Count);
                         await AssertNotAuthenticated        (hub);
                         await AssertAuthAccessOperations    (hub);

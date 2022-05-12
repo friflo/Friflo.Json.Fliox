@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
@@ -10,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public sealed class UserDBHandler : TaskHandler
     {
         public UserDBHandler() {
-            AddCommandHandlerAsync<Credentials, AuthResult>         (nameof(AuthenticateUser), AuthenticateUser);
+            AddCommandHandlerAsync<Credentials, AuthResult>              (nameof(AuthenticateUser), AuthenticateUser);
             AddCommandHandlerAsync<JsonValue, ValidateUserDbResult> (nameof(ValidateUserDb),    ValidateUserDb);
         }
         
@@ -40,8 +41,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private async Task<ValidateUserDbResult> ValidateUserDb (Param<JsonValue> param, MessageContext command) {
-            var authenticator = (UserAuthenticator)command.Hub.Authenticator;
-            var errors = await authenticator.ValidateUserDb();
+            var authenticator   = (UserAuthenticator)command.Hub.Authenticator;
+            var databases       = command.Hub.GetDatabases().Keys.ToHashSet();
+            var errors          = await authenticator.ValidateUserDb(databases);
             
             return new ValidateUserDbResult { errors = errors.ToArray() };
         }

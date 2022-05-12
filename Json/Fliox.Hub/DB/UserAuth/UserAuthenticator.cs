@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
@@ -58,8 +59,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub.Dispose();
         }
         
-        public async Task<List<string>> ValidateUserDb() {
-            var errors = new List<string>();
+        public async Task<List<string>> ValidateUserDb(HashSet<string> databases) {
+            var predicates  = registeredPredicates.Keys.ToHashSet();
+            var errors      = new List<string>();
             using(var userStore = new UserStore (userHub)) {
                 userStore.UserId = UserStore.AuthenticationUser;
                 userStore.permissions.QueryAll();
@@ -72,8 +74,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     }
                     return errors;
                 }
+                var roleValidation = new RoleValidation(databases, predicates, errors);
                 ValidatePermissions (userStore, errors);
-                ValidateRoles       (userStore, errors);
+                ValidateRoles       (userStore, roleValidation);
                 return  errors;
             }
         }
@@ -90,18 +93,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private void ValidateRoles(UserStore userStore, List<string> errors) {
+        private void ValidateRoles(UserStore userStore, RoleValidation roleValidation) {
             var roles = userStore.roles.AsList();
             foreach (var role in roles) {
+                var validation = new RoleValidation(roleValidation, role);
                 foreach (var right in role.rights) {
-                    if (!(right is PredicateRight rightPredicates))
-                        break;
-                    foreach (var predicateName in rightPredicates.names) {
-                        if (registeredPredicates.ContainsKey(predicateName))
-                            continue;
-                        var error = $"unknown predicate: '{predicateName}' in role: {role.id}";
-                        errors.Add(error);
-                    }
+                    right.Validate(validation);
                 }
             }
         }
