@@ -8,20 +8,20 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeAny : IAuthorizer {
-        private readonly    ICollection<IAuthorizer>     list;
+    public sealed class AuthorizeAny : Authorizer {
+        private readonly    ICollection<Authorizer>     list;
         
-        public AuthorizeAny(ICollection<IAuthorizer> list) {
+        public AuthorizeAny(ICollection<Authorizer> list) {
             this.list = list;    
         }
         
-        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) {
+        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) {
             foreach (var item in list) {
                 item.AddAuthorizedDatabases(databases);
             }
         }
 
-        public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             foreach (var item in list) {
                 if (item.Authorize(task, executeContext))
                     return true;
@@ -30,20 +30,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
     }
     
-    public sealed class AuthorizeAll : IAuthorizer {
-        private readonly    ICollection<IAuthorizer>     list;
+    public sealed class AuthorizeAll : Authorizer {
+        private readonly    ICollection<Authorizer>     list;
         
-        public AuthorizeAll(ICollection<IAuthorizer> list) {
+        public AuthorizeAll(ICollection<Authorizer> list) {
             this.list = list;    
         }
         
-        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) {
+        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) {
             foreach (var item in list) {
                 item.AddAuthorizedDatabases(databases);
             }
         }
         
-        public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             foreach (var item in list) {
                 if (!item.Authorize(task, executeContext))
                     return false;

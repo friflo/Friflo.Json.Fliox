@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 
         public  override            string      ToString() => "allow";
 
-        public override IAuthorizer ToAuthorizer() {
+        public override Authorizer ToAuthorizer() {
             return new AuthorizeAllow(database);
         }
     }

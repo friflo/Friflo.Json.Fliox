@@ -25,9 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         [Req]   public              Dictionary<string, ContainerAccess> containers;
                 public  override    RightType                           RightType => RightType.operation;
         
-        public override IAuthorizer ToAuthorizer() {
+        public override Authorizer ToAuthorizer() {
             var databaseName = database;
-            var list = new List<IAuthorizer>(containers.Count);
+            var list = new List<Authorizer>(containers.Count);
             foreach (var pair in containers) {
                 var name        = pair.Key;
                 var container   = pair.Value;

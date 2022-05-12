@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.sharedCache    = sharedCache;
         }
         
-        public void AuthenticationFailed(User user, string error, IAuthorizer authorizer) {
+        public void AuthenticationFailed(User user, string error, Authorizer authorizer) {
             AssertAuthenticationParams(user, authorizer);
             authState.user            = user;
             authState.authExecuted    = true;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             authState.error           = error;
         }
         
-        public void AuthenticationSucceed (User user, IAuthorizer authorizer) {
+        public void AuthenticationSucceed (User user, Authorizer authorizer) {
             AssertAuthenticationParams(user, authorizer);
             authState.user            = user;
             authState.authExecuted    = true;
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         [Conditional("DEBUG")]
-        private void AssertAuthenticationParams(User user, IAuthorizer authorizer) {
+        private void AssertAuthenticationParams(User user, Authorizer authorizer) {
             if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             if (user == null)           throw new ArgumentNullException(nameof(user));
             if (authorizer == null)     throw new ArgumentNullException(nameof(authorizer));

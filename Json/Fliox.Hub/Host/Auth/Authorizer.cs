@@ -9,17 +9,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
     /// <summary>
     /// Authorize a given task.
     /// <br></br>
-    /// This <see cref="IAuthorizer"/> it stored at <see cref="AuthState.authorizer"/>.
+    /// This <see cref="Authorizer"/> it stored at <see cref="AuthState.authorizer"/>.
     /// The <see cref="AuthState.authorizer"/> is set via <see cref="Authenticator.Authenticate"/> for
     /// <see cref="AuthState.authenticated"/> and for not <see cref="AuthState.authenticated"/> users.  
     /// </summary>
-    public interface IAuthorizer
+    public abstract class Authorizer
     {
         /// <summary>
         /// Create a set of <paramref name="databases"/> used to filter
         /// <see cref="DB.Cluster.ClusterStore"/> read and query results available to a user.
         /// </summary>
-        void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases);
-        bool    Authorize               (SyncRequestTask task, ExecuteContext executeContext);
+        public abstract void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases);
+        public abstract bool    Authorize               (SyncRequestTask task, ExecuteContext executeContext);
     }
 }

@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
-    public sealed class AuthorizeSendMessage : IAuthorizer {
+    public sealed class AuthorizeSendMessage : Authorizer {
         private  readonly   AuthorizeDatabase   authorizeDatabase;
         private  readonly   string              messageName;
         private  readonly   bool                prefix;
@@ -25,9 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             messageName = message;
         }
         
-        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
+        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
         
-        public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             if (!authorizeDatabase.Authorize(executeContext))
                 return false;
             if (!(task is SyncMessageTask messageTask))

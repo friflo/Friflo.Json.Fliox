@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public delegate bool AuthPredicate (SyncRequestTask task, ExecuteContext executeContext);
     
-    public sealed class AuthorizePredicate : IAuthorizer {
+    public sealed class AuthorizePredicate : Authorizer {
         private readonly string         name;
         private readonly AuthPredicate  predicate;
         public  override string         ToString() => name;
@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             this.predicate  = predicate;    
         }
         
-        public void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) { }
+        public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) { }
 
-        public bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
             return predicate(task, executeContext);
         }
     }

@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class PredicateRight : Right
     {
         /// <summary>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</summary>
-        [Req]   public  List<string>    names;
+        [Req]   public              List<string>    names;
         
-                public  override        RightType       RightType => RightType.predicate;
-                public  override        IAuthorizer     ToAuthorizer() => throw new NotImplementedException();
+                public  override    RightType       RightType => RightType.predicate;
+                public  override    Authorizer      ToAuthorizer() => throw new NotImplementedException();
     }
     
     // ReSharper disable InconsistentNaming

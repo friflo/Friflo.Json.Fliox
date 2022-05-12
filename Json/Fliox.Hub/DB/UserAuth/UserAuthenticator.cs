@@ -30,17 +30,17 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// Performs user authentication by validating the "userId" and the "token" assigned to a <see cref="Client.FlioxClient"/>
     /// <br></br>
     /// If authentication succeed it set the <see cref="AuthState.authorizer"/> derived from the roles assigned to the user.
-    /// If authentication fails the given default <see cref="IAuthorizer"/> is used for the user.
+    /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// </summary>
     public class UserAuthenticator : Authenticator, IDisposable
     {
         // --- private / internal
         private   readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
-        private   readonly  IAuthorizer                                 anonymousAuthorizer;
-        private   readonly  ConcurrentDictionary<string,  IAuthorizer>  authorizerByRole = new ConcurrentDictionary <string, IAuthorizer>();
+        private   readonly  Authorizer                                  anonymousAuthorizer;
+        private   readonly  ConcurrentDictionary<string, Authorizer>    authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
-        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, IAuthorizer anonymousAuthorizer = null)
+        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
         {
             if (!(userDatabase.handler is UserDBHandler))
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
 
-        private async Task<IAuthorizer> GetAuthorizer(UserStore userStore, JsonKey userId) {
+        private async Task<Authorizer> GetAuthorizer(UserStore userStore, JsonKey userId) {
             var readPermission = userStore.permissions.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);
             UserPermission permission = readPermission.Result;
@@ -179,10 +179,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 return anonymousAuthorizer;
             }
             await AddNewRoles(userStore, roles).ConfigureAwait(false);
-            var authorizers = new List<IAuthorizer>(roles.Count);
+            var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 // existence is checked already in AddNewRoles()
-                authorizerByRole.TryGetValue(role, out IAuthorizer authorizer);
+                authorizerByRole.TryGetValue(role, out Authorizer authorizer);
                 authorizers.Add(authorizer);
             }
             if (authorizers.Count == 1)
@@ -207,9 +207,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 Role newRole    = newRolePair.Value;
                 if (newRole == null)
                     throw new InvalidOperationException($"authorization role not found: '{role}'");
-                var authorizers = new List<IAuthorizer>(newRole.rights.Count);
+                var authorizers = new List<Authorizer>(newRole.rights.Count);
                 foreach (var right in newRole.rights) {
-                    IAuthorizer authorizer;
+                    Authorizer authorizer;
                     if (right is PredicateRight predicates) {
                         authorizer = GetPredicatesAuthorizer(predicates);
                     } else {
@@ -226,8 +226,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
         }
         
-        private IAuthorizer GetPredicatesAuthorizer(PredicateRight right) {
-            var authorizers = new List<IAuthorizer>(right.names.Count);
+        private Authorizer GetPredicatesAuthorizer(PredicateRight right) {
+            var authorizers = new List<Authorizer>(right.names.Count);
             foreach (var predicateName in right.names) {
                 if (!registeredPredicates.TryGetValue(predicateName, out var predicate)) {
                     throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");

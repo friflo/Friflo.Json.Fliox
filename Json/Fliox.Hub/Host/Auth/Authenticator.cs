@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, ExecuteContext executeContext);
         
-        protected Authenticator (IAuthorizer anonymousAuthorizer) {
+        protected Authenticator (Authorizer anonymousAuthorizer) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
             anonymousUser           = new User(User.AnonymousId, null, anonymousAuthorizer); 

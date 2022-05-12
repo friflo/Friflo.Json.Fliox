@@ -24,19 +24,19 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
-        private readonly        Dictionary<JsonKey, IAuthorizer>    userRights;
-        private static readonly IAuthorizer                         UnknownRights    = new AuthorizeDeny();
+        private readonly        Dictionary<JsonKey, Authorizer> userRights;
+        private static readonly Authorizer                      UnknownRights    = new AuthorizeDeny();
         
         public UserDatabaseAuthenticator(string userDbName) : base (null) {
-            var authUserRights   = new AuthorizeAny(new IAuthorizer[] {
+            var authUserRights   = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDbName),
                 new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read }, userDbName),
                 new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query}, userDbName),
             });
-            var serverRights     = new AuthorizeAny(new IAuthorizer[] {
+            var serverRights     = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDbName)
             });
-            userRights = new Dictionary<JsonKey, IAuthorizer> (JsonKey.Equality) {
+            userRights = new Dictionary<JsonKey, Authorizer> (JsonKey.Equality) {
                 { new JsonKey(UserStore.AuthenticationUser),    authUserRights },
                 { new JsonKey(UserStore.Server),                serverRights   },
             };
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 }
             }
 
-            if (userRights.TryGetValue(userId, out IAuthorizer rights)) {
+            if (userRights.TryGetValue(userId, out Authorizer rights)) {
                 executeContext.AuthenticationSucceed(user, rights);
                 return Task.CompletedTask;
             }
