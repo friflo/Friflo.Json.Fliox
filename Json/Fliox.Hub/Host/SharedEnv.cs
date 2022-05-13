@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <br/>
     /// Access to shared resources is thread safe.
     /// </summary>
-    public class SharedEnv : IDisposable
+    public class SharedEnv : IDisposable, ILogSource
     {
         private  readonly   TypeStore       typeStore;
         internal readonly   SharedCache     sharedCache;

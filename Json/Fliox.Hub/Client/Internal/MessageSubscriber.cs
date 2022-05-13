@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         public    override  string          ToString() => $"{name}(param: {param.AsString()})";
 
-        internal InvokeContext(string name, in JsonValue param, ObjectReader reader, HubLogger hubLogger) {
+        internal InvokeContext(string name, in JsonValue param, ObjectReader reader, IHubLogger hubLogger) {
             this.name       = name;
             this.param      = param;
             this.reader     = reader;

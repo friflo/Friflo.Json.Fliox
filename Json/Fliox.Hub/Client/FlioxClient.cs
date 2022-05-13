@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [CLSCompliant(true)]
 #endif
     [Fri.TypeMapper(typeof(FlioxClientMatcher))]
-    public partial class FlioxClient : ITracerContext, IDisposable, IResetable
+    public partial class FlioxClient : ITracerContext, IDisposable, IResetable, ILogSource
     {
         // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
         // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
-        [DebuggerBrowsable(Never)]  internal    HubLogger                   HubLogger       => _intern.hubLogger;
+        [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
 
         // --- commands
         /// standard commands

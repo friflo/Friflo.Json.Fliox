@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   TypeStore                                   typeStore;
         internal readonly   Pool                                        pool;
         internal readonly   SharedCache                                 sharedCache;
-        internal readonly   HubLogger                                   hubLogger;
+        internal readonly   IHubLogger                                  hubLogger;
         internal readonly   FlioxHub                                    hub;
         internal readonly   string                                      database;
         internal readonly   EventTarget                                 eventTarget;

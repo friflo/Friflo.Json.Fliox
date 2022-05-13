@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -24,10 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
-    public class SubscriptionProcessor : IDisposable
+    public class SubscriptionProcessor : IDisposable, ILogSource
     {
         private readonly    FlioxClient                         client;
-        private readonly    HubLogger                           hubLogger;
 
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
@@ -37,6 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    ConcurrentQueue <EventMessage>      eventQueue;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public              IHubLogger                          Logger { get; }
         public              int                                 EventSequence { get; private set ; }
 
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
@@ -57,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public SubscriptionProcessor (FlioxClient client, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.client                 = client;
-            this.hubLogger              = client.HubLogger;
+            this.Logger                 = client.Logger;
             this.synchronizationContext = synchronizationContext;
         }
         
@@ -70,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public SubscriptionProcessor (FlioxClient client, SubscriptionHandling _) {
             this.client                 = client;
-            this.hubLogger              = client.HubLogger;
+            this.Logger                 = client.Logger;
             this.eventQueue             = new ConcurrentQueue <EventMessage> ();
         }
 
@@ -118,6 +120,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             EventSequence++;
             using (var pooled = client.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
+                var logger = Logger;
                 foreach (var task in ev.tasks) {
                     EntitySet set;
                     switch (task.TaskType) {
@@ -167,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                             // and ProcessEvent() can be called concurrently from the 'main' thread.
-                            var invokeContext = new InvokeContext(name, message.param, mapper.reader, hubLogger);
+                            var invokeContext = new InvokeContext(name, message.param, mapper.reader, logger);
                             if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
                                 subscriber.InvokeCallbacks(invokeContext);    
                             }
@@ -224,10 +227,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             messages.Clear();
             using (var pooled = client.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
+                var logger = Logger;
                 foreach (var task in eventMessage.tasks) {
                     if (!(task is SyncMessageTask messageTask)) 
                         continue;
-                    var invokeContext   = new InvokeContext(messageTask.name, messageTask.param, reader, hubLogger);
+                    var invokeContext   = new InvokeContext(messageTask.name, messageTask.param, reader, logger);
                     var message         = new Message(invokeContext);
                     messages.Add(message);
                 }
