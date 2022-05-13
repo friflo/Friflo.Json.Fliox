@@ -17,9 +17,12 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     {
         public override async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, ExecuteContext executeContext)
         {
-            // tasks execution for cluster database bypass authorization - access is always allowed by intention.
-            // Returned task results are filtered by AuthorizeDatabase instances assigned to the authorizers. 
-            // if (!AuthorizeTask(task, executeContext, out var error)) { return error; }
+            // Note: Keep deprecated comment - may change behavior in future
+            //   tasks execution for cluster database bypass authorization - access is always allowed by intention.
+            //   Returned task results are filtered by AuthorizeDatabase instances assigned to the authorizers. 
+            if (!AuthorizeTask(task, executeContext, out var error)) {
+                return error;
+            }
             var clusterDB = (ClusterDB)database;
             switch (task.TaskType) {
                 case TaskType.command:

@@ -19,12 +19,19 @@ GET {{base}}/rest/cluster/containers
 # StatusCode:   200
 # Content-Type: application/json
 
-[{"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]}]
+[{"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},{"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]}]
 
 ###
 GET {{base}}/rest/cluster/containers
 # StatusCode:   200
 # Content-Type: application/json
 
-[{"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles"]}]
+[{"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},{"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles"]}]
+
+###
+GET {{base}}/rest/cluster/containers
+# StatusCode:   403
+# Content-Type: text/plain
+
+PermissionDenied > not authorized. user: user-readonly
 

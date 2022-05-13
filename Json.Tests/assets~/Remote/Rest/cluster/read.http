@@ -15,3 +15,7 @@ Cookie: fliox-user=monitor-admin; fliox-token=monitor-admin
 ###
 GET {{base}}/rest/cluster/containers
 Cookie: fliox-user=user-admin; fliox-token=user-admin
+
+###
+GET {{base}}/rest/cluster/containers
+Cookie: fliox-user=user-readonly; fliox-token=user-readonly
