@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -41,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         {
             var body            = QueryToStream(query, operationName, vars);
             var headers         = new TestHttpHeaders();
-            var cookies         = CreateCookies();
+            var cookies         = CreateDefaultCookies();
             var requestContext  = new RequestContext(_httpHost, "POST", route, "", body, headers, cookies);
             // execute synchronous to enable tests running in Unity Test Runner
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
@@ -69,7 +70,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             sb.AppendLine("@base = http://localhost:8010/fliox");
             sb.AppendLine();
             foreach (var req in restFile.requests) {
-                var context = HttpRequest(req.method, req.path, req.query, req.body);
+                var headers = new TestHttpHeaders(req.headers);
+                var cookies = CreateCookies(req.headers);
+                var context = HttpRequest(req.method, req.path, req.query, req.body, headers, cookies);
                 HttpFile.AppendRequest(sb, context);
             }
             var fullResult      = CommonUtils.GetBasePath() + "assets~/Remote/" + resultPath;
@@ -77,11 +80,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             File.WriteAllText(fullResult, result);
         }
 
-        private static RequestContext HttpRequest(string method, string route, string query = "", string jsonBody = null)
+        private static RequestContext HttpRequest(
+            string          method,
+            string          route,
+            string          query       = "",
+            string          jsonBody    = null,
+            IHttpHeaders    headers     = null,
+            IHttpCookies    cookies     = null)
         {
             var bodyStream      = BodyToStream(jsonBody);
-            var headers         = new TestHttpHeaders();
-            var cookies         = CreateCookies();
+            headers             = headers ?? new TestHttpHeaders();
+            cookies             = cookies ?? CreateDefaultCookies();
             var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, headers, cookies);
             // execute synchronous to enable tests running in Unity Test Runner
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
@@ -98,10 +107,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             return bodyStream;
         }
         
-        private static IHttpCookies CreateCookies() {
+        private static IHttpCookies CreateDefaultCookies() {
             return new TestHttpCookies {
                 map = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
             };
+        }
+        
+        private static IHttpCookies CreateCookies(Dictionary<string, string>  headers) {
+            var result = new TestHttpCookies ();
+            if (!headers.TryGetValue("Cookie", out var value))
+                return result;
+            var cookies = value.Split(new [] {";"}, StringSplitOptions.None);
+            foreach (var cookie in cookies) {
+                var assignPos   = cookie.IndexOf("=", StringComparison.InvariantCulture);
+                var cookieName  = cookie.Substring(0, assignPos).Trim();
+                var cookieValue = cookie.Substring(assignPos + 1).Trim();
+                result.map.Add(cookieName, cookieValue);
+            }
+            return result;
         }
         
         private static void AssertRequest(RequestContext request, int status, string contentType) {
@@ -124,9 +147,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     }
     
     internal class TestHttpHeaders : IHttpHeaders {
-    //  public  readonly    Dictionary<string, string>  map = new Dictionary<string, string>();
-        
+        private  readonly   Dictionary<string, string>  headers;
         public              string                      this[string key] => null;
+        
+        public  TestHttpHeaders() {
+            headers = new Dictionary<string, string>();
+        }
+        
+        public  TestHttpHeaders(Dictionary<string, string> headers) {
+            this.headers = headers;
+        }
     }
     
     internal class TestHttpCookies : IHttpCookies {
