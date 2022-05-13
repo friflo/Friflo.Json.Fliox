@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>list of database <see cref="containers"/></summary>
         [Req]   public  string[]                        containers;
                         
-        public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     /// <summary><see cref="commands"/> and <see cref="messages"/> of a database</summary>
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// Each JSON Schema is identified by its unique path</summary>
         [Req]   public  Dictionary<string, JsonValue>   jsonSchemas;
                         
-        public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     // --- commands
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         /// <summary>number of entities / records within a container</summary>
                 public  long                            count;
             
-        public override string                          ToString() => $"{name} - count: {count}";
+        public override string  ToString() => $"{name} - count: {count}";
     }
     
     /// <summary>general information about a Hub</summary>

@@ -22,6 +22,28 @@ GET {{base}}/rest/cluster/containers
 ]
 
 ###
+GET {{base}}/rest/cluster/containers?ids=cluster,user_db,unknown
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},
+    null,
+    null
+]
+
+###
+GET {{base}}/rest/cluster/messages?ids=cluster,user_db,unknown
+# StatusCode:   200
+# Content-Type: application/json
+
+[
+    {"id":"cluster","commands":["std.Echo","std.Containers","std.Messages","std.Schema","std.Stats","std.Details","std.Cluster"],"messages":[]},
+    null,
+    null
+]
+
+###
 GET {{base}}/rest/cluster/containers
 # StatusCode:   200
 # Content-Type: application/json

@@ -31,10 +31,16 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     var read        = (ReadEntities)task;
                     var denied      = ApplyAuthorizedDatabaseFilter(read, executeContext);
                     var readResult  = (ReadEntitiesResult)await task.Execute(clusterDB.stateDB, response, executeContext).ConfigureAwait(false);
-                    var entityMap   = response.GetContainerResult(read.container).entityMap;
+                    var container   = response.GetContainerResult(read.container);
+                    var entityMap   = container.entityMap;
                     foreach (var id in denied) {
-                        entityMap[id] = new EntityValue(new EntityError(EntityErrorType.ReadError, read.container, id, "Permission denied"));
+                        entityMap.Add(id, new EntityValue());
                     }
+                    /* var notFound    = container.notFound;
+                    if (notFound == null) {
+                        container.notFound = notFound = new List<JsonKey>();
+                    }
+                    notFound.AddRange(denied); */
                     return readResult;
                     // return await task.Execute(clusterDB.stateDB, response, executeContext).ConfigureAwait(false);
                 case TaskType.query:
