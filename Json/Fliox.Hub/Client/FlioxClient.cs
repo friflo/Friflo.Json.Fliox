@@ -148,6 +148,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return result;
         }
 
+        [DebuggerBrowsable(Never)]
         public string UserId {
             get => _intern.userId.AsString();
             set => _intern.userId = new JsonKey(value);
@@ -159,6 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             set => _intern.token   = value;
         }
 
+        [DebuggerBrowsable(Never)]
         public string ClientId {
             get => _intern.clientId.AsString();
             set => SetClientId(new JsonKey(value));
@@ -176,7 +178,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        [DebuggerBrowsable(Never)]
         public UserInfo UserInfo {
             get => new UserInfo (_intern.userId, _intern.token, _intern.clientId);
             set {
