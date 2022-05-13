@@ -33,16 +33,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     /// </summary>
     public class HttpFile
     {
-        private  readonly   string                  path;
-        public   readonly   List <HttpFileRequest>  requests;
+        private  readonly   string                      path;
+        public   readonly   List <HttpFileRequest>      requests;
+        public   readonly   Dictionary<string, string>  variables;
 
         public  override    string                  ToString() => path;
 
         public HttpFile(string path, string content) {
-            this.path   = path;
-            requests    = new List <HttpFileRequest>();
+            this.path       = path;
+            requests        = new List <HttpFileRequest>();
+            var sections    = content.Split(new [] {"###\r\n"}, StringSplitOptions.None);
+            variables       = ReadVariables(sections[0]);
             
-            var sections = content.Split(new [] {"###\r\n"}, StringSplitOptions.None);
             // skip first entry containing variables
             for (int n = 1; n < sections.Length; n++) {
                 var section = sections[n];
@@ -51,6 +53,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             }
         }
         
+        private static Dictionary<string, string> ReadVariables (string head) {
+            var result  = new Dictionary<string, string>();
+            var lines   = head.Split(new [] {"\r\n"}, StringSplitOptions.None);
+            foreach (var line in lines) {
+                if (!line.StartsWith("@"))
+                    continue;
+                var assignPos = line.IndexOf('=', 1);
+                if (assignPos == -1)
+                    continue;
+                var name    = line.Substring(1, assignPos - 1).Trim(); 
+                var value   = line.Substring(assignPos + 1).Trim();
+                result.Add(name, value);
+            }
+            return result;
+        }
+
         public static HttpFile Read(string path) {
             var content = File.ReadAllText(path);
             return new HttpFile(path, content);
