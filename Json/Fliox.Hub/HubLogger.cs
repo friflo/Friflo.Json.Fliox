@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub
 
         private static readonly HubLoggerConsole ConsoleLogger = new HubLoggerConsole();
 
-        public void Log(HubLog hubLog, string message, Exception exception = null) {
+        public void Log(HubLog hubLog, string message, Exception exception) {
             instance.Log(hubLog, message, exception);
         }
     }

@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public void AddExtensionDB(EntityDatabase extensionDB) {
             extensionDbs.Add(extensionDB.name, extensionDB);
-            Logger.Log(HubLog.Info, $"{DatabaseName} - add database: {extensionDB.name}", null);
+            Logger.Log(HubLog.Info, $"{DatabaseName} - add database: {extensionDB.name}");
         }
         
         public bool TryGetDatabase(string name, out EntityDatabase value) {

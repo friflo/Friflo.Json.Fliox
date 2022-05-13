@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public HttpHost(FlioxHub hub, string endpoint, SharedEnv env = null)
             : base(hub, env)
         {
-            Logger.Log(HubLog.Info, $"create HttpHost - database: {hub.DatabaseName}", null);
+            Logger.Log(HubLog.Info, $"create HttpHost - database: {hub.DatabaseName}");
 
             hubRoutes = hub.routes;
             hubRoutes.AddRange(restHandler.Routes);
