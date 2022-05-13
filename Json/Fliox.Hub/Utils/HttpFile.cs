@@ -8,7 +8,7 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
+namespace Friflo.Json.Fliox.Hub.Utils
 {
     /// <summary>
     /// <see cref="HttpFile"/> is used to run multiple http requests specified in a simple text file. <br/>
@@ -26,7 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     ///   <item> simplify adjusting test results in case of behavior change. E.g. bugfix or enhancements </item>
     ///   <item> avoid writing test assertions using difficult string literals caused by escaped characters or line feeds </item>
     /// </list>
-    /// This class is utilized by <see cref="TestRemote.ExecuteHttpFile"/> and create a single output file for the given request file.
+    /// This class is utilized by <b>Friflo.Json.Tests.Common.UnitTest.Fliox.Remote.TestRemote</b>
+    /// to a single output file for the given request file.<br/>
     /// The output files are added to version control. The expectation is that after running the tests the output files are
     /// "unmodified" in version control (Git). <br/>
     /// In case an output file is "modified" its new version have to be added to version control if the modifications meets expectation. 
@@ -37,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public   readonly   List <HttpFileRequest>      requests;
         public   readonly   Dictionary<string, string>  variables;
 
-        public  override    string                  ToString() => path;
+        public  override    string                      ToString() => path;
 
         public HttpFile(string path, string content) {
             this.path       = path;
@@ -104,15 +105,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var responseBody = context.Response.AsString();
             sb.AppendLine(responseBody);
             sb.AppendLine();
-        }
-        
-        public static Stream StringToStream(string jsonBody) {
-            var bodyStream      = new MemoryStream();
-            var writer          = new StreamWriter(bodyStream);
-            writer.Write(jsonBody);
-            writer.Flush();
-            bodyStream.Position   = 0;
-            return bodyStream;
         }
     }
 }

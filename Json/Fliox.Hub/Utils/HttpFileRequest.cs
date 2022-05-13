@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
+namespace Friflo.Json.Fliox.Hub.Utils
 {
     public class HttpFileRequest
     {
@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public  readonly    HttpFileHeaders     headers;
         public  readonly    HttpFileCookies     cookies;
         
-        public              Stream              BodyStream => HttpFile.StringToStream(body);
+        public              Stream              BodyStream => StringToStream(body);
 
         public  override    string  ToString() {
             if (query == "")
@@ -98,6 +98,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
                 result.cookies.Add(cookieName, cookieValue);
             }
             return result;
+        }
+        
+        public static Stream StringToStream(string jsonBody) {
+            var bodyStream      = new MemoryStream();
+            var writer          = new StreamWriter(bodyStream);
+            writer.Write(jsonBody);
+            writer.Flush();
+            bodyStream.Position   = 0;
+            return bodyStream;
         }
     }
     

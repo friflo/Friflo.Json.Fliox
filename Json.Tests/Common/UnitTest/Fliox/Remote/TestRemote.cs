@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Main;
@@ -82,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 
         private static RequestContext HttpRequest(string method, string route, string query = "", string jsonBody = null)
         {
-            var bodyStream      = HttpFile.StringToStream(jsonBody);
+            var bodyStream      = HttpFileRequest.StringToStream(jsonBody);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateDefaultCookies();
             var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, headers, cookies);
