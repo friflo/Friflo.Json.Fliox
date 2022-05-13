@@ -7,18 +7,22 @@ var exampleRole: Role = {
     rights: [
         {
             type:           "allow",
+            database:       "db",
             description:    "allow description"
         },
         {
             type:           "operation",
+            database:       "db",
             containers:     { "Article": { operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }}
         },
         {
             type:           "sendMessage",
+            database:       "db",
             names:          ["test-mess*"]
         },
         {
             type:           "subscribeMessage",
+            database:       "db",
             names:          ["test-sub*"]
         },
         { 
@@ -27,6 +31,7 @@ var exampleRole: Role = {
         },
         {
             type:           "task",
+            database:       "db",
             types:          ["read"]
         }
     ]
