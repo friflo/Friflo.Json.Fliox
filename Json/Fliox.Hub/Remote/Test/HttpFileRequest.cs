@@ -6,10 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Hub.Utils
+namespace Friflo.Json.Fliox.Hub.Remote.Test
 {
     public class HttpFileRequest
     {

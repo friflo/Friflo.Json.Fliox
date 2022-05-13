@@ -5,32 +5,39 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Friflo.Json.Fliox.Hub.Remote;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Hub.Utils
+namespace Friflo.Json.Fliox.Hub.Remote.Test
 {
     /// <summary>
-    /// <see cref="HttpFile"/> is used to run multiple http requests specified in a simple text file. <br/>
+    /// <see cref="HttpFile"/> run multiple http requests given in a simple text file used for concise regression tests <br/>
     /// The text file format is compatible to:
     /// <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client - Visual Studio Marketplace</a>
     /// <br/>
     /// This approach enables request execution in multiple ways:
     /// <list type="bullet">
     ///   <item> automated by unit tests </item>
-    ///   <item> individually using an IDE - e.g. the mentioned REST Client or Rider </item>
+    ///   <item> individually by using an IDE - e.g. the mentioned REST Client or Rider </item>
     /// </list>
     /// Other benefits using this approach:
     /// <list type="bullet">
-    ///   <item> avoid flooding the test suite with primitive tests </item>
-    ///   <item> simplify adjusting test results in case of behavior change. E.g. bugfix or enhancements </item>
-    ///   <item> avoid writing test assertions using difficult string literals caused by escaped characters or line feeds </item>
+    ///   <item>
+    ///     avoid flooding the test suite with primitive tests
+    ///   </item>
+    ///   <item>
+    ///     simplify adjusting test results in case of behavior changes (e.g. bugfix or enhancements) by simplify
+    ///     commiting the modified request response to version control.
+    ///   </item>
+    ///   <item>
+    ///     avoid writing test assertions using difficult string literals caused by escaped characters or line feeds
+    ///   </item>
     /// </list>
     /// This class is utilized by <b>Friflo.Json.Tests.Common.UnitTest.Fliox.Remote.TestRemote</b>
-    /// to a single output file for the given request file.<br/>
-    /// The output files are added to version control. The expectation is that after running the tests the output files are
-    /// "unmodified" in version control (Git). <br/>
-    /// In case an output file is "modified" its new version have to be added to version control if the modifications meets expectation. 
+    /// to write a single output file for a given request file.
+    /// <br/>
+    /// The generated output files are intended to be added to version control.
+    /// The expectation is that after running the tests the output files are <b>unmodified</b> in version control (Git). <br/>
+    /// In case an output file is <b>modified</b> its new version have to be added to version control if the modifications meets expectation. 
     /// </summary>
     public class HttpFile
     {

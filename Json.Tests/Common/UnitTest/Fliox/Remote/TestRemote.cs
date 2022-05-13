@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Hub.Utils;
+using Friflo.Json.Fliox.Hub.Remote.Test;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Main;
