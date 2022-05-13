@@ -18,6 +18,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             AssertRequest(request, 200, "application/json", "null");
         }
         
+        [Test, Order(0)]
+        public static void Rest_cluster_read() {
+            // depending on the user the http responses are different - depending on the applied Role databases
+            ExecuteHttpFile("Rest/cluster/read.http", "Rest/cluster/read.result.http");
+        }
+        
         [Test, Order(1)]
         public static void Rest_main_db_happy_read() {
             ExecuteHttpFile("Rest/main_db/happy-read.http", "Rest/main_db/happy-read.result.http");

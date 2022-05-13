@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Utils
         }
 
         private const           string  BaseVariable    = "{{base}}";
-        private static readonly Regex   RegExVariables  = new Regex(@"\{{([^}]+)\}}");
+        private static readonly Regex   RegExVariables  = new Regex(@"\{{([^}]+)\}}", RegexOptions.Compiled);
         
         public HttpFileRequest (string request, HttpFile httpFile) {
             var parts       = request.Split(new [] { "\r\n\r\n" }, StringSplitOptions.None);
@@ -49,40 +49,46 @@ namespace Friflo.Json.Fliox.Hub.Utils
             }
             path            = path.Substring(BaseVariable.Length);
             query           = queryPos == -1 ? "" : urlPath.Substring(queryPos + 1);
-            var headerMap   = ReadHeaders(lines, httpFile);
+            var sb          = new StringBuilder();
+            var headerMap   = ReadHeaders(lines, sb, httpFile);
             headers         = new HttpFileHeaders(headerMap); 
             cookies         = CreateCookies(headerMap);
         }
         
-        private static Dictionary<string, string> ReadHeaders(string[] lines, HttpFile httpFile) {
+        private static Dictionary<string, string> ReadHeaders(string[] lines, StringBuilder sb, HttpFile httpFile) {
             var result      = new Dictionary<string, string>();
-            var sb          = new StringBuilder();
-            var variables   = httpFile.variables;
-            
             for (int n = 1; n < lines.Length; n++) {
-                sb.Clear();
                 var line    = lines[n].Trim();
                 if (line == "")
                     continue;
-                var matches = RegExVariables.Matches(line);
-                var pos = 0;
-                for (int i = 0; i < matches.Count; i++) {
-                    var match       = matches[i];
-                    var count       = match.Index - pos;
-                    sb.Append(line, pos, count);
-                    var matchValue  = match.Value;
-                    var variable    = matchValue.Substring(2, matchValue.Length - 4); // remove '{{' and '}}'
-                    var varValue    = variables[variable];
-                    sb.Append(varValue);
-                    pos            +=  count + match.Length;
-                }
-                var resultLine  = sb.ToString();
+                var resultLine  = ReplaceVariables(line, sb, httpFile);
                 var colonPos    = resultLine.IndexOf(':');
                 var headerName  = resultLine.Substring(0, colonPos).Trim();
                 var headerValue = resultLine.Substring(colonPos + 1).Trim();
                 result.Add(headerName, headerValue);
             }            
             return result;
+        }
+        
+        private static string ReplaceVariables(string line, StringBuilder sb, HttpFile httpFile)
+        {
+            var matches     = RegExVariables.Matches(line);
+            if (matches.Count == 0)
+                return line;
+            var variables   = httpFile.variables;
+            sb.Clear();
+            var pos = 0;
+            for (int i = 0; i < matches.Count; i++) {
+                var match       = matches[i];
+                var count       = match.Index - pos;
+                sb.Append(line, pos, count);
+                var matchValue  = match.Value;
+                var variable    = matchValue.Substring(2, matchValue.Length - 4); // remove '{{' and '}}'
+                var varValue    = variables[variable];
+                sb.Append(varValue);
+                pos            +=  count + match.Length;
+            }
+            return sb.ToString();
         }
         
         private static HttpFileCookies CreateCookies(Dictionary<string, string>  headers) {

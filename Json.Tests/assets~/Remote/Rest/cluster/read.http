@@ -1,0 +1,17 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/rest/cluster/containers
+Cookie: fliox-user=admin; fliox-token=admin
+
+###
+GET {{base}}/rest/cluster/containers
+Cookie: fliox-user=cluster-admin; fliox-token=cluster-admin
+
+###
+GET {{base}}/rest/cluster/containers
+Cookie: fliox-user=monitor-admin; fliox-token=monitor-admin
+
+###
+GET {{base}}/rest/cluster/containers
+Cookie: fliox-user=user-admin; fliox-token=user-admin

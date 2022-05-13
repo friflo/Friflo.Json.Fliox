@@ -1,0 +1,30 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/rest/cluster/containers
+# StatusCode:   200
+# Content-Type: application/json
+
+[{"id":"main_db","storage":"in-memory","containers":["orders","customers","articles","producers","employees","types"]},{"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]},{"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]},{"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles"]}]
+
+###
+GET {{base}}/rest/cluster/containers
+# StatusCode:   200
+# Content-Type: application/json
+
+[{"id":"cluster","storage":"in-memory","containers":["containers","messages","schemas"]}]
+
+###
+GET {{base}}/rest/cluster/containers
+# StatusCode:   200
+# Content-Type: application/json
+
+[{"id":"monitor","storage":"in-memory","containers":["hosts","users","clients","histories"]}]
+
+###
+GET {{base}}/rest/cluster/containers
+# StatusCode:   200
+# Content-Type: application/json
+
+[{"id":"user_db","storage":"file-system","containers":["credentials","permissions","roles"]}]
+
