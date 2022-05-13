@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         
         private static IHttpCookies CreateDefaultCookies() {
             return new TestHttpCookies {
-                map = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
+                cookies = { ["fliox-user"]  = "admin",  ["fliox-token"] = "admin" }
             };
         }
         
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
                 var assignPos   = cookie.IndexOf("=", StringComparison.InvariantCulture);
                 var cookieName  = cookie.Substring(0, assignPos).Trim();
                 var cookieValue = cookie.Substring(assignPos + 1).Trim();
-                result.map.Add(cookieName, cookieValue);
+                result.cookies.Add(cookieName, cookieValue);
             }
             return result;
         }
@@ -146,7 +146,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     
     internal class TestHttpHeaders : IHttpHeaders {
         private  readonly   Dictionary<string, string>  headers;
-        public              string                      this[string key] => null;
+        public              string                      this[string key] => headers.TryGetValue(key, out var value) ? value : null;
         
         public  TestHttpHeaders() {
             headers = new Dictionary<string, string>();
@@ -158,8 +158,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     }
     
     internal class TestHttpCookies : IHttpCookies {
-        public  readonly    Dictionary<string, string>  map = new Dictionary<string, string>();
+        public  readonly    Dictionary<string, string>  cookies = new Dictionary<string, string>();
         
-        public              string                      this[string key] => map[key];
+        public              string                      this[string key] => cookies.TryGetValue(key, out var value) ? value : null;
     }
 }
