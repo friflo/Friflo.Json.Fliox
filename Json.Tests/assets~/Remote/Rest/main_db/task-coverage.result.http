@@ -69,7 +69,8 @@ GET {{base}}/rest/main_db/articles?filter-tree={"op":"false"}
 # StatusCode:   200
 # Content-Type: application/json
 
-[]
+[
+]
 
 ###
 GET {{base}}/rest/main_db/articles?filter-tree={"op":"equal","left":{"op":"field","name":"xxx.name"},"right":{"op":"string","value":"Smartphone"}}
@@ -104,9 +105,11 @@ GET {{base}}/rest/main_db/articles?maxCount=1
 # StatusCode:   200
 # Content-Type: application/json
 
-[{
+[
+    {
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
-}]
+}
+]
 

@@ -99,31 +99,38 @@ GET {{base}}/rest/main_db/articles
 # StatusCode:   200
 # Content-Type: application/json
 
-[{
+[
+    {
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
-},{
+},
+    {
     "id": "article-2",
     "name": "Smartphone",
     "producer": null
-},{
+},
+    {
     "id": "article-galaxy",
     "name": "Galaxy S10",
     "producer": "producer-samsung"
-},{
+},
+    {
     "id": "article-ipad",
     "name": "iPad Pro",
     "producer": "producer-apple"
-},{
+},
+    {
     "id": "article-notebook-💻-unicode",
     "name": "Galaxy Book",
     "producer": "producer-samsung"
-},{
+},
+    {
     "id": "log-create-read-error",
     "name": "used for successful read",
     "producer": null
-}]
+}
+]
 
 ###
 GET {{base}}/rest/main_db/articles/article-1
@@ -141,45 +148,54 @@ GET {{base}}/rest/main_db/articles?filter=o.producer=='producer-samsung'
 # StatusCode:   200
 # Content-Type: application/json
 
-[{
+[
+    {
     "id": "article-galaxy",
     "name": "Galaxy S10",
     "producer": "producer-samsung"
-},{
+},
+    {
     "id": "article-notebook-💻-unicode",
     "name": "Galaxy Book",
     "producer": "producer-samsung"
-}]
+}
+]
 
 ###
 GET {{base}}/rest/main_db/articles?ids=article-1,article-2
 # StatusCode:   200
 # Content-Type: application/json
 
-[{
+[
+    {
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
-},{
+},
+    {
     "id": "article-2",
     "name": "Smartphone",
     "producer": null
-}]
+}
+]
 
 ###
 POST {{base}}/rest/main_db/articles/bulk-get
 # StatusCode:   200
 # Content-Type: application/json
 
-[{
+[
+    {
     "id": "article-1",
     "name": "Changed name",
     "producer": "producer-canon"
-},{
+},
+    {
     "id": "article-2",
     "name": "Smartphone",
     "producer": null
-}]
+}
+]
 
 ###
 GET {{base}}/rest/main_db?command=std.Messages

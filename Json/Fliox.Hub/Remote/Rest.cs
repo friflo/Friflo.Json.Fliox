@@ -124,6 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {
                 var writer          = pooled.instance.writer;
+                writer.Pretty       = true;
                 var entitiesJson    = new JsonValue(writer.WriteAsArray(entities));
                 context.Write(entitiesJson, 0, "application/json", 200);
             }
@@ -165,6 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.AddHeader("count", entities.Count.ToString()); // added to simplify debugging experience
             using (var pooled = context.ObjectMapper.Get()) {
                 var writer      = pooled.instance.writer;
+                writer.Pretty   = true;
                 var entityArray = writer.WriteAsArray(entities);
                 var response    = new JsonValue(entityArray);
                 context.Write(response, 0, "application/json", 200);
