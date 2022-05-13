@@ -303,10 +303,10 @@ export class App {
     }
     async loadCluster() {
         const tasks = [
+            { "task": "command", "name": "std.Details" },
             { "task": "query", "container": "containers" },
-            { "task": "query", "container": "schemas" },
             { "task": "query", "container": "messages" },
-            { "task": "command", "name": "std.Details" }
+            { "task": "query", "container": "schemas" },
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response = await App.postRequestTasks("cluster", tasks, null);
@@ -316,11 +316,15 @@ export class App {
             catalogExplorer.innerHTML = App.errorAsHtml(error, null);
             return;
         }
-        const dbContainers = content.containers[0].entities;
-        const dbSchemas = content.containers[1].entities;
-        const dbMessages = content.containers[2].entities;
-        const hubInfoResult = content.tasks[3];
+        const hubInfoResult = content.tasks[0];
         this.hostDetails = hubInfoResult.result;
+        const containerMap = {};
+        for (const container of content.containers) {
+            containerMap[container.container] = container;
+        }
+        const dbContainers = containerMap["containers"].entities;
+        const dbMessages = containerMap["messages"].entities;
+        const dbSchemas = containerMap["schemas"].entities;
         //
         const name = this.hostDetails.projectName;
         const website = this.hostDetails.projectWebsite;

@@ -8,7 +8,8 @@ import { Playground }                                           from "./playgrou
 
 import { FieldType, JSONSchema, JsonType }                      from "../../../../../Json.Tests/assets~/Schema/Typescript/JSONSchema/Friflo.Json.Fliox.Schema.JSON";
 import { DbSchema, DbContainers, DbMessages, HostDetails }      from "../../../../../Json.Tests/assets~/Schema/Typescript/ClusterStore/Friflo.Json.Fliox.Hub.DB.Cluster";
-import { SyncRequest, SyncResponse, ProtocolResponse_Union }    from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
+import { SyncRequest, SyncResponse, ProtocolResponse_Union,
+         ContainerEntities }                                    from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol";
 import { SyncRequestTask_Union, SendCommandResult }             from "../../../../../Json.Tests/assets~/Schema/Typescript/Protocol/Friflo.Json.Fliox.Hub.Protocol.Tasks";
 
 declare global {
@@ -345,10 +346,10 @@ export class App {
 
     private async loadCluster () {
         const tasks: SyncRequestTask_Union[] = [
+            { "task": "command","name": "std.Details" },
             { "task": "query",  "container": "containers"},
-            { "task": "query",  "container": "schemas"},
             { "task": "query",  "container": "messages"},
-            { "task": "command","name": "std.Details" }
+            { "task": "query",  "container": "schemas"},
         ];
         catalogExplorer.innerHTML = 'read databases <span class="spinner"></span>';
         const response  = await App.postRequestTasks("cluster", tasks, null);
@@ -358,11 +359,15 @@ export class App {
             catalogExplorer.innerHTML = App.errorAsHtml(error, null);
             return;
         }
-        const dbContainers  = content.containers[0].entities    as DbContainers[];
-        const dbSchemas     = content.containers[1].entities    as DbSchema[];
-        const dbMessages    = content.containers[2].entities    as DbMessages[];
-        const hubInfoResult = content.tasks[3]                  as SendCommandResult;
+        const hubInfoResult = content.tasks[0]                  as SendCommandResult;
         this.hostDetails    = hubInfoResult.result              as HostDetails;
+        const containerMap: { [key: string]: ContainerEntities} = {};
+        for (const container of content.containers) {
+            containerMap[container.container] = container;
+        }
+        const dbContainers  = containerMap["containers"].entities   as DbContainers[];
+        const dbMessages    = containerMap["messages"].entities     as DbMessages[];
+        const dbSchemas     = containerMap["schemas"].entities      as DbSchema[];
         //
         const name      = this.hostDetails.projectName;
         const website   = this.hostDetails.projectWebsite;
