@@ -67,8 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             var fullRequest     = CommonUtils.GetBasePath() + "assets~/Remote/" + requestPath;
             var restFile        = HttpFile.Read(fullRequest);
             var sb              = new StringBuilder();
-            sb.AppendLine("@base = http://localhost:8010/fliox");
-            sb.AppendLine();
+            restFile.AppendFileHeader(sb);
             foreach (var req in restFile.requests) {
                 var context     = new RequestContext(_httpHost, req.method, req.path, req.query, req.BodyStream, req.headers, req.cookies);
                 // execute synchronous to enable tests running in Unity Test Runner

@@ -65,8 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Utils
                     continue;
                 var name    = line.Substring(1, assignPos - 1).Trim(); 
                 var value   = line.Substring(assignPos + 1).Trim();
-                var key     = $"{{{{{name}}}}}";
-                result.Add(key, value);
+                result.Add(name, value);
             }
             return result;
         }
@@ -74,6 +73,16 @@ namespace Friflo.Json.Fliox.Hub.Utils
         public static HttpFile Read(string path) {
             var content = File.ReadAllText(path);
             return new HttpFile(path, content);
+        }
+        
+        public void AppendFileHeader(StringBuilder sb) {
+            foreach (var pair in variables) {
+                sb.Append('@');
+                sb.Append(pair.Key);
+                sb.Append(" = ");
+                sb.AppendLine(pair.Value);
+            }
+            sb.AppendLine();
         }
         
         public static void AppendRequest(StringBuilder sb, RequestContext context)

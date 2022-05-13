@@ -70,16 +70,17 @@ namespace Friflo.Json.Fliox.Hub.Utils
                     var match       = matches[i];
                     var count       = match.Index - pos;
                     sb.Append(line, pos, count);
-                    var variable    = match.Value;
-                    var varValue    = variables[variable]; 
+                    var matchValue  = match.Value;
+                    var variable    = matchValue.Substring(2, matchValue.Length - 4); // remove '{{' and '}}'
+                    var varValue    = variables[variable];
                     sb.Append(varValue);
                     pos            +=  count + match.Length;
                 }
                 var resultLine  = sb.ToString();
                 var colonPos    = resultLine.IndexOf(':');
-                var name        = resultLine.Substring(0, colonPos).Trim();
-                var value       = resultLine.Substring(colonPos + 1).Trim();
-                result.Add(name, value);
+                var headerName  = resultLine.Substring(0, colonPos).Trim();
+                var headerValue = resultLine.Substring(colonPos + 1).Trim();
+                result.Add(headerName, headerValue);
             }            
             return result;
         }

@@ -1,3 +1,4 @@
+@auth = fliox-user=admin; fliox-token=admin
 @base = http://localhost:8010/fliox
 
 ###
