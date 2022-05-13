@@ -105,5 +105,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             sb.AppendLine(responseBody);
             sb.AppendLine();
         }
+        
+        public static Stream StringToStream(string jsonBody) {
+            var bodyStream      = new MemoryStream();
+            var writer          = new StreamWriter(bodyStream);
+            writer.Write(jsonBody);
+            writer.Flush();
+            bodyStream.Position   = 0;
+            return bodyStream;
+        }
     }
 }

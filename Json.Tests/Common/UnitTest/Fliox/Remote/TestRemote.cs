@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _env.Dispose();
         }
         
-        
+
         // ----------------------------------------- GraphQL -----------------------------------------
         private static RequestContext GraphQLRequest(string route, string query, string vars = null, string operationName = null)
         {
@@ -69,8 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             sb.AppendLine("@base = http://localhost:8010/fliox");
             sb.AppendLine();
             foreach (var req in restFile.requests) {
-                var bodyStream  = BodyToStream(req.body);
-                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, bodyStream, req.headers, req.cookies);
+                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, req.BodyStream, req.headers, req.cookies);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(context).Wait();
                 
@@ -83,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 
         private static RequestContext HttpRequest(string method, string route, string query = "", string jsonBody = null)
         {
-            var bodyStream      = BodyToStream(jsonBody);
+            var bodyStream      = HttpFile.StringToStream(jsonBody);
             var headers         = new TestHttpHeaders();
             var cookies         = CreateDefaultCookies();
             var requestContext  = new RequestContext(_httpHost, method, route, query, bodyStream, headers, cookies);
@@ -91,15 +90,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             _httpHost.ExecuteHttpRequest(requestContext).Wait();
             
             return requestContext;
-        }
-        
-        private static Stream BodyToStream(string jsonBody) {
-            var bodyStream      = new MemoryStream();
-            var writer          = new StreamWriter(bodyStream);
-            writer.Write(jsonBody);
-            writer.Flush();
-            bodyStream.Position   = 0;
-            return bodyStream;
         }
         
         private static IHttpCookies CreateDefaultCookies() {

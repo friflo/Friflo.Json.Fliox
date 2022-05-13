@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Friflo.Json.Fliox.Hub.Remote;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
 {
     public class HttpFileRequest
@@ -17,6 +19,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         public  readonly    string              body;
         public  readonly    HttpFileHeaders     headers;
         public  readonly    HttpFileCookies     cookies;
+        
+        public              Stream              BodyStream => HttpFile.StringToStream(body);
 
         public  override    string  ToString() {
             if (query == "")
