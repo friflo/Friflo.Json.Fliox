@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -71,9 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             sb.AppendLine();
             foreach (var req in restFile.requests) {
                 var bodyStream  = BodyToStream(req.body);
-                var headers     = new TestHttpHeaders(req.headers);
-                var cookies     = CreateCookies(req.headers);
-                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, bodyStream, headers, cookies);
+                var context     = new RequestContext(_httpHost, req.method, req.path, req.query, bodyStream, req.headers, req.cookies);
                 // execute synchronous to enable tests running in Unity Test Runner
                 _httpHost.ExecuteHttpRequest(context).Wait();
                 
@@ -111,20 +108,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             };
         }
         
-        private static IHttpCookies CreateCookies(Dictionary<string, string>  headers) {
-            var result = new TestHttpCookies ();
-            if (!headers.TryGetValue("Cookie", out var value))
-                return result;
-            var cookies = value.Split(new [] {";"}, StringSplitOptions.None);
-            foreach (var cookie in cookies) {
-                var assignPos   = cookie.IndexOf("=", StringComparison.InvariantCulture);
-                var cookieName  = cookie.Substring(0, assignPos).Trim();
-                var cookieValue = cookie.Substring(assignPos + 1).Trim();
-                result.cookies.Add(cookieName, cookieValue);
-            }
-            return result;
-        }
-        
         private static void AssertRequest(RequestContext request, int status, string contentType) {
             AreEqual(status,        request.StatusCode);
             AreEqual(contentType,   request.ResponseContentType);
@@ -145,16 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
     }
     
     internal class TestHttpHeaders : IHttpHeaders {
-        private  readonly   Dictionary<string, string>  headers;
-        public              string                      this[string key] => headers.TryGetValue(key, out var value) ? value : null;
-        
-        public  TestHttpHeaders() {
-            headers = new Dictionary<string, string>();
-        }
-        
-        public  TestHttpHeaders(Dictionary<string, string> headers) {
-            this.headers = headers;
-        }
+        public              string                      this[string key] => null;
     }
     
     internal class TestHttpCookies : IHttpCookies {
