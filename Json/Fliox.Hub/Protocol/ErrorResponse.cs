@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Text;
+using Friflo.Json.Fliox.Hub.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -26,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             sb.Append(e.GetType().Name);
             sb.Append(": ");
             sb.Append(e.Message);
-            var stack = e.StackTrace;
+            var stack = StackTraceUtils.GetStackTrace(e, true);
             if (stack != null) {
                 // Remove StackTrace sections starting with:
                 // --- End of stack trace from previous location where exception was thrown ---
