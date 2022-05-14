@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -235,25 +236,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static TaskErrorResult TaskExceptionError (Exception e) {
             var exceptionName   = e.GetType().Name;
             var msg             = $"{exceptionName}: {e.Message}";
-            // var stack        = e.StackTrace;                         // is not used as it contains file info
-            var stack           = new StackTrace(e, false).ToString();  // stacktrace without file info: source path & line
-            stack               = stack.Substring(0, stack.Length - 2); // remove trailing CR LF
-            
-#if UNITY_5_3_OR_NEWER
-            if (stack != null) {
-                // Unity add StackTrace sections starting with:
-                // --- End of stack trace from previous location where exception was thrown ---
-                // Remove these sections as they bloat the stacktrace assuming the relevant part of the stacktrace
-                // is at the beginning.
-                var endOfStackTraceFromPreviousLocation = stack.IndexOf("\n--- End of stack", StringComparison.Ordinal);
-                if (endOfStackTraceFromPreviousLocation != -1) {
-                    stack = stack.Substring(0, endOfStackTraceFromPreviousLocation);
-                }
-            }
-#endif
+            var stack           = StackTraceUtils.GetStackTrace(e, false);
             return new TaskErrorResult (TaskErrorResultType.UnhandledException,msg, stack);
         }
-
+        
         private void UpdateRequestStats(string database, SyncRequest syncRequest, ExecuteContext executeContext) {
             var user = executeContext.User;
             RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
