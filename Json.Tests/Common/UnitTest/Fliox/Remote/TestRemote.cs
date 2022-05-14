@@ -65,8 +65,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         // ------------------------------------------ REST ------------------------------------------
         private static void ExecuteHttpFile (string requestPath, string resultPath) {
             var httpFolder      = CommonUtils.GetBasePath() + "Common/UnitTest/Fliox/Remote/";
-            var fullRequest     = httpFolder + requestPath;
-            var restFile        = HttpFile.Read(fullRequest);
+            var path            = httpFolder + requestPath;
+            var content         = File.ReadAllText(path);
+            var restFile        = new HttpFile(path, content);
             var sb              = new StringBuilder();
             restFile.AppendFileHeader(sb);
             foreach (var req in restFile.requests) {

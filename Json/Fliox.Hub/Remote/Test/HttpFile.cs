@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -77,11 +76,6 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
             return result;
         }
 
-        public static HttpFile Read(string path) {
-            var content = File.ReadAllText(path);
-            return new HttpFile(path, content);
-        }
-        
         public void AppendFileHeader(StringBuilder sb) {
             foreach (var pair in variables) {
                 sb.Append('@');
