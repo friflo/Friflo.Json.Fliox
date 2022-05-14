@@ -1,0 +1,13 @@
+{
+    "id": "invalid-role",
+    "rights": [
+        {
+            "type": "allow",
+            "database": "not_found_db"
+        },
+        {
+            "type": "allow"
+        }
+
+    ]
+}

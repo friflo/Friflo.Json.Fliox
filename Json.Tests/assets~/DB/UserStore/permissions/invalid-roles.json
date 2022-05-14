@@ -1,0 +1,4 @@
+{
+    "id": "invalid-roles",
+    "roles": ["invalid-role", "missing-role"]
+}

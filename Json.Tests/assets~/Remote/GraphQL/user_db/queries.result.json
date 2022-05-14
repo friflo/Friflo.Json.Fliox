@@ -1,7 +1,7 @@
 {
     "data": {
         "queryRoles": {
-    "count": 12,
+    "count": 13,
     "items": [
         {
             "id": "all-allow",
@@ -17,6 +17,18 @@
             "rights": [
                 {
                     "database": "cluster",
+                    "__typename": "AllowRight"
+                }
+            ]
+        },
+        {
+            "id": "invalid-role",
+            "rights": [
+                {
+                    "database": "not_found_db",
+                    "__typename": "AllowRight"
+                },
+                {
                     "__typename": "AllowRight"
                 }
             ]

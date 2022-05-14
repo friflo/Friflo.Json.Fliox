@@ -7,6 +7,9 @@ GET {{base}}/rest/user_db?command=ValidateUserDb
 
 {
     "errors": [
+        "role not found. role: 'missing-role' in permission: invalid-roles",
+        "database not found: 'not_found_db' in role: invalid-role",
+        "missing database in role: invalid-role, right: allow",
         "unknown predicate: 'TestPredicate' in role: main_db-predicate"
     ]
 }
@@ -18,6 +21,9 @@ GET {{base}}/rest/user_db?command=ValidateUserDb
 
 {
     "errors": [
+        "role not found. role: 'missing-role' in permission: invalid-roles",
+        "database not found: 'not_found_db' in role: invalid-role",
+        "missing database in role: invalid-role, right: allow",
         "unknown predicate: 'TestPredicate' in role: main_db-predicate"
     ]
 }

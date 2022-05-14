@@ -33,7 +33,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         hub.Authenticator   = authenticator;
                         hub.EventBroker     = eventBroker;
                         var errors          = await authenticator.ValidateUserDb(null);
-                        AreEqual(0, errors.Count);
+                        AreEqual(new[] {
+                            "role not found. role: 'missing-role' in permission: invalid-roles",
+                            "missing database in role: invalid-role, right: allow"}, errors);
                         await AssertNotAuthenticated        (hub);
                         await AssertAuthAccessOperations    (hub);
                         await AssertAuthAccessSubscriptions (hub);
