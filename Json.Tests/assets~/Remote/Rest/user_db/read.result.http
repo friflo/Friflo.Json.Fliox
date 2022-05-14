@@ -1,0 +1,24 @@
+@base = http://localhost:8010/fliox
+
+###
+GET {{base}}/rest/user_db?command=ValidateUserDb
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "errors": [
+        "unknown predicate: 'TestPredicate' in role: main_db-predicate"
+    ]
+}
+
+###
+GET {{base}}/rest/user_db?command=ValidateUserDb
+# StatusCode:   200
+# Content-Type: application/json
+
+{
+    "errors": [
+        "unknown predicate: 'TestPredicate' in role: main_db-predicate"
+    ]
+}
+

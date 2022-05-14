@@ -1,0 +1,10 @@
+@base = http://localhost:8010/fliox
+
+
+###
+GET {{base}}/rest/user_db?command=ValidateUserDb
+Cookie: fliox-user=admin; fliox-token=admin
+
+###
+GET {{base}}/rest/user_db?command=ValidateUserDb
+Cookie: fliox-user=user-admin; fliox-token=user-admin

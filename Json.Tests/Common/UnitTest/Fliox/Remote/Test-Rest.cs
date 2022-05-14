@@ -24,6 +24,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
             ExecuteHttpFile("Rest/cluster/read.http", "Rest/cluster/read.result.http");
         }
         
+        [Test, Order(0)]
+        public static void Rest_user_db_read() {
+            ExecuteHttpFile("Rest/user_db/read.http", "Rest/user_db/read.result.http");
+        }
+        
         [Test, Order(1)]
         public static void Rest_main_db_happy_read() {
             ExecuteHttpFile("Rest/main_db/happy-read.http", "Rest/main_db/happy-read.result.http");
