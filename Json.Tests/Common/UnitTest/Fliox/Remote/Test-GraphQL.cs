@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Remote
         }
         
         // --------------------------------------- utils ---------------------------------------
-        private static readonly string GraphQLAssets = CommonUtils.GetBasePath() + "assets~/Remote/GraphQL/";
+        private static readonly string GraphQLAssets = CommonUtils.GetBasePath() + "Common/UnitTest/Fliox/Remote/GraphQL/"; 
 
         private static string ReadGraphQLAsset(string path) {
             return File.ReadAllText(GraphQLAssets + path);
