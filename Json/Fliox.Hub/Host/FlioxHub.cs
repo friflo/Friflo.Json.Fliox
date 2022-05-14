@@ -235,7 +235,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private static TaskErrorResult TaskExceptionError (Exception e) {
             var exceptionName   = e.GetType().Name;
             var msg             = $"{exceptionName}: {e.Message}";
-            var stack           = e.StackTrace;
+            // var stack        = e.StackTrace;                         // is not used as it contains file info
+            var stack           = new StackTrace(e, false).ToString();  // stacktrace without file info: source path & line
+            stack               = stack.Substring(0, stack.Length - 2); // remove trailing CR LF
+            
 #if UNITY_5_3_OR_NEWER
             if (stack != null) {
                 // Unity add StackTrace sections starting with:
