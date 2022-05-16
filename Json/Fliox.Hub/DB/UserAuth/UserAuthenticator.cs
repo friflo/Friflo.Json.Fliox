@@ -37,16 +37,18 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public class UserAuthenticator : Authenticator, IDisposable
     {
         // --- private / internal
-        private   readonly  FlioxHub                                    userHub;
+        internal  readonly  FlioxHub                                    userHub;
         private   readonly  IUserAuth                                   userAuth;
         private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  ConcurrentDictionary<string, Authorizer>    authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
+        
+        internal  readonly  ConcurrentDictionary<string, RoleUsers>     roleUserCache = new ConcurrentDictionary <string, RoleUsers>();
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
         {
             if (!(userDatabase.handler is UserDBHandler))
-                throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
+                throw new ArgumentException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
             var typeSchema          = NativeTypeSchema.Create(typeof(UserStore));
             userDatabase.Schema     = new DatabaseSchema(typeSchema);
             userHub        	        = new FlioxHub(userDatabase, env);
@@ -214,6 +216,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
+                if (!roleUserCache.TryGetValue(role, out RoleUsers value)) {
+                    value = new RoleUsers(new HashSet<JsonKey>(JsonKey.Equality));
+                    roleUserCache.TryAdd(role, value);
+                }
+                value.users.Add(userId);
                 // existence is checked already in AddNewRoles()
                 authorizerByRole.TryGetValue(role, out Authorizer authorizer);
                 authorizers.Add(authorizer);

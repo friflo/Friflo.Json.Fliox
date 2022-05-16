@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
@@ -28,12 +29,15 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private static readonly Authorizer                      UnknownRights    = new AuthorizeDeny();
         
         public UserDatabaseAuthenticator(string userDbName) : base (null) {
-            var authUserRights   = new AuthorizeAny(new Authorizer[] {
+            var changes         = new [] { Change.create, Change.upsert, Change.delete, Change.patch };
+            var authUserRights  = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDbName),
                 new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read, OperationType.query }, userDbName),
                 new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query }, userDbName),
+                new AuthorizeSubscribeChanges (nameof(UserStore.permissions),   changes, userDbName),
+                new AuthorizeSubscribeChanges (nameof(UserStore.roles),         changes, userDbName)
             });
-            var serverRights     = new AuthorizeAny(new Authorizer[] {
+            var serverRights    = new AuthorizeAny(new Authorizer[] {
                 new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDbName)
             });
             userRights = new Dictionary<JsonKey, Authorizer> (JsonKey.Equality) {
