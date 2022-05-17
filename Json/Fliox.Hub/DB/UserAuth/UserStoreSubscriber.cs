@@ -3,37 +3,38 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
-    public class UserStoreSubscriber : SubscriptionProcessor
+    internal class UserStoreSubscriber : SubscriptionProcessor
     {
         private readonly UserStore              client;
         private readonly UserAuthenticator      userAuthenticator;
         
-        public UserStoreSubscriber(UserStore client, UserAuthenticator userAuthenticator)
+        private UserStoreSubscriber(UserStore client, UserAuthenticator userAuthenticator)
             : base(client)
         {
             this.client             = client;
             this.userAuthenticator  = userAuthenticator;
         }
         
-        public static void CreateSubscriber(UserAuthenticator userAuthenticator) {
-            var userHub     = userAuthenticator.userHub;
-            userHub.EventBroker = new EventBroker(true);
+        internal static void CreateSubscriber(UserAuthenticator userAuthenticator, FlioxHub hub) {
             var changes     = new [] { Change.create, Change.upsert, Change.delete, Change.patch };
-            var store       = new UserStore (userHub);
+            var store       = new UserStore (hub, userAuthenticator.userHub.DatabaseName);
+            // userAuthenticator.userHub.EventBroker = new EventBroker(true);
             store.UserId    = UserStore.AuthenticationUser;
+            store.UserId    = "admin";
+            store.Token     = "admin";
             store.ClientId  = "user_db_subscriber";
             var subscriber  = new UserStoreSubscriber(store, userAuthenticator);
             store.SetSubscriptionProcessor(subscriber);
             store.permissions.SubscribeChanges(changes);
             store.roles.SubscribeChanges(changes);
-            store.SyncTasks().Wait();
+            var xxx = store.TrySyncTasks().Result;
         }
         
         /// <summary>

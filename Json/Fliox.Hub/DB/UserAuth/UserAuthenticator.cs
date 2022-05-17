@@ -61,6 +61,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub.Dispose();
         }
         
+        public void SubscribeDbChanges(FlioxHub hub) {
+            UserStoreSubscriber.CreateSubscriber (this, hub);
+        }
+
         public async Task<List<string>> ValidateUserDb(HashSet<string> databases) {
             var predicates  = registeredPredicates.Keys.ToHashSet();
             var errors      = new List<string>();
