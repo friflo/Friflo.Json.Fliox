@@ -238,6 +238,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         ///   <see cref="SubscriptionProcessor.ProcessEvent"/> before processing it.
         /// </para>
         /// </summary>
+        public void SetEventProcessor(EventProcessor eventProcessor) {
+            _intern.eventProcessor = eventProcessor ?? throw new NullReferenceException(nameof(eventProcessor));
+        }
+        
         public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             _intern.subscriptionProcessor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));
         }

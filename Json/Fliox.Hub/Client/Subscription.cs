@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
     
-    public abstract class SubscriptionProcessor
+    public class SubscriptionProcessor
     {
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
@@ -23,8 +23,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              int                                 EventSequence { get; private set ; }
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
-
-        public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
 
         /// <summary>
         /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
@@ -39,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <br></br>
         /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
-        protected virtual void ProcessEvent(FlioxClient client, EventMessage ev) {
+        public virtual void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
             EventSequence++;

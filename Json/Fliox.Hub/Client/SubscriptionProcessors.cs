@@ -9,6 +9,14 @@ using Friflo.Json.Fliox.Hub.Threading;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public abstract class EventProcessor
+    {
+        public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
+        
+        protected void ProcessEvent(FlioxClient client, EventMessage ev) {
+            client._intern.subscriptionProcessor.ProcessEvent(client, ev);
+        }
+    }
     /// <summary>
     /// Creates a <see cref="SubscriptionProcessor"/> using a <see cref="SynchronizationContext"/>
     /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.ProcessEvent"/> is called on the
@@ -21,16 +29,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
     /// </para> 
     /// </summary>
-    public class SynchronizedSubscriptionProcessor : SubscriptionProcessor
+    public class SynchronizedEventProcessor : EventProcessor
     {
         private readonly    SynchronizationContext              synchronizationContext;
         
 
-        public SynchronizedSubscriptionProcessor(SynchronizationContext synchronizationContext) {
+        public SynchronizedEventProcessor(SynchronizationContext synchronizationContext) {
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
-        public SynchronizedSubscriptionProcessor() {
+        public SynchronizedEventProcessor() {
             synchronizationContext =
                 SynchronizationContext.Current
                 ?? throw new InvalidOperationException(SynchronizationContextIsNull);
@@ -47,7 +55,14 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         }
     }
     
-    public class QueuingSubscriptionProcessor : SubscriptionProcessor
+    public class DirectEventProcessor : EventProcessor
+    {
+        public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
+            ProcessEvent(client, ev);
+        }
+    }
+    
+    public class QueuingEventProcessor : EventProcessor
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
@@ -58,7 +73,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
         /// are applied to the <see cref="FlioxClient"/>.
         /// </summary>
-        public QueuingSubscriptionProcessor() { }
+        public QueuingEventProcessor() { }
         
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             eventQueue.Enqueue(new QueuedMessage(client, ev));

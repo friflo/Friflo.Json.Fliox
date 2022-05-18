@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// test authorization of subscribing to container changes. E.g. create, upsert, delete and patch.
         private static async Task AssertAuthAccessSubscriptions(FlioxHub hub) {
             using (var mutateUser       = new PocStore(hub) { UserId = "test-deny"}) {
-                mutateUser.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor());
+                mutateUser.SetEventProcessor(new SynchronizedEventProcessor());
                 mutateUser.Token = "test-deny-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", articleDeletes.Error.Message);
             }
             using (var mutateUser       = new PocStore(hub) { UserId = "test-operation"}) {
-                mutateUser.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor());
+                mutateUser.SetEventProcessor(new SynchronizedEventProcessor());
                 mutateUser.Token = "test-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertAuthMessage(FlioxHub hub) {
             using (var denyUser      = new PocStore(hub) { UserId = "test-deny"})
             {
-                denyUser.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor());
+                denyUser.SetEventProcessor(new SynchronizedEventProcessor());
                 // test: deny message
                 denyUser.Token = "test-deny-token";
                 await denyUser.TrySyncTasks(); // authenticate to simplify debugging below
@@ -197,7 +197,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", subscribe.Error.Message);
             }
             using (var messageUser   = new PocStore(hub) { UserId = "test-message"}){
-                messageUser.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor());
+                messageUser.SetEventProcessor(new SynchronizedEventProcessor());
                 // test: allow message
                 messageUser.Token = "test-message-token";
                 await messageUser.TrySyncTasks(); // authenticate to simplify debugging below

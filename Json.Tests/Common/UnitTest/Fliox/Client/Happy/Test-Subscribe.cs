@@ -56,6 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task<PocSubscriptionProcessor> CreateSubscriptionProcessor (PocStore store, EventAssertion eventAssertion) {
             var processor = new PocSubscriptionProcessor(store, eventAssertion);
+            store.SetEventProcessor(new SynchronizedEventProcessor());
             store.SetSubscriptionProcessor(processor);
             store.SetSubscriptionHandler((handler, ev) => {
                 processor.subscribeEventsCalls++;
@@ -168,7 +169,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     }
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
-    internal class PocSubscriptionProcessor : SynchronizedSubscriptionProcessor {
+    internal class PocSubscriptionProcessor : SubscriptionProcessor {
         private readonly    PocStore                client;
         private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
         private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
@@ -190,7 +191,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
             
         /// All tests using <see cref="PocSubscriptionProcessor"/> are required to use "createStore" as userId
-        protected override void ProcessEvent (FlioxClient __, EventMessage ev) {
+        public override void ProcessEvent (FlioxClient __, EventMessage ev) {
             AreEqual("createStore", ev.srcUserId.ToString());
             base.ProcessEvent(client, ev);
             var orderChanges    = GetEntityChanges(client.orders,    ev);
@@ -300,7 +301,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new MemoryDatabase(TestGlobals.DB))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb     = new FlioxClient(hub) { ClientId = "listenDb" }) {
-                listenDb.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor());
+                listenDb.SetEventProcessor(new SynchronizedEventProcessor());
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {

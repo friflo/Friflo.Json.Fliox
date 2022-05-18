@@ -31,6 +31,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.ClientId  = "user_db_subscriber";
             var subscriber  = new UserStoreSubscriber(store, userAuthenticator);
             store.SetSubscriptionProcessor(subscriber);
+            var eventProcessor = new DirectEventProcessor();
+            store.SetEventProcessor(eventProcessor);
             store.permissions.SubscribeChanges(changes);
             store.roles.SubscribeChanges(changes);
             store.SyncTasks().Wait();
@@ -41,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// - a user permission changes
         /// - a role assigned to a user changes
         /// </summary>
-        public override void EnqueueEvent(FlioxClient c, EventMessage ev) {
+        public override void ProcessEvent(FlioxClient c, EventMessage ev) {
             if (!ReferenceEquals(client, c))    throw new InvalidOperationException("unexpected client reference");
-            ProcessEvent(client, ev);
+            base.ProcessEvent(client, ev);
 
             var credentialChanges   = GetEntityChanges(client.credentials,  ev);
             var permissionChanges   = GetEntityChanges(client.permissions,  ev);

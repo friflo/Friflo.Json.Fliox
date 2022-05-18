@@ -18,9 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     public partial class FlioxClient
     {
         internal void AssertSubscriptionProcessor() {
-            if (_intern.subscriptionProcessor != null)
+            if (_intern.eventProcessor != null)
                 return;
-            var msg = $"subscriptions require a {nameof(SubscriptionProcessor)} - {nameof(SetSubscriptionProcessor)}() before";
+            var msg = $"subscriptions require a {nameof(SubscriptionProcessor)} - {nameof(SetEventProcessor)}() before";
             throw new InvalidOperationException(msg);
         }
         
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Returning current <see cref="ClientIntern.syncStore"/> as <paramref name="syncStore"/> enables request handling
         /// in a worker thread while calling <see cref="SyncStore"/> methods from 'main' thread.
         /// 
-        /// If store has <see cref="ClientIntern.subscriptionProcessor"/> acknowledge received events to clear
+        /// If store has <see cref="ClientIntern.eventProcessor"/> acknowledge received events to clear
         /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             };
 
             // see method docs
-            if (_intern.subscriptionProcessor != null) {
+            if (_intern.eventProcessor != null) {
                 syncRequest.eventAck = _intern.lastEventSeq;
             }
 
