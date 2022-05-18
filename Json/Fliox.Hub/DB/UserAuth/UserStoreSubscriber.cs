@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         /// <summary>
-        /// used to remove users from cached <see cref="UserAuthenticator.users"/> in case:
+        /// used to remove users from cached <see cref="Host.Auth.Authenticator.users"/> in case:
         /// - a user permission changes
         /// - a role assigned to a user changes
         /// </summary>
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
             var users = userAuthenticator.users;
             foreach (var changedUser in changedUsers) {
-                users.Remove(changedUser, out _);
+                users.TryRemove(changedUser, out _);
             }
             
             var roleChanges     = GetEntityChanges(client.roles,        ev);
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 if (!userAuthenticator.roleUserCache.TryGetValue(changedRole, out var roleUser))
                     continue;
                 foreach (var userId in roleUser.users) {
-                    users.Remove(userId, out _);    
+                    users.TryRemove(userId, out _);    
                 }
             }
         }

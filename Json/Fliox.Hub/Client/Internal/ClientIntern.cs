@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- readonly / private - owned
             objectPatcher               = null;
             processor                   = null;
-            defaultProcessor            = new SubscriptionProcessor(client);
+            defaultProcessor            = new SynchronizedSubscriptionProcessor(client);
             setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();

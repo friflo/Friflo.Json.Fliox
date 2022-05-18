@@ -2,104 +2,43 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public enum SubscriptionHandling {
-        /// <summary>
-        /// Used in <see cref="SubscriptionProcessor(FlioxClient, SubscriptionHandling)"/> to enforce manual handling of subscription events. 
-        /// </summary>
-        Manual
-    }
-    
     public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
-    public class SubscriptionProcessor : IDisposable, ILogSource
+    
+    public abstract class SubscriptionProcessor : IDisposable, ILogSource
     {
         private readonly    FlioxClient                         client;
 
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
-        
-        /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
-        private readonly    SynchronizationContext              synchronizationContext;
-        /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
-        private readonly    ConcurrentQueue <EventMessage>      eventQueue;
-        
+
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
         public              int                                 EventSequence { get; private set ; }
 
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
-        /// <summary>
-        /// Creates a <see cref="SubscriptionProcessor"/> with the specified <see cref="synchronizationContext"/>
-        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
-        /// same thread as all other API calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
-        /// <para>
-        ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
-        ///   If <see cref="synchronizationContext"/> is null it defaults to <see cref="SynchronizationContext.Current"/>.
-        /// </para> 
-        /// <para>
-        ///   In case of a Console application where <see cref="SynchronizationContext.Current"/> is null
-        ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
-        /// </para> 
-        /// </summary>
-        public SubscriptionProcessor (FlioxClient client, SynchronizationContext synchronizationContext = null) {
-            synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
+        protected SubscriptionProcessor (FlioxClient client) {
             this.client                 = client;
             this.Logger                 = client.Logger;
-            this.synchronizationContext = synchronizationContext;
-        }
-        
-        /// <summary>
-        /// Creates a <see cref="SubscriptionProcessor"/> without a <see cref="synchronizationContext"/>
-        /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
-        /// <see cref="FlioxClient"/>.
-        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
-        /// are applied to the <see cref="FlioxClient"/>.
-        /// </summary>
-        public SubscriptionProcessor (FlioxClient client, SubscriptionHandling _) {
-            this.client                 = client;
-            this.Logger                 = client.Logger;
-            this.eventQueue             = new ConcurrentQueue <EventMessage> ();
         }
 
         public void Dispose() {
         }
 
-        public virtual void EnqueueEvent(EventMessage ev) {
-            if (eventQueue != null) {
-                eventQueue.Enqueue(ev);
-                return;
-            }
-            synchronizationContext.Post(delegate {
-                ProcessEvent(ev);
-            }, null);
-        }
-        
-        /// <summary>
-        /// Need to be called frequently if <see cref="SubscriptionProcessor"/> is initialized without a <see cref="SynchronizationContext"/>.
-        /// </summary>
-        public void ProcessEvents() {
-            if (synchronizationContext != null) {
-                throw new InvalidOperationException("SubscriptionHandler initialized with SynchronizationContext");
-            }
-            while (eventQueue.TryDequeue(out EventMessage eventMessage)) {
-                ProcessEvent(eventMessage);
-            }
-        }
+        public abstract void EnqueueEvent(EventMessage ev);
 
         /// <summary>
         /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
