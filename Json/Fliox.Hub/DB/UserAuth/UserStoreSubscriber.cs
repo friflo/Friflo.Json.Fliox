@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
@@ -15,9 +16,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         private readonly UserStore              client;
         private readonly UserAuthenticator      userAuthenticator;
         
-        private UserStoreSubscriber(UserStore client, UserAuthenticator userAuthenticator)
-            : base(client)
-        {
+        private UserStoreSubscriber(UserStore client, UserAuthenticator userAuthenticator) {
             this.client             = client;
             this.userAuthenticator  = userAuthenticator;
         }
@@ -42,8 +41,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// - a user permission changes
         /// - a role assigned to a user changes
         /// </summary>
-        public override void EnqueueEvent(EventMessage ev) {
-            ProcessEvent(ev);
+        public override void EnqueueEvent(FlioxClient c, EventMessage ev) {
+            if (!ReferenceEquals(client, c))    throw new InvalidOperationException("unexpected client reference");
+            ProcessEvent(client, ev);
 
             var credentialChanges   = GetEntityChanges(client.credentials,  ev);
             var permissionChanges   = GetEntityChanges(client.permissions,  ev);

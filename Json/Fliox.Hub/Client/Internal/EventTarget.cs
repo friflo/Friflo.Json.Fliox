@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (eventMessage == null)
                 return Task.FromResult(true);
 
-            client._intern.subscriptionProcessor?.EnqueueEvent(eventMessage);
+            client._intern.subscriptionProcessor?.EnqueueEvent(client, eventMessage);
 
             return Task.FromResult(true);
         }

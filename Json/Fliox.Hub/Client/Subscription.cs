@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -16,26 +15,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
     
-    public abstract class SubscriptionProcessor : ILogSource
+    public abstract class SubscriptionProcessor
     {
-        private readonly    FlioxClient                         client;
-
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
 
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger                          Logger { get; }
         public              int                                 EventSequence { get; private set ; }
-
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
-        protected SubscriptionProcessor (FlioxClient client) {
-            this.client                 = client;
-            this.Logger                 = client.Logger;
-        }
 
-        public abstract void EnqueueEvent(EventMessage ev);
+        public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
 
         /// <summary>
         /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
@@ -50,13 +39,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <br></br>
         /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
-        protected virtual void ProcessEvent(EventMessage ev) {
+        protected virtual void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
             EventSequence++;
             using (var pooled = client.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
-                var logger = Logger;
+                var logger = client.Logger;
                 foreach (var task in ev.tasks) {
                     EntitySet set;
                     switch (task.TaskType) {
@@ -67,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                             // apply changes only if subscribed
                             if (set.GetSubscription() == null)
                                 continue;
-                            create.entityKeys = GetKeysFromEntities (set.GetKeyName(), create.entities);
+                            create.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), create.entities);
                             SyncPeerEntities(set, create.entityKeys, create.entities, mapper);
                             break;
                         
@@ -77,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                             // apply changes only if subscribed
                             if (set.GetSubscription() == null)
                                 continue;
-                            upsert.entityKeys = GetKeysFromEntities (set.GetKeyName(), upsert.entities);
+                            upsert.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), upsert.entities);
                             SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);
                             break;
                         
@@ -126,7 +115,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
-        private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
+        private List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
             var processor = client._intern.EntityProcessor();
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
@@ -159,11 +148,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             return (EntityChanges<TKey, T>)result;
         }
         
-        public List<Message> GetMessages(EventMessage eventMessage) {
+        public List<Message> GetMessages(FlioxClient client, EventMessage eventMessage) {
             messages.Clear();
             using (var pooled = client.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
-                var logger = Logger;
+                var logger = client.Logger;
                 foreach (var task in eventMessage.tasks) {
                     if (!(task is SyncMessageTask messageTask)) 
                         continue;

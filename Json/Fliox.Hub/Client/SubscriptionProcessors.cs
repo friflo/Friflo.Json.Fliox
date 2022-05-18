@@ -26,15 +26,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    SynchronizationContext              synchronizationContext;
         
 
-        public SynchronizedSubscriptionProcessor(FlioxClient client, SynchronizationContext synchronizationContext)
-            : base (client)
-        {
+        public SynchronizedSubscriptionProcessor(SynchronizationContext synchronizationContext) {
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
-        public SynchronizedSubscriptionProcessor(FlioxClient client)
-            : base (client)
-        {
+        public SynchronizedSubscriptionProcessor() {
             synchronizationContext =
                 SynchronizationContext.Current
                 ?? throw new InvalidOperationException(SynchronizationContextIsNull);
@@ -44,16 +40,16 @@ namespace Friflo.Json.Fliox.Hub.Client
 This is typically the case in console applications or unit tests. 
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
-        public override void EnqueueEvent(EventMessage ev) {
+        public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             synchronizationContext.Post(delegate {
-                ProcessEvent(ev);
+                ProcessEvent(client, ev);
             }, null);
         }
     }
     
     public class QueuingSubscriptionProcessor : SubscriptionProcessor
     {
-        private readonly    ConcurrentQueue <EventMessage>      eventQueue = new ConcurrentQueue <EventMessage> ();
+        private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
         /// <summary>
         /// Creates a queuing <see cref="SubscriptionProcessor"/>.
@@ -62,20 +58,29 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
         /// are applied to the <see cref="FlioxClient"/>.
         /// </summary>
-        public QueuingSubscriptionProcessor(FlioxClient client)
-            : base (client)
-        { }
+        public QueuingSubscriptionProcessor() { }
         
-        public override void EnqueueEvent(EventMessage ev) {
-            eventQueue.Enqueue(ev);
+        public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
+            eventQueue.Enqueue(new QueuedMessage(client, ev));
         }
         
         /// <summary>
         /// Need to be called frequently if <see cref="SubscriptionProcessor"/> is initialized without a <see cref="SynchronizationContext"/>.
         /// </summary>
         public void ProcessEvents() {
-            while (eventQueue.TryDequeue(out EventMessage eventMessage)) {
-                ProcessEvent(eventMessage);
+            while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
+                ProcessEvent(queuedMessage.client, queuedMessage.message);
+            }
+        }
+
+        private readonly struct QueuedMessage
+        {
+            internal  readonly  FlioxClient     client;
+            internal  readonly  EventMessage    message;
+            
+            internal QueuedMessage(FlioxClient client, EventMessage  message) {
+                this.client     = client;
+                this.message    = message;
             }
         }
     }

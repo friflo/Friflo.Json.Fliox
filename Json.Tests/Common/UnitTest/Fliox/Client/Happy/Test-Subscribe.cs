@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         AreEqual(6, eventInfo.Count);
                         AreEqual(5, eventInfo.messages);
                         AreEqual(1, eventInfo.changes.upserts);
-                        var messages = handler.GetMessages(ev);
+                        var messages = handler.GetMessages(store, ev);
                         AreEqual(5, messages.Count);
                         break;
                 }
@@ -184,23 +184,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private readonly    EventAssertion          eventAssertion;
         
-        internal PocSubscriptionProcessor (PocStore client, EventAssertion eventAssertion)
-            : base (client)
-        {
+        internal PocSubscriptionProcessor (PocStore client, EventAssertion eventAssertion) {
             this.client         = client;
             this.eventAssertion = eventAssertion;
         }
             
         /// All tests using <see cref="PocSubscriptionProcessor"/> are required to use "createStore" as userId
-        protected override void ProcessEvent (EventMessage ev) {
+        protected override void ProcessEvent (FlioxClient __, EventMessage ev) {
             AreEqual("createStore", ev.srcUserId.ToString());
-            base.ProcessEvent(ev);
+            base.ProcessEvent(client, ev);
             var orderChanges    = GetEntityChanges(client.orders,    ev);
             var customerChanges = GetEntityChanges(client.customers, ev);
             var articleChanges  = GetEntityChanges(client.articles,  ev);
             var producerChanges = GetEntityChanges(client.producers, ev);
             var employeeChanges = GetEntityChanges(client.employees, ev);
-            var messages        = GetMessages                      (ev);
+            var messages        = GetMessages     (client,           ev);
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
@@ -302,7 +300,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new MemoryDatabase(TestGlobals.DB))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb     = new FlioxClient(hub) { ClientId = "listenDb" }) {
-                listenDb.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor(listenDb));
+                listenDb.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor());
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
