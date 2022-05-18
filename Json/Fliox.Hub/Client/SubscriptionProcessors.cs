@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -8,28 +9,40 @@ using Friflo.Json.Fliox.Hub.Threading;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Creates a <see cref="SubscriptionProcessor"/> using a <see cref="SynchronizationContext"/>
+    /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.ProcessEvent"/> is called on the
+    /// same thread as all other methods calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
+    /// <para>
+    ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
+    /// </para> 
+    /// <para>
+    ///   In case of a Console application or a unit test where <see cref="SynchronizationContext.Current"/> is null
+    ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
+    /// </para> 
+    /// </summary>
     public class SynchronizedSubscriptionProcessor : SubscriptionProcessor
     {
         private readonly    SynchronizationContext              synchronizationContext;
         
-        /// <summary>
-        /// Creates a <see cref="SubscriptionProcessor"/> with the specified <see cref="synchronizationContext"/>
-        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.ProcessEvent"/> is called on the
-        /// same thread as all other API calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
-        /// <para>
-        ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
-        ///   If <see cref="synchronizationContext"/> is null it defaults to <see cref="SynchronizationContext.Current"/>.
-        /// </para> 
-        /// <para>
-        ///   In case of a Console application where <see cref="SynchronizationContext.Current"/> is null
-        ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
-        /// </para> 
-        /// </summary>
-        public SynchronizedSubscriptionProcessor(FlioxClient client, SynchronizationContext synchronizationContext = null)
+
+        public SynchronizedSubscriptionProcessor(FlioxClient client, SynchronizationContext synchronizationContext)
             : base (client)
         {
-            this.synchronizationContext = synchronizationContext ?? SynchronizationContext.Current;
+            this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
+        
+        public SynchronizedSubscriptionProcessor(FlioxClient client)
+            : base (client)
+        {
+            synchronizationContext =
+                SynchronizationContext.Current
+                ?? throw new InvalidOperationException(SynchronizationContextIsNull);
+        }
+        
+        private const string SynchronizationContextIsNull = @"SynchronizationContext.Current is null.
+This is typically the case in console applications or unit tests. 
+Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
         public override void EnqueueEvent(EventMessage ev) {
             synchronizationContext.Post(delegate {

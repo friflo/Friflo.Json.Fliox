@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.SetSubscriptionProcessor(subscriber);
             store.permissions.SubscribeChanges(changes);
             store.roles.SubscribeChanges(changes);
-            var xxx = store.TrySyncTasks().Result;
+            store.SyncTasks().Wait();
         }
         
         /// <summary>

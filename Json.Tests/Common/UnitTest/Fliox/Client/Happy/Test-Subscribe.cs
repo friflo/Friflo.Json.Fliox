@@ -302,6 +302,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new MemoryDatabase(TestGlobals.DB))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb     = new FlioxClient(hub) { ClientId = "listenDb" }) {
+                listenDb.SetSubscriptionProcessor(new SynchronizedSubscriptionProcessor(listenDb));
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
