@@ -28,7 +28,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   ITracerContext                              tracerContext;
         
         // --- readonly / private - owned
-        private  readonly   SubscriptionProcessor                       defaultProcessor;
         private             ObjectPatcher                               objectPatcher;  // create on demand
         private             EntityProcessor                             processor;      // create on demand
         internal readonly   Dictionary<Type,   EntitySet>               setByType;
@@ -96,7 +95,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- readonly / private - owned
             objectPatcher               = null;
             processor                   = null;
-            defaultProcessor            = new SynchronizedSubscriptionProcessor(client);
             setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
@@ -107,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- mutable state
             syncStore                   = new SyncStore();
             tracerLogTask               = null;
-            subscriptionProcessor       = defaultProcessor;
+            subscriptionProcessor       = new SynchronizedSubscriptionProcessor(client);
             subscriptionHandler         = null;
             disposed                    = false;
             lastEventSeq                = 0;
@@ -130,7 +128,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             hub.RemoveEventTarget(clientId);
             setByName.Clear();
             setByType.Clear();
-            defaultProcessor.Dispose();
             processor?.Dispose();
             objectPatcher?.Dispose();
         }

@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
     
-    public abstract class SubscriptionProcessor : IDisposable, ILogSource
+    public abstract class SubscriptionProcessor : ILogSource
     {
         private readonly    FlioxClient                         client;
 
@@ -33,9 +33,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         protected SubscriptionProcessor (FlioxClient client) {
             this.client                 = client;
             this.Logger                 = client.Logger;
-        }
-
-        public void Dispose() {
         }
 
         public abstract void EnqueueEvent(EventMessage ev);
