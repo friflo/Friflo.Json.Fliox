@@ -17,8 +17,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change) where T : class;
-    
     /// <summary>
     /// An EntitySet represents a collection (table) of entities (records). <br/>
     /// <br/>

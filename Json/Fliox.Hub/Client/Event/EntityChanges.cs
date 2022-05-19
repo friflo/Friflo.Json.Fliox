@@ -12,6 +12,8 @@ using Friflo.Json.Fliox.Transform;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change) where T : class;
+    
     public abstract class EntityChanges
     {
         internal  abstract  int     Count       ();
