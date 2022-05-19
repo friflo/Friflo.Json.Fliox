@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var task = GetSyncSet().SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);
             if (handler != null) {
-                callback = new GenericChangeCallback<TKey,T>(handler);
+                changeCallback = new GenericChangeCallback<TKey,T>(handler);
             }
             return task;
         }

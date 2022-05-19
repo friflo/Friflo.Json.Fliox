@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     continue;
                 var entityType = result.Key;
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
-                set.callback?.InvokeCallback(entityChanges);
+                set.changeCallback?.InvokeCallback(entityChanges);
             }
         }
         

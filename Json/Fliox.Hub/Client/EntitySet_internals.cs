@@ -19,7 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     public abstract class EntitySet
     {
         internal  readonly  string          name;
-        internal            ChangeCallback  callback;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal            ChangeCallback  changeCallback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
         internal  abstract  SetInfo     SetInfo     { get; }
