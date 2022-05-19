@@ -13,10 +13,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class EventHandler
     {
         public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
-        
-        protected static void ProcessEvent(FlioxClient client, EventMessage ev) {
-            client._intern.subscriptionProcessor.OnEvent(client, ev);
-        }
     }
     /// <summary>
     /// Creates a <see cref="EventHandler"/> using a <see cref="SynchronizationContext"/>
@@ -51,7 +47,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             synchronizationContext.Post(delegate {
-                ProcessEvent(client, ev);
+                client._intern.subscriptionProcessor.OnEvent(client, ev);
             }, null);
         }
     }
@@ -59,7 +55,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     public class DirectEventHandler : EventHandler
     {
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
-            ProcessEvent(client, ev);
+            client._intern.subscriptionProcessor.OnEvent(client, ev);
         }
     }
     
@@ -85,18 +81,19 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         /// </summary>
         public void ProcessEvents() {
             while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
-                ProcessEvent(queuedMessage.client, queuedMessage.message);
+                var client  = queuedMessage.client;
+                client._intern.subscriptionProcessor.OnEvent(client, queuedMessage.ev);
             }
         }
 
         private readonly struct QueuedMessage
         {
             internal  readonly  FlioxClient     client;
-            internal  readonly  EventMessage    message;
+            internal  readonly  EventMessage    ev;
             
-            internal QueuedMessage(FlioxClient client, EventMessage  message) {
-                this.client     = client;
-                this.message    = message;
+            internal QueuedMessage(FlioxClient client, EventMessage  ev) {
+                this.client = client;
+                this.ev     = ev;
             }
         }
     }
