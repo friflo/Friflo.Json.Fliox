@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// - a user permission changes
         /// - a role assigned to a user changes
         /// </summary>
-        public override void ProcessEvent(FlioxClient c, EventMessage ev) {
+        public override void OnEvent(FlioxClient c, EventMessage ev) {
             if (!ReferenceEquals(client, c))    throw new InvalidOperationException("unexpected client reference");
-            base.ProcessEvent(client, ev);
+            ProcessEvent(client, ev);
 
             var credentialChanges   = GetEntityChanges(client.credentials,  ev);
             var permissionChanges   = GetEntityChanges(client.permissions,  ev);

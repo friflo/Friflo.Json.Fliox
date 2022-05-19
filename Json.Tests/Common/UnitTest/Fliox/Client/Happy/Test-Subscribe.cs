@@ -58,29 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var processor = new PocSubscriptionProcessor(store, eventAssertion);
             store.SetEventProcessor(new SynchronizedEventProcessor());
             store.SetSubscriptionProcessor(processor);
-            store.SetSubscriptionHandler((handler, ev) => {
-                processor.subscribeEventsCalls++;
-                var eventInfo = ev.GetEventInfo();
-                switch (handler.EventSequence) {
-                    case 3:
-                        AreEqual(6, eventInfo.Count);
-                        AreEqual(6, eventInfo.changes.Count);
-                        AreEqual("(creates: 2, upserts: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
-                        var articleChanges  = handler.GetEntityChanges(store.articles,  ev);
-                        var producerChanges = handler.GetEntityChanges(store.producers, ev);
-                        AreEqual(1, articleChanges.creates.Count);
-                        AreEqual("(creates: 1, upserts: 4, deletes: 0, patches: 0)", articleChanges.ToString());
-                        AreEqual("(creates: 1, upserts: 0, deletes: 0, patches: 0)", producerChanges.ToString());
-                        break;
-                    case 9:
-                        AreEqual(6, eventInfo.Count);
-                        AreEqual(5, eventInfo.messages);
-                        AreEqual(1, eventInfo.changes.upserts);
-                        var messages = handler.GetMessages(store, ev);
-                        AreEqual(5, messages.Count);
-                        break;
-                }
-            });
+            //store.SetSubscriptionHandler(processor.sss);
             
             var subscriptions   = store.SubscribeAllChanges(Changes.All);
             // change subscription of specific EntitySet<Article>
@@ -191,9 +169,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
             
         /// All tests using <see cref="PocSubscriptionProcessor"/> are required to use "createStore" as userId
-        public override void ProcessEvent (FlioxClient __, EventMessage ev) {
+        public override void OnEvent (FlioxClient __, EventMessage ev) {
             AreEqual("createStore", ev.srcUserId.ToString());
-            base.ProcessEvent(client, ev);
+            ProcessEvent(client, ev);
+            
+            CheckSomeMessages(this, ev);
+            
             var orderChanges    = GetEntityChanges(client.orders,    ev);
             var customerChanges = GetEntityChanges(client.customers, ev);
             var articleChanges  = GetEntityChanges(client.articles,  ev);
@@ -240,6 +221,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     changeInfo = ev.GetChangeInfo();
                     IsTrue(changeInfo.Count > 0);
                     AssertChangeEvent(articleChanges);
+                    break;
+            }
+        }
+        
+        private void CheckSomeMessages(SubscriptionProcessor processor, EventMessage ev) {
+            subscribeEventsCalls++;
+            var eventInfo = ev.GetEventInfo();
+            switch (EventSequence) {
+                case 3:
+                    AreEqual(6, eventInfo.Count);
+                    AreEqual(6, eventInfo.changes.Count);
+                    AreEqual("(creates: 2, upserts: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
+                    var articleChanges  = GetEntityChanges(client.articles,  ev);
+                    var producerChanges = GetEntityChanges(client.producers, ev);
+                    AreEqual(1, articleChanges.creates.Count);
+                    AreEqual("(creates: 1, upserts: 4, deletes: 0, patches: 0)", articleChanges.ToString());
+                    AreEqual("(creates: 1, upserts: 0, deletes: 0, patches: 0)", producerChanges.ToString());
+                    break;
+                case 9:
+                    AreEqual(6, eventInfo.Count);
+                    AreEqual(5, eventInfo.messages);
+                    AreEqual(1, eventInfo.changes.upserts);
+                    var messages = GetMessages(client, ev);
+                    AreEqual(5, messages.Count);
                     break;
             }
         }

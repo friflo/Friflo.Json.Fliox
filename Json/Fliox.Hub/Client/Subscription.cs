@@ -12,9 +12,6 @@ using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
-    
-    
     public class SubscriptionProcessor
     {
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
@@ -23,6 +20,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              int                                 EventSequence { get; private set ; }
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
+        
+        public virtual void OnEvent(FlioxClient client, EventMessage ev) {
+            ProcessEvent(client, ev);
+        }
 
         /// <summary>
         /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
@@ -37,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <br></br>
         /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
-        public virtual void ProcessEvent(FlioxClient client, EventMessage ev) {
+        public void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
             EventSequence++;
@@ -106,11 +107,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                     }
                 }
             }
-            var subHandler = client._intern.subscriptionHandler;
-            // ReSharper disable once UseNullPropagation
-            if (subHandler == null)
-                return;
-            subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
         private List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {

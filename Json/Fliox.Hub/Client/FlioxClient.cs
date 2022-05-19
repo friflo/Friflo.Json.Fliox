@@ -205,7 +205,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="changes"/>.
         /// By default these changes are applied to the <see cref="FlioxClient"/>.
-        /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(IEnumerable<Change> changes) {
@@ -220,6 +219,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             return tasks;
         }
         
+        public void SetEventProcessor(EventProcessor eventProcessor) {
+            _intern.eventProcessor = eventProcessor ?? throw new NullReferenceException(nameof(eventProcessor));
+        }
+        
         /// <summary>
         /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
@@ -227,41 +230,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="FlioxClient"/> as they arrive.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
         /// <br></br>
-        /// In contrast to <see cref="SetSubscriptionHandler"/> this method provide additional possibilities by the
-        /// given <see cref="SubscriptionProcessor"/>. These are:
+        /// A <see cref="SubscriptionProcessor"/> enables:
         /// <para>
         ///   Defer processing of events by queuing them for later processing.
         ///   E.g. by doing nothing in an override of <see cref="SubscriptionProcessor.ProcessEvent"/>.  
         /// </para>
         /// <para>
         ///   Manipulation of the received <see cref="EventMessage"/> in an override of
-        ///   <see cref="SubscriptionProcessor.ProcessEvent"/> before processing it.
+        ///   <see cref="SubscriptionProcessor.OnEvent"/> before calling <see cref="SubscriptionProcessor.ProcessEvent"/>.
         /// </para>
         /// </summary>
-        public void SetEventProcessor(EventProcessor eventProcessor) {
-            _intern.eventProcessor = eventProcessor ?? throw new NullReferenceException(nameof(eventProcessor));
-        }
-        
         public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             _intern.subscriptionProcessor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));
-        }
-        
-        /// <summary>
-        /// Set a <see cref="SubscriptionHandler"/> which is called for all events received by the client.
-        /// These events fall in two categories:
-        /// <para>
-        ///   1. change events.
-        ///      To receive change events use <see cref="SubscribeAllChanges"/> or
-        ///      <see cref="EntitySet{TKey,T}.SubscribeChanges"/> and its sibling methods.
-        /// </para>
-        /// <para>
-        ///   2. message/command events.
-        ///      To receive message/command events use <see cref="SubscribeMessage"/> or sibling methods.
-        /// </para>
-        /// </summary>
-        public void SetSubscriptionHandler(SubscriptionHandler handler) {
-            AssertSubscriptionProcessor();
-            _intern.subscriptionHandler = handler;
         }
         
         // --- SendMessage

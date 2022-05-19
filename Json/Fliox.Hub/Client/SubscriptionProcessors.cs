@@ -14,12 +14,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
         
         protected void ProcessEvent(FlioxClient client, EventMessage ev) {
-            client._intern.subscriptionProcessor.ProcessEvent(client, ev);
+            client._intern.subscriptionProcessor.OnEvent(client, ev);
         }
     }
     /// <summary>
-    /// Creates a <see cref="SubscriptionProcessor"/> using a <see cref="SynchronizationContext"/>
-    /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.ProcessEvent"/> is called on the
+    /// Creates a <see cref="EventProcessor"/> using a <see cref="SynchronizationContext"/>
+    /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.OnEvent"/> is called on the
     /// same thread as all other methods calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
     /// <para>
     ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.

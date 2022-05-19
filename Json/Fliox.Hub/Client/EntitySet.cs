@@ -172,7 +172,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To react on specific changes use <see cref="FlioxClient.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
@@ -186,7 +185,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <paramref name="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To react on specific changes use <see cref="FlioxClient.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
@@ -199,7 +197,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To react on specific changes use <see cref="FlioxClient.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
