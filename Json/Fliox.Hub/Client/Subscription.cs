@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Client
@@ -133,13 +134,25 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.SyncPeerEntities(syncEntities, mapper);
         }
         
-        private EntityChanges<TKey, T> GetChanges<TKey, T> (EntitySet<TKey, T> entitySet) where T : class {
+        private EntityChanges<TKey, T> GetChanges_Obsolete<TKey, T> (EntitySet<TKey, T> entitySet) where T : class {
             if (!results.TryGetValue(typeof(T), out var result)) {
                 var resultTyped = new EntityChanges<TKey, T>(entitySet);
                 results.Add(typeof(T), resultTyped);
                 return resultTyped;
             }
             return (EntityChanges<TKey, T>)result;
+        }
+        
+        private EntityChanges GetChanges (EntitySet entitySet) {
+            var entityType = entitySet.EntityType;
+            if (results.TryGetValue(entityType, out var result))
+                return result;
+            object[] constructorParams = { entitySet };
+            var keyType     = entitySet.KeyType;
+            var instance    = TypeMapperUtils.CreateGenericInstance(typeof(EntityChanges<,>), new[] {keyType, entityType}, constructorParams);
+            result          = (EntityChanges)instance;
+            results.Add(entityType, result);
+            return result;
         }
         
         public List<Message> GetMessages(FlioxClient client, EventMessage eventMessage) {
@@ -159,7 +172,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet, EventMessage eventMessage) where T : class {
-            var result  = GetChanges(entitySet);
+            // var result  = GetChanges(entitySet);
+            var result  = (EntityChanges<TKey, T>)GetChanges(entitySet);
             result.Clear();
             
             foreach (var task in eventMessage.tasks) {

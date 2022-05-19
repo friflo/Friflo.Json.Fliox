@@ -22,6 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal  abstract  SyncSet     SyncSet     { get; }
         internal  abstract  SetInfo     SetInfo     { get; }
+        internal  abstract  Type        KeyType     { get; }
+        internal  abstract  Type        EntityType  { get; }
         public    abstract  bool        WritePretty { get; set; }
         public    abstract  bool        WriteNull   { get; set; }
 

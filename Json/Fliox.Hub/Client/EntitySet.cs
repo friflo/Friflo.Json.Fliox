@@ -59,9 +59,12 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SyncSet                     SyncSet         => syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
+
+        [DebuggerBrowsable(Never)] internal override    Type    KeyType      => typeof(TKey);
+        [DebuggerBrowsable(Never)] internal override    Type    EntityType   => typeof(T);
         
-        [DebuggerBrowsable(Never)] public override bool WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
-        [DebuggerBrowsable(Never)] public override bool WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+        [DebuggerBrowsable(Never)] public   override    bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        [DebuggerBrowsable(Never)] public   override    bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
 
         internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
