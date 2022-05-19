@@ -7,15 +7,15 @@ using System.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
 
-// ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Client
+// EventMessageHandler is commonly not used directly by application => use separate namespace
+namespace Friflo.Json.Fliox.Hub.Client.Event
 {
-    public abstract class EventHandler
+    public abstract class EventMessageHandler
     {
         public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
     }
     /// <summary>
-    /// Creates a <see cref="EventHandler"/> using a <see cref="SynchronizationContext"/>
+    /// Creates a <see cref="EventMessageHandler"/> using a <see cref="SynchronizationContext"/>
     /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.OnEvent"/> is called on the
     /// same thread as all other methods calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
     /// <para>
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
     /// </para> 
     /// </summary>
-    public class SynchronizedEventHandler : EventHandler
+    public class SynchronizedEventHandler : EventMessageHandler
     {
         private readonly    SynchronizationContext              synchronizationContext;
         
@@ -52,19 +52,19 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         }
     }
     
-    public class DirectEventHandler : EventHandler
+    public class DirectEventHandler : EventMessageHandler
     {
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             client._intern.subscriptionProcessor.OnEvent(client, ev);
         }
     }
     
-    public class QueuingEventHandler : EventHandler
+    public class QueuingEventHandler : EventMessageHandler
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
         /// <summary>
-        /// Creates a queuing <see cref="EventHandler"/>.
+        /// Creates a queuing <see cref="EventMessageHandler"/>.
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="FlioxClient"/>.
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s

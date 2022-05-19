@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -40,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- mutable state
         internal            SyncStore                               syncStore;
         internal            LogTask                                 tracerLogTask;
-        internal            EventHandler                            eventHandler;
+        internal            EventMessageHandler                     eventHandler;
         internal            SubscriptionProcessor                   subscriptionProcessor;
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;

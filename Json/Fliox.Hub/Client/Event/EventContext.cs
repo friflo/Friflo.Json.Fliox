@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable once CheckNamespace

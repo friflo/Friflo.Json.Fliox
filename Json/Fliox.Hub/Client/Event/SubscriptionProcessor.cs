@@ -10,8 +10,8 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
-// ReSharper disable once CheckNamespace
-namespace Friflo.Json.Fliox.Hub.Client
+// SubscriptionProcessor is commonly not used directly by application => use separate namespace
+namespace Friflo.Json.Fliox.Hub.Client.Event
 {
     public class SubscriptionProcessor : IDisposable
     {

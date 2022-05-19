@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
@@ -219,7 +220,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return tasks;
         }
         
-        public void SetEventHandler(EventHandler eventHandler) {
+        public void SetEventHandler(EventMessageHandler eventHandler) {
             _intern.eventHandler = eventHandler ?? throw new NullReferenceException(nameof(eventHandler));
         }
         

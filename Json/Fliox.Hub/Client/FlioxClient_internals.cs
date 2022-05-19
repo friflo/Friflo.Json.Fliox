@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -20,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void AssertEventHandler() {
             if (_intern.eventHandler != null)
                 return;
-            var msg = $"subscriptions require a {nameof(EventHandler)} - {nameof(SetEventHandler)}() before";
+            var msg = $"subscriptions require a {nameof(EventMessageHandler)} - {nameof(SetEventHandler)}() before";
             throw new InvalidOperationException(msg);
         }
         
