@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleChanges  = GetEntityChanges(client.articles);
             var producerChanges = GetEntityChanges(client.producers);
             var employeeChanges = GetEntityChanges(client.employees);
-            var messages        = GetMessages     ();
+            var messages        = Messages;
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
@@ -243,7 +243,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual(6, eventInfo.Count);
                     AreEqual(5, eventInfo.messages);
                     AreEqual(1, eventInfo.changes.upserts);
-                    var messages = GetMessages();
+                    var messages = Messages;
                     AreEqual(5, messages.Count);
                     break;
             }

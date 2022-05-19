@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              int                                 EventSequence { get; private set ; }
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
-        public              List<Message>                       GetMessages() => messages;
+        public              List<Message>                       Messages => messages;
 
         public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
             return (EntityChanges<TKey, T>)GetChanges(entitySet);
@@ -206,22 +206,5 @@ namespace Friflo.Json.Fliox.Hub.Client
             results.Add(entityType, result);
             return result;
         }
-    }
-    
-    public sealed class EventContext
-    {
-        private readonly    SubscriptionProcessor   processor;
-        private readonly    JsonKey                 srcUserId;
-
-        public  override    string                  ToString() => $"source user: {srcUserId}";
-
-        internal EventContext(SubscriptionProcessor processor, in JsonKey srcUserId) {
-            this.processor  = processor;
-            this.srcUserId  = srcUserId;
-        }
-        
-        public EntityChanges<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            return (EntityChanges<TKey, T>)processor.GetChanges(entitySet);
-        } 
     }
 }
