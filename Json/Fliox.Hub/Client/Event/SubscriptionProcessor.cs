@@ -78,14 +78,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                     }
                 }
             }
-            var changeContext = new ChangeContext(this, ev.srcUserId);
+            var eventContext = new EventContext(this, ev.srcUserId);
             foreach (var result in results) {
                 EntityChanges entityChanges = result.Value;
                 if (entityChanges.Count() == 0)
                     continue;
                 var entityType = result.Key;
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
-                set.changeCallback?.InvokeCallback(entityChanges, changeContext);
+                set.changeCallback?.InvokeCallback(entityChanges, eventContext);
             }
         }
         

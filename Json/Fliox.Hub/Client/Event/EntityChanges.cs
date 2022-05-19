@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Transform;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change, ChangeContext context) where T : class;
+    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change, EventContext context) where T : class;
     
     public abstract class EntityChanges
     {
@@ -96,14 +96,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public sealed class ChangeContext
+    public sealed class EventContext
     {
         private readonly    SubscriptionProcessor   processor;
         private readonly    JsonKey                 srcUserId;
 
         public  override    string                  ToString() => $"source user: {srcUserId}";
 
-        internal ChangeContext(SubscriptionProcessor processor, in JsonKey srcUserId) {
+        internal EventContext(SubscriptionProcessor processor, in JsonKey srcUserId) {
             this.processor  = processor;
             this.srcUserId  = srcUserId;
         }
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     internal abstract class ChangeCallback {
-        internal abstract void InvokeCallback(EntityChanges entityChanges, ChangeContext context);
+        internal abstract void InvokeCallback(EntityChanges entityChanges, EventContext context);
     }
     
     internal sealed class GenericChangeCallback<TKey, T> : ChangeCallback where T : class
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(EntityChanges entityChanges, ChangeContext context) {
+        internal override void InvokeCallback(EntityChanges entityChanges, EventContext context) {
             var changes = (EntityChanges<TKey,T>)entityChanges;
             handler(changes, context);
         }
