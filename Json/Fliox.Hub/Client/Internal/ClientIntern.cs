@@ -123,6 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             pendingSyncs.Clear();
             disposed = true;
             // messageReader.Dispose();
+            subscriptionProcessor?.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
             hub.RemoveEventTarget(clientId);

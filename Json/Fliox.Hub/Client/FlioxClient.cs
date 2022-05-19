@@ -241,6 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </para>
         /// </summary>
         public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
+            _intern.subscriptionProcessor?.Dispose();
             _intern.subscriptionProcessor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));
         }
         

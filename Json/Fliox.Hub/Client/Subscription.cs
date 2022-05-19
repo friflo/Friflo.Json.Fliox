@@ -13,11 +13,11 @@ using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public class SubscriptionProcessor
+    public class SubscriptionProcessor : IDisposable
     {
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
-
+        private             ObjectMapper                        messageMapper;
         public              int                                 EventSequence { get; private set ; }
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
@@ -29,6 +29,10 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public virtual void OnEvent(FlioxClient client, EventMessage ev) {
             ProcessEvent(client, ev);
+        }
+
+        public void Dispose() {
+            messageMapper?.Dispose();
         }
 
         /// <summary>
@@ -47,6 +51,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
+            if (messageMapper == null) {
+                // use individual ObjectMapper for messages as they are used by App outside the pooled scope bellow
+                messageMapper = new ObjectMapper(client._intern.typeStore);
+                messageMapper.ErrorHandler = ObjectReader.NoThrow;
+            }
             messages.Clear();
             foreach (var result in results) {
                 result.Value.Clear();
@@ -58,12 +67,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                 foreach (var task in ev.tasks) {
                     switch (task.TaskType)
                     {
-                        case TaskType.create:   ProcessCreate  (client, (CreateEntities)task, mapper);         break;
-                        case TaskType.upsert:   ProcessUpsert  (client, (UpsertEntities)task, mapper);         break;
-                        case TaskType.delete:   ProcessDelete  (client, (DeleteEntities)task);                 break;
-                        case TaskType.patch:    ProcessPatch   (client, (PatchEntities) task, mapper);         break;
+                        case TaskType.create:   ProcessCreate (client, (CreateEntities)task, mapper);   break;
+                        case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task, mapper);   break;
+                        case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);           break;
+                        case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task, mapper);   break;
                         case TaskType.message:
-                        case TaskType.command:  ProcessMessage (client,(SyncMessageTask)task, mapper, logger); break;
+                        case TaskType.command:
+                            ProcessMessage (client,(SyncMessageTask)task, messageMapper, logger);
+                            break;
                     }
                 }
             }
