@@ -17,10 +17,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     // --------------------------------- FlioxClient internals ---------------------------------
     public partial class FlioxClient
     {
-        internal void AssertSubscriptionProcessor() {
+        internal void AssertEventProcessor() {
             if (_intern.eventProcessor != null)
                 return;
-            var msg = $"subscriptions require a {nameof(SubscriptionProcessor)} - {nameof(SetEventProcessor)}() before";
+            var msg = $"subscriptions require a {nameof(EventProcessor)} - {nameof(SetEventProcessor)}() before";
             throw new InvalidOperationException(msg);
         }
         

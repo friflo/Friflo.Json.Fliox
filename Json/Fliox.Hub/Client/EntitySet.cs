@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
-            intern.store.AssertSubscriptionProcessor();
+            intern.store.AssertEventProcessor();
             var op = Operation.FromFilter(filter);
             var task = GetSyncSet().SubscribeChangesFilter(changes, op);
             intern.store.AddTask(task);
@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
-            intern.store.AssertSubscriptionProcessor();
+            intern.store.AssertEventProcessor();
             var task = GetSyncSet().SubscribeChangesFilter(changes, filter.op);
             intern.store.AddTask(task);
             return task;
@@ -200,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
-            intern.store.AssertSubscriptionProcessor();
+            intern.store.AssertEventProcessor();
             var all = Operation.FilterTrue;
             var task = GetSyncSet().SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);
