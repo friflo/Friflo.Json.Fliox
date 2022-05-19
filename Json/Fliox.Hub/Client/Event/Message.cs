@@ -5,10 +5,11 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message);
-    public delegate void MessageSubscriptionHandler            (Message            message);
+    public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message, EventContext context);
+    public delegate void MessageSubscriptionHandler            (Message            message, EventContext context);
 
     /// <summary>
     /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> of a received message.

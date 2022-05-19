@@ -27,10 +27,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        internal void InvokeCallbacks(in InvokeContext invokeContext) {
+        internal void InvokeCallbacks(in InvokeContext invokeContext, EventContext context) {
             foreach (var callbackHandler in callbackHandlers) {
                 try {
-                    callbackHandler.InvokeCallback(invokeContext);
+                    callbackHandler.InvokeCallback(invokeContext, context);
                 }
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool    HasHandler (object handler) => handler == handlerObject;
         public   override   string  ToString()                  => name;
 
-        internal abstract void InvokeCallback(in InvokeContext invokeContext);
+        internal abstract void InvokeCallback(in InvokeContext invokeContext, EventContext context);
         
         internal MessageCallback (string name, object handler) {
             this.name       = name;
@@ -84,9 +84,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(in InvokeContext invokeContext) {
+        internal override void InvokeCallback(in InvokeContext invokeContext, EventContext context) {
             var msg = new Message(invokeContext);
-            handler(msg);
+            handler(msg, context);
         }
     }
     
@@ -98,9 +98,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(in InvokeContext invokeContext) {
+        internal override void InvokeCallback(in InvokeContext invokeContext, EventContext context) {
             var msg = new Message<TMessage>(invokeContext);
-            handler(msg);
+            handler(msg, context);
         }
     }
 }

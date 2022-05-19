@@ -64,20 +64,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // change subscription of specific EntitySet<Article>
             var articlesSub     = store.articles.SubscribeChanges(Changes.All);
             
-            var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
+            var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate(param: null)", msg.ToString());
                 processor.receivedAll = true;
                 IsTrue(                     msg.JsonParam.IsNull());
                 AreEqual("null",            msg.JsonParam.AsString());
             });
-            var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg) => {
+            var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg, context) => {
                 AreEqual(@"TestCommand(param: {""text"":""test message""})", msg.ToString());
                 processor.testMessageCalls++;
                 msg.GetParam(out TestCommand param, out _);
                 AreEqual("test message",        param.text);
                 AreEqual(nameof(TestCommand),   msg.Name);
             });
-            var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
+            var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg, context) => {
                 processor.testMessageIntCalls++;
                 msg.GetParam(out int param, out _);
                 AreEqual(42,                            param);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 msg.GetParam<string>(out _, out string error2);
                 AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error2);
             });
-            var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
+            var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg, context) => {
                 processor.testMessageIntCalls++;
                 msg.GetParam(out int val, out _);
                 AreEqual(42,                            val);
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var subscribeMessage5   = store.SubscribeMessage  (TestRelationPoC.TestRemoveAllHandler, RemovedHandler);
             var unsubscribe2        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveAllHandler, null);
             
-            var subscribeAllMessages= store.SubscribeMessage  ("Test*", msg => {
+            var subscribeAllMessages= store.SubscribeMessage  ("Test*", (msg, context) => {
                 processor.testWildcardCalls++;
             });
 
@@ -141,7 +141,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return processor;
         }
         
-        private static readonly MessageSubscriptionHandler<int> RemovedHandler = (msg) => {
+        private static readonly MessageSubscriptionHandler<int> RemovedHandler = (msg, context) => {
             Fail("unexpected call");
         };
     }
@@ -309,7 +309,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 listenDb.SetEventHandler(new SynchronizedEventHandler());
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
-                listenDb.SubscribeMessage("Hello", msg => {
+                listenDb.SubscribeMessage("Hello", (msg, context) => {
                     receivedHello = true;
                 });
                 await listenDb.SyncTasks();

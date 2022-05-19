@@ -77,8 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
             }
             // After processing / collecting all change & message tasks invoke their handler methods
-            // --- invoke changes handlers 
             var eventContext = new EventContext(this, ev.srcUserId);
+            // --- invoke changes handlers 
             foreach (var result in results) {
                 EntityChanges entityChanges = result.Value;
                 if (entityChanges.Count() == 0)
@@ -91,11 +91,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var message in messages) {
                 var name = message.Name;
                 if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
-                    subscriber.InvokeCallbacks(message.invokeContext);    
+                    subscriber.InvokeCallbacks(message.invokeContext, eventContext);    
                 }
                 foreach (var sub in client._intern.subscriptionsPrefix) {
                     if (name.StartsWith(sub.name)) {
-                        sub.InvokeCallbacks(message.invokeContext);
+                        sub.InvokeCallbacks(message.invokeContext, eventContext);
                     }
                 }
             }

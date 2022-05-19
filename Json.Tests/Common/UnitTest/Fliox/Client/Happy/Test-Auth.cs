@@ -191,7 +191,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await denyUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var message     = denyUser.SendMessage("test-message");
-                var subscribe   = denyUser.SubscribeMessage("test-subscribe", msg => {});
+                var subscribe   = denyUser.SubscribeMessage("test-subscribe", (msg, context) => {});
                 await denyUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", message.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", subscribe.Error.Message);
@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await messageUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var message     = messageUser.SendMessage("test-message");
-                var subscribe   = messageUser.SubscribeMessage("test-subscribe", msg => {});
+                var subscribe   = messageUser.SubscribeMessage("test-subscribe", (msg, context) => {});
                 await messageUser.TrySyncTasks();
                 IsTrue(message.Success);
                 IsTrue(subscribe.Success);
