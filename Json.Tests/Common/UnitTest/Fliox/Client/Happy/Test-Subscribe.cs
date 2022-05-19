@@ -175,12 +175,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             CheckSomeMessages(ev);
             
-            var orderChanges    = GetEntityChanges(client.orders,    ev);
-            var customerChanges = GetEntityChanges(client.customers, ev);
-            var articleChanges  = GetEntityChanges(client.articles,  ev);
-            var producerChanges = GetEntityChanges(client.producers, ev);
-            var employeeChanges = GetEntityChanges(client.employees, ev);
-            var messages        = GetMessages     (client,           ev);
+            var orderChanges    = GetEntityChanges(client.orders);
+            var customerChanges = GetEntityChanges(client.customers);
+            var articleChanges  = GetEntityChanges(client.articles);
+            var producerChanges = GetEntityChanges(client.producers);
+            var employeeChanges = GetEntityChanges(client.employees);
+            var messages        = GetMessages     (client, ev);
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
@@ -233,8 +233,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual(6, eventInfo.Count);
                     AreEqual(6, eventInfo.changes.Count);
                     AreEqual("(creates: 2, upserts: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
-                    var articleChanges  = GetEntityChanges(client.articles,  ev);
-                    var producerChanges = GetEntityChanges(client.producers, ev);
+                    var articleChanges  = GetEntityChanges(client.articles);
+                    var producerChanges = GetEntityChanges(client.producers);
                     AreEqual(1, articleChanges.creates.Count);
                     AreEqual("(creates: 1, upserts: 4, deletes: 0, patches: 0)", articleChanges.ToString());
                     AreEqual("(creates: 1, upserts: 0, deletes: 0, patches: 0)", producerChanges.ToString());

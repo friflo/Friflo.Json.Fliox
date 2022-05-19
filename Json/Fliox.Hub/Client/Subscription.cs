@@ -42,6 +42,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
+            foreach (var result in results) {
+                result.Value.Clear();
+            }
             EventSequence++;
             using (var pooled = client.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
@@ -58,6 +61,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                                 continue;
                             create.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), create.entities);
                             SyncPeerEntities(set, create.entityKeys, create.entities, mapper);
+                            
+                            // --- update changes
+                            var changes = GetChanges(set);
+                            foreach (var id in create.entityKeys) {
+                                changes.AddCreate(id);
+                            }
                             break;
                         
                         case TaskType.upsert:
@@ -68,6 +77,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                                 continue;
                             upsert.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), upsert.entities);
                             SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);
+                            
+                            // --- update changes
+                            changes = GetChanges(set);
+                            foreach (var id in upsert.entityKeys) {
+                                changes.AddUpsert(id);
+                            }
                             break;
                         
                         case TaskType.delete:
@@ -77,6 +92,12 @@ namespace Friflo.Json.Fliox.Hub.Client
                             if (set.GetSubscription() == null)
                                 continue;
                             set.DeletePeerEntities (delete.ids);
+                            
+                            // --- update changes
+                            changes = GetChanges(set);
+                            foreach (var id in delete.ids) {
+                                changes.AddDelete(id);
+                            }
                             break;
                         
                         case TaskType.patch:
@@ -86,6 +107,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                             if (set.GetSubscription() == null)
                                 continue;
                             set.PatchPeerEntities(patches.patches, mapper);
+                            
+                            // --- update changes
+                            changes = GetChanges(set);
+                            foreach (var pair in patches.patches) {
+                                var id      = pair.Key;
+                                var patch   = pair.Value;
+                                changes.AddPatch(id, patch);
+                            }
                             break;
                         
                         case TaskType.message:
@@ -171,70 +200,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet, EventMessage eventMessage) where T : class {
-            // var result  = GetChanges(entitySet);
+        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
             var result  = (EntityChanges<TKey, T>)GetChanges(entitySet);
-            result.Clear();
-            
-            foreach (var task in eventMessage.tasks) {
-                switch (task.TaskType) {
-                    
-                    case TaskType.create:
-                        var create = (CreateEntities)task;
-                        if (create.container != entitySet.name)
-                            continue;
-                        for (int n = 0; n < create.entityKeys.Count; n++) {
-                            var     id      = create.entityKeys[n];
-                            TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
-                            var     entity  = peer.Entity;
-                            result.creates.Add(key, entity);
-                        }
-                        result.Info.creates += create.entityKeys.Count;
-                        break;
-                    
-                    case TaskType.upsert:
-                        var upsert = (UpsertEntities)task;
-                        if (upsert.container != entitySet.name)
-                            continue;
-                        for (int n = 0; n < upsert.entityKeys.Count; n++) {
-                            var     id      = upsert.entityKeys[n];
-                            TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
-                            var     entity  = peer.Entity;
-                            result.upserts.Add(key, entity);
-                        }
-                        result.Info.upserts += upsert.entityKeys.Count;
-                        break;
-                    
-                    case TaskType.delete:
-                        var delete = (DeleteEntities)task;
-                        if (delete.container != entitySet.name)
-                            continue;
-                        foreach (var id in delete.ids) {
-                            TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                            result.deletes.Add(key);
-                        }
-                        result.Info.deletes += delete.ids.Count;
-                        break;
-                    
-                    case TaskType.patch:
-                        var patch = (PatchEntities)task;
-                        if (patch.container != entitySet.name)
-                            continue;
-                        foreach (var pair in patch.patches) {
-                            var         id          = pair.Key;
-                            TKey        key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                            var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
-                            var         entity      = peer.Entity;
-                            EntityPatch entityPatch = pair.Value;
-                            var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
-                            result.patches.Add(key, changePatch);
-                        }
-                        result.Info.patches += patch.patches.Count;
-                        break;
-                }
-            }
             return result;
         }
     }
@@ -249,12 +216,18 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public abstract class EntityChanges { }
+    public abstract class EntityChanges
+    {
+        internal abstract void Clear        ();
+        internal abstract void AddCreate    (in JsonKey id);
+        internal abstract void AddUpsert    (in JsonKey id);
+        internal abstract void AddDelete    (in JsonKey id);
+        internal abstract void AddPatch     (in JsonKey id, EntityPatch entityPatch);
+    }
     
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
-        // ReSharper disable once NotAccessedField.Local
-        private  readonly   EntitySet<TKey, T>                  entitySet; // only for debugging ergonomics
+        private  readonly   EntitySet<TKey, T>                  entitySet;
         
         public   readonly   Dictionary<TKey, T>                 creates = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   Dictionary<TKey, T>                 upserts = SyncSet.CreateDictionary<TKey, T>();
@@ -268,13 +241,44 @@ namespace Friflo.Json.Fliox.Hub.Client
             Info = new ChangeInfo<T>();
         }
 
-        internal void Clear() {
+        internal override void Clear() {
             creates.Clear();
             upserts.Clear();
             deletes.Clear();
             patches.Clear();
             //
             Info.Clear();
+        }
+        
+        internal override void AddCreate(in JsonKey id) {
+            TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
+            var     entity  = peer.Entity;
+            creates.Add(key, entity);
+            Info.creates++;
+        }
+        
+        internal override void AddUpsert(in JsonKey id) {
+            TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
+            var     entity  = peer.Entity;
+            upserts.Add(key, entity);
+            Info.upserts++;
+        }
+        
+        internal override void AddDelete(in JsonKey id) {
+            TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            deletes.Add(key);
+            Info.deletes++;
+        }
+        
+        internal override void AddPatch(in JsonKey id, EntityPatch entityPatch) {
+            TKey        key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
+            var         entity      = peer.Entity;
+            var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
+            patches.Add(key, changePatch);
+            Info.patches++;
         }
     }
     

@@ -47,8 +47,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             if (!ReferenceEquals(client, c))    throw new InvalidOperationException("unexpected client reference");
             ProcessEvent(client, ev);
 
-            var credentialChanges   = GetEntityChanges(client.credentials,  ev);
-            var permissionChanges   = GetEntityChanges(client.permissions,  ev);
+            var credentialChanges   = GetEntityChanges(client.credentials);
+            var permissionChanges   = GetEntityChanges(client.permissions);
             var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
             
             foreach (var pair   in credentialChanges.upserts) { changedUsers.Add(pair.Key); }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 users.TryRemove(changedUser, out _);
             }
             
-            var roleChanges     = GetEntityChanges(client.roles,        ev);
+            var roleChanges     = GetEntityChanges(client.roles);
             var changedRoles    = new HashSet<string>();
             
             foreach (var pair   in roleChanges.upserts) { changedRoles.Add(pair.Key); }
