@@ -7,13 +7,14 @@ using System.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class EventProcessor
     {
         public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
         
-        protected void ProcessEvent(FlioxClient client, EventMessage ev) {
+        protected static void ProcessEvent(FlioxClient client, EventMessage ev) {
             client._intern.subscriptionProcessor.OnEvent(client, ev);
         }
     }
