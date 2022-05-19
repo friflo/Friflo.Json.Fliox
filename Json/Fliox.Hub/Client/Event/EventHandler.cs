@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Hub.Threading;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public abstract class EventProcessor
+    public abstract class EventHandler
     {
         public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
         
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     /// <summary>
-    /// Creates a <see cref="EventProcessor"/> using a <see cref="SynchronizationContext"/>
+    /// Creates a <see cref="EventHandler"/> using a <see cref="SynchronizationContext"/>
     /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.OnEvent"/> is called on the
     /// same thread as all other methods calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
     /// <para>
@@ -30,16 +30,16 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
     /// </para> 
     /// </summary>
-    public class SynchronizedEventProcessor : EventProcessor
+    public class SynchronizedEventHandler : EventHandler
     {
         private readonly    SynchronizationContext              synchronizationContext;
         
 
-        public SynchronizedEventProcessor(SynchronizationContext synchronizationContext) {
+        public SynchronizedEventHandler(SynchronizationContext synchronizationContext) {
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
-        public SynchronizedEventProcessor() {
+        public SynchronizedEventHandler() {
             synchronizationContext =
                 SynchronizationContext.Current
                 ?? throw new InvalidOperationException(SynchronizationContextIsNull);
@@ -56,25 +56,25 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         }
     }
     
-    public class DirectEventProcessor : EventProcessor
+    public class DirectEventHandler : EventHandler
     {
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             ProcessEvent(client, ev);
         }
     }
     
-    public class QueuingEventProcessor : EventProcessor
+    public class QueuingEventHandler : EventHandler
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
         /// <summary>
-        /// Creates a queuing <see cref="EventProcessor"/>.
+        /// Creates a queuing <see cref="EventHandler"/>.
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="FlioxClient"/>.
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
         /// are applied to the <see cref="FlioxClient"/>.
         /// </summary>
-        public QueuingEventProcessor() { }
+        public QueuingEventHandler() { }
         
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             eventQueue.Enqueue(new QueuedMessage(client, ev));

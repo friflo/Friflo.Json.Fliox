@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.ClientId  = "user_db_subscriber";
             var subscriber  = new UserStoreSubscriber(store, userAuthenticator);
             store.SetSubscriptionProcessor(subscriber);
-            var eventProcessor = new DirectEventProcessor();
-            store.SetEventProcessor(eventProcessor);
+            var eventProcessor = new DirectEventHandler();
+            store.SetEventHandler(eventProcessor);
             store.permissions.SubscribeChanges(changes, change => {
                 var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
                 foreach (var pair   in change.upserts) { changedUsers.Add(pair.Key); }

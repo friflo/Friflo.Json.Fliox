@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- mutable state
         internal            SyncStore                               syncStore;
         internal            LogTask                                 tracerLogTask;
-        internal            EventProcessor                          eventProcessor;
+        internal            EventHandler                            eventHandler;
         internal            SubscriptionProcessor                   subscriptionProcessor;
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- mutable state
             syncStore                   = new SyncStore();
             tracerLogTask               = null;
-            eventProcessor              = null;
+            eventHandler                = null;
             subscriptionProcessor       = new SubscriptionProcessor();
             disposed                    = false;
             lastEventSeq                = 0;

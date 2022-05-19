@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task<PocSubscriptionProcessor> CreateSubscriptionProcessor (PocStore store, EventAssertion eventAssertion) {
             var processor = new PocSubscriptionProcessor(store, eventAssertion);
-            store.SetEventProcessor(new SynchronizedEventProcessor());
+            store.SetEventHandler(new SynchronizedEventHandler());
             store.SetSubscriptionProcessor(processor);
             //store.SetSubscriptionHandler(processor.sss);
             
@@ -306,7 +306,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new MemoryDatabase(TestGlobals.DB))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb     = new FlioxClient(hub) { ClientId = "listenDb" }) {
-                listenDb.SetEventProcessor(new SynchronizedEventProcessor());
+                listenDb.SetEventHandler(new SynchronizedEventHandler());
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
