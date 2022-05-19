@@ -21,7 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              int                                 EventSequence { get; private set ; }
         public override     string                              ToString() => $"EventSequence: {EventSequence}";
 
-        
+        public              List<Message>                       GetMessages() => messages;
+
+        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
+            return (EntityChanges<TKey, T>)GetChanges(entitySet);
+        }
+
         public virtual void OnEvent(FlioxClient client, EventMessage ev) {
             ProcessEvent(client, ev);
         }
@@ -42,6 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
+            messages.Clear();
             foreach (var result in results) {
                 result.Value.Clear();
             }
@@ -123,12 +129,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private static void ProcessMessage(FlioxClient client, SyncMessageTask message, ObjectMapper mapper, IHubLogger logger) {
-            var name = message.name;
+        private void ProcessMessage(FlioxClient client, SyncMessageTask task, ObjectMapper mapper, IHubLogger logger) {
+            var name = task.name;
             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
             // and ProcessEvent() can be called concurrently from the 'main' thread.
-            var invokeContext = new InvokeContext(name, message.param, mapper.reader, logger);
+            var invokeContext = new InvokeContext(name, task.param, mapper.reader, logger);
             if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
                 subscriber.InvokeCallbacks(invokeContext);    
             }
@@ -137,6 +143,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                     sub.InvokeCallbacks(invokeContext);
                 }
             }
+            var message         = new Message(invokeContext);
+            messages.Add(message);
         }
         
         private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
@@ -173,26 +181,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             result          = (EntityChanges)instance;
             results.Add(entityType, result);
             return result;
-        }
-        
-        public List<Message> GetMessages(FlioxClient client, EventMessage eventMessage) {
-            messages.Clear();
-            using (var pooled = client.ObjectMapper.Get()) {
-                var reader = pooled.instance.reader;
-                var logger = client.Logger;
-                foreach (var task in eventMessage.tasks) {
-                    if (!(task is SyncMessageTask messageTask)) 
-                        continue;
-                    var invokeContext   = new InvokeContext(messageTask.name, messageTask.param, reader, logger);
-                    var message         = new Message(invokeContext);
-                    messages.Add(message);
-                }
-                return messages;
-            }
-        }
-        
-        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            return (EntityChanges<TKey, T>)GetChanges(entitySet);
         }
     }
     
