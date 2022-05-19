@@ -18,7 +18,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  readonly  string      name;
+        internal  readonly  string          name;
+        internal            ChangeCallback  callback;
 
         internal  abstract  SyncSet     SyncSet     { get; }
         internal  abstract  SetInfo     SetInfo     { get; }

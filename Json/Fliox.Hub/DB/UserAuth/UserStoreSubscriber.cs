@@ -33,7 +33,26 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.SetSubscriptionProcessor(subscriber);
             var eventProcessor = new DirectEventProcessor();
             store.SetEventProcessor(eventProcessor);
-            store.permissions.SubscribeChanges(changes);
+            store.permissions.SubscribeChanges(changes, change => {
+                var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
+                foreach (var pair   in change.upserts) { changedUsers.Add(pair.Key); }
+                foreach (var id     in change.deletes) { changedUsers.Add(id); }
+                foreach (var pair   in change.patches) { changedUsers.Add(pair.Key); }
+                
+                foreach (var changedUser in changedUsers) {
+                    userAuthenticator.users.TryRemove(changedUser, out _);
+                }
+            });
+            store.credentials.SubscribeChanges(changes, change => {
+                var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
+                foreach (var pair   in change.upserts) { changedUsers.Add(pair.Key); }
+                foreach (var id     in change.deletes) { changedUsers.Add(id); }
+                foreach (var pair   in change.patches) { changedUsers.Add(pair.Key); }
+                
+                foreach (var changedUser in changedUsers) {
+                    userAuthenticator.users.TryRemove(changedUser, out _);
+                }
+            });
             store.roles.SubscribeChanges(changes);
             store.SyncTasks().Wait();
         }
@@ -47,23 +66,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             if (!ReferenceEquals(client, c))    throw new InvalidOperationException("unexpected client reference");
             ProcessEvent(client, ev);
 
-            var credentialChanges   = GetEntityChanges(client.credentials);
-            var permissionChanges   = GetEntityChanges(client.permissions);
-            var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
-            
-            foreach (var pair   in credentialChanges.upserts) { changedUsers.Add(pair.Key); }
-            foreach (var id     in credentialChanges.deletes) { changedUsers.Add(id); }
-            foreach (var pair   in credentialChanges.patches) { changedUsers.Add(pair.Key); }
-
-            foreach (var pair   in permissionChanges.upserts) { changedUsers.Add(pair.Key); }
-            foreach (var id     in permissionChanges.deletes) { changedUsers.Add(id); }
-            foreach (var pair   in permissionChanges.patches) { changedUsers.Add(pair.Key); }
-            
-            var users = userAuthenticator.users;
-            foreach (var changedUser in changedUsers) {
-                users.TryRemove(changedUser, out _);
-            }
-            
             var roleChanges     = GetEntityChanges(client.roles);
             var changedRoles    = new HashSet<string>();
             
@@ -75,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 if (!userAuthenticator.roleUserCache.TryGetValue(changedRole, out var roleUser))
                     continue;
                 foreach (var userId in roleUser.users) {
-                    users.TryRemove(userId, out _);    
+                    userAuthenticator.users.TryRemove(userId, out _);    
                 }
             }
         }

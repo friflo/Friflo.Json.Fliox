@@ -17,6 +17,8 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change) where T : class;
+    
     /// <summary>
     /// An EntitySet represents a collection (table) of entities (records). <br/>
     /// <br/>
@@ -202,11 +204,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
+        public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes, ChangeSubscriptionHandler<TKey, T> handler = null) {
             intern.store.AssertEventProcessor();
             var all = Operation.FilterTrue;
             var task = GetSyncSet().SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);
+            if (handler != null) {
+                callback = new GenericChangeCallback<TKey,T>(handler);
+            }
             return task;
         }
         

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -77,6 +78,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                             break;
                     }
                 }
+            }
+            foreach (var result in results) {
+                EntityChanges entityChanges = result.Value;
+                if (entityChanges.Count() == 0)
+                    continue;
+                var entityType = entityChanges.EntityType();
+                client._intern.TryGetSetByType(entityType, out EntitySet set);
+                set.callback?.InvokeCallback(entityChanges);
             }
         }
         
@@ -207,29 +216,35 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class EntityChanges
     {
-        internal abstract void Clear        ();
-        internal abstract void AddCreate    (in JsonKey id);
-        internal abstract void AddUpsert    (in JsonKey id);
-        internal abstract void AddDelete    (in JsonKey id);
-        internal abstract void AddPatch     (in JsonKey id, EntityPatch entityPatch);
+        internal  abstract  int     Count       ();
+        internal  abstract  Type    EntityType  ();
+        internal  abstract  void    Clear       ();
+        internal  abstract  void    AddCreate   (in JsonKey id);
+        internal  abstract  void    AddUpsert   (in JsonKey id);
+        internal  abstract  void    AddDelete   (in JsonKey id);
+        internal  abstract  void    AddPatch    (in JsonKey id, EntityPatch entityPatch);
     }
     
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
-        private  readonly   EntitySet<TKey, T>                  entitySet;
         
         public   readonly   Dictionary<TKey, T>                 creates = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   Dictionary<TKey, T>                 upserts = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   HashSet   <TKey>                    deletes = SyncSet.CreateHashSet<TKey>();
         public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = SyncSet.CreateDictionary<TKey, ChangePatch<T>>();
         
-        public override     string                              ToString() => Info.ToString();       
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private  readonly   EntitySet<TKey, T>                  entitySet;
+        
+        public   override   string                              ToString    () => Info.ToString();       
+        internal override   int                                 Count       () => Info.Count;
+        internal override   Type                                EntityType  () => typeof(T);
 
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
             this.entitySet = entitySet;
             Info = new ChangeInfo<T>();
         }
-
+        
         internal override void Clear() {
             creates.Clear();
             upserts.Clear();
@@ -280,6 +295,24 @@ namespace Friflo.Json.Fliox.Hub.Client
         public ChangePatch(T entity, List<JsonPatch> patches) {
             this.entity     = entity;
             this.patches    = patches;
+        }
+    }
+    
+    internal abstract class ChangeCallback {
+        internal abstract void InvokeCallback(EntityChanges entityChanges);
+    }
+    
+    internal sealed class GenericChangeCallback<TKey, T> : ChangeCallback where T : class
+    {
+        private  readonly   ChangeSubscriptionHandler<TKey, T>   handler;
+        
+        internal GenericChangeCallback (ChangeSubscriptionHandler<TKey, T> handler) {
+            this.handler = handler;
+        }
+        
+        internal override void InvokeCallback(EntityChanges entityChanges) {
+            var changes = (EntityChanges<TKey,T>)entityChanges;
+            handler(changes);
         }
     }
 }
