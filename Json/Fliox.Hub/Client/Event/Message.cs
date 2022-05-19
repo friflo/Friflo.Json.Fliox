@@ -66,17 +66,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> of a received message.
     /// </summary>
     public readonly struct Message  : IMessage {
-        public              string          Name        { get; }
-        public              JsonValue       JsonParam   { get; }
+        public              string          Name        => invokeContext.name; 
+        public              JsonValue       JsonParam   => invokeContext.param;
         
-        private readonly    ObjectReader    reader;
+        internal readonly   InvokeContext   invokeContext;
         
         public override     string          ToString()  => $"{Name}(param: {JsonParam.AsString()})";
         
         internal Message(in InvokeContext invokeContext) {
-            Name        = invokeContext.name;
-            JsonParam   = invokeContext.param;
-            reader      = invokeContext.reader;
+            this.invokeContext = invokeContext;
         }
         
         /// <summary>Return the message <paramref name="param"/></summary> without validation 
@@ -84,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
         public bool GetParam<TParam>(out TParam param, out string error) {
-            return Read(JsonParam, reader, out param, out error);
+            return Read(JsonParam, invokeContext.reader, out param, out error);
         }
         
         // --- internals
