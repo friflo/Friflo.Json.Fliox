@@ -173,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("createStore", ev.srcUserId.ToString());
             ProcessEvent(client, ev);
             
-            CheckSomeMessages(this, ev);
+            CheckSomeMessages(ev);
             
             var orderChanges    = GetEntityChanges(client.orders,    ev);
             var customerChanges = GetEntityChanges(client.customers, ev);
@@ -225,7 +225,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private void CheckSomeMessages(SubscriptionProcessor processor, EventMessage ev) {
+        private void CheckSomeMessages(EventMessage ev) {
             subscribeEventsCalls++;
             var eventInfo = ev.GetEventInfo();
             switch (EventSequence) {

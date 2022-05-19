@@ -67,7 +67,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
         /// <summary>
-        /// Creates a queuing <see cref="SubscriptionProcessor"/>.
+        /// Creates a queuing <see cref="EventProcessor"/>.
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="FlioxClient"/>.
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
@@ -80,7 +80,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         }
         
         /// <summary>
-        /// Need to be called frequently if <see cref="SubscriptionProcessor"/> is initialized without a <see cref="SynchronizationContext"/>.
+        /// Need to be called frequently by application to process subscription events.
         /// </summary>
         public void ProcessEvents() {
             while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
