@@ -50,96 +50,96 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var mapper = pooled.instance;
                 var logger = client.Logger;
                 foreach (var task in ev.tasks) {
-                    EntitySet set;
-                    switch (task.TaskType) {
-                        
-                        case TaskType.create:
-                            var create = (CreateEntities)task;
-                            set = client.GetEntitySet(create.container);
-                            // apply changes only if subscribed
-                            if (set.GetSubscription() == null)
-                                continue;
-                            create.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), create.entities);
-                            SyncPeerEntities(set, create.entityKeys, create.entities, mapper);
-                            
-                            // --- update changes
-                            var changes = GetChanges(set);
-                            foreach (var id in create.entityKeys) {
-                                changes.AddCreate(id);
-                            }
-                            break;
-                        
-                        case TaskType.upsert:
-                            var upsert = (UpsertEntities)task;
-                            set = client.GetEntitySet(upsert.container);
-                            // apply changes only if subscribed
-                            if (set.GetSubscription() == null)
-                                continue;
-                            upsert.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), upsert.entities);
-                            SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);
-                            
-                            // --- update changes
-                            changes = GetChanges(set);
-                            foreach (var id in upsert.entityKeys) {
-                                changes.AddUpsert(id);
-                            }
-                            break;
-                        
-                        case TaskType.delete:
-                            var delete = (DeleteEntities)task;
-                            set = client.GetEntitySet(delete.container);
-                            // apply changes only if subscribed
-                            if (set.GetSubscription() == null)
-                                continue;
-                            set.DeletePeerEntities (delete.ids);
-                            
-                            // --- update changes
-                            changes = GetChanges(set);
-                            foreach (var id in delete.ids) {
-                                changes.AddDelete(id);
-                            }
-                            break;
-                        
-                        case TaskType.patch:
-                            var patches = (PatchEntities)task;
-                            set = client.GetEntitySet(patches.container);
-                            // apply changes only if subscribed
-                            if (set.GetSubscription() == null)
-                                continue;
-                            set.PatchPeerEntities(patches.patches, mapper);
-                            
-                            // --- update changes
-                            changes = GetChanges(set);
-                            foreach (var pair in patches.patches) {
-                                var id      = pair.Key;
-                                var patch   = pair.Value;
-                                changes.AddPatch(id, patch);
-                            }
-                            break;
-                        
+                    switch (task.TaskType)
+                    {
+                        case TaskType.create:   ProcessCreate  (client, (CreateEntities)task, mapper);         break;
+                        case TaskType.upsert:   ProcessUpsert  (client, (UpsertEntities)task, mapper);         break;
+                        case TaskType.delete:   ProcessDelete  (client, (DeleteEntities)task);                 break;
+                        case TaskType.patch:    ProcessPatch   (client, (PatchEntities) task, mapper);         break;
                         case TaskType.message:
-                        case TaskType.command:
-                            var message = (SyncMessageTask)task;
-                            var name = message.name;
-                            // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
-                            // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
-                            // and ProcessEvent() can be called concurrently from the 'main' thread.
-                            var invokeContext = new InvokeContext(name, message.param, mapper.reader, logger);
-                            if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
-                                subscriber.InvokeCallbacks(invokeContext);    
-                            }
-                            foreach (var sub in client._intern.subscriptionsPrefix) {
-                                if (name.StartsWith(sub.name)) {
-                                    sub.InvokeCallbacks(invokeContext);
-                                }
-                            }
-                            break;
+                        case TaskType.command:  ProcessMessage (client,(SyncMessageTask)task, mapper, logger); break;
                     }
                 }
             }
         }
         
-        private List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
+        private void ProcessCreate(FlioxClient client, CreateEntities create, ObjectMapper mapper) {
+            var set = client.GetEntitySet(create.container);
+            // apply changes only if subscribed
+            if (set.GetSubscription() == null)
+                return;
+            create.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), create.entities);
+            SyncPeerEntities(set, create.entityKeys, create.entities, mapper);
+                            
+            // --- update changes
+            var changes = GetChanges(set);
+            foreach (var id in create.entityKeys) {
+                changes.AddCreate(id);
+            }
+        }
+        
+        private void ProcessUpsert(FlioxClient client, UpsertEntities upsert, ObjectMapper mapper) {
+            var set = client.GetEntitySet(upsert.container);
+            // apply changes only if subscribed
+            if (set.GetSubscription() == null)
+                return;
+            upsert.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), upsert.entities);
+            SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);
+                            
+            // --- update changes
+            var changes = GetChanges(set);
+            foreach (var id in upsert.entityKeys) {
+                changes.AddUpsert(id);
+            }
+        }
+        
+        private void ProcessDelete(FlioxClient client, DeleteEntities delete) {
+            var set = client.GetEntitySet(delete.container);
+            // apply changes only if subscribed
+            if (set.GetSubscription() == null)
+                return;
+            set.DeletePeerEntities (delete.ids);
+                            
+            // --- update changes
+            var changes = GetChanges(set);
+            foreach (var id in delete.ids) {
+                changes.AddDelete(id);
+            }
+        }
+        
+        private void ProcessPatch(FlioxClient client, PatchEntities patches, ObjectMapper mapper) {
+            var set = client.GetEntitySet(patches.container);
+            // apply changes only if subscribed
+            if (set.GetSubscription() == null)
+                return;
+            set.PatchPeerEntities(patches.patches, mapper);
+                            
+            // --- update changes
+            var changes = GetChanges(set);
+            foreach (var pair in patches.patches) {
+                var id      = pair.Key;
+                var patch   = pair.Value;
+                changes.AddPatch(id, patch);
+            }
+        }
+        
+        private static void ProcessMessage(FlioxClient client, SyncMessageTask message, ObjectMapper mapper, IHubLogger logger) {
+            var name = message.name;
+            // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
+            // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
+            // and ProcessEvent() can be called concurrently from the 'main' thread.
+            var invokeContext = new InvokeContext(name, message.param, mapper.reader, logger);
+            if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
+                subscriber.InvokeCallbacks(invokeContext);    
+            }
+            foreach (var sub in client._intern.subscriptionsPrefix) {
+                if (name.StartsWith(sub.name)) {
+                    sub.InvokeCallbacks(invokeContext);
+                }
+            }
+        }
+        
+        private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
             var processor = client._intern.EntityProcessor();
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
@@ -161,15 +161,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 syncEntities.Add(key, value);
             }
             set.SyncPeerEntities(syncEntities, mapper);
-        }
-        
-        private EntityChanges<TKey, T> GetChanges_Obsolete<TKey, T> (EntitySet<TKey, T> entitySet) where T : class {
-            if (!results.TryGetValue(typeof(T), out var result)) {
-                var resultTyped = new EntityChanges<TKey, T>(entitySet);
-                results.Add(typeof(T), resultTyped);
-                return resultTyped;
-            }
-            return (EntityChanges<TKey, T>)result;
         }
         
         private EntityChanges GetChanges (EntitySet entitySet) {
@@ -201,8 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            var result  = (EntityChanges<TKey, T>)GetChanges(entitySet);
-            return result;
+            return (EntityChanges<TKey, T>)GetChanges(entitySet);
         }
     }
     
