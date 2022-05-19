@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 EntityChanges entityChanges = result.Value;
                 if (entityChanges.Count() == 0)
                     continue;
-                var entityType = entityChanges.EntityType();
+                var entityType = result.Key;
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
                 set.callback?.InvokeCallback(entityChanges);
             }
@@ -217,7 +217,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class EntityChanges
     {
         internal  abstract  int     Count       ();
-        internal  abstract  Type    EntityType  ();
         internal  abstract  void    Clear       ();
         internal  abstract  void    AddCreate   (in JsonKey id);
         internal  abstract  void    AddUpsert   (in JsonKey id);
@@ -238,7 +237,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public   override   string                              ToString    () => Info.ToString();       
         internal override   int                                 Count       () => Info.Count;
-        internal override   Type                                EntityType  () => typeof(T);
 
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
             this.entitySet = entitySet;
