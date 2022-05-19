@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public  readonly    JsonKey                 srcUserId;
         public              int                     EventSequence { get; }
-        public              List<Message>           Messages    => processor.Messages;
+        public              IReadOnlyList<Message>  Messages    => processor.Messages;
 
         private readonly    SubscriptionProcessor   processor;
 

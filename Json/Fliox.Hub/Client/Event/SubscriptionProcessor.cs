@@ -15,13 +15,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public class SubscriptionProcessor : IDisposable
     {
-        private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
-        private readonly    List<Message>                       messages  = new List<Message>();
-        private             ObjectMapper                        messageMapper;
-        public              int                                 EventSequence { get; private set ; }
-        public override     string                              ToString() => $"EventSequence: {EventSequence}";
+        private readonly    Dictionary<Type, EntityChanges> results   = new Dictionary<Type, EntityChanges>();
+        private readonly    List<Message>                   messages  = new List<Message>();
+        private             ObjectMapper                    messageMapper;
+        public              int                             EventSequence { get; private set ; }
+        public override     string                          ToString() => $"EventSequence: {EventSequence}";
 
-        public              List<Message>                       Messages => messages;
+        public              IReadOnlyList<Message>          Messages => messages;
 
         public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
             return (EntityChanges<TKey, T>)GetChanges(entitySet);
