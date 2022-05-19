@@ -96,23 +96,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public sealed class EventContext
-    {
-        private readonly    SubscriptionProcessor   processor;
-        private readonly    JsonKey                 srcUserId;
-
-        public  override    string                  ToString() => $"source user: {srcUserId}";
-
-        internal EventContext(SubscriptionProcessor processor, in JsonKey srcUserId) {
-            this.processor  = processor;
-            this.srcUserId  = srcUserId;
-        }
-        
-        public EntityChanges<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            return (EntityChanges<TKey, T>)processor.GetChanges(entitySet);
-        } 
-    }
-    
     public sealed class ChangeInfo<T> : ChangeInfo where T : class
     {
         public bool IsEqual(ChangeInfo<T> other) {
