@@ -78,13 +78,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                     }
                 }
             }
+            var changeContext = new ChangeContext(this, ev.srcUserId);
             foreach (var result in results) {
                 EntityChanges entityChanges = result.Value;
                 if (entityChanges.Count() == 0)
                     continue;
                 var entityType = result.Key;
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
-                set.changeCallback?.InvokeCallback(entityChanges);
+                set.changeCallback?.InvokeCallback(entityChanges, changeContext);
             }
         }
         
@@ -190,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.SyncPeerEntities(syncEntities, mapper);
         }
         
-        private EntityChanges GetChanges (EntitySet entitySet) {
+        internal EntityChanges GetChanges (EntitySet entitySet) {
             var entityType = entitySet.EntityType;
             if (results.TryGetValue(entityType, out var result))
                 return result;

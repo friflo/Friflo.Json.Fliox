@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.SetSubscriptionProcessor(subscriber);
             var eventProcessor = new DirectEventHandler();
             store.SetEventHandler(eventProcessor);
-            store.permissions.SubscribeChanges(changes, change => {
+            store.permissions.SubscribeChanges(changes, (change, context) => {
                 var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
                 foreach (var pair   in change.upserts) { changedUsers.Add(pair.Key); }
                 foreach (var id     in change.deletes) { changedUsers.Add(id); }
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     userAuthenticator.users.TryRemove(changedUser, out _);
                 }
             });
-            store.credentials.SubscribeChanges(changes, change => {
+            store.credentials.SubscribeChanges(changes, (change, context) => {
                 var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
                 foreach (var pair   in change.upserts) { changedUsers.Add(pair.Key); }
                 foreach (var id     in change.deletes) { changedUsers.Add(id); }

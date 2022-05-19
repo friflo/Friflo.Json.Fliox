@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Transform;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change) where T : class;
+    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change, ChangeContext context) where T : class;
     
     public abstract class EntityChanges
     {
@@ -96,6 +96,23 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
+    public sealed class ChangeContext
+    {
+        private readonly    SubscriptionProcessor   processor;
+        private readonly    JsonKey                 srcUserId;
+
+        public  override    string                  ToString() => $"source user: {srcUserId}";
+
+        internal ChangeContext(SubscriptionProcessor processor, in JsonKey srcUserId) {
+            this.processor  = processor;
+            this.srcUserId  = srcUserId;
+        }
+        
+        public EntityChanges<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
+            return (EntityChanges<TKey, T>)processor.GetChanges(entitySet);
+        } 
+    }
+    
     public sealed class ChangeInfo<T> : ChangeInfo where T : class
     {
         public bool IsEqual(ChangeInfo<T> other) {
@@ -107,7 +124,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     internal abstract class ChangeCallback {
-        internal abstract void InvokeCallback(EntityChanges entityChanges);
+        internal abstract void InvokeCallback(EntityChanges entityChanges, ChangeContext context);
     }
     
     internal sealed class GenericChangeCallback<TKey, T> : ChangeCallback where T : class
@@ -118,9 +135,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(EntityChanges entityChanges) {
+        internal override void InvokeCallback(EntityChanges entityChanges, ChangeContext context) {
             var changes = (EntityChanges<TKey,T>)entityChanges;
-            handler(changes);
+            handler(changes, context);
         }
     }
 }
