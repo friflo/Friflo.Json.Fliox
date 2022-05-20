@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Mapper;
@@ -10,9 +11,11 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class EventContext
     {
-        public  readonly    JsonKey                 srcUserId;
-        public              int                     EventSequence { get; }
-        public              IReadOnlyList<Message>  Messages    => processor.Messages;
+        public  readonly    JsonKey                         srcUserId;
+        public              int                             EventSequence { get; }
+        public              IReadOnlyList<Message>          Messages    => processor.Messages;
+        /// <summary> <see cref="Changes"/> enables exploring changes in debugger. Use <see cref="GetChanges{TKey,T}"/> to access data </summary>
+        public              Dictionary<Type, EntityChanges> Changes     => processor.changes;
 
         private readonly    SubscriptionProcessor   processor;
 
