@@ -39,17 +39,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   List<JsonKey>                               idsBuf;
 
         // --- mutable state
-        internal            SyncStore                               syncStore;
-        internal            LogTask                                 tracerLogTask;
-        internal            EventMessageHandler                     eventHandler;
-        private             SubscriptionProcessor                   subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
-        internal            ChangeSubscriptionHandler               subscriptionHandler;
-        internal            bool                                    disposed;
-        internal            int                                     lastEventSeq;
-        internal            int                                     syncCount;
-        internal            JsonKey                                 userId;
-        internal            JsonKey                                 clientId;
-        internal            string                                  token;
+        internal            SyncStore                   syncStore;
+        internal            LogTask                     tracerLogTask;
+        internal            EventMessageHandler         eventHandler;
+        private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
+        internal            ChangeSubscriptionHandler   subscriptionHandler;
+        internal            bool                        disposed;
+        internal            int                         lastEventSeq;
+        internal            int                         syncCount;
+        internal            JsonKey                     userId;
+        internal            JsonKey                     clientId;
+        internal            string                      token;
 
 
         internal EntityProcessor        EntityProcessor()       => processor     ?? (processor      = new EntityProcessor());
@@ -80,47 +80,47 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal ClientIntern(
-            FlioxClient             client,
-            FlioxHub                hub,
-            string                  database,
-            ITracerContext          tracerContext,
-            EventTarget             eventTarget)
+            FlioxClient     client,
+            FlioxHub        hub,
+            string          database,
+            ITracerContext  tracerContext,
+            EventTarget     eventTarget)
         {
-            var entityInfos             = ClientEntityUtils.GetEntityInfos (client.type);
-            var sharedEnv               = hub.sharedEnv;
+            var entityInfos         = ClientEntityUtils.GetEntityInfos (client.type);
+            var sharedEnv           = hub.sharedEnv;
             
             // --- readonly
-            typeStore                   = sharedEnv.TypeStore;
-            this.pool                   = sharedEnv.Pool;
-            this.sharedCache            = sharedEnv.sharedCache;
-            this.hubLogger              = sharedEnv.hubLogger;
-            this.hub                    = hub;
-            this.database               = database;
-            this.eventTarget            = eventTarget;
-            this.tracerContext          = tracerContext;
+            typeStore               = sharedEnv.TypeStore;
+            this.pool               = sharedEnv.Pool;
+            this.sharedCache        = sharedEnv.sharedCache;
+            this.hubLogger          = sharedEnv.hubLogger;
+            this.hub                = hub;
+            this.database           = database;
+            this.eventTarget        = eventTarget;
+            this.tracerContext      = tracerContext;
             
             // --- readonly / private - owned
-            objectPatcher               = null;
-            processor                   = null;
-            setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
-            setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
-            subscriptions               = new Dictionary<string, MessageSubscriber>();  // could create lazy - needed only if dealing with subscriptions
-            subscriptionsPrefix         = new List<MessageSubscriber>();                // could create lazy - needed only if dealing with subscriptions 
-            pendingSyncs                = new ConcurrentDictionary<Task, ExecuteContext>();
-            idsBuf                      = new List<JsonKey>();
+            objectPatcher           = null;
+            processor               = null;
+            setByType               = new Dictionary<Type,   EntitySet>(entityInfos.Length);
+            setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
+            subscriptions           = new Dictionary<string, MessageSubscriber>();  // could create lazy - needed only if dealing with subscriptions
+            subscriptionsPrefix     = new List<MessageSubscriber>();                // could create lazy - needed only if dealing with subscriptions 
+            pendingSyncs            = new ConcurrentDictionary<Task, ExecuteContext>();
+            idsBuf                  = new List<JsonKey>();
 
             // --- mutable state
-            syncStore                   = new SyncStore();
-            tracerLogTask               = null;
-            eventHandler                = null;
-            subscriptionHandler         = null;
-            subscriptionProcessor       = null;
-            disposed                    = false;
-            lastEventSeq                = 0;
-            syncCount                   = 0;
-            userId                      = new JsonKey();
-            clientId                    = new JsonKey();
-            token                       = null;
+            syncStore               = new SyncStore();
+            tracerLogTask           = null;
+            eventHandler            = null;
+            subscriptionHandler     = null;
+            subscriptionProcessor   = null;
+            disposed                = false;
+            lastEventSeq            = 0;
+            syncCount               = 0;
+            userId                  = new JsonKey();
+            clientId                = new JsonKey();
+            token                   = null;
             
             InitEntitySets (client, entityInfos);
         }
