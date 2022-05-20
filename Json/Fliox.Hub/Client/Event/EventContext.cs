@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  readonly    JsonKey                         srcUserId;
         public              int                             EventSequence   => processor.EventSequence;
         public              IReadOnlyList<Message>          Messages        => processor.Messages;
-        /// <summary> <see cref="Changes"/> enables exploring changes in debugger. Use <see cref="GetChanges{TKey,T}"/> to access data </summary>
-        public              Dictionary<Type, EntityChanges> Changes         => processor.changes;
+        /// <summary> <see cref="DebugChanges"/> enables exploring changes in debugger. Use <see cref="GetChanges{TKey,T}"/> to access data </summary>
+        public              Dictionary<Type, EntityChanges> DebugChanges    => processor.changes;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                      Logger { get; }
 
