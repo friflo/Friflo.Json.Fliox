@@ -1,12 +1,12 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable ReturnTypeCanBeEnumerable.Global
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
