@@ -35,29 +35,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
                     var msg = $"{type} failed. name: {callbackHandler.name}";
-                    invokeContext.Logger.Log(HubLog.Error, msg, e);
+                    context.Logger.Log(HubLog.Error, msg, e);
                     Debug.Fail($"{msg}, exception {e}");
                 }
             }
         }
     }
     
-    internal readonly struct InvokeContext : ILogSource
+    internal readonly struct InvokeContext
     {
         internal  readonly  string          name;
         internal  readonly  JsonValue       param;
         internal  readonly  ObjectReader    reader;
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger      Logger { get; }
-
         public    override  string          ToString() => $"{name}(param: {param.AsString()})";
 
-        internal InvokeContext(string name, in JsonValue param, ObjectReader reader, IHubLogger hubLogger) {
+        internal InvokeContext(string name, in JsonValue param, ObjectReader reader) {
             this.name       = name;
             this.param      = param;
             this.reader     = reader;
-            this.Logger     = hubLogger;
         }
     }
     

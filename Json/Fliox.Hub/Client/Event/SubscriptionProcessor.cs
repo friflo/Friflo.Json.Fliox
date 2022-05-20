@@ -63,21 +63,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             EventSequence++;
             using (var pooled = client.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
-                var logger = client.Logger;
                 foreach (var task in ev.tasks) {
                     switch (task.TaskType)
                     {
-                        case TaskType.create:   ProcessCreate (client, (CreateEntities)task, mapper);           break;
-                        case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task, mapper);           break;
-                        case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);                   break;
-                        case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task, mapper);           break;
+                        case TaskType.create:   ProcessCreate (client, (CreateEntities)task, mapper);   break;
+                        case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task, mapper);   break;
+                        case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);           break;
+                        case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task, mapper);   break;
                         case TaskType.message:
-                        case TaskType.command:  ProcessMessage ((SyncMessageTask)task, messageMapper, logger);  break;
+                        case TaskType.command:  ProcessMessage ((SyncMessageTask)task, messageMapper);  break;
                     }
                 }
             }
             // After processing / collecting all change & message tasks invoke their handler methods
-            var eventContext = new EventContext(this, ev.srcUserId);
+            var logger          = client.Logger;
+            var eventContext    = new EventContext(this, ev.srcUserId, logger);
             // --- invoke changes handlers 
             foreach (var change in changes) {
                 EntityChanges entityChanges = change.Value;
@@ -161,12 +161,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
         }
         
-        private void ProcessMessage(SyncMessageTask task, ObjectMapper mapper, IHubLogger logger) {
+        private void ProcessMessage(SyncMessageTask task, ObjectMapper mapper) {
             var name = task.name;
             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
             // and ProcessEvent() can be called concurrently from the 'main' thread.
-            var invokeContext   = new InvokeContext(name, task.param, mapper.reader, logger);
+            var invokeContext   = new InvokeContext(name, task.param, mapper.reader);
             var message         = new Message(invokeContext);
             messages.Add(message);
         }
