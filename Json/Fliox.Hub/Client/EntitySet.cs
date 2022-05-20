@@ -177,11 +177,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
+        public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler = null) {
             intern.store.AssertEventHandler();
             var op = Operation.FromFilter(filter);
             var task = GetSyncSet().SubscribeChangesFilter(changes, op);
             intern.store.AddTask(task);
+            if (handler != null) changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
         }
         
@@ -190,10 +191,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
+        public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler = null) {
             intern.store.AssertEventHandler();
             var task = GetSyncSet().SubscribeChangesFilter(changes, filter.op);
             intern.store.AddTask(task);
+            if (handler != null) changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
         }
         
@@ -207,9 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var all = Operation.FilterTrue;
             var task = GetSyncSet().SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);
-            if (handler != null) {
-                changeCallback = new GenericChangeCallback<TKey,T>(handler);
-            }
+            if (handler != null) changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
         }
         
