@@ -43,6 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            LogTask                                 tracerLogTask;
         internal            EventMessageHandler                     eventHandler;
         internal            SubscriptionProcessor                   subscriptionProcessor;
+        internal            ChangeSubscriptionHandler               subscriptionHandler;
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
@@ -107,6 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncStore                   = new SyncStore();
             tracerLogTask               = null;
             eventHandler                = null;
+            subscriptionHandler         = null;
             subscriptionProcessor       = new SubscriptionProcessor();
             disposed                    = false;
             lastEventSeq                = 0;

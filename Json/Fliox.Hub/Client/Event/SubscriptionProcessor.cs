@@ -78,14 +78,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // After processing / collecting all change & message tasks invoke their handler methods
             var logger          = client.Logger;
             var eventContext    = new EventContext(this, ev.srcUserId, logger);
-            // --- invoke changes handlers 
+            // --- invoke changes handlers
+            var count = 0;
             foreach (var change in changes) {
                 EntityChanges entityChanges = change.Value;
-                if (entityChanges.Count() == 0)
+                if (entityChanges.Count == 0)
                     continue;
+                count++;
                 var entityType = change.Key;
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
                 set.changeCallback?.InvokeCallback(entityChanges, eventContext);
+            }
+            if (count > 0) {
+                client._intern.subscriptionHandler?.Invoke(eventContext);
             }
             // --- invoke message handlers
             foreach (var message in messages) {

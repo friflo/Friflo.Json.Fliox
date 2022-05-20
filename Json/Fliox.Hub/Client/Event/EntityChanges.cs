@@ -12,11 +12,12 @@ using Friflo.Json.Fliox.Transform;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public delegate void ChangeSubscriptionHandler         (EventContext context);
     public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change, EventContext context) where T : class;
     
     public abstract class EntityChanges
     {
-        internal  abstract  int     Count       ();
+        public    abstract  int     Count       { get; }
         internal  abstract  void    Clear       ();
         internal  abstract  void    AddCreate   (in JsonKey id);
         internal  abstract  void    AddUpsert   (in JsonKey id);
@@ -35,8 +36,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private  readonly   EntitySet<TKey, T>                  entitySet;
         
-        public   override   string                              ToString    () => Info.ToString();       
-        internal override   int                                 Count       () => Info.Count;
+        public   override   string                              ToString()  => Info.ToString();       
+        public   override   int                                 Count       => Info.Count;
 
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
             this.entitySet = entitySet;

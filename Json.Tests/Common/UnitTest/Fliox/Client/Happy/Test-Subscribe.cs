@@ -61,7 +61,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SetSubscriptionProcessor(processor);
             //store.SetSubscriptionHandler(processor.sss);
             
-            var subscriptions   = store.SubscribeAllChanges(Changes.All);
+            var subscriptions   = store.SubscribeAllChanges(Changes.All, context => {
+                AreEqual("createStore", context.srcUserId.AsString());
+                foreach (var pair in context.DebugChanges) {
+                    processor.countAllChanges += pair.Value.Count;
+                }
+            });
             // change subscription of specific EntitySet<Article>
             var articlesSub     = store.articles.SubscribeChanges(Changes.All);
             
@@ -161,6 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         internal            int                     testWildcardCalls;
         internal            int                     subscribeEventsCalls;
         internal            bool                    receivedAll;
+        internal            int                     countAllChanges;
         
         private readonly    EventAssertion          eventAssertion;
         
@@ -280,11 +286,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSimilar("(creates: 3, upserts: 0, deletes: 3, patches: 0)", producerSum);
             AreSimilar("(creates: 1, upserts: 0, deletes: 1, patches: 0)", employeeSum);
             
-            AreEqual(5, messageCount);
-            AreEqual(4, testWildcardCalls);
+            AreEqual(5,  messageCount);
+            AreEqual(4,  testWildcardCalls);
 
-            AreEqual(1, testMessageCalls);
-            AreEqual(2, testMessageIntCalls);
+            AreEqual(1,  testMessageCalls);
+            AreEqual(2,  testMessageIntCalls);
+            AreEqual(34, countAllChanges);
         }
     }
     
