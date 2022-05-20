@@ -52,13 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            string                                  token;
 
 
-        internal EntityProcessor        EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
-        internal ObjectPatcher          ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
-
-        internal SubscriptionProcessor SubscriptionProcessor { get {
-            if (subscriptionProcessor == null) subscriptionProcessor = new SubscriptionProcessor();
-            return subscriptionProcessor;
-        } }
+        internal EntityProcessor        EntityProcessor()       => processor     ?? (processor      = new EntityProcessor());
+        internal ObjectPatcher          ObjectPatcher()         => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
+        internal SubscriptionProcessor  SubscriptionProcessor   => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
 
         static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
 
