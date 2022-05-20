@@ -104,9 +104,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             processor                   = null;
             setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
-            subscriptions               = new Dictionary<string, MessageSubscriber>();
-            subscriptionsPrefix         = new List<MessageSubscriber>();                    // could create lazy - Needed only if dealing with subscriptions 
-            pendingSyncs                = new ConcurrentDictionary<Task, ExecuteContext>(); // could create lazy - Needed only if dealing with subscriptions
+            subscriptions               = new Dictionary<string, MessageSubscriber>();  // could create lazy - needed only if dealing with subscriptions
+            subscriptionsPrefix         = new List<MessageSubscriber>();                // could create lazy - needed only if dealing with subscriptions 
+            pendingSyncs                = new ConcurrentDictionary<Task, ExecuteContext>();
             idsBuf                      = new List<JsonKey>();
 
             // --- mutable state
@@ -206,9 +206,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
             var task = new SubscribeMessageTask(name, null);
-            if (!subscriptions.TryGetValue(name, out var subscriber)) {
+            var subs = subscriptions; 
+            if (!subs.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
-                subscriptions.Add(name, subscriber);
+                subs.Add(name, subscriber);
                 syncStore.SubscribeMessage().Add(task);
             } else {
                 task.state.Executed = true;
@@ -223,16 +224,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal SubscribeMessageTask RemoveCallbackHandler (string name, object handler) {
             var prefix = SubscribeMessage.GetPrefix(name);
             if (prefix != null) {
+                var subsPrefix = subscriptionsPrefix;
                 if (handler == null) {
-                    subscriptionsPrefix.RemoveAll((sub) => sub.name == prefix);
+                    subsPrefix.RemoveAll((sub) => sub.name == prefix);
                 } else {
-                    foreach (var sub in subscriptionsPrefix.Where(sub => sub.name == prefix)) {
+                    foreach (var sub in subsPrefix.Where(sub => sub.name == prefix)) {
                         sub.callbackHandlers.RemoveAll(callback => callback.HasHandler(handler));
                     }
                 }
             }
             var task = new SubscribeMessageTask(name, true);
-            if (!subscriptions.TryGetValue(name, out var subscriber)) {
+            var subs = subscriptions;
+            if (!subs.TryGetValue(name, out var subscriber)) {
                 task.state.Executed = true;
                 return task;
             }
@@ -242,7 +245,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 subscriber.callbackHandlers.Clear();
             }
             if (subscriber.callbackHandlers.Count == 0) {
-                subscriptions.Remove(name);
+                subs.Remove(name);
                 syncStore.SubscribeMessage().Add(task);
             } else {
                 task.state.Executed = true;
