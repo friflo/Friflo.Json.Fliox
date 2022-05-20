@@ -110,9 +110,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             SyncPeerEntities(set, create.entityKeys, create.entities, mapper);
                             
             // --- update changes
-            var changes = GetChanges(set);
+            var entityChanges = GetChanges(set);
             foreach (var id in create.entityKeys) {
-                changes.AddCreate(id);
+                entityChanges.AddCreate(id);
             }
         }
         
@@ -125,9 +125,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);
                             
             // --- update changes
-            var changes = GetChanges(set);
+            var entityChanges = GetChanges(set);
             foreach (var id in upsert.entityKeys) {
-                changes.AddUpsert(id);
+                entityChanges.AddUpsert(id);
             }
         }
         
@@ -139,9 +139,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             set.DeletePeerEntities (delete.ids);
                             
             // --- update changes
-            var changes = GetChanges(set);
+            var entityChanges = GetChanges(set);
             foreach (var id in delete.ids) {
-                changes.AddDelete(id);
+                entityChanges.AddDelete(id);
             }
         }
         
@@ -153,11 +153,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             set.PatchPeerEntities(patches.patches, mapper);
                             
             // --- update changes
-            var changes = GetChanges(set);
+            var entityChanges = GetChanges(set);
             foreach (var pair in patches.patches) {
                 var id      = pair.Key;
                 var patch   = pair.Value;
-                changes.AddPatch(id, patch);
+                entityChanges.AddPatch(id, patch);
             }
         }
         
