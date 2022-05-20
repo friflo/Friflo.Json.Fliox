@@ -15,13 +15,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
 {
     public class SubscriptionProcessor : IDisposable
     {
-        internal readonly   Dictionary<Type, EntityChanges> changes   = new Dictionary<Type, EntityChanges>();
-        private  readonly   List<Message>                   messages  = new List<Message>();
+        private  readonly   Dictionary<Type, EntityChanges> changes         = new Dictionary<Type, EntityChanges>();
+        /// <summary> contain only <see cref="EntityChanges"/> where <see cref="EntityChanges.Count"/> > 0 </summary>
+        internal readonly   Dictionary<Type, EntityChanges> contextChanges  = new Dictionary<Type, EntityChanges>();
+        private  readonly   List<Message>                   messages        = new List<Message>();
         private             ObjectMapper                    messageMapper;
         public              int                             EventSequence { get; private set ; }
-        public   override   string                          ToString() => $"EventSequence: {EventSequence}";
+        public   override   string                          ToString()  => $"EventSequence: {EventSequence}";
 
-        public              IReadOnlyList<Message>          Messages => messages;
+        public              IReadOnlyList<Message>          Messages    => messages;
 
         public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
             return (EntityChanges<TKey, T>)GetChanges(entitySet);
@@ -30,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         public virtual void OnEvent(FlioxClient client, EventMessage ev) {
             ProcessEvent(client, ev);
         }
-
+        
         public void Dispose() {
             messageMapper?.Dispose();
         }
@@ -76,20 +78,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                 }
             }
             // After processing / collecting all change & message tasks invoke their handler methods
+            // --- prepare EventContext state
             var logger          = client.Logger;
             var eventContext    = new EventContext(this, ev.srcUserId, logger);
-            // --- invoke changes handlers
-            var count = 0;
+            contextChanges.Clear();
             foreach (var change in changes) {
                 EntityChanges entityChanges = change.Value;
                 if (entityChanges.Count == 0)
                     continue;
-                count++;
                 var entityType = change.Key;
+                contextChanges.Add(entityType, entityChanges);
+            }
+            // --- invoke changes handlers
+            foreach (var change in contextChanges) {
+                var entityType      = change.Key;
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
+                var entityChanges   = change.Value;
                 set.changeCallback?.InvokeCallback(entityChanges, eventContext);
             }
-            if (count > 0) {
+            if (contextChanges.Count > 0) {
                 client._intern.subscriptionHandler?.Invoke(eventContext);
             }
             // --- invoke message handlers

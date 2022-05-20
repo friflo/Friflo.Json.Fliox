@@ -47,7 +47,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
             synchronizationContext.Post(delegate {
-                client._intern.subscriptionProcessor.OnEvent(client, ev);
+                client._intern.SubscriptionProcessor.OnEvent(client, ev);
             }, null);
         }
     }
@@ -55,7 +55,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
     public class DirectEventHandler : EventMessageHandler
     {
         public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
-            client._intern.subscriptionProcessor.OnEvent(client, ev);
+            client._intern.SubscriptionProcessor.OnEvent(client, ev);
         }
     }
     
@@ -82,7 +82,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         public void ProcessEvents() {
             while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
                 var client  = queuedMessage.client;
-                client._intern.subscriptionProcessor.OnEvent(client, queuedMessage.ev);
+                client._intern.SubscriptionProcessor.OnEvent(client, queuedMessage.ev);
             }
         }
 

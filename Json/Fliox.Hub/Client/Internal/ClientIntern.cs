@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            SyncStore                               syncStore;
         internal            LogTask                                 tracerLogTask;
         internal            EventMessageHandler                     eventHandler;
-        internal            SubscriptionProcessor                   subscriptionProcessor;
+        private             SubscriptionProcessor                   subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
         internal            ChangeSubscriptionHandler               subscriptionHandler;
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;
@@ -52,10 +52,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            string                                  token;
 
 
-        internal EntityProcessor    EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
-        internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
+        internal EntityProcessor        EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
+        internal ObjectPatcher          ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
 
-        
+        internal SubscriptionProcessor SubscriptionProcessor { get {
+            if (subscriptionProcessor == null) subscriptionProcessor = new SubscriptionProcessor();
+            return subscriptionProcessor;
+        } }
+
         static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
 
         internal EntitySet GetSetByType(Type type) {
@@ -72,6 +76,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal bool TryGetSetByName (string name, out EntitySet set) {
             return setByName.TryGetValue(name, out set);
+        }
+        
+        internal void SetSubscriptionProcessor(SubscriptionProcessor processor) {
+            subscriptionProcessor?.Dispose();
+            subscriptionProcessor = processor;
         }
 
         internal ClientIntern(
@@ -109,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tracerLogTask               = null;
             eventHandler                = null;
             subscriptionHandler         = null;
-            subscriptionProcessor       = new SubscriptionProcessor();
+            subscriptionProcessor       = null;
             disposed                    = false;
             lastEventSeq                = 0;
             syncCount                   = 0;
