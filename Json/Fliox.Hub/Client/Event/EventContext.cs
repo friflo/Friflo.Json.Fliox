@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class EventContext : ILogSource
     {
         public  readonly    JsonKey                         srcUserId;
-        public              int                             EventSequence { get; }
-        public              IReadOnlyList<Message>          Messages    => processor.Messages;
+        public              int                             EventSequence   => processor.EventSequence;
+        public              IReadOnlyList<Message>          Messages        => processor.Messages;
         /// <summary> <see cref="Changes"/> enables exploring changes in debugger. Use <see cref="GetChanges{TKey,T}"/> to access data </summary>
-        public              Dictionary<Type, EntityChanges> Changes     => processor.changes;
+        public              Dictionary<Type, EntityChanges> Changes         => processor.changes;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                      Logger { get; }
 
@@ -27,7 +27,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal EventContext(SubscriptionProcessor processor, in JsonKey srcUserId, IHubLogger logger) {
             this.processor  = processor;
             this.srcUserId  = srcUserId;
-            EventSequence   = processor.EventSequence;
             Logger          = logger;
         }
         
