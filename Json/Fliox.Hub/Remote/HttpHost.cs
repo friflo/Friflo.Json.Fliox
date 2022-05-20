@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Each request is dispatched by a matching request handler. 
         /// <br/>
         /// Note:
-        /// Request matching and execution are seperated to ensure no heap allocation caused by awaited method calls. 
+        /// Request matching and execution are separated to ensure no heap allocation caused by awaited method calls. 
         /// </summary>
         public async Task ExecuteHttpRequest(RequestContext request) {
             if (request.method == "POST" && request.route == "/") {

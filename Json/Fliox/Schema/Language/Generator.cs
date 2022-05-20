@@ -162,9 +162,9 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var search = replacement.@namespace;
                 var pos = ns.IndexOf(search, StringComparison.InvariantCulture);
                 if (pos == 0) {
-                    var substr = ns.Substring(search.Length);
+                    var subStr = ns.Substring(search.Length);
                     var replace = replacement.replacement;
-                    return replace.Length >= 0 ? replace + substr : substr;
+                    return replace.Length >= 0 ? replace + subStr : subStr;
                 }
             }
             return ns;

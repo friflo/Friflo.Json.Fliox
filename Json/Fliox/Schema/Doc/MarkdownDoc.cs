@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Schema.Doc
         }
         
         private static void AppendNode (StringBuilder sb, XNode node) {
-            if (node is XText xtext) {
-                sb.Append(xtext.Value);
+            if (node is XText xText) {
+                sb.Append(xText.Value);
                 return;
             }
             if (node is XElement element) {
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Schema.Doc
                     case "code":    AppendCode   (sb, element);                 return;
                     default:
                         // Note: should not be reached
-                        // dont error but explicit cases are easier to read and debug
+                        // don't error but explicit cases are easier to read and debug
                         AppendElement(sb, element);
                         return;
                 }
@@ -58,8 +58,8 @@ namespace Friflo.Json.Fliox.Schema.Doc
             var nodes = element.DescendantNodes();
             sb.Append("[");
             foreach (var node in nodes) {
-                if (node is XText xtext) {
-                    sb.Append(xtext.Value);
+                if (node is XText xText) {
+                    sb.Append(xText.Value);
                 }
             }
             sb.Append("](");

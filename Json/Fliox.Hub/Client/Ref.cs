@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///     <see cref="EntitySet{TKey,T}.Read"/> returns a <see cref="ReadTask{TKey, T}"/> providing the possibility
     ///     to read referenced entity together with its parent by calling <see cref="ReadTask{TKey, T}.ReadRef{TKey,T}"/>.
     ///     <br></br>
-    ///     Further more those tasks used to resolve references provide themself methods to resolve their references.
+    ///     Further more those tasks used to resolve references provide themselves methods to resolve their references.
     ///     These are <see cref="ReadRefTask{TKey,T}"/> and <see cref="ReadRefsTask{TKey,T}"/>
     ///   </para>
     ///   In all these cases <see cref="Entity"/> is accessible after calling <see cref="FlioxClient.SyncTasks"/>

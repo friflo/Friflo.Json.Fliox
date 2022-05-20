@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote.Test
     ///   </item>
     ///   <item>
     ///     simplify adjusting test results in case of behavior changes (e.g. bugfix or enhancements) by simplify
-    ///     commiting the modified request response to version control.
+    ///     committing the modified request response to version control.
     ///   </item>
     ///   <item>
     ///     avoid writing test assertions using difficult string literals caused by escaped characters or line feeds
