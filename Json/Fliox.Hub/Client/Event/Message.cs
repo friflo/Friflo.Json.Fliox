@@ -34,21 +34,21 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// Expose the <see cref="Name"/>, the <see cref="JsonParam"/> and the type safe <see cref="GetParam"/> of a received message.
     /// </summary>
     public readonly struct Message<TParam> : IMessage {
-        public              string          Name        { get; }
-        public              JsonValue       JsonParam   { get; }
+        public              string          Name        => invokeContext.name;
+        public              JsonValue       JsonParam   => invokeContext.param;
         
-        private readonly    ObjectReader    reader;
+        private readonly    InvokeContext   invokeContext;
        
         /// <summary>Return the message <paramref name="param"/></summary> without validation 
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public  bool    GetParam    (out TParam param, out string error) => Message.Read(JsonParam, reader, out param, out error);
+        public  bool    GetParam    (out TParam param, out string error) => Message.Read(JsonParam, invokeContext.reader, out param, out error);
         /// <summary>Return the message <paramref name="param"/> as the given type <typeparamref name="T"/> without validation</summary>
         /// <param name="param">the param value if conversion successful</param>
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
-        public  bool    GetParam<T> (out T      param, out string error) => Message.Read(JsonParam, reader, out param, out error);
+        public  bool    GetParam<T> (out T      param, out string error) => Message.Read(JsonParam, invokeContext.reader, out param, out error);
 
         public override string          ToString()  => $"{Name}(param: {JsonParam.AsString()})";
         
@@ -57,9 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// If json is null <see cref="JsonParam"/> is set to "null".
         /// </summary>
         internal Message(in InvokeContext invokeContext) {
-            Name        = invokeContext.name;
-            JsonParam   = invokeContext.param;  
-            reader      = invokeContext.reader;
+            this.invokeContext = invokeContext;
         }
     }
     
