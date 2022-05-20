@@ -105,8 +105,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
-            subscriptionsPrefix         = new List<MessageSubscriber>();
-            pendingSyncs                = new ConcurrentDictionary<Task, ExecuteContext>();
+            subscriptionsPrefix         = new List<MessageSubscriber>();                    // could create lazy - Needed only if dealing with subscriptions 
+            pendingSyncs                = new ConcurrentDictionary<Task, ExecuteContext>(); // could create lazy - Needed only if dealing with subscriptions
             idsBuf                      = new List<JsonKey>();
 
             // --- mutable state
