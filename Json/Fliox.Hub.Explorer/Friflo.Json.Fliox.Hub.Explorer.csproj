@@ -42,8 +42,8 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Content  Include="www~/*.*;www~/explorer/js/*.js;www~/explorer/img/*.*;www~/explorer/example-requests/*.sync.json;www~/swagger/*.*;www~/graphiql/**/*.*"
-                Exclude="www~/manifest.json;www~/sw.js;">
+      <Content  Include="./www~/*.*;./www~/explorer/js/*.js;./www~/explorer/img/*.*;./www~/explorer/example-requests/*.sync.json;./www~/swagger/*.*;./www~/graphiql/**/*.*"
+                Exclude="./www~/manifest.json;./www~/sw.js;">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <PackageCopyToOutput>true</PackageCopyToOutput>
       </Content>
