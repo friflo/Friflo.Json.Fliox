@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
@@ -18,6 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class EntityChanges
     {
         public    abstract  int     Count       { get; }
+        public    abstract  string  Container   { get; }
+        internal  abstract  Type    GetEntityType();
         internal  abstract  void    Clear       ();
         internal  abstract  void    AddCreate   (in JsonKey id);
         internal  abstract  void    AddUpsert   (in JsonKey id);
@@ -38,10 +41,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public   override   string                              ToString()  => Info.ToString();       
         public   override   int                                 Count       => Info.Count;
+        public   override   string                              Container   { get; }
+        internal override   Type                                GetEntityType() => typeof(T);
 
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
-            this.entitySet = entitySet;
-            Info = new ChangeInfo<T>();
+            this.entitySet  = entitySet;
+            Info            = new ChangeInfo<T>();
+            Container       = entitySet.name;
         }
         
         internal override void Clear() {

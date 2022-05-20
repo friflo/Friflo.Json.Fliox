@@ -63,8 +63,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var subscriptions   = store.SubscribeAllChanges(Changes.All, context => {
                 AreEqual("createStore", context.srcUserId.AsString());
-                foreach (var pair in context.DebugChanges) {
-                    processor.countAllChanges += pair.Value.Count;
+                foreach (var changes in context.DebugChanges) {
+                    processor.countAllChanges += changes.Count;
                 }
             });
             // change subscription of specific EntitySet<Article>

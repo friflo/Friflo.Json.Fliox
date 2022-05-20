@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
     {
         private  readonly   Dictionary<Type, EntityChanges> changes         = new Dictionary<Type, EntityChanges>();
         /// <summary> contain only <see cref="EntityChanges"/> where <see cref="EntityChanges.Count"/> > 0 </summary>
-        internal readonly   Dictionary<Type, EntityChanges> contextChanges  = new Dictionary<Type, EntityChanges>();
+        internal readonly   List<EntityChanges>             contextChanges  = new List<EntityChanges>();
         private  readonly   List<Message>                   messages        = new List<Message>();
         private             ObjectMapper                    messageMapper;
         public              int                             EventSequence { get; private set ; }
@@ -86,15 +86,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                 EntityChanges entityChanges = change.Value;
                 if (entityChanges.Count == 0)
                     continue;
-                var entityType = change.Key;
-                contextChanges.Add(entityType, entityChanges);
+                contextChanges.Add(entityChanges);
             }
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
-                var entityType      = change.Key;
+                var entityType = change.GetEntityType();
                 client._intern.TryGetSetByType(entityType, out EntitySet set);
-                var entityChanges   = change.Value;
-                set.changeCallback?.InvokeCallback(entityChanges, eventContext);
+                set.changeCallback?.InvokeCallback(change, eventContext);
             }
             if (contextChanges.Count > 0) {
                 client._intern.subscriptionHandler?.Invoke(eventContext);
