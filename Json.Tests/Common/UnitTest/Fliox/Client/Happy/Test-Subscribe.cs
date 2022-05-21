@@ -160,6 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private readonly    ChangeInfo      articleSum   = new ChangeInfo();
         private readonly    ChangeInfo      producerSum  = new ChangeInfo();
         private readonly    ChangeInfo      employeeSum  = new ChangeInfo();
+        private readonly    ChangeInfo      typesSum     = new ChangeInfo();
         private             int             messageCount;
         internal            int             testMessageCalls;
         internal            int             testMessageIntCalls;
@@ -187,6 +188,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articleChanges  = GetEntityChanges(client.articles);
             var producerChanges = GetEntityChanges(client.producers);
             var employeeChanges = GetEntityChanges(client.employees);
+            var typesChanges    = GetEntityChanges(client.types);
             var messages        = Messages;
             
             orderSum.   AddChanges(orderChanges);
@@ -194,6 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             articleSum. AddChanges(articleChanges);
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
+            typesSum.   AddChanges(typesChanges);
             messageCount += messages.Count;
 
             foreach (var message in messages) {
@@ -285,12 +288,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSimilar("(creates: 2, upserts: 7, deletes: 5, patches: 2)", articleSum);
             AreSimilar("(creates: 3, upserts: 0, deletes: 3, patches: 0)", producerSum);
             AreSimilar("(creates: 1, upserts: 0, deletes: 1, patches: 0)", employeeSum);
+            AreSimilar("(creates: 0, upserts: 1, deletes: 0, patches: 0)", typesSum);
             
             AreEqual(5,  messageCount);
             AreEqual(4,  testWildcardCalls);
 
             AreEqual(1,  testMessageCalls);
             AreEqual(2,  testMessageIntCalls);
+            
+            var allChanges = orderSum.Count + customerSum.Count + articleSum.Count + producerSum.Count + employeeSum.Count + typesSum.Count;
+            
+            AreEqual(34, allChanges);
             AreEqual(34, countAllChanges);
         }
     }
