@@ -206,17 +206,14 @@ namespace Friflo.Json.Fliox.Mapper.Map
         TypeMapper MatchTypeMapper(Type type, StoreConfig config);
     }
     
-    public static class TypeMapperUtils {
-        /*
-        public static object CreateGenericInstance(Type genericType, Type[] genericArgs) {
-            var genericTypeArgs = genericType.MakeGenericType(genericArgs);
-            return Activator.CreateInstance(genericTypeArgs);
-        } */
+    public static class TypeMapperUtils
+    {
+        private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams) {
-            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            var genericTypeArgs = genericType.MakeGenericType(genericArgs);
-            return Activator.CreateInstance(genericTypeArgs, flags, null, constructorParams, null);
+        public static object CreateGenericInstance(Type genericType, Type[] genericArgs, object[] constructorParams)
+        {
+            var concreteType = genericType.MakeGenericType(genericArgs);
+            return Activator.CreateInstance(concreteType, Flags, null, constructorParams, null);
         } 
     }
 
