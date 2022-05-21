@@ -154,21 +154,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
     internal class PocSubscriptionProcessor : SubscriptionProcessor {
-        private readonly    PocStore                client;
-        private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
-        private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
-        private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
-        private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
-        private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
-        private             int                     messageCount;
-        internal            int                     testMessageCalls;
-        internal            int                     testMessageIntCalls;
-        internal            int                     testWildcardCalls;
-        internal            int                     subscribeEventsCalls;
-        internal            bool                    receivedAll;
-        internal            int                     countAllChanges;
+        private readonly    PocStore        client;
+        private readonly    ChangeInfo      orderSum     = new ChangeInfo();
+        private readonly    ChangeInfo      customerSum  = new ChangeInfo();
+        private readonly    ChangeInfo      articleSum   = new ChangeInfo();
+        private readonly    ChangeInfo      producerSum  = new ChangeInfo();
+        private readonly    ChangeInfo      employeeSum  = new ChangeInfo();
+        private             int             messageCount;
+        internal            int             testMessageCalls;
+        internal            int             testMessageIntCalls;
+        internal            int             testWildcardCalls;
+        internal            int             subscribeEventsCalls;
+        internal            bool            receivedAll;
+        internal            int             countAllChanges;
         
-        private readonly    EventAssertion          eventAssertion;
+        private readonly    EventAssertion  eventAssertion;
         
         internal PocSubscriptionProcessor (PocStore client, EventAssertion eventAssertion) {
             this.client         = client;
@@ -297,7 +297,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     
     static class PocUtils
     {
-        public static void AddChanges<TKey, T> (this ChangeInfo<T> sum, EntityChanges<TKey, T> changes) where T: class {
+        public static void AddChanges<TKey, T> (this ChangeInfo sum, EntityChanges<TKey, T> changes) where T: class {
             sum.creates += changes.creates.Count;
             sum.upserts += changes.upserts.Count;
             sum.deletes += changes.deletes.Count;

@@ -18,19 +18,20 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class EntityChanges
     {
-        public    abstract  int     Count       { get; }
-        public    abstract  string  Container   { get; }
-        internal  abstract  Type    GetEntityType();
-        internal  abstract  void    Clear       ();
-        internal  abstract  void    AddCreate   (in JsonKey id);
-        internal  abstract  void    AddUpsert   (in JsonKey id);
-        internal  abstract  void    AddDelete   (in JsonKey id);
-        internal  abstract  void    AddPatch    (in JsonKey id, EntityPatch entityPatch);
+        public              int         Count       => Info.Count;
+        public              ChangeInfo  Info        { get; } = new ChangeInfo();
+        public    abstract  string      Container   { get; }
+        
+        internal  abstract  Type        GetEntityType();
+        internal  abstract  void        Clear       ();
+        internal  abstract  void        AddCreate   (in JsonKey id);
+        internal  abstract  void        AddUpsert   (in JsonKey id);
+        internal  abstract  void        AddDelete   (in JsonKey id);
+        internal  abstract  void        AddPatch    (in JsonKey id, EntityPatch entityPatch);
     }
     
-    public sealed class EntityChanges<TKey, T> : EntityChanges where T : class {
-        public              ChangeInfo<T>                       Info { get; }
-        
+    public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
+    {
         public   readonly   Dictionary<TKey, T>                 creates = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   Dictionary<TKey, T>                 upserts = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   HashSet   <TKey>                    deletes = SyncSet.CreateHashSet<TKey>();
@@ -40,13 +41,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   EntitySet<TKey, T>                  entitySet;
         
         public   override   string                              ToString()  => Info.ToString();       
-        public   override   int                                 Count       => Info.Count;
         public   override   string                              Container   { get; }
         internal override   Type                                GetEntityType() => typeof(T);
 
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
-            Info            = new ChangeInfo<T>();
+
             Container       = entitySet.name;
         }
         
@@ -103,16 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public sealed class ChangeInfo<T> : ChangeInfo where T : class
-    {
-        public bool IsEqual(ChangeInfo<T> other) {
-            return creates == other.creates &&
-                   upserts == other.upserts &&
-                   deletes == other.deletes &&
-                   patches == other.patches;
-        }
-    }
-    
+   
     internal abstract class ChangeCallback {
         internal abstract void InvokeCallback(EntityChanges entityChanges, EventContext context);
     }
