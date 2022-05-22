@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
             });
             // change subscription of specific EntitySet<Article>
-            var articlesSub     = store.articles.SubscribeChanges(Changes.All);
+            var articlesSub     = store.articles.SubscribeChanges(Changes.All, (change, context) => { });
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate(param: null)", msg.ToString());

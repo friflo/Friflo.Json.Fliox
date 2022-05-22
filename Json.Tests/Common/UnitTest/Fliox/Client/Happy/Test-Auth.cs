@@ -158,11 +158,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 mutateUser.Token = "test-deny-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
-                var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert});
+                var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert}, (change, context) => { });
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", articleChanges.Error.Message);
                 
-                var articleDeletes = mutateUser.articles.SubscribeChanges(new [] {Change.delete});
+                var articleDeletes = mutateUser.articles.SubscribeChanges(new [] {Change.delete}, (change, context) => { });
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", articleDeletes.Error.Message);
             }
@@ -171,12 +171,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 mutateUser.Token = "test-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
-                var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert});
+                var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert}, (change, context) => { });
                 var sync = await mutateUser.TrySyncTasks();
                 AreEqual(0, sync.failed.Count);
                 IsTrue(articleChanges.Success);
                 
-                var articleDeletes = mutateUser.articles.SubscribeChanges(new [] {Change.delete});
+                var articleDeletes = mutateUser.articles.SubscribeChanges(new [] {Change.delete}, (change, context) => { });
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-operation", articleDeletes.Error.Message);
             }

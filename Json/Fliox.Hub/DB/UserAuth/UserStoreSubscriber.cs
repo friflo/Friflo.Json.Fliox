@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     userAuthenticator.users.TryRemove(changedUser, out _);
                 }
             });
-            store.roles.SubscribeChanges(changes);
+            store.roles.SubscribeChanges(changes, (change, context) => { });
             store.SyncTasks().Wait();
         }
         

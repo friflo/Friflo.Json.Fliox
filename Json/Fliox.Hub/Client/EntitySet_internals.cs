@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
@@ -284,7 +285,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override SyncTask SubscribeChangesInternal(IEnumerable<Change> changes) {
-            return SubscribeChanges(changes);    
+            var all = Operation.FilterTrue;
+            var task = GetSyncSet().SubscribeChangesFilter(changes, all);
+            intern.store.AddTask(task);
+            return task;
         }
         
         internal override SubscribeChanges GetSubscription() {
