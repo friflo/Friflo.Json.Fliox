@@ -56,15 +56,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task<PocStoreSubscriber> CreatePocStoreSubscriber (PocStore store, EventAssertion eventAssertion) {
-            var processor = new PocStoreSubscriber(store, eventAssertion);
+            var subscriber = new PocStoreSubscriber(store, eventAssertion);
             store.SetEventHandler(new SynchronizedEventHandler());
-            store.OnSubscriptionEvent(processor.OnEvent);
-            //store.SetSubscriptionHandler(processor.sss);
+            store.OnSubscriptionEvent(subscriber.OnEvent);
+            //store.SetSubscriptionHandler(subscriber.sss);
             
             var subscriptions   = store.SubscribeAllChanges(Changes.All, context => {
                 AreEqual("createStore", context.SrcUserId.AsString());
                 foreach (var changes in context.Changes) {
-                    processor.countAllChanges += changes.Count;
+                    subscriber.countAllChanges += changes.Count;
                 }
             });
             // change subscription of specific EntitySet<Article>
@@ -72,19 +72,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate(param: null)", msg.ToString());
-                processor.receivedAll = true;
+                subscriber.receivedAll = true;
                 IsTrue(                     msg.JsonParam.IsNull());
                 AreEqual("null",            msg.JsonParam.AsString());
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg, context) => {
                 AreEqual(@"TestCommand(param: {""text"":""test message""})", msg.ToString());
-                processor.testMessageCalls++;
+                subscriber.testMessageCalls++;
                 msg.GetParam(out TestCommand param, out _);
                 AreEqual("test message",        param.text);
                 AreEqual(nameof(TestCommand),   msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg, context) => {
-                processor.testMessageIntCalls++;
+                subscriber.testMessageIntCalls++;
                 msg.GetParam(out int param, out _);
                 AreEqual(42,                            param);
                 AreEqual("42",                          msg.JsonParam.AsString());
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error2);
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg, context) => {
-                processor.testMessageIntCalls++;
+                subscriber.testMessageIntCalls++;
                 msg.GetParam(out int val, out _);
                 AreEqual(42,                            val);
                 AreEqual("42",                          msg.JsonParam.AsString());
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var unsubscribe2        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveAllHandler, null);
             
             var subscribeAllMessages= store.SubscribeMessage  ("Test*", (msg, context) => {
-                processor.testWildcardCalls++;
+                subscriber.testWildcardCalls++;
             });
 
             await store.SyncTasks(); // ----------------
@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsTrue(unsubscribe1.            Success);
             IsTrue(unsubscribe2.            Success);
             IsTrue(subscribeAllMessages.    Success);
-            return processor;
+            return subscriber;
         }
         
         private static readonly MessageSubscriptionHandler<int> RemovedHandler = (msg, context) => {
