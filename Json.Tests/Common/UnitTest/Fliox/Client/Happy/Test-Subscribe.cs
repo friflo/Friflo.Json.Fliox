@@ -245,7 +245,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual("(creates: 2, upserts: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
                     var articleChanges  = GetEntityChanges(client.articles);
                     var producerChanges = GetEntityChanges(client.producers);
-                    AreEqual(1, articleChanges.creates.Count);
+                    AreEqual(1, articleChanges.Creates.Count);
                     AreEqual("(creates: 1, upserts: 4, deletes: 0, patches: 0)", articleChanges.ToString());
                     AreEqual("(creates: 1, upserts: 0, deletes: 0, patches: 0)", producerChanges.ToString());
                     break;
@@ -263,13 +263,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             switch (EventSequence) {
                 case 2:
                     AreEqual("(creates: 0, upserts: 2, deletes: 0, patches: 0)", articleChanges.Info.ToString());
-                    var ipad = articleChanges.upserts.Find(e => e.id == "article-ipad");
+                    var ipad = articleChanges.Upserts.Find(e => e.id == "article-ipad");
                     AreEqual("iPad Pro", ipad.name);
                     break;
                 case 5:
                     AreEqual("(creates: 0, upserts: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());
-                    IsTrue(articleChanges.deletes.Contains("article-delete"));
-                    ChangePatch<Article> articlePatch = articleChanges.patches.Find(p => p.entity.id == "article-1");
+                    IsTrue(articleChanges.Deletes.Contains("article-delete"));
+                    ChangePatch<Article> articlePatch = articleChanges.Patches.Find(p => p.entity.id == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
                     AreEqual("Changed name",            articlePatch.entity.name);
@@ -307,10 +307,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     static class PocUtils
     {
         public static void AddChanges<TKey, T> (this ChangeInfo sum, EntityChanges<TKey, T> changes) where T: class {
-            sum.creates += changes.creates.Count;
-            sum.upserts += changes.upserts.Count;
-            sum.deletes += changes.deletes.Count;
-            sum.patches += changes.patches.Count;
+            sum.creates += changes.Creates.Count;
+            sum.upserts += changes.Upserts.Count;
+            sum.deletes += changes.Deletes.Count;
+            sum.patches += changes.Patches.Count;
         }
     }
     

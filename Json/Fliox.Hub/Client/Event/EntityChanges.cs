@@ -32,10 +32,11 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
     {
-        public   readonly   List<T>                 creates = new List<T>();
-        public   readonly   List<T>                 upserts = new List<T>();
-        public   readonly   HashSet<TKey>           deletes = SyncSet.CreateHashSet<TKey>();
-        public   readonly   List<ChangePatch<T>>    patches = new List<ChangePatch<T>>();
+        // used properties for Creates, Upserts, Deletes & Patches to enable changing implementation. May fill these properties lazy in future.
+        public              List<T>                 Creates { get; } = new List<T>();
+        public              List<T>                 Upserts { get; } = new List<T>();
+        public              HashSet<TKey>           Deletes { get; } = SyncSet.CreateHashSet<TKey>();
+        public              List<ChangePatch<T>>    Patches { get; } = new List<ChangePatch<T>>();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private  readonly   EntitySet<TKey, T>      entitySet;
@@ -51,10 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Clear() {
-            creates.Clear();
-            upserts.Clear();
-            deletes.Clear();
-            patches.Clear();
+            Creates.Clear();
+            Upserts.Clear();
+            Deletes.Clear();
+            Patches.Clear();
             //
             Info.Clear();
         }
@@ -62,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void AddCreates (List<JsonValue> entities, ObjectMapper mapper) {
             foreach (var entity in entities) {
                 var value = mapper.Read<T>(entity);
-                creates.Add(value);
+                Creates.Add(value);
             }
             Info.creates += entities.Count;
         }
@@ -70,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void AddUpserts (List<JsonValue> entities, ObjectMapper mapper) {
             foreach (var entity in entities) {
                 var value = mapper.Read<T>(entity);
-                upserts.Add(value);
+                Upserts.Add(value);
             }
             Info.upserts += entities.Count;
         }
@@ -78,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void AddDeletes  (HashSet<JsonKey> ids) {
             foreach (var id in ids) {
                 TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                deletes.Add(key);
+                Deletes.Add(key);
             }
             Info.deletes += ids.Count;
         }
@@ -91,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     peer        = entitySet.GetOrCreatePeerByKey(key, id); // todo remove access to entitySet
                 var     entity      = peer.Entity;
                 var     changePatch = new ChangePatch<T>(entity, entityPatch.patches);
-                patches.Add(changePatch);
+                Patches.Add(changePatch);
             }
             Info.patches += entityPatches.Count;
         }
