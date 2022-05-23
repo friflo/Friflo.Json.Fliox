@@ -165,16 +165,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hub.EventBroker = eventBroker;
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
-                    var listenProcessor     = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
+                    var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteHub) { UserId = "createStore", ClientId = "create-client"})
                     using (var useStore     = new PocStore(remoteHub) { UserId = "useStore",    ClientId = "use-client"}) {
-                        var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
+                        var createSubscriber = await CreatePocStoreSubscriber(createStore, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
-                        while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
+                        while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                         
                         AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
-                        listenProcessor.AssertCreateStoreChanges();
+                        listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
                     await remoteHub.Close();
@@ -201,12 +201,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hub.EventBroker = eventBroker;
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
-                    var listenProcessor    = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
+                    var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
                         await remoteHub.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
-                        AreEqual(0, listenProcessor.EventSequence);
+                        AreEqual(0, listenSubscriber.EventSequence);
                         
                         // subscriber contains send events which are not acknowledged
                         IsTrue(eventBroker.NotAcknowledgedEvents() > 0);
@@ -216,16 +216,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.SyncTasks();  // an empty SyncTasks() is sufficient initiate re-sending all not-received change events
 
-                        while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
+                        while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                         
-                        listenProcessor.AssertCreateStoreChanges();
+                        listenSubscriber.AssertCreateStoreChanges();
 
                         await listenDb.SyncTasks();  // all changes are received => state of store remains unchanged
                         
                         // subscriber contains NO send events which are not acknowledged
                         AreEqual(0, eventBroker.NotAcknowledgedEvents());
 
-                        listenProcessor.AssertCreateStoreChanges();
+                        listenSubscriber.AssertCreateStoreChanges();
                     }
                     await remoteHub.Close();
                 });
@@ -244,16 +244,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var loopbackHub      = new LoopbackHub(hub))
             using (var listenDb         = new PocStore(loopbackHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 loopbackHub.host.EventBroker    = eventBroker;
-                var listenProcessor         = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
+                var listenSubscriber        = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackHub) { UserId = "createStore", ClientId = "create-client"})
                 using (var useStore         = new PocStore(loopbackHub) { UserId = "useStore",    ClientId = "use-client"}) {
-                    var createSubscriber        = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
+                    var createSubscriber = await CreatePocStoreSubscriber(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
-                    while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
+                    while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
                     
                     AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
-                    listenProcessor.AssertCreateStoreChanges();
+                    listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
                 await eventBroker.FinishQueues();

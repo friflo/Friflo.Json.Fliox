@@ -247,7 +247,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         ///   <see cref="SubscriptionProcessor.OnEvent"/> before calling <see cref="SubscriptionProcessor.ProcessEvent"/>.
         /// </para>
         /// </summary>
-        public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
+        internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             var processor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));
             _intern.SetSubscriptionProcessor(processor);
         }

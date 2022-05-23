@@ -13,7 +13,7 @@ using Friflo.Json.Fliox.Mapper.Map;
 // SubscriptionProcessor is commonly not used directly by application => use separate namespace
 namespace Friflo.Json.Fliox.Hub.Client.Event
 {
-    public class SubscriptionProcessor : IDisposable
+    internal sealed class SubscriptionProcessor : IDisposable
     {
         private  readonly   Dictionary<Type, EntityChanges> changes         = new Dictionary<Type, EntityChanges>();
         /// <summary> contain only <see cref="EntityChanges"/> where <see cref="EntityChanges.Count"/> > 0 </summary>
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             return (EntityChanges<TKey, T>)GetChanges(entitySet);
         }
 
-        public virtual void OnEvent(FlioxClient client, EventMessage ev) {
+        public void OnEvent(FlioxClient client, EventMessage ev) {
             ProcessEvent(client, ev);
         }
         
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // After processing / collecting all change & message tasks invoke their handler methods
             // --- prepare EventContext state
             var logger          = client.Logger;
-            var eventContext    = new EventContext(this, ev.srcUserId, logger);
+            var eventContext    = new EventContext(this, ev, logger);
             contextChanges.Clear();
             foreach (var change in changes) {
                 EntityChanges entityChanges = change.Value;

@@ -40,29 +40,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb     = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
                 hub.EventBroker = eventBroker;
-                var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
+                var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                 using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
-                    var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
+                    var createSubscriber = await CreatePocStoreSubscriber(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
-                    while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
+                    while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
 
-                    AreEqual(1, createProcessor.EventSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
                 }
-                listenProcessor.AssertCreateStoreChanges();
-                AreEqual(9, listenProcessor.EventSequence);           // non protected access
+                listenSubscriber.AssertCreateStoreChanges();
+                AreEqual(9, listenSubscriber.EventSequence);           // non protected access
                 await eventBroker.FinishQueues();
             }
         }
         
-        private static async Task<PocSubscriptionProcessor> CreateSubscriptionProcessor (PocStore store, EventAssertion eventAssertion) {
-            var processor = new PocSubscriptionProcessor(store, eventAssertion);
+        private static async Task<PocStoreSubscriber> CreatePocStoreSubscriber (PocStore store, EventAssertion eventAssertion) {
+            var processor = new PocStoreSubscriber(store, eventAssertion);
             store.SetEventHandler(new SynchronizedEventHandler());
-            store.SetSubscriptionProcessor(processor);
+            store.OnSubscriptionEvent(processor.OnEvent);
             //store.SetSubscriptionHandler(processor.sss);
             
             var subscriptions   = store.SubscribeAllChanges(Changes.All, context => {
-                AreEqual("createStore", context.srcUserId.AsString());
+                AreEqual("createStore", context.SrcUserId.AsString());
                 foreach (var changes in context.Changes) {
                     processor.countAllChanges += changes.Count;
                 }
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     }
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
-    internal class PocSubscriptionProcessor : SubscriptionProcessor {
+    internal class PocStoreSubscriber {
         private readonly    PocStore        client;
         private readonly    ChangeInfo      orderSum     = new ChangeInfo();
         private readonly    ChangeInfo      customerSum  = new ChangeInfo();
@@ -168,28 +168,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         internal            int             subscribeEventsCalls;
         internal            bool            receivedAll;
         internal            int             countAllChanges;
+        internal            int             EventSequence { get; private set; }
         
         private readonly    EventAssertion  eventAssertion;
         
-        internal PocSubscriptionProcessor (PocStore client, EventAssertion eventAssertion) {
+        internal PocStoreSubscriber (PocStore client, EventAssertion eventAssertion) {
             this.client         = client;
             this.eventAssertion = eventAssertion;
         }
             
-        /// All tests using <see cref="PocSubscriptionProcessor"/> are required to use "createStore" as userId
-        public override void OnEvent (FlioxClient __, EventMessage ev) {
-            AreEqual("createStore", ev.srcUserId.ToString());
-            ProcessEvent(client, ev);
+        /// All tests using <see cref="PocStoreSubscriber"/> are required to use "createStore" as userId
+        public void OnEvent (EventContext context) {
+            AreEqual("createStore", context.SrcUserId.ToString());
+            EventSequence = context.EventSequence;
             
-            CheckSomeMessages(ev);
+            CheckSomeMessages(context);
             
-            var orderChanges    = GetEntityChanges(client.orders);
-            var customerChanges = GetEntityChanges(client.customers);
-            var articleChanges  = GetEntityChanges(client.articles);
-            var producerChanges = GetEntityChanges(client.producers);
-            var employeeChanges = GetEntityChanges(client.employees);
-            var typesChanges    = GetEntityChanges(client.types);
-            var messages        = Messages;
+            var orderChanges    = context.GetChanges(client.orders);
+            var customerChanges = context.GetChanges(client.customers);
+            var articleChanges  = context.GetChanges(client.articles);
+            var producerChanges = context.GetChanges(client.producers);
+            var employeeChanges = context.GetChanges(client.employees);
+            var typesChanges    = context.GetChanges(client.types);
+            var messages        = context.Messages;
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
@@ -224,27 +225,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             switch (eventAssertion) {
                 case EventAssertion.NoChanges:
-                    var changeInfo = ev.GetChangeInfo();
+                    var changeInfo = context.Changes;
                     IsTrue(changeInfo.Count == 0);
                     break;
                 case EventAssertion.Changes:
-                    changeInfo = ev.GetChangeInfo();
+                    changeInfo = context.Changes;
                     IsTrue(changeInfo.Count > 0);
                     AssertChangeEvent(articleChanges);
                     break;
             }
         }
         
-        private void CheckSomeMessages(EventMessage ev) {
+        private void CheckSomeMessages(EventContext context) {
             subscribeEventsCalls++;
-            var eventInfo = ev.GetEventInfo();
-            switch (EventSequence) {
+            var eventInfo = context.EventInfo;
+            switch (context.EventSequence) {
                 case 3:
                     AreEqual(6, eventInfo.Count);
                     AreEqual(6, eventInfo.changes.Count);
                     AreEqual("(creates: 2, upserts: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
-                    var articleChanges  = GetEntityChanges(client.articles);
-                    var producerChanges = GetEntityChanges(client.producers);
+                    var articleChanges  = context.GetChanges(client.articles);
+                    var producerChanges = context.GetChanges(client.producers);
                     AreEqual(1, articleChanges.Creates.Count);
                     AreEqual("(creates: 1, upserts: 4, deletes: 0, patches: 0)", articleChanges.ToString());
                     AreEqual("(creates: 1, upserts: 0, deletes: 0, patches: 0)", producerChanges.ToString());
@@ -253,7 +254,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     AreEqual(6, eventInfo.Count);
                     AreEqual(5, eventInfo.messages);
                     AreEqual(1, eventInfo.changes.upserts);
-                    var messages = Messages;
+                    var messages = context.Messages;
                     AreEqual(5, messages.Count);
                     break;
             }

@@ -55,11 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             }
             return info;
         }
-
-        public ChangeInfo GetChangeInfo() {
-            var eventInfo = GetEventInfo();
-            return eventInfo.changes;
-        }
     }
     
 
@@ -89,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
-    /// It purpose is to get aggregated change information about a <see cref="EventMessage"/> by <see cref="EventMessage.GetChangeInfo"/>.
+    /// It purpose is to get aggregated change information about a <see cref="EventMessage"/> by <see cref="EventMessage.GetEventInfo"/>.
     /// </summary>
     public class ChangeInfo {
         public  int creates;

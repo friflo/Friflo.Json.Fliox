@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Event;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -15,23 +16,29 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class EventContext : ILogSource
     {
-        public  readonly    JsonKey                         srcUserId;
+        public              JsonKey                         SrcUserId       => ev.srcUserId;
         public              int                             EventSequence   => processor.EventSequence;
         public              IReadOnlyList<Message>          Messages        => processor.Messages;
         /// <summary> <see cref="Changes"/> return the changes per database <see cref="EntityChanges.Container"/>.
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
-        public              IReadOnlyList<EntityChanges>    Changes    => processor.contextChanges;
+        public              IReadOnlyList<EntityChanges>    Changes         => processor.contextChanges;
+        public              EventInfo                       EventInfo       { get; private set; }
+        
         [DebuggerBrowsable(Never)]
         public              IHubLogger                      Logger { get; }
 
         [DebuggerBrowsable(Never)]
         private readonly    SubscriptionProcessor           processor;
+        
+        [DebuggerBrowsable(Never)]
+        private readonly    EventMessage                    ev;
 
-        public  override    string                          ToString()  => $"source user: {srcUserId}";
+        public  override    string                          ToString()  => $"source user: {ev.srcUserId}";
 
-        internal EventContext(SubscriptionProcessor processor, in JsonKey srcUserId, IHubLogger logger) {
+        internal EventContext(SubscriptionProcessor processor, EventMessage ev, IHubLogger logger) {
             this.processor  = processor;
-            this.srcUserId  = srcUserId;
+            this.ev         = ev;
+            EventInfo       = ev.GetEventInfo();
             Logger          = logger;
         }
         
