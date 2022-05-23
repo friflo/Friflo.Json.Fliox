@@ -18,16 +18,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         private  readonly   Dictionary<Type, EntityChanges> changes         = new Dictionary<Type, EntityChanges>();
         /// <summary> contain only <see cref="EntityChanges"/> where <see cref="EntityChanges.Count"/> > 0 </summary>
         internal readonly   List<EntityChanges>             contextChanges  = new List<EntityChanges>();
-        private  readonly   List<Message>                   messages        = new List<Message>();
+        internal readonly   List<Message>                   messages        = new List<Message>();
         private             ObjectMapper                    messageMapper;
-        public              int                             EventSequence { get; private set ; }
+        internal            int                             EventSequence { get; private set ; }
+        
         public   override   string                          ToString()  => $"EventSequence: {EventSequence}";
-
-        public              IReadOnlyList<Message>          Messages    => messages;
-
-        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            return (EntityChanges<TKey, T>)GetChanges(entitySet);
-        }
 
         public void OnEvent(FlioxClient client, EventMessage ev) {
             ProcessEvent(client, ev);
