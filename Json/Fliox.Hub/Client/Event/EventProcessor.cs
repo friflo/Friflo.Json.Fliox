@@ -7,15 +7,23 @@ using System.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
 
-// EventMessageHandler is commonly not used directly by application => use separate namespace
+// IEventProcessor is commonly not used directly by application => use separate namespace
 namespace Friflo.Json.Fliox.Hub.Client.Event
 {
-    public abstract class EventMessageHandler
+    public interface IEventProcessor
     {
-        public abstract void EnqueueEvent(FlioxClient client, EventMessage ev);
+        void EnqueueEvent(FlioxClient client, EventMessage ev);
     }
+    
+    public sealed class DirectEventProcessor : IEventProcessor
+    {
+        public void EnqueueEvent(FlioxClient client, EventMessage ev) {
+            client._intern.SubscriptionProcessor.OnEvent(client, ev);
+        }
+    }
+    
     /// <summary>
-    /// Creates a <see cref="EventMessageHandler"/> using a <see cref="SynchronizationContext"/>
+    /// Creates a <see cref="IEventProcessor"/> using a <see cref="SynchronizationContext"/>
     /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.OnEvent"/> is called on the
     /// same thread as all other methods calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
     /// <para>
@@ -26,16 +34,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
     ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
     /// </para> 
     /// </summary>
-    public class SynchronizedEventHandler : EventMessageHandler
+    public sealed class SynchronizationContextProcessor : IEventProcessor
     {
-        private readonly    SynchronizationContext              synchronizationContext;
+        private  readonly   SynchronizationContext  synchronizationContext;
         
 
-        public SynchronizedEventHandler(SynchronizationContext synchronizationContext) {
+        public SynchronizationContextProcessor(SynchronizationContext synchronizationContext) {
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
-        public SynchronizedEventHandler() {
+        public SynchronizationContextProcessor() {
             synchronizationContext =
                 SynchronizationContext.Current
                 ?? throw new InvalidOperationException(SynchronizationContextIsNull);
@@ -45,34 +53,27 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
 This is typically the case in console applications or unit tests. 
 Consider running application / test withing SingleThreadSynchronizationContext.Run()";
         
-        public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
+        public void EnqueueEvent(FlioxClient client, EventMessage ev) {
             synchronizationContext.Post(delegate {
                 client._intern.SubscriptionProcessor.OnEvent(client, ev);
             }, null);
         }
     }
     
-    public class DirectEventHandler : EventMessageHandler
-    {
-        public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
-            client._intern.SubscriptionProcessor.OnEvent(client, ev);
-        }
-    }
-    
-    public class QueuingEventHandler : EventMessageHandler
+    public sealed class QueuingEventProcessor : IEventProcessor
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
         /// <summary>
-        /// Creates a queuing <see cref="EventMessageHandler"/>.
+        /// Creates a queuing <see cref="IEventProcessor"/>.
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="FlioxClient"/>.
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
         /// are applied to the <see cref="FlioxClient"/>.
         /// </summary>
-        public QueuingEventHandler() { }
+        public QueuingEventProcessor() { }
         
-        public override void EnqueueEvent(FlioxClient client, EventMessage ev) {
+        public void EnqueueEvent(FlioxClient client, EventMessage ev) {
             eventQueue.Enqueue(new QueuedMessage(client, ev));
         }
         

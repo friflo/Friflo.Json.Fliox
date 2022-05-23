@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(Change changes, ChangeSubscriptionHandler handler) {
-            AssertEventHandler();
+            AssertEventProcessor();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
@@ -222,12 +222,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public void OnSubscriptionEvent(SubscriptionHandler handler) {
-            AssertEventHandler();
+            AssertEventProcessor();
             _intern.subscriptionHandler = handler;
         }
         
-        public void SetEventHandler(EventMessageHandler eventHandler) {
-            _intern.eventHandler = eventHandler ?? throw new NullReferenceException(nameof(eventHandler));
+        public void SetEventProcessor(IEventProcessor eventProcessor) {
+            _intern.eventProcessor = eventProcessor ?? throw new NullReferenceException(nameof(eventProcessor));
         }
         
         /// <summary>
@@ -302,7 +302,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
-            AssertEventHandler();
+            AssertEventProcessor();
             var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
@@ -310,7 +310,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
-            AssertEventHandler();
+            AssertEventProcessor();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
