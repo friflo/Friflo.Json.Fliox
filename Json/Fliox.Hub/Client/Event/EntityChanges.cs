@@ -18,8 +18,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class EntityChanges
     {
-        public              int             Count       => Info.Count;
-        public              ChangeInfo      Info        { get; } = new ChangeInfo();
+        public              int             Count       => ChangeInfo.Count;
+        public              ChangeInfo      ChangeInfo  { get; } = new ChangeInfo();
         public    abstract  string          Container   { get; }
         
         internal  abstract  Type            GetEntityType();
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private  readonly   EntitySet<TKey, T>      entitySet;
         
-        public   override   string                  ToString()  => Info.ToString();       
+        public   override   string                  ToString()  => ChangeInfo.ToString();       
         public   override   string                  Container   { get; }
         internal override   Type                    GetEntityType() => typeof(T);
 
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             Deletes.Clear();
             Patches.Clear();
             //
-            Info.Clear();
+            ChangeInfo.Clear();
         }
         
         internal override void AddCreates (List<JsonValue> entities, ObjectMapper mapper) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var value = mapper.Read<T>(entity);
                 Creates.Add(value);
             }
-            Info.creates += entities.Count;
+            ChangeInfo.creates += entities.Count;
         }
         
         internal override void AddUpserts (List<JsonValue> entities, ObjectMapper mapper) {
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var value = mapper.Read<T>(entity);
                 Upserts.Add(value);
             }
-            Info.upserts += entities.Count;
+            ChangeInfo.upserts += entities.Count;
         }
         
         internal override void AddDeletes  (HashSet<JsonKey> ids) {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                 Deletes.Add(key);
             }
-            Info.deletes += ids.Count;
+            ChangeInfo.deletes += ids.Count;
         }
         
         internal override void AddPatches(Dictionary<JsonKey, EntityPatch> entityPatches) {
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     changePatch = new ChangePatch<T>(entity, entityPatch.patches);
                 Patches.Add(changePatch);
             }
-            Info.patches += entityPatches.Count;
+            ChangeInfo.patches += entityPatches.Count;
         }
     }
     

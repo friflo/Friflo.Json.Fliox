@@ -263,12 +263,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  void AssertChangeEvent (EntityChanges<string, Article> articleChanges) {
             switch (EventSequence) {
                 case 2:
-                    AreEqual("(creates: 0, upserts: 2, deletes: 0, patches: 0)", articleChanges.Info.ToString());
+                    AreEqual("(creates: 0, upserts: 2, deletes: 0, patches: 0)", articleChanges.ChangeInfo.ToString());
                     var ipad = articleChanges.Upserts.Find(e => e.id == "article-ipad");
                     AreEqual("iPad Pro", ipad.name);
                     break;
                 case 5:
-                    AreEqual("(creates: 0, upserts: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());
+                    AreEqual("(creates: 0, upserts: 0, deletes: 1, patches: 1)", articleChanges.ChangeInfo.ToString());
                     IsTrue(articleChanges.Deletes.Contains("article-delete"));
                     ChangePatch<Article> articlePatch = articleChanges.Patches.Find(p => p.entity.id == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
