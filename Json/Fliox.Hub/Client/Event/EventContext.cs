@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Mapper;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ReturnTypeCanBeEnumerable.Global
 // ReSharper disable once CheckNamespace
@@ -18,9 +19,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary> <see cref="ChangesList"/> return the changes per database <see cref="EntityChanges.Container"/>.
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
         public              IReadOnlyList<EntityChanges>    ChangesList    => processor.contextChanges;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [DebuggerBrowsable(Never)]
         public              IHubLogger                      Logger { get; }
 
+        [DebuggerBrowsable(Never)]
         private readonly    SubscriptionProcessor           processor;
 
         public  override    string                          ToString()  => $"source user: {srcUserId}";
