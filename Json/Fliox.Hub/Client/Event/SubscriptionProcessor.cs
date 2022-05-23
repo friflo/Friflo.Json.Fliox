@@ -88,6 +88,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                     continue;
                 contextChanges.Add(entityChanges);
             }
+            // --- invoke subscription handler
+            client._intern.subscriptionHandler?.Invoke(eventContext);
+            
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
                 var entityType = change.GetEntityType();
@@ -95,8 +98,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                 set.changeCallback?.InvokeCallback(change, eventContext);
             }
             if (contextChanges.Count > 0) {
-                client._intern.subscriptionHandler?.Invoke(eventContext);
+                client._intern.changeSubscriptionHandler?.Invoke(eventContext);
             }
+            
             // --- invoke message handlers
             foreach (var message in messages) {
                 var name = message.Name;

@@ -43,7 +43,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            LogTask                     tracerLogTask;
         internal            EventMessageHandler         eventHandler;
         private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
-        internal            ChangeSubscriptionHandler   subscriptionHandler;
+        internal            ChangeSubscriptionHandler   changeSubscriptionHandler;
+        internal            SubscriptionHandler         subscriptionHandler;
         internal            bool                        disposed;
         internal            int                         lastEventSeq;
         internal            int                         syncCount;
@@ -110,17 +111,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             idsBuf                  = new List<JsonKey>();
 
             // --- mutable state
-            syncStore               = new SyncStore();
-            tracerLogTask           = null;
-            eventHandler            = null;
-            subscriptionHandler     = null;
-            subscriptionProcessor   = null;
-            disposed                = false;
-            lastEventSeq            = 0;
-            syncCount               = 0;
-            userId                  = new JsonKey();
-            clientId                = new JsonKey();
-            token                   = null;
+            syncStore                   = new SyncStore();
+            tracerLogTask               = null;
+            eventHandler                = null;
+            changeSubscriptionHandler   = null;
+            subscriptionHandler         = null;
+            subscriptionProcessor       = null;
+            disposed                    = false;
+            lastEventSeq                = 0;
+            syncCount                   = 0;
+            userId                      = new JsonKey();
+            clientId                    = new JsonKey();
+            token                       = null;
             
             InitEntitySets (client, entityInfos);
         }

@@ -11,6 +11,8 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    public delegate void SubscriptionHandler (EventContext context);
+    
     public sealed class EventContext : ILogSource
     {
         public  readonly    JsonKey                         srcUserId;

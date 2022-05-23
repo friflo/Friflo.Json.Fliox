@@ -217,8 +217,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var task = set.SubscribeChangesInternal(changes);
                 tasks.Add(task);
             }
-            _intern.subscriptionHandler = handler; 
+            _intern.changeSubscriptionHandler = handler; 
             return tasks;
+        }
+        
+        public void OnSubscriptionEvent(SubscriptionHandler handler) {
+            AssertEventHandler();
+            _intern.subscriptionHandler = handler;
         }
         
         public void SetEventHandler(EventMessageHandler eventHandler) {
