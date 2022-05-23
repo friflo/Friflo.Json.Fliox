@@ -16,9 +16,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  readonly    JsonKey                         srcUserId;
         public              int                             EventSequence   => processor.EventSequence;
         public              IReadOnlyList<Message>          Messages        => processor.Messages;
-        /// <summary> <see cref="ChangesList"/> return the changes per database <see cref="EntityChanges.Container"/>.
+        /// <summary> <see cref="Changes"/> return the changes per database <see cref="EntityChanges.Container"/>.
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
-        public              IReadOnlyList<EntityChanges>    ChangesList    => processor.contextChanges;
+        public              IReadOnlyList<EntityChanges>    Changes    => processor.contextChanges;
         [DebuggerBrowsable(Never)]
         public              IHubLogger                      Logger { get; }
 
