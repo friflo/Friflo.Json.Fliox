@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChangesFilter(Change changes, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             intern.store.AssertEventHandler();
@@ -193,7 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChangesByFilter(Change changes, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             intern.store.AssertEventHandler();
@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChanges(Change changes, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             intern.store.AssertEventHandler();
             var all = Operation.FilterTrue;

@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     internal static class UserStoreSubscriber
     {
         internal static void CreateSubscriber(UserAuthenticator userAuthenticator, FlioxHub hub) {
-            var changes     = new [] { Change.create, Change.upsert, Change.delete, Change.patch };
+            var changes     = Changes.All;
             var store       = new UserStore (hub, userAuthenticator.userHub.DatabaseName);
             // userAuthenticator.userHub.EventBroker = new EventBroker(true);
             store.UserId    = UserStore.AuthenticationUser;

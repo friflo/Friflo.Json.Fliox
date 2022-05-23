@@ -151,9 +151,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- SubscribeChanges
-        internal SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, FilterOperation filter) {
+        internal SubscribeChangesTask<T> SubscribeChangesFilter(Change changeFlags, FilterOperation filter) {
             if (subscribeChanges == null)
                 subscribeChanges = new SubscribeChangesTask<T>();
+            var changes = Changes.ToList(changeFlags);
             subscribeChanges.Set(changes, filter);
             return subscribeChanges;
         }

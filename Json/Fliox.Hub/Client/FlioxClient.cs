@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// By default these changes are applied to the <see cref="FlioxClient"/>.
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
-        public List<SyncTask> SubscribeAllChanges(IEnumerable<Change> changes, ChangeSubscriptionHandler handler) {
+        public List<SyncTask> SubscribeAllChanges(Change changes, ChangeSubscriptionHandler handler) {
             AssertEventHandler();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {

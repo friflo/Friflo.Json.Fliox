@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
@@ -72,9 +72,18 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         /// <summary>Shortcut to subscribe to all types database changes. These ase <see cref="Change.create"/>,
         /// <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
-        public static readonly ReadOnlyCollection<Change> All  = new List<Change> { Change.create, Change.upsert, Change.delete, Change.patch }.AsReadOnly();
+        public static readonly Change All  = Change.create | Change.upsert | Change.delete | Change.patch;
         /// <summary>Shortcut to unsubscribe from all database change types.</summary>
-        public static readonly ReadOnlyCollection<Change> None = new List<Change>().AsReadOnly();
+        public static readonly Change None = 0;
+        
+        internal static IReadOnlyList<Change> ToList(Change changeFlags) {
+            var list = new List<Change>(4);
+            if ((changeFlags & Change.create) != 0) list.Add(Change.create);
+            if ((changeFlags & Change.upsert) != 0) list.Add(Change.upsert);
+            if ((changeFlags & Change.delete) != 0) list.Add(Change.delete);
+            if ((changeFlags & Change.patch)  != 0) list.Add(Change.patch);
+            return list;
+        }
     }
     
     /// <summary>Filter type used to specify the type of a database change.</summary>
@@ -82,15 +91,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
     /// </remarks>
     // ReSharper disable InconsistentNaming
+    [Flags]
     public enum Change
     {
         /// <summary>filter change events of created entities.</summary>
-        create,
+        create  = 1,
         /// <summary>filter change events of upserted entities.</summary>
-        upsert,
+        upsert  = 2,
         /// <summary>filter change events of entity patches.</summary>
-        patch,
+        patch   = 4,
         /// <summary>filter change events of deleted entities.</summary>
-        delete
+        delete  = 8
     }
 }
