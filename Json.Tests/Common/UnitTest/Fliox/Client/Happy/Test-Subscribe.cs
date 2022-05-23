@@ -263,7 +263,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             switch (EventSequence) {
                 case 2:
                     AreEqual("(creates: 0, upserts: 2, deletes: 0, patches: 0)", articleChanges.Info.ToString());
-                    AreEqual("iPad Pro", articleChanges.upserts["article-ipad"].name);
+                    var ipad = articleChanges.upserts.Find(e => e.id == "article-ipad");
+                    AreEqual("iPad Pro", ipad.name);
                     break;
                 case 5:
                     AreEqual("(creates: 0, upserts: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());

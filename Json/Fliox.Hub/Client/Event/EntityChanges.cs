@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
     {
-        public   readonly   Dictionary<TKey, T>                 creates = SyncSet.CreateDictionary<TKey, T>();
-        public   readonly   Dictionary<TKey, T>                 upserts = SyncSet.CreateDictionary<TKey, T>();
+        public   readonly   List<T>                             creates = new List<T>();
+        public   readonly   List<T>                             upserts = new List<T>();
         public   readonly   HashSet   <TKey>                    deletes = SyncSet.CreateHashSet<TKey>();
         public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = SyncSet.CreateDictionary<TKey, ChangePatch<T>>();
         
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
             var     entity  = peer.Entity;
-            creates.Add(key, entity);
+            creates.Add(entity);
             Info.creates++;
         }
         
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
             var     entity  = peer.Entity;
-            upserts.Add(key, entity);
+            upserts.Add(entity);
             Info.upserts++;
         }
         
