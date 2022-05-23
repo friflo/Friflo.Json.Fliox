@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
                 foreach (var entity in change.upserts) { changedUsers.Add(entity.id); }
                 foreach (var id     in change.deletes) { changedUsers.Add(id); }
-                foreach (var pair   in change.patches) { changedUsers.Add(pair.Key); }
+                foreach (var patch  in change.patches) { changedUsers.Add(patch.entity.id); }
                 
                 foreach (var changedUser in changedUsers) {
                     userAuthenticator.users.TryRemove(changedUser, out _);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                 var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
                 foreach (var entity in change.upserts) { changedUsers.Add(entity.id); }
                 foreach (var id     in change.deletes) { changedUsers.Add(id); }
-                foreach (var pair   in change.patches) { changedUsers.Add(pair.Key); }
+                foreach (var patch  in change.patches) { changedUsers.Add(patch.entity.id); }
                 
                 foreach (var changedUser in changedUsers) {
                     userAuthenticator.users.TryRemove(changedUser, out _);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             
             foreach (var entity in roleChanges.upserts) { changedRoles.Add(entity.id); }
             foreach (var id     in roleChanges.deletes) { changedRoles.Add(id); }
-            foreach (var pair   in roleChanges.patches) { changedRoles.Add(pair.Key); }
+            foreach (var patch  in roleChanges.patches) { changedRoles.Add(patch.entity.id); }
             
             foreach (var changedRole in changedRoles) {
                 if (!userAuthenticator.roleUserCache.TryGetValue(changedRole, out var roleUser))

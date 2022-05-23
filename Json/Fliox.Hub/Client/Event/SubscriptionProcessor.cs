@@ -121,9 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                             
             // --- update changes
             var entityChanges = GetChanges(set);
-            foreach (var id in create.entityKeys) {
-                entityChanges.AddCreate(id);
-            }
+            entityChanges.AddCreates(create.entities, mapper);
         }
         
         private void ProcessUpsert(FlioxClient client, UpsertEntities upsert, ObjectMapper mapper) {
@@ -136,9 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                             
             // --- update changes
             var entityChanges = GetChanges(set);
-            foreach (var id in upsert.entityKeys) {
-                entityChanges.AddUpsert(id);
-            }
+            entityChanges.AddUpserts(upsert.entities, mapper);
         }
         
         private void ProcessDelete(FlioxClient client, DeleteEntities delete) {
@@ -150,9 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                             
             // --- update changes
             var entityChanges = GetChanges(set);
-            foreach (var id in delete.ids) {
-                entityChanges.AddDelete(id);
-            }
+            entityChanges.AddDeletes(delete.ids);
         }
         
         private void ProcessPatch(FlioxClient client, PatchEntities patches, ObjectMapper mapper) {
@@ -164,11 +158,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                             
             // --- update changes
             var entityChanges = GetChanges(set);
-            foreach (var pair in patches.patches) {
-                var id      = pair.Key;
-                var patch   = pair.Value;
-                entityChanges.AddPatch(id, patch);
-            }
+            entityChanges.AddPatches(patches.patches);
         }
         
         private void ProcessMessage(SyncMessageTask task, ObjectMapper mapper) {

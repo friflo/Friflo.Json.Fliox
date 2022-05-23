@@ -18,31 +18,31 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class EntityChanges
     {
-        public              int         Count       => Info.Count;
-        public              ChangeInfo  Info        { get; } = new ChangeInfo();
-        public    abstract  string      Container   { get; }
+        public              int             Count       => Info.Count;
+        public              ChangeInfo      Info        { get; } = new ChangeInfo();
+        public    abstract  string          Container   { get; }
         
-        internal  abstract  Type        GetEntityType();
-        internal  abstract  void        Clear       ();
-        internal  abstract  void        AddCreate   (in JsonKey id);
-        internal  abstract  void        AddUpsert   (in JsonKey id);
-        internal  abstract  void        AddDelete   (in JsonKey id);
-        internal  abstract  void        AddPatch    (in JsonKey id, EntityPatch entityPatch);
+        internal  abstract  Type            GetEntityType();
+        internal  abstract  void            Clear       ();
+        internal  abstract  void            AddCreates  (List<JsonValue> entities, ObjectMapper mapper);
+        internal  abstract  void            AddUpserts  (List<JsonValue> entities, ObjectMapper mapper);
+        internal  abstract  void            AddDeletes  (HashSet<JsonKey> ids);
+        internal  abstract  void            AddPatches  (Dictionary<JsonKey, EntityPatch> patches);
     }
     
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
     {
-        public   readonly   List<T>                             creates = new List<T>();
-        public   readonly   List<T>                             upserts = new List<T>();
-        public   readonly   HashSet   <TKey>                    deletes = SyncSet.CreateHashSet<TKey>();
-        public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = SyncSet.CreateDictionary<TKey, ChangePatch<T>>();
+        public   readonly   List<T>                 creates = new List<T>();
+        public   readonly   List<T>                 upserts = new List<T>();
+        public   readonly   HashSet<TKey>           deletes = SyncSet.CreateHashSet<TKey>();
+        public   readonly   List<ChangePatch<T>>    patches = new List<ChangePatch<T>>();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private  readonly   EntitySet<TKey, T>                  entitySet;
+        private  readonly   EntitySet<TKey, T>      entitySet;
         
-        public   override   string                              ToString()  => Info.ToString();       
-        public   override   string                              Container   { get; }
-        internal override   Type                                GetEntityType() => typeof(T);
+        public   override   string                  ToString()  => Info.ToString();       
+        public   override   string                  Container   { get; }
+        internal override   Type                    GetEntityType() => typeof(T);
 
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
             this.entitySet  = entitySet;
@@ -59,35 +59,41 @@ namespace Friflo.Json.Fliox.Hub.Client
             Info.Clear();
         }
         
-        internal override void AddCreate(in JsonKey id) {
-            TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
-            var     entity  = peer.Entity;
-            creates.Add(entity);
-            Info.creates++;
+        internal override void AddCreates (List<JsonValue> entities, ObjectMapper mapper) {
+            foreach (var entity in entities) {
+                var value = mapper.Read<T>(entity);
+                creates.Add(value);
+            }
+            Info.creates += entities.Count;
         }
         
-        internal override void AddUpsert(in JsonKey id) {
-            TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
-            var     entity  = peer.Entity;
-            upserts.Add(entity);
-            Info.upserts++;
+        internal override void AddUpserts (List<JsonValue> entities, ObjectMapper mapper) {
+            foreach (var entity in entities) {
+                var value = mapper.Read<T>(entity);
+                upserts.Add(value);
+            }
+            Info.upserts += entities.Count;
         }
         
-        internal override void AddDelete(in JsonKey id) {
-            TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-            deletes.Add(key);
-            Info.deletes++;
+        internal override void AddDeletes  (HashSet<JsonKey> ids) {
+            foreach (var id in ids) {
+                TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                deletes.Add(key);
+            }
+            Info.deletes += ids.Count;
         }
         
-        internal override void AddPatch(in JsonKey id, EntityPatch entityPatch) {
-            TKey        key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-            var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
-            var         entity      = peer.Entity;
-            var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
-            patches.Add(key, changePatch);
-            Info.patches++;
+        internal override void AddPatches(Dictionary<JsonKey, EntityPatch> entityPatches) {
+            foreach (var pair in entityPatches) {
+                var     id          = pair.Key;
+                var     entityPatch = pair.Value;
+                TKey    key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                var     peer        = entitySet.GetOrCreatePeerByKey(key, id); // todo remove access to entitySet
+                var     entity      = peer.Entity;
+                var     changePatch = new ChangePatch<T>(entity, entityPatch.patches);
+                patches.Add(changePatch);
+            }
+            Info.patches += entityPatches.Count;
         }
     }
     
