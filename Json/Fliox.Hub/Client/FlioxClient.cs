@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(Change changes, ChangeSubscriptionHandler handler) {
-            AssertEventProcessor();
+            AssertSubscription();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
@@ -222,7 +222,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public void OnSubscriptionEvent(SubscriptionEventHandler handler) {
-            AssertEventProcessor();
+            AssertSubscription();
             _intern.subscriptionEventHandler = handler;
         }
         
@@ -291,7 +291,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
-            AssertEventProcessor();
+            AssertSubscription();
             var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
@@ -299,7 +299,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
-            AssertEventProcessor();
+            AssertSubscription();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);

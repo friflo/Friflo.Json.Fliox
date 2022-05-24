@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public SubscribeChangesTask<T> SubscribeChangesFilter(Change changes, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
-            intern.store.AssertEventProcessor();
+            intern.store.AssertSubscription();
             var op = Operation.FromFilter(filter);
             var task = GetSyncSet().SubscribeChangesFilter(changes, op);
             intern.store.AddTask(task);
@@ -196,7 +196,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public SubscribeChangesTask<T> SubscribeChangesByFilter(Change changes, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
-            intern.store.AssertEventProcessor();
+            intern.store.AssertSubscription();
             var task = GetSyncSet().SubscribeChangesFilter(changes, filter.op);
             intern.store.AddTask(task);
             changeCallback = new GenericChangeCallback<TKey,T>(handler);
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(Change changes, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
-            intern.store.AssertEventProcessor();
+            intern.store.AssertSubscription();
             var all = Operation.FilterTrue;
             var task = GetSyncSet().SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);

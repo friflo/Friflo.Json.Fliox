@@ -18,11 +18,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     // --------------------------------- FlioxClient internals ---------------------------------
     public partial class FlioxClient
     {
-        internal void AssertEventProcessor() {
-            if (_intern.eventProcessor != null)
-                return;
-            var msg = $"subscriptions require a {nameof(IEventProcessor)} - {nameof(SetEventProcessor)}() before";
-            throw new InvalidOperationException(msg);
+        internal void AssertSubscription() {
+            if (_intern.clientId.IsNull()) {
+                var msg = $"subscriptions require a {nameof(ClientId)}. database: {DatabaseName}";
+                throw new InvalidOperationException(msg);
+            }
+            if (_intern.eventProcessor == null) {
+                var msg = $"subscriptions require a {nameof(IEventProcessor)} - {nameof(SetEventProcessor)}() before";
+                throw new InvalidOperationException(msg);
+            }
         }
         
         private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
