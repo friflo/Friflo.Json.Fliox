@@ -23,16 +23,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
     }
     
     /// <summary>
-    /// Creates a <see cref="IEventProcessor"/> using a <see cref="SynchronizationContext"/>
-    /// The <see cref="SynchronizationContext"/> is required to ensure that <see cref="SubscriptionProcessor.OnEvent"/> is called on the
-    /// same thread as all other methods calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
-    /// <para>
-    ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
-    /// </para> 
-    /// <para>
-    ///   In case of a Console application or a unit test where <see cref="SynchronizationContext.Current"/> is null
-    ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
-    /// </para> 
+    /// Creates a <see cref="IEventProcessor"/> using a <see cref="SynchronizationContext"/>.<br/>
+    /// This ensures that the handler methods passed to the <b>Subscribe*()</b> methods of
+    /// <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/> are called on the on the thread associated with
+    /// the <see cref="SynchronizationContext"/>
+    /// <br/>
+    /// Depending on the application type <b>SynchronizationContext.Current</b> is null or not-null
+    /// <list type="bullet">
+    ///   <item>
+    ///     In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> is not-null.<br/>
+    ///     These application types utilize <see cref="SynchronizationContext.Current"/> to enables calling all UI methods
+    ///     on the UI thread.
+    ///   </item> 
+    ///   <item>
+    ///     In case of unit-tests or Console / ASP.NET Core applications <see cref="SynchronizationContext.Current"/> is null.<br/>
+    ///     One way to establish a <see cref="SynchronizationContext"/> in these scenarios is to execute the whole
+    ///     application / unit test within the <b>Run()</b> method of <see cref="SingleThreadSynchronizationContext"/>
+    ///   </item>
+    /// </list>
     /// </summary>
     public sealed class SynchronizationContextProcessor : IEventProcessor
     {
