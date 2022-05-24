@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             if (set.GetSubscription() == null)
                 return;
             create.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), create.entities);
-            SyncPeerEntities(set, create.entityKeys, create.entities, mapper);
+            SyncPeerEntities(set, create.entityKeys, create.entities, mapper); // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             if (set.GetSubscription() == null)
                 return;
             upsert.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), upsert.entities);
-            SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);
+            SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);   // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // apply changes only if subscribed
             if (set.GetSubscription() == null)
                 return;
-            set.DeletePeerEntities (delete.ids);
+            set.DeletePeerEntities (delete.ids);   // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // apply changes only if subscribed
             if (set.GetSubscription() == null)
                 return;
-            set.PatchPeerEntities(patches.patches, mapper);
+            set.PatchPeerEntities(patches.patches, mapper); // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
