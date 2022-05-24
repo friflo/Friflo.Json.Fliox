@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         internal static void CreateSubscriber(UserAuthenticator userAuthenticator, FlioxHub hub) {
             var changes     = Changes.All;
             var store       = new UserStore (hub, userAuthenticator.userHub.DatabaseName);
-            // userAuthenticator.userHub.EventBroker = new EventBroker(true);
+            // userAuthenticator.userHub.EventDispatcher = new EventDispatcher(true);
             store.UserId    = UserStore.AuthenticationUser;
             store.UserId    = "admin";
             store.Token     = "admin";

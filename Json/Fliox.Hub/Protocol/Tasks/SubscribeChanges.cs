@@ -30,10 +30,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         public   override           string          TaskName  => $"container: '{container}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
-            var hub         = executeContext.Hub;
-            var eventBroker = hub.EventBroker;
-            if (eventBroker == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventBroker"));
+            var hub             = executeContext.Hub;
+            var eventDispatcher = hub.EventDispatcher;
+            if (eventDispatcher == null)
+                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventDispatcher"));
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             if (changes == null)
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             
             var eventTarget = executeContext.eventTarget;
-            if (!eventBroker.SubscribeChanges(this, executeContext.clientId, eventTarget, out error))
+            if (!eventDispatcher.SubscribeChanges(this, executeContext.clientId, eventTarget, out error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             return Task.FromResult<SyncTaskResult>(new SubscribeChangesResult());

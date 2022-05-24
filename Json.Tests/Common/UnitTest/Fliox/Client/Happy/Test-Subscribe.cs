@@ -34,12 +34,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
-            using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventBroker  = new EventBroker(false))
-            using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
-            using (var listenDb     = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
-                hub.EventBroker = eventBroker;
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var listenDb         = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
+                hub.EventDispatcher     = eventDispatcher;
                 var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                 using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
                     var createSubscriber = await CreatePocStoreSubscriber(createStore, EventAssertion.NoChanges);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
                 listenSubscriber.AssertCreateStoreChanges();
                 AreEqual(9, listenSubscriber.EventSequence);           // non protected access
-                await eventBroker.FinishQueues();
+                await eventDispatcher.FinishQueues();
             }
         }
         
@@ -324,13 +324,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
             
         private static async Task AssertAcknowledgeMessages() {
-            using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventBroker  = new EventBroker(false))
-            using (var database     = new MemoryDatabase(TestGlobals.DB))
-            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
-            using (var listenDb     = new FlioxClient(hub) { ClientId = "listenDb" }) {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var listenDb         = new FlioxClient(hub) { ClientId = "listenDb" }) {
                 listenDb.SetEventProcessor(new SynchronizationContextProcessor());
-                hub.EventBroker = eventBroker;
+                hub.EventDispatcher = eventDispatcher;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", (msg, context) => {
                     receivedHello = true;
@@ -348,7 +348,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     await listenDb.SyncTasks();
 
                     // assert no send events are pending which are not acknowledged
-                    AreEqual(0, eventBroker.NotAcknowledgedEvents());
+                    AreEqual(0, eventDispatcher.NotAcknowledgedEvents());
                 }
             }
         }

@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <list type="bullet">
     ///   <item>
     ///     A Pub-Sub implementation to send events of database changes or messages to clients by assigning an
-    ///     <see cref="Event.EventBroker"/> to <see cref="EventBroker"/>.
+    ///     <see cref="Event.EventDispatcher"/> to <see cref="EventDispatcher"/>.
     ///     Note: A client need to subscribe events in order to receive them. 
     ///   </item>
     ///   <item>
@@ -92,11 +92,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              IHubLogger          Logger          => sharedEnv.hubLogger;
         
         /// <summary>
-        /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. <br/>
+        /// An optional <see cref="Event.EventDispatcher"/> used to enable Pub-Sub. <br/>
         /// If assigned the database send push events to clients for database changes and messages these clients have subscribed. <br/>
         /// In case of remote database connections <b>WebSockets</b> are used to send Pub-Sub events to clients.   
         /// </summary>
-        public              EventBroker         EventBroker     { get; set; }
+        public              EventDispatcher         EventDispatcher     { get; set; }
         
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             response.AssertResponse(syncRequest);
             
-            var broker = EventBroker;
+            var broker = EventDispatcher;
             if (broker != null) {
                 broker.EnqueueSyncTasks(syncRequest, executeContext);
                 if (!broker.background) {

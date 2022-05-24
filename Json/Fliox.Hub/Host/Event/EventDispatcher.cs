@@ -18,12 +18,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     }
     
     /// <summary>
-    /// An <see cref="EventBroker"/> is used to enable Pub-Sub. <br/>
-    /// If assigned to <see cref="FlioxHub.EventBroker"/> the <see cref="FlioxHub"/> send
+    /// An <see cref="EventDispatcher"/> is used to enable Pub-Sub. <br/>
+    /// If assigned to <see cref="FlioxHub.EventDispatcher"/> the <see cref="FlioxHub"/> send
     /// push events to clients for database changes and messages these clients have subscribed. <br/>
     /// In case of remote database connections <b>WebSockets</b> are used to send push events to clients.   
     /// </summary>
-    public sealed class EventBroker : IDisposable
+    public sealed class EventDispatcher : IDisposable
     {
         private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         private const string MissingEventTarget = "subscribing events requires an eventTarget. E.g a WebSocket as a target for push events.";
 
-        public EventBroker (bool background, SharedEnv env = null) {
+        public EventDispatcher (bool background, SharedEnv env = null) {
             sharedEnv       = env ?? SharedEnv.Default;
             jsonEvaluator   = new JsonEvaluator();
             subscribers     = new ConcurrentDictionary<JsonKey, EventSubscriber>(JsonKey.Equality);

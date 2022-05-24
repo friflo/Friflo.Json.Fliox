@@ -29,8 +29,8 @@ namespace Fliox.TodoHub
             hub.Info.projectName    = "TodoHub";                                                        // optional
             hub.Info.projectWebsite = "https://github.com/friflo/Friflo.Json.Fliox/tree/main/TodoHub";  // optional
             hub.Info.envName        = "dev";                                                            // optional
-            hub.AddExtensionDB (new ClusterDB("cluster", hub)); // optional - expose info of hosted databases. Required by Hub Explorer
-            hub.EventBroker         = new EventBroker(true);    // optional - enables sending events for subscriptions
+            hub.AddExtensionDB (new ClusterDB("cluster", hub));     // optional - expose info of hosted databases. Required by Hub Explorer
+            hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables sending events for subscriptions
             
             var httpHost            = new HttpHost(hub, "/fliox/").CacheControl(c.cache);
             httpHost.AddHandler      (new StaticFileHandler(c.www).CacheControl(c.cache)); // optional - serve static web files of Hub Explorer

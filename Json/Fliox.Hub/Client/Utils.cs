@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public static void DisposeDatabase(FlioxHub hub) {
             if (hub == null)
                 return;
-            if (hub.EventBroker != null) {
-                var eb = hub.EventBroker;
-                hub.EventBroker = null;
+            if (hub.EventDispatcher != null) {
+                var eb = hub.EventDispatcher;
+                hub.EventDispatcher = null;
                 eb.Dispose();
             }
             hub.Dispose();

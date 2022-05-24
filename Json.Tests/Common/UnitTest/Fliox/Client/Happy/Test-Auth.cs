@@ -28,11 +28,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared))
                     using (var database         = new MemoryDatabase(TestGlobals.DB))
                     using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
-                    using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
+                    using (var eventDispatcher  = new EventDispatcher(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
                         authenticator.RegisterPredicate(TestPredicate);
                         hub.Authenticator   = authenticator;
-                        hub.EventBroker     = eventBroker;
+                        hub.EventDispatcher = eventDispatcher;
                         var errors          = await authenticator.ValidateUserDb(null);
                         AreEqual(new[] {
                             "role not found. role: 'missing-role' in permission: invalid-roles",

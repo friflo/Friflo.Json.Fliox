@@ -91,9 +91,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         }
         
         private static EventDelivery? GetEventDelivery (FlioxHub hub, ClientHits clientHits) {
-            if (hub.EventBroker == null)
+            if (hub.EventDispatcher == null)
                 return null;
-            if (!hub.EventBroker.TryGetSubscriber(clientHits.id, out var subscriber)) {
+            if (!hub.EventDispatcher.TryGetSubscriber(clientHits.id, out var subscriber)) {
                 return null;
             }
             var msgSubs     = clientHits.ev?.messageSubs;

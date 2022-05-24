@@ -155,14 +155,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker(false))
+            using (var eventDispatcher  = new EventDispatcher(false))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var httpHost         = new HttpHost(hub, "/", TestGlobals.Shared))
             using (var server           = new HttpListenerHost("http://+:8080/", httpHost))
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
-                hub.EventBroker = eventBroker;
+                hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
                     var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
@@ -179,7 +179,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     }
                     await remoteHub.Close();
                 });
-                await eventBroker.FinishQueues();
+                await eventDispatcher.FinishQueues();
             }
         }
         
@@ -190,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker(true))
+            using (var eventDispatcher  = new EventDispatcher(true))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHost(hub, "/"))
@@ -198,7 +198,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var remoteHub        = new WebSocketClientHub(TestGlobals.DB, "ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hostHub.fakeOpenClosedSockets = true;
-                hub.EventBroker = eventBroker;
+                hub.EventDispatcher = eventDispatcher;
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
                     var listenSubscriber    = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
@@ -209,7 +209,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         AreEqual(0, listenSubscriber.EventSequence);
                         
                         // subscriber contains send events which are not acknowledged
-                        IsTrue(eventBroker.NotAcknowledgedEvents() > 0);
+                        IsTrue(eventDispatcher.NotAcknowledgedEvents() > 0);
 
                         await remoteHub.Connect();
                         
@@ -223,13 +223,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         await listenDb.SyncTasks();  // all changes are received => state of store remains unchanged
                         
                         // subscriber contains NO send events which are not acknowledged
-                        AreEqual(0, eventBroker.NotAcknowledgedEvents());
+                        AreEqual(0, eventDispatcher.NotAcknowledgedEvents());
 
                         listenSubscriber.AssertCreateStoreChanges();
                     }
                     await remoteHub.Close();
                 });
-                await eventBroker.FinishQueues();
+                await eventDispatcher.FinishQueues();
             }
         }
         
@@ -238,12 +238,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task LoopbackUse() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker(false))
+            using (var eventDispatcher  = new EventDispatcher(false))
             using (var database         = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var loopbackHub      = new LoopbackHub(hub))
             using (var listenDb         = new PocStore(loopbackHub) { UserId = "listenDb", ClientId = "listen-client"}) {
-                loopbackHub.host.EventBroker    = eventBroker;
+                loopbackHub.host.EventDispatcher    = eventDispatcher;
                 var listenSubscriber        = await CreatePocStoreSubscriber(listenDb, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackHub) { UserId = "createStore", ClientId = "create-client"})
                 using (var useStore         = new PocStore(loopbackHub) { UserId = "useStore",    ClientId = "use-client"}) {
@@ -256,7 +256,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
-                await eventBroker.FinishQueues();
+                await eventDispatcher.FinishQueues();
             }
         }
         
