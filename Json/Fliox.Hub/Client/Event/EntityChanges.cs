@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -22,12 +24,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              ChangeInfo      ChangeInfo  { get; } = new ChangeInfo();
         public    abstract  string          Container   { get; }
         
-        internal  abstract  Type            GetEntityType();
-        internal  abstract  void            Clear       ();
-        internal  abstract  void            AddCreates  (List<JsonValue> entities, ObjectMapper mapper);
-        internal  abstract  void            AddUpserts  (List<JsonValue> entities, ObjectMapper mapper);
-        internal  abstract  void            AddDeletes  (HashSet<JsonKey> ids);
-        internal  abstract  void            AddPatches  (Dictionary<JsonKey, EntityPatch> patches);
+        [DebuggerBrowsable(Never)] protected readonly   List<JsonValue> rawCreates = new List<JsonValue>();
+        [DebuggerBrowsable(Never)] protected readonly   List<JsonValue> rawUpserts = new List<JsonValue>();
+
+        internal  abstract  Type    GetEntityType();
+        internal  abstract  void    Clear       ();
+        internal  abstract  void    AddCreates  (List<JsonValue> entities, ObjectMapper mapper);
+        internal  abstract  void    AddUpserts  (List<JsonValue> entities, ObjectMapper mapper);
+        internal  abstract  void    AddDeletes  (HashSet<JsonKey> ids);
+        internal  abstract  void    AddPatches  (Dictionary<JsonKey, EntityPatch> patches);
+        
+        internal  abstract  void    ApplyChangesTo  (EntitySet entitySet);
     }
     
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
@@ -36,18 +43,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              List<T>                 Creates { get; } = new List<T>();
         public              List<T>                 Upserts { get; } = new List<T>();
         public              HashSet<TKey>           Deletes { get; } = SyncSet.CreateHashSet<TKey>();
-        public              List<ChangePatch<T>>    Patches { get; } = new List<ChangePatch<T>>();
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private  readonly   EntitySet<TKey, T>      entitySet;
+        public              List<ChangePatch<TKey>> Patches { get; } = new List<ChangePatch<TKey>>();
         
         public   override   string                  ToString()  => ChangeInfo.ToString();       
         public   override   string                  Container   { get; }
         internal override   Type                    GetEntityType() => typeof(T);
 
+        /// <summary> called via <see cref="Event.SubscriptionProcessor.GetChanges"/> </summary>
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
-            this.entitySet  = entitySet;
-
             Container       = entitySet.name;
         }
         
@@ -56,6 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             Upserts.Clear();
             Deletes.Clear();
             Patches.Clear();
+            
+            rawCreates.Clear();
+            rawUpserts.Clear();
             //
             ChangeInfo.Clear();
         }
@@ -65,6 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var value = mapper.Read<T>(entity);
                 Creates.Add(value);
             }
+            rawCreates.AddRange(entities);
             ChangeInfo.creates += entities.Count;
         }
         
@@ -73,6 +80,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var value = mapper.Read<T>(entity);
                 Upserts.Add(value);
             }
+            rawUpserts.AddRange(entities);
             ChangeInfo.upserts += entities.Count;
         }
         
@@ -89,28 +97,78 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     id          = pair.Key;
                 var     entityPatch = pair.Value;
                 TKey    key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                var     peer        = entitySet.GetOrCreatePeerByKey(key, id); // todo remove access to entitySet
-                var     entity      = peer.Entity;
-                var     changePatch = new ChangePatch<T>(entity, entityPatch.patches);
+                var     changePatch = new ChangePatch<TKey>(key, id, entityPatch.patches);
                 Patches.Add(changePatch);
             }
             ChangeInfo.patches += entityPatches.Count;
         }
+        
+        internal override void ApplyChangesTo  (EntitySet entitySet) {
+            var set = (EntitySet<TKey, T>)entitySet;
+            ApplyChangesTo(set);
+        }
+        
+        public void ApplyChangesTo(EntitySet<TKey, T> entitySet) {
+            if (Count == 0)
+                return;
+            var client = entitySet.intern.store;
+            using (var pooled = client._intern.pool.ObjectMapper.Get()) {
+                var mapper = pooled.instance;
+                if (rawCreates.Count > 0) {
+                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), rawCreates);
+                    SyncPeerEntities(entitySet, entityKeys, rawCreates, mapper);
+                }
+                if (rawUpserts.Count > 0) {
+                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), rawUpserts);
+                    SyncPeerEntities(entitySet, entityKeys, rawUpserts, mapper);
+                }
+                entitySet.PatchPeerEntities(Patches, mapper);
+            }
+            entitySet.DeletePeerEntities(Deletes);
+        }
+        
+        private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
+            var processor = client._intern.EntityProcessor();
+            var keys = new List<JsonKey>(entities.Count);
+            foreach (var entity in entities) {
+                if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
+                    throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
+                keys.Add(key);
+            }
+            return keys;
+        }
+        
+        private static void SyncPeerEntities (EntitySet set, List<JsonKey> keys, List<JsonValue> entities, ObjectMapper mapper) {
+            if (keys.Count != entities.Count)
+                throw new InvalidOperationException("Expect equal counts");
+            var syncEntities = new Dictionary<JsonKey, EntityValue>(entities.Count, JsonKey.Equality);
+            for (int n = 0; n < entities.Count; n++) {
+                var entity  = entities[n];
+                var key     = keys[n];
+                var value = new EntityValue(entity);
+                syncEntities.Add(key, value);
+            }
+            // todo simplify - creating a Dictionary<,> is overkill
+            set.SyncPeerEntities(syncEntities, mapper);
+        }
     }
     
-    public readonly struct ChangePatch<T> where T : class {
-        public  readonly    T                   entity;
-        public  readonly    List<JsonPatch>     patches;
-
-        public  override    string              ToString() => EntitySetBase<T>.EntityKeyMap.GetId(entity).AsString();
+    public readonly struct ChangePatch<TKey> {
+        public    readonly  TKey                key;
+        public    readonly  List<JsonPatch>     patches;
         
-        public ChangePatch(T entity, List<JsonPatch> patches) {
-            this.entity     = entity;
+        internal  readonly  JsonKey             id;
+
+        public  override    string              ToString() => key.ToString();
+        
+        public ChangePatch(TKey key, in JsonKey id, List<JsonPatch> patches) {
+            this.id         = id;
+            this.key        = key;
             this.patches    = patches;
         }
     }
     
-   
+
     internal abstract class ChangeCallback {
         internal abstract void InvokeCallback(EntityChanges entityChanges, EventContext context);
     }

@@ -44,6 +44,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public EntityChanges<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
             return (EntityChanges<TKey, T>)processor.GetChanges(entitySet);
-        } 
+        }
+        
+        public void ApplyChangesTo(FlioxClient client)
+        {
+            foreach (var entityChanges in processor.contextChanges) {
+                var entityType = entityChanges.GetEntityType();
+                if (!client._intern.TryGetSetByType(entityType, out var entitySet))
+                    continue;
+                entityChanges.ApplyChangesTo(entitySet);
+            }
+        }
     }
 }

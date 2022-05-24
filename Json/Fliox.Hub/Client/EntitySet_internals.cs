@@ -36,8 +36,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  void                Reset                   ();
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask, ObjectMapper mapper);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper);
-        internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
-        internal  abstract  void                PatchPeerEntities       (Dictionary<JsonKey, EntityPatch> patches, ObjectMapper mapper);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(Change changes);
@@ -262,21 +260,21 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal  override void DeletePeerEntities (HashSet<JsonKey> ids) {
-            foreach (var id in ids) {
-                DeletePeer(id);
+        internal void DeletePeerEntities (ICollection<TKey> keys) {
+            var peers = Peers();
+            foreach (var key in keys) {
+                peers.Remove(key);
             }
         }
         
-        internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches, ObjectMapper mapper) {
-            var objectPatcher = intern.store._intern.ObjectPatcher();
-            var reader = mapper.reader;
-            foreach (var pair in patches) {
-                var         id          = pair.Key;
-                EntityPatch entityPatch = pair.Value;
-                var         peer        = GetPeerById(id);
-                var         entity      = peer.Entity;
-                objectPatcher.ApplyPatches(entity, entityPatch.patches, reader);
+        internal void PatchPeerEntities (List<ChangePatch<TKey>> patches, ObjectMapper mapper) {
+            var objectPatcher   = intern.store._intern.ObjectPatcher();
+            var reader          = mapper.reader;
+            foreach (var changePatch in patches) {
+                var id      = changePatch.id;
+                var peer    = GetPeerById(id);
+                var entity  = peer.Entity;
+                objectPatcher.ApplyPatches(entity, changePatch.patches, reader);
             }
         }
 

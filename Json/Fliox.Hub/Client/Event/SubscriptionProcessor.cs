@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -115,8 +114,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // apply changes only if subscribed
             if (set.GetSubscription() == null)
                 return;
-            create.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), create.entities);
-            SyncPeerEntities(set, create.entityKeys, create.entities, mapper); // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -128,8 +125,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // apply changes only if subscribed
             if (set.GetSubscription() == null)
                 return;
-            upsert.entityKeys = GetKeysFromEntities (client, set.GetKeyName(), upsert.entities);
-            SyncPeerEntities(set, upsert.entityKeys, upsert.entities, mapper);   // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -141,7 +136,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // apply changes only if subscribed
             if (set.GetSubscription() == null)
                 return;
-            set.DeletePeerEntities (delete.ids);   // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -153,7 +147,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // apply changes only if subscribed
             if (set.GetSubscription() == null)
                 return;
-            set.PatchPeerEntities(patches.patches, mapper); // todo - add ApplyToClient() method
                             
             // --- update changes
             var entityChanges = GetChanges(set);
@@ -168,30 +161,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var invokeContext   = new InvokeContext(name, task.param, mapper.reader);
             var message         = new Message(invokeContext);
             messages.Add(message);
-        }
-        
-        private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
-            var processor = client._intern.EntityProcessor();
-            var keys = new List<JsonKey>(entities.Count);
-            foreach (var entity in entities) {
-                if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
-                    throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
-                keys.Add(key);
-            }
-            return keys;
-        }
-        
-        private static void SyncPeerEntities (EntitySet set, List<JsonKey> keys, List<JsonValue> entities, ObjectMapper mapper) {
-            if (keys.Count != entities.Count)
-                throw new InvalidOperationException("Expect equal counts");
-            var syncEntities = new Dictionary<JsonKey, EntityValue>(entities.Count, JsonKey.Equality);
-            for (int n = 0; n < entities.Count; n++) {
-                var entity  = entities[n];
-                var key     = keys[n];
-                var value = new EntityValue(entity);
-                syncEntities.Add(key, value);
-            }
-            set.SyncPeerEntities(syncEntities, mapper);
         }
         
         internal EntityChanges GetChanges (EntitySet entitySet) {
