@@ -12,7 +12,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void SubscriptionHandler (EventContext context);
+    public delegate void SubscriptionEventHandler (EventContext context);
     
     /// <summary>
     /// The <see cref="EventContext"/> provide all information of event messages received by a <see cref="FlioxClient"/>.<br/>

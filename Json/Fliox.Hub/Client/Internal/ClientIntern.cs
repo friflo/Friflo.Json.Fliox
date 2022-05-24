@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            IEventProcessor             eventProcessor;
         private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
         internal            ChangeSubscriptionHandler   changeSubscriptionHandler;
-        internal            SubscriptionHandler         subscriptionHandler;
+        internal            SubscriptionEventHandler    subscriptionEventHandler;
         internal            bool                        disposed;
         internal            int                         lastEventSeq;
         internal            int                         syncCount;
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tracerLogTask               = null;
             eventProcessor              = DefaultEventProcessor;
             changeSubscriptionHandler   = null;
-            subscriptionHandler         = null;
+            subscriptionEventHandler    = null;
             subscriptionProcessor       = null;
             disposed                    = false;
             lastEventSeq                = 0;

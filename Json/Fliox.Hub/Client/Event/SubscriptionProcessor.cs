@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                         case TaskType.create:   ProcessCreate (client, (CreateEntities)task, mapper);   break;
                         case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task, mapper);   break;
                         case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);           break;
-                        case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task, mapper);   break;
+                        case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task);           break;
                         case TaskType.message:
                         case TaskType.command:  ProcessMessage ((SyncMessageTask)task, messageMapper);  break;
                     }
@@ -75,8 +75,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                     continue;
                 contextChanges.Add(entityChanges);
             }
-            // --- invoke subscription handler
-            client._intern.subscriptionHandler?.Invoke(eventContext);
+            
+            // --- invoke subscription event handler
+            client._intern.subscriptionEventHandler?.Invoke(eventContext);
             
             // --- invoke changes handlers
             foreach (var change in contextChanges) {
@@ -104,10 +105,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         
         private void ProcessCreate(FlioxClient client, CreateEntities create, ObjectMapper mapper) {
             var set = client.GetEntitySet(create.container);
-            // apply changes only if subscribed
-            if (set.GetSubscription() == null)
+            if (set.GetSubscription() == null) {
                 return;
-                            
+            }
             // --- update changes
             var entityChanges = GetChanges(set);
             entityChanges.AddCreates(create.entities, mapper);
@@ -115,10 +115,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         
         private void ProcessUpsert(FlioxClient client, UpsertEntities upsert, ObjectMapper mapper) {
             var set = client.GetEntitySet(upsert.container);
-            // apply changes only if subscribed
-            if (set.GetSubscription() == null)
+            if (set.GetSubscription() == null) {
                 return;
-                            
+            }
             // --- update changes
             var entityChanges = GetChanges(set);
             entityChanges.AddUpserts(upsert.entities, mapper);
@@ -126,21 +125,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         
         private void ProcessDelete(FlioxClient client, DeleteEntities delete) {
             var set = client.GetEntitySet(delete.container);
-            // apply changes only if subscribed
-            if (set.GetSubscription() == null)
+            if (set.GetSubscription() == null) {
                 return;
-                            
+            }
             // --- update changes
             var entityChanges = GetChanges(set);
             entityChanges.AddDeletes(delete.ids);
         }
         
-        private void ProcessPatch(FlioxClient client, PatchEntities patches, ObjectMapper mapper) {
+        private void ProcessPatch(FlioxClient client, PatchEntities patches) {
             var set = client.GetEntitySet(patches.container);
-            // apply changes only if subscribed
-            if (set.GetSubscription() == null)
+            if (set.GetSubscription() == null) {
                 return;
-                            
+            }
             // --- update changes
             var entityChanges = GetChanges(set);
             entityChanges.AddPatches(patches.patches);

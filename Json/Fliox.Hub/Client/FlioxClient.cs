@@ -221,9 +221,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return tasks;
         }
         
-        public void OnSubscriptionEvent(SubscriptionHandler handler) {
+        public void OnSubscriptionEvent(SubscriptionEventHandler handler) {
             AssertEventProcessor();
-            _intern.subscriptionHandler = handler;
+            _intern.subscriptionEventHandler = handler;
         }
         
         public void SetEventProcessor(IEventProcessor eventProcessor) {
