@@ -40,14 +40,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
     {
         // used properties for Creates, Upserts, Deletes & Patches to enable changing implementation. May fill these properties lazy in future.
-        public              List<T>                 Creates { get; } = new List<T>();
-        public              List<T>                 Upserts { get; } = new List<T>();
-        public              HashSet<TKey>           Deletes { get; } = SyncSet.CreateHashSet<TKey>();
-        public              List<ChangePatch<TKey>> Patches { get; } = new List<ChangePatch<TKey>>();
+        public              List<T>             Creates { get; } = new List<T>();
+        public              List<T>             Upserts { get; } = new List<T>();
+        public              HashSet<TKey>       Deletes { get; } = SyncSet.CreateHashSet<TKey>();
+        public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
         
-        public   override   string                  ToString()  => ChangeInfo.ToString();       
-        public   override   string                  Container   { get; }
-        internal override   Type                    GetEntityType() => typeof(T);
+        public   override   string              ToString()      => ChangeInfo.ToString();       
+        public   override   string              Container       { get; }
+        internal override   Type                GetEntityType() => typeof(T);
 
         /// <summary> called via <see cref="Event.SubscriptionProcessor.GetChanges"/> </summary>
         internal EntityChanges(EntitySet<TKey, T> entitySet) {
@@ -97,8 +97,8 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     id          = pair.Key;
                 var     entityPatch = pair.Value;
                 TKey    key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
-                var     changePatch = new ChangePatch<TKey>(key, id, entityPatch.patches);
-                Patches.Add(changePatch);
+                var     patch       = new Patch<TKey>(key, id, entityPatch.patches);
+                Patches.Add(patch);
             }
             ChangeInfo.patches += entityPatches.Count;
         }
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public readonly struct ChangePatch<TKey> {
+    public readonly struct Patch<TKey> {
         public    readonly  TKey                key;
         public    readonly  List<JsonPatch>     patches;
         
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public  override    string              ToString() => key.ToString();
         
-        public ChangePatch(TKey key, in JsonKey id, List<JsonPatch> patches) {
+        public Patch(TKey key, in JsonKey id, List<JsonPatch> patches) {
             this.id         = id;
             this.key        = key;
             this.patches    = patches;

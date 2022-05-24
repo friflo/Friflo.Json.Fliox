@@ -272,7 +272,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 case 5:
                     AreEqual("(creates: 0, upserts: 0, deletes: 1, patches: 1)", articleChanges.ChangeInfo.ToString());
                     IsTrue(articleChanges.Deletes.Contains("article-delete"));
-                    ChangePatch<string> articlePatch = articleChanges.Patches.Find(p => p.key == "article-1");
+                    Patch<string> articlePatch = articleChanges.Patches.Find(p => p.key == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
                     // todo
                     /* 
