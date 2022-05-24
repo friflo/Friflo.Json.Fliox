@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var hub         = executeContext.Hub;
             var eventBroker = hub.EventBroker;
             if (eventBroker == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventBroker"));
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             if (changes == null)
