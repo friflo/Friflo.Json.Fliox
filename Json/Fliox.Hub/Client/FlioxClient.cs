@@ -231,21 +231,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary>
-        /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
+        /// Set a custom <see cref="SubscriptionProcessor"/> to process subscribed database changes or messages (commands).<br/>
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
-        /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="FlioxClient"/> as they arrive.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
-        /// <br></br>
-        /// A <see cref="SubscriptionProcessor"/> enables:
-        /// <para>
-        ///   Defer processing of events by queuing them for later processing.
-        ///   E.g. by doing nothing in an override of <see cref="SubscriptionProcessor.ProcessEvent"/>.  
-        /// </para>
-        /// <para>
-        ///   Manipulation of the received <see cref="EventMessage"/> in an override of
-        ///   <see cref="SubscriptionProcessor.OnEvent"/> before calling <see cref="SubscriptionProcessor.ProcessEvent"/>.
-        /// </para>
         /// </summary>
         internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             var processor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));

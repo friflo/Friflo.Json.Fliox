@@ -36,13 +36,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         /// These <see cref="EventMessage.tasks"/> are "messages" resulting from subscriptions registered by
         /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="FlioxClient.SubscribeAllChanges"/> or
         /// <see cref="FlioxClient.SubscribeMessage"/>.
-        /// <br></br>
-        /// Tasks notifying about database changes are applied to the <see cref="FlioxClient"/> the <see cref="SubscriptionProcessor"/>
-        /// is attached to.
-        /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.upsert"/>ed,
-        /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
-        /// <br></br>
-        /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed

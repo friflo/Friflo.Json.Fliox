@@ -14,6 +14,20 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public delegate void SubscriptionHandler (EventContext context);
     
+    /// <summary>
+    /// The <see cref="EventContext"/> provide all information of event messages received by a <see cref="FlioxClient"/>.<br/>
+    /// Event messages are received by a client in case the client setup subscriptions by the <b>Subscribe*()</b> methods
+    /// of <see cref="FlioxClient"/> or <see cref="EntitySet{TKey,T}"/>.<br/>
+    /// The event context provide the following event data.
+    /// <list type="bullet">
+    ///   <item> The <see cref="SrcUserId"/> - the origin of the event</item>
+    ///   <item> The <see cref="Messages"/> send by a user </item>
+    ///   <item> The database <see cref="Changes"/> made by a user </item>
+    ///   <item> The <see cref="EventInfo"/> containing the number of messages and database changes </item>
+    /// </list>
+    /// Database change events are not automatically applied to a <see cref="FlioxClient"/>.<br/>
+    /// To apply database change events to a <see cref="FlioxClient"/> call <see cref="ApplyChangesTo"/>.
+    /// </summary>
     public sealed class EventContext : ILogSource
     {
         public              JsonKey                         SrcUserId       => ev.srcUserId;
