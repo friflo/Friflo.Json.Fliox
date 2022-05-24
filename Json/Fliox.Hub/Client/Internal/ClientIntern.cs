@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- mutable state
         internal            SyncStore                   syncStore;
         internal            LogTask                     tracerLogTask;
-        internal            IEventProcessor              eventProcessor;
+        internal            IEventProcessor             eventProcessor;
         private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
         internal            ChangeSubscriptionHandler   changeSubscriptionHandler;
         internal            SubscriptionHandler         subscriptionHandler;
@@ -57,7 +57,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ObjectPatcher          ObjectPatcher()         => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
         internal SubscriptionProcessor  SubscriptionProcessor   => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
 
-        static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
+        private static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
+        private static readonly DirectEventProcessor                 DefaultEventProcessor = new DirectEventProcessor();
 
         internal EntitySet GetSetByType(Type type) {
             return setByType[type];
@@ -113,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- mutable state
             syncStore                   = new SyncStore();
             tracerLogTask               = null;
-            eventProcessor              = null;
+            eventProcessor              = DefaultEventProcessor;
             changeSubscriptionHandler   = null;
             subscriptionHandler         = null;
             subscriptionProcessor       = null;
