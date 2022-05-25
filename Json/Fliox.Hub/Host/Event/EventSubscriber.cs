@@ -21,36 +21,36 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     }
     
     internal sealed class EventSubscriber : ILogSource {
-        internal readonly   JsonKey                                 clientId;
-        private             IEventTarget                            eventTarget;
+        internal readonly   JsonKey                             clientId;
+        private             IEventTarget                        eventTarget;
 
-        private  readonly   Pool                                    pool;
-        private  readonly   SharedCache                             sharedCache;
+        private  readonly   Pool                                pool;
+        private  readonly   SharedCache                         sharedCache;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              IHubLogger                              Logger { get; }
+        public              IHubLogger                          Logger { get; }
         
-        internal readonly   Dictionary<string, DatabaseSubs>        databaseSubs        = new Dictionary<string, DatabaseSubs>();
+        internal readonly   Dictionary<string, DatabaseSubs>    databaseSubs        = new Dictionary<string, DatabaseSubs>();
         
-        internal            int                                     SubCount   => databaseSubs.Sum(sub => sub.Value.SubCount); 
+        internal            int                                 SubCount   => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
         /// lock (<see cref="eventQueue"/>) {
-        private             int                                     eventCounter;
-        private  readonly   LinkedList<ProtocolEvent>               eventQueue = new LinkedList<ProtocolEvent>();
+        private             int                                 eventCounter;
+        private  readonly   LinkedList<ProtocolEvent>           eventQueue = new LinkedList<ProtocolEvent>();
         /// contains all events which are sent but not acknowledged
-        private  readonly   List<ProtocolEvent>                     sentEvents = new List<ProtocolEvent>();
+        private  readonly   List<ProtocolEvent>                 sentEvents = new List<ProtocolEvent>();
         // }
         
-        private  readonly   bool                                    background;
-        internal readonly   Task                                    triggerLoop;
-        private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
+        private  readonly   bool                                background;
+        internal readonly   Task                                triggerLoop;
+        private  readonly   DataChannelWriter<TriggerType>      triggerWriter;
 
-        internal            int                                     Seq             => eventCounter;
-        internal            int                                     EventQueueCount => eventQueue.Count;
-        public   override   string                                  ToString()      => clientId.ToString();
+        internal            int                                 Seq             => eventCounter;
+        internal            int                                 EventQueueCount => eventQueue.Count;
+        public   override   string                              ToString()      => clientId.ToString();
         
-        internal            int                                     SentEventsCount => sentEvents.Count;
-        internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHost;
+        internal            int                                 SentEventsCount => sentEvents.Count;
+        internal            bool                                IsRemoteTarget  => eventTarget is WebSocketHost;
         
         internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
             pool                = new Pool(env.Pool);
