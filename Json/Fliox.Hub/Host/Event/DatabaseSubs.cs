@@ -75,13 +75,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
 
-        public void AddMessageSubscription(string name) {
+        internal void AddMessageSubscription(string name) {
             var prefix = SubscribeMessage.GetPrefix(name);
             if (prefix == null) {
                 messageSubscriptions.Add(name);
             } else {
                 messagePrefixSubscriptions.Add(prefix);
             }
+        }
+
+        internal void RemoveChangeSubscription(string container) {
+            changeSubscriptions.Remove(container);
+        }
+
+        internal void AddChangeSubscription(SubscribeChanges subscribe) {
+            changeSubscriptions[subscribe.container] = subscribe;
         }
     }
 }

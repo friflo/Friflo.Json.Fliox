@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     return true;
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs))
                     return true;
-                databaseSubs.changeSubscriptions.Remove(subscribe.container);
+                databaseSubs.RemoveChangeSubscription(subscribe.container);
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
                 }
-                databaseSubs.changeSubscriptions[subscribe.container] = subscribe;
+                databaseSubs.AddChangeSubscription(subscribe);
                 return true;
             }
         }
