@@ -171,19 +171,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subscriber.AcknowledgeEvents(value);
         }
         
-        private static void AddTask(ref List<SyncRequestTask> tasks, SyncRequestTask task) {
-            if (tasks == null) {
-                tasks = new List<SyncRequestTask>();
-            }
-            tasks.Add(task);
-        }
-
         internal void EnqueueSyncTasks (SyncRequest syncRequest, ExecuteContext executeContext) {
             var database    = executeContext.DatabaseName;
             ProcessSubscriber (syncRequest, executeContext);
             
             using (var pooled = executeContext.ObjectMapper.Get()) {
-                ObjectWriter writer = pooled.instance.writer;
+                ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 foreach (var pair in subscribers) {
@@ -197,23 +190,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     
                     // Enqueue only change events for (change) tasks which are not send by the client itself
                     bool subscriberIsSender = executeContext.clientId.IsEqual(subscriber.clientId);
-                    
-                    foreach (var task in syncRequest.tasks) {
-                        foreach (var changesPair in databaseSubs.changeSubs) {
-                            if (subscriberIsSender)
-                                continue;
-                            SubscribeChanges subscribeChanges = changesPair.Value;
-                            var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
-                            if (taskResult == null)
-                                continue;
-                            AddTask(ref tasks, taskResult);
-                        }
-                        if (task is SyncMessageTask messageTask) {
-                            if (!databaseSubs.FilterMessage(messageTask.name))
-                                continue;
-                            AddTask(ref tasks, task);
-                        }
-                    }
+                    databaseSubs.AddEventTasks(syncRequest, subscriberIsSender, ref tasks, jsonEvaluator);
+
                     if (tasks == null)
                         continue;
                     var eventMessage = new EventMessage {

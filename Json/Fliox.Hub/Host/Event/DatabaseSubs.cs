@@ -3,7 +3,9 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.DB.Monitor;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event
 {
@@ -14,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         public   override   string                                  ToString() => database;
 
         /// key: <see cref="SubscribeChanges.container"/>
-        internal readonly   Dictionary<string, SubscribeChanges>    changeSubs         = new Dictionary<string, SubscribeChanges>();
+        private  readonly   Dictionary<string, SubscribeChanges>    changeSubs         = new Dictionary<string, SubscribeChanges>();
         private  readonly   HashSet<string>                         messageSubs        = new HashSet<string>();
         private  readonly   HashSet<string>                         messagePrefixSubs  = new HashSet<string>();
         
@@ -25,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             this.database   = database;
         }
         
-        internal bool FilterMessage (string messageName) {
+        private bool FilterMessage (string messageName) {
             if (messageSubs.Contains(messageName))
                 return true;
             foreach (var prefixSub in messagePrefixSubs) {
@@ -90,6 +92,37 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal void AddChangeSubscription(SubscribeChanges subscribe) {
             changeSubs[subscribe.container] = subscribe;
+        }
+
+        internal void AddEventTasks(
+            SyncRequest                 syncRequest,
+            bool                        subscriberIsSender,
+            ref List<SyncRequestTask>   tasks,
+            JsonEvaluator               jsonEvaluator)
+        {
+            foreach (var task in syncRequest.tasks) {
+                foreach (var changesPair in changeSubs) {
+                    if (subscriberIsSender)
+                        continue;
+                    SubscribeChanges subscribeChanges = changesPair.Value;
+                    var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
+                    if (taskResult == null)
+                        continue;
+                    AddTask(ref tasks, taskResult);
+                }
+                if (task is SyncMessageTask messageTask) {
+                    if (!FilterMessage(messageTask.name))
+                        continue;
+                    AddTask(ref tasks, task);
+                }
+            }
+        }
+        
+        private static void AddTask(ref List<SyncRequestTask> tasks, SyncRequestTask task) {
+            if (tasks == null) {
+                tasks = new List<SyncRequestTask>();
+            }
+            tasks.Add(task);
         }
     }
 }
