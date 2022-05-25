@@ -23,10 +23,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         
         public   override   string                          ToString()  => $"EventSequence: {EventSequence}";
 
-        public void OnEvent(FlioxClient client, EventMessage ev) {
-            ProcessEvent(client, ev);
-        }
-        
         public void Dispose() {
             messageMapper?.Dispose();
         }
