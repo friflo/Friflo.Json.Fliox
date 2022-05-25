@@ -193,12 +193,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var typesChanges    = context.GetChanges(client.types);
             var messages        = context.Messages;
             
-            orderSum.   AddChanges(orderChanges);
-            customerSum.AddChanges(customerChanges);
-            articleSum. AddChanges(articleChanges);
-            producerSum.AddChanges(producerChanges);
-            employeeSum.AddChanges(employeeChanges);
-            typesSum.   AddChanges(typesChanges);
+            orderSum.   Add(orderChanges.ChangeInfo);
+            customerSum.Add(customerChanges.ChangeInfo);
+            articleSum. Add(articleChanges.ChangeInfo);
+            producerSum.Add(producerChanges.ChangeInfo);
+            employeeSum.Add(employeeChanges.ChangeInfo);
+            typesSum.   Add(typesChanges.ChangeInfo);
             messageCount += messages.Count;
 
             foreach (var message in messages) {
@@ -306,16 +306,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreEqual(34, allChanges);
             AreEqual(34, countAllChanges);
-        }
-    }
-    
-    static class PocUtils
-    {
-        public static void AddChanges<TKey, T> (this ChangeInfo sum, EntityChanges<TKey, T> changes) where T: class {
-            sum.creates += changes.Creates.Count;
-            sum.upserts += changes.Upserts.Count;
-            sum.deletes += changes.Deletes.Count;
-            sum.patches += changes.Patches.Count;
         }
     }
     
