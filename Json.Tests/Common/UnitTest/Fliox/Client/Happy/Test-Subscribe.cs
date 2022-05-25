@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
@@ -310,7 +311,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     }
     
     public partial class TestHappy {
-        [Test]      public void         AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
+        [Test]
+        public void AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
             
         private static async Task AssertAcknowledgeMessages() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
@@ -328,6 +330,48 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
                 using (var sendStore  = new FlioxClient(hub) { ClientId = "sendStore" }) {
                     sendStore.SendMessage("Hello", "some text");
+                    await sendStore.SyncTasks();
+                    
+                    while (!receivedHello) {
+                        await Task.Delay(1); // release thread to process message event handler
+                    }
+                    
+                    await listenDb.SyncTasks();
+
+                    // assert no send events are pending which are not acknowledged
+                    AreEqual(0, eventDispatcher.NotAcknowledgedEvents());
+                }
+            }
+        }
+        
+        // [Test]
+        public void MultiDbSubscriptions() { SingleThreadSynchronizationContext.Run(AssertMultiDbSubscriptions); }
+            
+        private static async Task AssertMultiDbSubscriptions() {
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
+            using (var eventDispatcher  = new EventDispatcher(false))
+            using (var database         = new MemoryDatabase(TestGlobals.DB))
+            using (var extDB            = new MemoryDatabase("ext_db"))
+            using (var hub              = new FlioxHub(database, TestGlobals.Shared))
+            using (var listenDb         = new FlioxClient(hub) { ClientId = "listenDb" }) {
+                hub.EventDispatcher = eventDispatcher;
+                hub.AddExtensionDB(extDB);
+                bool receivedHello = false;
+                listenDb.SubscribeMessage("hello-main_db", (msg, context) => {
+                    receivedHello = true;
+                });
+                listenDb.SubscribeMessage("hello-ext_db", (msg, context) =>
+                    throw new InvalidOperationException("expect only ext_db messages"));
+                
+                await listenDb.SyncTasks();
+
+                using (var sendStore   = new FlioxClient(hub) { ClientId = "sendStore" })
+                using (var extDbStore  = new FlioxClient(hub) { ClientId = "extDbStore" })
+                {
+                    extDbStore.SendMessage("hello-main_db", "some text to ext_db");
+                    await extDbStore.SyncTasks();
+                    
+                    sendStore.SendMessage("hello-ext_db", "some text");
                     await sendStore.SyncTasks();
                     
                     while (!receivedHello) {
