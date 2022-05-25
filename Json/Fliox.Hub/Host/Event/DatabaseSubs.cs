@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
-        internal readonly   HashSet<string>                         messageSubscriptions        = new HashSet<string>();
-        internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
+        private  readonly   HashSet<string>                         messageSubscriptions        = new HashSet<string>();
+        private  readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
 
@@ -36,6 +36,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return false;
         }
         
+        internal List<string> GetMessageSubscriptions (List<string> msgSubs) {
+            foreach (var messageSub in messageSubscriptions) {
+                if (msgSubs == null) msgSubs = new List<string>();
+                msgSubs.Add(messageSub);
+            }
+            foreach (var messageSub in messagePrefixSubscriptions) {
+                if (msgSubs == null) msgSubs = new List<string>();
+                msgSubs.Add(messageSub + "*");
+            }
+            return msgSubs;
+        }
+        
         internal List<ChangeSubscription> GetChangeSubscriptions (List<ChangeSubscription> subs) {
             if (changeSubscriptions.Count == 0)
                 return null;
@@ -52,6 +64,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 subs.Add(changeSubscription);
             }
             return subs;
+        }
+
+        internal void RemoveMessageSubscription(string name) {
+            var prefix = SubscribeMessage.GetPrefix(name);
+            if (prefix == null) {
+                messageSubscriptions.Remove(name);
+            } else {
+                messagePrefixSubscriptions.Remove(prefix);
+            }
+        }
+
+        public void AddMessageSubscription(string name) {
+            var prefix = SubscribeMessage.GetPrefix(name);
+            if (prefix == null) {
+                messageSubscriptions.Add(name);
+            } else {
+                messagePrefixSubscriptions.Add(prefix);
+            }
         }
     }
 }

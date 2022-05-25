@@ -78,18 +78,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             error = null;
             EventSubscriber subscriber;
             var remove = subscribe.remove;
-            var prefix = Protocol.Tasks.SubscribeMessage.GetPrefix(subscribe.name);
             if (remove.HasValue && remove.Value) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return true;
                 if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
                     return true;
                 }
-                if (prefix == null) {
-                    databaseSubs.messageSubscriptions.Remove(subscribe.name);
-                } else {
-                    databaseSubs.messagePrefixSubscriptions.Remove(prefix);
-                }
+                databaseSubs.RemoveMessageSubscription(subscribe.name);
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
             } else {
@@ -98,11 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     databaseSubs = new DatabaseSubs(database);
                     subscriber.databaseSubs.Add(database, databaseSubs);
                 }
-                if (prefix == null) {
-                    databaseSubs.messageSubscriptions.Add(subscribe.name);
-                } else {
-                    databaseSubs.messagePrefixSubscriptions.Add(prefix);
-                }
+                databaseSubs.AddMessageSubscription(subscribe.name);
                 return true;
             }
         }

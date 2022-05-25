@@ -100,14 +100,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             var msgSubs     = clientHits.ev?.messageSubs;
             foreach (var pair in subscriber.databaseSubs) {
                 var databaseSubs = pair.Value;
-                foreach (var messageSub in databaseSubs.messageSubscriptions) {
-                    if (msgSubs == null) msgSubs = new List<string>();
-                    msgSubs.Add(messageSub);
-                }
-                foreach (var messageSub in databaseSubs.messagePrefixSubscriptions) {
-                    if (msgSubs == null) msgSubs = new List<string>();
-                    msgSubs.Add(messageSub + "*");
-                }
+                msgSubs     = databaseSubs.GetMessageSubscriptions(msgSubs);
                 changeSubs  = databaseSubs.GetChangeSubscriptions (changeSubs);
             }
             return new EventDelivery {
