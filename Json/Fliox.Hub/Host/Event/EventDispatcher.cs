@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                             if (subscriberIsSender)
                                 continue;
                             SubscribeChanges subscribeChanges = changesPair.Value;
-                            var taskResult = FilterChanges(task, subscribeChanges);
+                            var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
                             if (taskResult == null)
                                 continue;
                             AddTask(ref tasks, taskResult);
@@ -256,74 +256,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
             tasks.Clear();
             eventMessage.tasks = null;
-        }
-
-        private SyncRequestTask FilterChanges (SyncRequestTask task, SubscribeChanges subscribe) {
-            switch (task.TaskType) {
-                
-                case TaskType.create:
-                    if (!subscribe.changes.Contains(Change.create))
-                        return null;
-                    var create = (CreateEntities) task;
-                    if (create.container != subscribe.container)
-                        return null;
-                    var createResult = new CreateEntities {
-                        container   = create.container,
-                        entities    = FilterEntities(subscribe.filterOp, create.entities),
-                        keyName     = create.keyName   
-                    };
-                    return createResult;
-                
-                case TaskType.upsert:
-                    if (!subscribe.changes.Contains(Change.upsert))
-                        return null;
-                    var upsert = (UpsertEntities) task;
-                    if (upsert.container != subscribe.container)
-                        return null;
-                    var upsertResult = new UpsertEntities {
-                        container   = upsert.container,
-                        entities    = FilterEntities(subscribe.filterOp, upsert.entities),
-                        keyName     = upsert.keyName
-                    };
-                    return upsertResult;
-                
-                case TaskType.delete:
-                    if (!subscribe.changes.Contains(Change.delete))
-                        return null;
-                    var delete = (DeleteEntities) task;
-                    if (subscribe.container != delete.container)
-                        return null;
-                    // todo apply filter
-                    return task;
-                
-                case TaskType.patch:
-                    if (!subscribe.changes.Contains(Change.patch))
-                        return null;
-                    var patch = (PatchEntities) task;
-                    if (subscribe.container != patch.container)
-                        return null;
-                    // todo apply filter
-                    return task;
-                
-                default:
-                    return null;
-            }
-        }
-        
-        private List<JsonValue> FilterEntities (FilterOperation filter, List<JsonValue> entities)    
-        {
-            if (filter == null)
-                return entities;
-            var jsonFilter      = new JsonFilter(filter); // filter can be reused
-            var result          = new List<JsonValue>();
-
-            for (int n = 0; n < entities.Count; n++) {
-                var value   = entities[n];
-                if (jsonEvaluator.Filter(value, jsonFilter, out _)) {
-                    result.Add(value);
-                }
-            }
-            return result;
         }
     }
 }
