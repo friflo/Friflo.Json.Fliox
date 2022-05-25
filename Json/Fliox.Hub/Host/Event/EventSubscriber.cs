@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         
         internal readonly   Dictionary<string, DatabaseSubs>        databaseSubs        = new Dictionary<string, DatabaseSubs>();
         
-        internal            int                                     SubscriptionCount   => databaseSubs.Sum(sub => sub.Value.SubscriptionCount); 
+        internal            int                                     SubCount   => databaseSubs.Sum(sub => sub.Value.SubCount); 
         
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;

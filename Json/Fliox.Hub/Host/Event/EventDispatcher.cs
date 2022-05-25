@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         private void RemoveEmptySubscriber(EventSubscriber subscriber, in JsonKey clientId) {
-            if (subscriber.SubscriptionCount > 0)
+            if (subscriber.SubCount > 0)
                 return;
             subscribers.TryRemove(clientId, out _);
         }
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 foreach (var pair in subscribers) {
                     List<SyncRequestTask>  tasks = null;
                     EventSubscriber     subscriber = pair.Value;
-                    if (subscriber.SubscriptionCount == 0)
+                    if (subscriber.SubCount == 0)
                         throw new InvalidOperationException("Expect SubscriptionCount > 0");
                     
                     if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs))
@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     bool subscriberIsSender = executeContext.clientId.IsEqual(subscriber.clientId);
                     
                     foreach (var task in syncRequest.tasks) {
-                        foreach (var changesPair in databaseSubs.changeSubscriptions) {
+                        foreach (var changesPair in databaseSubs.changeSubs) {
                             if (subscriberIsSender)
                                 continue;
                             SubscribeChanges subscribeChanges = changesPair.Value;
