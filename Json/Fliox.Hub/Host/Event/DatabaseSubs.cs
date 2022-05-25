@@ -9,8 +9,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     internal class DatabaseSubs
     {
-        
-        internal readonly  string                                   database;
+        private  readonly   string                                  database;
+
+        public   override   string                                  ToString() => database;
 
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
