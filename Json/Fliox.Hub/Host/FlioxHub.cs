@@ -289,28 +289,4 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         public virtual void Dispose() { }  // todo - remove
     }
-    
-    // --------------------------------- ExecuteSyncResult ---------------------------------
-    public readonly struct ExecuteSyncResult {
-        public   readonly   SyncResponse    success;
-        public   readonly   ErrorResponse   error;
-
-        public ExecuteSyncResult (SyncResponse successResponse) {
-            success = successResponse;
-            error   = null;
-        }
-        
-        public ExecuteSyncResult (string errorMessage, ErrorResponseType errorType) {
-            success = null;
-            error   = new ErrorResponse { message = errorMessage, type = errorType };
-        }
-        
-        public  ProtocolResponse Result { get {
-            if (success != null)
-                return success;
-            return error;
-        } }
-
-        public override string ToString() => success != null ? success.ToString() : error.ToString();
-    }
 }
