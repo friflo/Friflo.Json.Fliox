@@ -23,10 +23,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var msg = $"subscriptions require a {nameof(ClientId)}. database: {DatabaseName}";
                 throw new InvalidOperationException(msg);
             }
-            if (_intern.eventProcessor == null) {
-                var msg = $"subscriptions require a {nameof(IEventProcessor)} - {nameof(SetEventProcessor)}() before";
-                throw new InvalidOperationException(msg);
-            }
         }
         
         private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
@@ -93,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Returning current <see cref="ClientIntern.syncStore"/> as <paramref name="syncStore"/> enables request handling
         /// in a worker thread while calling <see cref="SyncStore"/> methods from 'main' thread.
         /// 
-        /// If store has <see cref="ClientIntern.eventProcessor"/> acknowledge received events to clear
+        /// <see cref="SyncRequest.eventAck"/> is set to acknowledge already received events to clear
         /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
@@ -107,13 +103,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 tasks       = tasks,
                 userId      = _intern.userId,
                 clientId    = _intern.clientId, 
-                token       = _intern.token
+                token       = _intern.token,
+                eventAck    = _intern.lastEventSeq
             };
-
-            // see method docs
-            if (_intern.eventProcessor != null) {
-                syncRequest.eventAck = _intern.lastEventSeq;
-            }
 
             foreach (var setPair in _intern.setByType) {
                 EntitySet set       = setPair.Value;
