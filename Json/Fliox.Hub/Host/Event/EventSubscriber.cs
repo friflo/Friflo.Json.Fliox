@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         internal void UpdateTarget(IEventTarget eventTarget) {
-            if (this.eventTarget == null) throw new NullReferenceException(nameof(eventTarget));
+            if (this.eventTarget == null) throw new ArgumentNullException(nameof(eventTarget));
             if (this.eventTarget == eventTarget)
                 return;
             Logger.Log(HubLog.Info, $"EventSubscriber: eventTarget changed. dstId: {clientId}");

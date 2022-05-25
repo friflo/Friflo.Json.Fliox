@@ -448,7 +448,7 @@ namespace Friflo.Json.Burst
          */
         public void FromString(string str) {
             if (str == null)
-                throw new NullReferenceException("FromString() - string parameter must not be null");
+                throw new ArgumentNullException(nameof(str));
             int maxByteLen = utf8.GetMaxByteCount(str.Length);
             EnsureCapacity(maxByteLen);
 

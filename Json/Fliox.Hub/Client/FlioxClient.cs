@@ -227,7 +227,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public void SetEventProcessor(IEventProcessor eventProcessor) {
-            _intern.eventProcessor = eventProcessor ?? throw new NullReferenceException(nameof(eventProcessor));
+            _intern.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
         }
         
         /// <summary>
@@ -237,7 +237,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
         /// </summary>
         internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
-            var processor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));
+            var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
             _intern.SetSubscriptionProcessor(processor);
         }
         

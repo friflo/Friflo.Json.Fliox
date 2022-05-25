@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         public AuthenticateNone(Authorizer anonymousAuthorizer)
             : base (anonymousAuthorizer)
         {
-            this.anonymousAuthorizer = anonymousAuthorizer ?? throw new NullReferenceException(nameof(anonymousAuthorizer));
+            this.anonymousAuthorizer = anonymousAuthorizer ?? throw new ArgumentNullException(nameof(anonymousAuthorizer));
         }
         
         public override Task Authenticate(SyncRequest syncRequest, ExecuteContext executeContext) {

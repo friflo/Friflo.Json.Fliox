@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         
         public override bool Equals(object obj) {
             if (obj == null)
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(obj));
             var other = (NativeTypeDef)obj;
             return native == other.native;
         }

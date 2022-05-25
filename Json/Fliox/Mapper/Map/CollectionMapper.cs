@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.keyType        = keyType;
             elementTypeNative   = elementType;
             if (elementType == null)
-                throw new NullReferenceException("elementType is required");
+                throw new ArgumentNullException(nameof(elementType));
             this.rank           = rank;
             // constructor can be null. E.g. All array types have none.
             this.constructor    = constructor;

@@ -103,17 +103,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
         /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.handler"/>.
         /// </summary>
-        public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
+        public              Authenticator       Authenticator   { get => authenticator; set => authenticator = value ?? throw new ArgumentNullException(nameof(Authenticator)); }
         
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
         /// It also enables monitoring execution statistics of <see cref="FlioxHub.ExecuteSync"/> 
         /// </summary>
-        public              ClientController    ClientController{ get => clientController; set => clientController = NotNull(value, nameof(ClientController)); }
+        public              ClientController    ClientController{ get => clientController; set => clientController = value ?? throw new ArgumentNullException(nameof(ClientController)); }
         
-        private  static     T NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
-
         /// <summary>
         /// A host name that is assigned to a default database.
         /// Its only purpose is to use it as id in <see cref="HostHits.id"/>.
@@ -124,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   readonly   string                  Version = "0.0.1";
         
         /// <summary>General Hub information. Clients can request this information with the command <b>std.HostDetails</b></summary>
-        public              HubInfo                 Info { get => info; set => info = NotNull(value, nameof(Info)); }
+        public              HubInfo                 Info { get => info; set => info = value ?? throw new ArgumentNullException(nameof(Info)); }
         
         public              IReadOnlyList<string>   Routes => routes;
         
