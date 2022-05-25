@@ -199,6 +199,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDbName };
             var taskHandler = db.handler;
             
+            // ------------------------ loop throw all given tasks and execute them ------------------------
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
                 if (task == null) {
