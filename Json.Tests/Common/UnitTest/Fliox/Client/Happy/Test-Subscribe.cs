@@ -274,13 +274,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     IsTrue(articleChanges.Deletes.Contains("article-delete"));
                     Patch<string> articlePatch = articleChanges.Patches.Find(p => p.key == "article-1");
                     AreEqual("article-1",               articlePatch.ToString());
-                    // todo
-                    /* 
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
-                    AreEqual("Changed name",            articlePatch.entity.name);
                     AreEqual("/name",                   articlePatch0.path);
                     AreEqual("\"Changed name\"",        articlePatch0.value.AsString());
-                    */
+                    
+                    // cached article is updated by ApplyChangesTo()
+                    client.articles.TryGet("article-1", out var article);
+                    AreEqual("Changed name",            article.name);
                     break;
             }
         }
