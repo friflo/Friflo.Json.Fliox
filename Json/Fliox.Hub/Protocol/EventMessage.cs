@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         
         public int Count => changes.Count + messages;
         
-        public override string ToString() => $"(creates: {changes.creates}, upserts: {changes.upserts}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages})";
+        public override string ToString() => $"creates: {changes.creates}, upserts: {changes.upserts}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages}";
         
         public void Clear() {
             changes.Clear();
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         
         public int Count => creates + upserts + deletes + patches;
         
-        public override string ToString() => $"(creates: {creates}, upserts: {upserts}, deletes: {deletes}, patches: {patches})";
+        public override string ToString() => $"creates: {creates}, upserts: {upserts}, deletes: {deletes}, patches: {patches}";
         
         public void Clear() {
             creates = 0;
