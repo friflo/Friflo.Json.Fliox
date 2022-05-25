@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal bool SubscribeMessage(SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
+        internal bool SubscribeMessage(string database, SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
             if (eventTarget == null) {
                 error = MissingEventTarget; 
                 return false;
@@ -82,24 +82,32 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (remove.HasValue && remove.Value) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return true;
+                if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    return true;
+                }
                 if (prefix == null) {
-                    subscriber.messageSubscriptions.Remove(subscribe.name);
+                    databaseSubs.messageSubscriptions.Remove(subscribe.name);
                 } else {
-                    subscriber.messagePrefixSubscriptions.Remove(prefix);
+                    databaseSubs.messagePrefixSubscriptions.Remove(prefix);
                 }
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
-            }
-            subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            if (prefix == null) {
-                subscriber.messageSubscriptions.Add(subscribe.name);
             } else {
-                subscriber.messagePrefixSubscriptions.Add(prefix);
+                subscriber = GetOrCreateSubscriber(clientId, eventTarget);
+                if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    databaseSubs = new DatabaseSubs(database);
+                    subscriber.databaseSubs.Add(database, databaseSubs);
+                }
+                if (prefix == null) {
+                    databaseSubs.messageSubscriptions.Add(subscribe.name);
+                } else {
+                    databaseSubs.messagePrefixSubscriptions.Add(prefix);
+                }
+                return true;
             }
-            return true;
         }
 
-        internal bool SubscribeChanges (SubscribeChanges subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
+        internal bool SubscribeChanges (string database, SubscribeChanges subscribe, in JsonKey clientId, IEventTarget eventTarget, out string error) {
             if (eventTarget == null) {
                 error = MissingEventTarget; 
                 return false;
@@ -109,13 +117,20 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             if (subscribe.changes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return true;
-                subscriber.changeSubscriptions.Remove(subscribe.container);
+                if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs))
+                    return true;
+                databaseSubs.changeSubscriptions.Remove(subscribe.container);
                 RemoveEmptySubscriber(subscriber, clientId);
                 return true;
+            } else {
+                subscriber = GetOrCreateSubscriber(clientId, eventTarget);
+                if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs)) {
+                    databaseSubs = new DatabaseSubs(database);
+                    subscriber.databaseSubs.Add(database, databaseSubs);
+                }
+                databaseSubs.changeSubscriptions[subscribe.container] = subscribe;
+                return true;
             }
-            subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            subscriber.changeSubscriptions[subscribe.container] = subscribe;
-            return true;
         }
         
         private EventSubscriber GetOrCreateSubscriber(in JsonKey clientId, IEventTarget eventTarget) {
@@ -173,7 +188,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         }
 
         internal void EnqueueSyncTasks (SyncRequest syncRequest, ExecuteContext executeContext) {
+            var database    = executeContext.DatabaseName;
             ProcessSubscriber (syncRequest, executeContext);
+            
             using (var pooled = executeContext.ObjectMapper.Get()) {
                 ObjectWriter writer = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
@@ -184,11 +201,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     if (subscriber.SubscriptionCount == 0)
                         throw new InvalidOperationException("Expect SubscriptionCount > 0");
                     
+                    if (!subscriber.databaseSubs.TryGetValue(database, out var databaseSubs))
+                        continue;
+                    
                     // Enqueue only change events for (change) tasks which are not send by the client itself
                     bool subscriberIsSender = executeContext.clientId.IsEqual(subscriber.clientId);
                     
                     foreach (var task in syncRequest.tasks) {
-                        foreach (var changesPair in subscriber.changeSubscriptions) {
+                        foreach (var changesPair in databaseSubs.changeSubscriptions) {
                             if (subscriberIsSender)
                                 continue;
                             SubscribeChanges subscribeChanges = changesPair.Value;
@@ -198,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                             AddTask(ref tasks, taskResult);
                         }
                         if (task is SyncMessageTask messageTask) {
-                            if (!subscriber.FilterMessage(messageTask.name))
+                            if (!databaseSubs.FilterMessage(messageTask.name))
                                 continue;
                             AddTask(ref tasks, task);
                         }

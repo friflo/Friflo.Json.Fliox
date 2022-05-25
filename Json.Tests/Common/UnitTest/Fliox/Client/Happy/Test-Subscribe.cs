@@ -18,6 +18,7 @@ using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
+// ReSharper disable ConvertToLambdaExpression
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     internal enum EventAssertion {
@@ -344,7 +345,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        // [Test]
+        [Test]
         public void MultiDbSubscriptions() { SingleThreadSynchronizationContext.Run(AssertMultiDbSubscriptions); }
             
         private static async Task AssertMultiDbSubscriptions() {
@@ -353,32 +354,46 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database         = new MemoryDatabase(TestGlobals.DB))
             using (var extDB            = new MemoryDatabase("ext_db"))
             using (var hub              = new FlioxHub(database, TestGlobals.Shared))
-            using (var listenDb         = new FlioxClient(hub) { ClientId = "listenDb" }) {
+            using (var listenMainDb     = new FlioxClient(hub)              { ClientId = "listenMainDb" })
+            using (var listenExtDb      = new FlioxClient(hub, "ext_db")    { ClientId = "listenExtDb" }) {
                 hub.EventDispatcher = eventDispatcher;
                 hub.AddExtensionDB(extDB);
-                bool receivedHello = false;
-                listenDb.SubscribeMessage("hello-main_db", (msg, context) => {
-                    receivedHello = true;
+                int receivedHelloMainDB = 0;
+                int receivedHelloExtDB  = 0;
+                listenMainDb.SubscribeMessage("hello-main_db", (msg, context) => {
+                    receivedHelloMainDB++;
                 });
-                listenDb.SubscribeMessage("hello-ext_db", (msg, context) =>
-                    throw new InvalidOperationException("expect only ext_db messages"));
+                listenMainDb.SubscribeMessage("hello-ext_db", (msg, context) => {
+                    throw new InvalidOperationException("expect only main_db messages");
+                });
+                listenExtDb.SubscribeMessage("hello-main_db", (msg, context) => {
+                    throw new InvalidOperationException("expect only ext_db messages");
+                });
+                listenExtDb.SubscribeMessage("hello-ext_db", (msg, context) => {
+                    receivedHelloExtDB++;
+                });
                 
-                await listenDb.SyncTasks();
+                await listenMainDb.SyncTasks();
+                await listenExtDb.SyncTasks();
+                
 
-                using (var sendStore   = new FlioxClient(hub) { ClientId = "sendStore" })
-                using (var extDbStore  = new FlioxClient(hub) { ClientId = "extDbStore" })
+                using (var mainDbStore  = new FlioxClient(hub)              { ClientId = "mainDbStore" })
+                using (var extDbStore   = new FlioxClient(hub, "ext_db")    { ClientId = "extDbStore" })
                 {
-                    extDbStore.SendMessage("hello-main_db", "some text to ext_db");
+                    extDbStore.SendMessage("hello-ext_db", "some text");
                     await extDbStore.SyncTasks();
                     
-                    sendStore.SendMessage("hello-ext_db", "some text");
-                    await sendStore.SyncTasks();
+                    mainDbStore.SendMessage("hello-main_db", "some text to ext_db");
+                    await mainDbStore.SyncTasks();
                     
-                    while (!receivedHello) {
+                    while (receivedHelloMainDB == 0) {
                         await Task.Delay(1); // release thread to process message event handler
                     }
+                    AreEqual(1, receivedHelloMainDB);
+                    AreEqual(1, receivedHelloExtDB);
                     
-                    await listenDb.SyncTasks();
+                    await listenMainDb.SyncTasks();
+                    await listenExtDb.SyncTasks();
 
                     // assert no send events are pending which are not acknowledged
                     AreEqual(0, eventDispatcher.NotAcknowledgedEvents());

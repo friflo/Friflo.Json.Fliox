@@ -4,10 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.DB.Monitor;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Mapper;
@@ -24,17 +23,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     internal sealed class EventSubscriber : ILogSource {
         internal readonly   JsonKey                                 clientId;
         private             IEventTarget                            eventTarget;
-        /// key: <see cref="SubscribeChanges.container"/>
-        internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
-        internal readonly   HashSet<string>                         messageSubscriptions        = new HashSet<string>();
-        internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
+
         private  readonly   Pool                                    pool;
         private  readonly   SharedCache                             sharedCache;
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                              Logger { get; }
         
-        internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
+        internal readonly   Dictionary<string, DatabaseSubs>        databaseSubs        = new Dictionary<string, DatabaseSubs>();
+        
+        internal            int                                     SubscriptionCount   => databaseSubs.Sum(sub => sub.Value.SubscriptionCount); 
         
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
@@ -54,24 +52,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                     SentEventsCount => sentEvents.Count;
         internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHost;
         
-        internal List<ChangeSubscription> GetChangeSubscriptions (List<ChangeSubscription> subs) {
-            if (changeSubscriptions.Count == 0)
-                return null;
-            if (subs == null) subs = new List<ChangeSubscription>(changeSubscriptions.Count);
-            subs.Clear();
-            subs.Capacity = changeSubscriptions.Count;
-            foreach (var pair in changeSubscriptions) {
-                SubscribeChanges sub = pair.Value;
-                var changeSubscription = new ChangeSubscription {
-                    container   = sub.container,
-                    changes     = sub.changes,
-                    filter      = sub.filterOp?.Linq
-                };
-                subs.Add(changeSubscription);
-            }
-            return subs;
-        }
-
         internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
             pool                = new Pool(env.Pool);
             sharedCache         = env.sharedCache;
@@ -86,17 +66,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             triggerWriter       = channel.writer;
             var triggerReader   = channel.reader;
             triggerLoop         = TriggerLoop(triggerReader);
-        }
-        
-        internal bool FilterMessage (string messageName) {
-            if (messageSubscriptions.Contains(messageName))
-                return true;
-            foreach (var prefixSub in messagePrefixSubscriptions) {
-                if (messageName.StartsWith(prefixSub)) {
-                    return true;
-                }
-            }
-            return false;
         }
         
         internal void UpdateTarget(IEventTarget eventTarget) {
