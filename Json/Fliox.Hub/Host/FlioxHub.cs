@@ -222,11 +222,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             response.AssertResponse(syncRequest);
             
-            var broker = EventDispatcher;
-            if (broker != null) {
-                broker.EnqueueSyncTasks(syncRequest, executeContext);
-                if (!broker.background) {
-                    await broker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
+            var dispatcher = EventDispatcher;
+            if (dispatcher != null) {
+                dispatcher.EnqueueSyncTasks(syncRequest, executeContext);
+                if (!dispatcher.background) {
+                    await dispatcher.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }
             }
             return new ExecuteSyncResult(response);
