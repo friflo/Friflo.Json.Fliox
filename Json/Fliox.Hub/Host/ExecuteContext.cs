@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         internal  readonly  IEventTarget        eventTarget;
         internal            AuthState           authState;
-        private             PoolUsage           startUsage;
+        private   readonly  PoolUsage           startUsage;
         internal            Action              canceler = () => {};
         internal            FlioxHub            hub;
         internal  readonly  SharedCache         sharedCache;
