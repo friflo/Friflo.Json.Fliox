@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
         private  readonly   Task                                    sendLoop;
         private  readonly   Pool                                    pool;
+        private  readonly   Pool                                    executePool;
         private  readonly   SharedCache                             sharedCache;
         private  readonly   IPEndPoint                              remoteEndPoint;
         
@@ -34,7 +35,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         
         private WebSocketHost (SharedEnv env, WebSocket webSocket, IPEndPoint remoteEndPoint, bool fakeOpenClosedSocket) {
-            pool                        = new Pool(env.Pool);
+            pool                        = env.Pool;
+            executePool                 = new Pool(env.Pool);
             sharedCache                 = env.sharedCache;
             Logger                      = env.hubLogger;
             this.webSocket              = webSocket;
@@ -54,9 +56,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public Task<bool> ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext) {
+        public Task<bool> ProcessEvent(ProtocolEvent ev) {
             try {
-                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, executeContext.ObjectMapper);
+                var pooledMapper    = pool.ObjectMapper;
+                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, pooledMapper);
                 var arraySegment    = jsonEvent.AsArraySegment();
                 sendWriter.TryWrite(arraySegment);
                 return Task.FromResult(true);
@@ -101,8 +104,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.ToArray());
-                        var executeContext  = new ExecuteContext(pool, this, sharedCache);
+                        var executeContext  = new ExecuteContext(executePool, this, sharedCache);
                         var result          = await remoteHost.ExecuteJsonRequest(requestContent, executeContext).ConfigureAwait(false);
+                        
                         executeContext.Release();
                         var arraySegment    = result.body.AsArraySegment();
                         sendWriter.TryWrite(arraySegment);

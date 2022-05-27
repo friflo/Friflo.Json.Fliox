@@ -24,9 +24,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   JsonKey                             clientId;
         private             IEventTarget                        eventTarget;
 
-        private  readonly   Pool                                pool;
-        private  readonly   SharedCache                         sharedCache;
-        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              IHubLogger                          Logger { get; }
         
@@ -53,8 +50,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            bool                                IsRemoteTarget  => eventTarget is WebSocketHost;
         
         internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
-            pool                = new Pool(env.Pool);
-            sharedCache         = env.sharedCache;
             Logger              = env.hubLogger;
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
@@ -123,12 +118,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             
             while (DequeueEvent(out var ev)) {
                 try {
-                    var executeContext  = new ExecuteContext(pool, eventTarget, sharedCache);
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
-                    await eventTarget.ProcessEvent(ev, executeContext).ConfigureAwait(false);
-                    
-                    executeContext.Release();
+                    await eventTarget.ProcessEvent(ev).ConfigureAwait(false);
                 }
                 catch (Exception e) {
                     var message = "SendEvents failed";

@@ -98,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private void OnReceive(JsonValue messageJson) {
             try {
-                var contextPool    = new Pool(sharedEnv.Pool);
-                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPool.ObjectMapper, out _);
+                var pooledMapper        = sharedEnv.Pool.ObjectMapper;
+                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, pooledMapper, out _);
                 switch (message) {
                     case null:
                         break; // errors are ignored. 

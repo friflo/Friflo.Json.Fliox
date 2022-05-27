@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();
-        Task<bool>  ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext);
+        Task<bool>  ProcessEvent(ProtocolEvent ev);
     }
     
     /// <summary>

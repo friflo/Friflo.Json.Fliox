@@ -3,7 +3,6 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 
@@ -20,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- IEventTarget
         public bool     IsOpen ()   => true;
 
-        public Task<bool> ProcessEvent(ProtocolEvent ev, ExecuteContext executeContext) {
+        public Task<bool> ProcessEvent(ProtocolEvent ev) {
             if (!ev.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == FlioxClient.clientId");
             
