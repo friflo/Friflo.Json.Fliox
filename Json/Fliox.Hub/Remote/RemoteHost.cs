@@ -34,26 +34,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public void Dispose() { }
         
         internal async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, ExecuteContext executeContext) {
+            var objectMapper = executeContext.ObjectMapper;
             try {
-                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, executeContext.ObjectMapper, out string error);
+                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, objectMapper, out string error);
                 switch (request) {
                     case null:
-                        return JsonResponse.CreateError(executeContext, error, ErrorResponseType.BadResponse);
+                        return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse);
                     case SyncRequest syncRequest:
                         var response = await localHub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
                         
                         SetContainerResults(response.success);
                         response.Result.reqId   = syncRequest.reqId;
-                        JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, executeContext.ObjectMapper);
+                        JsonValue jsonResponse  = RemoteUtils.CreateProtocolMessage(response.Result, objectMapper);
                         return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";
-                        return JsonResponse.CreateError(executeContext, msg, ErrorResponseType.BadResponse);
+                        return JsonResponse.CreateError(objectMapper, msg, ErrorResponseType.BadResponse);
                 }
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateError(executeContext, errorMsg, ErrorResponseType.Exception);
+                return JsonResponse.CreateError(objectMapper, errorMsg, ErrorResponseType.Exception);
             }
         }
         

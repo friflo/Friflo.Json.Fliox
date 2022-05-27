@@ -29,17 +29,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
             httpClient.Dispose();
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.ObjectMapper);
-            var content = jsonRequest.AsByteArrayContent();
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext)
+        {
+            var pooledMapper    = executeContext.ObjectMapper;
+            var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, pooledMapper);
+            var content         = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
             
             try {
-                HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
-                var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var jsonBody    = new JsonValue(bodyArray);
-                var response    = RemoteUtils.ReadProtocolMessage (jsonBody, executeContext.ObjectMapper, out string error);
+                var httpResponse    = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
+                
+                var bodyArray       = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var jsonBody        = new JsonValue(bodyArray);
+                var response        = RemoteUtils.ReadProtocolMessage (jsonBody, pooledMapper, out string error);
                 switch (response) {
                     case null:
                         return  new ExecuteSyncResult(error, ErrorResponseType.BadResponse);

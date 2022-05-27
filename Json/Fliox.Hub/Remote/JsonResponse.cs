@@ -1,9 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -27,11 +27,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.status = status;
         }
         
-        public static JsonResponse CreateError(ExecuteContext executeContext, string message, ErrorResponseType type)
+        public static JsonResponse CreateError(ObjectPool<ObjectMapper> mapperPool, string message, ErrorResponseType type)
         {
             var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
             var errorResponse   = new ErrorResponse { message = message, type = type };
-            using (var pooled = executeContext.ObjectMapper.Get()) {
+            using (var pooled = mapperPool.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
