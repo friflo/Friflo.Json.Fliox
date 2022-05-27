@@ -34,11 +34,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --- internal / private properties
         internal            IPool           Pool            => syncContext.pool;
         [DebuggerBrowsable(Never)]
-        internal            SyncContext  SyncContext  => syncContext;
+        internal            SyncContext     SyncContext     => syncContext;
         
         // --- internal / private fields
         [DebuggerBrowsable(Never)]
-        private   readonly  SyncContext  syncContext;
+        private   readonly  SyncContext     syncContext;
         internal            string          error;
         
         public   override   string          ToString()      => Name;
