@@ -12,15 +12,15 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    // ------------------------------------ ExecuteContext ------------------------------------
+    // ------------------------------------ SyncContext ------------------------------------
     /// <summary>
-    /// One <see cref="ExecuteContext"/> is created per <see cref="FlioxHub.ExecuteSync"/> call to enable
+    /// One <see cref="SyncContext"/> is created per <see cref="FlioxHub.ExecuteSync"/> call to enable
     /// multi threaded / concurrent handling of a <see cref="SyncRequest"/>.
     /// <br/>
     /// Note: In case of adding transaction support for <see cref="SyncRequest"/>'s in future transaction data / state
     /// need to be handled by this class.
     /// </summary>
-    public sealed class ExecuteContext
+    public sealed class SyncContext
     {
         // --- public
         public              FlioxHub                    Hub             => hub;
@@ -49,14 +49,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
-        internal ExecuteContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache) {
+        internal SyncContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache) {
             this.pool           = pool;
             startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
             this.sharedCache    = sharedCache;
         }
         
-        internal ExecuteContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
+        internal SyncContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
             this.pool           = pool;
             startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;

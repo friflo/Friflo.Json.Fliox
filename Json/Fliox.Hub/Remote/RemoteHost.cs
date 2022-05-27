@@ -33,15 +33,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public void Dispose() { }
         
-        internal async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, ExecuteContext executeContext) {
-            var objectMapper = executeContext.ObjectMapper;
+        internal async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, SyncContext syncContext) {
+            var objectMapper = syncContext.ObjectMapper;
             try {
                 var request = RemoteUtils.ReadProtocolMessage(jsonRequest, objectMapper, out string error);
                 switch (request) {
                     case null:
                         return JsonResponse.CreateError(objectMapper, error, ErrorResponseType.BadResponse);
                     case SyncRequest syncRequest:
-                        var response = await localHub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+                        var response = await localHub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
                         
                         SetContainerResults(response.success);
                         response.Result.reqId   = syncRequest.reqId;

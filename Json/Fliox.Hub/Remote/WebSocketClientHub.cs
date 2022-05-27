@@ -125,13 +125,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             int sendReqId = Interlocked.Increment(ref reqId);
             syncRequest.reqId = sendReqId;
-            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.ObjectMapper);
+            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
-                var wsRequest         = new WebsocketRequest(executeContext, cancellationToken);
+                var wsRequest         = new WebsocketRequest(syncContext, cancellationToken);
                 requests.TryAdd(sendReqId, wsRequest);
                 
                 var arraySegment    = jsonRequest.AsArraySegment();
@@ -159,9 +159,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
         
-        internal WebsocketRequest(ExecuteContext executeContext, CancellationTokenSource cancellationToken) {
+        internal WebsocketRequest(SyncContext syncContext, CancellationTokenSource cancellationToken) {
             response            = new TaskCompletionSource<ProtocolResponse>();
-            executeContext.canceler = () => {
+            syncContext.canceler = () => {
                 cancellationToken.Cancel();
             };
         }

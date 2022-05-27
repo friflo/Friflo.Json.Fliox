@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         internal  readonly  User                                    anonymousUser;
         
             
-        public abstract Task    Authenticate    (SyncRequest syncRequest, ExecuteContext executeContext);
+        public abstract Task    Authenticate    (SyncRequest syncRequest, SyncContext syncContext);
         
         protected Authenticator (Authorizer anonymousAuthorizer) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
@@ -32,29 +32,29 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         }
         
         /// <summary>
-        /// Validate <see cref="ExecuteContext.clientId"/> and returns <see cref="ClientIdValidation"/> result.
+        /// Validate <see cref="SyncContext.clientId"/> and returns <see cref="ClientIdValidation"/> result.
         /// </summary>
-        public virtual ClientIdValidation ValidateClientId(ClientController clientController, ExecuteContext executeContext) {
-            ref var clientId = ref executeContext.clientId; 
+        public virtual ClientIdValidation ValidateClientId(ClientController clientController, SyncContext syncContext) {
+            ref var clientId = ref syncContext.clientId; 
             if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
-            var user = executeContext.User;
+            var user = syncContext.User;
             if (clientController.UseClientIdFor(user, clientId))
                 return ClientIdValidation.Valid;
             return ClientIdValidation.Invalid;
         }
         
-        public virtual bool EnsureValidClientId(ClientController clientController, ExecuteContext executeContext, out string error) {
-            switch (executeContext.clientIdValidation) {
+        public virtual bool EnsureValidClientId(ClientController clientController, SyncContext syncContext, out string error) {
+            switch (syncContext.clientIdValidation) {
                 case ClientIdValidation.Valid:
                     error = null;
                     return true;
                 case ClientIdValidation.IsNull:
                     error = null;
-                    var user                            = executeContext.User;
-                    executeContext.clientId             = clientController.NewClientIdFor(user);
-                    executeContext.clientIdValidation   = ClientIdValidation.Valid;
+                    var user                        = syncContext.User;
+                    syncContext.clientId            = clientController.NewClientIdFor(user);
+                    syncContext.clientIdValidation  = ClientIdValidation.Valid;
                     return true;
                 case ClientIdValidation.Invalid:
                     error = "invalid clientId";

@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             }
         }
 
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is SendCommand message) {
                     if (!syncErrors.TryGetValue(message.name, out var fcn))
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
                     return resp;
                 }
             }
-            var response = await base.ExecuteSync(syncRequest, executeContext);
+            var response = await base.ExecuteSync(syncRequest, syncContext);
             foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
                 if (!response.success.resultMap.TryGetValue(testContainer.name, out var result))
@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             local = localContainer;
         }
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, ExecuteContext executeContext) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
             AssertEntityCounts(command.entityKeys, command.entities);
             var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return Task.FromResult(new CreateEntitiesResult());
         }
 
-        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, ExecuteContext executeContext) {
+        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, SyncContext syncContext) {
             AssertEntityCounts(command.entityKeys, command.entities);
             var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
@@ -142,7 +142,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return Task.FromResult(new UpsertEntitiesResult());
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, ExecuteContext executeContext) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
             var error = SimulateWriteErrors(command.ids, out var errors);
             if (error != null)
                 return Task.FromResult(new DeleteEntitiesResult { Error = error });
@@ -153,17 +153,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 
         /// Validation of JSON entity values in result set is required, as this this implementation is able to
         /// simulate assign invalid JSON via .<see cref="SimulateReadErrors"/>.
-        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, ExecuteContext executeContext) {
-            var result = await local.ReadEntitiesSet(command, executeContext).ConfigureAwait(false);
+        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, SyncContext syncContext) {
+            var result = await local.ReadEntitiesSet(command, syncContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
-            result.ValidateEntities(local.name, command.keyName, executeContext);
+            result.ValidateEntities(local.name, command.keyName, syncContext);
             return result;
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, ExecuteContext executeContext) {
-            var result = await local.QueryEntities(command, executeContext).ConfigureAwait(false);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+            var result = await local.QueryEntities(command, syncContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null) {
                 result.Error = databaseError;
@@ -176,7 +176,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             return result;
         }
         
-        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, ExecuteContext executeContext) {
+        public override Task<AggregateEntitiesResult> AggregateEntities (AggregateEntities command, SyncContext syncContext) {
             throw new NotImplementedException();
         }
         

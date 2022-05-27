@@ -20,6 +20,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         /// <see cref="DB.Cluster.ClusterStore"/> read and query results available to a user.
         /// </summary>
         public abstract void    AddAuthorizedDatabases  (HashSet<AuthorizeDatabase> databases);
-        public abstract bool    Authorize               (SyncRequestTask task, ExecuteContext executeContext);
+        public abstract bool    Authorize               (SyncRequestTask task, SyncContext syncContext);
     }
 }

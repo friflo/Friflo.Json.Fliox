@@ -44,8 +44,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return stateDB.CreateContainer(name, database);
         }
 
-        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var pool = executeContext.pool;
+        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, SyncContext syncContext) {
+            var pool = syncContext.pool;
             using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
                 var cluster = pooled.instance;
                 var tasks = syncRequest.tasks;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         internal static async Task<HostCluster> GetDbList (MessageContext context) {
             var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
-            var authorizer          = context.ExecuteContext.authState.authorizer;
+            var authorizer          = context.SyncContext.authState.authorizer;
             authorizer.AddAuthorizedDatabases(authorizedDatabases);
             var hub         = context.Hub;
             var databases   = hub.GetDatabases();

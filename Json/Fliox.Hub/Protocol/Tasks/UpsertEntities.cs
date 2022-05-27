@@ -29,17 +29,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override       TaskType        TaskType => TaskType.upsert;
         public   override       string          TaskName => $"container: '{container}'";
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
-            entityKeys = EntityUtils.GetKeysFromEntities(keyName, entities, executeContext, out string error);
+            entityKeys = EntityUtils.GetKeysFromEntities(keyName, entities, syncContext, out string error);
             if (entityKeys == null) {
                 return InvalidTask(error);
             }
             List<EntityError> validationErrors = null;
-            error = database.Schema?.ValidateEntities (container, entityKeys, entities, executeContext, EntityErrorType.WriteError, ref validationErrors);
+            error = database.Schema?.ValidateEntities (container, entityKeys, entities, syncContext, EntityErrorType.WriteError, ref validationErrors);
             if (error != null) {
                 return TaskError(new CommandError(TaskErrorResultType.ValidationError, error));
             }
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
-                using (var pooled = executeContext.pool.JsonPatcher.Get()) {
+                using (var pooled = syncContext.pool.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooled.instance;
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     }
                 }
             }
-            var result = await entityContainer.UpsertEntities(this, executeContext).ConfigureAwait(false);
+            var result = await entityContainer.UpsertEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }

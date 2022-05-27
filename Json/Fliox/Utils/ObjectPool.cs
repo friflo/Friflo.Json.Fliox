@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Utils
         /// Safe access to <see cref="instance"/> is intended by calling <see cref="ObjectPool{T}.Get"/> in a using scope.
         /// E.g.:
         /// <code>
-        ///     using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+        ///     using (var pooled = syncContext.pool.ObjectMapper.Get()) {
         ///         ObjectMapper mapper  = pooled.instance;
         ///         ...
         ///     }

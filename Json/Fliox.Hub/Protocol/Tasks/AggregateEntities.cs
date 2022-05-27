@@ -41,17 +41,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return Operation.FilterTrue;
         }
 
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
-            if (!QueryEntities.ValidateFilter (filterTree, filter, executeContext, ref filterLambda, out var error))
+            if (!QueryEntities.ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out var error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {
                 return InvalidTaskError($"invalid filter: {message}");
             }
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.AggregateEntities(this, executeContext).ConfigureAwait(false);
+            var result = await entityContainer.AggregateEntities(this, syncContext).ConfigureAwait(false);
             
             if (result.Error != null) {
                 return TaskError(result.Error);

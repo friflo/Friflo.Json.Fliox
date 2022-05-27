@@ -152,14 +152,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             }
         }
         
-        private void ProcessSubscriber(SyncRequest syncRequest, ExecuteContext executeContext) {
-            ref JsonKey  clientId = ref executeContext.clientId;
+        private void ProcessSubscriber(SyncRequest syncRequest, SyncContext syncContext) {
+            ref JsonKey  clientId = ref syncContext.clientId;
             if (clientId.IsNull())
                 return;
             
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
-            var eventTarget = executeContext.eventTarget;
+            var eventTarget = syncContext.eventTarget;
             if (eventTarget != null) {
                 subscriber.UpdateTarget (eventTarget);
             }
@@ -171,11 +171,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subscriber.AcknowledgeEvents(value);
         }
         
-        internal void EnqueueSyncTasks (SyncRequest syncRequest, ExecuteContext executeContext) {
-            var database    = executeContext.DatabaseName;
-            ProcessSubscriber (syncRequest, executeContext);
+        internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
+            var database    = syncContext.DatabaseName;
+            ProcessSubscriber (syncRequest, syncContext);
             
-            using (var pooled = executeContext.ObjectMapper.Get()) {
+            using (var pooled = syncContext.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                         continue;
                     
                     // Enqueue only change events for (change) tasks which are not send by the client itself
-                    bool subscriberIsSender = executeContext.clientId.IsEqual(subscriber.clientId);
+                    bool subscriberIsSender = syncContext.clientId.IsEqual(subscriber.clientId);
                     databaseSubs.AddEventTasks(syncRequest, subscriberIsSender, ref tasks, jsonEvaluator);
 
                     if (tasks == null)

@@ -33,8 +33,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             return databaseName == database;
         }
         
-        internal bool Authorize(ExecuteContext executeContext) {
-            var databaseName = executeContext.DatabaseName;
+        internal bool Authorize(SyncContext syncContext) {
+            var databaseName = syncContext.DatabaseName;
             return Authorize(databaseName);
         }
         

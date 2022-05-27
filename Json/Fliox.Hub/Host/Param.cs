@@ -9,23 +9,23 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Param<TParam>
     {
-        public                      JsonValue       JsonParam       => param;
+        public                      JsonValue   JsonParam       => param;
         
-        public    override          string          ToString() => param.AsString();
+        public    override          string      ToString() => param.AsString();
         
         [DebuggerBrowsable(Never)]
-        private   readonly          JsonValue       param;
+        private   readonly          JsonValue   param;
         [DebuggerBrowsable(Never)]
-        private   readonly          ExecuteContext  executeContext;
+        private   readonly          SyncContext syncContext;
 
 
-        internal Param(in JsonValue param, ExecuteContext  executeContext) {
+        internal Param(in JsonValue param, SyncContext  syncContext) {
             this.param          = param;
-            this.executeContext = executeContext;
+            this.syncContext = syncContext;
         }
         
         /*  public TParam Param { get {
-            using (var pooled = executeContext.pool.ObjectMapper.Get()) {
+            using (var pooled = syncContext.pool.ObjectMapper.Get()) {
                 var reader = pooled.instance.reader;
                 return reader.Read<TParam>(param);
             }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <param name="error">contains the error message if conversion failed</param>
         /// <returns> true if successful; false otherwise </returns>
         public bool Get<T>(out T param, out string error) {
-            using (var pooled = executeContext.ObjectMapper.Get()) {
+            using (var pooled = syncContext.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 param       = reader.Read<T>(this.param);
                 if (reader.Error.ErrSet) {
@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public bool Validate<T>(out string error) {
-            var paramValidation = executeContext.sharedCache.GetValidationType(typeof(T));
-            using (var pooled = executeContext.pool.TypeValidator.Get()) {
+            var paramValidation = syncContext.sharedCache.GetValidationType(typeof(T));
+            using (var pooled = syncContext.pool.TypeValidator.Get()) {
                 var validator   = pooled.instance;
                 if (!validator.Validate(this.param, paramValidation, out error)) {
                     return false;

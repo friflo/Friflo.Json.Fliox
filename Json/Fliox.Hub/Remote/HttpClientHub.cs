@@ -29,9 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             httpClient.Dispose();
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext)
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext)
         {
-            var pooledMapper    = executeContext.ObjectMapper;
+            var pooledMapper    = syncContext.ObjectMapper;
             var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, pooledMapper);
             var content         = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

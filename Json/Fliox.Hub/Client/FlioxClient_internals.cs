@@ -24,13 +24,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
+        private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             _intern.syncCount++;
             Task<ExecuteSyncResult> task = null;
             try {
-                task = _intern.hub.ExecuteSync(syncRequest, executeContext);
+                task = _intern.hub.ExecuteSync(syncRequest, syncContext);
 
-                _intern.pendingSyncs.TryAdd(task, executeContext);
+                _intern.pendingSyncs.TryAdd(task, syncContext);
                 var response = await task.ConfigureAwait(false);
                 _intern.pendingSyncs.TryRemove(task, out _);
                 return response;

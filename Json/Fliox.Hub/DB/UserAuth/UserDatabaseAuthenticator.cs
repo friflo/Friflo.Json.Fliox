@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             };
         }
 
-        public override Task Authenticate(SyncRequest syncRequest, ExecuteContext executeContext) {
+        public override Task Authenticate(SyncRequest syncRequest, SyncContext syncContext) {
             ref var userId = ref syncRequest.userId;
             User user;
             if (userId.IsNull()) {
@@ -59,11 +59,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             }
 
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
-                executeContext.AuthenticationSucceed(user, rights);
+                syncContext.AuthenticationSucceed(user, rights);
                 return Task.CompletedTask;
             }
             // AuthenticationFailed() is not called to avoid giving a hint for a valid userId (user)
-            executeContext.AuthenticationSucceed(user, UnknownRights);
+            syncContext.AuthenticationSucceed(user, UnknownRights);
             return Task.CompletedTask;
         }
     }

@@ -19,24 +19,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct ClientIntern
     {
         // --- readonly
-        internal readonly   TypeStore                                   typeStore;
-        internal readonly   Pool                                        pool;
-        internal readonly   SharedCache                                 sharedCache;
-        internal readonly   IHubLogger                                  hubLogger;
-        internal readonly   FlioxHub                                    hub;
-        internal readonly   string                                      database;
-        internal readonly   EventTarget                                 eventTarget;
-        internal readonly   ITracerContext                              tracerContext;
+        internal readonly   TypeStore                               typeStore;
+        internal readonly   Pool                                    pool;
+        internal readonly   SharedCache                             sharedCache;
+        internal readonly   IHubLogger                              hubLogger;
+        internal readonly   FlioxHub                                hub;
+        internal readonly   string                                  database;
+        internal readonly   EventTarget                             eventTarget;
+        internal readonly   ITracerContext                          tracerContext;
         
         // --- readonly / private - owned
-        private             ObjectPatcher                               objectPatcher;  // create on demand
-        private             EntityProcessor                             processor;      // create on demand
-        internal readonly   Dictionary<Type,   EntitySet>               setByType;
-        private  readonly   Dictionary<string, EntitySet>               setByName;
-        internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
-        internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
-        internal readonly   ConcurrentDictionary<Task, ExecuteContext>  pendingSyncs;
-        internal readonly   List<JsonKey>                               idsBuf;
+        private             ObjectPatcher                           objectPatcher;  // create on demand
+        private             EntityProcessor                         processor;      // create on demand
+        internal readonly   Dictionary<Type,   EntitySet>           setByType;
+        private  readonly   Dictionary<string, EntitySet>           setByName;
+        internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
+        internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
+        internal readonly   ConcurrentDictionary<Task, SyncContext> pendingSyncs;
+        internal readonly   List<JsonKey>                           idsBuf;
 
         // --- mutable state
         internal            SyncStore                   syncStore;
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             setByName               = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions           = new Dictionary<string, MessageSubscriber>();  // could create lazy - needed only if dealing with subscriptions
             subscriptionsPrefix     = new List<MessageSubscriber>();                // could create lazy - needed only if dealing with subscriptions 
-            pendingSyncs            = new ConcurrentDictionary<Task, ExecuteContext>();
+            pendingSyncs            = new ConcurrentDictionary<Task, SyncContext>();
             idsBuf                  = new List<JsonKey>();
 
             // --- mutable state

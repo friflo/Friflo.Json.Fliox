@@ -32,19 +32,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             host.Dispose();
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, executeContext.ObjectMapper);
-            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, executeContext.ObjectMapper, out _);
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            var requestJson     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
+            var requestMessage  = RemoteUtils.ReadProtocolMessage (requestJson, syncContext.ObjectMapper, out _);
             var requestCopy     = (SyncRequest)requestMessage;
             
-            var syncResponse    = await host.ExecuteSync(requestCopy, executeContext);
+            var syncResponse    = await host.ExecuteSync(requestCopy, syncContext);
             
             if (syncResponse.error != null) {
                 return syncResponse;
             }
             RemoteHost.SetContainerResults(syncResponse.success);
-            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, executeContext.ObjectMapper);
-            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, executeContext.ObjectMapper, out _);
+            var responseJson    = RemoteUtils.CreateProtocolMessage(syncResponse.success, syncContext.ObjectMapper);
+            var responseMessage = RemoteUtils.ReadProtocolMessage (responseJson, syncContext.ObjectMapper, out _);
             var responseCopy    = (SyncResponse)responseMessage;
             
             return new ExecuteSyncResult(responseCopy);

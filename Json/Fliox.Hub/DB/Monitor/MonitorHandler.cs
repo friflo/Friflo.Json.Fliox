@@ -26,17 +26,17 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             return new ClearStatsResult();
         }
         
-        public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
-            if (!AuthorizeTask(task, executeContext, out var error)) {
+        public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            if (!AuthorizeTask(task, syncContext, out var error)) {
                 return Task.FromResult(error);
             }
             var monitorDB = (MonitorDB)database;
             switch (task.TaskType) {
                 case TaskType.command:
-                    return base.ExecuteTask(task, database, response, executeContext);
+                    return base.ExecuteTask(task, database, response, syncContext);
                 case TaskType.read:
                 case TaskType.query:
-                    return base.ExecuteTask(task, monitorDB.stateDB, response, executeContext);
+                    return base.ExecuteTask(task, monitorDB.stateDB, response, syncContext);
                 default:
                     SyncTaskResult result = SyncRequestTask.InvalidTask ($"MonitorDB does not support task: '{task.TaskType}'");
                     return Task.FromResult(result);

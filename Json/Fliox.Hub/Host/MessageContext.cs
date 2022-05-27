@@ -21,32 +21,32 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <remarks>For consistency the API to access the command param is same a <see cref="IMessage"/></remarks>
     public sealed class MessageContext { // : IMessage { // uncomment to check API consistency
         public              string          Name            { get; }
-        public              FlioxHub        Hub             => executeContext.hub;
-        public              string          DatabaseName    => executeContext.DatabaseName; // not null
-        public              EntityDatabase  Database        => executeContext.Database;     // not null
-        public              User            User            => executeContext.User;
-        public              JsonKey         ClientId        => executeContext.clientId;
+        public              FlioxHub        Hub             => syncContext.hub;
+        public              string          DatabaseName    => syncContext.DatabaseName; // not null
+        public              EntityDatabase  Database        => syncContext.Database;     // not null
+        public              User            User            => syncContext.User;
+        public              JsonKey         ClientId        => syncContext.clientId;
         public              UserInfo        UserInfo        => GetUserInfo();
         
         public              bool            WriteNull       { get; set; }
         public              bool            WritePretty     { get; set; }
 
         // --- internal / private properties
-        internal            IPool           Pool            => executeContext.pool;
+        internal            IPool           Pool            => syncContext.pool;
         [DebuggerBrowsable(Never)]
-        internal            ExecuteContext  ExecuteContext  => executeContext;
+        internal            SyncContext  SyncContext  => syncContext;
         
         // --- internal / private fields
         [DebuggerBrowsable(Never)]
-        private   readonly  ExecuteContext  executeContext;
+        private   readonly  SyncContext  syncContext;
         internal            string          error;
         
         public   override   string          ToString()      => Name;
 
 
-        internal MessageContext(string name, ExecuteContext executeContext) {
+        internal MessageContext(string name, SyncContext syncContext) {
             Name                = name;
-            this.executeContext = executeContext;
+            this.syncContext = syncContext;
             WritePretty         = true;
         }
         
@@ -69,8 +69,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private UserInfo GetUserInfo() { 
-            var user = executeContext.User;
-            return new UserInfo (user.userId, user.token, executeContext.clientId);
+            var user = syncContext.User;
+            return new UserInfo (user.userId, user.token, syncContext.clientId);
         }
     }
 }

@@ -97,10 +97,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // method is added to preserve API internal for: SharedCache, Pool()
-        public ExecuteContext CreateExecuteContext(IEventTarget eventTarget) {
+        public SyncContext CreateSyncContext(IEventTarget eventTarget) {
             var sharedCache     = SharedCache;
             var localPool       = new Pool(hub.sharedEnv);
-            return new ExecuteContext(localPool, eventTarget, sharedCache);
+            return new SyncContext(localPool, eventTarget, sharedCache);
         }
     }
     

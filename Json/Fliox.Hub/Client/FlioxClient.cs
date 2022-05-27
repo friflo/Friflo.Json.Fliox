@@ -128,24 +128,24 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- SyncTasks() / TrySyncTasks()
         public async Task<SyncResult> SyncTasks() {
-            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var executeContext  = new ExecuteContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
-            var response        = await ExecuteSync(syncRequest, executeContext).ConfigureAwait(ClientUtils.OriginalContext);
+            var syncRequest = CreateSyncRequest(out SyncStore syncStore);
+            var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(ClientUtils.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
                 throw new SyncTasksException(response.error, result.failed);
-            executeContext.Release();
+            syncContext.Release();
             return result;
         }
         
         public async Task<SyncResult> TrySyncTasks() {
-            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var executeContext  = new ExecuteContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
-            var response        = await ExecuteSync(syncRequest, executeContext).ConfigureAwait(ClientUtils.OriginalContext);
+            var syncRequest = CreateSyncRequest(out SyncStore syncStore);
+            var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
+            var response    = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(ClientUtils.OriginalContext);
 
             var result = HandleSyncResponse(syncRequest, response, syncStore);
-            executeContext.Release();
+            syncContext.Release();
             return result;
         }
 
@@ -321,8 +321,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public async Task CancelPendingSyncs() {
             foreach (var pair in _intern.pendingSyncs) {
-                var executeContext = pair.Value;
-                executeContext.Cancel();
+                var syncContext = pair.Value;
+                syncContext.Cancel();
             }
             await Task.WhenAll(_intern.pendingSyncs.Keys).ConfigureAwait(false);
         }

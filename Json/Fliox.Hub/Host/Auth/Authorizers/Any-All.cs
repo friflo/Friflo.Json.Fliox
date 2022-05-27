@@ -21,9 +21,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
 
-        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
             foreach (var item in list) {
-                if (item.Authorize(task, executeContext))
+                if (item.Authorize(task, syncContext))
                     return true;
             }
             return false;
@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
             }
         }
         
-        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
             foreach (var item in list) {
-                if (!item.Authorize(task, executeContext))
+                if (!item.Authorize(task, syncContext))
                     return false;
             }
             return true;

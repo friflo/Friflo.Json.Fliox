@@ -84,8 +84,8 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var cookies         = context.cookies;
                     syncRequest.userId  = new JsonKey(cookies["fliox-user"]); 
                     syncRequest.token   = cookies["fliox-token"];
-                    var executeContext  = context.CreateExecuteContext(null);
-                    var syncResult      = await context.hub.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+                    var syncContext     = context.CreateSyncContext(null);
+                    var syncResult      = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 
                     if (syncResult.error != null) {
                         context.WriteError("execution error", syncResult.error.message, 500);

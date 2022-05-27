@@ -59,14 +59,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal static bool ValidateFilter(
                 JsonValue           filterTree,
                 string              filter,
-                ExecuteContext      executeContext,
+                SyncContext         syncContext,
             ref FilterOperation     filterLambda,
             out TaskErrorResult     error)
         {
             error                   = null;
             if (!filterTree.IsNull()) {
-                var pool                = executeContext.pool;
-                var filterValidation    = executeContext.sharedCache.GetValidationType(typeof(FilterOperation));
+                var pool                = syncContext.pool;
+                var filterValidation    = syncContext.sharedCache.GetValidationType(typeof(FilterOperation));
                 using (var pooled = pool.TypeValidator.Get()) {
                     var validator   = pooled.instance;
                     if (!validator.Validate(filterTree, filterValidation, out var validationError)) {
@@ -100,19 +100,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             return false;
         }
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return MissingContainer();
             if (!ValidReferences(references, out var error))
                 return error;
-            if (!ValidateFilter (filterTree, filter, executeContext, ref filterLambda, out error))
+            if (!ValidateFilter (filterTree, filter, syncContext, ref filterLambda, out error))
                 return error;
             filterContext = new OperationContext();
             if (!filterContext.Init(GetFilter(), out var message)) {
                 return InvalidTaskError($"invalid filter: {message}");
             }
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.QueryEntities(this, executeContext).ConfigureAwait(false);
+            var result = await entityContainer.QueryEntities(this, syncContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 queryRefsResults =
-                    await entityContainer.ReadReferences(references, entities, container, "", response, executeContext).ConfigureAwait(false);
+                    await entityContainer.ReadReferences(references, entities, container, "", response, syncContext).ConfigureAwait(false);
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
             result.container    = container;

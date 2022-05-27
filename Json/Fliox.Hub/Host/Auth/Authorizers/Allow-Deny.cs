@@ -18,8 +18,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) => databases.Add(authorizeDatabase);
         
-        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
-            return authorizeDatabase.Authorize(executeContext);
+        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
+            return authorizeDatabase.Authorize(syncContext);
         }
     }
     
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth
         
         public override void AddAuthorizedDatabases(HashSet<AuthorizeDatabase> databases) { }
         
-        public override bool Authorize(SyncRequestTask task, ExecuteContext executeContext) {
+        public override bool Authorize(SyncRequestTask task, SyncContext syncContext) {
             return false;
         }
     }

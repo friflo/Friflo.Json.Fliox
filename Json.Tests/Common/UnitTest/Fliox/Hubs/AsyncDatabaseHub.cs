@@ -20,11 +20,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
             local = new FlioxHub(database, env);
         }
         
-        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             const bool originalContext = true;
             // force release the thread back to the caller so continuation will not be executed synchronously.
             await Task.Delay(1).ConfigureAwait(originalContext);
-            var response = await local.ExecuteSync(syncRequest, executeContext).ConfigureAwait(false);
+            var response = await local.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             return response;
         }
     }

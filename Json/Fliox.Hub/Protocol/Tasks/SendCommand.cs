@@ -15,12 +15,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         internal override   TaskType        TaskType => TaskType.command;
 
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (name == null) {
                 return MissingField(nameof(name));
             }
             if (database.handler.TryGetMessage(name, out var callback)) {
-                var result  = await callback.InvokeDelegate(name, param, executeContext).ConfigureAwait(false);
+                var result  = await callback.InvokeDelegate(name, param, syncContext).ConfigureAwait(false);
                 if (result.error == null)
                     return new SendCommandResult { result = result.value };
                 return new TaskErrorResult (TaskErrorResultType.CommandError, result.error);

@@ -22,19 +22,19 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override       TaskType    TaskType    => TaskType.subscribeMessage;
         public   override       string      TaskName    => $"name: '{name}'";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
-            var hub             = executeContext.Hub;
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
             if (eventDispatcher == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventDispatcher"));
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
             
-            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, executeContext, out string error))
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
-            var eventTarget = executeContext.eventTarget;
-            if (!eventDispatcher.SubscribeMessage(database.name, this, executeContext.clientId, eventTarget, out error))
+            var eventTarget = syncContext.eventTarget;
+            if (!eventDispatcher.SubscribeMessage(database.name, this, syncContext.clientId, eventTarget, out error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             return Task.FromResult<SyncTaskResult>(new SubscribeMessageResult());

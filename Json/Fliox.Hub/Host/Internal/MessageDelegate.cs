@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         public    override  string              ToString()  => name;
         
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
-        internal  abstract  Task<InvokeResult>  InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext);
+        internal  abstract  Task<InvokeResult>  InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext);
         
         protected MessageDelegate (string name) {
             this.name   = name;
@@ -55,9 +55,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new MessageContext(messageName,  executeContext);
-            var param   = new Param<TValue> (messageValue, executeContext); 
+        internal override Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(messageName,  syncContext);
+            var param   = new Param<TValue> (messageValue, syncContext); 
             handler(param, cmd);
             
             var error = cmd.error;
@@ -78,9 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new MessageContext(messageName,  executeContext);
-            var param   = new Param<TParam> (messageValue, executeContext); 
+        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(messageName,  syncContext);
+            var param   = new Param<TParam> (messageValue, syncContext); 
             await handler(param, cmd).ConfigureAwait(false);
             
             var error   = cmd.error;
@@ -101,16 +101,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new MessageContext(messageName,  executeContext);
-            var param   = new Param<TValue> (messageValue, executeContext); 
+        internal override Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(messageName,  syncContext);
+            var param   = new Param<TValue> (messageValue, syncContext); 
             TResult result  = handler(param, cmd);
             
             var error = cmd.error;
             if (error != null) {
                 return Task.FromResult(new InvokeResult(error));
             }
-            using (var pooled = executeContext.ObjectMapper.Get()) {
+            using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance.writer;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;
@@ -131,16 +131,16 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, ExecuteContext executeContext) {
-            var cmd     = new MessageContext(messageName,  executeContext);
-            var param   = new Param<TParam> (messageValue, executeContext); 
+        internal override async Task<InvokeResult> InvokeDelegate(string messageName, JsonValue messageValue, SyncContext syncContext) {
+            var cmd     = new MessageContext(messageName,  syncContext);
+            var param   = new Param<TParam> (messageValue, syncContext); 
             var result  = await handler(param, cmd).ConfigureAwait(false);
             
             var error   = cmd.error;
             if (error != null) {
                 return new InvokeResult(error);
             }
-            using (var pooled = executeContext.ObjectMapper.Get()) {
+            using (var pooled = syncContext.ObjectMapper.Get()) {
                 var writer = pooled.instance;
                 writer.WriteNullMembers = cmd.WriteNull;
                 writer.Pretty           = cmd.WritePretty;

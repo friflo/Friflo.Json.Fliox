@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override           TaskType        TaskType  => TaskType.subscribeChanges;
         public   override           string          TaskName  => $"container: '{container}'";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
-            var hub             = executeContext.Hub;
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+            var hub             = syncContext.Hub;
             var eventDispatcher = hub.EventDispatcher;
             if (eventDispatcher == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no EventDispatcher"));
@@ -39,10 +39,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (changes == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(changes)));
             
-            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, executeContext, out string error))
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, syncContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
 
-            using (var pooled = executeContext.ObjectMapper.Get()) {
+            using (var pooled = syncContext.ObjectMapper.Get()) {
                 var reader  = pooled.instance.reader;
                 filterOp    = reader.Read<FilterOperation>(filter);
                 if (reader.Error.ErrSet) {
@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                 }
             }
             
-            var eventTarget = executeContext.eventTarget;
-            if (!eventDispatcher.SubscribeChanges(database.name, this, executeContext.clientId, eventTarget, out error))
+            var eventTarget = syncContext.eventTarget;
+            if (!eventDispatcher.SubscribeChanges(database.name, this, syncContext.clientId, eventTarget, out error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             return Task.FromResult<SyncTaskResult>(new SubscribeChangesResult());

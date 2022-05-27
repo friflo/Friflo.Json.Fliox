@@ -46,8 +46,8 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
             return stateDB.CreateContainer(name, database);
         }
 
-        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, ExecuteContext executeContext) {
-            var pool = executeContext.pool;
+        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, SyncContext syncContext) {
+            var pool = syncContext.pool;
             using (var pooled  = pool.Type(() => new MonitorStore(monitorHub)).Get()) {
                 var monitor = pooled.instance;
                 monitor.hostName = hub.hostName;

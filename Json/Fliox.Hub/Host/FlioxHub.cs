@@ -170,17 +170,17 @@ namespace Friflo.Json.Fliox.Hub.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Hub.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, ExecuteContext executeContext) {
-            executeContext.hub  = this;
+        public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+            syncContext.hub  = this;
             var syncDbName      = syncRequest.database;             // is nullable
-            var hubDbName       = executeContext.hub.DatabaseName;  // not null
+            var hubDbName       = syncContext.hub.DatabaseName;  // not null
             var dbName          = syncDbName ?? hubDbName;          // not null
-            executeContext.DatabaseName = dbName;
-            if (executeContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
-            executeContext.clientId = syncRequest.clientId;
+            syncContext.DatabaseName = dbName;
+            if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
+            syncContext.clientId = syncRequest.clientId;
             
-            await authenticator.Authenticate(syncRequest, executeContext).ConfigureAwait(false);
-            executeContext.clientIdValidation = authenticator.ValidateClientId(clientController, executeContext);
+            await authenticator.Authenticate(syncRequest, syncContext).ConfigureAwait(false);
+            syncContext.clientIdValidation = authenticator.ValidateClientId(clientController, syncContext);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (dbName != hubDbName) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
-                await db.ExecuteSyncPrepare(syncRequest, executeContext).ConfigureAwait(false);
+                await db.ExecuteSyncPrepare(syncRequest, syncContext).ConfigureAwait(false);
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
@@ -206,25 +206,25 @@ namespace Friflo.Json.Fliox.Hub.Host
                 }
                 task.index = index;
                 try {
-                    var result = await taskHandler.ExecuteTask(task, db, response, executeContext).ConfigureAwait(false);
+                    var result = await taskHandler.ExecuteTask(task, db, response, syncContext).ConfigureAwait(false);
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
                 }
             }
             hostStats.Update(syncRequest);
-            UpdateRequestStats(dbName, syncRequest, executeContext);
+            UpdateRequestStats(dbName, syncRequest, syncContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
             // So next request will create a new valid client id.
-            response.clientId = executeContext.clientIdValidation == ClientIdValidation.Invalid ? new JsonKey() : executeContext.clientId;
+            response.clientId = syncContext.clientIdValidation == ClientIdValidation.Invalid ? new JsonKey() : syncContext.clientId;
             
             response.AssertResponse(syncRequest);
             
             var dispatcher = EventDispatcher;
             if (dispatcher != null) {
-                dispatcher.EnqueueSyncTasks(syncRequest, executeContext);
+                dispatcher.EnqueueSyncTasks(syncRequest, syncContext);
                 if (!dispatcher.background) {
                     await dispatcher.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }
@@ -239,10 +239,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             return new TaskErrorResult (TaskErrorResultType.UnhandledException,msg, stack);
         }
         
-        private void UpdateRequestStats(string database, SyncRequest syncRequest, ExecuteContext executeContext) {
-            var user = executeContext.User;
+        private void UpdateRequestStats(string database, SyncRequest syncRequest, SyncContext syncContext) {
+            var user = syncContext.User;
             RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
-            ref var clientId = ref executeContext.clientId;
+            ref var clientId = ref syncContext.clientId;
             if (clientId.IsNull())
                 return;
             if (clientController.clients.TryGetValue(clientId, out UserClient client)) {

@@ -23,12 +23,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         
         public   override       string          TaskName => $"container: '{container}', cursor: {cursors}";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, ExecuteContext executeContext) {
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             
             var entityContainer     = database.GetOrCreateContainer(container);
-            RemoveCursors(entityContainer, cursors, executeContext.User);
+            RemoveCursors(entityContainer, cursors, syncContext.User);
             
             var count               = entityContainer.cursors.Count;
             SyncTaskResult result   = new CloseCursorsResult { count = count };

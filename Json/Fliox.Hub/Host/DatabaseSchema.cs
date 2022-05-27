@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             string                  container,
             List<JsonKey>           entityKeys,
             List<JsonValue>         entities,
-            ExecuteContext          executeContext,
+            SyncContext             syncContext,
             EntityErrorType         errorType,
             ref List<EntityError>   validationErrors
         ) {
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!containerTypes.TryGetValue(container, out ValidationType type)) {
                 return $"No Schema definition for container Type: {container}";
             }
-            using (var pooled = executeContext.pool.TypeValidator.Get()) {
+            using (var pooled = syncContext.pool.TypeValidator.Get()) {
                 TypeValidator validator = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];

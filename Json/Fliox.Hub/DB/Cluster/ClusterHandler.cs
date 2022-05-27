@@ -15,22 +15,22 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     internal sealed class ClusterHandler : TaskHandler
     {
-        public override async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, ExecuteContext executeContext)
+        public override async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, SyncContext syncContext)
         {
             // Note: Keep deprecated comment - may change behavior in future
             //   tasks execution for cluster database bypass authorization - access is always allowed by intention.
             //   Returned task results are filtered by AuthorizeDatabase instances assigned to the authorizers. 
-            if (!AuthorizeTask(task, executeContext, out var error)) {
+            if (!AuthorizeTask(task, syncContext, out var error)) {
                 return error;
             }
             var clusterDB = (ClusterDB)database;
             switch (task.TaskType) {
                 case TaskType.command:
-                    return await task.Execute(database, response, executeContext).ConfigureAwait(false);
+                    return await task.Execute(database, response, syncContext).ConfigureAwait(false);
                 case TaskType.read:
                     var read        = (ReadEntities)task;
-                    var denied      = ApplyAuthorizedDatabaseFilter(read, executeContext);
-                    var readResult  = (ReadEntitiesResult)await task.Execute(clusterDB.stateDB, response, executeContext).ConfigureAwait(false);
+                    var denied      = ApplyAuthorizedDatabaseFilter(read, syncContext);
+                    var readResult  = (ReadEntitiesResult)await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                     var container   = response.GetContainerResult(read.container);
                     var entityMap   = container.entityMap;
                     foreach (var id in denied) {
@@ -42,21 +42,21 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     }
                     notFound.AddRange(denied); */
                     return readResult;
-                    // return await task.Execute(clusterDB.stateDB, response, executeContext).ConfigureAwait(false);
+                    // return await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                 case TaskType.query:
-                    ApplyAuthorizedDatabaseFilter((QueryEntities)task, executeContext);
-                    return await task.Execute(clusterDB.stateDB, response, executeContext).ConfigureAwait(false);
+                    ApplyAuthorizedDatabaseFilter((QueryEntities)task, syncContext);
+                    return await task.Execute(clusterDB.stateDB, response, syncContext).ConfigureAwait(false);
                 default:
                     SyncTaskResult result = SyncRequestTask.InvalidTask ($"ClusterDB does not support task: '{task.TaskType}'");
                     return result;
             }
         }
         
-        private static HashSet<JsonKey> ApplyAuthorizedDatabaseFilter(ReadEntities read, ExecuteContext executeContext)
+        private static HashSet<JsonKey> ApplyAuthorizedDatabaseFilter(ReadEntities read, SyncContext syncContext)
         {
             var deniedIds           = new HashSet<JsonKey>(JsonKey.Equality);
             var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
-            executeContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
+            syncContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
             foreach (var set in read.sets) {
                 var ids = Helper.CreateHashSet(set.ids.Count, JsonKey.Equality);
                 foreach (var id in set.ids) {
@@ -72,10 +72,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             return deniedIds;
         }
         
-        private static void ApplyAuthorizedDatabaseFilter(QueryEntities query, ExecuteContext executeContext)
+        private static void ApplyAuthorizedDatabaseFilter(QueryEntities query, SyncContext syncContext)
         {
             var authorizedDatabases = Helper.CreateHashSet(4, AuthorizeDatabaseComparer.Instance);
-            executeContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
+            syncContext.authState.authorizer.AddAuthorizedDatabases(authorizedDatabases);
             var sb = new StringBuilder();
             foreach (var authorizedDatabase in authorizedDatabases) {
                 if (sb.Length != 0)

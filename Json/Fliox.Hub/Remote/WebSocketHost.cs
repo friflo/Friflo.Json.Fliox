@@ -104,10 +104,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.ToArray());
-                        var executeContext  = new ExecuteContext(executePool, this, sharedCache);
-                        var result          = await remoteHost.ExecuteJsonRequest(requestContent, executeContext).ConfigureAwait(false);
+                        var syncContext     = new SyncContext(executePool, this, sharedCache);
+                        var result          = await remoteHost.ExecuteJsonRequest(requestContent, syncContext).ConfigureAwait(false);
                         
-                        executeContext.Release();
+                        syncContext.Release();
                         var arraySegment    = result.body.AsArraySegment();
                         sendWriter.TryWrite(arraySegment);
                     }

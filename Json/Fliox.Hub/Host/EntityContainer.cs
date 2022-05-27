@@ -68,12 +68,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         public    virtual   bool                                Pretty      => false;
         public    override  string                              ToString()  => $"{GetType().Name} - {instanceName}";
 
-        public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, ExecuteContext executeContext);
-        public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, ExecuteContext executeContext);
-        public abstract Task<ReadEntitiesSetResult>   ReadEntitiesSet  (ReadEntitiesSet   command, ExecuteContext executeContext);
-        public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, ExecuteContext executeContext);
-        public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, ExecuteContext executeContext);
-        public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, ExecuteContext executeContext);
+        public abstract Task<CreateEntitiesResult>    CreateEntities   (CreateEntities    command, SyncContext syncContext);
+        public abstract Task<UpsertEntitiesResult>    UpsertEntities   (UpsertEntities    command, SyncContext syncContext);
+        public abstract Task<ReadEntitiesSetResult>   ReadEntitiesSet  (ReadEntitiesSet   command, SyncContext syncContext);
+        public abstract Task<DeleteEntitiesResult>    DeleteEntities   (DeleteEntities    command, SyncContext syncContext);
+        public abstract Task<QueryEntitiesResult>     QueryEntities    (QueryEntities     command, SyncContext syncContext);
+        public abstract Task<AggregateEntitiesResult> AggregateEntities(AggregateEntities command, SyncContext syncContext);
 
 
         protected EntityContainer(string name, EntityDatabase database) {
@@ -95,12 +95,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
-        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, ExecuteContext executeContext) {
+        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, SyncContext syncContext) {
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
             var readTask    = new ReadEntitiesSet { ids = ids, keyName = patchEntities.keyName };
-            var readResult  = await ReadEntitiesSet(readTask, executeContext).ConfigureAwait(false);
+            var readResult  = await ReadEntitiesSet(readTask, syncContext).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult { Error = readResult.Error };
             }
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var targetKeys  = new  List<JsonKey>    (entities.Count);
             var container   = patchEntities.container;
             List<EntityError> patchErrors = null;
-            using (var pooled = executeContext.pool.JsonPatcher.Get()) {
+            using (var pooled = syncContext.pool.JsonPatcher.Get()) {
                 JsonPatcher patcher = pooled.instance;
                 foreach (var entity in entities) {
                     var key = entity.Key;
@@ -139,14 +139,14 @@ namespace Friflo.Json.Fliox.Hub.Host
                     targetKeys.Add(key);
                 }
             }
-            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, executeContext, EntityErrorType.PatchError, ref patchErrors);
+            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, syncContext, EntityErrorType.PatchError, ref patchErrors);
             if (valError != null) {
                 return new PatchEntitiesResult{Error = new CommandError(TaskErrorResultType.ValidationError, valError)};
             }
             
             // Write patched entities back
             var task = new UpsertEntities {entities = targets, entityKeys = targetKeys };
-            var upsertResult = await UpsertEntities(task, executeContext).ConfigureAwait(false);
+            var upsertResult = await UpsertEntities(task, syncContext).ConfigureAwait(false);
             if (upsertResult.Error != null) {
                 return new PatchEntitiesResult {Error = upsertResult.Error};
             }
@@ -156,14 +156,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<AggregateEntitiesResult> CountEntities (AggregateEntities command, ExecuteContext executeContext) {
+        protected async Task<AggregateEntitiesResult> CountEntities (AggregateEntities command, SyncContext syncContext) {
             var query = new QueryEntities {
                 container       = command.container,
                 filter          = command.filter,
                 filterTree      = command.filterTree,
                 filterContext   = command.filterContext
             };
-            var queryResult = await QueryEntities(query, executeContext).ConfigureAwait(false);
+            var queryResult = await QueryEntities(query, syncContext).ConfigureAwait(false);
             
             var queryError = queryResult.Error; 
             if (queryError != null) {
@@ -175,12 +175,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         /// Default implementation. Performs a full table scan! Act as reference and is okay for small data sets
-        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, ExecuteContext executeContext) {
+        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, QueryEnumerator entities, SyncContext syncContext) {
             var  jsonFilter = new JsonFilter(command.filterContext); // filter can be reused
             var  result     = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             long limit      = command.limit     ?? long.MaxValue;
             long maxCount   = command.maxCount  ?? long.MaxValue;
-            using (var pooled = executeContext.pool.JsonEvaluator.Get()) {
+            using (var pooled = syncContext.pool.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooled.instance;
                 while (entities.MoveNext()) {
                     var         key = entities.Current;
@@ -205,7 +205,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                         break;
                     if (result.Count < maxCount)
                         continue;
-                    var cursor = StoreCursor(entities, executeContext.User.userId);
+                    var cursor = StoreCursor(entities, syncContext.User.userId);
                     return new QueryEntitiesResult{ entities = result, cursor = cursor };
                 }
             }
@@ -223,13 +223,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return nextCursor;
         }
         
-        protected bool FindCursor(string cursor, ExecuteContext executeContext, out QueryEnumerator enumerator, out CommandError error) {
+        protected bool FindCursor(string cursor, SyncContext syncContext, out QueryEnumerator enumerator, out CommandError error) {
             if (cursor == null) {
                 enumerator  = null;
                 error       = null;
                 return true;
             }
-            var user = executeContext.User;
+            var user = syncContext.User;
             if (user != null && cursors.TryGetValue(cursor, out enumerator)) {
                 if (enumerator.UserId.IsEqual(user.userId)) {
                     enumerator.Attach();
@@ -246,7 +246,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             List<References>                    references,
             Dictionary<JsonKey, EntityValue>    entities,
             string                              container,
-            ExecuteContext                      executeContext)
+            SyncContext                         syncContext)
         {
             if (references.Count == 0)
                 throw new InvalidOperationException("Expect references.Count > 0");
@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                 referenceResults.Add(referenceResult);
             }
             var select      = new ScalarSelect(selectors);  // can be reused
-            using (var pooled = executeContext.pool.ScalarSelector.Get()) {
+            using (var pooled = syncContext.pool.ScalarSelector.Get()) {
                 ScalarSelector selector = pooled.instance;
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
@@ -302,9 +302,9 @@ namespace Friflo.Json.Fliox.Hub.Host
                 string                              container,
                 string                              selectorPath,
                 SyncResponse                        syncResponse,
-                ExecuteContext                      executeContext)
+                SyncContext                         syncContext)
         {
-            var referenceResults = GetReferences(references, entities, container, executeContext);
+            var referenceResults = GetReferences(references, entities, container, syncContext);
             
             // add referenced entities to ContainerEntities
             for (int n = 0; n < references.Count; n++) {
@@ -317,7 +317,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     continue;
                 var refIdList   = ids;
                 var readRefIds  = new ReadEntitiesSet { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
-                var refEntities = await refCont.ReadEntitiesSet(readRefIds, executeContext).ConfigureAwait(false);
+                var refEntities = await refCont.ReadEntitiesSet(readRefIds, syncContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntitiesSet error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
@@ -337,7 +337,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     subEntities.Add(id, refEntities.entities[id]);
                 }
                 var refReferencesResult =
-                    await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, executeContext).ConfigureAwait(false);
+                    await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
                 // returned refReferencesResult.references is always set. Each references[] item contain either a result or an error.
                 referenceResult.references = refReferencesResult.references;
             }
