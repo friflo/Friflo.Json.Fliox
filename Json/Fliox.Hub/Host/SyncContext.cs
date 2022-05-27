@@ -42,7 +42,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         internal  readonly  IEventTarget        eventTarget;
         internal            AuthState           authState;
-        private   readonly  PoolUsage           startUsage;
         internal            Action              canceler = () => {};
         internal            FlioxHub            hub;
         internal  readonly  SharedCache         sharedCache;
@@ -50,15 +49,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
         internal SyncContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache) {
+            AssertPoolUnused(pool);
             this.pool           = pool;
-            startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
             this.sharedCache    = sharedCache;
         }
         
         internal SyncContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
+            AssertPoolUnused(pool);
             this.pool           = pool;
-            startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
             this.sharedCache    = sharedCache;
@@ -88,12 +87,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (authorizer == null)     throw new ArgumentNullException(nameof(authorizer));
         }
         
+        [Conditional("DEBUG")]
+        private static void AssertPoolUnused(Pool pool) {
+            pool.AssertEqual(new PoolUsage());
+        }
+        
         internal void Cancel() {
             canceler(); // canceler.Invoke();
         }
-
-        internal void Release() {
-            pool.AssertEqual(startUsage);
+        
+        public void Release() {
+            AssertPoolUnused(pool);
         }
     }
     

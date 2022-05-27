@@ -87,6 +87,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
                     var syncContext     = context.CreateSyncContext(null);
                     var syncResult      = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
 
+                    syncContext.Release();
                     if (syncResult.error != null) {
                         context.WriteError("execution error", syncResult.error.message, 500);
                         return;
