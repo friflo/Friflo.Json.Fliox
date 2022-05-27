@@ -52,15 +52,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal int    objectMapperCount;
         internal int    entityProcessorCount;
         internal int    typeValidatorCount;
-        
-        public void AssertEqual(in PoolUsage other) {
-            if (patcherCount            != other.patcherCount)          throw new InvalidOperationException("detect JsonPatcher leak");
-            if (selectorCount           != other.selectorCount)         throw new InvalidOperationException("detect ScalarSelector leak");
-            if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect JsonEvaluator leak");
-            if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect ObjectMapper leak");
-            if (entityProcessorCount    != other.entityProcessorCount)  throw new InvalidOperationException("detect EntityProcessor leak");
-            if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect TypeValidator leak");
-        }
     }
     
     
@@ -127,16 +118,23 @@ namespace Friflo.Json.Fliox.Hub.Host
             poolMap.Clear();
         }
 
-        public PoolUsage PoolUsage { get {
-            var usage = new PoolUsage {
-                patcherCount            = JsonPatcher       .Usage,
-                selectorCount           = ScalarSelector    .Usage,
-                evaluatorCount          = JsonEvaluator     .Usage,
-                objectMapperCount       = ObjectMapper      .Usage,
-                entityProcessorCount    = EntityProcessor   .Usage,
-                typeValidatorCount      = TypeValidator     .Usage
-            };
-            return usage;
-        } }
+        public PoolUsage PoolUsage => new PoolUsage {
+            patcherCount            = JsonPatcher       .Usage,
+            selectorCount           = ScalarSelector    .Usage,
+            evaluatorCount          = JsonEvaluator     .Usage,
+            objectMapperCount       = ObjectMapper      .Usage,
+            entityProcessorCount    = EntityProcessor   .Usage,
+            typeValidatorCount      = TypeValidator     .Usage
+        };
+        
+        internal void AssertEqual(in PoolUsage startUsage) {
+            var usage = PoolUsage;
+            if (usage.patcherCount            != startUsage.patcherCount)          throw new InvalidOperationException("detect JsonPatcher leak");
+            if (usage.selectorCount           != startUsage.selectorCount)         throw new InvalidOperationException("detect ScalarSelector leak");
+            if (usage.evaluatorCount          != startUsage.evaluatorCount)        throw new InvalidOperationException("detect JsonEvaluator leak");
+            if (usage.objectMapperCount       != startUsage.objectMapperCount)     throw new InvalidOperationException("detect ObjectMapper leak");
+            if (usage.entityProcessorCount    != startUsage.entityProcessorCount)  throw new InvalidOperationException("detect EntityProcessor leak");
+            if (usage.typeValidatorCount      != startUsage.typeValidatorCount)    throw new InvalidOperationException("detect TypeValidator leak");
+        }
     }
 }

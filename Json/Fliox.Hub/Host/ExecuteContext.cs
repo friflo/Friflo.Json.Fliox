@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// Note!  Keep <see cref="pool"/> internal
         /// Its <see cref="ObjectPool{T}"/> instances can be made public as properties if required
         /// </summary>
-        internal  readonly  IPool               pool;
+        internal  readonly  Pool                pool;
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         internal  readonly  IEventTarget        eventTarget;
         internal            AuthState           authState;
@@ -49,14 +49,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
-        internal ExecuteContext (IPool pool, IEventTarget eventTarget, SharedCache sharedCache) {
+        internal ExecuteContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache) {
             this.pool           = pool;
             startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
             this.sharedCache    = sharedCache;
         }
         
-        internal ExecuteContext (IPool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
+        internal ExecuteContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
             this.pool           = pool;
             startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         internal void Release() {
-            startUsage.AssertEqual(pool.PoolUsage);
+            pool.AssertEqual(startUsage);
         }
     }
     
