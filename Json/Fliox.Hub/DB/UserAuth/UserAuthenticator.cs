@@ -62,7 +62,8 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         public void SubscribeDbChanges(FlioxHub hub) {
-            UserStoreSubscriber.CreateSubscriber (this, hub);
+            var subscriber = new UserStoreSubscriber(this);
+            subscriber.CreateSubscriber (this, hub);
         }
 
         public async Task<List<string>> ValidateUserDb(HashSet<string> databases) {

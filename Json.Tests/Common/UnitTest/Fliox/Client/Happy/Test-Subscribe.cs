@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -22,10 +21,10 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     internal enum EventAssertion {
-        /// <summary>Assert a <see cref="SubscriptionProcessor"/> will not get change events from the
+        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.Event.SubscriptionProcessor"/> will not get change events from the
         /// <see cref="FlioxClient"/> it is attached to.</summary>.
         NoChanges,
-        /// <summary>Assert a <see cref="SubscriptionProcessor"/> will get change events from all
+        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.Event.SubscriptionProcessor"/> will get change events from all
         /// <see cref="FlioxClient"/>'s it is not attached to.</summary>.
         Changes
     }

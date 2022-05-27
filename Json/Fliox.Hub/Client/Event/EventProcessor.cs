@@ -7,8 +7,8 @@ using System.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Threading;
 
-// IEventProcessor is commonly not used directly by application => use separate namespace
-namespace Friflo.Json.Fliox.Hub.Client.Event
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Client
 {
     public interface IEventProcessor
     {
