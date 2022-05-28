@@ -16,9 +16,9 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public delegate void ChangeSubscriptionHandler         (EventContext context);
-    public delegate void ChangeSubscriptionHandler<TKey, T>(EntityChanges<TKey, T> change, EventContext context) where T : class;
+    public delegate void ChangeSubscriptionHandler<TKey, T>(Changes<TKey, T> changes, EventContext context) where T : class;
     
-    public abstract class EntityChanges
+    public abstract class Changes
     {
         public              int             Count       => ChangeInfo.Count;
         public              ChangeInfo      ChangeInfo  { get; } = new ChangeInfo();
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  abstract  void    ApplyChangesTo  (EntitySet entitySet);
     }
     
-    public sealed class EntityChanges<TKey, T> : EntityChanges where T : class
+    public sealed class Changes<TKey, T> : Changes where T : class
     {
         // used properties for Creates, Upserts, Deletes & Patches to enable changing implementation. May fill these properties lazy in future.
         public              List<T>             Creates { get; } = new List<T>();
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   Type                GetEntityType() => typeof(T);
 
         /// <summary> called via <see cref="Event.SubscriptionProcessor.GetChanges"/> </summary>
-        internal EntityChanges(EntitySet<TKey, T> entitySet) {
+        internal Changes(EntitySet<TKey, T> entitySet) {
             Container       = entitySet.name;
         }
         
@@ -170,7 +170,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     
 
     internal abstract class ChangeCallback {
-        internal abstract void InvokeCallback(EntityChanges entityChanges, EventContext context);
+        internal abstract void InvokeCallback(Changes entityChanges, EventContext context);
     }
     
     internal sealed class GenericChangeCallback<TKey, T> : ChangeCallback where T : class
@@ -181,8 +181,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(EntityChanges entityChanges, EventContext context) {
-            var changes = (EntityChanges<TKey,T>)entityChanges;
+        internal override void InvokeCallback(Changes entityChanges, EventContext context) {
+            var changes = (Changes<TKey,T>)entityChanges;
             handler(changes, context);
         }
     }

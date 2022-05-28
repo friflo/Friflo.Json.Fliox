@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
             });
             // change subscription of specific EntitySet<Article>
-            var articlesSub     = store.articles.SubscribeChanges(ChangeFlags.All, (change, context) => { });
+            var articlesSub         = store.articles.SubscribeChanges(ChangeFlags.All, (changes, context) => { });
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate(param: null)", msg.ToString());
@@ -262,7 +262,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private  void AssertChangeEvent (EntityChanges<string, Article> articleChanges) {
+        private  void AssertChangeEvent (Changes<string, Article> articleChanges) {
             switch (EventSequence) {
                 case 2:
                     AreEqual("creates: 0, upserts: 2, deletes: 0, patches: 0", articleChanges.ChangeInfo.ToString());

@@ -14,14 +14,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
 {
     internal sealed class SubscriptionProcessor : IDisposable
     {
-        private  readonly   Dictionary<Type, EntityChanges> changes         = new Dictionary<Type, EntityChanges>();
-        /// <summary> contain only <see cref="EntityChanges"/> where <see cref="EntityChanges.Count"/> > 0 </summary>
-        internal readonly   List<EntityChanges>             contextChanges  = new List<EntityChanges>();
-        internal readonly   List<Message>                   messages        = new List<Message>();
-        private             ObjectMapper                    messageMapper;
-        internal            int                             EventSequence { get; private set ; }
+        private  readonly   Dictionary<Type, Changes>   changes         = new Dictionary<Type, Changes>();
+        /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
+        internal readonly   List<Changes>               contextChanges  = new List<Changes>();
+        internal readonly   List<Message>               messages        = new List<Message>();
+        private             ObjectMapper                messageMapper;
+        internal            int                         EventSequence { get; private set ; }
         
-        public   override   string                          ToString()  => $"EventSequence: {EventSequence}";
+        public   override   string                      ToString()  => $"EventSequence: {EventSequence}";
 
         public void Dispose() {
             messageMapper?.Dispose();
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var eventContext    = new EventContext(this, ev, logger);
             contextChanges.Clear();
             foreach (var change in changes) {
-                EntityChanges entityChanges = change.Value;
+                Changes entityChanges = change.Value;
                 if (entityChanges.Count == 0)
                     continue;
                 contextChanges.Add(entityChanges);
@@ -149,14 +149,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             messages.Add(message);
         }
         
-        internal EntityChanges GetChanges (EntitySet entitySet) {
+        internal Changes GetChanges (EntitySet entitySet) {
             var entityType = entitySet.EntityType;
             if (changes.TryGetValue(entityType, out var change))
                 return change;
             object[] constructorParams = { entitySet };
             var keyType     = entitySet.KeyType;
-            var instance    = TypeMapperUtils.CreateGenericInstance(typeof(EntityChanges<,>), new[] {keyType, entityType}, constructorParams);
-            change          = (EntityChanges)instance;
+            var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), new[] {keyType, entityType}, constructorParams);
+            change          = (Changes)instance;
             changes.Add(entityType, change);
             return change;
         }

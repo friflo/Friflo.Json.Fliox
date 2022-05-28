@@ -30,24 +30,24 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class EventContext : ILogSource
     {
-        public              JsonKey                         SrcUserId       => ev.srcUserId;
-        public              int                             EventSequence   => processor.EventSequence;
-        public              IReadOnlyList<Message>          Messages        => processor.messages;
-        /// <summary> <see cref="Changes"/> return the changes per database <see cref="EntityChanges.Container"/>.
+        public              JsonKey                 SrcUserId       => ev.srcUserId;
+        public              int                     EventSequence   => processor.EventSequence;
+        public              IReadOnlyList<Message>  Messages        => processor.messages;
+        /// <summary> <see cref="Changes"/> return the changes per database <see cref="Changes.Container"/>.
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
-        public              IReadOnlyList<EntityChanges>    Changes         => processor.contextChanges;
-        public              EventInfo                       EventInfo       { get; private set; }
+        public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
+        public              EventInfo               EventInfo       { get; private set; }
         
         [DebuggerBrowsable(Never)]
-        public              IHubLogger                      Logger { get; }
+        public              IHubLogger              Logger { get; }
 
         [DebuggerBrowsable(Never)]
-        private readonly    SubscriptionProcessor           processor;
+        private readonly    SubscriptionProcessor   processor;
         
         [DebuggerBrowsable(Never)]
-        private readonly    EventMessage                    ev;
+        private readonly    EventMessage            ev;
 
-        public  override    string                          ToString()  => $"source user: {ev.srcUserId}";
+        public  override    string                  ToString()  => $"source user: {ev.srcUserId}";
 
         internal EventContext(SubscriptionProcessor processor, EventMessage ev, IHubLogger logger) {
             this.processor  = processor;
@@ -56,8 +56,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             Logger          = logger;
         }
         
-        public EntityChanges<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
-            return (EntityChanges<TKey, T>)processor.GetChanges(entitySet);
+        public Changes<TKey, T> GetChanges<TKey, T>(EntitySet<TKey, T> entitySet) where T : class {
+            return (Changes<TKey, T>)processor.GetChanges(entitySet);
         }
         
         public void ApplyChangesTo(FlioxClient client)

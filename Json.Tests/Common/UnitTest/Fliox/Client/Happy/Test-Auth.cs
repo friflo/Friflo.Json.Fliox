@@ -156,11 +156,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 mutateUser.Token = "test-deny-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
-                var articleChanges = mutateUser.articles.SubscribeChanges(Change.upsert, (change, context) => { });
+                var articleChanges = mutateUser.articles.SubscribeChanges(Change.upsert, (changes, context) => { });
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", articleChanges.Error.Message);
                 
-                var articleDeletes = mutateUser.articles.SubscribeChanges(Change.delete, (change, context) => { });
+                var articleDeletes = mutateUser.articles.SubscribeChanges(Change.delete, (changes, context) => { });
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-deny", articleDeletes.Error.Message);
             }
@@ -168,12 +168,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 mutateUser.Token = "test-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
-                var articleChanges = mutateUser.articles.SubscribeChanges(Change.upsert, (change, context) => { });
+                var articleChanges = mutateUser.articles.SubscribeChanges(Change.upsert, (changes, context) => { });
                 var sync = await mutateUser.TrySyncTasks();
                 AreEqual(0, sync.failed.Count);
                 IsTrue(articleChanges.Success);
                 
-                var articleDeletes = mutateUser.articles.SubscribeChanges(Change.delete, (change, context) => { });
+                var articleDeletes = mutateUser.articles.SubscribeChanges(Change.delete, (changes, context) => { });
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized. user: test-operation", articleDeletes.Error.Message);
             }

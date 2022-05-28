@@ -38,34 +38,34 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.SyncTasks().Wait();
         }
         
-        private void CredentialChange(EntityChanges<JsonKey, UserCredential> change, EventContext context) {
+        private void CredentialChange(Changes<JsonKey, UserCredential> changes, EventContext context) {
             var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
-            foreach (var entity in change.Upserts) { changedUsers.Add(entity.id); }
-            foreach (var id     in change.Deletes) { changedUsers.Add(id); }
-            foreach (var patch  in change.Patches) { changedUsers.Add(patch.key); }
+            foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
+            foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
+            foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
                 
             foreach (var changedUser in changedUsers) {
                 userAuthenticator.users.TryRemove(changedUser, out _);
             }
         }
         
-        private void PermissionChange(EntityChanges<JsonKey, UserPermission> change, EventContext context) {
+        private void PermissionChange(Changes<JsonKey, UserPermission> changes, EventContext context) {
             var changedUsers = new HashSet<JsonKey>(JsonKey.Equality);
-            foreach (var entity in change.Upserts) { changedUsers.Add(entity.id); }
-            foreach (var id     in change.Deletes) { changedUsers.Add(id); }
-            foreach (var patch  in change.Patches) { changedUsers.Add(patch.key); }
+            foreach (var entity in changes.Upserts) { changedUsers.Add(entity.id); }
+            foreach (var id     in changes.Deletes) { changedUsers.Add(id); }
+            foreach (var patch  in changes.Patches) { changedUsers.Add(patch.key); }
                 
             foreach (var changedUser in changedUsers) {
                 userAuthenticator.users.TryRemove(changedUser, out _);
             }
         }
         
-        private void RoleChange(EntityChanges<string, Role> change, EventContext context) {
+        private void RoleChange(Changes<string, Role> changes, EventContext context) {
             var changedRoles    = new List<string>();
             
-            foreach (var entity in change.Upserts) { changedRoles.Add(entity.id); }
-            foreach (var id     in change.Deletes) { changedRoles.Add(id); }
-            foreach (var patch  in change.Patches) { changedRoles.Add(patch.key); }
+            foreach (var entity in changes.Upserts) { changedRoles.Add(entity.id); }
+            foreach (var id     in changes.Deletes) { changedRoles.Add(id); }
+            foreach (var patch  in changes.Patches) { changedRoles.Add(patch.key); }
             
             var affectedUsers = new List<JsonKey>();
             foreach (var changedRole in changedRoles) {
