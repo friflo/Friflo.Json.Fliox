@@ -173,46 +173,46 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- SubscribeChanges
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="changes"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesFilter(Change changes, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChangesFilter(Change change, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             intern.store.AssertSubscription();
             var op = Operation.FromFilter(filter);
-            var task = GetSyncSet().SubscribeChangesFilter(changes, op);
+            var task = GetSyncSet().SubscribeChangesFilter(change, op);
             intern.store.AddTask(task);
             changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
         }
         
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <paramref name="changes"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesByFilter(Change changes, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChangesByFilter(Change change, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filter == null)  throw new ArgumentNullException(nameof(filter));
             intern.store.AssertSubscription();
-            var task = GetSyncSet().SubscribeChangesFilter(changes, filter.op);
+            var task = GetSyncSet().SubscribeChangesFilter(change, filter.op);
             intern.store.AddTask(task);
             changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
         }
         
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="changes"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To unsubscribe from receiving change events set <paramref name="changes"/> to null.
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChanges(Change changes, ChangeSubscriptionHandler<TKey, T> handler) {
+        public SubscribeChangesTask<T> SubscribeChanges(Change change, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             intern.store.AssertSubscription();
             var all = Operation.FilterTrue;
-            var task = GetSyncSet().SubscribeChangesFilter(changes, all);
+            var task = GetSyncSet().SubscribeChangesFilter(change, all);
             intern.store.AddTask(task);
             changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;

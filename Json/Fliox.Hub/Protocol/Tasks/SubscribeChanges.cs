@@ -68,27 +68,28 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     }
     
     /// <summary>Contains predefined sets of common database <see cref="Change"/> filters.</summary>
-    public static class Changes
+    public static class ChangeFlags
     {
         /// <summary>Shortcut to subscribe to all types database changes. These ase <see cref="Change.create"/>,
         /// <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
-        public static readonly Change All  = Change.create | Change.upsert | Change.delete | Change.patch;
+        public const Change All = Change.create | Change.upsert | Change.delete | Change.patch;
+
         /// <summary>Shortcut to unsubscribe from all database change types.</summary>
-        public static readonly Change None = 0;
+        public const Change None = 0;
         
-        internal static IReadOnlyList<Change> ToList(Change changeFlags) {
+        internal static IReadOnlyList<Change> ToList(Change change) {
             var list = new List<Change>(4);
-            if ((changeFlags & Change.create) != 0) list.Add(Change.create);
-            if ((changeFlags & Change.upsert) != 0) list.Add(Change.upsert);
-            if ((changeFlags & Change.delete) != 0) list.Add(Change.delete);
-            if ((changeFlags & Change.patch)  != 0) list.Add(Change.patch);
+            if ((change & Change.create) != 0) list.Add(Change.create);
+            if ((change & Change.upsert) != 0) list.Add(Change.upsert);
+            if ((change & Change.delete) != 0) list.Add(Change.delete);
+            if ((change & Change.patch)  != 0) list.Add(Change.patch);
             return list;
         }
     }
     
     /// <summary>Filter type used to specify the type of a database change.</summary>
     /// <remarks>
-    /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
+    /// Consider using the predefined sets <see cref="ChangeFlags.All"/> or <see cref="ChangeFlags.None"/> as shortcuts.
     /// </remarks>
     // ReSharper disable InconsistentNaming
     [Flags]

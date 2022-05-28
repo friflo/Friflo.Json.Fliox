@@ -61,14 +61,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SetEventProcessor(new SynchronizationContextProcessor());
             store.OnSubscriptionEvent(subscriber.OnEvent);
             
-            var subscriptions   = store.SubscribeAllChanges(Changes.All, context => {
+            var subscriptions   = store.SubscribeAllChanges(ChangeFlags.All, context => {
                 AreEqual("createStore", context.SrcUserId.AsString());
                 foreach (var changes in context.Changes) {
                     subscriber.countAllChanges += changes.Count;
                 }
             });
             // change subscription of specific EntitySet<Article>
-            var articlesSub     = store.articles.SubscribeChanges(Changes.All, (change, context) => { });
+            var articlesSub     = store.articles.SubscribeChanges(ChangeFlags.All, (change, context) => { });
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate(param: null)", msg.ToString());
