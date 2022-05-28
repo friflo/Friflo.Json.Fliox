@@ -68,17 +68,17 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         }
     }
     
+    /// <summary>
+    /// Is a queuing <see cref="IEventProcessor"/>. <br/>
+    /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
+    /// <see cref="FlioxClient"/>.
+    /// This allows to specify the exact code point in an application (e.g. Unity) to call the handler
+    /// methods of message and changes subscriptions.
+    /// </summary>
     public sealed class QueuingEventProcessor : IEventProcessor
     {
         private readonly    ConcurrentQueue <QueuedMessage>      eventQueue = new ConcurrentQueue <QueuedMessage> ();
 
-        /// <summary>
-        /// Creates a queuing <see cref="IEventProcessor"/>.
-        /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
-        /// <see cref="FlioxClient"/>.
-        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
-        /// are applied to the <see cref="FlioxClient"/>.
-        /// </summary>
         public QueuingEventProcessor() { }
         
         public void EnqueueEvent(FlioxClient client, EventMessage ev) {
