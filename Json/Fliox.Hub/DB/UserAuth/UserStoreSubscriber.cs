@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
@@ -60,17 +61,39 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
         
         private void RoleChange(EntityChanges<string, Role> change, EventContext context) {
-            var changedRoles    = new HashSet<string>();
+            var changedRoles    = new List<string>();
             
             foreach (var entity in change.Upserts) { changedRoles.Add(entity.id); }
             foreach (var id     in change.Deletes) { changedRoles.Add(id); }
             foreach (var patch  in change.Patches) { changedRoles.Add(patch.key); }
             
+            var affectedUsers = new List<JsonKey>();
             foreach (var changedRole in changedRoles) {
-                if (!userAuthenticator.roleUserCache.TryGetValue(changedRole, out var roleUser))
+                if(!userAuthenticator.authorizerByRole.TryRemove(changedRole, out var authorizer))
                     continue;
-                foreach (var userId in roleUser.users) {
-                    userAuthenticator.users.TryRemove(userId, out _);    
+                AddAffectedUsers(affectedUsers, authorizer);
+            }
+            foreach (var user in affectedUsers) {
+                userAuthenticator.users.TryRemove(user, out _);
+            }
+        }
+        
+        /// Iterate all authorized users and remove those having an <see cref="Authorizer"/> which was modified.
+        /// Used iteration instead of an additional map (role -> users) to avoid long lived objects in heap.
+        private void AddAffectedUsers(List<JsonKey> affectedUsers, Authorizer search) {
+            foreach (var pair in userAuthenticator.users) {
+                var user = pair.Value;
+                if (user.authorizer is AuthorizeAny any) {
+                    foreach (var authorizer in any.list) {
+                        if (authorizer == search) {
+                            affectedUsers.Add(user.userId);
+                            break;
+                        }
+                    }
+                    continue;
+                }
+                if (user.authorizer == search) {
+                    affectedUsers.Add(user.userId);                    
                 }
             }
         }

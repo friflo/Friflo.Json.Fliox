@@ -9,9 +9,9 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public sealed class AuthorizeAny : Authorizer {
-        private readonly    ICollection<Authorizer>     list;
+        internal  readonly  IReadOnlyList<Authorizer>     list;
         
-        public AuthorizeAny(ICollection<Authorizer> list) {
+        public AuthorizeAny(IReadOnlyList<Authorizer> list) {
             this.list = list;    
         }
         
