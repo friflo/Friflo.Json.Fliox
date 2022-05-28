@@ -23,14 +23,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         // Note: Pool does not expose sharedEnv.TypeStore by intention to avoid side effects by unexpected usage. 
         private   readonly  Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
 
-        public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
-        public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
-        public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
+        internal    ObjectPool<JsonPatcher>     JsonPatcher     { get; }
+        internal    ObjectPool<ScalarSelector>  ScalarSelector  { get; }
+        internal    ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
-        public  ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        public  ObjectPool<EntityProcessor> EntityProcessor { get; }
-        public  ObjectPool<TypeValidator>   TypeValidator   { get; }
+        internal    ObjectPool<ObjectMapper>    ObjectMapper    { get; }
+        internal    ObjectPool<EntityProcessor> EntityProcessor { get; }
+        internal    ObjectPool<TypeValidator>   TypeValidator   { get; }
         /// <summary>
         /// Enable pooling instances of the given Type <typeparamref name="T"/>. In case no cached instance of <typeparamref name="T"/>
         /// is available the <paramref name="factory"/> method is called to create a new instance.
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// }
         /// </code>
         /// </summary>
-        public  ObjectPool<T>               Type<T>         (Func<T> factory) where T : IDisposable {
+        internal    ObjectPool<T>               Type<T>         (Func<T> factory) where T : IDisposable {
             if (poolMap.TryGetValue(typeof(T), out var pooled)) {
                 return (ObjectPool<T>)pooled;
             }
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             TypeValidator   = new ObjectPool<TypeValidator>     (() => new TypeValidator());
         }
         
-        public void Dispose() {
+        internal void Dispose() {
             JsonPatcher.    Dispose();
             ScalarSelector. Dispose();
             JsonEvaluator.  Dispose();
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             poolMap.Clear();
         }
 
-        public PoolUsage PoolUsage => new PoolUsage {
+        internal PoolUsage PoolUsage => new PoolUsage {
             jsonPatcher     = JsonPatcher       .Count,
             scalarSelector  = ScalarSelector    .Count,
             jsonEvaluator   = JsonEvaluator     .Count,
@@ -85,13 +85,13 @@ namespace Friflo.Json.Fliox.Hub.Host
         };
     }
     
-    public struct PoolUsage {
-        public  int     jsonPatcher;
-        public  int     scalarSelector;
-        public  int     jsonEvaluator;
-        public  int     objectMapper;
-        public  int     entityProcessor;
-        public  int     typeValidator;
+    internal struct PoolUsage {
+        internal  int     jsonPatcher;
+        internal  int     scalarSelector;
+        internal  int     jsonEvaluator;
+        internal  int     objectMapper;
+        internal  int     entityProcessor;
+        internal  int     typeValidator;
 
         public override string ToString() =>
             $"jsonPatcher: {jsonPatcher}, scalarSelector: {scalarSelector}, jsonEvaluator: {jsonEvaluator}, " +
