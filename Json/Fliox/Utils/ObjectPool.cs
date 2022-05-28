@@ -35,7 +35,9 @@ namespace Friflo.Json.Fliox.Utils
         }
     }
     
-    public readonly struct ObjectPool<T> : IDisposable where T : IDisposable
+    // Could be a readonly struct but don't see a real advantage.
+    // Instances of this are intended to be created rarely as they are used as long lived pools.
+    public class ObjectPool<T> : IDisposable where T : IDisposable
     {
         private readonly    Action<T>           init;
         private readonly    ConcurrentStack<T>  stack;
