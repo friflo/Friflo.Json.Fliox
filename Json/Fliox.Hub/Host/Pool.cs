@@ -86,12 +86,12 @@ namespace Friflo.Json.Fliox.Hub.Host
     }
     
     public struct PoolUsage {
-        internal int    jsonPatcher;
-        internal int    scalarSelector;
-        internal int    jsonEvaluator;
-        internal int    objectMapper;
-        internal int    entityProcessor;
-        internal int    typeValidator;
+        public  int     jsonPatcher;
+        public  int     scalarSelector;
+        public  int     jsonEvaluator;
+        public  int     objectMapper;
+        public  int     entityProcessor;
+        public  int     typeValidator;
 
         public override string ToString() =>
             $"jsonPatcher: {jsonPatcher}, scalarSelector: {scalarSelector}, jsonEvaluator: {jsonEvaluator}, " +
