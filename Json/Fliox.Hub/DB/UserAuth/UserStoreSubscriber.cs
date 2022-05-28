@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
             
         internal void CreateSubscriber(UserAuthenticator userAuthenticator, FlioxHub hub) {
-            var changes     = ChangeFlags.All;
+            var change      = ChangeFlags.All;
             var store       = new UserStore (hub, userAuthenticator.userHub.DatabaseName);
             // userAuthenticator.userHub.EventDispatcher = new EventDispatcher(true);
             store.UserId    = UserStore.AuthenticationUser;
@@ -32,9 +32,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             store.Token     = "admin";
             store.ClientId  = "user_db_subscriber";
             store.SetEventProcessor(new DirectEventProcessor());
-            store.credentials.SubscribeChanges  (changes, CredentialChange);
-            store.permissions.SubscribeChanges  (changes, PermissionChange);
-            store.roles.SubscribeChanges        (changes, RoleChange);
+            store.credentials.SubscribeChanges  (change, CredentialChange);
+            store.permissions.SubscribeChanges  (change, PermissionChange);
+            store.roles.SubscribeChanges        (change, RoleChange);
             store.SyncTasks().Wait();
         }
         
