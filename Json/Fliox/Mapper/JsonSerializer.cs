@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.Mapper
     public static class JsonSerializer
     {
         public   static readonly    TypeStore                   DebugTypeStore  = new TypeStore();
-        private  static readonly    SharedPool<ObjectWriter>    WriterPool      = new SharedPool<ObjectWriter> (() => new ObjectWriter(DebugTypeStore));
-        private  static readonly    SharedPool<ObjectReader>    ReaderPool      = new SharedPool<ObjectReader> (() => new ObjectReader(DebugTypeStore));
+        private  static readonly    ObjectPool<ObjectWriter>    WriterPool      = new ObjectPool<ObjectWriter> (() => new ObjectWriter(DebugTypeStore));
+        private  static readonly    ObjectPool<ObjectReader>    ReaderPool      = new ObjectPool<ObjectReader> (() => new ObjectReader(DebugTypeStore));
         
         public static void Dispose() {
             WriterPool.Dispose();

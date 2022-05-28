@@ -35,16 +35,24 @@ namespace Friflo.Json.Fliox.Utils
         }
     }
     
-    public abstract class ObjectPool<T> : IDisposable where T : IDisposable
+    public readonly struct ObjectPool<T> : IDisposable where T : IDisposable
     {
-        internal    readonly    Action<T>   init;
+        private readonly    Action<T>           init;
+        private readonly    ConcurrentStack<T>  stack;
+        private readonly    ConcurrentStack<T>  instances;
+        private readonly    Func<T>             factory;
         
-        internal    abstract    T           GetInstance();
-        internal    abstract    void        Return(T instance);
-        public      abstract    void        Dispose();
-        public      abstract    int         Usage { get; }
+        public              int                 Count       => stack.Count;
+        public  override    string              ToString()  => $"Count: {stack.Count}";
         
-        public                  Pooled<T>   Get() {
+        public ObjectPool(Func<T> factory, Action<T> init = null) {
+            stack           = new ConcurrentStack<T>();
+            instances       = new ConcurrentStack<T>();
+            this.factory    = factory;
+            this.init       = init;
+        }
+
+        public              Pooled<T>           Get() {
             var instance = GetInstance();
             // ReSharper disable once UseNullPropagation
             if (init != null) {
@@ -52,27 +60,8 @@ namespace Friflo.Json.Fliox.Utils
             }
             return new Pooled<T>(this, instance);
         }
-        
-        protected ObjectPool(Action<T> init) {
-            this.init = init;
-        }
-    }
-    
-    public sealed class SharedPool<T> : ObjectPool<T> where T : IDisposable
-    {
-        private readonly    ConcurrentStack<T>  stack       = new ConcurrentStack<T>();
-        private readonly    ConcurrentStack<T>  instances   = new ConcurrentStack<T>();
-        private readonly    Func<T>             factory;
-        
-        public              int                 Count       => stack.Count;
-        public  override    int                 Usage       => 0;
-        public  override    string              ToString()  => $"Count: {stack.Count}";
 
-        public SharedPool(Func<T> factory, Action<T> init = null) : base(init){
-            this.factory    = factory;
-        }
-
-        public override void Dispose() {
+        public void Dispose() {
             foreach (var instance in instances) {
                 instance.Dispose();
             }
@@ -80,44 +69,20 @@ namespace Friflo.Json.Fliox.Utils
             instances.Clear();
         }
         
-        internal override T GetInstance() {
-            if (!stack.TryPop(out T instance)) {
-                instance = factory();
-                instances.Push(instance);
+        private T GetInstance() {
+            if (stack.TryPop(out T instance)) {
+                return instance;
             }
+            instance = factory();
+            instances.Push(instance);
             return instance;
         }
         
-        internal override void Return(T instance) {
+        public void Return(T instance) {
             if (instance is IResetable resetable) {
                 resetable.Reset();
             }
             stack.Push(instance);
-        }
-    }
-    
-    public sealed class LocalPool<T> : ObjectPool<T> where T : IDisposable
-    {
-        private readonly    ObjectPool<T>   pool;
-        private             int             count;
-        
-        public  override    int             Usage       => count;
-        public  override    string          ToString()  => pool.ToString();
-
-        public LocalPool(ObjectPool<T> pool) : base (pool.init) {
-            this.pool   = pool;
-        }
-
-        public override void Dispose() { }
-        
-        internal override T GetInstance() {
-            count++;
-            return pool.GetInstance();
-        }
-        
-        internal override void Return(T instance) {
-            count--;
-            pool.Return(instance);
         }
     }
 }

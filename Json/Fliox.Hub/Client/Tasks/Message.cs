@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public class CommandTask : MessageTask
     {
-        private  readonly   IPool           pool;
+        private  readonly   Pool            pool;
         internal            JsonValue       result;
 
         public   override   string          Details     => $"CommandTask (name: {name})";
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       ResultJson  => IsOk("CommandTask.ResultJson", out Exception e) ? result : throw e;
         
-        internal CommandTask(string name, JsonValue param, IPool pool) : base (name, param) {
+        internal CommandTask(string name, JsonValue param, Pool pool) : base (name, param) {
             this.pool = pool;
         }
 
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              TResult         Result => ReadResult<TResult>();
         
-        internal CommandTask(string name, JsonValue param, IPool pool) : base (name, param, pool) { }
+        internal CommandTask(string name, JsonValue param, Pool pool) : base (name, param, pool) { }
     }
 }
 

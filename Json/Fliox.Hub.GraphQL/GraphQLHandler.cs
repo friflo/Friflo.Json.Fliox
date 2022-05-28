@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.GraphQL
         
         public GraphQLHandler() {
             dbSchemas       = new Dictionary<string, QLDatabaseSchema>();
-            projectorPool   = new SharedPool<JsonProjector>(() => new JsonProjector());
+            projectorPool   = new ObjectPool<JsonProjector>(() => new JsonProjector());
         }
         
         public bool IsMatch(RequestContext context) {

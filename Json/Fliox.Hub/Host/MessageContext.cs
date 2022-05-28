@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              bool            WritePretty     { get; set; }
 
         // --- internal / private properties
-        internal            IPool           Pool            => syncContext.pool;
+        internal            Pool            Pool            => syncContext.pool;
         [DebuggerBrowsable(Never)]
         internal            SyncContext     SyncContext     => syncContext;
         

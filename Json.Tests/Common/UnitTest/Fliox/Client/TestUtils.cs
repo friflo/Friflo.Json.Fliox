@@ -183,7 +183,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public void BenchmarkPooledClient() {
             var env             = new SharedEnv();
             var hub             = new NoopDatabaseHub("noop_db", env);
-            var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub));
+            var pocStorePool    = new ObjectPool<PocStore>(() => new PocStore(hub));
             FlioxClient client;
             using (var pooled = pocStorePool.Get()) {
                 client = pooled.instance;

@@ -467,8 +467,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             };
             var hub         = context.hub;
             var sharedCache = context.SharedCache;
-            var localPool   = new Pool(hub.sharedEnv);
-            syncContext     = new SyncContext(localPool, null, sharedCache);
+            var pool        = hub.sharedEnv.Pool;
+            syncContext     = new SyncContext(pool, null, sharedCache);
             return syncRequest;
         }
         

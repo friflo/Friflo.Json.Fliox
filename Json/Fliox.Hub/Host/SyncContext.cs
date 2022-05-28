@@ -49,14 +49,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
         internal SyncContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache) {
-            AssertPoolUnused(pool);
             this.pool           = pool;
             this.eventTarget    = eventTarget;
             this.sharedCache    = sharedCache;
         }
         
         internal SyncContext (Pool pool, IEventTarget eventTarget, SharedCache sharedCache, in JsonKey clientId) {
-            AssertPoolUnused(pool);
             this.pool           = pool;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
@@ -87,18 +85,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (authorizer == null)     throw new ArgumentNullException(nameof(authorizer));
         }
         
-        [Conditional("DEBUG")]
-        private static void AssertPoolUnused(Pool pool) {
-            pool.AssertEqual(new PoolUsage());
-        }
-        
         internal void Cancel() {
             canceler(); // canceler.Invoke();
         }
         
-        public void Release() {
-            AssertPoolUnused(pool);
-        }
+        // todo remove
+        public void Release() { }
     }
     
     /// <summary>

@@ -149,8 +149,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// If given database has no schema the key name of all entities in all containers need to be "id"
         public async Task SeedDatabase(EntityDatabase src) {
             var sharedEnv       = new SharedEnv();
-            var localPool       = new Pool(sharedEnv);
-            var syncContext     = new SyncContext(localPool, null, sharedEnv.sharedCache);
+            var pool            = sharedEnv.Pool;
+            var syncContext     = new SyncContext(pool, null, sharedEnv.sharedCache);
             var containerNames  = await src.GetContainers().ConfigureAwait(false);
             var entityTypes     = src.Schema?.typeSchema.GetEntityTypes();
             foreach (var container in containerNames) {
