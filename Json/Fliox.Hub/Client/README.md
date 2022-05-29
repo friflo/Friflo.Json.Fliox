@@ -67,11 +67,18 @@ These container operations are:
 
 ## database commands & messages
 
-A client also offer the possibility to send commands and messages.  
-Both accept **none** or a **single** parameter - commonly called `param`.  
-The difference between the two is:
-- a command return a **result** 
-- a message return **void** aka nothing.
+A client also offer the possibility to send and subscribe commands and messages.  
+In detail:
+
+- **Send** a message / commands by passing its name and an optional parameter - commonly called `param`.  
+  The difference between command and message is:
+  - a command return a **result** 
+  - a message return **void** aka nothing.
+
+- **Subscribe** messages / commands send to a Hub by passing their name and a handler method or lambda.  
+  A Hub send message / command events to a client **only** if subscribed.  
+  *In other words:* A Hub don't send message / command events to a client unsolicited.
+
 
 
 ## Client usage
