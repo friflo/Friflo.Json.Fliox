@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// If assigned the database send push events to clients for database changes and messages these clients have subscribed. <br/>
         /// In case of remote database connections <b>WebSockets</b> are used to send Pub-Sub events to clients.   
         /// </summary>
-        public              EventDispatcher         EventDispatcher     { get; set; }
+        public              EventDispatcher     EventDispatcher     { get; set; }
         
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
