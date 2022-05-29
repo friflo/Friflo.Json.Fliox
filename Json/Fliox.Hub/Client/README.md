@@ -72,8 +72,8 @@ In detail:
 
 - **Send** a message / commands by passing its name and an optional parameter - commonly called `param`.  
   The difference between command and message is:
-  - a command return a **result** 
-  - a message return **void** aka nothing.
+  - a command return a **result** - It is used to execute a domain specific operation on the Hub.
+  - a message return **void**     - It is used to send messages to other clients.
 
 - **Subscribe** messages / commands send to a Hub by passing their name and a handler method or lambda.  
   - A Hub send message / command events to a client **only** if subscribed.  
