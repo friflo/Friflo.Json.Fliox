@@ -117,7 +117,7 @@ public static async Task AccessDatabase() {
 As mentioned above `ShopStore` also defines a database schema.  
 A database schema is the declaration of database **containers**, **commands** and **messages**.  
 
-All declarations as expressed as types in a schema. This principle enables code generation as types
+All declarations are expressed as types in a schema. This principle enables code generation as types
 for other programming languages.
 
 Schema generation is integral part of the [HTTP Hub](../Host/README.md#HttpHost).  
