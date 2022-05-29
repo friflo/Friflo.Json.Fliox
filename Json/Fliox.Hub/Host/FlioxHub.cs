@@ -152,10 +152,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </para>
         /// </summary>
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            syncContext.hub  = this;
-            var syncDbName      = syncRequest.database;             // is nullable
-            var hubDbName       = syncContext.hub.DatabaseName;  // not null
-            var dbName          = syncDbName ?? hubDbName;          // not null
+            syncContext.hub = this;
+            var syncDbName  = syncRequest.database;             // is nullable
+            var hubDbName   = syncContext.hub.DatabaseName;     // not null
+            var dbName      = syncDbName ?? hubDbName;          // not null
             syncContext.DatabaseName = dbName;
             if (syncContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             syncContext.clientId = syncRequest.clientId;

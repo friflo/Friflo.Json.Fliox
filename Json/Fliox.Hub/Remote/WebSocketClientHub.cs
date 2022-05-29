@@ -126,12 +126,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            int sendReqId = Interlocked.Increment(ref reqId);
-            syncRequest.reqId = sendReqId;
-            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
+            int sendReqId       = Interlocked.Increment(ref reqId);
+            syncRequest.reqId   = sendReqId;
+            var jsonRequest     = RemoteUtils.CreateProtocolMessage(syncRequest, syncContext.ObjectMapper);
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
-                var wsRequest         = new WebsocketRequest(syncContext, cancellationToken);
+                var wsRequest       = new WebsocketRequest(syncContext, cancellationToken);
                 requests.TryAdd(sendReqId, wsRequest);
                 
                 var arraySegment    = jsonRequest.AsArraySegment();
