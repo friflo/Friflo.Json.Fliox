@@ -18,7 +18,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// An EntitySet represents a collection (table) of entities (records). <br/>
+    /// An EntitySet represents a collection (table) of entities (records) with a specific type <typeparamref name="T"/>. <br/>
     /// <br/>
     /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities. <br/>
     /// It also allows to subscribe to entity changes made by other database clients. <br/>
