@@ -22,20 +22,6 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public readonly struct UserInfo {
-                                    public  readonly    JsonKey     userId; 
-        [DebuggerBrowsable(Never)]  public  readonly    string      token;
-                                    public  readonly    JsonKey     clientId;
-
-        public override     string      ToString() => $"userId: {userId}, clientId: {clientId}";
-
-        public UserInfo (in JsonKey userId, string token, in JsonKey clientId) {
-            this.userId     = userId;
-            this.token      = token;
-            this.clientId   = clientId;
-        }
-    }
-
     /// <summary>
     /// Application classes extending <see cref="FlioxClient"/> offer two main functionalities:
     /// <list type="number">
