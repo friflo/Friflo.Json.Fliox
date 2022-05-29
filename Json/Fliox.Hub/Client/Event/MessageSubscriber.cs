@@ -7,7 +7,8 @@ using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Client.Internal
+// internal Event API => use specific namespace
+namespace Friflo.Json.Fliox.Hub.Client.Event
 {
     internal sealed class MessageSubscriber
     {

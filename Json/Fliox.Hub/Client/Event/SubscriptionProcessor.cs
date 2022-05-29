@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
-// SubscriptionProcessor is commonly not used directly by application => use separate namespace
+// internal Event API => use separate namespace
 namespace Friflo.Json.Fliox.Hub.Client.Event
 {
     internal sealed class SubscriptionProcessor : IDisposable
