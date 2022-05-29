@@ -70,7 +70,7 @@ These container operations are:
 A client also offer the possibility to send and subscribe commands and messages.  
 In detail:
 
-- **Send** a message / commands by passing its name and an optional parameter - commonly called `param`.  
+- **Send** a message / command by passing its name and an optional parameter - commonly called `param`.  
   The difference between command and message is:
   - a command return a **result** - It is used to execute a domain specific operation on the Hub.
   - a message return **void**     - It is used to send messages to other clients.
