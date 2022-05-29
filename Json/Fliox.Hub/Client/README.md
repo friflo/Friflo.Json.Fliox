@@ -76,9 +76,10 @@ In detail:
   - a message return **void** aka nothing.
 
 - **Subscribe** messages / commands send to a Hub by passing their name and a handler method or lambda.  
-  A Hub send message / command events to a client **only** if subscribed.  
-  *In other words:* A Hub don't send message / command events to a client unsolicited.
-
+  - A Hub send message / command events to a client **only** if subscribed.  
+    *In other words:* A Hub don't send message / command events to a client unsolicited.  
+  - This approach enables subscribing messages / events send from other clients **without** changing / deploying the Hub.  
+    The client user need to be **authorized** to subscribe specific message & command events.
 
 
 ## Client usage
