@@ -50,7 +50,8 @@ namespace Fliox.DemoHub
             hub.EventDispatcher     = new EventDispatcher(true);    // optional - enables sending events for subscriptions
             
             var userDB              = new FileDatabase("user_db", c.userDbPath, new UserDBHandler(), null, false);
-            hub.Authenticator       = new UserAuthenticator(userDB).SubscribeUserDbChanges(hub.EventDispatcher);// optional - otherwise all request tasks are authorized
+            hub.Authenticator       = new UserAuthenticator(userDB) // optional - otherwise all request tasks are authorized
+                .SubscribeUserDbChanges(hub.EventDispatcher);       // optional - apply user_db changes instantaneously
             hub.AddExtensionDB(userDB);                             // optional - expose userStore as extension database
             
             var httpHost            = new HttpHost(hub, "/fliox/").CacheControl(c.cache);
