@@ -31,9 +31,12 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     
     /// <summary>
     /// Performs user authentication by validating the "userId" and the "token" assigned to a <see cref="Client.FlioxClient"/>
-    /// <br></br>
+    /// <br/>
     /// If authentication succeed it set the <see cref="AuthState.authorizer"/> derived from the roles assigned to the user.
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
+    /// <br/>
+    /// <b>Note:</b> User permissions and roles are cached for successful authenticated users.<br/>
+    /// This enables instant task authorization and reduces the number of reads to the <b>user_db</b> significant. 
     /// </summary>
     public class UserAuthenticator : Authenticator, IDisposable
     {
@@ -63,7 +66,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         
         /// <summary>
         /// Subscribe changes to <b>user_db</b> <see cref="UserStore.permissions"/> and <see cref="UserStore.roles"/> to 
-        /// applying these changes to users instantaneously.
+        /// applying these changes to users instantaneously.<br/>
+        /// <br/>
+        /// Without subscribing <b>user_db</b> changes they are effective after a call to <see cref="UserStore.ClearAuthCache"/>
+        /// or after a server restart.
         /// </summary>
         public UserAuthenticator SubscribeUserDbChanges(EventDispatcher eventDispatcher) {
             userHub.EventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
