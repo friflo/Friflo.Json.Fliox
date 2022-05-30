@@ -20,12 +20,14 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class Changes
     {
-        public              int             Count       => ChangeInfo.Count;
-        public              ChangeInfo      ChangeInfo  { get; } = new ChangeInfo();
-        public    abstract  string          Container   { get; }
+        public              int                         Count       => ChangeInfo.Count;
+        public              ChangeInfo                  ChangeInfo  { get; } = new ChangeInfo();
+        public    abstract  string                      Container   { get; }
+        public              IReadOnlyList<JsonValue>    RawCreates  => rawCreates;
+        public              IReadOnlyList<JsonValue>    RawUpserts  => rawUpserts;
         
-        public    readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
-        public    readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
+        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
+        [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
 
         internal  abstract  Type    GetEntityType();
         internal  abstract  void    Clear       ();
@@ -36,16 +38,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class Changes<TKey, T> : Changes where T : class
     {
-                                   public           HashSet<TKey>       Deletes { get; } = SyncSet.CreateHashSet<TKey>();
-                                   public           List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
+        public              HashSet<TKey>       Deletes { get; } = SyncSet.CreateHashSet<TKey>();
+        public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
+        public    override  string              ToString()      => ChangeInfo.ToString();       
+        public    override  string              Container       { get; }
+        internal  override  Type                GetEntityType() => typeof(T);
         
         [DebuggerBrowsable(Never)] private          List<T>             creates;
         [DebuggerBrowsable(Never)] private          List<T>             upserts;
         [DebuggerBrowsable(Never)] private readonly ObjectMapper        objectMapper;
-        
-        public   override   string              ToString()      => ChangeInfo.ToString();       
-        public   override   string              Container       { get; }
-        internal override   Type                GetEntityType() => typeof(T);
 
         /// <summary> called via <see cref="Event.SubscriptionProcessor.GetChanges"/> </summary>
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
