@@ -64,12 +64,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // --- prepare EventContext state
             var logger          = client.Logger;
             var eventContext    = new EventContext(this, ev, logger);
-            foreach (var change in changes) {
-                Changes entityChanges = change.Value;
-                if (entityChanges.Count == 0)
-                    continue;
-                contextChanges.Add(entityChanges);
-            }
             
             // --- invoke subscription event handler
             client._intern.subscriptionEventHandler?.Invoke(eventContext);
@@ -105,6 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
             // --- update changes
             var entityChanges = GetChanges(set);
+            AddChanges(entityChanges);
             entityChanges.rawCreates.AddRange(create.entities);
             entityChanges.ChangeInfo.creates += create.entities.Count;
         }
@@ -116,6 +111,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
             // --- update changes
             var entityChanges = GetChanges(set);
+            AddChanges(entityChanges);
             entityChanges.rawUpserts.AddRange(upsert.entities);
             entityChanges.ChangeInfo.upserts += upsert.entities.Count;
         }
@@ -127,6 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
             // --- update changes
             var entityChanges = GetChanges(set);
+            AddChanges(entityChanges);
             entityChanges.AddDeletes(delete.ids);
         }
         
@@ -137,6 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
             // --- update changes
             var entityChanges = GetChanges(set);
+            AddChanges(entityChanges);
             entityChanges.AddPatches(patches.patches);
         }
         
@@ -148,6 +146,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var invokeContext   = new InvokeContext(name, task.param, mapper.reader);
             var message         = new Message(invokeContext);
             messages.Add(message);
+        }
+        
+        private void AddChanges(Changes entityChanges) {
+            if (entityChanges.added)
+                return;
+            contextChanges.Add(entityChanges);
+            entityChanges.added = true;
         }
         
         internal Changes GetChanges (EntitySet entitySet) {

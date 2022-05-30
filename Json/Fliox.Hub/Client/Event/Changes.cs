@@ -26,6 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<JsonValue>    RawCreates  => rawCreates;
         public              IReadOnlyList<JsonValue>    RawUpserts  => rawUpserts;
         
+        [DebuggerBrowsable(Never)]  internal            bool            added;
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
 
@@ -55,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Clear() {
+            added   = false;
             creates = null;
             upserts = null;
             Deletes.Clear();
