@@ -46,18 +46,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                 change.Value.Clear();
             }
             EventSequence++;
-            using (var pooled = client.ObjectMapper.Get()) {
-                var mapper = pooled.instance;
-                foreach (var task in ev.tasks) {
-                    switch (task.TaskType)
-                    {
-                        case TaskType.create:   ProcessCreate (client, (CreateEntities)task, mapper);   break;
-                        case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task, mapper);   break;
-                        case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);           break;
-                        case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task);           break;
-                        case TaskType.message:
-                        case TaskType.command:  ProcessMessage ((SyncMessageTask)task, messageMapper);  break;
-                    }
+
+            foreach (var task in ev.tasks) {
+                switch (task.TaskType)
+                {
+                    case TaskType.create:   ProcessCreate (client, (CreateEntities)task);   break;
+                    case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task);   break;
+                    case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);   break;
+                    case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task);   break;
+                    case TaskType.message:
+                    case TaskType.command:  ProcessMessage ((SyncMessageTask)task, messageMapper);  break;
                 }
             }
             // After processing / collecting all change & message tasks invoke their handler methods
@@ -99,24 +97,24 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
         }
         
-        private void ProcessCreate(FlioxClient client, CreateEntities create, ObjectMapper mapper) {
+        private void ProcessCreate(FlioxClient client, CreateEntities create) {
             var set = client.GetEntitySet(create.container);
             if (set.GetSubscription() == null) {
                 return;
             }
             // --- update changes
             var entityChanges = GetChanges(set);
-            entityChanges.AddCreates(create.entities, mapper);
+            entityChanges.AddCreates(create.entities);
         }
         
-        private void ProcessUpsert(FlioxClient client, UpsertEntities upsert, ObjectMapper mapper) {
+        private void ProcessUpsert(FlioxClient client, UpsertEntities upsert) {
             var set = client.GetEntitySet(upsert.container);
             if (set.GetSubscription() == null) {
                 return;
             }
             // --- update changes
             var entityChanges = GetChanges(set);
-            entityChanges.AddUpserts(upsert.entities, mapper);
+            entityChanges.AddUpserts(upsert.entities);
         }
         
         private void ProcessDelete(FlioxClient client, DeleteEntities delete) {
@@ -153,9 +151,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var entityType = entitySet.EntityType;
             if (changes.TryGetValue(entityType, out var change))
                 return change;
-            object[] constructorParams = { entitySet };
+            object[] constructorParams = { entitySet, messageMapper };
             var keyType     = entitySet.KeyType;
-            var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), new[] {keyType, entityType}, constructorParams);
+            var genericArgs = new[] { keyType, entityType };
+            var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), genericArgs, constructorParams);
             change          = (Changes)instance;
             changes.Add(entityType, change);
             return change;
