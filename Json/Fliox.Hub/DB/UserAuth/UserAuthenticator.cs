@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public UserAuthenticator SubscribeUserDbChanges(EventDispatcher eventDispatcher) {
             userHub.EventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
             var subscriber          = new UserStoreSubscriber(this);
-            subscriber.CreateSubscriber (this);
+            subscriber.CreateSubscriber ();
             return this;
         }
 

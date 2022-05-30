@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             this.userAuthenticator = userAuthenticator;
         }
             
-        internal void CreateSubscriber(UserAuthenticator userAuthenticator) {
+        internal void CreateSubscriber() {
             var change      = ChangeFlags.All;
             var store       = new UserStore (userAuthenticator.userHub);
             // userAuthenticator.userHub.EventDispatcher = new EventDispatcher(true);
