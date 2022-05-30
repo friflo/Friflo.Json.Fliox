@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -22,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             this.userAuthenticator = userAuthenticator;
         }
             
-        internal void SetupSubscriptions() {
+        internal async Task SetupSubscriptions() {
             var change      = ChangeFlags.All;
             var store       = new UserStore (userAuthenticator.userHub);
             // userAuthenticator.userHub.EventDispatcher = new EventDispatcher(true);
@@ -32,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             // store.credentials.SubscribeChanges  (change, CredentialChange);
             store.permissions.SubscribeChanges  (change, PermissionChange);
             store.roles.SubscribeChanges        (change, RoleChange);
-            store.SyncTasks().Wait();
+            await store.SyncTasks();
         }
         
         private void CredentialChange(Changes<JsonKey, UserCredential> changes, EventContext context) {
