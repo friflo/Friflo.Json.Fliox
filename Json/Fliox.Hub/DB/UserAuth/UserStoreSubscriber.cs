@@ -24,14 +24,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
             
         internal async Task SetupSubscriptions() {
-            var change      = ChangeFlags.All;
             var store       = new UserStore (userAuthenticator.userHub);
             store.UserId    = UserStore.AuthenticationUser;
             store.ClientId  = "user_db_subscriber";
             store.SetEventProcessor(new DirectEventProcessor());
-            // store.credentials.SubscribeChanges  (change, CredentialChange);
-            store.permissions.SubscribeChanges  (change, PermissionChange);
-            store.roles.SubscribeChanges        (change, RoleChange);
+        //  store.credentials.SubscribeChanges  (ChangeFlags.All, CredentialChange);
+            store.permissions.SubscribeChanges  (ChangeFlags.All, PermissionChange);
+            store.roles.SubscribeChanges        (ChangeFlags.All, RoleChange);
             await store.SyncTasks();
         }
         
@@ -93,15 +92,6 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
                     affectedUsers.Add(user.userId);                    
                 }
             }
-        }
-    }
-    
-    internal readonly struct RoleUsers
-    {
-        internal readonly HashSet<JsonKey> users;
-        
-        internal RoleUsers(HashSet<JsonKey> users) {
-            this.users = users;
         }
     }
 }
