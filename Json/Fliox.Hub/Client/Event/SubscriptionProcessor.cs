@@ -93,6 +93,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         }
         
         private void ProcessCreate(FlioxClient client, CreateEntities create) {
+            var entities = create.entities;
+            if (entities.Count == 0)
+                return;
             var set = client.GetEntitySet(create.container);
             if (set.GetSubscription() == null) {
                 return;
@@ -100,11 +103,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.rawCreates.AddRange(create.entities);
-            entityChanges.ChangeInfo.creates += create.entities.Count;
+            entityChanges.rawCreates.AddRange(entities);
+            entityChanges.ChangeInfo.creates += entities.Count;
         }
         
         private void ProcessUpsert(FlioxClient client, UpsertEntities upsert) {
+            var entities = upsert.entities;
+            if (entities.Count == 0)
+                return;
             var set = client.GetEntitySet(upsert.container);
             if (set.GetSubscription() == null) {
                 return;
@@ -112,11 +118,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.rawUpserts.AddRange(upsert.entities);
-            entityChanges.ChangeInfo.upserts += upsert.entities.Count;
+            entityChanges.rawUpserts.AddRange(entities);
+            entityChanges.ChangeInfo.upserts += entities.Count;
         }
         
         private void ProcessDelete(FlioxClient client, DeleteEntities delete) {
+            var ids = delete.ids;
+            if (ids.Count == 0)
+                return;
             var set = client.GetEntitySet(delete.container);
             if (set.GetSubscription() == null) {
                 return;
@@ -124,18 +133,21 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.AddDeletes(delete.ids);
+            entityChanges.AddDeletes(ids);
         }
         
-        private void ProcessPatch(FlioxClient client, PatchEntities patches) {
-            var set = client.GetEntitySet(patches.container);
+        private void ProcessPatch(FlioxClient client, PatchEntities patchEntities) {
+            var patches = patchEntities.patches;
+            if (patches.Count == 0)
+                return;
+            var set = client.GetEntitySet(patchEntities.container);
             if (set.GetSubscription() == null) {
                 return;
             }
             // --- update changes
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
-            entityChanges.AddPatches(patches.patches);
+            entityChanges.AddPatches(patches);
         }
         
         private void ProcessMessage(SyncMessageTask task, ObjectMapper mapper) {
