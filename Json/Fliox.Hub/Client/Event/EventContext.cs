@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              JsonKey                 SrcUserId       => ev.srcUserId;
         public              int                     EventSequence   => processor.EventSequence;
         public              IReadOnlyList<Message>  Messages        => processor.messages;
-        /// <summary> <see cref="Changes"/> return the changes per database <see cref="Changes.Container"/>.
+        /// <summary> <see cref="Changes"/> return the changes per database container. <br/>
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
         public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
         public              EventInfo               EventInfo       { get; private set; }
