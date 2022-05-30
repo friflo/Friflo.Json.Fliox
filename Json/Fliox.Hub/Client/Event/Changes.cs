@@ -36,13 +36,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class Changes<TKey, T> : Changes where T : class
     {
-        // used properties for Creates, Upserts, Deletes & Patches to enable changing implementation. May fill these properties lazy in future.
-        public              HashSet<TKey>       Deletes { get; } = SyncSet.CreateHashSet<TKey>();
-        public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
+                                   public           HashSet<TKey>       Deletes { get; } = SyncSet.CreateHashSet<TKey>();
+                                   public           List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
         
-        private             List<T>             creates;
-        private             List<T>             upserts;
-        private  readonly   ObjectMapper        objectMapper;
+        [DebuggerBrowsable(Never)] private          List<T>             creates;
+        [DebuggerBrowsable(Never)] private          List<T>             upserts;
+        [DebuggerBrowsable(Never)] private readonly ObjectMapper        objectMapper;
         
         public   override   string              ToString()      => ChangeInfo.ToString();       
         public   override   string              Container       { get; }
