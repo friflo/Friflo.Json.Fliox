@@ -42,9 +42,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                 messageMapper.ErrorHandler = ObjectReader.NoThrow;
             }
             messages.Clear();
-            foreach (var change in changes) {
-                change.Value.Clear();
+            // clear all changes from the last event
+            foreach (var change in contextChanges) {
+                change.Clear();
             }
+            contextChanges.Clear();
             EventSequence++;
 
             foreach (var task in ev.tasks) {
@@ -62,7 +64,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             // --- prepare EventContext state
             var logger          = client.Logger;
             var eventContext    = new EventContext(this, ev, logger);
-            contextChanges.Clear();
             foreach (var change in changes) {
                 Changes entityChanges = change.Value;
                 if (entityChanges.Count == 0)
