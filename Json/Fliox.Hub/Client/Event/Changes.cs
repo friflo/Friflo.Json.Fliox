@@ -24,23 +24,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              ChangeInfo      ChangeInfo  { get; } = new ChangeInfo();
         public    abstract  string          Container   { get; }
         
-        [DebuggerBrowsable(Never)] protected readonly   List<JsonValue> rawCreates = new List<JsonValue>();
-        [DebuggerBrowsable(Never)] protected readonly   List<JsonValue> rawUpserts = new List<JsonValue>();
+        public    readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
+        public    readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
 
         internal  abstract  Type    GetEntityType();
         internal  abstract  void    Clear       ();
         internal  abstract  void    AddDeletes  (HashSet<JsonKey> ids);
         internal  abstract  void    AddPatches  (Dictionary<JsonKey, EntityPatch> patches);
         internal  abstract  void    ApplyChangesTo  (EntitySet entitySet);
-        
-        internal  void    AddCreates  (List<JsonValue> entities) {
-            rawCreates.AddRange(entities);
-            ChangeInfo.creates += entities.Count;
-        }
-        internal  void    AddUpserts  (List<JsonValue> entities) {
-            rawUpserts.AddRange(entities);
-            ChangeInfo.upserts += entities.Count;
-        }
     }
     
     public sealed class Changes<TKey, T> : Changes where T : class

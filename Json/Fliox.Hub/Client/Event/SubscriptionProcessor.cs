@@ -104,7 +104,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
             // --- update changes
             var entityChanges = GetChanges(set);
-            entityChanges.AddCreates(create.entities);
+            entityChanges.rawCreates.AddRange(create.entities);
+            entityChanges.ChangeInfo.creates += create.entities.Count;
         }
         
         private void ProcessUpsert(FlioxClient client, UpsertEntities upsert) {
@@ -114,7 +115,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             }
             // --- update changes
             var entityChanges = GetChanges(set);
-            entityChanges.AddUpserts(upsert.entities);
+            entityChanges.rawUpserts.AddRange(upsert.entities);
+            entityChanges.ChangeInfo.upserts += upsert.entities.Count;
         }
         
         private void ProcessDelete(FlioxClient client, DeleteEntities delete) {
