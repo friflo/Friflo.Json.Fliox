@@ -61,6 +61,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub.Dispose();
         }
         
+        /// <summary>
+        /// Subscribe changes to <b>user_db</b> <see cref="UserStore.permissions"/> and <see cref="UserStore.roles"/> to 
+        /// applying these changes to users instantaneously.
+        /// </summary>
         public UserAuthenticator SubscribeUserDbChanges(EventDispatcher eventDispatcher) {
             userHub.EventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
             var subscriber          = new UserStoreSubscriber(this);
