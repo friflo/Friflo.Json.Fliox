@@ -47,6 +47,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public CommandTask<ValidateUserDbResult> ValidateUserDb() {
             return SendCommand<ValidateUserDbResult>(nameof(ValidateUserDb));
         }
+        public CommandTask<bool> ClearAuthCache() {
+            return SendCommand<bool>(nameof(ClearAuthCache));
+        }
         
         public async Task<AuthResult> Authenticate(Credentials command) {
             var commandTask = AuthenticateUser(command);

@@ -22,6 +22,7 @@ type Query {
     countRoles      (filter: String) : Int
     AuthenticateUser(param: CredentialsInput) : AuthResult!
     ValidateUserDb   : ValidateUserDbResult!
+    ClearAuthCache   : Boolean!
     std_Echo        (param: Any!) : Any!
     std_Containers   : DbContainers!
     std_Messages     : DbMessages!

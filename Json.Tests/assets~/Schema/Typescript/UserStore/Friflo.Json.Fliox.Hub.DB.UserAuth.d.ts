@@ -24,6 +24,7 @@ export interface UserStore {
     /** authenticate user **Credentials**: **userId** and **token** */
     ["AuthenticateUser"]     (param: Credentials | null) : AuthResult;
     ["ValidateUserDb"]       () : ValidateUserDbResult;
+    ["ClearAuthCache"]       () : boolean;
     /** echos the given parameter to assure the database is working appropriately. */
     ["std.Echo"]             (param: any) : any;
     /** list all database containers */

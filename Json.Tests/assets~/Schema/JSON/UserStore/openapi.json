@@ -95,6 +95,24 @@
         }
       }
     },
+    "/?command=ClearAuthCache": {
+      "post": {
+        "summary":    "",
+        "tags":       ["commands"],
+        "responses": {
+          "200": {             
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/?command=std.Echo": {
       "post": {
         "summary":    "echos the given parameter to assure the database is working appropriately.",

@@ -11,8 +11,9 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     public sealed class UserDBHandler : TaskHandler
     {
         public UserDBHandler() {
-            AddCommandHandlerAsync<Credentials, AuthResult>              (nameof(AuthenticateUser), AuthenticateUser);
+            AddCommandHandlerAsync<Credentials, AuthResult>         (nameof(AuthenticateUser),  AuthenticateUser);
             AddCommandHandlerAsync<JsonValue, ValidateUserDbResult> (nameof(ValidateUserDb),    ValidateUserDb);
+            AddCommandHandler<JsonValue, bool>                      (nameof(ClearAuthCache),    ClearAuthCache);
         }
         
         private async Task<AuthResult> AuthenticateUser (Param<Credentials> param, MessageContext command) {
@@ -46,6 +47,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             var errors          = await authenticator.ValidateUserDb(databases).ConfigureAwait(false);
             
             return new ValidateUserDbResult { errors = errors.ToArray() };
+        }
+        
+        private static bool ClearAuthCache (Param<JsonValue> param, MessageContext command) {
+            var authenticator   = (UserAuthenticator)command.Hub.Authenticator;
+            authenticator.users.Clear();
+            authenticator.authorizerByRole.Clear();
+            return true;
         }
     }
 }
