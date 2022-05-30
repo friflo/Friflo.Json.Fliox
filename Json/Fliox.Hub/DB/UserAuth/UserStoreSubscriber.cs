@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -23,16 +22,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             this.userAuthenticator = userAuthenticator;
         }
             
-        internal void CreateSubscriber(UserAuthenticator userAuthenticator, FlioxHub hub) {
+        internal void CreateSubscriber(UserAuthenticator userAuthenticator) {
             var change      = ChangeFlags.All;
-            var store       = new UserStore (hub, userAuthenticator.userHub.DatabaseName);
+            var store       = new UserStore (userAuthenticator.userHub);
             // userAuthenticator.userHub.EventDispatcher = new EventDispatcher(true);
             store.UserId    = UserStore.AuthenticationUser;
-            store.UserId    = "admin";
-            store.Token     = "admin";
             store.ClientId  = "user_db_subscriber";
             store.SetEventProcessor(new DirectEventProcessor());
-            store.credentials.SubscribeChanges  (change, CredentialChange);
+            // store.credentials.SubscribeChanges  (change, CredentialChange);
             store.permissions.SubscribeChanges  (change, PermissionChange);
             store.roles.SubscribeChanges        (change, RoleChange);
             store.SyncTasks().Wait();

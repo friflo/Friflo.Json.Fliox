@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal void AddEventTasks(
             SyncRequest                 syncRequest,
             bool                        subscriberIsSender,
-            ref List<SyncRequestTask>   tasks,
+            ref List<SyncRequestTask>   eventTasks,
             JsonEvaluator               jsonEvaluator)
         {
             foreach (var task in syncRequest.tasks) {
@@ -108,12 +108,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     var taskResult = FilterUtils.FilterChanges(task, subscribeChanges, jsonEvaluator);
                     if (taskResult == null)
                         continue;
-                    AddTask(ref tasks, taskResult);
+                    AddTask(ref eventTasks, taskResult);
                 }
                 if (task is SyncMessageTask messageTask) {
                     if (!FilterMessage(messageTask.name))
                         continue;
-                    AddTask(ref tasks, task);
+                    AddTask(ref eventTasks, task);
                 }
             }
         }

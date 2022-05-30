@@ -55,10 +55,8 @@ namespace Friflo.Json.Tests.Main
             hub.EventDispatcher     = new EventDispatcher(true, c.env); // optional - enables sending events for subscriptions
             
             var userDB              = new FileDatabase("user_db", c.UserDbPath, new UserDBHandler(), null, false);
-            var userAuth            = new UserAuthenticator(userDB, c.env);
-            hub.Authenticator       = userAuth;                     // optional - otherwise all request tasks are authorized
+            hub.Authenticator       = new UserAuthenticator(userDB, c.env).SubscribeUserDbChanges(hub.EventDispatcher);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB(userDB);                             // optional - expose userStore as extension database
-            userAuth.SubscribeDbChanges(hub);
             
             var httpHost            = new HttpHost(hub, "/fliox/", c.env).CacheControl(c.cache);
             httpHost.AddHandler      (new GraphQLHandler());

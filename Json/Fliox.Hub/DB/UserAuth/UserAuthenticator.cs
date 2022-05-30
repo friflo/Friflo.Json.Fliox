@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
+using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Utils;
 using Friflo.Json.Fliox.Mapper;
@@ -47,9 +48,10 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new ArgumentException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
+            var sharedEnv           = env  ?? SharedEnv.Default;
             var typeSchema          = NativeTypeSchema.Create(typeof(UserStore));
             userDatabase.Schema     = new DatabaseSchema(typeSchema);
-            userHub        	        = new FlioxHub(userDatabase, env);
+            userHub        	        = new FlioxHub(userDatabase, sharedEnv);
             userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase.name);  // authorize access to userDatabase
             this.userAuth           = userAuth;
             this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();
@@ -59,9 +61,11 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
             userHub.Dispose();
         }
         
-        public void SubscribeDbChanges(FlioxHub hub) {
-            var subscriber = new UserStoreSubscriber(this);
-            subscriber.CreateSubscriber (this, hub);
+        public UserAuthenticator SubscribeUserDbChanges(EventDispatcher eventDispatcher) {
+            userHub.EventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
+            var subscriber          = new UserStoreSubscriber(this);
+            subscriber.CreateSubscriber (this);
+            return this;
         }
 
         public async Task<List<string>> ValidateUserDb(HashSet<string> databases) {

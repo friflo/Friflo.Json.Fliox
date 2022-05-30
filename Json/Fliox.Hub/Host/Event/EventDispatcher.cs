@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 foreach (var pair in subscribers) {
-                    List<SyncRequestTask>  tasks = null;
+                    List<SyncRequestTask>  eventTasks = null;
                     EventSubscriber     subscriber = pair.Value;
                     if (subscriber.SubCount == 0)
                         throw new InvalidOperationException("Expect SubscriptionCount > 0");
@@ -190,17 +190,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
                     
                     // Enqueue only change events for (change) tasks which are not send by the client itself
                     bool subscriberIsSender = syncContext.clientId.IsEqual(subscriber.clientId);
-                    databaseSubs.AddEventTasks(syncRequest, subscriberIsSender, ref tasks, jsonEvaluator);
+                    databaseSubs.AddEventTasks(syncRequest, subscriberIsSender, ref eventTasks, jsonEvaluator);
 
-                    if (tasks == null)
+                    if (eventTasks == null)
                         continue;
                     var eventMessage = new EventMessage {
-                        tasks       = tasks.ToArray(),
+                        tasks       = eventTasks.ToArray(),
                         srcUserId   = syncRequest.userId,
                         dstClientId = subscriber.clientId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {
-                        SerializeRemoteEvent(eventMessage, tasks, writer);
+                        SerializeRemoteEvent(eventMessage, eventTasks, writer);
                     }
                     subscriber.EnqueueEvent(eventMessage);
                 }
