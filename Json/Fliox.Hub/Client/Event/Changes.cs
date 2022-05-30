@@ -70,8 +70,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (creates != null)
                 return creates;
             // create entities on demand
-            creates = new List<T>(rawCreates.Count); // list could be reused
-            foreach (var create in rawCreates) {
+            var entities = rawCreates;
+            creates = new List<T>(entities.Count); // list could be reused
+            foreach (var create in entities) {
                 var entity = objectMapper.Read<T>(create);
                 creates.Add(entity);
             }
@@ -82,8 +83,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (upserts != null)
                 return upserts;
             // create entities on demand
-            upserts = new List<T>(rawUpserts.Count); // list could be reused
-            foreach (var upsert in rawUpserts) {
+            var entities = rawUpserts;
+            upserts = new List<T>(entities.Count); // list could be reused
+            foreach (var upsert in entities) {
                 var entity = objectMapper.Read<T>(upsert);
                 upserts.Add(entity);
             }
@@ -119,14 +121,16 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return;
             var client = entitySet.intern.store;
             using (var pooled = client._intern.pool.ObjectMapper.Get()) {
-                var mapper = pooled.instance;
-                if (rawCreates.Count > 0) {
-                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), rawCreates);
-                    SyncPeerEntities(entitySet, entityKeys, rawCreates, mapper);
+                var mapper          = pooled.instance;
+                var localCreates    = rawCreates;
+                if (localCreates.Count > 0) {
+                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
+                    SyncPeerEntities(entitySet, entityKeys, localCreates, mapper);
                 }
-                if (rawUpserts.Count > 0) {
-                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), rawUpserts);
-                    SyncPeerEntities(entitySet, entityKeys, rawUpserts, mapper);
+                var localUpserts    = rawUpserts;
+                if (localUpserts.Count > 0) {
+                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
+                    SyncPeerEntities(entitySet, entityKeys, localUpserts, mapper);
                 }
                 entitySet.PatchPeerEntities(Patches, mapper);
             }
