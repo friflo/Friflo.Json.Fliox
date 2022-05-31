@@ -46,6 +46,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              string          Name        => invokeContext.name;
         public              JsonValue       JsonParam   => invokeContext.param;
         
+        private             TParam          DebugParam {
+            get { Message.Read(JsonParam, invokeContext.reader, out TParam param, out _); return param; }
+        }
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    InvokeContext   invokeContext;
        
