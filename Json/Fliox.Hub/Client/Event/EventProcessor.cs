@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class DirectEventProcessor : IEventProcessor
     {
         public void EnqueueEvent(FlioxClient client, EventMessage ev) {
-            var processor = client._intern.SubscriptionProcessor; 
+            var processor = client._intern.SubscriptionProcessor(); 
             processor.ProcessEvent(client, ev);
         }
     }
@@ -73,7 +73,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         
         public void EnqueueEvent(FlioxClient client, EventMessage ev) {
             synchronizationContext.Post(delegate {
-                var processor = client._intern.SubscriptionProcessor;
+                var processor = client._intern.SubscriptionProcessor();
                 processor.ProcessEvent(client, ev);
             }, null);
         }
@@ -102,7 +102,7 @@ Consider running application / test withing SingleThreadSynchronizationContext.R
         public void ProcessEvents() {
             while (eventQueue.TryDequeue(out QueuedMessage queuedMessage)) {
                 var client      = queuedMessage.client;
-                var processor   = client._intern.SubscriptionProcessor;
+                var processor   = client._intern.SubscriptionProcessor();
                 processor.ProcessEvent(client, queuedMessage.ev);
             }
         }

@@ -172,8 +172,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private static List<JsonKey> GetKeysFromEntities(FlioxClient client, string keyName, List<JsonValue> entities) {
-            var processor = client._intern.EntityProcessor();
-            var keys = new List<JsonKey>(entities.Count);
+            var processor   = client._intern.EntityProcessor();
+            var keys        = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");

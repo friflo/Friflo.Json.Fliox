@@ -52,10 +52,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            JsonKey                     clientId;
         internal            string                      token;
 
-
-        internal EntityProcessor        EntityProcessor()       => processor     ?? (processor      = new EntityProcessor());
-        internal ObjectPatcher          ObjectPatcher()         => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
-        internal SubscriptionProcessor  SubscriptionProcessor   => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
+        // --- create expensive / infrequently used objects on demand. Used method to avoid creation by debugger
+        internal EntityProcessor        EntityProcessor()       => processor             ?? (processor             = new EntityProcessor());
+        internal ObjectPatcher          ObjectPatcher()         => objectPatcher         ?? (objectPatcher         = new ObjectPatcher());
+        internal SubscriptionProcessor  SubscriptionProcessor() => subscriptionProcessor ?? (subscriptionProcessor = new SubscriptionProcessor());
 
         private static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
         private static readonly DirectEventProcessor                 DefaultEventProcessor = new DirectEventProcessor();
