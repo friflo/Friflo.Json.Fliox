@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <list type="bullet">
     ///   <item>
     ///     A Pub-Sub implementation to send events of database changes or messages to clients by assigning an
-    ///     <see cref="Event.EventDispatcher"/> to <see cref="EventDispatcher"/>.
+    ///     <see cref="Event.EventDispatcher"/> to <see cref="EventDispatcher"/>. <br/>
     ///     Note: A client need to subscribe events in order to receive them. 
     ///   </item>
     ///   <item>
