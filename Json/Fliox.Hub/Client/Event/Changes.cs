@@ -20,10 +20,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public abstract class Changes
     {
+        /// <summary> total number of container changes </summary>
         public              int                         Count       => ChangeInfo.Count;
+        /// <summary> number of changes per mutation type: creates, upserts, deletes and patches </summary>
         public              ChangeInfo                  ChangeInfo  { get; } = new ChangeInfo();
+        /// <summary> name of the container the changes are referring to </summary>
         public    abstract  string                      Container   { get; }
+        /// <summary> raw JSON values of created container entities </summary>
         public              IReadOnlyList<JsonValue>    RawCreates  => rawCreates;
+        /// <summary> raw JSON values of upserted container entities </summary>
         public              IReadOnlyList<JsonValue>    RawUpserts  => rawUpserts;
         
         [DebuggerBrowsable(Never)]  internal            bool            added;
@@ -37,9 +42,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  abstract  void    ApplyChangesTo  (EntitySet entitySet);
     }
     
+    /// <summary>
+    /// Contain the changes (mutations) made to a container subscribed with <see cref="EntitySet{TKey,T}.SubscribeChanges"/>. <br/>
+    /// Following properties provide type-safe access to the different types of container changes 
+    /// <list type="bullet">
+    ///   <item> <see cref="Creates"/> - the created container entities</item>
+    ///   <item> <see cref="Upserts"/> - the upserted container entities</item>
+    ///   <item> <see cref="Deletes"/> - the keys of removed container entities</item>
+    ///   <item> <see cref="Patches"/> - the patches applied to container entities</item>
+    /// </list>
+    /// </summary>
     public sealed class Changes<TKey, T> : Changes where T : class
     {
+        /// <summary> return the keys of removed container entities </summary>
         public              List<TKey>          Deletes { get; } = new List<TKey>();
+        /// <summary> return patches applied to container entities </summary>
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
         public    override  string              ToString()      => ChangeInfo.ToString();       
         public    override  string              Container       { get; }
@@ -68,6 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             ChangeInfo.Clear();
         }
         
+        /// <summary> return the entities created in a container </summary>
         public List<T> Creates { get {
             if (creates != null)
                 return creates;
@@ -81,6 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return creates;
         } }
         
+        /// <summary> return the entities upserted in a container </summary>
         public List<T> Upserts { get {
             if (upserts != null)
                 return upserts;
@@ -118,6 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             ApplyChangesTo(set);
         }
         
+        /// <summary> Apply the container changes to the given <paramref name="entitySet"/> </summary>
         public void ApplyChangesTo(EntitySet<TKey, T> entitySet) {
             if (Count == 0)
                 return;

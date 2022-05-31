@@ -30,12 +30,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class EventContext : ILogSource
     {
+        /// <summary> user id sending the <see cref="Messages"/> and causing the <see cref="Changes"/>  </summary>
         public              JsonKey                 SrcUserId       => ev.srcUserId;
         public              int                     EventSequence   => processor.EventSequence;
+        /// <summary> return the <see cref="Messages"/> sent by a user </summary>
         public              IReadOnlyList<Message>  Messages        => processor.messages;
         /// <summary> <see cref="Changes"/> return the changes per database container. <br/>
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
         public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
+        /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
         public              EventInfo               EventInfo       { get; private set; }
         
         [DebuggerBrowsable(Never)]
@@ -60,6 +63,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return (Changes<TKey, T>)processor.GetChanges(entitySet);
         }
         
+        /// <summary> Apply all <see cref="Changes"/> the given <paramref name="client"/> </summary>
         public void ApplyChangesTo(FlioxClient client)
         {
             foreach (var entityChanges in processor.contextChanges) {
