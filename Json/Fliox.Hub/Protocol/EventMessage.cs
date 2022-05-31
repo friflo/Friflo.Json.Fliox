@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         public   override   string                      ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {
-            var info = new EventInfo(new ChangeInfo());
+            var info = new EventInfo();
             foreach (var task in tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
@@ -63,13 +63,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// It purpose is to get all aggregated information about a <see cref="EventMessage"/> by  by <see cref="EventMessage.GetEventInfo"/>.
     /// </summary>
     public struct EventInfo {
-        public  readonly    ChangeInfo  changes;
+        public              ChangeInfo  changes;
         public              int         messages;
-        
-        public EventInfo(ChangeInfo changes) {
-            this.changes    = changes ?? new ChangeInfo();
-            messages        = 0;
-        }
         
         public int Count => changes.Count + messages;
         
@@ -86,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// <see cref="ChangeInfo"/> is never de-/serialized.
     /// It purpose is to get aggregated change information about a <see cref="EventMessage"/> by <see cref="EventMessage.GetEventInfo"/>.
     /// </summary>
-    public class ChangeInfo {
+    public struct ChangeInfo {
         public  int creates;
         public  int upserts;
         public  int deletes;

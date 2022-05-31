@@ -155,12 +155,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
     internal class PocStoreSubscriber {
         private readonly    PocStore        client;
-        private readonly    ChangeInfo      orderSum     = new ChangeInfo();
-        private readonly    ChangeInfo      customerSum  = new ChangeInfo();
-        private readonly    ChangeInfo      articleSum   = new ChangeInfo();
-        private readonly    ChangeInfo      producerSum  = new ChangeInfo();
-        private readonly    ChangeInfo      employeeSum  = new ChangeInfo();
-        private readonly    ChangeInfo      typesSum     = new ChangeInfo();
+        private             ChangeInfo      orderSum;
+        private             ChangeInfo      customerSum;
+        private             ChangeInfo      articleSum;
+        private             ChangeInfo      producerSum;
+        private             ChangeInfo      employeeSum;
+        private             ChangeInfo      typesSum;
         private             int             messageCount;
         internal            int             testMessageCalls;
         internal            int             testMessageIntCalls;

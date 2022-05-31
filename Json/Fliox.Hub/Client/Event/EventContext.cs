@@ -52,24 +52,21 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Use <see cref="GetChanges{TKey,T}"/> to access specific container changes </summary>
         public              IReadOnlyList<Changes>  Changes         => processor.contextChanges;
         /// <summary> return the number of <see cref="Messages"/> and <see cref="Changes"/> of the subscription event </summary>
-        public              EventInfo               EventInfo       { get; private set; }
+        public              EventInfo               EventInfo       => ev.GetEventInfo();
         
-        [DebuggerBrowsable(Never)]
-        public              IHubLogger              Logger { get; }
-
-        [DebuggerBrowsable(Never)]
-        private readonly    SubscriptionProcessor   processor;
+        public  override    string                  ToString()      => $"source user: {ev.srcUserId}";
         
-        [DebuggerBrowsable(Never)]
-        private readonly    EventMessage            ev;
+        [DebuggerBrowsable(Never)] public           IHubLogger              Logger { get; private set; }
+        [DebuggerBrowsable(Never)] private readonly SubscriptionProcessor   processor;
+        [DebuggerBrowsable(Never)] private          EventMessage            ev;
 
-        public  override    string                  ToString()  => $"source user: {ev.srcUserId}";
-
-        internal EventContext(SubscriptionProcessor processor, EventMessage ev, IHubLogger logger) {
+        internal EventContext(SubscriptionProcessor processor) {
             this.processor  = processor;
-            this.ev         = ev;
-            EventInfo       = ev.GetEventInfo();
-            Logger          = logger;
+        }
+        
+        internal void Init(EventMessage ev, IHubLogger logger) {
+            this.ev = ev;
+            Logger  = logger;
         }
         
         /// <summary>

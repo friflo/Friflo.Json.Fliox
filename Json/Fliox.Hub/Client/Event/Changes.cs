@@ -29,9 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     public abstract class Changes
     {
         /// <summary> total number of container changes </summary>
-        public              int                         Count       => ChangeInfo.Count;
+        public              int                         Count       => changeInfo.Count;
         /// <summary> number of changes per mutation type: creates, upserts, deletes and patches </summary>
-        public              ChangeInfo                  ChangeInfo  { get; } = new ChangeInfo();
+        public              ChangeInfo                  ChangeInfo  => changeInfo;
         /// <summary> name of the container the changes are referring to </summary>
         public    abstract  string                      Container   { get; }
         /// <summary> raw JSON values of created container entities </summary>
@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<JsonValue>    RawUpserts  => rawUpserts;
         
         [DebuggerBrowsable(Never)]  internal            bool            added;
+        [DebuggerBrowsable(Never)]  internal            ChangeInfo      changeInfo;
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawCreates  = new List<JsonValue>();
         [DebuggerBrowsable(Never)]  internal  readonly  List<JsonValue> rawUpserts  = new List<JsonValue>();
 
@@ -68,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              List<TKey>          Deletes { get; } = new List<TKey>();
         /// <summary> return patches applied to container entities </summary>
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
-        public    override  string              ToString()      => ChangeInfo.ToString();       
+        public    override  string              ToString()      => changeInfo.ToString();       
         public    override  string              Container       { get; }
         internal  override  Type                GetEntityType() => typeof(T);
         
@@ -92,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             rawCreates.Clear();
             rawUpserts.Clear();
             //
-            ChangeInfo.Clear();
+            changeInfo.Clear();
         }
         
         /// <summary> return the entities created in a container </summary>
@@ -128,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                 Deletes.Add(key);
             }
-            ChangeInfo.deletes += ids.Count;
+            changeInfo.deletes += ids.Count;
         }
         
         internal override void AddPatches(Dictionary<JsonKey, EntityPatch> entityPatches) {
@@ -139,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 var     patch       = new Patch<TKey>(key, id, entityPatch.patches);
                 Patches.Add(patch);
             }
-            ChangeInfo.patches += entityPatches.Count;
+            changeInfo.patches += entityPatches.Count;
         }
         
         internal override void ApplyChangesTo  (EntitySet entitySet) {

@@ -12,8 +12,9 @@ using Friflo.Json.Fliox.Mapper.Map;
 // internal Event API => use separate namespace
 namespace Friflo.Json.Fliox.Hub.Client.Event
 {
-    internal sealed class SubscriptionProcessor : IDisposable
+    public sealed class SubscriptionProcessor : IDisposable
     {
+        private  readonly   EventContext                eventContext;
         private  readonly   Dictionary<Type, Changes>   changes         = new Dictionary<Type, Changes>();
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
@@ -22,6 +23,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         internal            int                         EventSequence { get; private set ; }
         
         public   override   string                      ToString()  => $"EventSequence: {EventSequence}";
+        
+        public SubscriptionProcessor() {
+            eventContext = new EventContext(this);
+        }
 
         public void Dispose() {
             objectMapper?.Dispose();
@@ -34,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         /// <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
+            eventContext.Init(ev, client.Logger);
             if (client._intern.disposed)  // store may already be disposed
                 return;
             if (objectMapper == null) {
@@ -60,10 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
                     case TaskType.command:  ProcessMessage(        (SyncMessageTask)task);  break;
                 }
             }
-            // After processing / collecting all change & message tasks invoke their handler methods
-            // --- prepare EventContext state
-            var logger          = client.Logger;
-            var eventContext    = new EventContext(this, ev, logger);
+            // After processing event message invoke their handler methods:
             
             // --- invoke subscription event handler
             client._intern.subscriptionEventHandler?.Invoke(eventContext);
@@ -104,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
             entityChanges.rawCreates.AddRange(entities);
-            entityChanges.ChangeInfo.creates += entities.Count;
+            entityChanges.changeInfo.creates += entities.Count;
         }
         
         private void ProcessUpsert(FlioxClient client, UpsertEntities upsert) {
@@ -119,7 +122,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var entityChanges = GetChanges(set);
             AddChanges(entityChanges);
             entityChanges.rawUpserts.AddRange(entities);
-            entityChanges.ChangeInfo.upserts += entities.Count;
+            entityChanges.changeInfo.upserts += entities.Count;
         }
         
         private void ProcessDelete(FlioxClient client, DeleteEntities delete) {

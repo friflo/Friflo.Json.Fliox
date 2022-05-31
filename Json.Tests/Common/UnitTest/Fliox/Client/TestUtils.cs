@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
@@ -247,6 +250,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             var expected = IsDebug() ? Is.InRange(46944, 47296) : Is.InRange(44040, 44432); // Test Debug & Release
             That(diff, expected);
+        }
+        
+        [Test]
+        public void TestSubscriptionProcessorMemory() {
+            var sub     = new SubscriptionProcessor();
+            var ev      = new EventMessage { tasks = Array.Empty<SyncRequestTask>() };
+            var db      = new MemoryDatabase("dummy");
+            var hub     = new FlioxHub(db);
+            var client  = new FlioxClient(hub);
+            sub.ProcessEvent(client, ev);
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < 10; n++) {
+                sub.ProcessEvent(client, ev);
+            }
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, diff);
         }
         
         private static bool IsDebug() {
