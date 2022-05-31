@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     public delegate void SubscriptionEventHandler (EventContext context);
     
     /// <summary>
-    /// The <see cref="EventContext"/> provide all information of event messages received by a <see cref="FlioxClient"/>.<br/>
-    /// Event messages are received by a client in case the client setup subscriptions by the <b>Subscribe*()</b> methods
+    /// The <see cref="EventContext"/> provide all information of subscription events received by a <see cref="FlioxClient"/>.<br/>
+    /// Subscription events are received by a client in case the client setup subscriptions by the <b>Subscribe*()</b> methods
     /// of <see cref="FlioxClient"/> or <see cref="EntitySet{TKey,T}"/>.<br/>
     /// The event context provide the following event data.
     /// <list type="bullet">
