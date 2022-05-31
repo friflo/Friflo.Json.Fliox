@@ -31,14 +31,14 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public UserDatabaseAuthenticator(string userDbName) : base (null) {
             var changes         = new [] { Change.create, Change.upsert, Change.delete, Change.patch };
             var authUserRights  = new AuthorizeAny(new Authorizer[] {
-                new AuthorizeSendMessage(nameof(UserStore.AuthenticateUser), userDbName),
-                new AuthorizeContainer  (nameof(UserStore.permissions),  new []{ OperationType.read, OperationType.query }, userDbName),
-                new AuthorizeContainer  (nameof(UserStore.roles),        new []{ OperationType.read, OperationType.query }, userDbName),
-                new AuthorizeSubscribeChanges (nameof(UserStore.permissions),   changes, userDbName),
-                new AuthorizeSubscribeChanges (nameof(UserStore.roles),         changes, userDbName)
+                new AuthorizeSendMessage     (nameof(UserStore.AuthenticateUser), userDbName),
+                new AuthorizeContainer       (nameof(UserStore.permissions), new []{ OperationType.read, OperationType.query }, userDbName),
+                new AuthorizeContainer       (nameof(UserStore.roles),       new []{ OperationType.read, OperationType.query }, userDbName),
+                new AuthorizeSubscribeChanges(nameof(UserStore.permissions), changes, userDbName),
+                new AuthorizeSubscribeChanges(nameof(UserStore.roles),       changes, userDbName)
             });
             var serverRights    = new AuthorizeAny(new Authorizer[] {
-                new AuthorizeContainer  (nameof(UserStore.credentials),  new []{ OperationType.read }, userDbName)
+                new AuthorizeContainer       (nameof(UserStore.credentials), new []{ OperationType.read }, userDbName)
             });
             userRights = new Dictionary<JsonKey, Authorizer> (JsonKey.Equality) {
                 { new JsonKey(UserStore.AuthenticationUser),    authUserRights },
