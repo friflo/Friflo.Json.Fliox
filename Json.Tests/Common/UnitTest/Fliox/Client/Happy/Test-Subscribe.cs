@@ -21,10 +21,10 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     internal enum EventAssertion {
-        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.Event.SubscriptionProcessor"/> will not get change events from the
+        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.SubscriptionProcessor"/> will not get change events from the
         /// <see cref="FlioxClient"/> it is attached to.</summary>.
         NoChanges,
-        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.Event.SubscriptionProcessor"/> will get change events from all
+        /// <summary>Assert a <see cref="Friflo.Json.Fliox.Hub.Client.SubscriptionProcessor"/> will get change events from all
         /// <see cref="FlioxClient"/>'s it is not attached to.</summary>.
         Changes
     }

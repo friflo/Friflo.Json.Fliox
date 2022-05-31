@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void  WebSocketReconnectSync()       { SingleThreadSynchronizationContext.Run(WebSocketReconnect); }
         
         /// Test WebSocket disconnect while having changes subscribed. Change events pushed by the database may not arrived at subscriber.
-        /// To ensure all change events arrive at <see cref="Friflo.Json.Fliox.Hub.Client.Event.SubscriptionProcessor"/>
+        /// To ensure all change events arrive at <see cref="Friflo.Json.Fliox.Hub.Client.SubscriptionProcessor"/>
         /// <see cref="SyncRequest.eventAck"/> is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
