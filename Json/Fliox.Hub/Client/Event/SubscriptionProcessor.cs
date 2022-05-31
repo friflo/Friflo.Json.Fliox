@@ -3,14 +3,15 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
-// internal Event API => use separate namespace
-namespace Friflo.Json.Fliox.Hub.Client.Event
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class SubscriptionProcessor : IDisposable
     {
