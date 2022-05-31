@@ -61,6 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         /// <summary>
         /// return type-safe access to the changes made to a container. <br/>
+        /// The container is identified by the passed <paramref name="entitySet"/>. <br/> 
         /// These changes contain the: <see cref="Changes{TKey,T}.Creates"/>, <see cref="Changes{TKey,T}.Upserts"/>,
         /// <see cref="Changes{TKey,T}.Deletes"/> and <see cref="Changes{TKey,T}.Patches"/> made to a container
         /// </summary>
