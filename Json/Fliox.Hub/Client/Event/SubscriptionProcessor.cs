@@ -18,13 +18,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         /// <summary> contain only <see cref="Changes"/> where <see cref="Changes.Count"/> > 0 </summary>
         internal readonly   List<Changes>               contextChanges  = new List<Changes>();
         internal readonly   List<Message>               messages        = new List<Message>();
-        private             ObjectMapper                messageMapper;
+        private             ObjectMapper                objectMapper;
         internal            int                         EventSequence { get; private set ; }
         
         public   override   string                      ToString()  => $"EventSequence: {EventSequence}";
 
         public void Dispose() {
-            messageMapper?.Dispose();
+            objectMapper?.Dispose();
         }
 
         /// <summary>
@@ -36,10 +36,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
         public void ProcessEvent(FlioxClient client, EventMessage ev) {
             if (client._intern.disposed)  // store may already be disposed
                 return;
-            if (messageMapper == null) {
+            if (objectMapper == null) {
                 // use individual ObjectMapper for messages as they are used by App outside the pooled scope bellow
-                messageMapper = new ObjectMapper(client._intern.typeStore);
-                messageMapper.ErrorHandler = ObjectReader.NoThrow;
+                objectMapper = new ObjectMapper(client._intern.typeStore);
+                objectMapper.ErrorHandler = ObjectReader.NoThrow;
             }
             messages.Clear();
             // clear all changes from the last event
@@ -52,12 +52,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             foreach (var task in ev.tasks) {
                 switch (task.TaskType)
                 {
-                    case TaskType.create:   ProcessCreate (client, (CreateEntities)task);   break;
-                    case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities)task);   break;
-                    case TaskType.delete:   ProcessDelete (client, (DeleteEntities)task);   break;
-                    case TaskType.patch:    ProcessPatch  (client, (PatchEntities) task);   break;
+                    case TaskType.create:   ProcessCreate (client, (CreateEntities) task);  break;
+                    case TaskType.upsert:   ProcessUpsert (client, (UpsertEntities) task);  break;
+                    case TaskType.delete:   ProcessDelete (client, (DeleteEntities) task);  break;
+                    case TaskType.patch:    ProcessPatch  (client, (PatchEntities)  task);  break;
                     case TaskType.message:
-                    case TaskType.command:  ProcessMessage ((SyncMessageTask)task, messageMapper);  break;
+                    case TaskType.command:  ProcessMessage(        (SyncMessageTask)task);  break;
                 }
             }
             // After processing / collecting all change & message tasks invoke their handler methods
@@ -150,12 +150,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             entityChanges.AddPatches(patches);
         }
         
-        private void ProcessMessage(SyncMessageTask task, ObjectMapper mapper) {
+        private void ProcessMessage(SyncMessageTask task) {
             var name = task.name;
             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
             // and ProcessEvent() can be called concurrently from the 'main' thread.
-            var invokeContext   = new InvokeContext(name, task.param, mapper.reader);
+            var invokeContext   = new InvokeContext(name, task.param, objectMapper.reader);
             var message         = new Message(invokeContext);
             messages.Add(message);
         }
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             var entityType = entitySet.EntityType;
             if (changes.TryGetValue(entityType, out var change))
                 return change;
-            object[] constructorParams = { entitySet, messageMapper };
+            object[] constructorParams = { entitySet, objectMapper };
             var keyType     = entitySet.KeyType;
             var genericArgs = new[] { keyType, entityType };
             var instance    = TypeMapperUtils.CreateGenericInstance(typeof(Changes<,>), genericArgs, constructorParams);
