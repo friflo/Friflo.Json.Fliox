@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
     ///         If the <see cref="Ref{TKey,T}"/> was assigned by an entity the access has no restrictions.
     ///         If the <see cref="Ref{TKey,T}"/> was assigned by an key the referenced entity instance need to
-    ///         be resolved upfront. For resolving see notes bellow.
+    ///         be resolved upfront. For resolving see notes below.
     ///     </para>
     /// </para>
     /// <para>

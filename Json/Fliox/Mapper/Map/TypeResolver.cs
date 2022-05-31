@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             
             if (MatchMappers(genericTypeMatcher,        config, type, q)) return q.hit;
             //
-            // The order of codecs bellow need to be irrelevant to ensure same behavior independent
+            // The order of codecs below need to be irrelevant to ensure same behavior independent
             // when adding various codecs to a custom resolver.
             if (Match(ArrayMatcher.         Instance,   config, type, q)) return q.hit;
             //
