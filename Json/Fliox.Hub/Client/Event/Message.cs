@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Event;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -45,6 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              string          Name        => invokeContext.name;
         public              JsonValue       JsonParam   => invokeContext.param;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    InvokeContext   invokeContext;
        
         /// <summary>Return the message <paramref name="param"/></summary> without validation 
@@ -76,6 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              string          Name        => invokeContext.name; 
         public              JsonValue       JsonParam   => invokeContext.param;
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal readonly   InvokeContext   invokeContext;
         
         public override     string          ToString()  => $"{Name}(param: {JsonParam.AsString()})";
