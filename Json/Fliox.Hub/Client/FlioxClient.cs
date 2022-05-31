@@ -207,11 +207,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return tasks;
         }
         
-        public void OnSubscriptionEvent(SubscriptionEventHandler handler) {
-            AssertSubscription();
-            _intern.subscriptionEventHandler = handler;
+        /// <summary> <see cref="SubscriptionEventHandler"/> is called for all events received by a <see cref="FlioxClient"/></summary>
+        public SubscriptionEventHandler SubscriptionEventHandler {
+            get => _intern.subscriptionEventHandler;
+            set => _intern.subscriptionEventHandler = value;
         }
-        
+
         /// <summary>
         /// Set the <see cref="IEventProcessor"/> used to process subscription events subscribed by a <see cref="FlioxClient"/><br/>
         /// <br/>

@@ -13,7 +13,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     /// <summary>
-    /// Defines signature of the handler method passed to <see cref="FlioxClient.OnSubscriptionEvent"/> <br/>
+    /// Defines the signature of the event handler passed to <see cref="FlioxClient.SubscriptionEventHandler"/> <br/>
     /// </summary>
     /// <remarks>
     /// All subscription handler methods are synchronous by intention.<br/>

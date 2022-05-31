@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task<PocStoreSubscriber> CreatePocStoreSubscriber (PocStore store, EventAssertion eventAssertion) {
             var subscriber = new PocStoreSubscriber(store, eventAssertion);
             store.SetEventProcessor(new SynchronizationContextProcessor());
-            store.OnSubscriptionEvent(subscriber.OnEvent);
+            store.SubscriptionEventHandler += subscriber.OnEvent;
             
             var subscriptions   = store.SubscribeAllChanges(ChangeFlags.All, context => {
                 AreEqual("createStore", context.SrcUserId.AsString());
