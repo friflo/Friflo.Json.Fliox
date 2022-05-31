@@ -39,15 +39,15 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class Changes<TKey, T> : Changes where T : class
     {
-        public              HashSet<TKey>       Deletes { get; } = SyncSet.CreateHashSet<TKey>();
+        public              List<TKey>          Deletes { get; } = new List<TKey>();
         public              List<Patch<TKey>>   Patches { get; } = new List<Patch<TKey>>();
         public    override  string              ToString()      => ChangeInfo.ToString();       
         public    override  string              Container       { get; }
         internal  override  Type                GetEntityType() => typeof(T);
         
-        [DebuggerBrowsable(Never)] private          List<T>             creates;
-        [DebuggerBrowsable(Never)] private          List<T>             upserts;
-        [DebuggerBrowsable(Never)] private readonly ObjectMapper        objectMapper;
+        [DebuggerBrowsable(Never)] private          List<T>         creates;
+        [DebuggerBrowsable(Never)] private          List<T>         upserts;
+        [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
 
         /// <summary> called via <see cref="Event.SubscriptionProcessor.GetChanges"/> </summary>
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
