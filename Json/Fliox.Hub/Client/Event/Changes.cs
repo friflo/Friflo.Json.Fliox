@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     ///   <item> <see cref="Patches"/> - the patches applied to container entities</item>
     /// </list>
     /// Container <see cref="Changes{TKey,T}"/> are not automatically applied to an <see cref="EntitySet{TKey,T}"/>.
-    /// To apply container changes to a <see cref="EntitySet{TKey,T}"/> call <see cref="ApplyChangesTo"/>.
+    /// To apply container changes to a <see cref="EntitySet{TKey,T}"/> call <see cref="ApplyChangesTo(EntitySet{TKey,T},Change)"/>.
     /// </summary>
     public sealed class Changes<TKey, T> : Changes where T : class
     {
