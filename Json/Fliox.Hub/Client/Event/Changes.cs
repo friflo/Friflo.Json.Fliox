@@ -142,21 +142,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (Count == 0)
                 return;
             var client = entitySet.intern.store;
-            using (var pooled = client._intern.pool.ObjectMapper.Get()) {
-                var mapper          = pooled.instance;
-                var localCreates    = rawCreates;
-                if ((change & Change.create) != 0 && localCreates.Count > 0) {
-                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
-                    SyncPeerEntities(entitySet, entityKeys, localCreates, mapper);
-                }
-                var localUpserts    = rawUpserts;
-                if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
-                    var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
-                    SyncPeerEntities(entitySet, entityKeys, localUpserts, mapper);
-                }
-                if ((change & Change.patch) != 0) {
-                    entitySet.PatchPeerEntities(Patches, mapper);
-                }
+            var localCreates    = rawCreates;
+            if ((change & Change.create) != 0 && localCreates.Count > 0) {
+                var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localCreates);
+                SyncPeerEntities(entitySet, entityKeys, localCreates, objectMapper);
+            }
+            var localUpserts    = rawUpserts;
+            if ((change & Change.upsert) != 0 && localUpserts.Count > 0) {
+                var entityKeys = GetKeysFromEntities (client, entitySet.GetKeyName(), localUpserts);
+                SyncPeerEntities(entitySet, entityKeys, localUpserts, objectMapper);
+            }
+            if ((change & Change.patch) != 0) {
+                entitySet.PatchPeerEntities(Patches, objectMapper);
             }
             if ((change & Change.delete) != 0) {
                 entitySet.DeletePeerEntities(Deletes);
