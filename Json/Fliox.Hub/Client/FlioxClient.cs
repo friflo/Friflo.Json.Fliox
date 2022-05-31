@@ -192,6 +192,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="FlioxClient"/>.
         /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
             AssertSubscription();
@@ -211,6 +212,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.subscriptionEventHandler = handler;
         }
         
+        /// <summary>
+        /// Set the <see cref="IEventProcessor"/> used to process subscription events subscribed by a <see cref="FlioxClient"/><br/>
+        /// <br/>
+        /// By default a <see cref="FlioxClient"/> uses a <see cref="DirectEventProcessor"/> to handle subscription events
+        /// in the thread an event arrives.<br/>
+        /// In case of an <b>UI</b> application consider using a <see cref="SynchronizationContextProcessor"/> used to process
+        /// subscription events in the <b>UI</b> thread.
+        /// </summary>
         public void SetEventProcessor(IEventProcessor eventProcessor) {
             _intern.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
         }
@@ -220,6 +229,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
@@ -275,6 +285,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --- SubscribeMessage
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
             var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
@@ -283,6 +294,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
             AssertSubscription();
             var callbackHandler = new NonGenericMessageCallback(name, handler);

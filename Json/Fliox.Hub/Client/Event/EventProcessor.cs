@@ -10,11 +10,20 @@ using Friflo.Json.Fliox.Hub.Threading;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// An <see cref="IEventProcessor"/> is used to process subscription events subscribed by a <see cref="FlioxClient"/><br/>
+    /// By default a <see cref="FlioxClient"/> uses a <see cref="DirectEventProcessor"/> to handle subscription events
+    /// in the thread the events arrive.
+    /// </summary>
     public interface IEventProcessor
     {
         void EnqueueEvent(FlioxClient client, EventMessage ev);
     }
     
+    /// <summary>
+    /// Handle subscription events in the thread a event message arrived. <br/>
+    /// E.g. In case of a <see cref="System.Net.WebSockets.WebSocket"/> in the thread reading data from the WebSocket stream.
+    /// </summary>
     public sealed class DirectEventProcessor : IEventProcessor
     {
         public void EnqueueEvent(FlioxClient client, EventMessage ev) {

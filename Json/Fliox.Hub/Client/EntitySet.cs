@@ -176,6 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesFilter(Change change, Expression<Func<T, bool>> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -192,6 +193,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(Change change, EntityFilter<T> filter, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -207,6 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(Change change, ChangeSubscriptionHandler<TKey, T> handler) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
