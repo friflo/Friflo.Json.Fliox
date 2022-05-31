@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Event
             if (client._intern.disposed)  // store may already be disposed
                 return;
             if (objectMapper == null) {
-                // use individual ObjectMapper for messages as they are used by App outside the pooled scope bellow
+                // use individual ObjectMapper for messages as they are used by App outside the pooled scope below
                 objectMapper = new ObjectMapper(client._intern.typeStore);
                 objectMapper.ErrorHandler = ObjectReader.NoThrow;
             }

@@ -8,8 +8,16 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message, EventContext context);
+    /// <summary>
+    /// Defines signature of the handler method passed to <see cref="FlioxClient.SubscribeMessage"/>
+    /// <seealso cref="SubscriptionEventHandler"/>
+    /// </summary>
     public delegate void MessageSubscriptionHandler            (Message            message, EventContext context);
+    /// <summary>
+    /// Defines signature of the handler method passed to <see cref="FlioxClient.SubscribeMessage{TMessage}"/>
+    /// <seealso cref="SubscriptionEventHandler"/>
+    /// </summary>
+    public delegate void MessageSubscriptionHandler<TMessage>  (Message<TMessage>  message, EventContext context);
 
     /// <summary>
     /// Expose the <see cref="Name"/> and the <see cref="JsonParam"/> of a received message.

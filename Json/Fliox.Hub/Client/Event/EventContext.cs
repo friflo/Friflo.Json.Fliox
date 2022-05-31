@@ -12,6 +12,19 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Defines signature of the handler method passed to <see cref="FlioxClient.OnSubscriptionEvent"/> <br/>
+    /// </summary>
+    /// <remarks>
+    /// All subscription handler methods are synchronous by intention.<br/>
+    /// <b>Reason:</b>
+    /// In contrast to handler methods of a service or a web server subscription handlers don't return a result. <br/>
+    /// In case the application need to call an asynchronous method consider using the approach below:
+    /// <code>
+    ///     Task.Factory.StartNew(() => AsyncMethod());
+    /// </code>
+    /// <b>Note:</b> exceptions thrown in the <c>AsyncMethod()</c> are unhandled. Add try/catch to log exceptions.
+    /// </remarks>
     public delegate void SubscriptionEventHandler (EventContext context);
     
     /// <summary>

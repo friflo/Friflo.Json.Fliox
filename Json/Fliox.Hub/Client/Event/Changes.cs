@@ -15,7 +15,15 @@ using static System.Diagnostics.DebuggerBrowsableState;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
+    /// <summary>
+    /// Defines signature of the handler method passed to <see cref="FlioxClient.SubscribeAllChanges"/>
+    /// <seealso cref="SubscriptionEventHandler"/>
+    /// </summary>
     public delegate void ChangeSubscriptionHandler         (EventContext context);
+    /// <summary>
+    /// Defines signature of the handler method passed to <see cref="EntitySet{TKey,T}.SubscribeChanges"/>
+    /// <seealso cref="SubscriptionEventHandler"/>
+    /// </summary>
     public delegate void ChangeSubscriptionHandler<TKey, T>(Changes<TKey, T> changes, EventContext context) where T : class;
     
     public abstract class Changes
