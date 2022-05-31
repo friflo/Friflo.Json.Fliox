@@ -229,7 +229,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
         /// </summary>
         internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
