@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         /// <summary> <see cref="SubscriptionEventHandler"/> is called for all events received by a <see cref="FlioxClient"/></summary>
-        public SubscriptionEventHandler SubscriptionEventHandler {
+        [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
             get => _intern.subscriptionEventHandler;
             set => _intern.subscriptionEventHandler = value;
         }
