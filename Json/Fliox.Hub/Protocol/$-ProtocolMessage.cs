@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
@@ -66,14 +67,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and
         /// does <b>not</b> utilize it internally.
         /// </summary>
-        [Fri.Property(Name =               "req")]
+        [Property(Name =                   "req")]
                         public  int?        reqId       { get; set; }
         /// <summary>As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually. <br/>
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
         /// to enable sending <see cref="EventMessage"/>'s to the desired subscriber.
         /// </summary>
-        [Fri.Property(Name =               "clt")]
+        [Property(Name =                   "clt")]
                         public  JsonKey     clientId    { get; set; }
     }
     
@@ -87,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/> of a <see cref="ProtocolRequest"/></summary>
-        [Fri.Property(Name =               "req")]
+        [Property(Name =                   "req")]
                         public  int?        reqId       { get; set; }
         /// <summary>
         /// Set to <see cref="ProtocolRequest.clientId"/> of a <see cref="SyncRequest"/> in case the given
@@ -101,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// This enables tasks like <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> identifying the
         /// <see cref="EventMessage"/> target. 
         /// </remarks>
-        [Fri.Property(Name =               "clt")]
+        [Property(Name =                   "clt")]
                         public  JsonKey     clientId    { get; set; }
     }
     
@@ -121,14 +122,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
         /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
-        [Fri.Property(Name =               "src")]
+        [Property(Name =                   "src")]
         [Req]           public  JsonKey     srcUserId   { get; set; }
         
         /// <summary>
         /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
-        [Fri.Property(Name =               "clt")]
+        [Property(Name =                   "clt")]
         [Req]           public  JsonKey     dstClientId { get; set; }
     }
     

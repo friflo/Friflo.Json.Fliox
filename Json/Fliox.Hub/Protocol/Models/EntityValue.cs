@@ -3,13 +3,14 @@
 
 using Friflo.Json.Fliox.Mapper;
 using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
     public sealed class EntityValue
     {
-        [Fri.Property]  private     JsonValue   value;
-        [Fri.Property]  private     EntityError error;
+        [Property]      private     JsonValue   value;
+        [Property]      private     EntityError error;
         
         [Ignore]        public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
         [Ignore]        public      EntityError Error   => error;

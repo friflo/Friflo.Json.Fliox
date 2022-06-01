@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -68,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
         /// <summary>number executed requests and tasks per database</summary>
                 public  List<RequestCount>              counts = new List<RequestCount>();
         /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
-        [Fri.Property (Name =                          "event")]
+        [Property (Name =                              "event")]
                 public  EventDelivery?                  ev;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");

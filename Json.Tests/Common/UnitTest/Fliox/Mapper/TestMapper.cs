@@ -8,6 +8,7 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 
 using static NUnit.Framework.Assert;
+
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
@@ -139,9 +140,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
 
         class Derived : Base {
-            [Fri.Property]
+            [Fri.PropertyMember]
             private     int derivedField = 0;
-            [Fri.Property]
+            [Fri.PropertyMember]
             private     int Int32 { get; set; }  // compiler auto generate backing field
 
             public void AssertFields() {

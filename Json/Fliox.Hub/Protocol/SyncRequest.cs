@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -21,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// In case using of using <see cref="DB.UserAuth.UserAuthenticator"/> the <see cref="userId"/> and <see cref="token"/>
         /// are use for user authentication.
         /// </summary>
-        [Fri.Property(Name = "user")]   public  JsonKey                 userId;
+        [Property(Name = "user")]       public  JsonKey                 userId;
                                         public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
@@ -29,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// it has subscribed to database changes by a <see cref="SubscribeChanges"/> task.
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
-        [Fri.Property(Name = "ack")]    public  int?                    eventAck;
+        [Property(Name = "ack")]        public  int?                    eventAck;
         /// <summary>list of tasks either container operations or database commands / messages</summary>
         [Req]                           public  List<SyncRequestTask>   tasks;
         /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>

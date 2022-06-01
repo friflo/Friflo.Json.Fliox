@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 using Key = Friflo.Json.Fliox.Mapper.Fri.PrimaryKeyAttribute;
+using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
 
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.Host.Internal
@@ -14,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     public sealed class Sequence {
         [Key]           public  string  container;
         [Req]           public  long    autoId;
-        [Fri.Property  (Name =        "_etag")]
+        [Property  (Name =             "_etag")]
                         public  string  etag;
     }
     
@@ -29,9 +30,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     public sealed class SequenceStore : FlioxClient
     {
         // --- containers
-        [Fri.Property(Name =                             "_sequence")]  
+        [Property(Name =                                 "_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;
-        [Fri.Property(Name =                             "_sequenceKeys")]  
+        [Property(Name =                                 "_sequenceKeys")]  
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         
         public  SequenceStore(FlioxHub hub) : base(hub) { }

@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class PropertyAttribute : Attribute {
+        public sealed class PropertyMemberAttribute : Attribute {
             public string       Name        { get; set; }
         }
         

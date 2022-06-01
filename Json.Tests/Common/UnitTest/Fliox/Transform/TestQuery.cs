@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public class Address
     {
         public          Street          street;
-        [Fri.Property(Name = "city")]
+        [Fri.PropertyMember(Name = "city")]
         public          string          cityName;
     }
     

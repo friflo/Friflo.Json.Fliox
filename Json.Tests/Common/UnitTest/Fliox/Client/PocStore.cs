@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
@@ -113,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public class Producer {
         [Req]   public  string                  id { get; set; }
         [Req]   public  string                  name;
-        [Fri.Property (Name =                      "employees")]
+        [Property (Name =                      "employees")]
                 public  List<Ref<string, Employee>> employeeList;
                         
         public override string                  ToString() => JsonSerializer.Serialize(this);
