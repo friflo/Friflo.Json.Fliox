@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class LongEntity {
-        [Fri.Key]
+        [Fri.PrimaryKey]
         public long Id { get; set; }
     }
     
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class CustomIdEntity {
-        [Fri.Key]
+        [Fri.PrimaryKey]
         [Req]  public string customId;
     }
     

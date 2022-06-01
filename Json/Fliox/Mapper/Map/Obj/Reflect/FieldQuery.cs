@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         public static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.KeyAttribute))
+                if (attr.AttributeType == typeof(Fri.PrimaryKeyAttribute))
                     return true;
                 // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
                 if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.KeyAttribute")

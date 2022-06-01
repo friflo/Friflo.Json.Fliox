@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class KeyAttribute : Attribute {
+        public sealed class PrimaryKeyAttribute : Attribute {
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]

@@ -5,20 +5,21 @@ using System;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Key = Friflo.Json.Fliox.Mapper.Fri.PrimaryKeyAttribute;
 
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
     // --- models
     public sealed class Sequence {
-        [Fri.Key]       public  string  container;
+        [Key]           public  string  container;
         [Req]           public  long    autoId;
         [Fri.Property  (Name =        "_etag")]
                         public  string  etag;
     }
     
     public sealed class SequenceKeys {
-        [Fri.Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
+        [Key]           public  Guid    token;  // secret to ensure the client has reserved the keys
         [Req]           public  string  container;
         [Req]           public  long    start;
         [Req]           public  int     count;
