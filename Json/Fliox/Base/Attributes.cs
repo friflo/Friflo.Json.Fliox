@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox
     
     /// <summary> Used to ignore the annotated public member from JSON serialization </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class IgnoreFieldAttribute : Attribute {
+    public sealed class IgnoreAttribute : Attribute {
     }
     
     

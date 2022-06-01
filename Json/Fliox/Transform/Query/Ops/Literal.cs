@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable EmptyConstructor
 // ReSharper disable FieldCanBeMadeReadOnly.Global

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
