@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -20,12 +21,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Fri.Required]  public  string                  container;
+        [Req]           public  string                  container;
         /// <summary>name of the primary key property of the returned entities</summary>
                         public  string                  keyName;
                         public  bool?                   isIntKey;
         /// <summary>contains the <see cref="ReadEntitiesSet.ids"/> of requested entities</summary>               
-        [Fri.Required]  public  List<ReadEntitiesSet>   sets;
+        [Req]           public  List<ReadEntitiesSet>   sets;
         
         internal override       TaskType                TaskType => TaskType.read;
         public   override       string                  TaskName =>  $"container: '{container}'";
@@ -98,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        [Fri.Required]  public  List<ReadEntitiesSetResult> sets;
+        [Req]   public          List<ReadEntitiesSetResult> sets;
         
         internal override       TaskType                    TaskType => TaskType.read;
     }

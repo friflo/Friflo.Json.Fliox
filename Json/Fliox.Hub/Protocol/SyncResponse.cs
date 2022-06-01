@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -69,12 +70,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-        [Fri.Required]  public  string                              container;
+        [Req]           public  string                              container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                                count;
         /// <summary>all <see cref="entities"/> as results from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/></summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-        [Fri.Required]  public  List<JsonValue>                     entities;
+        [Req]           public  List<JsonValue>                     entities;
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
                         public  List<JsonKey>                       notFound;

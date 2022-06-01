@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -18,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Fri.Ignore]    public  string                  keyName;
         [Fri.Ignore]    public  bool?                   isIntKey;
         /// <summary>list of entity <see cref="ids"/> requested by a <see cref="Tasks.ReadEntities"/> task</summary>
-        [Fri.Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Req]           public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>used to request the entities referenced by properties of a read task result</summary>
                         public  List<References>        references;
     }

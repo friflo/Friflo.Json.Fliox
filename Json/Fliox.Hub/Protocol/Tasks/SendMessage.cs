@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -16,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncMessageTask : SyncRequestTask
     {
         /// <summary>command / message name</summary>
-        [Fri.Required]  public  string          name;
+        [Req]           public  string          name;
         /// <summary>command / message parameter. Can be null or absent</summary>
                         public  JsonValue       param;
                         

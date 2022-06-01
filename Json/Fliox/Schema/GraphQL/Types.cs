@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredAttribute;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable UnassignedField.Global
 // ReSharper disable MemberCanBePrivate.Global

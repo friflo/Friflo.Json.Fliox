@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable MemberCanBeProtected.Global
@@ -11,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------------- unary -------------------------------------------
     public abstract class UnaryAggregateOp : Operation
     {
-        [Fri.Required]  public              Field       field;
+        [Req]           public              Field       field;
         [Fri.Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected UnaryAggregateOp() { }
@@ -45,9 +46,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------------- binary -------------------------------------------
     public abstract class BinaryAggregateOp : Operation
     {
-        [Fri.Required]  public              Field       field;
-        [Fri.Required]  public              string      arg;
-        [Fri.Required]  public              Operation   array;
+        [Req]           public              Field       field;
+        [Req]           public              string      arg;
+        [Req]           public              Operation   array;
         [Fri.Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }

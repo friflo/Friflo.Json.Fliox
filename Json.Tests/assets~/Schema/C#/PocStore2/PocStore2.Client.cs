@@ -9,22 +9,22 @@ using System.Numerics;
 namespace PocStore2.Client {
 
 public abstract class PocStore {
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, Order>     orders;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, Customer>  customers;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, Article>   articles;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, Producer>  producers;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, Employee>  employees;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, TestType>  types;
 }
 
 public class Order {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string           id;
     string           customer;
     DateTime         created;
@@ -32,32 +32,32 @@ public class Order {
 }
 
 public class Customer {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  name;
 }
 
 public class Article {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  name;
     string  producer;
 }
 
 public class Producer {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        name;
     List<string>  employees;
 }
 
 public class Employee {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  firstName;
     string  lastName;
 }
@@ -83,25 +83,25 @@ public class TestType : PocEntity {
     double?       float64Null;
     PocStruct     pocStruct;
     PocStruct?    pocStructNull;
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<int>     intArray;
     List<int>     intArrayNull;
     List<int?>    intNullArray;
     JsonValue?    jsonValue;
-    [Fri.Required]
+    [Fri.RequiredMember]
     DerivedClass  derivedClass;
     DerivedClass  derivedClassNull;
 }
 
 public class OrderItem {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  article;
     int     amount;
     string  name;
 }
 
 public abstract class PocEntity {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  id;
 }
 

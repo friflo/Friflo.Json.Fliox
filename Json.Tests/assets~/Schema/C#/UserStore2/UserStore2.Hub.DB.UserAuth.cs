@@ -8,38 +8,38 @@ using UserStore2.Hub.Host.Auth.Rights;
 namespace UserStore2.Hub.DB.UserAuth {
 
 public abstract class UserStore {
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, UserCredential>  credentials;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, UserPermission>  permissions;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, Role>            roles;
 }
 
 public class UserCredential {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  id;
     string  token;
 }
 
 public class UserPermission {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        id;
     List<string>  roles;
 }
 
 public class Role {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string       id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<Right>  rights;
     string       description;
 }
 
 public class Credentials {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  userId;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  token;
 }
 

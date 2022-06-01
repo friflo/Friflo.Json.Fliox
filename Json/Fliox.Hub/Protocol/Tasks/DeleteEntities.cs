@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -17,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class DeleteEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Fri.Required]  public  string              container;
+        [Req]           public  string              container;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                         public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>

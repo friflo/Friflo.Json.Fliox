@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -15,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// WIP
     /// </summary>
     public sealed class ReserveKeys  : SyncRequestTask {
-        [Fri.Required]  public  string          container;
-        [Fri.Required]  public  int             count;
+        [Req]  public  string          container;
+        [Req]  public  int             count;
         
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub = syncContext.Hub;
@@ -82,8 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public struct ReservedKeys
     {
-        [Fri.Required]  public  long    start;
-        [Fri.Required]  public  int     count;
-        [Fri.Required]  public  Guid    token;
+        [Req]  public  long    start;
+        [Req]  public  int     count;
+        [Req]  public  Guid    token;
     }
 }

@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -18,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class AggregateEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Fri.Required]  public      string              container;
+        [Req]           public      string              container;
         /// <summary>aggregation type - e.g. count </summary>
                         public      AggregateType       type;
         /// <summary>aggregation filter as JSON tree. <br/>

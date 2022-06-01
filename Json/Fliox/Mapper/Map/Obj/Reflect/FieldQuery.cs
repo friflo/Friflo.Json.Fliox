@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         private static bool IsRequired(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.RequiredAttribute))
+                if (attr.AttributeType == typeof(Fri.RequiredMemberAttribute))
                     return true;
                 // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
                 if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.RequiredAttribute")

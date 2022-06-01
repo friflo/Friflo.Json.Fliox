@@ -6,6 +6,7 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -21,9 +22,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class EntityError
     {
         /// <summary>entity id</summary>
-        [Fri.Required]      public  JsonKey             id;
+        [Req]               public  JsonKey             id;
         /// <summary>error type when accessing an entity in a database</summary>
-        [Fri.Required]      public  EntityErrorType     type;
+        [Req]               public  EntityErrorType     type;
         /// <summary>error details when accessing an entity</summary>
         [Fri.Property]      public  string              message;
             

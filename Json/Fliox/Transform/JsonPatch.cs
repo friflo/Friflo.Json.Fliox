@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {
@@ -23,8 +24,8 @@ namespace Friflo.Json.Fliox.Transform
 
     public sealed class PatchReplace : JsonPatch
     {
-        [Fri.Required]  public  string      path;
-        [Fri.Required]  public  JsonValue   value;
+        [Req]  public  string      path;
+        [Req]  public  JsonValue   value;
 
         public override         PatchType   PatchType   => PatchType.Replace;
         public override         string      ToString()  => path;
@@ -32,8 +33,8 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchAdd : JsonPatch
     {
-        [Fri.Required]  public  string      path;
-        [Fri.Required]  public  JsonValue   value;
+        [Req]  public  string      path;
+        [Req]  public  JsonValue   value;
 
         public override         PatchType   PatchType   => PatchType.Add;
         public override         string      ToString()  => path;
@@ -41,7 +42,7 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchRemove : JsonPatch
     {
-        [Fri.Required]  public  string      path;
+        [Req]  public  string      path;
 
         public override         PatchType   PatchType   => PatchType.Remove;
         public override         string      ToString()  => path;
@@ -49,7 +50,7 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchCopy : JsonPatch
     {
-        [Fri.Required]  public string       path;
+        [Req]           public string       path;
                         public string       from;
 
         public override PatchType   PatchType   => PatchType.Copy;
@@ -58,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchMove : JsonPatch
     {
-        [Fri.Required]  public  string      path;
+        [Req]           public  string      path;
                         public  string      from;
 
         public override         PatchType   PatchType   => PatchType.Move;
@@ -68,7 +69,7 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchTest : JsonPatch
     {
-        [Fri.Required]  public  string      path;
+        [Req]           public  string      path;
                         public  JsonValue   value;
 
         public override         PatchType   PatchType   => PatchType.Test;

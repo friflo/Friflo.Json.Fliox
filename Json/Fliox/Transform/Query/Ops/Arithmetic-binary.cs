@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable MemberCanBeProtected.Global
@@ -12,8 +13,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------ binary arithmetic operations ------------------------------------
     public abstract class BinaryArithmeticOp : Operation
     {
-        [Fri.Required]  public  Operation   left;
-        [Fri.Required]  public  Operation   right;
+        [Req]           public  Operation   left;
+        [Req]           public  Operation   right;
         
         internal readonly       EvalResult  evalResult = new EvalResult(new List<Scalar>());
         internal override       bool        IsNumeric => true;

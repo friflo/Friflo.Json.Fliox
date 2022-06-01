@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -20,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Fri.Required]  public  string              container;
+        [Req]           public  string              container;
         /// <summary>name of the primary key property of the returned entities</summary>
                         public  string              keyName;
                         public  bool?               isIntKey;
@@ -148,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  string                          cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                            count;
-        [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Req]           public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
                         
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;

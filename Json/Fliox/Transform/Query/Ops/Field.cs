@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -25,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------- unary operations -------------------------------------
     public sealed class Field : Operation, ISelector
     {
-        [Fri.Required]  public      string      name;
+        [Req]           public      string      name;
         [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
         [Fri.Ignore]    internal    EvalResult  evalResult;
 

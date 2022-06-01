@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -30,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                    eventAck;
         /// <summary>list of tasks either container operations or database commands / messages</summary>
-        [Fri.Required]                  public  List<SyncRequestTask>   tasks;
+        [Req]                           public  List<SyncRequestTask>   tasks;
         /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>
                                         public  string                  database;
         /// <summary>optional JSON value - can be used to describe a request</summary>

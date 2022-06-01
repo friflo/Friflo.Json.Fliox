@@ -4,6 +4,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -15,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeMessage : SyncRequestTask
     {
         /// <summary>subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
-        [Fri.Required]  public  string      name;
+        [Req]           public  string      name;
         /// <summary>if true a previous added subscription is removed. Otherwise added</summary>
                         public  bool?       remove;
         

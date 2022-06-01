@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
-
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class TaskErrorResult : SyncTaskResult
     {
         /// <summary>task error type</summary>
-        [Fri.Required]  public  TaskErrorResultType type;
+        [Req]           public  TaskErrorResultType type;
         /// <summary>task error details</summary>
                         public  string              message;
         /// <summary>stacktrace in case the error <see cref="type"/> is a <see cref="TaskErrorResultType.UnhandledException"/></summary>

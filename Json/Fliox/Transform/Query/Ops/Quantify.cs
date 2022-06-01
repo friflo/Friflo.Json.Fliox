@@ -3,15 +3,16 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public abstract class BinaryQuantifyOp : FilterOperation
     {
-        [Fri.Required]  public  Field           field;
-        [Fri.Required]  public  string          arg;
-        [Fri.Required]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
+        [Req]  public  Field           field;
+        [Req]  public  string          arg;
+        [Req]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
 
         protected BinaryQuantifyOp() { }
         protected BinaryQuantifyOp(Field field, string arg, FilterOperation predicate) {
@@ -80,9 +81,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class CountWhere : Operation // Note: must not extend: FilterOperation
     {
-        [Fri.Required]  public  Field           field;
-        [Fri.Required]  public  string          arg;
-        [Fri.Required]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
+        [Req]  public  Field           field;
+        [Req]  public  string          arg;
+        [Req]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
         
         // is set always to the same value in Eval() so it can be reused
         [Fri.Ignore]

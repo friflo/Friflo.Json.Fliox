@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -17,9 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeChanges : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Fri.Required]  public      string          container;
+        [Req]           public      string          container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
-        [Fri.Required]  public      List<Change>    changes;
+        [Req]           public      List<Change>    changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                         public      JsonValue       filter;

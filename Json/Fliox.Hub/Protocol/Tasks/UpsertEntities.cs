@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -18,11 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class UpsertEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
-        [Fri.Required]  public  string          container;
+        [Req]           public  string          container;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                         public  string          keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
-        [Fri.Required]  public  List<JsonValue> entities;
+        [Req]           public  List<JsonValue> entities;
         
         [Fri.Ignore]    public  List<JsonKey>   entityKeys;
         

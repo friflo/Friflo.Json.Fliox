@@ -7,31 +7,31 @@ using Friflo.Json.Fliox.Mapper;
 namespace EntityIdStore2.Cluster {
 
 public class DbContainers {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        storage;
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<string>  containers;
 }
 
 public class DbMessages {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<string>  commands;
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<string>  messages;
 }
 
 public class DbSchema {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string                         id;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string                         schemaName;
-    [Fri.Required]
+    [Fri.RequiredMember]
     string                         schemaPath;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, JsonValue>  jsonSchemas;
 }
 
@@ -40,25 +40,25 @@ public class DbStats {
 }
 
 public class ContainerStats {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  name;
     long    count;
 }
 
 public class HostDetails {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string        version;
     string        hostName;
     string        projectName;
     string        projectWebsite;
     string        envName;
     string        envColor;
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<string>  routes;
 }
 
 public class HostCluster {
-    [Fri.Required]
+    [Fri.RequiredMember]
     List<DbContainers>  databases;
 }
 

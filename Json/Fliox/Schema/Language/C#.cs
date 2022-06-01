@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (def.isKey)
                     sb.AppendLine("    [Fri.Key]");
                 if (def.required && isReferenceType)
-                    sb.AppendLine("    [Fri.Required]");
+                    sb.AppendLine("    [Fri.RequiredMember]");
                 sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
             }
             sb.AppendLine("}");

@@ -8,23 +8,23 @@ using System;
 namespace EntityIdStore2.Client {
 
 public abstract class EntityIdStore {
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, GuidEntity>       guidEntities;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, IntEntity>        intEntities;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, AutoIntEntity>    intEntitiesAuto;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, LongEntity>       longEntities;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, ShortEntity>      shortEntities;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, ByteEntity>       byteEntities;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, CustomIdEntity>   customIdEntities;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, EntityRefs>       entityRefs;
-    [Fri.Required]
+    [Fri.RequiredMember]
     Dictionary<string, CustomIdEntity2>  customIdEntities2;
 }
 
@@ -55,12 +55,12 @@ public class ByteEntity {
 
 public class CustomIdEntity {
     [Fri.Key]
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  customId;
 }
 
 public class EntityRefs {
-    [Fri.Required]
+    [Fri.RequiredMember]
     string      id;
     Guid        guidEntity;
     Guid?       guidNullEntity;
@@ -80,7 +80,7 @@ public class EntityRefs {
 
 public class CustomIdEntity2 {
     [Fri.Key]
-    [Fri.Required]
+    [Fri.RequiredMember]
     string  customId2;
 }
 

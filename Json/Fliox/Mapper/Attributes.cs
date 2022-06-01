@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class RequiredAttribute : Attribute {
+        public sealed class RequiredMemberAttribute : Attribute {
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]

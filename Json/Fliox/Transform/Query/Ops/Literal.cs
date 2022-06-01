@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable EmptyConstructor
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -20,7 +21,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
     public sealed class StringLiteral : Literal
     {
-        [Fri.Required]  public  string      value;
+        [Req]  public  string      value;
         
         public   override string    OperationName => value;
         public   override void      AppendLinq(AppendCx cx) { cx.Append("'"); cx.Append(value); cx.Append("'"); }

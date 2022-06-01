@@ -3,6 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -10,8 +11,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // -------------------------------------- comparison operations --------------------------------------
     public abstract class BinaryBoolOp : FilterOperation
     {
-        [Fri.Required]  public  Operation   left;
-        [Fri.Required]  public  Operation   right;
+        [Req]  public  Operation   left;
+        [Req]  public  Operation   right;
         
         protected BinaryBoolOp() { }
         protected BinaryBoolOp(Operation left, Operation right) {

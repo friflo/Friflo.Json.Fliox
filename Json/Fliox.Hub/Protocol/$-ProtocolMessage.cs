@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
@@ -121,14 +122,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
         [Fri.Property(Name =               "src")]
-        [Fri.Required]  public  JsonKey     srcUserId   { get; set; }
+        [Req]           public  JsonKey     srcUserId   { get; set; }
         
         /// <summary>
         /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
         [Fri.Property(Name =               "clt")]
-        [Fri.Required]  public  JsonKey     dstClientId { get; set; }
+        [Req]           public  JsonKey     dstClientId { get; set; }
     }
     
     /// <summary>

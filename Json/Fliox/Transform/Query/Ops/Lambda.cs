@@ -2,13 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Mapper;
+using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public sealed class Lambda : Operation
     {
-        [Fri.Required]  public          string          arg;
-        [Fri.Required]  public          Operation       body;
+        [Req]  public          string          arg;
+        [Req]  public          Operation       body;
         
         public   override string    OperationName => "(o): any";
         public   override void      AppendLinq(AppendCx cx) {
@@ -41,8 +42,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class Filter : FilterOperation
     {
-        [Fri.Required]  public          string          arg;
-        [Fri.Required]  public          FilterOperation body;
+        [Req]  public          string          arg;
+        [Req]  public          FilterOperation body;
         
         public   override string    OperationName => "(o): bool";
         public   override void      AppendLinq(AppendCx cx) {
