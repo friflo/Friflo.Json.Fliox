@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
     public class CustomIdEntity2 {
 #if UNITY_5_3_OR_NEWER
-        [Key] [Req]
+        [PrimaryKey] [Req]
 #else
         // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
         // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute
