@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
-using Friflo.Json.Fliox.Hub.Client;
 
 namespace Fliox.DemoHub
 {
@@ -64,7 +63,7 @@ namespace Fliox.DemoHub
                     .RuleFor(p => p.employees,  f => {
                         if (employees == 0)
                             return null;
-                        return new List<Ref<long, Employee>> { f.PickRandom(result.employees) };
+                        return new List<long> { f.PickRandom(result.employees).id };
                     })
                     .RuleFor(e => e.created,    now);
                 
@@ -80,7 +79,7 @@ namespace Fliox.DemoHub
                     .RuleFor(a => a.producer,   f => {
                         if (producers == 0)
                             return default;
-                        return f.PickRandom(result.producers);
+                        return f.PickRandom(result.producers).id;
                     })
                     .RuleFor(e => e.created,    now);
 
@@ -114,7 +113,7 @@ namespace Fliox.DemoHub
                     .RuleFor(o => o.customer,   f => {
                         if (customers == 0)
                             return default;
-                        return f.PickRandom(result.customers);
+                        return f.PickRandom(result.customers).id;
                     })
                     .RuleFor(o => o.items,      articles == 0 ? null : itemFaker.Generate(2).ToList());
                 

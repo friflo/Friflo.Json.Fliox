@@ -41,42 +41,46 @@ namespace Fliox.DemoHub
     
     // ------------------------------ entity models ------------------------------
     public class Article {
-        [Required]  public  long                id { get; set; }
-        [Required]  public  string              name;
-                    public  Ref<long, Producer> producer;
-                    public  DateTime?           created;
+        [Required]  public  long            id { get; set; }
+        [Required]  public  string          name;
+        [ContainerRelation(nameof(DemoStore.producers))]
+                    public  long            producer;
+                    public  DateTime?       created;
     }
 
     public class Customer {
-        [Required]  public  long                id { get; set; }
-        [Required]  public  string              name;
-                    public  DateTime?           created;
+        [Required]  public  long            id { get; set; }
+        [Required]  public  string          name;
+                    public  DateTime?       created;
     }
     
     public class Employee {
-        [Required]  public  long                id { get; set; }
-        [Required]  public  string              firstName;
-                    public  string              lastName;
-                    public  DateTime?           created;
+        [Required]  public  long            id { get; set; }
+        [Required]  public  string          firstName;
+                    public  string          lastName;
+                    public  DateTime?       created;
     }
 
     public class Order {
-        [Required]  public  long                id { get; set; }
-                    public  Ref<long, Customer> customer;
-                    public  DateTime            created;
-                    public  List<OrderItem>     items = new List<OrderItem>();
+        [Required]  public  long            id { get; set; }
+        [ContainerRelation(nameof(DemoStore.customers))]
+                    public  long            customer;
+                    public  DateTime        created;
+                    public  List<OrderItem> items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        [Required]  public  Ref<long, Article>  article;
-                    public  int                 amount;
-                    public  string              name;
+        [ContainerRelation(nameof(DemoStore.articles))]
+        [Required]  public  long            article;
+                    public  int             amount;
+                    public  string          name;
     }
 
     public class Producer {
-        [Required]  public  long                        id { get; set; }
-        [Required]  public  string                      name;
-                    public  List<Ref<long, Employee>>   employees;
-                    public  DateTime?                   created;
+        [Required]  public  long            id { get; set; }
+        [Required]  public  string          name;
+        [ContainerRelation(nameof(DemoStore.employees))]
+                    public  List<long>      employees;
+                    public  DateTime?       created;
     }
 }
