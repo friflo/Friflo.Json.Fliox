@@ -15,17 +15,17 @@ namespace Friflo.Json.Fliox
     }
     
     // -------------------------------- field & property attributes ------------------------------
-    /// <summary> Declare the attributed field / property is the primary key of an entity in its container </summary>
+    /// <summary> Declare the attributed member is the primary key of an entity in its container </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class PrimaryKeyAttribute : Attribute {
     }
 
-    /// <summary> Declare the attributed field / property as an auto increment field / property </summary>
+    /// <summary> Declare the attributed member as an auto increment field / property </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class AutoIncrementAttribute : Attribute {
     }
     
-    /// <summary> Specify that the attributed field / property is a reference (secondary key) to the given container </summary>
+    /// <summary> Specify that the attributed member is a reference (secondary key) to an entity in the given container </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class ContainerRelationAttribute : Attribute {
         public ContainerRelationAttribute (string container) {}
