@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
     }
 
-    [Fri.Instance(typeof(Sub))]
+    [Instance(typeof(Sub))]
     public interface ISub {
     }
 

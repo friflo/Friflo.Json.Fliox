@@ -14,63 +14,63 @@ using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {
-    [Fri.Discriminator("op", Description = "operation type")]
+    [Discriminator("op", Description = "operation type")]
     //
-    [Fri.Polymorph(typeof(Field),               Discriminant = "field")]
+    [Polymorph(typeof(Field),               Discriminant = "field")]
     //  
-    [Fri.Polymorph(typeof(StringLiteral),       Discriminant = "string")]
-    [Fri.Polymorph(typeof(DoubleLiteral),       Discriminant = "double")]
-    [Fri.Polymorph(typeof(LongLiteral),         Discriminant = "int64")]
+    [Polymorph(typeof(StringLiteral),       Discriminant = "string")]
+    [Polymorph(typeof(DoubleLiteral),       Discriminant = "double")]
+    [Polymorph(typeof(LongLiteral),         Discriminant = "int64")]
     //
-    [Fri.Polymorph(typeof(NullLiteral),         Discriminant = "null")]
-    [Fri.Polymorph(typeof(PiLiteral),           Discriminant = "PI")]
-    [Fri.Polymorph(typeof(EulerLiteral),        Discriminant = "E")]
-    [Fri.Polymorph(typeof(TauLiteral),          Discriminant = "Tau")]
+    [Polymorph(typeof(NullLiteral),         Discriminant = "null")]
+    [Polymorph(typeof(PiLiteral),           Discriminant = "PI")]
+    [Polymorph(typeof(EulerLiteral),        Discriminant = "E")]
+    [Polymorph(typeof(TauLiteral),          Discriminant = "Tau")]
     //  
-    [Fri.Polymorph(typeof(Abs),                 Discriminant = "abs")]
-    [Fri.Polymorph(typeof(Ceiling),             Discriminant = "ceiling")]
-    [Fri.Polymorph(typeof(Floor),               Discriminant = "floor")]
-    [Fri.Polymorph(typeof(Exp),                 Discriminant = "exp")]
-    [Fri.Polymorph(typeof(Log),                 Discriminant = "log")]
-    [Fri.Polymorph(typeof(Sqrt),                Discriminant = "sqrt")]
-    [Fri.Polymorph(typeof(Negate),              Discriminant = "negate")]
+    [Polymorph(typeof(Abs),                 Discriminant = "abs")]
+    [Polymorph(typeof(Ceiling),             Discriminant = "ceiling")]
+    [Polymorph(typeof(Floor),               Discriminant = "floor")]
+    [Polymorph(typeof(Exp),                 Discriminant = "exp")]
+    [Polymorph(typeof(Log),                 Discriminant = "log")]
+    [Polymorph(typeof(Sqrt),                Discriminant = "sqrt")]
+    [Polymorph(typeof(Negate),              Discriminant = "negate")]
     //  
-    [Fri.Polymorph(typeof(Add),                 Discriminant = "add")]
-    [Fri.Polymorph(typeof(Subtract),            Discriminant = "subtract")]
-    [Fri.Polymorph(typeof(Multiply),            Discriminant = "multiply")]
-    [Fri.Polymorph(typeof(Divide),              Discriminant = "divide")]
-    [Fri.Polymorph(typeof(Modulo),              Discriminant = "modulo")]
+    [Polymorph(typeof(Add),                 Discriminant = "add")]
+    [Polymorph(typeof(Subtract),            Discriminant = "subtract")]
+    [Polymorph(typeof(Multiply),            Discriminant = "multiply")]
+    [Polymorph(typeof(Divide),              Discriminant = "divide")]
+    [Polymorph(typeof(Modulo),              Discriminant = "modulo")]
     //  
-    [Fri.Polymorph(typeof(Min),                 Discriminant = "min")]
-    [Fri.Polymorph(typeof(Max),                 Discriminant = "max")]
-    [Fri.Polymorph(typeof(Sum),                 Discriminant = "sum")]
-    [Fri.Polymorph(typeof(Average),             Discriminant = "average")]
-    [Fri.Polymorph(typeof(Count),               Discriminant = "count")]
+    [Polymorph(typeof(Min),                 Discriminant = "min")]
+    [Polymorph(typeof(Max),                 Discriminant = "max")]
+    [Polymorph(typeof(Sum),                 Discriminant = "sum")]
+    [Polymorph(typeof(Average),             Discriminant = "average")]
+    [Polymorph(typeof(Count),               Discriminant = "count")]
     
     // --- FilterOperation
-    [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
-    [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
-    [Fri.Polymorph(typeof(Less),                Discriminant = "less")]
-    [Fri.Polymorph(typeof(LessOrEqual),         Discriminant = "lessOrEqual")]
-    [Fri.Polymorph(typeof(Greater),             Discriminant = "greater")]
-    [Fri.Polymorph(typeof(GreaterOrEqual),      Discriminant = "greaterOrEqual")]
+    [Polymorph(typeof(Equal),               Discriminant = "equal")]
+    [Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
+    [Polymorph(typeof(Less),                Discriminant = "less")]
+    [Polymorph(typeof(LessOrEqual),         Discriminant = "lessOrEqual")]
+    [Polymorph(typeof(Greater),             Discriminant = "greater")]
+    [Polymorph(typeof(GreaterOrEqual),      Discriminant = "greaterOrEqual")]
     //
-    [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
-    [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
+    [Polymorph(typeof(And),                 Discriminant = "and")]
+    [Polymorph(typeof(Or),                  Discriminant = "or")]
     //
-    [Fri.Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
-    [Fri.Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
-    [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    [Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
+    [Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
+    [Polymorph(typeof(Not),                 Discriminant = "not")]
     
-    [Fri.Polymorph(typeof(Lambda),              Discriminant = "lambda")]
-    [Fri.Polymorph(typeof(Filter),              Discriminant = "filter")]
-    [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
-    [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
-    [Fri.Polymorph(typeof(CountWhere),          Discriminant = "countWhere")]
+    [Polymorph(typeof(Lambda),              Discriminant = "lambda")]
+    [Polymorph(typeof(Filter),              Discriminant = "filter")]
+    [Polymorph(typeof(Any),                 Discriminant = "any")]
+    [Polymorph(typeof(All),                 Discriminant = "all")]
+    [Polymorph(typeof(CountWhere),          Discriminant = "countWhere")]
     //
-    [Fri.Polymorph(typeof(Contains),            Discriminant = "contains")]
-    [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
-    [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
+    [Polymorph(typeof(Contains),            Discriminant = "contains")]
+    [Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
+    [Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
     // ----------------------------- Operation --------------------------
 #if !UNITY_5_3_OR_NEWER
@@ -233,29 +233,29 @@ namespace Friflo.Json.Fliox.Transform
         }
     }
     
-    [Fri.Discriminator("op", Description = "filter type")]
+    [Discriminator("op", Description = "filter type")]
     // --- FilterOperation
-    [Fri.Polymorph(typeof(Equal),               Discriminant = "equal")]
-    [Fri.Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
-    [Fri.Polymorph(typeof(Less),                Discriminant = "less")]
-    [Fri.Polymorph(typeof(LessOrEqual),         Discriminant = "lessOrEqual")]
-    [Fri.Polymorph(typeof(Greater),             Discriminant = "greater")]
-    [Fri.Polymorph(typeof(GreaterOrEqual),      Discriminant = "greaterOrEqual")]
+    [Polymorph(typeof(Equal),               Discriminant = "equal")]
+    [Polymorph(typeof(NotEqual),            Discriminant = "notEqual")]
+    [Polymorph(typeof(Less),                Discriminant = "less")]
+    [Polymorph(typeof(LessOrEqual),         Discriminant = "lessOrEqual")]
+    [Polymorph(typeof(Greater),             Discriminant = "greater")]
+    [Polymorph(typeof(GreaterOrEqual),      Discriminant = "greaterOrEqual")]
     //
-    [Fri.Polymorph(typeof(And),                 Discriminant = "and")]
-    [Fri.Polymorph(typeof(Or),                  Discriminant = "or")]
+    [Polymorph(typeof(And),                 Discriminant = "and")]
+    [Polymorph(typeof(Or),                  Discriminant = "or")]
     //
-    [Fri.Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
-    [Fri.Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
-    [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
+    [Polymorph(typeof(TrueLiteral),         Discriminant = "true")]
+    [Polymorph(typeof(FalseLiteral),        Discriminant = "false")]
+    [Polymorph(typeof(Not),                 Discriminant = "not")]
     
-    [Fri.Polymorph(typeof(Filter),              Discriminant = "filter")]
-    [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
-    [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
+    [Polymorph(typeof(Filter),              Discriminant = "filter")]
+    [Polymorph(typeof(Any),                 Discriminant = "any")]
+    [Polymorph(typeof(All),                 Discriminant = "all")]
     //
-    [Fri.Polymorph(typeof(Contains),            Discriminant = "contains")]
-    [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
-    [Fri.Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
+    [Polymorph(typeof(Contains),            Discriminant = "contains")]
+    [Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]
+    [Polymorph(typeof(EndsWith),            Discriminant = "endsWith")]
     
     // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation

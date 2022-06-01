@@ -12,13 +12,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// The database operation or command execution is granted if any of it <see cref="DB.UserAuth.Role.rights"/>
     /// grant access.
     /// </summary>
-    [Fri.Discriminator("type", Description = "right type")]
-    [Fri.Polymorph(typeof(AllowRight),              Discriminant = "allow")]
-    [Fri.Polymorph(typeof(TaskRight),               Discriminant = "task")]
-    [Fri.Polymorph(typeof(SendMessageRight),        Discriminant = "sendMessage")]
-    [Fri.Polymorph(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
-    [Fri.Polymorph(typeof(OperationRight),          Discriminant = "operation")]
-    [Fri.Polymorph(typeof(PredicateRight),          Discriminant = "predicate")]
+    [Discriminator("type", Description = "right type")]
+    [Polymorph(typeof(AllowRight),              Discriminant = "allow")]
+    [Polymorph(typeof(TaskRight),               Discriminant = "task")]
+    [Polymorph(typeof(SendMessageRight),        Discriminant = "sendMessage")]
+    [Polymorph(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
+    [Polymorph(typeof(OperationRight),          Discriminant = "operation")]
+    [Polymorph(typeof(PredicateRight),          Discriminant = "predicate")]
     public abstract class Right {
         /// <summary>optional description explaining the Right</summary>
         public              string      description;

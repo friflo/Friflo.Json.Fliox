@@ -6,22 +6,22 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
     // ----------------------------------- task result -----------------------------------
-    [Fri.Discriminator("task", Description = "task result type")]
-    [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
-    [Fri.Polymorph(typeof(UpsertEntitiesResult),    Discriminant = "upsert")]
-    [Fri.Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
-    [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
-    [Fri.Polymorph(typeof(AggregateEntitiesResult), Discriminant = "aggregate")]
-    [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
-    [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
-    [Fri.Polymorph(typeof(SendMessageResult),       Discriminant = "message")]
-    [Fri.Polymorph(typeof(SendCommandResult),       Discriminant = "command")]
-    [Fri.Polymorph(typeof(CloseCursorsResult),      Discriminant = "closeCursors")]
-    [Fri.Polymorph(typeof(SubscribeChangesResult),  Discriminant = "subscribeChanges")]
-    [Fri.Polymorph(typeof(SubscribeMessageResult),  Discriminant = "subscribeMessage")]
-    [Fri.Polymorph(typeof(ReserveKeysResult),       Discriminant = "reserveKeys")]
+    [Discriminator("task", Description = "task result type")]
+    [Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
+    [Polymorph(typeof(UpsertEntitiesResult),    Discriminant = "upsert")]
+    [Polymorph(typeof(ReadEntitiesResult),      Discriminant = "read")]
+    [Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
+    [Polymorph(typeof(AggregateEntitiesResult), Discriminant = "aggregate")]
+    [Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
+    [Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
+    [Polymorph(typeof(SendMessageResult),       Discriminant = "message")]
+    [Polymorph(typeof(SendCommandResult),       Discriminant = "command")]
+    [Polymorph(typeof(CloseCursorsResult),      Discriminant = "closeCursors")]
+    [Polymorph(typeof(SubscribeChangesResult),  Discriminant = "subscribeChanges")]
+    [Polymorph(typeof(SubscribeMessageResult),  Discriminant = "subscribeMessage")]
+    [Polymorph(typeof(ReserveKeysResult),       Discriminant = "reserveKeys")]
     //
-    [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
+    [Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
     public abstract class SyncTaskResult
     {
         internal abstract TaskType          TaskType { get; }

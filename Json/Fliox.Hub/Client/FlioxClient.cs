@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    [Fri.TypeMapper(typeof(FlioxClientMatcher))]
+    [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : ITracerContext, IDisposable, IResetable, ILogSource
     {
         // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.

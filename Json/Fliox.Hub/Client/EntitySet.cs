@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    [Fri.TypeMapper(typeof(EntitySetMatcher))]
+    [TypeMapper(typeof(EntitySetMatcher))]
     public sealed partial class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern (intern) to enhance debugging overview.

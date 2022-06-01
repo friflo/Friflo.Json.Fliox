@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class AutoIntEntity {
-        [Fri.AutoIncrement]
+        [AutoIncrement]
         public int  id;
     }
     
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
     public class CustomIdEntity2 {
 #if UNITY_5_3_OR_NEWER
-        [Fri.Key] [Req]
+        [Key] [Req]
 #else
         // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
         // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute

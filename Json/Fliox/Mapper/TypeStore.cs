@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         private static Type GetTypeMapperType(Type type, out bool isMapper) {
             foreach (var attr in type.CustomAttributes) {
-                if (attr.AttributeType == typeof(Fri.TypeMapperAttribute)) {
+                if (attr.AttributeType == typeof(TypeMapperAttribute)) {
                     var arg = attr.ConstructorArguments;
                     var typeMapper = arg[0].Value as Type;
                     if (typeMapper != null) {
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Mapper
                             return typeMapper;
                         }
                     }
-                    var msg = $"[Fri.TypeMapper()] parameter must be a Type extending TypeMapper or TypeMatcher at Type: {type}";
+                    var msg = $"[TypeMapper()] parameter must be a Type extending TypeMapper or TypeMatcher at Type: {type}";
                     throw new InvalidOperationException(msg);
                 }
             }

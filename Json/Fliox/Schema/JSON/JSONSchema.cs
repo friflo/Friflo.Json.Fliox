@@ -198,12 +198,12 @@ namespace Friflo.Json.Fliox.Schema.JSON
     }
     
     internal enum SchemaType {
-        [Fri.EnumValue(Name = "null")]      Null,
-        [Fri.EnumValue(Name = "object")]    Object,
-        [Fri.EnumValue(Name = "string")]    String,
-        [Fri.EnumValue(Name = "boolean")]   Boolean,
-        [Fri.EnumValue(Name = "number")]    Number,
-        [Fri.EnumValue(Name = "integer")]   Integer,
-        [Fri.EnumValue(Name = "array")]     Array
+        [EnumValue(Name = "null")]      Null,
+        [EnumValue(Name = "object")]    Object,
+        [EnumValue(Name = "string")]    String,
+        [EnumValue(Name = "boolean")]   Boolean,
+        [EnumValue(Name = "number")]    Number,
+        [EnumValue(Name = "integer")]   Integer,
+        [EnumValue(Name = "array")]     Array
     }
 }

@@ -96,12 +96,12 @@ namespace Friflo.Json.Fliox.Schema.Language
                 var abstractStr = type.IsAbstract ? "abstract " : "";
                 sb.AppendLine($"public {abstractStr}{classType} {type.Name} {extendsStr}{{");
             } else {
-                sb.AppendLine($"[Fri.Discriminator(\"{unionType.discriminator}\")]");
+                sb.AppendLine($"[Discriminator(\"{unionType.discriminator}\")]");
                 int max    = unionType.types.MaxLength(polyType => polyType.typeDef.Name.Length);
                 foreach (var polyType in unionType.types) {
                     var polyTypeDef = polyType.typeDef;
                     var indent   = Indent(max, polyTypeDef.Name);
-                    sb.AppendLine($"[Fri.Polymorph(typeof({polyTypeDef.Name}),{indent} Discriminant = \"{polyType.discriminant}\")]");
+                    sb.AppendLine($"[Polymorph(typeof({polyTypeDef.Name}),{indent} Discriminant = \"{polyType.discriminant}\")]");
                     imports.Add(polyTypeDef);
                 }
                 sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");

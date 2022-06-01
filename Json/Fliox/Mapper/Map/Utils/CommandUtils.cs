@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         
         private static string GetMessagePrefix(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.MessagePrefixAttribute)) {
+                if (attr.AttributeType == typeof(MessagePrefixAttribute)) {
                     var arg     = attr.ConstructorArguments;
                     var value   = (string)arg[0].Value;
                     return value ?? "";

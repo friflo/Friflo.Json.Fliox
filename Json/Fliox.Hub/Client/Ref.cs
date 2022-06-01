@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    [Fri.TypeMapper(typeof(RefMatcher))]
+    [TypeMapper(typeof(RefMatcher))]
     public struct Ref<TKey, T>  where T : class
     {
         // invariant of Ref<T> has following cases:
