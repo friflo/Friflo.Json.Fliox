@@ -3,7 +3,6 @@
 
 using System;
 
-// ReSharper disable CheckNamespace
 namespace Friflo.Json.Fliox
 {
     // ------------------------------- OpenAPI attributes -------------------------------

@@ -5,7 +5,6 @@ using System;
 
 // ReSharper disable UnusedParameter.Local
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
     // -------------------------------- class attributes ------------------------------
