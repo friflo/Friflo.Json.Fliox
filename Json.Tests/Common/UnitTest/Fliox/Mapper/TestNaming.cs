@@ -6,7 +6,6 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 #pragma warning disable 649 // Field 'field' is never assigned
 

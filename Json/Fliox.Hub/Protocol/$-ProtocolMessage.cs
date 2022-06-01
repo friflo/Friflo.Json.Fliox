@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming

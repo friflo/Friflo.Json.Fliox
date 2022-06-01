@@ -8,8 +8,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
-
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable UnassignedReadonlyField

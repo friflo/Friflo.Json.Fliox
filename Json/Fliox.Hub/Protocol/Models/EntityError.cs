@@ -7,7 +7,6 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {

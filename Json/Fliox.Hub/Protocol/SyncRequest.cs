@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {

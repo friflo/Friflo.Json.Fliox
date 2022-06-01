@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {

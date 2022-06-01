@@ -4,7 +4,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
-using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.Host.Internal
