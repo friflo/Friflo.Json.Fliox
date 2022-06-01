@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox
     
     /// <summary> Used to ignore public fields / properties from JSON serialization </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class IgnoreAttribute : Attribute {
+    public sealed class IgnoreMemberAttribute : Attribute {
     }
     
     /// <summary> Declare the attributed field / property as a required </summary>
