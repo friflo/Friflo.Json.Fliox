@@ -7,6 +7,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
     public readonly struct JsonKey

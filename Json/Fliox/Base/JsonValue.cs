@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
     /// <summary>

@@ -4,6 +4,7 @@ using System;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedParameter.Local
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
     // -------------------------------- class & interface attributes ------------------------------
@@ -29,6 +30,7 @@ namespace Friflo.Json.Fliox
         public InstanceTypeAttribute (Type instance) {}
     }
 
+    /// <summary> Hub specific </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class MessagePrefixAttribute : Attribute {
         public MessagePrefixAttribute (string prefix) { }
@@ -48,22 +50,26 @@ namespace Friflo.Json.Fliox
     public sealed class RequiredMemberAttribute : Attribute {
     }
     
+    /// <summary> database specific </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class PrimaryKeyAttribute : Attribute {
     }
 
+    /// <summary> database specific </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class AutoIncrementAttribute : Attribute {
     }
     
+    /// <summary> database specific </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class RelationMemberAttribute : Attribute {
-        public RelationMemberAttribute (string instance) {}
+    public sealed class ContainerRelationAttribute : Attribute {
+        public ContainerRelationAttribute (string instance) {}
     }
     
     // -------------------------------- method attributes ------------------------------
+    /// <summary> database specific </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class CommandAttribute : Attribute {
+    public sealed class DatabaseCommandAttribute : Attribute {
         public string       Name        { get; set; }
     }
     

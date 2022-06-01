@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly TestCommands    test;
         
         // --- commands
-        [Command(Name =            "TestCommand")]
+        [DatabaseCommand(Name =        "TestCommand")]
         public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand",param);
         public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>  ("SyncCommand", param);
         public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>  ("AsyncCommand",param);

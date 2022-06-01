@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         
         public static string CommandName(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType != typeof(CommandAttribute))
+                if (attr.AttributeType != typeof(DatabaseCommandAttribute))
                     continue;
                 if (attr.NamedArguments == null)
                     continue;
