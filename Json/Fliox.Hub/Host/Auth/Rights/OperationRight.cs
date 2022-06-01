@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable CollectionNeverUpdated.Global
@@ -21,10 +21,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class OperationRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
-        [Req]   public              string                              database;
+        [Required]  public              string                              database;
         /// <summary>grant execution of operations and subscriptions on listed <see cref="containers"/> </summary>
-        [Req]   public              Dictionary<string, ContainerAccess> containers;
-                public  override    RightType                           RightType => RightType.operation;
+        [Required]  public              Dictionary<string, ContainerAccess> containers;
+                    public  override    RightType                           RightType => RightType.operation;
         
         public override Authorizer ToAuthorizer() {
             var databaseName = database;

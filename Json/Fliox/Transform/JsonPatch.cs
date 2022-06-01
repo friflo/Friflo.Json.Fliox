@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using System.ComponentModel.DataAnnotations;
 
 namespace Friflo.Json.Fliox.Transform
 {
@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.Transform
 
     public sealed class PatchReplace : JsonPatch
     {
-        [Req]  public  string      path;
-        [Req]  public  JsonValue   value;
+        [Required]  public  string      path;
+        [Required]  public  JsonValue   value;
 
         public override         PatchType   PatchType   => PatchType.Replace;
         public override         string      ToString()  => path;
@@ -32,8 +32,8 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchAdd : JsonPatch
     {
-        [Req]  public  string      path;
-        [Req]  public  JsonValue   value;
+        [Required]  public  string      path;
+        [Required]  public  JsonValue   value;
 
         public override         PatchType   PatchType   => PatchType.Add;
         public override         string      ToString()  => path;
@@ -41,38 +41,38 @@ namespace Friflo.Json.Fliox.Transform
     
     public sealed class PatchRemove : JsonPatch
     {
-        [Req]  public  string      path;
+        [Required]  public  string      path;
 
-        public override         PatchType   PatchType   => PatchType.Remove;
-        public override         string      ToString()  => path;
+        public override     PatchType   PatchType   => PatchType.Remove;
+        public override     string      ToString()  => path;
     }
     
     public sealed class PatchCopy : JsonPatch
     {
-        [Req]           public string       path;
-                        public string       from;
+        [Required]  public  string      path;
+                    public  string      from;
 
-        public override PatchType   PatchType   => PatchType.Copy;
-        public override string      ToString()  => path;
+        public override     PatchType   PatchType   => PatchType.Copy;
+        public override     string      ToString()  => path;
     }
     
     public sealed class PatchMove : JsonPatch
     {
-        [Req]           public  string      path;
-                        public  string      from;
+        [Required]  public  string      path;
+                    public  string      from;
 
-        public override         PatchType   PatchType   => PatchType.Move;
-        public override         string      ToString()  => path;
+        public override     PatchType   PatchType   => PatchType.Move;
+        public override     string      ToString()  => path;
 
     }
     
     public sealed class PatchTest : JsonPatch
     {
-        [Req]           public  string      path;
-                        public  JsonValue   value;
+        [Required]  public  string      path;
+                    public  JsonValue   value;
 
-        public override         PatchType   PatchType   => PatchType.Test;
-        public override         string      ToString()  => path;
+        public override     PatchType   PatchType   => PatchType.Test;
+        public override     string      ToString()  => path;
     }
     
     public enum PatchType

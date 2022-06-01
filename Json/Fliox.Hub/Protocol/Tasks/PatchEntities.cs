@@ -2,11 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -19,11 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class PatchEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]       public  string                              container;
+        [Required]  public  string                              container;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
                     public  string                              keyName;
         /// <summary>set of patches for each entity identified by its primary key</summary>
-        [Req]       public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
+        [Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
         internal override   TaskType                            TaskType => TaskType.patch;
         public   override   string                              TaskName =>  $"container: '{container}'";
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class EntityPatch
     {
         /// <summary>list of patches applied to an entity</summary>
-        [Req]  public  List<JsonPatch>      patches;
+        [Required]  public  List<JsonPatch>      patches;
     }
 
     // ----------------------------------- task result -----------------------------------

@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -20,12 +20,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]       public  string                  container;
+        [Required]  public  string                  container;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string                  keyName;
                     public  bool?                   isIntKey;
         /// <summary>contains the <see cref="ReadEntitiesSet.ids"/> of requested entities</summary>               
-        [Req]       public  List<ReadEntitiesSet>   sets;
+        [Required]  public  List<ReadEntitiesSet>   sets;
         
         internal override   TaskType                TaskType => TaskType.read;
         public   override   string                  TaskName =>  $"container: '{container}'";
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        [Req]   public      List<ReadEntitiesSetResult> sets;
+        [Required]  public  List<ReadEntitiesSetResult> sets;
         
         internal override   TaskType                    TaskType => TaskType.read;
     }

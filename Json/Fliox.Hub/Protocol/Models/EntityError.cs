@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
@@ -23,9 +23,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class EntityError
     {
         /// <summary>entity id</summary>
-        [Req]       public  JsonKey             id;
+        [Required]  public  JsonKey             id;
         /// <summary>error type when accessing an entity in a database</summary>
-        [Req]       public  EntityErrorType     type;
+        [Required]  public  EntityErrorType     type;
         /// <summary>error details when accessing an entity</summary>
         [Serialize] public  string              message;
             

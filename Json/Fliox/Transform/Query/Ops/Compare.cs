@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Transform.Query.Arity;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -10,8 +10,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // -------------------------------------- comparison operations --------------------------------------
     public abstract class BinaryBoolOp : FilterOperation
     {
-        [Req]  public  Operation   left;
-        [Req]  public  Operation   right;
+        [Required]  public  Operation   left;
+        [Required]  public  Operation   right;
         
         protected BinaryBoolOp() { }
         protected BinaryBoolOp(Operation left, Operation right) {

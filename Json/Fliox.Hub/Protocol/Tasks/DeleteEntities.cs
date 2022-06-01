@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class DeleteEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]       public  string              container;
+        [Required]  public  string              container;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
                     public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>

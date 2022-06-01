@@ -2,12 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -41,9 +41,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     /// <summary>number of requests and tasks executed by the host. Container contains always a single record</summary>
     public sealed class HostHits {
         /// <summary>host name</summary>
-        [Req]   public  JsonKey                         id;
+        [Required]  public  JsonKey                         id;
         /// <summary>number of executed requests and tasks per database</summary>
-                public  RequestCount                    counts;
+                    public  RequestCount                    counts;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
@@ -51,11 +51,11 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     /// <summary>all user clients and number of executed user requests and tasks</summary>
     public sealed class UserHits {
         /// <summary>user id </summary>
-        [Req]   public  JsonKey                         id;
+        [Required]  public  JsonKey                         id;
         /// <summary>list of clients owned by a user</summary>
-        [Req]   public  List<Ref<JsonKey, ClientHits>>  clients;
+        [Required]  public  List<Ref<JsonKey, ClientHits>>  clients;
         /// <summary>number executed requests and tasks per database</summary>
-        public  List<RequestCount>                      counts = new List<RequestCount>();
+                    public  List<RequestCount>                      counts = new List<RequestCount>();
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
@@ -63,14 +63,14 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     /// <summary>information about requests, tasks, events and subscriptions of a client</summary>
     public sealed class ClientHits {
         /// <summary>client id </summary>
-        [Req]   public  JsonKey                         id;
+        [Required]  public  JsonKey                         id;
         /// <summary>user owning the client</summary>
-        [Req]   public  Ref<JsonKey, UserHits>          user;
+        [Required]  public  Ref<JsonKey, UserHits>          user;
         /// <summary>number executed requests and tasks per database</summary>
-                public  List<RequestCount>              counts = new List<RequestCount>();
+                    public  List<RequestCount>              counts = new List<RequestCount>();
         /// <summary>number of sent or queued client events and its message and change subscriptions</summary>
-        [Serialize (Name =                             "event")]
-                public  EventDelivery?                  ev;
+        [Serialize (Name =                                 "event")]
+                    public  EventDelivery?                  ev;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
@@ -91,21 +91,21 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
     public sealed class ChangeSubscription
     {
         /// <summary>name of subscribed container</summary>
-        [Req]   public  string                          container;
+        [Required]  public  string                          container;
         /// <summary>type of subscribed changes like create, upsert, delete and patch</summary>
-        [Req]   public  List<Change>                    changes;
+        [Required]  public  List<Change>                    changes;
         /// <summary>filter to narrow the amount of change events</summary>
-                public  string                          filter;
+                    public  string                          filter;
     }
     
     /// <summary>aggregated counts of latest requests. Each record uses a specific aggregation interval.</summary>
     public sealed class HistoryHits {
         /// <summary>time in seconds for an aggregation interval</summary>
-        [Req]   public  int                             id;
+        [Required]  public  int                             id;
         /// <summary>number of requests executed in each interval</summary>
-        [Req]   public  int[]                           counters;
+        [Required]  public  int[]                           counters;
         /// <summary>last update of the <see cref="HistoryHits"/> record</summary>
-                public  int                             lastUpdate;
+                    public  int                             lastUpdate;
                         
         public override string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }

@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Transform.Query.Arity;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ----------------------------------- unary logical operations -----------------------------------
     public abstract class UnaryLogicalOp : FilterOperation
     {
-        [Req]  public  FilterOperation     operand;     // e.g.   i => i.amount < 1
+        [Required]  public  FilterOperation     operand;     // e.g.   i => i.amount < 1
 
         protected UnaryLogicalOp() { }
         protected UnaryLogicalOp(FilterOperation operand) { this.operand = operand; }
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ----------------------------------- (n-ary) logical group operations -----------------------------------
     public abstract class BinaryLogicalOp : FilterOperation
     {
-        [Req]       public              List<FilterOperation>   operands;
+        [Required]  public              List<FilterOperation>   operands;
         [Ignore]    internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
         [Ignore]    internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 

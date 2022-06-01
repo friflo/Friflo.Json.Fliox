@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Ignore]    public  string                  keyName;
         [Ignore]    public  bool?                   isIntKey;
         /// <summary>list of entity <see cref="ids"/> requested by a <see cref="Tasks.ReadEntities"/> task</summary>
-        [Req]       public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>used to request the entities referenced by properties of a read task result</summary>
                     public  List<References>        references;
     }

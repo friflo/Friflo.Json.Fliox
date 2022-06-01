@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// These referenced entities are also loaded via the next <see cref="FlioxClient.SyncTasks"/> request.
         /// </remarks>
         /// <summary>the field path used as a reference to an entity in the specified <see cref="container"/></summary>
-        [Req]   public  string              selector; // e.g. ".items[*].article"
+        [Required]  public  string              selector; // e.g. ".items[*].article"
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
-        [Req]   public  string              container;
-                public  string              keyName;
-                public  bool?               isIntKey;
-                public  List<References>    references;
+        [Required]  public  string              container;
+                    public  string              keyName;
+                    public  bool?               isIntKey;
+                    public  List<References>    references;
     }
     
     // ----------------------------------- sub task result -----------------------------------
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [DebugInfo]     public  string                  container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                    count;
-        [Req]           public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Required]      public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>  references;
     }
 }

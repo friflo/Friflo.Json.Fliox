@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Transform;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -18,9 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeChanges : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]       public      string          container;
+        [Required]  public      string          container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
-        [Req]       public      List<Change>    changes;
+        [Required]  public      List<Change>    changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                     public      JsonValue       filter;

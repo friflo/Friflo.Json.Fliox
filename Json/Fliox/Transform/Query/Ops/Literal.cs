@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable EmptyConstructor
@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         
     public sealed class StringLiteral : Literal
     {
-        [Req]  public  string      value;
+        [Required]  public  string      value;
         
         public   override string    OperationName => value;
         public   override void      AppendLinq(AppendCx cx) { cx.Append("'"); cx.Append(value); cx.Append("'"); }

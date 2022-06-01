@@ -2,13 +2,13 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]       public  string              container;
+        [Required]  public  string              container;
         /// <summary>name of the primary key property of the returned entities</summary>
                     public  string              keyName;
                     public  bool?               isIntKey;
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                         public  string                          cursor;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
         [DebugInfo]     public  int?                            count;
-        [Req]           public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Required]      public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
                         
         [Ignore]        public  Dictionary<JsonKey,EntityValue> entities;

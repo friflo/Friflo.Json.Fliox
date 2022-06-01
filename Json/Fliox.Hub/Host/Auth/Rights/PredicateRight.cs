@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -14,10 +14,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class PredicateRight : Right
     {
         /// <summary>a specific predicate: 'TestPredicate', multiple predicates by prefix: 'Test*', all predicates: '*'</summary>
-        [Req]   public              List<string>    names;
+        [Required]  public              List<string>    names;
         
-                public  override    RightType       RightType => RightType.predicate;
-                public  override    Authorizer      ToAuthorizer() => throw new NotImplementedException();
+                    public  override    RightType       RightType => RightType.predicate;
+                    public  override    Authorizer      ToAuthorizer() => throw new NotImplementedException();
                 
         internal override void Validate(in RoleValidation validation) {
             foreach (var predicateName in names) {

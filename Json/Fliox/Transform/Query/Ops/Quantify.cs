@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using System.ComponentModel.DataAnnotations;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -10,9 +10,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
     public abstract class BinaryQuantifyOp : FilterOperation
     {
-        [Req]  public  Field           field;
-        [Req]  public  string          arg;
-        [Req]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
+        [Required]  public  Field           field;
+        [Required]  public  string          arg;
+        [Required]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
 
         protected BinaryQuantifyOp() { }
         protected BinaryQuantifyOp(Field field, string arg, FilterOperation predicate) {
@@ -81,9 +81,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class CountWhere : Operation // Note: must not extend: FilterOperation
     {
-        [Req]   public              Field           field;
-        [Req]   public              string          arg;
-        [Req]   public              FilterOperation predicate;  // e.g.   i => i.amount < 1
+        [Required]  public          Field           field;
+        [Required]  public          string          arg;
+        [Required]  public          FilterOperation predicate;  // e.g.   i => i.amount < 1
         
         // is set always to the same value in Eval() so it can be reused
         [Ignore]private readonly    EvalResult      evalResult = new EvalResult(new List<Scalar> {new Scalar()});

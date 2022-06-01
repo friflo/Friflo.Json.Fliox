@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -20,12 +20,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CreateEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
-        [Req]       public  string          container;
+        [Required]  public  string          container;
                     public  Guid?           reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
                     public  string          keyName;
         /// <summary>the <see cref="entities"/> which are created in the specified <see cref="container"/></summary>
-        [Req]       public  List<JsonValue> entities;
+        [Required]  public  List<JsonValue> entities;
                         
         [Ignore]    public  List<JsonKey>   entityKeys;
         

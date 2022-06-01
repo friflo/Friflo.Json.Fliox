@@ -2,9 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
-using Key = Friflo.Json.Fliox.PrimaryKeyAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnassignedReadonlyField
@@ -12,18 +11,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
     // --- models
     public sealed class Sequence {
-        [Key]           public  string  container;
-        [Req]           public  long    autoId;
+        [PrimaryKey]    public  string  container;
+        [Required]      public  long    autoId;
         [Serialize  (Name =           "_etag")]
                         public  string  etag;
     }
     
     public sealed class SequenceKeys {
-        [Key]   public  Guid    token;  // secret to ensure the client has reserved the keys
-        [Req]   public  string  container;
-        [Req]   public  long    start;
-        [Req]   public  int     count;
-                public  JsonKey user;   // to track back who reserved keys in case of abuse
+        [PrimaryKey]    public  Guid    token;  // secret to ensure the client has reserved the keys
+        [Required]      public  string  container;
+        [Required]      public  long    start;
+        [Required]      public  int     count;
+                        public  JsonKey user;   // to track back who reserved keys in case of abuse
     }
 
     public sealed class SequenceStore : FlioxClient

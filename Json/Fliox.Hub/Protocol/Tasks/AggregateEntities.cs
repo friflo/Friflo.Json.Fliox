@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable InconsistentNaming
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class AggregateEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]       public      string              container;
+        [Required]  public      string              container;
         /// <summary>aggregation type - e.g. count </summary>
                     public      AggregateType       type;
         /// <summary>aggregation filter as JSON tree. <br/>

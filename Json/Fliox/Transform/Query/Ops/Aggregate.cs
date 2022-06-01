@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using System.ComponentModel.DataAnnotations;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------------- unary -------------------------------------------
     public abstract class UnaryAggregateOp : Operation
     {
-        [Req]       public              Field       field;
+        [Required]  public              Field       field;
         [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected UnaryAggregateOp() { }
@@ -46,9 +46,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------------- binary -------------------------------------------
     public abstract class BinaryAggregateOp : Operation
     {
-        [Req]       public              Field       field;
-        [Req]       public              string      arg;
-        [Req]       public              Operation   array;
+        [Required]  public              Field       field;
+        [Required]  public              string      arg;
+        [Required]  public              Operation   array;
         [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }

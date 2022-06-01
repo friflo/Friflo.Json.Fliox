@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -18,10 +18,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     public sealed class SendMessageRight : Right
     {
         /// <summary>a specific database: 'test_db', multiple databases by prefix: 'test_*', all databases: '*'</summary>
-        [Req]   public  string          database;
+        [Required]  public  string          database;
         /// <summary>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
-        [Req]   public  List<string>    names;
-                public  override        RightType       RightType => RightType.message;
+        [Required]  public  List<string>    names;
+                    public  override        RightType       RightType => RightType.message;
         
         public override Authorizer ToAuthorizer() {
             var databaseName = database;

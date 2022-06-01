@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncMessageTask : SyncRequestTask
     {
         /// <summary>command / message name</summary>
-        [Req]       public  string          name;
+        [Required]  public  string          name;
         /// <summary>command / message parameter. Can be null or absent</summary>
                     public  JsonValue       param;
                         

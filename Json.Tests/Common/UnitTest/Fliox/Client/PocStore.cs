@@ -3,13 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -73,108 +73,108 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// </code>
     /// Test type reference '<see cref="OrderItem"/>' </summary>
     public class Order {
-        [Req]   public  string                  id { get; set; }
-                /// <summary>
-                /// Some <b>useful</b> field documentation 🙂
-                /// Check some new lines
-                /// in documentation
-                /// </summary>
-                public  Ref<string, Customer>   customer;
-                /// <summary>single line documentation</summary>
-                public  DateTime                created;
-                /// <summary><code>single line code documentation</code></summary>
-                public  List<OrderItem>         items = new List<OrderItem>();
+        [Required]  public  string                  id { get; set; }
+                    /// <summary>
+                    /// Some <b>useful</b> field documentation 🙂
+                    /// Check some new lines
+                    /// in documentation
+                    /// </summary>
+                    public  Ref<string, Customer>   customer;
+                    /// <summary>single line documentation</summary>
+                    public  DateTime                created;
+                    /// <summary><code>single line code documentation</code></summary>
+                    public  List<OrderItem>         items = new List<OrderItem>();
                         
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                      ToString() => JsonSerializer.Serialize(this);
     }
 
     public class OrderItem {
-        [Req]   public  Ref<string, Article>    article;
-                public  int                     amount;
-                public  string                  name;
+        [Required]  public  Ref<string, Article>    article;
+                    public  int                     amount;
+                    public  string                  name;
                         
-        public  override string                 ToString() => JsonSerializer.Serialize(this);
+        public  override    string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Article
     {
-        [Req]   public  string                  id { get; set; }
-        [Req]   public  string                  name;
-                public  Ref<string, Producer>   producer;
+        [Required]  public  string                  id { get; set; }
+        [Required]  public  string                  name;
+                    public  Ref<string, Producer>   producer;
                         
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Customer {
-        [Req]   public  string                  id { get; set; }
-        [Req]   public  string                  name;
+        [Required]  public  string                  id { get; set; }
+        [Required]  public  string                  name;
         
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Producer {
-        [Req]   public  string                  id { get; set; }
-        [Req]   public  string                  name;
-        [Serialize (Name =                         "employees")]
-                public  List<Ref<string, Employee>> employeeList;
+        [Required]  public  string                  id { get; set; }
+        [Required]  public  string                  name;
+        [Serialize (Name =                             "employees")]
+                    public  List<Ref<string, Employee>> employeeList;
                         
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+        public override string                      ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Employee {
-        [Req]   public  string                  id { get; set; }
-        [Req]   public  string                  firstName;
-                public  string                  lastName;
+        [Required]  public  string                  id { get; set; }
+        [Required]  public  string                  firstName;
+                    public  string                  lastName;
                         
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     // test case: using abstract class containing the id 
     public abstract class PocEntity
     {
-        [Req]   public   string                 id { get; set; } // defining as property ensures "id" is first JSON member
+        [Required]  public   string                 id { get; set; } // defining as property ensures "id" is first JSON member
 
         public override string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class TestType : PocEntity {
-                public  DateTime        dateTime;
-                public  DateTime?       dateTimeNull;
-                public  BigInteger      bigInt;
-                public  BigInteger?     bigIntNull;
-        
-                public  bool            boolean;
-                public  bool?           booleanNull;
-        
-                public  byte            uint8;
-                public  byte?           uint8Null;
-                
-                public  short           int16;
-                public  short?          int16Null;
-                
-                public  int             int32;
-                public  int?            int32Null;
-                
-                public  long            int64;
-                public  long?           int64Null;
-                
-                public  float           float32;
-                public  float?          float32Null;
-                
-                public  double          float64;
-                public  double?         float64Null;
-        
-                public  PocStruct       pocStruct;
-                public  PocStruct?      pocStructNull;
+                    public  DateTime        dateTime;
+                    public  DateTime?       dateTimeNull;
+                    public  BigInteger      bigInt;
+                    public  BigInteger?     bigIntNull;
+            
+                    public  bool            boolean;
+                    public  bool?           booleanNull;
+            
+                    public  byte            uint8;
+                    public  byte?           uint8Null;
+                    
+                    public  short           int16;
+                    public  short?          int16Null;
+                    
+                    public  int             int32;
+                    public  int?            int32Null;
+                    
+                    public  long            int64;
+                    public  long?           int64Null;
+                    
+                    public  float           float32;
+                    public  float?          float32Null;
+                    
+                    public  double          float64;
+                    public  double?         float64Null;
+            
+                    public  PocStruct       pocStruct;
+                    public  PocStruct?      pocStructNull;
 
-        [Req]   public  List<int>       intArray = new List<int>();
-                public  List<int>       intArrayNull;
-                public  List<int?>      intNullArray;
+        [Required]  public  List<int>       intArray = new List<int>();
+                    public  List<int>       intArrayNull;
+                    public  List<int?>      intNullArray;
         
-                public  JsonValue       jsonValue;
+                    public  JsonValue       jsonValue;
         
-        [Req]   public  DerivedClass    derivedClass;
-                public  DerivedClass    derivedClassNull;
+        [Required]  public  DerivedClass    derivedClass;
+                    public  DerivedClass    derivedClassNull;
     }
     
     public struct PocStruct {

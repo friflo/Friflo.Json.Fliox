@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using System.ComponentModel.DataAnnotations;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------ unary arithmetic operations ------------------------------------
     public abstract class UnaryArithmeticOp : Operation
     {
-        [Req]       public              Operation   value;
+        [Required]  public              Operation   value;
         [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar>());
         internal override               bool        IsNumeric => true;
 

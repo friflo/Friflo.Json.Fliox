@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         [Serialize(Name =                          "ack")]
                     public  int?                    eventAck;
         /// <summary>list of tasks either container operations or database commands / messages</summary>
-        [Req]       public  List<SyncRequestTask>   tasks;
+        [Required]  public  List<SyncRequestTask>   tasks;
         /// <summary>database name the <see cref="tasks"/> apply to. null to access the default database</summary>
                     public  string                  database;
         /// <summary>optional JSON value - can be used to describe a request</summary>

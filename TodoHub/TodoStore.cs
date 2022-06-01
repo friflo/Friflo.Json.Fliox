@@ -1,7 +1,7 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable All
 namespace Fliox.TodoHub
@@ -25,10 +25,10 @@ namespace Fliox.TodoHub
     
     // ------------------------------ entity models ------------------------------
     public class Todo {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              title;
-                public  string              description;
-                public  bool?               completed;
-                public  DateTime?           created;
+        [Required]  public  long                id { get; set; }
+        [Required]  public  string              title;
+                    public  string              description;
+                    public  bool?               completed;
+                    public  DateTime?           created;
     }
 }

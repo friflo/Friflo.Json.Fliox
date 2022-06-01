@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeMessage : SyncRequestTask
     {
         /// <summary>subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
-        [Req]       public  string      name;
+        [Required]  public  string      name;
         /// <summary>if true a previous added subscription is removed. Otherwise added</summary>
                     public  bool?       remove;
         

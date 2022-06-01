@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Schema.OAS;
-using Req       = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore    = Friflo.Json.Fliox.IgnoreFieldAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
@@ -128,8 +128,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// </summary>
     public sealed class TypeRef {
         /// <summary>reference to a type definition</summary>
-        [Serialize (Name =             "$ref")]
-        [Req]   public  string          reference;
+        [Serialize (Name =            "$ref")]
+        [Required]  public  string      reference;
         //      public  string          type;   // not used - was used for nullable array elements
 
         public override string          ToString() => reference;

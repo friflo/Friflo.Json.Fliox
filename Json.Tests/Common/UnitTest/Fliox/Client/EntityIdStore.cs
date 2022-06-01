@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable InconsistentNaming
@@ -56,11 +55,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     
     public class CustomIdEntity {
         [PrimaryKey]
-        [Req]  public string customId;
+        [Required]  public string customId;
     }
     
     public class EntityRefs {
-        [Req]
+        [Required]
         public  string                              id;
         public  Ref      <Guid,   GuidEntity>       guidEntity;
         public  Ref      <Guid?,  GuidEntity>       guidNullEntity;
@@ -82,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
     public class CustomIdEntity2 {
 #if UNITY_5_3_OR_NEWER
-        [PrimaryKey] [Req]
+        [PrimaryKey] [Required]
 #else
         // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
         // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute

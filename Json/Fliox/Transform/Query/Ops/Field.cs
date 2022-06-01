@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable ConvertToAutoProperty
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------- unary operations -------------------------------------
     public sealed class Field : Operation, ISelector
     {
-        [Req]       public      string      name;
+        [Required]  public      string      name;
         [Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
         [Ignore]    internal    EvalResult  evalResult;
 

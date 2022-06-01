@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -122,14 +122,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
         [Serialize(Name =              "src")]
-        [Req]       public  JsonKey     srcUserId   { get; set; }
+        [Required]  public  JsonKey     srcUserId   { get; set; }
         
         /// <summary>
         /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
         [Serialize(Name =              "clt")]
-        [Req]       public  JsonKey     dstClientId { get; set; }
+        [Required]  public  JsonKey     dstClientId { get; set; }
     }
     
     /// <summary>

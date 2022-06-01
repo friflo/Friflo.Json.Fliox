@@ -2,11 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -16,8 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// WIP
     /// </summary>
     public sealed class ReserveKeys  : SyncRequestTask {
-        [Req]  public  string          container;
-        [Req]  public  int             count;
+        [Required]  public  string          container;
+        [Required]  public  int             count;
         
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub = syncContext.Hub;
@@ -83,8 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public struct ReservedKeys
     {
-        [Req]  public  long    start;
-        [Req]  public  int     count;
-        [Req]  public  Guid    token;
+        [Required]  public  long    start;
+        [Required]  public  int     count;
+        [Required]  public  Guid    token;
     }
 }

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
@@ -160,7 +161,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         private static bool IsRequired(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(RequiredFieldAttribute))
+                if (attr.AttributeType == typeof(RequiredAttribute))
                     return true;
                 // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
                 if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.RequiredAttribute")

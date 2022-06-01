@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable All
 namespace Fliox.DemoHub
@@ -41,42 +41,42 @@ namespace Fliox.DemoHub
     
     // ------------------------------ entity models ------------------------------
     public class Article {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              name;
-                public  Ref<long, Producer> producer;
-                public  DateTime?           created;
+        [Required]  public  long                id { get; set; }
+        [Required]  public  string              name;
+                    public  Ref<long, Producer> producer;
+                    public  DateTime?           created;
     }
 
     public class Customer {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              name;
-                public  DateTime?           created;
+        [Required]  public  long                id { get; set; }
+        [Required]  public  string              name;
+                    public  DateTime?           created;
     }
     
     public class Employee {
-        [Req]   public  long                id { get; set; }
-        [Req]   public  string              firstName;
-                public  string              lastName;
-                public  DateTime?           created;
+        [Required]  public  long                id { get; set; }
+        [Required]  public  string              firstName;
+                    public  string              lastName;
+                    public  DateTime?           created;
     }
 
     public class Order {
-        [Req]   public  long                id { get; set; }
-                public  Ref<long, Customer> customer;
-                public  DateTime            created;
-                public  List<OrderItem>     items = new List<OrderItem>();
+        [Required]  public  long                id { get; set; }
+                    public  Ref<long, Customer> customer;
+                    public  DateTime            created;
+                    public  List<OrderItem>     items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        [Req]   public  Ref<long, Article>  article;
-                public  int                 amount;
-                public  string              name;
+        [Required]  public  Ref<long, Article>  article;
+                    public  int                 amount;
+                    public  string              name;
     }
 
     public class Producer {
-        [Req]   public  long                        id { get; set; }
-        [Req]   public  string                      name;
-                public  List<Ref<long, Employee>>   employees;
-                public  DateTime?                   created;
+        [Required]  public  long                        id { get; set; }
+        [Required]  public  string                      name;
+                    public  List<Ref<long, Employee>>   employees;
+                    public  DateTime?                   created;
     }
 }
