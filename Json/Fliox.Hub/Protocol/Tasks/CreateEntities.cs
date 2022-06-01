@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -27,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>the <see cref="entities"/> which are created in the specified <see cref="container"/></summary>
         [Req]           public  List<JsonValue> entities;
                         
-        [Fri.Ignore]    public  List<JsonKey>   entityKeys;
+        [Ignore]        public  List<JsonKey>   entityKeys;
         
         internal override       TaskType        TaskType => TaskType.create;
         public   override       string          TaskName => $"container: '{container}'";
@@ -75,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class CreateEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError        Error { get; set; }
+        [Ignore]    public CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to create</summary>
                      public List<EntityError>   errors;
         

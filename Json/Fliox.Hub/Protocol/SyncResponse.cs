@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -26,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// grouped by container</summary>
                         public  List<ContainerEntities>                 containers;
         // key of all Dictionary's is the container name
-        [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
+        [Ignore]        public  Dictionary<string, ContainerEntities>   resultMap;
                         public  JsonValue                               info;
                         
         internal override       MessageType                             MessageType => MessageType.resp;
@@ -83,8 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Required only by <see cref="RemoteHost"/> for serialization
                         public  List<EntityError>                   errors;
         
-        [Fri.Ignore]
-                public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        [Ignore]        public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 
         public override         string                              ToString() => container;
 

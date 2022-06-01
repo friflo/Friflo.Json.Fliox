@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -27,8 +28,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     public sealed class Field : Operation, ISelector
     {
         [Req]           public      string      name;
-        [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
-        [Fri.Ignore]    internal    EvalResult  evalResult;
+        [Ignore]        internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
+        [Ignore]        internal    EvalResult  evalResult;
 
         public   override string    OperationName => "name";
         public   override void      AppendLinq(AppendCx cx) {

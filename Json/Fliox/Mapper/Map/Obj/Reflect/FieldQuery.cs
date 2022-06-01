@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         private static bool Ignore(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.IgnoreAttribute))
+                if (attr.AttributeType == typeof(Fri.IgnoreMemberAttribute))
                     return true;
             }
             return false;

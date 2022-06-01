@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -28,12 +29,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>error details when accessing an entity</summary>
         [Fri.Property]      public  string              message;
             
-        [Fri.Ignore]        public  string              container;
+        [Ignore]            public  string              container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
-        [Fri.Ignore]        public  TaskErrorResultType taskErrorType;
+        [Ignore]            public  TaskErrorResultType taskErrorType;
         /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
         /// and the accessed <see cref="EntityContainer"/> implementation expose this data.</summary>
-        [Fri.Ignore]        public  string              stacktrace;
+        [Ignore]            public  string              stacktrace;
 
         public override             string              ToString() => AsText(true);
 

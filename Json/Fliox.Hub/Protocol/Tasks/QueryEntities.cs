@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -45,8 +46,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>specify the <see cref="cursor"/> of a previous cursor request</summary>
                         public  string              cursor;
                         
-        [Fri.Ignore]    private FilterOperation     filterLambda;
-        [Fri.Ignore]    public  OperationContext    filterContext;
+        [Ignore]        private FilterOperation     filterLambda;
+        [Ignore]        public  OperationContext    filterContext;
                         
         internal override       TaskType            TaskType => TaskType.query;
         public   override       string              TaskName => $"container: '{container}', filter: {filter}";
@@ -152,8 +153,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Req]           public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
                         
-        [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
-        [Fri.Ignore]    public  CommandError                    Error { get; set; }
+        [Ignore]        public  Dictionary<JsonKey,EntityValue> entities;
+        [Ignore]        public  CommandError                    Error { get; set; }
 
         
         internal override       TaskType                        TaskType => TaskType.query;

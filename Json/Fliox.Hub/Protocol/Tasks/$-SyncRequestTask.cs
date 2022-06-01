@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -32,9 +33,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
     public abstract class SyncRequestTask
     {
-                     public     JsonValue           info;
-        [Fri.Ignore] public     int                 index;
-        [Fri.Ignore] internal   JsonValue?          json;
+                 public     JsonValue           info;
+        [Ignore] public     int                 index;
+        [Ignore] internal   JsonValue?          json;
         
         internal abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         internal abstract   TaskType                TaskType { get; }

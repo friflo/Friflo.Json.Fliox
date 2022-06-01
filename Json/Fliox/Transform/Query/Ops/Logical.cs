@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -49,9 +50,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ----------------------------------- (n-ary) logical group operations -----------------------------------
     public abstract class BinaryLogicalOp : FilterOperation
     {
-        [Req]        public             List<FilterOperation>   operands;
-        [Fri.Ignore] internal readonly  List<EvalResult>        evalList        = new List<EvalResult>();
-        [Fri.Ignore] internal           N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
+        [Req]       public              List<FilterOperation>   operands;
+        [Ignore]    internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
+        [Ignore]    internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 
         protected BinaryLogicalOp() { }
         protected BinaryLogicalOp(List<FilterOperation> operands) { this.operands = operands; }

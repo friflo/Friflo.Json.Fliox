@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
@@ -86,7 +87,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         [Req]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
         
         // is set always to the same value in Eval() so it can be reused
-        [Fri.Ignore]
+        [Ignore]
         private  readonly       EvalResult      evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         public CountWhere() { }

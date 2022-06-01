@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable MemberCanBeProtected.Global
@@ -12,8 +13,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------ unary arithmetic operations ------------------------------------
     public abstract class UnaryArithmeticOp : Operation
     {
-        [Req]        public             Operation   value;
-        [Fri.Ignore] internal  readonly EvalResult  evalResult = new EvalResult(new List<Scalar>());
+        [Req]       public              Operation   value;
+        [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar>());
         internal override               bool        IsNumeric => true;
 
         protected UnaryArithmeticOp() { }

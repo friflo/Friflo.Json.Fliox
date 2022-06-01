@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -57,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class PatchEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError        Error { get; set; }
+        [Ignore]    public CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to patch</summary>
                      public List<EntityError>   errors;
         

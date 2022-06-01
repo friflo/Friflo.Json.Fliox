@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -74,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReserveKeysResult : SyncTaskResult {
                         public  ReservedKeys?   keys;
         
-        [Fri.Ignore]    public  CommandError    Error { get; set; }
+        [Ignore]        public  CommandError    Error { get; set; }
         internal override       TaskType        TaskType => TaskType.reserveKeys;
     }
     

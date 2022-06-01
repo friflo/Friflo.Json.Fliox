@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {
@@ -259,9 +260,9 @@ namespace Friflo.Json.Fliox.Transform
     // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation
     {
-        [Fri.Ignore] public   readonly  QueryFormat query;
-        [Fri.Ignore] internal readonly  EvalResult  evalResult = new EvalResult(new List<Scalar>());
-                     public             bool        IsTrue => this is TrueLiteral || (this as Filter)?.body is TrueLiteral;
+        [Ignore]    public   readonly  QueryFormat query;
+        [Ignore]    internal readonly  EvalResult  evalResult = new EvalResult(new List<Scalar>());
+                    public             bool        IsTrue => this is TrueLiteral || (this as Filter)?.body is TrueLiteral;
                      
         protected FilterOperation() {
             query    = new QueryFormat(this);

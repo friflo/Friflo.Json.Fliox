@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Mapper;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -10,8 +11,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         [Fri.Property]  private     JsonValue   value;
         [Fri.Property]  private     EntityError error;
         
-        [Fri.Ignore]    public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
-        [Fri.Ignore]    public      EntityError Error   => error;
+        [Ignore]        public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
+        [Ignore]        public      EntityError Error   => error;
 
         public override             string      ToString() => error == null ? value.AsString() : error.type + ": " + error.message;
 

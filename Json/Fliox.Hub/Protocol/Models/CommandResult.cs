@@ -3,13 +3,14 @@
 
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
     public interface ICommandResult
     {
         /// In case a command fails its <see cref="CommandError.message"/> is assigned to <see cref="TaskErrorResult.message"/>
-        [Fri.Ignore]        CommandError        Error { get; set;  }
+        [Ignore]        CommandError        Error { get; set;  }
     }
     
     /// <summary>
@@ -18,8 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public sealed class CommandError
     {
-        [Fri.Ignore] public TaskErrorResultType type;
-        [Fri.Ignore] public string              message;
+        [Ignore] public     TaskErrorResultType type;
+        [Ignore] public     string              message;
 
         public   override   string              ToString() => message;
         

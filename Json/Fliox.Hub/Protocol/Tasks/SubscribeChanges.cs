@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -25,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
                         public      JsonValue       filter;
                         
-        [Fri.Ignore]    internal    FilterOperation filterOp;
+        [Ignore]        internal    FilterOperation filterOp;
         
         internal override           TaskType        TaskType  => TaskType.subscribeChanges;
         public   override           string          TaskName  => $"container: '{container}'";

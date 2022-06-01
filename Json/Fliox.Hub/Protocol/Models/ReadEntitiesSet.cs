@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -16,8 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public sealed class ReadEntitiesSet
     {
-        [Fri.Ignore]    public  string                  keyName;
-        [Fri.Ignore]    public  bool?                   isIntKey;
+        [Ignore]        public  string                  keyName;
+        [Ignore]        public  bool?                   isIntKey;
         /// <summary>list of entity <see cref="ids"/> requested by a <see cref="Tasks.ReadEntities"/> task</summary>
         [Req]           public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>used to request the entities referenced by properties of a read task result</summary>
@@ -29,9 +30,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class ReadEntitiesSetResult: ICommandResult
     {
                         public  List<ReferencesResult>          references;
-        [Fri.Ignore]    public  CommandError                    Error { get; set; }
+        [Ignore]        public  CommandError                    Error { get; set; }
 
-        [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
+        [Ignore]        public  Dictionary<JsonKey,EntityValue> entities;
         
         /// <summary>
         /// Validate all <see cref="EntityValue.value"/>'s in the result set.

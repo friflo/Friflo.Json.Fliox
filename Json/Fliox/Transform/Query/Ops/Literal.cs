@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable EmptyConstructor
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -13,7 +14,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // --- literals
     public abstract class Literal : Operation {
         // is set always to the same value in Eval() so it can be reused
-        [Fri.Ignore]
+        [Ignore]
         internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         internal override void Init(OperationContext cx, InitFlags flags) { }

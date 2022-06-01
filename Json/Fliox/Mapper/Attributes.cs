@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class IgnoreAttribute : Attribute {
+        public sealed class IgnoreMemberAttribute : Attribute {
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]

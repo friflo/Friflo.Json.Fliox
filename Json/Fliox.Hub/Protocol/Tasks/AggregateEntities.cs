@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
@@ -30,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// </summary>
                         public      string              filter;
                         
-        [Fri.Ignore]    private     FilterOperation     filterLambda;
-        [Fri.Ignore]    public      OperationContext    filterContext;
+        [Ignore]        private     FilterOperation     filterLambda;
+        [Ignore]        public      OperationContext    filterContext;
                         
         internal override           TaskType            TaskType => TaskType.aggregate;
         public   override           string              TaskName => $"container: '{container}',type: {type}, filter: {filter}";
@@ -70,7 +71,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>container name - not utilized by Protocol</summary>
         [DebugInfo]     public  string          container;
                         public  double?         value;      // set if not using groupBy
-        [Fri.Ignore]    public  CommandError    Error { get; set; }
+        [Ignore]        public  CommandError    Error { get; set; }
 
         
         internal override   TaskType            TaskType => TaskType.aggregate;

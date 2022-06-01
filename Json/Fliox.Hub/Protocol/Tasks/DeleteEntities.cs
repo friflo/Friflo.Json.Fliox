@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -56,9 +57,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class DeleteEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError        Error { get; set; }
+        [Ignore]    public CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to delete</summary>
-                     public List<EntityError>   errors;
+                    public List<EntityError>   errors;
 
         internal override   TaskType            TaskType => TaskType.delete;
     }

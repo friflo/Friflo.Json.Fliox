@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {
@@ -25,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
         [Req]           public  List<JsonValue> entities;
         
-        [Fri.Ignore]    public  List<JsonKey>   entityKeys;
+        [Ignore]        public  List<JsonKey>   entityKeys;
         
         internal override       TaskType        TaskType => TaskType.upsert;
         public   override       string          TaskName => $"container: '{container}'";
@@ -74,9 +75,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class UpsertEntitiesResult : SyncTaskResult, ICommandResult
     {
-        [Fri.Ignore] public CommandError        Error { get; set; }
+        [Ignore]    public CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to upsert</summary>
-                     public List<EntityError>   errors;
+                    public List<EntityError>   errors;
 
         internal override   TaskType            TaskType => TaskType.upsert;
     }

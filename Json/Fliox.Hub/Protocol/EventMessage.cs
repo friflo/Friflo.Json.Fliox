@@ -3,6 +3,7 @@
 
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {
@@ -22,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// </summary>
                         public      SyncRequestTask[]   tasks;
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
-        [Fri.Ignore]    internal    JsonValue[]         tasksJson;
+        [Ignore]        internal    JsonValue[]         tasksJson;
         
         internal override   MessageType                 MessageType => MessageType.ev;
         public   override   string                      ToString()  => GetEventInfo().ToString();
