@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.Remote.Test;

@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
-using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 
 // ReSharper disable UnassignedField.Global
 // ReSharper disable MemberCanBePrivate.Global

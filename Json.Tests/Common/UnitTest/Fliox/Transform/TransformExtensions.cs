@@ -3,7 +3,7 @@
 
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform

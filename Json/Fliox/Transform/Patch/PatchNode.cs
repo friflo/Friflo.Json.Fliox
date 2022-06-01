@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Transform.Patch

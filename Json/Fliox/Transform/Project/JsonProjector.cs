@@ -3,7 +3,6 @@
 
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Transform.Project

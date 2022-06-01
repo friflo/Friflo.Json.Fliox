@@ -2,8 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {

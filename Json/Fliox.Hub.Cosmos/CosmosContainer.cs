@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Microsoft.Azure.Cosmos;
 
 namespace Friflo.Json.Fliox.Hub.Cosmos

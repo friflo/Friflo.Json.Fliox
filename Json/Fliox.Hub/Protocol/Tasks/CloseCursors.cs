@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
-using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
 {

@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 
-namespace Friflo.Json.Fliox.Mapper
+namespace Friflo.Json.Fliox
 {
     /// <summary>
     /// <see cref="JsonValue"/> instances contain <b>immutable</b> JSON values. <br/>

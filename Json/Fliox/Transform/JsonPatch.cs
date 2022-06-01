@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {

@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Mapper;
 using GraphQLParser.AST;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault

@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Protocol;
-using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable ReturnTypeCanBeEnumerable.Global

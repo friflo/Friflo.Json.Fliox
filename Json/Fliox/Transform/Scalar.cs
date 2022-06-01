@@ -3,7 +3,6 @@
 
 using System;
 using System.Text;
-using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 namespace Friflo.Json.Fliox.Transform

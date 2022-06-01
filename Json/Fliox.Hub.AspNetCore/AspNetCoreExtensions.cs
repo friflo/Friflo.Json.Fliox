@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 

@@ -3,7 +3,6 @@
 
 #if !UNITY_5_3_OR_NEWER
 
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.GraphQL;
 
 namespace Friflo.Json.Fliox.Hub.GraphQL

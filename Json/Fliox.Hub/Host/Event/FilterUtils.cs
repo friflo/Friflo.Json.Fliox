@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Host.Event

@@ -2,10 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
-using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
-using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops

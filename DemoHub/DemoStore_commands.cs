@@ -1,5 +1,5 @@
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global

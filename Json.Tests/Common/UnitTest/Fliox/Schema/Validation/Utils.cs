@@ -1,7 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Schema.Validation;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation

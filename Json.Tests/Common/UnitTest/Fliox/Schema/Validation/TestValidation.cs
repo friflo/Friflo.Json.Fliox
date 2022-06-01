@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Schema.Validation;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

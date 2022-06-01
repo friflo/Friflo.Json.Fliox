@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Mapper;
-using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
-using Property = Friflo.Json.Fliox.Mapper.PropertyMemberAttribute;
+using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
+using Property = Friflo.Json.Fliox.PropertyMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {

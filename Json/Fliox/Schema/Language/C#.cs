@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Schema.Language
             AddType (map, standard.BigInteger,  "System.Numerics" );
             AddType (map, standard.DateTime,    "System" );
             AddType (map, standard.Guid,        "System" );
-            AddType (map, standard.JsonValue,   "Friflo.Json.Fliox.Mapper" );
+            AddType (map, standard.JsonValue,   "Friflo.Json.Fliox" );
             return map;
         }
         
@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
                 sb.AppendLine("using System.Collections.Generic;");
-                var namespaces = new HashSet<string> {"Friflo.Json.Fliox.Mapper"};
+                var namespaces = new HashSet<string> {"Friflo.Json.Fliox"};
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value;
                     if (import.type.Path == filePath)

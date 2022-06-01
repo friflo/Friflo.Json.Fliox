@@ -3,7 +3,7 @@
 
 using System;
 using System.Text;
-using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

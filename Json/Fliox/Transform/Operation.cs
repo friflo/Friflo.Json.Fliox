@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
-using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
+using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {

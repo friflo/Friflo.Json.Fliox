@@ -3,7 +3,6 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Fliox.Hub.Client.Internal

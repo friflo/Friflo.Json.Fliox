@@ -4,7 +4,7 @@ using System;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedParameter.Local
-namespace Friflo.Json.Fliox.Mapper
+namespace Friflo.Json.Fliox
 {
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class TypeMapperAttribute : Attribute {

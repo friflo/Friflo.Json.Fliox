@@ -3,8 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {

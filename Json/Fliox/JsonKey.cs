@@ -5,8 +5,9 @@ using System;
 using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
+using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Mapper
+namespace Friflo.Json.Fliox
 {
     public readonly struct JsonKey
     {

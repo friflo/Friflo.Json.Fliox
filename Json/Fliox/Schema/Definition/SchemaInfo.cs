@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.OAS;
 
 // ReSharper disable PossibleMultipleEnumeration
