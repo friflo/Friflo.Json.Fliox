@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Transform.Query.Arity;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable MemberCanBeProtected.Global

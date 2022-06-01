@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable InconsistentNaming

@@ -3,9 +3,9 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.OAS;
-using Req       = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Ignore    = Friflo.Json.Fliox.IgnoreMemberAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Req       = Friflo.Json.Fliox.RequiredFieldAttribute;
+using Ignore    = Friflo.Json.Fliox.IgnoreFieldAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global

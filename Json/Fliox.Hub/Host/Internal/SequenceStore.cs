@@ -3,9 +3,9 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Client;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 using Key = Friflo.Json.Fliox.PrimaryKeyAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.Host.Internal

@@ -11,13 +11,13 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         public static void Property(IEnumerable<CustomAttributeData> attributes, out string name) {
             name        = null;
             foreach (var attr in attributes) {
-                if (attr.AttributeType != typeof(SerializeMemberAttribute))
+                if (attr.AttributeType != typeof(SerializeFieldAttribute))
                     continue;
                 if (attr.NamedArguments == null)
                     continue;
                 foreach (var args in attr.NamedArguments) {
                     switch (args.MemberName) {
-                        case nameof(SerializeMemberAttribute.Name):
+                        case nameof(SerializeFieldAttribute.Name):
                             if (args.TypedValue.Value != null)
                                 name = args.TypedValue.Value as string;
                             break;
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
                     continue;
                 foreach (var args in attr.NamedArguments) {
                     switch (args.MemberName) {
-                        case nameof(SerializeMemberAttribute.Name):
+                        case nameof(SerializeFieldAttribute.Name):
                             if (args.TypedValue.Value != null)
                                 return args.TypedValue.Value as string;
                             break;

@@ -36,20 +36,20 @@ namespace Friflo.Json.Fliox
     
 
     // -------------------------------- field & property attributes ------------------------------
-    /// <summary> Used to include private or internal fields / properties to JSON serialization </summary>
+    /// <summary> Used serialize the attributed private / internal member as a JSON field </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class SerializeMemberAttribute : Attribute {
+    public sealed class SerializeFieldAttribute : Attribute {
         public string       Name        { get; set; }
     }
     
-    /// <summary> Used to ignore public fields / properties from JSON serialization </summary>
+    /// <summary> Used to ignore the annotated public member from JSON serialization </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class IgnoreMemberAttribute : Attribute {
+    public sealed class IgnoreFieldAttribute : Attribute {
     }
     
-    /// <summary> Declare the attributed field / property as a required </summary>
+    /// <summary> Declare the attributed member as a required field </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class RequiredMemberAttribute : Attribute {
+    public sealed class RequiredFieldAttribute : Attribute {
     }
     
     

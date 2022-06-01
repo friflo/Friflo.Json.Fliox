@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Mapper;
 
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global

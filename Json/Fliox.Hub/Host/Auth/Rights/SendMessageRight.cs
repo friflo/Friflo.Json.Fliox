@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.DB.UserAuth;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global

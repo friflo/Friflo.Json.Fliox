@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
+using Ignore = Friflo.Json.Fliox.IgnoreFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {

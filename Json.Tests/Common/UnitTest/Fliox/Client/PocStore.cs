@@ -9,8 +9,8 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming

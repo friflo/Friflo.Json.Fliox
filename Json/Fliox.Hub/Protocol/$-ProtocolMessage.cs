@@ -5,8 +5,8 @@ using System;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming

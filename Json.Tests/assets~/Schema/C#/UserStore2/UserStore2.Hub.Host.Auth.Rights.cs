@@ -19,35 +19,35 @@ public abstract class Right {
 }
 
 public class AllowRight : Right {
-    [RequiredMember]
+    [RequiredField]
     string  database;
 }
 
 public class TaskRight : Right {
-    [RequiredMember]
+    [RequiredField]
     string          database;
-    [RequiredMember]
+    [RequiredField]
     List<TaskType>  types;
 }
 
 public class SendMessageRight : Right {
-    [RequiredMember]
+    [RequiredField]
     string        database;
-    [RequiredMember]
+    [RequiredField]
     List<string>  names;
 }
 
 public class SubscribeMessageRight : Right {
-    [RequiredMember]
+    [RequiredField]
     string        database;
-    [RequiredMember]
+    [RequiredField]
     List<string>  names;
 }
 
 public class OperationRight : Right {
-    [RequiredMember]
+    [RequiredField]
     string                               database;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, ContainerAccess>  containers;
 }
 
@@ -70,7 +70,7 @@ public enum OperationType {
 }
 
 public class PredicateRight : Right {
-    [RequiredMember]
+    [RequiredField]
     List<string>  names;
 }
 

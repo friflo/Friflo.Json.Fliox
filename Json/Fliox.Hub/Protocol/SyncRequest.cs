@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {

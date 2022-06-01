@@ -1,7 +1,7 @@
 ﻿using System;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.RequiredFieldAttribute;
 
 // ReSharper disable All
 namespace Fliox.TodoHub

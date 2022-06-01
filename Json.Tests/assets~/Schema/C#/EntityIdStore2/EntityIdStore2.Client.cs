@@ -8,23 +8,23 @@ using System;
 namespace EntityIdStore2.Client {
 
 public abstract class EntityIdStore {
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, GuidEntity>       guidEntities;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, IntEntity>        intEntities;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, AutoIntEntity>    intEntitiesAuto;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, LongEntity>       longEntities;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, ShortEntity>      shortEntities;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, ByteEntity>       byteEntities;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, CustomIdEntity>   customIdEntities;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, EntityRefs>       entityRefs;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, CustomIdEntity2>  customIdEntities2;
 }
 
@@ -55,12 +55,12 @@ public class ByteEntity {
 
 public class CustomIdEntity {
     [PrimaryKey]
-    [RequiredMember]
+    [RequiredField]
     string  customId;
 }
 
 public class EntityRefs {
-    [RequiredMember]
+    [RequiredField]
     string      id;
     Guid        guidEntity;
     Guid?       guidNullEntity;
@@ -80,7 +80,7 @@ public class EntityRefs {
 
 public class CustomIdEntity2 {
     [PrimaryKey]
-    [RequiredMember]
+    [RequiredField]
     string  customId2;
 }
 

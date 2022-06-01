@@ -9,22 +9,22 @@ using System.Numerics;
 namespace PocStore2.Client {
 
 public abstract class PocStore {
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, Order>     orders;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, Customer>  customers;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, Article>   articles;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, Producer>  producers;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, Employee>  employees;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, TestType>  types;
 }
 
 public class Order {
-    [RequiredMember]
+    [RequiredField]
     string           id;
     string           customer;
     DateTime         created;
@@ -32,32 +32,32 @@ public class Order {
 }
 
 public class Customer {
-    [RequiredMember]
+    [RequiredField]
     string  id;
-    [RequiredMember]
+    [RequiredField]
     string  name;
 }
 
 public class Article {
-    [RequiredMember]
+    [RequiredField]
     string  id;
-    [RequiredMember]
+    [RequiredField]
     string  name;
     string  producer;
 }
 
 public class Producer {
-    [RequiredMember]
+    [RequiredField]
     string        id;
-    [RequiredMember]
+    [RequiredField]
     string        name;
     List<string>  employees;
 }
 
 public class Employee {
-    [RequiredMember]
+    [RequiredField]
     string  id;
-    [RequiredMember]
+    [RequiredField]
     string  firstName;
     string  lastName;
 }
@@ -83,25 +83,25 @@ public class TestType : PocEntity {
     double?       float64Null;
     PocStruct     pocStruct;
     PocStruct?    pocStructNull;
-    [RequiredMember]
+    [RequiredField]
     List<int>     intArray;
     List<int>     intArrayNull;
     List<int?>    intNullArray;
     JsonValue?    jsonValue;
-    [RequiredMember]
+    [RequiredField]
     DerivedClass  derivedClass;
     DerivedClass  derivedClassNull;
 }
 
 public class OrderItem {
-    [RequiredMember]
+    [RequiredField]
     string  article;
     int     amount;
     string  name;
 }
 
 public abstract class PocEntity {
-    [RequiredMember]
+    [RequiredField]
     string  id;
 }
 

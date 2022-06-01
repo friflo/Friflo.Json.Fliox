@@ -10,7 +10,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {

@@ -7,31 +7,31 @@ using Friflo.Json.Fliox;
 namespace UserStore2.Hub.DB.Cluster {
 
 public class DbContainers {
-    [RequiredMember]
+    [RequiredField]
     string        id;
-    [RequiredMember]
+    [RequiredField]
     string        storage;
-    [RequiredMember]
+    [RequiredField]
     List<string>  containers;
 }
 
 public class DbMessages {
-    [RequiredMember]
+    [RequiredField]
     string        id;
-    [RequiredMember]
+    [RequiredField]
     List<string>  commands;
-    [RequiredMember]
+    [RequiredField]
     List<string>  messages;
 }
 
 public class DbSchema {
-    [RequiredMember]
+    [RequiredField]
     string                         id;
-    [RequiredMember]
+    [RequiredField]
     string                         schemaName;
-    [RequiredMember]
+    [RequiredField]
     string                         schemaPath;
-    [RequiredMember]
+    [RequiredField]
     Dictionary<string, JsonValue>  jsonSchemas;
 }
 
@@ -40,25 +40,25 @@ public class DbStats {
 }
 
 public class ContainerStats {
-    [RequiredMember]
+    [RequiredField]
     string  name;
     long    count;
 }
 
 public class HostDetails {
-    [RequiredMember]
+    [RequiredField]
     string        version;
     string        hostName;
     string        projectName;
     string        projectWebsite;
     string        envName;
     string        envColor;
-    [RequiredMember]
+    [RequiredField]
     List<string>  routes;
 }
 
 public class HostCluster {
-    [RequiredMember]
+    [RequiredField]
     List<DbContainers>  databases;
 }
 

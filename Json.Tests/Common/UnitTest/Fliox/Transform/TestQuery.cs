@@ -14,7 +14,7 @@ using static NUnit.Framework.Assert;
 
 using static Friflo.Json.Tests.Common.UnitTest.Fliox.Transform.AssertEqual;
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
-using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeFieldAttribute;
 
 // ReSharper disable CollectionNeverQueried.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
