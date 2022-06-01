@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         internal object CreateInstance(Type type) {
             if (isAbstract)
-                throw new InvalidOperationException($"type requires instantiatable types by [Instance()] or [Polymorph()] on: {type.Name}");
+                throw new InvalidOperationException($"type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: {type.Name}");
             return instanceMapper.CreateInstance();
         }
         
@@ -71,11 +71,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             string          discDescription = null;
             List<PolyType>  typeList        = new List<PolyType>();
             foreach (var attr in type.CustomAttributes) {
-                if (attr.AttributeType == typeof(PolymorphAttribute)) {
+                if (attr.AttributeType == typeof(PolymorphTypeAttribute)) {
                     string name = null;
                     if (attr.NamedArguments != null) {
                         foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(PolymorphAttribute.Discriminant)) {
+                            if (args.MemberName == nameof(PolymorphTypeAttribute.Discriminant)) {
                                 if (args.TypedValue.Value != null)
                                     name = (string) args.TypedValue.Value;
                             }
@@ -84,17 +84,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     var arg = attr.ConstructorArguments;
                     var polyType = (Type) arg[0].Value;
                     if (polyType == null)
-                        throw new InvalidOperationException($"[Polymorph(null)] type must not be null on: {type.Name}");
+                        throw new InvalidOperationException($"[PolymorphType(null)] type must not be null on: {type.Name}");
                     if (!type.IsAssignableFrom(polyType))
-                        throw new InvalidOperationException($"[Polymorph({polyType.Name})] type must extend annotated type: {type.Name}");
+                        throw new InvalidOperationException($"[PolymorphType({polyType.Name})] type must extend annotated type: {type.Name}");
                     typeList.Add(new PolyType(polyType, name ?? polyType.Name));
-                } else if (attr.AttributeType == typeof(InstanceAttribute)) {
+                } else if (attr.AttributeType == typeof(InstanceTypeAttribute)) {
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
                     if (instanceType == null)
-                        throw new InvalidOperationException($"[Instance(null)] type must not be null on: {type.Name}");
+                        throw new InvalidOperationException($"[InstanceType(null)] type must not be null on: {type.Name}");
                     if (!type.IsAssignableFrom(instanceType))
-                        throw new InvalidOperationException($"[Instance({instanceType.Name})] type must extend annotated type: {type.Name}");
+                        throw new InvalidOperationException($"[InstanceType({instanceType.Name})] type must extend annotated type: {type.Name}");
                 } else if (attr.AttributeType == typeof(DiscriminatorAttribute)) {
                     if (attr.NamedArguments != null) {
                         var arg = attr.ConstructorArguments;
@@ -109,9 +109,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 }
             }
             if (discriminator != null && typeList.Count == 0)
-                throw new InvalidOperationException($"specified [Discriminator] require at least one [Polymorph] attribute on: {type.Name}");
+                throw new InvalidOperationException($"specified [Discriminator] require at least one [PolymorphType] attribute on: {type.Name}");
             if (discriminator == null && typeList.Count > 0)
-                throw new InvalidOperationException($"specified [Polymorph] attribute require [Discriminator] on: {type.Name}");
+                throw new InvalidOperationException($"specified [PolymorphType] attribute require [Discriminator] on: {type.Name}");
 
             if (instanceType != null || typeList.Count > 0)
                 return new InstanceFactory(discriminator, discDescription, instanceType, typeList.ToArray());

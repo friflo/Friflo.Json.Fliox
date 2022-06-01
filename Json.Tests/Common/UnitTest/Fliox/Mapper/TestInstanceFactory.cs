@@ -15,22 +15,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
     {
         // --------------- interface
         
-        // exception: missing [Instance] or [Polymorph] attribute
+        // exception: missing [InstanceType] or [PolymorphType] attribute
         interface IVehicle { }
         
-        // exception: missing [Instance] or [Polymorph] attribute
+        // exception: missing [InstanceType] or [PolymorphType] attribute
         abstract class Abstract { }
         
         // exception: type is null
-        [Instance(null)]
+        [InstanceType(null)]
         interface ITestInstanceNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [Instance(typeof(Book))]
+        [InstanceType(typeof(Book))]
         interface ITestIncompatibleInstance { }
 
         // --- IBook
-        [Instance(typeof(Book))]
+        [InstanceType(typeof(Book))]
         interface IBook { }
 
         class Book : IBook {
@@ -56,39 +56,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json, jsonResult);
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<IVehicle>("{}"));
-                AreEqual("type requires instantiatable types by [Instance()] or [Polymorph()] on: IVehicle", e.Message);
+                AreEqual("type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: IVehicle", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
-                AreEqual("type requires instantiatable types by [Instance()] or [Polymorph()] on: Abstract", e.Message);
+                AreEqual("type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: Abstract", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestIncompatibleInstance>("{}"));
-                AreEqual("[Instance(Book)] type must extend annotated type: ITestIncompatibleInstance", e.Message);
+                AreEqual("[InstanceType(Book)] type must extend annotated type: ITestIncompatibleInstance", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestInstanceNull>("{}"));
-                AreEqual("[Instance(null)] type must not be null on: ITestInstanceNull", e.Message);
+                AreEqual("[InstanceType(null)] type must not be null on: ITestInstanceNull", e.Message);
             }
         }
         
         // --------------- polymorphic interface
         // exception: type is null
-        [Polymorph(null)]
+        [PolymorphType(null)]
         abstract class TestPolymorphNull { }
         
         // exception: Book does not extend ITestIncompatibleInstance
-        [Polymorph(typeof(Book))]
+        [PolymorphType(typeof(Book))]
         abstract class TestIncompatiblePolymorph { }
         
         // exception - test missing [Discriminator]
-        [Polymorph(typeof(TestNoDiscriminator))]
+        [PolymorphType(typeof(TestNoDiscriminator))]
         abstract class TestNoDiscriminator { }
         
-        // exception - missing [Polymorph]
+        // exception - missing [PolymorphType]
         [Discriminator ("discriminator")]
         abstract class TestNoPolymorph { }
         
         
         [Discriminator("animalType")]
-        [Polymorph(typeof(Lion), Discriminant = "lion")]
+        [PolymorphType(typeof(Lion), Discriminant = "lion")]
         interface IAnimal {
         }
 
@@ -113,28 +113,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json, jsonResult);
                 
                 reader.Read<IAnimal>("{\"animalType\":\"Tiger\"}");
-                StringAssert.Contains("No [Polymorph] type declared for discriminant: 'Tiger' on type: IAnimal", reader.Error.msg.AsString());
+                StringAssert.Contains("No [PolymorphType] type declared for discriminant: 'Tiger' on type: IAnimal", reader.Error.msg.AsString());
                 
                 reader.Read<IAnimal>("{}");
                 StringAssert.Contains("Expect discriminator 'animalType': '...' as first JSON member for type: IAnimal", reader.Error.msg.AsString());
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<TestIncompatiblePolymorph>("{}"));
-                AreEqual("[Polymorph(Book)] type must extend annotated type: TestIncompatiblePolymorph", e.Message);
+                AreEqual("[PolymorphType(Book)] type must extend annotated type: TestIncompatiblePolymorph", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestPolymorphNull>("{}"));
-                AreEqual("[Polymorph(null)] type must not be null on: TestPolymorphNull", e.Message);
+                AreEqual("[PolymorphType(null)] type must not be null on: TestPolymorphNull", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoDiscriminator>("{}"));
-                AreEqual("specified [Polymorph] attribute require [Discriminator] on: TestNoDiscriminator", e.Message);
+                AreEqual("specified [PolymorphType] attribute require [Discriminator] on: TestNoDiscriminator", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoPolymorph>("{}"));
-                AreEqual("specified [Discriminator] require at least one [Polymorph] attribute on: TestNoPolymorph", e.Message);
+                AreEqual("specified [Discriminator] require at least one [PolymorphType] attribute on: TestNoPolymorph", e.Message);
             }
         }
         
         // --------------- polymorphic class
         [Discriminator ("personType")]
-        [Polymorph(typeof(Employee))]
+        [PolymorphType(typeof(Employee))]
         abstract class Person {
         }
 

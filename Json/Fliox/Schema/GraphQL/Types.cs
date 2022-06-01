@@ -25,14 +25,14 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
     
     // ------------------------------------- GraphQL Type ------------------------------------- 
     [Discriminator("kind")]
-    [Polymorph(typeof(GqlScalar),       Discriminant = "SCALAR")]
-    [Polymorph(typeof(GqlObject),       Discriminant = "OBJECT")]
-    [Polymorph(typeof(GqlInterface),    Discriminant = "INTERFACE")]
-    [Polymorph(typeof(GqlUnion),        Discriminant = "UNION")]
-    [Polymorph(typeof(GqlEnum),         Discriminant = "ENUM")]
-    [Polymorph(typeof(GqlInputObject),  Discriminant = "INPUT_OBJECT")]
-    [Polymorph(typeof(GqlList),         Discriminant = "LIST")]
-    [Polymorph(typeof(GqlNonNull),      Discriminant = "NON_NULL")]
+    [PolymorphType(typeof(GqlScalar),       Discriminant = "SCALAR")]
+    [PolymorphType(typeof(GqlObject),       Discriminant = "OBJECT")]
+    [PolymorphType(typeof(GqlInterface),    Discriminant = "INTERFACE")]
+    [PolymorphType(typeof(GqlUnion),        Discriminant = "UNION")]
+    [PolymorphType(typeof(GqlEnum),         Discriminant = "ENUM")]
+    [PolymorphType(typeof(GqlInputObject),  Discriminant = "INPUT_OBJECT")]
+    [PolymorphType(typeof(GqlList),         Discriminant = "LIST")]
+    [PolymorphType(typeof(GqlNonNull),      Discriminant = "NON_NULL")]
     public class GqlType {
         [Req]   public  string      name        { get; set; }
                 public  string      description { get; set; }

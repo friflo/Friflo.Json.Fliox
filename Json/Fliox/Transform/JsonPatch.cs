@@ -10,12 +10,12 @@ namespace Friflo.Json.Fliox.Transform
     /// <a href="https://tools.ietf.org/html/rfc6902">JavaScript Object Notation (JSON) Patch</a>
     /// </summary>
     [Discriminator("op", Description = "patch type")]
-    [Polymorph(typeof(PatchReplace),    Discriminant = "replace")]
-    [Polymorph(typeof(PatchAdd),        Discriminant = "add")]
-    [Polymorph(typeof(PatchRemove),     Discriminant = "remove")]
-    [Polymorph(typeof(PatchCopy),       Discriminant = "copy")]
-    [Polymorph(typeof(PatchMove),       Discriminant = "move")]
-    [Polymorph(typeof(PatchTest),       Discriminant = "test")]
+    [PolymorphType(typeof(PatchReplace),    Discriminant = "replace")]
+    [PolymorphType(typeof(PatchAdd),        Discriminant = "add")]
+    [PolymorphType(typeof(PatchRemove),     Discriminant = "remove")]
+    [PolymorphType(typeof(PatchCopy),       Discriminant = "copy")]
+    [PolymorphType(typeof(PatchMove),       Discriminant = "move")]
+    [PolymorphType(typeof(PatchTest),       Discriminant = "test")]
     public abstract class JsonPatch
     {
         public abstract PatchType PatchType { get; }

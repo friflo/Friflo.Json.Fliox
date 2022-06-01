@@ -8,7 +8,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
 {
     public class TestInterface
     {
-        [Instance(typeof(Employee))]
+        [InstanceType(typeof(Employee))]
         interface IPerson {
         }
         

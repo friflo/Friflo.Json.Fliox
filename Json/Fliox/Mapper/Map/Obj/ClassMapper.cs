@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
             if (type.IsClass || type.IsValueType || notInstantiatable) {
                 var factory = InstanceFactory.GetInstanceFactory(type);
                 if (notInstantiatable && factory == null)
-                    throw new InvalidOperationException($"type requires instantiatable types by [Instance()] or [Polymorph()] on: {type}");
+                    throw new InvalidOperationException($"type requires instantiatable types by [InstanceType()] or [PolymorphType()] on: {type}");
                 
                 object[] constructorParams = {config, type, constructor, factory, type.IsValueType};
 #if !UNITY_5_3_OR_NEWER
@@ -274,7 +274,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                         string discriminant = reader.parser.value.AsString();
                         obj = (T) factory.CreatePolymorph(discriminant);
                         if (classType.IsNull(ref obj))
-                            return reader.ErrorMsg<TypeMapper>($"No [Polymorph] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
+                            return reader.ErrorMsg<TypeMapper>($"No [PolymorphType] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else

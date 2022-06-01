@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// </para>
     /// </summary>
     [Discriminator("msg", Description = "message type")] 
-    [Polymorph(typeof(SyncRequest),    Discriminant = "sync")]
-    [Polymorph(typeof(SyncResponse),   Discriminant = "resp")]
-    [Polymorph(typeof(ErrorResponse),  Discriminant = "error")]
-    [Polymorph(typeof(EventMessage),   Discriminant = "ev")]
+    [PolymorphType(typeof(SyncRequest),    Discriminant = "sync")]
+    [PolymorphType(typeof(SyncResponse),   Discriminant = "resp")]
+    [PolymorphType(typeof(ErrorResponse),  Discriminant = "error")]
+    [PolymorphType(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     // ----------------------------------- request -----------------------------------
     [Discriminator("msg", Description = "request type")] 
-    [Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
+    [PolymorphType(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
         /// <summary>Used only for <see cref="RemoteClientHub"/> to enable:
         /// <para>
@@ -83,8 +83,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     /// A response is either a <see cref="SyncResponse"/> or a <see cref="ErrorResponse"/> in case of a general error. 
     /// </summary>
     [Discriminator("msg", Description = "response type")] 
-    [Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
-    [Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
+    [PolymorphType(typeof(SyncResponse),        Discriminant = "resp")]
+    [PolymorphType(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/> of a <see cref="ProtocolRequest"/></summary>
         [Property(Name =                   "req")]
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     // ----------------------------------- event -----------------------------------
     [Discriminator("msg", Description = "event type")] 
-    [Polymorph(typeof(EventMessage),   Discriminant = "ev")]
+    [PolymorphType(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolEvent     : ProtocolMessage {
         // note for all fields
         // used { get; set; } to force properties on the top of JSON

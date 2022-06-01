@@ -12,12 +12,12 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
     /// grant access.
     /// </summary>
     [Discriminator("type", Description = "right type")]
-    [Polymorph(typeof(AllowRight),              Discriminant = "allow")]
-    [Polymorph(typeof(TaskRight),               Discriminant = "task")]
-    [Polymorph(typeof(SendMessageRight),        Discriminant = "sendMessage")]
-    [Polymorph(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
-    [Polymorph(typeof(OperationRight),          Discriminant = "operation")]
-    [Polymorph(typeof(PredicateRight),          Discriminant = "predicate")]
+    [PolymorphType(typeof(AllowRight),              Discriminant = "allow")]
+    [PolymorphType(typeof(TaskRight),               Discriminant = "task")]
+    [PolymorphType(typeof(SendMessageRight),        Discriminant = "sendMessage")]
+    [PolymorphType(typeof(SubscribeMessageRight),   Discriminant = "subscribeMessage")]
+    [PolymorphType(typeof(OperationRight),          Discriminant = "operation")]
+    [PolymorphType(typeof(PredicateRight),          Discriminant = "predicate")]
     public abstract class Right {
         /// <summary>optional description explaining the Right</summary>
         public              string      description;

@@ -18,14 +18,14 @@ namespace Friflo.Json.Fliox
     }
 
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class PolymorphAttribute : Attribute {
+    public sealed class PolymorphTypeAttribute : Attribute {
         public string     Discriminant    { get; set; }
-        public PolymorphAttribute (Type instance) {}
+        public PolymorphTypeAttribute (Type instance) {}
     }
 
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public sealed class InstanceAttribute : Attribute {
-        public InstanceAttribute (Type instance) {}
+    public sealed class InstanceTypeAttribute : Attribute {
+        public InstanceTypeAttribute (Type instance) {}
     }
 
     

@@ -8,12 +8,12 @@ using UserStore2.Hub.Protocol.Tasks;
 namespace UserStore2.Hub.Host.Auth.Rights {
 
 [Discriminator("type")]
-[Polymorph(typeof(AllowRight),            Discriminant = "allow")]
-[Polymorph(typeof(TaskRight),             Discriminant = "task")]
-[Polymorph(typeof(SendMessageRight),      Discriminant = "sendMessage")]
-[Polymorph(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
-[Polymorph(typeof(OperationRight),        Discriminant = "operation")]
-[Polymorph(typeof(PredicateRight),        Discriminant = "predicate")]
+[PolymorphType(typeof(AllowRight),            Discriminant = "allow")]
+[PolymorphType(typeof(TaskRight),             Discriminant = "task")]
+[PolymorphType(typeof(SendMessageRight),      Discriminant = "sendMessage")]
+[PolymorphType(typeof(SubscribeMessageRight), Discriminant = "subscribeMessage")]
+[PolymorphType(typeof(OperationRight),        Discriminant = "operation")]
+[PolymorphType(typeof(PredicateRight),        Discriminant = "predicate")]
 public abstract class Right {
     string  description;
 }
