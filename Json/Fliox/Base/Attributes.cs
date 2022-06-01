@@ -47,11 +47,6 @@ namespace Friflo.Json.Fliox
     public sealed class IgnoreFieldAttribute : Attribute {
     }
     
-    /// <summary> Declare the attributed member as a required field </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class RequiredFieldAttribute : Attribute {
-    }
-    
     
     // -------------------------------- enum value attributes ------------------------------
     /// <summary> Use a custom name for the annotated enum value for JSON serialization </summary>
