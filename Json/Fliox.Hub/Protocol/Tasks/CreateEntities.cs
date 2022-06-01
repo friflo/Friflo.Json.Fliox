@@ -20,17 +20,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CreateEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are created</summary>
-        [Req]           public  string          container;
-                        public  Guid?           reservedToken;
+        [Req]       public  string          container;
+                    public  Guid?           reservedToken;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
-                        public  string          keyName;
+                    public  string          keyName;
         /// <summary>the <see cref="entities"/> which are created in the specified <see cref="container"/></summary>
-        [Req]           public  List<JsonValue> entities;
+        [Req]       public  List<JsonValue> entities;
                         
-        [Ignore]        public  List<JsonKey>   entityKeys;
+        [Ignore]    public  List<JsonKey>   entityKeys;
         
-        internal override       TaskType        TaskType => TaskType.create;
-        public   override       string          TaskName => $"container: '{container}'";
+        internal override   TaskType        TaskType => TaskType.create;
+        public   override   string          TaskName => $"container: '{container}'";
         
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
@@ -77,8 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         [Ignore]    public CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to create</summary>
-                     public List<EntityError>   errors;
+                    public List<EntityError>   errors;
         
-        internal override   TaskType            TaskType => TaskType.create;
+        internal override  TaskType            TaskType => TaskType.create;
     }
 }

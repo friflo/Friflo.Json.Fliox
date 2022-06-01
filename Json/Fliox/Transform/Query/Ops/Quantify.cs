@@ -81,13 +81,12 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     
     public sealed class CountWhere : Operation // Note: must not extend: FilterOperation
     {
-        [Req]  public  Field           field;
-        [Req]  public  string          arg;
-        [Req]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
+        [Req]   public              Field           field;
+        [Req]   public              string          arg;
+        [Req]   public              FilterOperation predicate;  // e.g.   i => i.amount < 1
         
         // is set always to the same value in Eval() so it can be reused
-        [Ignore]
-        private  readonly       EvalResult      evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        [Ignore]private readonly    EvalResult      evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         public CountWhere() { }
         public CountWhere(Field field, string arg, FilterOperation predicate)  {

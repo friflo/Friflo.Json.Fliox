@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public abstract class SyncMessageTask : SyncRequestTask
     {
         /// <summary>command / message name</summary>
-        [Req]           public  string          name;
+        [Req]       public  string          name;
         /// <summary>command / message parameter. Can be null or absent</summary>
-                        public  JsonValue       param;
+                    public  JsonValue       param;
                         
-        public   override       string          TaskName => $"name: '{name}'";
+        public   override   string          TaskName => $"name: '{name}'";
     }
     
     /// <summary>
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task result -----------------------------------
     public abstract class SyncMessageResult : SyncTaskResult, ICommandResult
     {
-        [Ignore] public CommandError    Error { get; set; }
+        [Ignore]    public  CommandError    Error { get; set; }
     }
     
     /// <summary>

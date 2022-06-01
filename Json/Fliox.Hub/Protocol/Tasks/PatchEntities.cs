@@ -19,14 +19,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class PatchEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public  string                              container;
+        [Req]       public  string                              container;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
-                        public  string                              keyName;
+                    public  string                              keyName;
         /// <summary>set of patches for each entity identified by its primary key</summary>
-        [Req]           public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
+        [Req]       public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
-        internal override       TaskType                            TaskType => TaskType.patch;
-        public   override       string                              TaskName =>  $"container: '{container}'";
+        internal override   TaskType                            TaskType => TaskType.patch;
+        public   override   string                              TaskName =>  $"container: '{container}'";
         
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class EntityPatch
     {
         /// <summary>list of patches applied to an entity</summary>
-        [Req]  public  List<JsonPatch>             patches;
+        [Req]  public  List<JsonPatch>      patches;
     }
 
     // ----------------------------------- task result -----------------------------------
@@ -59,8 +59,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     {
         [Ignore]    public CommandError        Error { get; set; }
         /// <summary>list of entity errors failed to patch</summary>
-                     public List<EntityError>   errors;
+                    public List<EntityError>   errors;
         
-        internal override   TaskType            TaskType => TaskType.patch;
+        internal override  TaskType            TaskType => TaskType.patch;
     }
 }

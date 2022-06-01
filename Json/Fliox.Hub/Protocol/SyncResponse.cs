@@ -19,17 +19,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     public sealed class SyncResponse : ProtocolResponse
     {
         /// <summary>for debugging - not used by Protocol</summary>
-                        public  string                                  database;
+                    public  string                                  database;
         /// <summary>list of task results corresponding to the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/></summary>
-                        public  List<SyncTaskResult>                    tasks;
+                    public  List<SyncTaskResult>                    tasks;
         /// <summary>entities as results from the <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/>
         /// grouped by container</summary>
-                        public  List<ContainerEntities>                 containers;
+                    public  List<ContainerEntities>                 containers;
         // key of all Dictionary's is the container name
-        [Ignore]        public  Dictionary<string, ContainerEntities>   resultMap;
-                        public  JsonValue                               info;
+        [Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
+                    public  JsonValue                               info;
                         
-        internal override       MessageType                             MessageType => MessageType.resp;
+        internal override   MessageType                             MessageType => MessageType.resp;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (resultMap.TryGetValue(container, out ContainerEntities result))
@@ -70,20 +70,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-        [Req]           public  string                              container;
+        [Req]       public  string                              container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
-        [DebugInfo]     public  int?                                count;
+        [DebugInfo] public  int?                                count;
         /// <summary>all <see cref="entities"/> as results from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/></summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-        [Req]           public  List<JsonValue>                     entities;
+        [Req]       public  List<JsonValue>                     entities;
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-                        public  List<JsonKey>                       notFound;
+                    public  List<JsonKey>                       notFound;
         /// <summary>list of entity errors read from <see cref="container"/></summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-                        public  List<EntityError>                   errors;
+                    public  List<EntityError>                   errors;
         
-        [Ignore]        public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        [Ignore]    public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 
         public override         string                              ToString() => container;
 

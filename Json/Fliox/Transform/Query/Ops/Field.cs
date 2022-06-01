@@ -26,9 +26,9 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------- unary operations -------------------------------------
     public sealed class Field : Operation, ISelector
     {
-        [Req]           public      string      name;
-        [Ignore]        internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
-        [Ignore]        internal    EvalResult  evalResult;
+        [Req]       public      string      name;
+        [Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
+        [Ignore]    internal    EvalResult  evalResult;
 
         public   override string    OperationName => "name";
         public   override void      AppendLinq(AppendCx cx) {

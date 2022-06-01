@@ -18,17 +18,17 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeChanges : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public      string          container;
+        [Req]       public      string          container;
         /// <summary>subscribe to entity <see cref="changes"/> of the given <see cref="container"/></summary>
-        [Req]           public      List<Change>    changes;
+        [Req]       public      List<Change>    changes;
         /// <summary>subscription filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c></summary>
-                        public      JsonValue       filter;
+                    public      JsonValue       filter;
                         
-        [Ignore]        internal    FilterOperation filterOp;
+        [Ignore]    internal    FilterOperation filterOp;
         
-        internal override           TaskType        TaskType  => TaskType.subscribeChanges;
-        public   override           string          TaskName  => $"container: '{container}'";
+        internal override       TaskType        TaskType  => TaskType.subscribeChanges;
+        public   override       string          TaskName  => $"container: '{container}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;

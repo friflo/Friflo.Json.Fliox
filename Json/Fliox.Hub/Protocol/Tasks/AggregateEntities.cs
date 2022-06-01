@@ -19,22 +19,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class AggregateEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public      string              container;
+        [Req]       public      string              container;
         /// <summary>aggregation type - e.g. count </summary>
-                        public      AggregateType       type;
+                    public      AggregateType       type;
         /// <summary>aggregation filter as JSON tree. <br/>
         /// Is used in favour of <see cref="filter"/> as its serialization is more performant</summary>
-                        public      JsonValue           filterTree;
+                    public      JsonValue           filterTree;
         /// <summary>aggregation filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>
         /// </summary>
-                        public      string              filter;
+                    public      string              filter;
                         
-        [Ignore]        private     FilterOperation     filterLambda;
-        [Ignore]        public      OperationContext    filterContext;
+        [Ignore]    private     FilterOperation     filterLambda;
+        [Ignore]    public      OperationContext    filterContext;
                         
-        internal override           TaskType            TaskType => TaskType.aggregate;
-        public   override           string              TaskName => $"container: '{container}',type: {type}, filter: {filter}";
+        internal override       TaskType            TaskType => TaskType.aggregate;
+        public   override       string              TaskName => $"container: '{container}',type: {type}, filter: {filter}";
         
         public FilterOperation GetFilter() {
             if (filterLambda != null)

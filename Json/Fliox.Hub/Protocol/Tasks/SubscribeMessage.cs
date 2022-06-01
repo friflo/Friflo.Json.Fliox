@@ -15,12 +15,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class SubscribeMessage : SyncRequestTask
     {
         /// <summary>subscribe a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
-        [Req]           public  string      name;
+        [Req]       public  string      name;
         /// <summary>if true a previous added subscription is removed. Otherwise added</summary>
-                        public  bool?       remove;
+                    public  bool?       remove;
         
-        internal override       TaskType    TaskType    => TaskType.subscribeMessage;
-        public   override       string      TaskName    => $"name: '{name}'";
+        internal override   TaskType    TaskType    => TaskType.subscribeMessage;
+        public   override   string      TaskName    => $"name: '{name}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var hub             = syncContext.Hub;

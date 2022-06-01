@@ -116,20 +116,20 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// Increasing event sequence number starting with 1 for a specific target client <see cref="dstClientId"/>.
         /// Each target client (subscriber) has its own sequence.
         /// </summary>
-                        public  int         seq         { get; set; }
+                    public  int         seq         { get; set; }
         /// <summary>
         /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
         /// The user client is not preserved by en extra property as a use case for this is not obvious.
         /// </summary>
-        [Property(Name =                   "src")]
-        [Req]           public  JsonKey     srcUserId   { get; set; }
+        [Property(Name =               "src")]
+        [Req]       public  JsonKey     srcUserId   { get; set; }
         
         /// <summary>
         /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.
         /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         /// </summary>
-        [Property(Name =                   "clt")]
-        [Req]           public  JsonKey     dstClientId { get; set; }
+        [Property(Name =               "clt")]
+        [Req]       public  JsonKey     dstClientId { get; set; }
     }
     
     /// <summary>

@@ -19,16 +19,16 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class UpsertEntities : SyncRequestTask
     {
         /// <summary>container name the <see cref="entities"/> are upserted - created or updated</summary>
-        [Req]           public  string          container;
+        [Req]       public  string          container;
         /// <summary>name of the primary key property in <see cref="entities"/></summary>
-                        public  string          keyName;
+                    public  string          keyName;
         /// <summary>the <see cref="entities"/> which are upserted in the specified <see cref="container"/></summary>
-        [Req]           public  List<JsonValue> entities;
+        [Req]       public  List<JsonValue> entities;
         
-        [Ignore]        public  List<JsonKey>   entityKeys;
+        [Ignore]    public  List<JsonKey>   entityKeys;
         
-        internal override       TaskType        TaskType => TaskType.upsert;
-        public   override       string          TaskName => $"container: '{container}'";
+        internal override   TaskType        TaskType => TaskType.upsert;
+        public   override   string          TaskName => $"container: '{container}'";
         
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)

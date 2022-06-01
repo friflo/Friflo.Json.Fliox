@@ -32,15 +32,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     [PolymorphType(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
     public abstract class SyncRequestTask
     {
-                 public     JsonValue           info;
-        [Ignore] public     int                 index;
-        [Ignore] internal   JsonValue?          json;
+                    public     JsonValue    info;
+        [Ignore]    public     int          index;
+        [Ignore]    internal   JsonValue?   json;
         
         internal abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
-        internal abstract   TaskType                TaskType { get; }
-        public   abstract   string                  TaskName { get; }
+        internal    abstract   TaskType     TaskType { get; }
+        public      abstract   string       TaskName { get; }
 
-        public   override   string                  ToString() => TaskName;
+        public      override   string       ToString() => TaskName;
 
         internal static TaskErrorResult TaskError(CommandError error) {
             return new TaskErrorResult (error.type, error.message);   

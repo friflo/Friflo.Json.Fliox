@@ -21,35 +21,35 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class QueryEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public  string              container;
+        [Req]       public  string              container;
         /// <summary>name of the primary key property of the returned entities</summary>
-                        public  string              keyName;
-                        public  bool?               isIntKey;
+                    public  string              keyName;
+                    public  bool?               isIntKey;
         /// <summary>
         /// query filter as JSON tree. <br/>
         /// Is used in favour of <see cref="filter"/> as its serialization is more performant
         /// </summary>
-                        public  JsonValue           filterTree;
+                    public  JsonValue           filterTree;
         /// <summary>
         /// query filter as a <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions">Lambda expression</a> (infix notation)
         /// returning a boolean value. E.g. <c>o.name == 'Smartphone'</c><br/>
         /// if <see cref="filterTree"/> is assigned it has priority
         /// </summary>
-                        public  string              filter;
+                    public  string              filter;
         /// <summary>used to request the entities referenced by properties of the query task result</summary>
-                        public  List<References>    references;
+                    public  List<References>    references;
         /// <summary>limit the result set to the given number</summary>
-                        public  int?                limit;
+                    public  int?                limit;
         /// <summary>execute a cursor request with the specified <see cref="maxCount"/> number of entities in the result.</summary>
-                        public  int?                maxCount;
+                    public  int?                maxCount;
         /// <summary>specify the <see cref="cursor"/> of a previous cursor request</summary>
-                        public  string              cursor;
+                    public  string              cursor;
                         
-        [Ignore]        private FilterOperation     filterLambda;
-        [Ignore]        public  OperationContext    filterContext;
+        [Ignore]    private FilterOperation     filterLambda;
+        [Ignore]    public  OperationContext    filterContext;
                         
-        internal override       TaskType            TaskType => TaskType.query;
-        public   override       string              TaskName => $"container: '{container}', filter: {filter}";
+        internal override   TaskType            TaskType => TaskType.query;
+        public   override   string              TaskName => $"container: '{container}', filter: {filter}";
         
         public FilterOperation GetFilter() {
             if (filterLambda != null)

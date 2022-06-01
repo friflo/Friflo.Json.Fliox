@@ -13,14 +13,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class TaskErrorResult : SyncTaskResult
     {
         /// <summary>task error type</summary>
-        [Req]           public  TaskErrorResultType type;
+        [Req]   public      TaskErrorResultType type;
         /// <summary>task error details</summary>
-                        public  string              message;
+                public      string              message;
         /// <summary>stacktrace in case the error <see cref="type"/> is a <see cref="TaskErrorResultType.UnhandledException"/></summary>
-                        public  string              stacktrace;
+                public      string              stacktrace;
 
-        internal override       TaskType            TaskType => TaskType.error;
-        public   override       string              ToString() => $"type: {type}, message: {message}";
+        internal override   TaskType            TaskType => TaskType.error;
+        public   override   string              ToString() => $"type: {type}, message: {message}";
         
         public TaskErrorResult() {}
         public TaskErrorResult(TaskErrorResultType type, string message, string stacktrace = null) {

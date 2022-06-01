@@ -13,8 +13,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // --- literals
     public abstract class Literal : Operation {
         // is set always to the same value in Eval() so it can be reused
-        [Ignore]
-        internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        [Ignore] internal  readonly  EvalResult evalResult = new EvalResult(new List<Scalar> {new Scalar()});
         
         internal override void Init(OperationContext cx, InitFlags flags) { }
     }

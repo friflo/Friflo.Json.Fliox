@@ -16,22 +16,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     /// </summary>
     public sealed class ReadEntitiesSet
     {
-        [Ignore]        public  string                  keyName;
-        [Ignore]        public  bool?                   isIntKey;
+        [Ignore]    public  string                  keyName;
+        [Ignore]    public  bool?                   isIntKey;
         /// <summary>list of entity <see cref="ids"/> requested by a <see cref="Tasks.ReadEntities"/> task</summary>
-        [Req]           public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+        [Req]       public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>used to request the entities referenced by properties of a read task result</summary>
-                        public  List<References>        references;
+                    public  List<References>        references;
     }
     
     // ----------------------------------- sub task result -----------------------------------
     /// The data of requested entities are added to <see cref="ContainerEntities.entityMap"/> 
     public sealed class ReadEntitiesSetResult: ICommandResult
     {
-                        public  List<ReferencesResult>          references;
-        [Ignore]        public  CommandError                    Error { get; set; }
+                    public  List<ReferencesResult>          references;
+        [Ignore]    public  CommandError                    Error { get; set; }
 
-        [Ignore]        public  Dictionary<JsonKey,EntityValue> entities;
+        [Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         
         /// <summary>
         /// Validate all <see cref="EntityValue.value"/>'s in the result set.

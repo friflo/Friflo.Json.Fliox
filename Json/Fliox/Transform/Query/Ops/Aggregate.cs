@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------------- unary -------------------------------------------
     public abstract class UnaryAggregateOp : Operation
     {
-        [Req]           public              Field       field;
-        [Ignore]        internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        [Req]       public              Field       field;
+        [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected UnaryAggregateOp() { }
         protected UnaryAggregateOp(Field field) {
@@ -46,10 +46,10 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     // ------------------------------------------- binary -------------------------------------------
     public abstract class BinaryAggregateOp : Operation
     {
-        [Req]           public              Field       field;
-        [Req]           public              string      arg;
-        [Req]           public              Operation   array;
-        [Ignore]        internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        [Req]       public              Field       field;
+        [Req]       public              string      arg;
+        [Req]       public              Operation   array;
+        [Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }
         protected BinaryAggregateOp(Field field, string arg, Operation array) {

@@ -55,21 +55,21 @@ namespace Friflo.Json.Fliox.Schema.JSON
     {
         /// <summary>reference to 'main' type definition in <see cref="definitions"/> to<br/>
         /// enable schema urls without fragment suffix like: <c>#/definitions/SomeType</c> </summary>
-        [Property(Name =                                   "$ref")]
-                public      string                          rootRef;
+        [Property(Name =                                       "$ref")]
+                    public      string                          rootRef;
 
         /// <summary>map of type <see cref="definitions"/> contained by the JSON Schema.</summary>
-                public      Dictionary<string, JsonType>    definitions;
+                    public      Dictionary<string, JsonType>    definitions;
         
-                public      OpenApi                         openAPI;
+                    public      OpenApi                         openAPI;
 
         /// <summary>file name is <see cref="name"/> + ".json".
         /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>
-        [Ignore]public      string                          fileName;
-        [Ignore]public      string                          name;
-        [Ignore]internal    Dictionary<string, JsonTypeDef> typeDefs;
+        [Ignore]    public      string                          fileName;
+        [Ignore]    public      string                          name;
+        [Ignore]    internal    Dictionary<string, JsonTypeDef> typeDefs;
 
-        public  override    string                          ToString() => fileName;
+        public  override        string                          ToString() => fileName;
     }
 
     /// <summary>

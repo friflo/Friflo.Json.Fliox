@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// These referenced entities are also loaded via the next <see cref="FlioxClient.SyncTasks"/> request.
         /// </remarks>
         /// <summary>the field path used as a reference to an entity in the specified <see cref="container"/></summary>
-        [Req]           public  string              selector; // e.g. ".items[*].article"
+        [Req]   public  string              selector; // e.g. ".items[*].article"
         /// <summary>the <see cref="container"/> storing the entities referenced by the specified <see cref="selector"/></summary>
-        [Req]           public  string              container;
-                        public  string              keyName;
-                        public  bool?               isIntKey;
-                        public  List<References>    references;
+        [Req]   public  string              container;
+                public  string              keyName;
+                public  bool?               isIntKey;
+                public  List<References>    references;
     }
     
     // ----------------------------------- sub task result -----------------------------------

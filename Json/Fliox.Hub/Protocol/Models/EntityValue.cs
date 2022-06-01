@@ -8,13 +8,13 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
     public sealed class EntityValue
     {
-        [Property]      private     JsonValue   value;
-        [Property]      private     EntityError error;
+        [Property]  private     JsonValue   value;
+        [Property]  private     EntityError error;
         
-        [Ignore]        public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
-        [Ignore]        public      EntityError Error   => error;
+        [Ignore]    public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
+        [Ignore]    public      EntityError Error   => error;
 
-        public override             string      ToString() => error == null ? value.AsString() : error.type + ": " + error.message;
+        public override         string      ToString() => error == null ? value.AsString() : error.type + ": " + error.message;
 
         public void SetJson(JsonValue json) {
             value = json;

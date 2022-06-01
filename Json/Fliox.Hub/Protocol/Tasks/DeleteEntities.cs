@@ -18,14 +18,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class DeleteEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public  string              container;
+        [Req]       public  string              container;
         /// <summary>list of <see cref="ids"/> requested for deletion</summary>
-                        public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
+                    public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
         /// <summary>if true all entities in the specified <see cref="container"/> are deleted</summary>
-                        public  bool?               all;
+                    public  bool?               all;
         
-        internal override       TaskType            TaskType => TaskType.delete;
-        public   override       string              TaskName => $"container: '{container}'";
+        internal override   TaskType            TaskType => TaskType.delete;
+        public   override   string              TaskName => $"container: '{container}'";
         
         internal bool Authorize (string container, bool delete, bool deleteAll) {
             bool allBool = all != null && all.Value;

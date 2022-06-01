@@ -16,12 +16,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class CloseCursors : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public  string          container;
+        [Req]       public  string          container;
         /// <summary>list of <see cref="cursors"/></summary>
-                        public  List<string>    cursors;
-        internal override       TaskType        TaskType => TaskType.closeCursors;
+                    public  List<string>    cursors;
+        internal override   TaskType        TaskType => TaskType.closeCursors;
         
-        public   override       string          TaskName => $"container: '{container}', cursor: {cursors}";
+        public   override   string          TaskName => $"container: '{container}', cursor: {cursors}";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)

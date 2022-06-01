@@ -72,10 +72,10 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// WIP
     /// </summary>
     public sealed class ReserveKeysResult : SyncTaskResult {
-                        public  ReservedKeys?   keys;
+                    public  ReservedKeys?   keys;
         
-        [Ignore]        public  CommandError    Error { get; set; }
-        internal override       TaskType        TaskType => TaskType.reserveKeys;
+        [Ignore]    public  CommandError    Error { get; set; }
+        internal override   TaskType        TaskType => TaskType.reserveKeys;
     }
     
     /// <summary>

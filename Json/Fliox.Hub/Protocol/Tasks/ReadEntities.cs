@@ -20,15 +20,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class ReadEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Req]           public  string                  container;
+        [Req]       public  string                  container;
         /// <summary>name of the primary key property of the returned entities</summary>
-                        public  string                  keyName;
-                        public  bool?                   isIntKey;
+                    public  string                  keyName;
+                    public  bool?                   isIntKey;
         /// <summary>contains the <see cref="ReadEntitiesSet.ids"/> of requested entities</summary>               
-        [Req]           public  List<ReadEntitiesSet>   sets;
+        [Req]       public  List<ReadEntitiesSet>   sets;
         
-        internal override       TaskType                TaskType => TaskType.read;
-        public   override       string                  TaskName =>  $"container: '{container}'";
+        internal override   TaskType                TaskType => TaskType.read;
+        public   override   string                  TaskName =>  $"container: '{container}'";
 
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
@@ -98,8 +98,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        [Req]   public          List<ReadEntitiesSetResult> sets;
+        [Req]   public      List<ReadEntitiesSetResult> sets;
         
-        internal override       TaskType                    TaskType => TaskType.read;
+        internal override   TaskType                    TaskType => TaskType.read;
     }
 }
