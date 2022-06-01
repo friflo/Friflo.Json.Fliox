@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
             var                     attributes  = schemaType.CustomAttributes;
             List<SchemaInfoServer>  servers     = null;
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(OpenAPIServer)) {
+                if (attr.AttributeType == typeof(OpenAPIServerAttribute)) {
                     var namedArguments = attr.NamedArguments;
                     if (namedArguments != null) {
                         var server = GetOpenAPIServerAttributes(namedArguments);
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
                 }
             }
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(OpenAPI)) {
+                if (attr.AttributeType == typeof(OpenAPIAttribute)) {
                     var namedArguments = attr.NamedArguments;
                     if (namedArguments != null) {
                         return GetOpenAPIAttributes(namedArguments, servers);
@@ -119,13 +119,13 @@ namespace Friflo.Json.Fliox.Schema.Definition
             foreach (var args in  namedArguments) {
                 var value = (string)args.TypedValue.Value;
                 switch (args.MemberName) {
-                    case nameof(OpenAPI.Version):       version       = value;    break;
-                    case nameof(OpenAPI.TermsOfService):termsOfService= value;    break;
-                    case nameof(OpenAPI.LicenseName):   licenseName   = value;    break;
-                    case nameof(OpenAPI.LicenseUrl):    licenseUrl    = value;    break;
-                    case nameof(OpenAPI.ContactName):   contactName   = value;    break;
-                    case nameof(OpenAPI.ContactUrl):    contactUrl    = value;    break;
-                    case nameof(OpenAPI.ContactEmail):  contactEmail  = value;    break;
+                    case nameof(OpenAPIAttribute.Version):       version       = value;    break;
+                    case nameof(OpenAPIAttribute.TermsOfService):termsOfService= value;    break;
+                    case nameof(OpenAPIAttribute.LicenseName):   licenseName   = value;    break;
+                    case nameof(OpenAPIAttribute.LicenseUrl):    licenseUrl    = value;    break;
+                    case nameof(OpenAPIAttribute.ContactName):   contactName   = value;    break;
+                    case nameof(OpenAPIAttribute.ContactUrl):    contactUrl    = value;    break;
+                    case nameof(OpenAPIAttribute.ContactEmail):  contactEmail  = value;    break;
                 }
             }
             return new SchemaInfo(version, termsOfService, contactName, contactUrl, contactEmail, licenseName, licenseUrl, servers);
@@ -137,8 +137,8 @@ namespace Friflo.Json.Fliox.Schema.Definition
             foreach (var args in namedArguments) {
                 var value = (string)args.TypedValue.Value;
                 switch (args.MemberName) {
-                    case nameof(OpenAPIServer.Description): description = value;    break;
-                    case nameof(OpenAPIServer.Url):         url         = value;    break;
+                    case nameof(OpenAPIServerAttribute.Description): description = value;    break;
+                    case nameof(OpenAPIServerAttribute.Url):         url         = value;    break;
                 }
             }
             return new SchemaInfoServer(url, description);

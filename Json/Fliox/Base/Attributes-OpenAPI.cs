@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox
     /// <a href="https://spec.openapis.org/oas/v3.0.0#openapi-object">OpenAPI Object specification</a>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class OpenAPI : Attribute {
+    public sealed class OpenAPIAttribute : Attribute {
         public string           Version        { get; set; }
         public string           TermsOfService { get; set; }
         
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox
     /// <a href="https://spec.openapis.org/oas/v3.0.0#server-object">OpenAPI Server Object</a>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class OpenAPIServer : Attribute {
+    public sealed class OpenAPIServerAttribute : Attribute {
         public string           Url             { get; set; }
         public string           Description     { get; set; }
     }
