@@ -30,12 +30,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     // ----------------------------------- sub task result -----------------------------------
     public sealed class ReferencesResult
     {
-                        public  string                  error;
+                    public  string                  error;
         /// <summary>container name - not utilized by Protocol</summary>
-        [DebugInfo]     public  string                  container;
+        [DebugInfo] public  string                  container;
         /// <summary>number of <see cref="ids"/> - not utilized by Protocol</summary>
-        [DebugInfo]     public  int?                    count;
-        [Required]      public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
-                        public  List<ReferencesResult>  references;
+        [DebugInfo] public  int?                    count;
+        [Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+                    public  List<ReferencesResult>  references;
     }
 }
