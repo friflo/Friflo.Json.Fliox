@@ -14,7 +14,7 @@ using static NUnit.Framework.Assert;
 
 using static Friflo.Json.Tests.Common.UnitTest.Fliox.Transform.AssertEqual;
 using Contains = Friflo.Json.Fliox.Transform.Query.Ops.Contains;
-
+using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
 
 // ReSharper disable CollectionNeverQueried.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
     public class Address
     {
         public          Street          street;
-        [PropertyMember(Name = "city")]
+        [Serialize(Name =              "city")]
         public          string          cityName;
     }
     

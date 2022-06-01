@@ -3,7 +3,6 @@
 using System;
 using System.Numerics;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -11,6 +10,7 @@ using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
+using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 {
@@ -141,10 +141,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
 
         class Derived : Base {
-            [PropertyMember]
-            private     int derivedField = 0;
-            [PropertyMember]
-            private     int Int32 { get; set; }  // compiler auto generate backing field
+            [Serialize] private     int derivedField = 0;
+            [Serialize] private     int Int32 { get; set; }  // compiler auto generate backing field
 
             public void AssertFields() {
                 AreEqual(10, baseField);

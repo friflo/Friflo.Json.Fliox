@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
 
 #pragma warning disable 649 // Field 'field' is never assigned
 
@@ -25,11 +26,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int      ignoredProperty { get; set; }
 
             // custom member names
-            [PropertyMember(Name = "field")]
-            public int      namedField;
+            [Serialize(Name = "field")]
+            public int         namedField;
             
-            [PropertyMember(Name = "property")]
-            public int      namedProperty { get; set; }
+            [Serialize(Name = "property")]
+            public int         namedProperty { get; set; }
         }
         
         [Test] public void CamelCaseReflect()    { CamelCase(TypeAccess.Reflection); }

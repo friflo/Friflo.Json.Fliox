@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         public static bool Property(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(PropertyMemberAttribute))
+                if (attr.AttributeType == typeof(SerializeMemberAttribute))
                     return true;
             }
             return false;

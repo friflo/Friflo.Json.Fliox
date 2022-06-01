@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox
     // -------------------------------- field & property attributes ------------------------------
     /// <summary> Used to include private or internal fields / properties to JSON serialization </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class PropertyMemberAttribute : Attribute {
+    public sealed class SerializeMemberAttribute : Attribute {
         public string       Name        { get; set; }
     }
     

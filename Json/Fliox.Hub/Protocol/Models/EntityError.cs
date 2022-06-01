@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
-using Property = Friflo.Json.Fliox.PropertyMemberAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// <summary>error type when accessing an entity in a database</summary>
         [Req]       public  EntityErrorType     type;
         /// <summary>error details when accessing an entity</summary>
-        [Property]  public  string              message;
+        [Serialize] public  string              message;
             
         [Ignore]    public  string              container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>

@@ -2,14 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
-using Property = Friflo.Json.Fliox.PropertyMemberAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models
 {
     public sealed class EntityValue
     {
-        [Property]  private     JsonValue   value;
-        [Property]  private     EntityError error;
+        [Serialize] private     JsonValue   value;
+        [Serialize] private     EntityError error;
         
         [Ignore]    public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
         [Ignore]    public      EntityError Error   => error;

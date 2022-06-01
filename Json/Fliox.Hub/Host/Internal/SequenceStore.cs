@@ -5,7 +5,7 @@ using System;
 using Friflo.Json.Fliox.Hub.Client;
 using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
 using Key = Friflo.Json.Fliox.PrimaryKeyAttribute;
-using Property = Friflo.Json.Fliox.PropertyMemberAttribute;
+using Serialize = Friflo.Json.Fliox.SerializeMemberAttribute;
 
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.Host.Internal
@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     public sealed class Sequence {
         [Key]           public  string  container;
         [Req]           public  long    autoId;
-        [Property  (Name =             "_etag")]
+        [Serialize  (Name =           "_etag")]
                         public  string  etag;
     }
     
@@ -29,9 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
     public sealed class SequenceStore : FlioxClient
     {
         // --- containers
-        [Property(Name =                                 "_sequence")]  
+        [Serialize(Name =                                "_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;
-        [Property(Name =                                 "_sequenceKeys")]  
+        [Serialize(Name =                                "_sequenceKeys")]  
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         
         public  SequenceStore(FlioxHub hub) : base(hub) { }
