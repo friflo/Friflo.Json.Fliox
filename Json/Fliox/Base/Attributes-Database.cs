@@ -15,10 +15,9 @@ namespace Friflo.Json.Fliox
     }
     
     // -------------------------------- field & property attributes ------------------------------
-    /// <summary> Declare the attributed member is the primary key of an entity in its container </summary>
+    /* /// <summary> Declare the attributed member is the primary key of an entity in its container </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class PrimaryKeyAttribute : Attribute {
-    }
+    public sealed class PrimaryKeyAttribute : Attribute {  } */
 
     /// <summary> Declare the attributed member as an auto increment field / property </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]

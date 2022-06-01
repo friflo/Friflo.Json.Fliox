@@ -42,7 +42,7 @@ public class AutoIntEntity {
 }
 
 public class LongEntity {
-    [PrimaryKey]
+    [Key]
     long  Id;
 }
 
@@ -55,7 +55,7 @@ public class ByteEntity {
 }
 
 public class CustomIdEntity {
-    [PrimaryKey]
+    [Key]
     [Required]
     string  customId;
 }
@@ -80,7 +80,7 @@ public class EntityRefs {
 }
 
 public class CustomIdEntity2 {
-    [PrimaryKey]
+    [Key]
     [Required]
     string  customId2;
 }

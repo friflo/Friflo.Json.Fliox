@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 bool notNull        = def.required || isReferenceType;
                 var nullStr         = notNull ? " " : "?";
                 if (def.isKey)
-                    sb.AppendLine("    [PrimaryKey]");
+                    sb.AppendLine("    [Key]");
                 if (def.required && isReferenceType)
                     sb.AppendLine("    [Required]");
                 sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");

@@ -61,8 +61,10 @@ namespace Friflo.Json.Fliox
 namespace System.ComponentModel.DataAnnotations
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter)]
-    public class RequiredAttribute : Attribute {
-    }
+    public class RequiredAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
+    public class KeyAttribute : Attribute { }
 }
 
 #endif

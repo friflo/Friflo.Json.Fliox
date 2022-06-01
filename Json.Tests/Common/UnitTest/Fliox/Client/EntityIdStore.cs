@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class LongEntity {
-        [PrimaryKey]
+        [Key]
         public long Id { get; set; }
     }
     
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class CustomIdEntity {
-        [PrimaryKey]
+        [Key]
         [Required]  public string customId;
     }
     
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
     public class CustomIdEntity2 {
 #if UNITY_5_3_OR_NEWER
-        [PrimaryKey] [Required]
+        [Key] [Required]
 #else
         // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
         // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute
