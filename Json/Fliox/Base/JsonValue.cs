@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox
         }
     }
     
-    public static class Utf8ArrayExtensions {
+    public static class JsonValueExtensions {
     
         public static void AppendArray(this ref Bytes bytes, JsonValue array) {
             AppendArray (ref bytes, array, 0, array.Array.Length);
