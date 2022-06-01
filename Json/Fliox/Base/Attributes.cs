@@ -60,3 +60,14 @@ namespace Friflo.Json.Fliox
         public string       Name        { get; set; }
     }
 }
+
+#if UNITY_5_3_OR_NEWER
+
+namespace System.ComponentModel.DataAnnotations
+{
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter)]
+    public class RequiredAttribute : Attribute {
+    }
+}
+
+#endif
