@@ -7,6 +7,8 @@ using System;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox
 {
+    // --- Database Attributes - used by: Friflo.Json.Fliox.Hub 
+    
     // -------------------------------- class attributes ------------------------------
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class MessagePrefixAttribute : Attribute {

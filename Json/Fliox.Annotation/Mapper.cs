@@ -6,6 +6,8 @@ using System;
 // ReSharper disable UnusedParameter.Local
 namespace Friflo.Json.Fliox
 {
+    // --- ObjectMapper / serialization Attributes - used by: Friflo.Json.Fliox.Mapper
+    
     // -------------------------------- class & interface attributes ------------------------------
     /// <summary> Register a custom TypeMapper for the attributed class, interface or struct </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
