@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable InconsistentNaming
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class LongEntity {
-        [Fri.PrimaryKey]
+        [PrimaryKey]
         public long Id { get; set; }
     }
     
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     public class CustomIdEntity {
-        [Fri.PrimaryKey]
+        [PrimaryKey]
         [Req]  public string customId;
     }
     

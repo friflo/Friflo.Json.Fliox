@@ -4,8 +4,8 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
-using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops

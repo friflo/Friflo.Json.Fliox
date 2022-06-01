@@ -140,9 +140,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
 
         class Derived : Base {
-            [Fri.PropertyMember]
+            [PropertyMember]
             private     int derivedField = 0;
-            [Fri.PropertyMember]
+            [PropertyMember]
             private     int Int32 { get; set; }  // compiler auto generate backing field
 
             public void AssertFields() {

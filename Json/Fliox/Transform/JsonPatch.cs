@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {

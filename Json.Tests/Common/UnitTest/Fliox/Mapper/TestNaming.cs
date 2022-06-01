@@ -17,17 +17,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int      Upper;
 
             // ignored members
-            [Fri.IgnoreMember]
+            [IgnoreMember]
             public int      ignoredField;
             
-            [Fri.IgnoreMember]
+            [IgnoreMember]
             public int      ignoredProperty { get; set; }
 
             // custom member names
-            [Fri.PropertyMember(Name = "field")]
+            [PropertyMember(Name = "field")]
             public int      namedField;
             
-            [Fri.PropertyMember(Name = "property")]
+            [PropertyMember(Name = "property")]
             public int      namedProperty { get; set; }
         }
         

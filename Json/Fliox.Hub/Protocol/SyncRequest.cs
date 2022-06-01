@@ -4,8 +4,8 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
-using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.PropertyMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol
 {

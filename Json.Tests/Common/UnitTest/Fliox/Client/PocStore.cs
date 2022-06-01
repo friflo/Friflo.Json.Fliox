@@ -8,8 +8,8 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
-using Property = Friflo.Json.Fliox.Mapper.Fri.PropertyMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Property = Friflo.Json.Fliox.Mapper.PropertyMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly TestCommands    test;
         
         // --- commands
-        [Fri.Command(Name =            "TestCommand")]
+        [Command(Name =            "TestCommand")]
         public CommandTask<bool>        Test (TestCommand param)    => SendCommand<TestCommand, bool>("TestCommand",param);
         public CommandTask<string>      SyncCommand (string param)  => SendCommand<string, string>  ("SyncCommand", param);
         public CommandTask<string>      AsyncCommand (string param) => SendCommand<string, string>  ("AsyncCommand",param);

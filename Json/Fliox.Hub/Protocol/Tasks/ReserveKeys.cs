@@ -7,8 +7,8 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
-using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox.Hub.Protocol.Tasks

@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         public static bool Property(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.PropertyMemberAttribute))
+                if (attr.AttributeType == typeof(PropertyMemberAttribute))
                     return true;
             }
             return false;
@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         private static bool Ignore(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.IgnoreMemberAttribute))
+                if (attr.AttributeType == typeof(IgnoreMemberAttribute))
                     return true;
             }
             return false;
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         private static bool IsRequired(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.RequiredMemberAttribute))
+                if (attr.AttributeType == typeof(RequiredMemberAttribute))
                     return true;
                 // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
                 if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.RequiredAttribute")
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         public static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.PrimaryKeyAttribute))
+                if (attr.AttributeType == typeof(PrimaryKeyAttribute))
                     return true;
                 // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
                 if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.KeyAttribute")

@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 using Friflo.Json.Fliox.Transform.Query.Parser;
-using Ignore = Friflo.Json.Fliox.Mapper.Fri.IgnoreMemberAttribute;
+using Ignore = Friflo.Json.Fliox.Mapper.IgnoreMemberAttribute;
 
 namespace Friflo.Json.Fliox.Transform
 {

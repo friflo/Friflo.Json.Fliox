@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public static class Fri {
+    public static partial class Fri {
 
         [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
         public sealed class TypeMapperAttribute : Attribute {
@@ -32,29 +32,31 @@ namespace Friflo.Json.Fliox.Mapper
         public sealed class InstanceAttribute : Attribute {
             public InstanceAttribute (Type instance) {}
         }
+    }
         
-        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class PropertyMemberAttribute : Attribute {
-            public string       Name        { get; set; }
-        }
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class PropertyMemberAttribute : Attribute {
+        public string       Name        { get; set; }
+    }
+    
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class CommandAttribute : Attribute {
+        public string       Name        { get; set; }
+    }
+    
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class IgnoreMemberAttribute : Attribute {
+    }
+    
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class RequiredMemberAttribute : Attribute {
+    }
+    
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class PrimaryKeyAttribute : Attribute {
+    }
         
-        [AttributeUsage(AttributeTargets.Method)]
-        public sealed class CommandAttribute : Attribute {
-            public string       Name        { get; set; }
-        }
-        
-        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class IgnoreMemberAttribute : Attribute {
-        }
-        
-        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class RequiredMemberAttribute : Attribute {
-        }
-        
-        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class PrimaryKeyAttribute : Attribute {
-        }
-        
+    public static partial class Fri {
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
         public sealed class AutoIncrementAttribute : Attribute {
         }
@@ -100,6 +102,5 @@ namespace Friflo.Json.Fliox.Mapper
             public string           Description     { get; set; }
         }
     }
-    
 
 }

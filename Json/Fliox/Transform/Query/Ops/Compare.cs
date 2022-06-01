@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query.Arity;
-using Req = Friflo.Json.Fliox.Mapper.Fri.RequiredMemberAttribute;
+using Req = Friflo.Json.Fliox.Mapper.RequiredMemberAttribute;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 namespace Friflo.Json.Fliox.Transform.Query.Ops
