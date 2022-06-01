@@ -6,7 +6,6 @@ using System.Text;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
 using Property = Friflo.Json.Fliox.PropertyMemberAttribute;
 
 namespace Friflo.Json.Fliox.Hub.Protocol.Models

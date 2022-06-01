@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Schema.OAS;
 using Req       = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Ignore    = Friflo.Json.Fliox.IgnoreMemberAttribute;
 using Property = Friflo.Json.Fliox.PropertyMemberAttribute;
 
 // ReSharper disable ClassNeverInstantiated.Global

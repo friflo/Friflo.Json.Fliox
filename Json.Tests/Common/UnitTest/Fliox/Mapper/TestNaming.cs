@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+using Ignore = Friflo.Json.Fliox.IgnoreAttribute;
 
 #pragma warning disable 649 // Field 'field' is never assigned
 
@@ -18,10 +19,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             public int      Upper;
 
             // ignored members
-            [IgnoreMember]
+            [Ignore]
             public int      ignoredField;
             
-            [IgnoreMember]
+            [Ignore]
             public int      ignoredProperty { get; set; }
 
             // custom member names

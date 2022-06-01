@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
 
 // ReSharper disable EmptyConstructor
 // ReSharper disable FieldCanBeMadeReadOnly.Global

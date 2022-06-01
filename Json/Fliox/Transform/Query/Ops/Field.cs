@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Req = Friflo.Json.Fliox.RequiredMemberAttribute;
-using Ignore = Friflo.Json.Fliox.IgnoreMemberAttribute;
 
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable FieldCanBeMadeReadOnly.Global
