@@ -9,7 +9,6 @@ using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using Friflo.Json.Tests.Common.Utils;
 using static NUnit.Framework.Assert;

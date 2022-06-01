@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using static NUnit.Framework.Assert;
 

@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
-using System.Text;
+
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
-using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Burst
 {
