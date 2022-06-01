@@ -7,6 +7,7 @@ WORKDIR /app
 COPY *.sln .
 COPY Json/Burst/*.csproj                ./Json/Burst/
 COPY Json/Fliox/*.csproj                ./Json/Fliox/
+COPY Json/Fliox.Annotation/*.csproj     ./Json/Fliox.Annotation/
 COPY Json/Fliox.Hub/*.csproj            ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/*.csproj ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/*.csproj   ./Json/Fliox.Hub.Explorer/
@@ -18,6 +19,7 @@ RUN dotnet restore DemoHub/Fliox.DemoHub.csproj
 # copy everything else and build app
 COPY Json/Burst/.                       ./Json/Burst/
 COPY Json/Fliox/.                       ./Json/Fliox/
+COPY Json/Fliox.Annotation/.            ./Json/Fliox.Annotation/
 COPY Json/Fliox.Hub/.                   ./Json/Fliox.Hub/
 COPY Json/Fliox.Hub.AspNetCore/.        ./Json/Fliox.Hub.AspNetCore/
 COPY Json/Fliox.Hub.Explorer/.          ./Json/Fliox.Hub.Explorer/
