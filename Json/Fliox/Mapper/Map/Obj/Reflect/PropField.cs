@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         public string GetRelationAttributeType() {
             foreach (var attr in customAttributes) {
-                if (attr.AttributeType == typeof(RelationAttribute))
+                if (attr.AttributeType == typeof(RelationMemberAttribute))
                     return (string)attr.ConstructorArguments[0].Value;
             }
             return null;

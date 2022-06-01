@@ -6,6 +6,7 @@ using System;
 // ReSharper disable UnusedParameter.Local
 namespace Friflo.Json.Fliox
 {
+    // -------------------------------- class & interface attributes ------------------------------
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class TypeMapperAttribute : Attribute {
         public TypeMapperAttribute (Type typeMapper) {}
@@ -28,15 +29,14 @@ namespace Friflo.Json.Fliox
         public InstanceTypeAttribute (Type instance) {}
     }
 
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class MessagePrefixAttribute : Attribute {
+        public MessagePrefixAttribute (string prefix) { }
+    }
     
     // -------------------------------- field & property attributes ------------------------------
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class PropertyMemberAttribute : Attribute {
-        public string       Name        { get; set; }
-    }
-    
-    [AttributeUsage(AttributeTargets.Method)]
-    public sealed class CommandAttribute : Attribute {
         public string       Name        { get; set; }
     }
     
@@ -56,19 +56,21 @@ namespace Friflo.Json.Fliox
     public sealed class AutoIncrementAttribute : Attribute {
     }
     
-    [AttributeUsage(AttributeTargets.Field)]  // enum fields
-    public sealed class EnumValueAttribute : Attribute {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class RelationMemberAttribute : Attribute {
+        public RelationMemberAttribute (string instance) {}
+    }
+    
+    // -------------------------------- method attributes ------------------------------
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class CommandAttribute : Attribute {
         public string       Name        { get; set; }
     }
     
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class RelationAttribute : Attribute {
-        public RelationAttribute (string instance) {}
-    }
-    
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class MessagePrefixAttribute : Attribute {
-        public MessagePrefixAttribute (string prefix) { }
+    // -------------------------------- enum value attributes ------------------------------
+    [AttributeUsage(AttributeTargets.Field)]  // enum fields
+    public sealed class EnumValueAttribute : Attribute {
+        public string       Name        { get; set; }
     }
     
     // ------------------------------- OpenAPI attributes -------------------------------
@@ -96,5 +98,4 @@ namespace Friflo.Json.Fliox
         public string           Url             { get; set; }
         public string           Description     { get; set; }
     }
-
 }
