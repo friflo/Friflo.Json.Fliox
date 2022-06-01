@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 if (def.isKey)
                     sb.AppendLine("    [PrimaryKey]");
                 if (def.required && isReferenceType)
-                    sb.AppendLine("    [RequiredField]");
+                    sb.AppendLine("    [Required]");
                 sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
             }
             sb.AppendLine("}");
@@ -165,6 +165,7 @@ namespace Friflo.Json.Fliox.Schema.Language
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
                 sb.AppendLine("using System.Collections.Generic;");
+                sb.AppendLine("using System.ComponentModel.DataAnnotations;");
                 var namespaces = new HashSet<string> {"Friflo.Json.Fliox"};
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value;
