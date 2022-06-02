@@ -176,6 +176,13 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, set.intern.store);
         }
+        
+        public ReadRefTask<TRefKey, TRef> ReadRelationPath<TRefKey, TRef>(RelationPath<TRefKey, TRef> selector) where TRef : class {
+            if (State.IsExecuted())
+                throw AlreadySyncedError();
+            var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
+            return ReadRefByPath<TRefKey, TRef>(relation, selector.path);
+        }
 
         // lab - ReadRefs by Entity Type
         /*

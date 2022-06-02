@@ -368,6 +368,24 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- create RefPath / RefsPath
+        // Relation
+        public RelationPath<TRefKey, TRef> RelationPath<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>        relation,
+            Expression<Func<T, TRefKey>>    selector) where TRef : class
+        {
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RelationPath<TRefKey, TRef>(path);
+        }
+        
+        public RelationsPath<TRefKey, TRef> RefsPath<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>                relation,
+            Expression<Func<T, IEnumerable<TKey>>>  selector) where TRef : class
+        {
+            string path = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RelationPath<TRefKey, TRef>(path);
+        }
+        
+        // from Ref<,>
         public RefPath<T, TKey, TRef> RefPath<TRef>(Expression<Func<T, Ref<TKey, TRef>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return new RefPath<T, TKey, TRef>(path);

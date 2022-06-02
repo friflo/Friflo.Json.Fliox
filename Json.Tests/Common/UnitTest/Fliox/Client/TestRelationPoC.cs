@@ -162,6 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var item3 = new OrderItem { article = camera.Result, amount = 3, name = "Camera" };
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;  // customer created implicit
+            order.customer2 = "customer-2";
             
             AreSimilar("entities:  9, tasks: 1",                        store);
             

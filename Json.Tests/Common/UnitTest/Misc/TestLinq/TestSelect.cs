@@ -37,10 +37,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                     from order in orders
                     // where order.id == "order-1"
                     select new Order {
-                        id = order.id,
-                        created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc),
-                        customer =  order.customer,
-                        items = order.items
+                        id          = order.id,
+                        created     = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc),
+                        customer    = order.customer,
+                        customer2   = order.customer2,
+                        items       = order.items
                     };
 
                 m.Pretty = true;
