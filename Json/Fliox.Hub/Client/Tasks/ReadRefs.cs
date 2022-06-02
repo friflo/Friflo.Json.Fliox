@@ -89,19 +89,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         public ReadRefsTask<TRefKey, TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRefKey, TRef>(selector.path, store);
+            var relation = store._intern.GetSetByType(typeof(TRef));
+            return refsTask.ReadRefsByPath<TRefKey, TRef>(relation, selector.path, store);
         }
         
         public ReadRefsTask<TRefKey, TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, store);
+            var relation = store._intern.GetSetByType(typeof(TRef));
+            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
         }
         
         public ReadRefsTask<TRefKey, TRef> ReadArrayRefs<TRefKey,TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, store);
+            var relation = store._intern.GetSetByType(typeof(TRef));
+            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
         }
     }
     
@@ -164,19 +167,22 @@ namespace Friflo.Json.Fliox.Hub.Client
         public ReadRefsTask<TRefKey, TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRefKey, TRef>(selector.path, store);
+            var relation = store._intern.GetSetByType(typeof(TRef));
+            return refsTask.ReadRefsByPath<TRefKey, TRef>(relation, selector.path, store);
         }
         
         public ReadRefsTask<TRefKey, TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, store);
+            var relation = store._intern.GetSetByType(typeof(TRef));
+            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
         }
         
         public ReadRefsTask<TRefKey, TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, store);
+            var relation = store._intern.GetSetByType(typeof(TRef));
+            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
         }
     }
 }

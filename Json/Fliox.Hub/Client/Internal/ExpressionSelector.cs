@@ -34,7 +34,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     
                     sb.Append('.');
                     sb.Append(name);
-                    if (typeof(IEnumerable).IsAssignableFrom(expression.Type)) {
+                    var type = expression.Type;
+                    if (type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type)) {
                         sb.Append("[*]");
                         isArraySelector = true;
                     }

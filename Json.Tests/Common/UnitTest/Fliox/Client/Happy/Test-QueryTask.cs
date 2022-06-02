@@ -53,6 +53,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var customer3               = readOrders.ReadRef(o => o.customer);
             AreSame(customer, customer3);
             AreEqual("readOrders -> .customer", customer.Details);
+            
+            var customer4               = readOrders.ReadRelation(store.customers, o => o.customer2);
+            AreEqual("readOrders -> .customer2", customer4.Details);
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
