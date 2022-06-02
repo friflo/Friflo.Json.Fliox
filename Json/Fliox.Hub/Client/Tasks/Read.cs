@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return ReadRefByPath<TRefKey, TRef>(relation, path);
         }
         
-        // --- Relation
+        // --- Relations
         public ReadRefsTask<TRefKey, TRef> ReadRelations<TRefKey, TRef>(
             EntitySet<TRefKey, TRef>                    relation,
             Expression<Func<T, IEnumerable<TRefKey>>>   selector) where TRef : class

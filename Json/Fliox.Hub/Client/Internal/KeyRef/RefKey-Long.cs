@@ -3,7 +3,7 @@
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
 {
-    internal sealed class RefKeyLong<T> : RefKey<long, T> where T : class
+    internal sealed class RefKeyLong : RefKey<long>
     {
         internal override long IdToKey(in JsonKey id) {
             return id.AsLong();
@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
         }
     }
     
-    internal sealed class RefKeyLongNull<T> : RefKey<long?, T> where T : class
+    internal sealed class RefKeyLongNull : RefKey<long?>
     {
         internal override   bool                IsKeyNull (long? key)       => key == null;
         

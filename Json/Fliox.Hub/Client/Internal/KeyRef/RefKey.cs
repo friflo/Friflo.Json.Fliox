@@ -10,32 +10,31 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
     internal abstract class RefKey {
         private static readonly   Dictionary<Type, RefKey> Map = new Dictionary<Type, RefKey>();
 
-        internal static RefKey<TKey, T> GetRefKey<TKey, T> () where T : class {
-            var type = typeof(Ref<TKey,T>);
-            if (Map.TryGetValue(type, out RefKey id)) {
-                return (RefKey<TKey, T>)id;
+        internal static RefKey<TKey> GetRefKey<TKey, T> () where T : class {
+            var keyType = typeof(TKey);
+            if (Map.TryGetValue(keyType, out RefKey id)) {
+                return (RefKey<TKey>)id;
             }
             var result  = CreateRefKey<TKey, T>();
-            Map[type]   = result;
-            return (RefKey<TKey, T>)result;
+            Map[keyType]   = result;
+            return (RefKey<TKey>)result;
         }
 
         private static RefKey CreateRefKey<TKey, T> () where T : class {
-            var type    = typeof (T);
             var keyType = typeof (TKey);
-            if (keyType == typeof(string))  return new RefKeyString<T>   ();
-            if (keyType == typeof(Guid))    return new RefKeyGuid<T>     ();
-            if (keyType == typeof(Guid?))   return new RefKeyGuidNull<T> ();
-            if (keyType == typeof(int))     return new RefKeyInt<T>      ();
-            if (keyType == typeof(int?))    return new RefKeyIntNull<T>  ();
-            if (keyType == typeof(long))    return new RefKeyLong<T>     ();
-            if (keyType == typeof(long?))   return new RefKeyLongNull<T> ();
-            if (keyType == typeof(short))   return new RefKeyShort<T>    ();
-            if (keyType == typeof(short?))  return new RefKeyShortNull<T>();
-            if (keyType == typeof(byte))    return new RefKeyByte<T>     ();
-            if (keyType == typeof(byte?))   return new RefKeyByteNull<T> ();
-            if (keyType == typeof(JsonKey)) return new RefKeyJsonKey<T>  ();
-            var msg = UnsupportedTypeMessage(keyType, type);
+            if (keyType == typeof(string))  return new RefKeyString   ();
+            if (keyType == typeof(Guid))    return new RefKeyGuid     ();
+            if (keyType == typeof(Guid?))   return new RefKeyGuidNull ();
+            if (keyType == typeof(int))     return new RefKeyInt      ();
+            if (keyType == typeof(int?))    return new RefKeyIntNull  ();
+            if (keyType == typeof(long))    return new RefKeyLong     ();
+            if (keyType == typeof(long?))   return new RefKeyLongNull ();
+            if (keyType == typeof(short))   return new RefKeyShort    ();
+            if (keyType == typeof(short?))  return new RefKeyShortNull();
+            if (keyType == typeof(byte))    return new RefKeyByte     ();
+            if (keyType == typeof(byte?))   return new RefKeyByteNull ();
+            if (keyType == typeof(JsonKey)) return new RefKeyJsonKey  ();
+            var msg = UnsupportedTypeMessage(keyType, typeof (T));
             throw new InvalidOperationException(msg);
         }
 
@@ -45,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
     }
 
     // ------------------------------------------ RefKey<TKey, T> ------------------------------------------
-    internal abstract class RefKey<TKey, T> : RefKey {
+    internal abstract class RefKey<TKey> : RefKey {
         internal abstract   JsonKey KeyToId (in TKey key);
         internal abstract   TKey    IdToKey (in JsonKey key);
         

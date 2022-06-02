@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal                    T                   GetEntity() => entity;
         internal                    Peer<T>             GetPeer()   => peer;
 
-        internal static readonly    RefKey<TKey, T>     RefKeyMap = RefKey.GetRefKey<TKey, T>();
+        internal static readonly    RefKey<TKey>        RefKeyMap = RefKey.GetRefKey<TKey, T>();
         
         
         public Ref(TKey key) {

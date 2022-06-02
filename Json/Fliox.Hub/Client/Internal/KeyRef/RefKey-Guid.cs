@@ -5,7 +5,7 @@ using System;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
 {
-    internal sealed class RefKeyGuid<T> : RefKey<Guid, T> where T : class
+    internal sealed class RefKeyGuid : RefKey<Guid>
     {
         internal override Guid IdToKey(in JsonKey id) {
             return id.AsGuid();
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
         }
     }
     
-    internal sealed class RefKeyGuidNull<T> : RefKey<Guid?, T> where T : class
+    internal sealed class RefKeyGuidNull : RefKey<Guid?>
     {
         internal override   bool                IsKeyNull (Guid? key)       => key == null;
 
