@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     public partial class EntitySet<TKey, T>
     {
-        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetRefKey<TKey>();
         
         internal override void Init(FlioxClient store) {
             intern      = new SetIntern<TKey, T>(store);

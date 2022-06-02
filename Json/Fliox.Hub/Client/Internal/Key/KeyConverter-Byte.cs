@@ -4,7 +4,7 @@
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
 {
-    internal sealed class RefKeyByte : RefKey<byte>
+    internal sealed class KeyConverterByte : KeyConverter<byte>
     {
         internal override byte IdToKey(in JsonKey id) {
             return (byte)id.AsLong();
@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
         }
     }
     
-    internal sealed class RefKeyByteNull : RefKey<byte?>
+    internal sealed class KeyConverterByteNull : KeyConverter<byte?>
     {
         internal override   bool                IsKeyNull (byte? key)       => key == null;
         

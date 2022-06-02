@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     internal partial class SyncSet<TKey, T>
     {
-        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetRefKey<TKey>();
         
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = _reserveKeys;

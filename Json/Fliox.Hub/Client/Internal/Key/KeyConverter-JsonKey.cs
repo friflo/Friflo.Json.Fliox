@@ -3,7 +3,7 @@
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
 {
-    internal sealed class RefKeyJsonKey : RefKey<JsonKey> {
+    internal sealed class KeyConverterJsonKey : KeyConverter<JsonKey> {
         internal override   bool                IsKeyNull (JsonKey key)      => key.IsNull();
 
         internal override JsonKey IdToKey(in JsonKey id) {

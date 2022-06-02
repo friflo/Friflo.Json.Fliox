@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
-        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetRefKey<TKey>();
 
         internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SubRefs         SubRefs => refsTask.subRefs;
 
-        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetRefKey<TKey>();
 
         internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {

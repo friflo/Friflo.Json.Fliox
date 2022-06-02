@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState   State       => findState;
         public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{key}')";
         
-        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetRefKey<TKey>();
         
         internal Find(TKey key) {
             this.key     = key;
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState       State       => findState;
         public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
         
-        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetRefKey<TKey>();
         
         internal FindRange(ICollection<TKey> keys) {
             results = SyncSet.CreateDictionary<TKey, T>(keys.Count);
