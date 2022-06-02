@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
+    public sealed class QueryTask<T> : SyncTask, IReadRefsTask<T> where T : class
     {
         public              int?            limit;
         /// <summary> return <see cref="maxCount"/> number of entities within <see cref="Result"/>.
@@ -53,21 +53,21 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.store      = store;
         }
 
-        public ReadRefsTask<TRefKey, TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             var relation    = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByPath<TRefKey, TRef>(relation, selector.path, store);
+            return refsTask.ReadRefsByPath<TRef>(relation, selector.path, store);
         }
 
-        public ReadRefsTask<TRefKey, TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             var relation = store._intern.GetSetByType(typeof(TRef));
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
         }
         
-        public ReadRefsTask<TRefKey, TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             var relation = store._intern.GetSetByType(typeof(TRef));

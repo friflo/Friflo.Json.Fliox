@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- backing fields for lazy-initialized getters
         private     List<ReadTask<TKey, T>>         _reads;
 
-        private     List<QueryTask<TKey, T>>        _queries;
+        private     List<QueryTask<T>>              _queries;
         private     int                             queriesTasksIndex;
 
         private     List<AggregateTask>             _aggregates;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- lazy-initialized getters => they behave like readonly fields
         private     List<ReadTask<TKey, T>>         Reads()         => _reads       ?? (_reads       = new List<ReadTask<TKey, T>>());
 
-        private     List<QueryTask<TKey, T>>        Queries()       => _queries     ?? (_queries     = new List<QueryTask<TKey, T>>());
+        private     List<QueryTask<T>>              Queries()       => _queries     ?? (_queries     = new List<QueryTask<T>>());
 
         private     List<AggregateTask>             Aggregates()    => _aggregates  ?? (_aggregates  = new List<AggregateTask>());
 
@@ -128,9 +128,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // --- Query
-        internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
+        internal QueryTask<T> QueryFilter(FilterOperation filter) {
             var queries = Queries();
-            var query   = new QueryTask<TKey, T>(filter, set.intern.store);
+            var query   = new QueryTask<T>(filter, set.intern.store);
             queries.Add(query);
             return query;
         }

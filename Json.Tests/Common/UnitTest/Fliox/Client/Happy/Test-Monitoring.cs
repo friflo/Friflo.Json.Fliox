@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
@@ -205,12 +204,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         internal class MonitorResult {
-            internal    SyncResult                      sync;
-            internal    QueryTask<JsonKey,  UserHits>   users;
-            internal    QueryTask<JsonKey,  ClientHits> clients;
-            internal    Find<JsonKey,       UserHits>   user;
-            internal    Find<JsonKey,       ClientHits> client;
-            internal    QueryTask<JsonKey,  HostHits>   hosts;
+            internal    SyncResult              sync;
+            internal    QueryTask<UserHits>     users;
+            internal    QueryTask<ClientHits>   clients;
+            internal    Find<JsonKey,           UserHits>   user;
+            internal    Find<JsonKey,           ClientHits> client;
+            internal    QueryTask<HostHits>     hosts;
         }
     }
 }
