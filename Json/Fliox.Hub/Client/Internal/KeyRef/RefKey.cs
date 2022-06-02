@@ -10,17 +10,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
     internal abstract class RefKey {
         private static readonly   Dictionary<Type, RefKey> Map = new Dictionary<Type, RefKey>();
 
-        internal static RefKey<TKey> GetRefKey<TKey, T> () where T : class {
+        internal static RefKey<TKey> GetRefKey<TKey> () {
             var keyType = typeof(TKey);
             if (Map.TryGetValue(keyType, out RefKey id)) {
                 return (RefKey<TKey>)id;
             }
-            var result  = CreateRefKey<TKey, T>();
+            var result  = CreateRefKey<TKey>();
             Map[keyType]   = result;
             return (RefKey<TKey>)result;
         }
 
-        private static RefKey CreateRefKey<TKey, T> () where T : class {
+        private static RefKey CreateRefKey<TKey> () {
             var keyType = typeof (TKey);
             if (keyType == typeof(string))  return new RefKeyString   ();
             if (keyType == typeof(Guid))    return new RefKeyGuid     ();
@@ -34,16 +34,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
             if (keyType == typeof(byte))    return new RefKeyByte     ();
             if (keyType == typeof(byte?))   return new RefKeyByteNull ();
             if (keyType == typeof(JsonKey)) return new RefKeyJsonKey  ();
-            var msg = UnsupportedTypeMessage(keyType, typeof (T));
+            var msg = UnsupportedTypeMessage(keyType);
             throw new InvalidOperationException(msg);
         }
 
-        private static string UnsupportedTypeMessage(Type keyType, Type type) {
-            return $"unsupported TKey Type: Ref<{keyType.Name},{type.Name}>";
+        private static string UnsupportedTypeMessage(Type keyType) {
+            return $"unsupported key Type: {keyType.Name}";
         }
     }
 
-    // ------------------------------------------ RefKey<TKey, T> ------------------------------------------
+    // ------------------------------------------ RefKey<TKey> ------------------------------------------
     internal abstract class RefKey<TKey> : RefKey {
         internal abstract   JsonKey KeyToId (in TKey key);
         internal abstract   TKey    IdToKey (in JsonKey key);
