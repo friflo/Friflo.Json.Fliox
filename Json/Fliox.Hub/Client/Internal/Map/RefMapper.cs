@@ -4,6 +4,7 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -39,6 +40,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         public  override    string              DataTypeName()          { return $"Ref<{typeof(TKey).Name},{typeof(T).Name}>"; }
         public  override    TypeMapper          GetUnderlyingMapper()   => keyMapper;
         public  override    Type                RelationType()          => typeof(T);
+        
+        private static readonly EntityKey<T> EntityKeyMap = EntityKey.GetEntityKey<T>();
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
@@ -48,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper               = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
             entityMapper            = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
-            var entityKeyType       = EntitySetBase<T>.EntityKeyMap.GetKeyType();
+            var entityKeyType       = EntityKeyMap.GetKeyType();
             var keyType             = typeof(TKey);
             // TAG_NULL_REF
             var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);

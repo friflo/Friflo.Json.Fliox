@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -60,8 +59,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     internal partial class SyncSet<TKey, T>
     {
-        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
-        
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = _reserveKeys;
             if (result is TaskErrorResult taskError) {

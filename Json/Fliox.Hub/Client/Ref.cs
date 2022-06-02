@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -87,7 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal                    T                   GetEntity() => entity;
         internal                    Peer<T>             GetPeer()   => peer;
 
-        internal static readonly     KeyConverter<TKey>       KeyConvert = KeyConverter.GetConverter<TKey>();
+        internal static readonly    KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
+        private  static readonly    EntityKey<T>        EntityKeyMap    = EntityKey.GetEntityKey<T>();
         
         
         public Ref(TKey key) {
@@ -181,7 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (entity == null) {
                 return new Ref<TKey, T>(); // equals to return new Ref<TKey, T> (default, null);
             }
-            TKey key = EntitySetBase<T>.EntityKeyMap.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
+            TKey key = EntityKeyMap.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
             if (key == null)
                 throw new ArgumentException($"cannot assign entity with Key = null to Ref<{typeof(TKey).Name},{typeof(T).Name}>");
             return new Ref<TKey, T> (key, entity);

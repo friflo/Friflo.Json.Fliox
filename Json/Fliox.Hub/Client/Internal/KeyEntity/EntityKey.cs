@@ -151,9 +151,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
     
     // ----------------------------------------- EntityKeyT<TKey, T> -----------------------------------------
     internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
-        internal readonly   bool        autoIncrement;
+        internal readonly       bool                autoIncrement;
         
-        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
+        private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
             
         internal abstract   TKey        GetKey      (T entity);
         internal abstract   void        SetKey      (T entity, TKey id);

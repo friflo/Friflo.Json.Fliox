@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
-using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -66,9 +65,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  JsonKey         GetEntityId     (T entity);
         internal  abstract  Peer<T>         GetOrCreatePeerById(JsonKey id); // TAG_NULL_REF
         
-        internal static readonly EntityKey<T> EntityKeyMap = EntityKey.GetEntityKey<T>();
-
-
         protected EntitySetBase(string name) : base(name) { }
         
         internal static void ValidateKeyType(Type keyType) {
@@ -96,8 +92,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     public partial class EntitySet<TKey, T>
     {
-        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
-        
         internal override void Init(FlioxClient store) {
             intern      = new SetIntern<TKey, T>(store);
         }

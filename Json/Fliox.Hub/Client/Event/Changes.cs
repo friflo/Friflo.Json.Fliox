@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
         [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
         
-        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
+        private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {

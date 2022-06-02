@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
@@ -49,7 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// create peers map on demand.                 Note: must be private by all means
         private             Dictionary<TKey, Peer<T>>   Peers() => _peers ?? (_peers = SyncSet.CreateDictionary<TKey,Peer<T>>());
         
-        internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
+        internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+        private  static readonly KeyConverter<TKey>     KeyConvert      = KeyConverter.GetConverter<TKey>();
 
         [DebuggerBrowsable(Never)]
         private             SyncSet<TKey, T>            syncSet;
