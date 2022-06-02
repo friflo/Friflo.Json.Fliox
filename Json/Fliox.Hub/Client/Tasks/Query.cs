@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   FlioxClient     store;
 
         public              List<T>         Result          => IsOk("QueryTask.Result",  out Exception e) ? result : throw e;
-        public              List<JsonValue> JsonResult      => IsOk("QueryTask.JsonResult",  out Exception e) ? GetJsonValues() : throw e;
+        public              List<JsonValue> RawResult       => IsOk("QueryTask.JsonResult",  out Exception e) ? GetJsonValues() : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>
