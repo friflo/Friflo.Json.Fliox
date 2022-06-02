@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     /// </summary>
                     public  Ref<string, Customer>   customer;
         [Relation(nameof(PocStore.customers))]
-        [Ignore]    public  string   customer2;
+                    public  string                  customer2;
                     /// <summary>single line documentation</summary>
                     public  DateTime                created;
                     /// <summary><code>single line code documentation</code></summary>

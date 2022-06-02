@@ -1946,6 +1946,16 @@
                     }
                 },
                 {
+                    "name": "customer2",
+                    "description": "",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
                     "name": "created",
                     "description": "    /** single line documentation */\n",
                     "args": [
@@ -1999,6 +2009,16 @@
                 {
                     "name": "customer",
                     "description": "    /**\n     * Some **useful** field documentation 🙂\n     * Check some new lines\n     * in documentation\n     */\n",
+                    "args": [
+                    ],
+                    "type": {
+                        "kind":"SCALAR",
+                        "name": "String"
+                    }
+                },
+                {
+                    "name": "customer2",
+                    "description": "",
                     "args": [
                     ],
                     "type": {

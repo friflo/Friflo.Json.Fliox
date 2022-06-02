@@ -108,17 +108,18 @@ export class TestCommand {
  * Test type reference '**OrderItem**'
  */
 export class Order {
-    id        : string;
+    id         : string;
     /**
      * Some **useful** field documentation 🙂
      * Check some new lines
      * in documentation
      */
-    customer? : string | null;
+    customer?  : string | null;
+    customer2? : string | null;
     /** single line documentation */
-    created   : DateTime;
+    created    : DateTime;
     /** `single line code documentation` */
-    items?    : OrderItem[] | null;
+    items?     : OrderItem[] | null;
 }
 
 export class Producer {

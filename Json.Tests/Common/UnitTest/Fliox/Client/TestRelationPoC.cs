@@ -218,6 +218,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             customers.Upsert(new Customer{id = "patch-task-error",              name = "used for successful patch-read"});
             customers.Upsert(new Customer{id = "patch-task-exception",          name = "used for successful patch-read"});
             customers.Upsert(new Customer{id = "patch-write-entity-error",      name = "used for successful patch-read"});
+            customers.Upsert(new Customer{id = "customer-2",                    name = "Armstrong Inc."});
 
             articles.Upsert (new Article {id = "log-create-read-error",         name = "used for successful read"});
             await store.SyncTasks();
