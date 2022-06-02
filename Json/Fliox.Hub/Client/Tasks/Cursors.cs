@@ -14,11 +14,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<string>    cursors;
         
         internal            TaskState       state;
-        internal override   TaskState       State       => state;
+        internal override   TaskState       State   => state;
         internal            int             count;
         
-        public   override   string          Details     => $"CloseCursorsTask ()";
-        public              int             Count       => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
+        public   override   string          Details => $"CloseCursorsTask ()";
+        public              int             Count   => IsOk("CloseCursorsTask.Count", out Exception e) ? count : throw e;
 
 
         internal CloseCursorsTask(IEnumerable<string> cursors) {

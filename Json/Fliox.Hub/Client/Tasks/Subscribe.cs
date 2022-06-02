@@ -12,13 +12,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class SubscribeChangesTask<T> : SyncTask where T : class
     {
-        internal            TaskState               state;
-        internal            List<Change>            changes;
-        internal            FilterOperation         filter;
-        private             string                  filterLinq; // use as string identifier of a filter
+        internal            TaskState       state;
+        internal            List<Change>    changes;
+        internal            FilterOperation filter;
+        private             string          filterLinq; // use as string identifier of a filter
             
-        internal override   TaskState               State           => state;
-        public   override   string                  Details         => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
+        internal override   TaskState       State   => state;
+        public   override   string          Details => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
         
         internal  SubscribeChangesTask() { }
             
@@ -31,12 +31,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class SubscribeMessageTask : SyncTask
     {
-        internal readonly   string                  name;
-        internal readonly   bool?                   remove;
-        internal            TaskState               state;
+        internal readonly   string      name;
+        internal readonly   bool?       remove;
+        internal            TaskState   state;
             
-        internal override   TaskState               State           => state;
-        public   override   string                  Details         => $"SubscribeMessageTask (name: {name})";
+        internal override   TaskState   State   => state;
+        public   override   string      Details => $"SubscribeMessageTask (name: {name})";
         
 
         internal SubscribeMessageTask(string name, bool? remove) {

@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class WriteTask : SyncTask {
         internal            TaskState   state;
-        internal override   TaskState   State      => state;
+        internal override   TaskState   State   => state;
 
         internal abstract void GetIds(List<JsonKey> ids);
     }
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    EntitySetBase<T>    set;
         private readonly    List<T>             entities;
 
-        public   override   string              Details     => $"CreateTask<{typeof(T).Name}> (#keys: {entities.Count})";
+        public   override   string              Details => $"CreateTask<{typeof(T).Name}> (#keys: {entities.Count})";
         
         
         internal CreateTask(List<T> entities, EntitySetBase<T> set) {

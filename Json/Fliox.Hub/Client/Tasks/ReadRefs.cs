@@ -42,10 +42,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         private   readonly  SyncTask    parent;
         private   readonly  FlioxClient store;
             
-        public              List<T>     Result      => IsOk("ReadRefsTask.Result", out Exception e) ? result      : throw e;
+        public              List<T>     Result  => IsOk("ReadRefsTask.Result", out Exception e) ? result      : throw e;
         
-        internal  override  TaskState   State       => state;
-        public    override  string      Details     => $"{parent.GetLabel()} -> {Selector}";
+        internal  override  TaskState   State   => state;
+        public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
             
         internal  override  string      Selector  { get; }
         internal  override  string      Container { get; }
@@ -112,22 +112,22 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : class
     {
-        private             RefsTask        refsTask;
-        private             T               entity;
-        private   readonly  SyncTask        parent;
-        private   readonly  FlioxClient     store;
+        private             RefsTask    refsTask;
+        private             T           entity;
+        private   readonly  SyncTask    parent;
+        private   readonly  FlioxClient store;
     
-        public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
+        public              T           Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
-        internal  override  TaskState       State       => state;
-        public    override  string          Details     => $"{parent.GetLabel()} -> {Selector}";
+        internal  override  TaskState   State   => state;
+        public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
                 
-        internal  override  string          Selector    { get; }
-        internal  override  string          Container   { get; }
-        internal  override  string          KeyName     { get; }
-        internal  override  bool            IsIntKey    { get; }
+        internal  override  string      Selector    { get; }
+        internal  override  string      Container   { get; }
+        internal  override  string      KeyName     { get; }
+        internal  override  bool        IsIntKey    { get; }
 
-        internal override   SubRefs         SubRefs => refsTask.subRefs;
+        internal override   SubRefs     SubRefs => refsTask.subRefs;
 
         internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {

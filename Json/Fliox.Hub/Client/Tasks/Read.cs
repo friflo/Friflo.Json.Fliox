@@ -57,16 +57,10 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class FindRange<TKey, T> : FindTask<TKey, T> where T : class
     {
-        private  readonly   Dictionary<TKey, T>     results;
-
-        public              Dictionary<TKey, T>     Result { get {
-            if (IsOk("FindRange.Result", out Exception e))
-                return results;
-            throw e;
-        } }
-
-        internal override   TaskState       State       => findState;
-        public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
+        private  readonly   Dictionary<TKey, T> results;
+        public              Dictionary<TKey, T> Result  => IsOk("FindRange.Result", out Exception e) ? results : throw e;
+        internal override   TaskState           State   => findState;
+        public   override   string              Details => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
         
@@ -114,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
         internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
 
-        public              Dictionary<TKey, T>     Result          => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
+        public              Dictionary<TKey, T>     Result      => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
 
         internal override   TaskState               State       => state;
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {result.Count})";
