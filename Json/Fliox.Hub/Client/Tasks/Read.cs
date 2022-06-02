@@ -27,8 +27,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         private  readonly   TKey        key;
         private             T           result;
+        private             JsonValue   rawResult;
 
-        public              T           Result      => IsOk("Find.Result", out Exception e) ? result : throw e;
+        public              T           Result      => IsOk("Find.Result",   out Exception e) ? result : throw e;
+        public              JsonValue   RawResult   => IsOk("Find.RawResult",out Exception e) ? rawResult : throw e;
         internal override   TaskState   State       => findState;
         public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{key}')";
         
@@ -41,10 +43,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> keysBuf) {
             TaskErrorInfo error = new TaskErrorInfo();
             var id          = KeyConvert.KeyToId(key);
-            var entityError = entities[id].Error;
+            var value       = entities[id];
+            var entityError = value.Error;
             if (entityError == null) {
-                findState.Executed = true;
-                result = values[key];
+                findState.Executed  = true;
+                result              = values[key];
+                rawResult           = value.Json;
                 return;
             }
             error.AddEntityError(entityError);
@@ -57,10 +61,12 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class FindRange<TKey, T> : FindTask<TKey, T> where T : class
     {
-        private  readonly   Dictionary<TKey, T> results;
-        public              Dictionary<TKey, T> Result  => IsOk("FindRange.Result", out Exception e) ? results : throw e;
-        internal override   TaskState           State   => findState;
-        public   override   string              Details => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
+        private  readonly   Dictionary<TKey, T>                 results;
+        private             Dictionary<JsonKey, EntityValue>    entities;
+        public              Dictionary<TKey, T>                 Result    => IsOk("FindRange.Result",   out Exception e) ? results : throw e;
+        public              Dictionary<TKey, EntityValue>       RawResult => IsOk("FindRange.RawResult",out Exception e) ? GetRawResult() : throw e;
+        internal override   TaskState                           State   => findState;
+        public   override   string                              Details => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
         
         private static readonly KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
         
@@ -71,7 +77,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
+        private Dictionary<TKey, EntityValue> GetRawResult() {
+            var rawResults = new Dictionary<TKey, EntityValue>(results.Count);
+            foreach (var pair in results) {
+                var key     = pair.Key;
+                var id      = KeyConvert.KeyToId(key);
+                var value   = entities[id];
+                rawResults.Add(key, value);
+            }
+            return rawResults;
+        }
+        
         internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> keysBuf) {
+            this.entities = entities; 
             TaskErrorInfo error = new TaskErrorInfo();
             keysBuf.Clear();
             foreach (var result in results) {

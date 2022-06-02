@@ -38,8 +38,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            string          resultCursor;
         private  readonly   FlioxClient     store;
 
-        public              List<T>         Result          => IsOk("QueryTask.Result",  out Exception e) ? result : throw e;
-        public              List<JsonValue> RawResult       => IsOk("QueryTask.JsonResult",  out Exception e) ? GetJsonValues() : throw e;
+        public              List<T>         Result          => IsOk("QueryTask.Result",   out Exception e) ? result : throw e;
+        public              List<JsonValue> RawResult       => IsOk("QueryTask.RawResult",out Exception e) ? GetRawValues() : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.store      = store;
         }
 
-        private List<JsonValue> GetJsonValues() {
+        private List<JsonValue> GetRawValues() {
             var jsonResult = new List<JsonValue> (ids.Count);
             foreach (var id in ids) {
                 var entity = entities[id];
