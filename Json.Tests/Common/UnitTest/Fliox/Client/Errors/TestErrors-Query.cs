@@ -161,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             IsTrue(readOrders2.Success);
             IsTrue(order2.Success);
             IsFalse(order2Customer.Success);
-            AreEqual("read-task-error", readOrders2["order-2"].customer.Key);
+            AreEqual("read-task-error", readOrders2.Result["order-2"].customer.Key);
             AreEqual("read-task-error", order2.Result.customer.Key);
             AreEqual("DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error", order2Customer.   Error.ToString());
             

@@ -85,16 +85,16 @@ articleSet", string.Join("\n", store.Tasks));
             AreEqual("Canon",           articleProducerTask.Result.Find(i => i.id == "producer-canon").name);
 
             AreEqual(2,                 articleSet.Result.Count);
-            AreEqual("Galaxy S10",      articleSet["article-galaxy"].name);
-            AreEqual("iPad Pro",        articleSet["article-ipad"].name);
+            AreEqual("Galaxy S10",      articleSet.Result["article-galaxy"].name);
+            AreEqual("iPad Pro",        articleSet.Result["article-ipad"].name);
             
             AreEqual("Galaxy S10",      galaxy.Result.name);
             
             AreEqual(2,                 article1And2.Result.Count);
-            AreEqual("Smartphone",      article1And2["article-2"].name);
+            AreEqual("Smartphone",      article1And2.Result["article-2"].name);
             
             AreEqual(4,                 readTask.Result.Count);
-            AreEqual("Galaxy S10",      readTask["article-galaxy"].name);
+            AreEqual("Galaxy S10",      readTask.Result["article-galaxy"].name);
         }
     }
 }

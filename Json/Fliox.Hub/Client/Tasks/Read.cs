@@ -59,7 +59,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         private  readonly   Dictionary<TKey, T>     results;
 
-        public              T                       this[TKey key]      => IsOk("FindRange[]", out Exception e) ? results[key] : throw e;
         public              Dictionary<TKey, T>     Result { get {
             if (IsOk("FindRange.Result", out Exception e))
                 return results;
@@ -116,7 +115,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
 
         public              Dictionary<TKey, T>     Result          => IsOk("ReadTask.Result", out Exception e) ? result      : throw e;
-        public              T                       this[TKey key]  => IsOk("ReadTask[]",      out Exception e) ? result[key] : throw e;
 
         internal override   TaskState               State       => state;
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {result.Count})";
