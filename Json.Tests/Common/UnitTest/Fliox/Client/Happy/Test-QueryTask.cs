@@ -110,12 +110,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
                 
             AreEqual(3,                 producersTask.Result.Count);
-            AreEqual("Samsung",         producersTask["producer-samsung"].name);
-            AreEqual("Canon",           producersTask["producer-canon"].name);
-            AreEqual("Apple",           producersTask["producer-apple"].name);
+            AreEqual("Samsung",         producersTask.Result.Find(i => i.id == "producer-samsung").name);
+            AreEqual("Canon",           producersTask.Result.Find(i => i.id == "producer-canon").name);
+            AreEqual("Apple",           producersTask.Result.Find(i => i.id == "producer-apple").name);
                 
             AreEqual(1,                 producerEmployees.Result.Count);
-            AreEqual("Steve",           producerEmployees["apple-0001"].firstName);
+            AreEqual("Steve",           producerEmployees.Result.Find(i => i.id == "apple-0001").firstName);
         }
         
         [Test] public async Task TestQueryCursor      () { await TestCreate(async (store) => await AssertQueryCursor            (store)); }

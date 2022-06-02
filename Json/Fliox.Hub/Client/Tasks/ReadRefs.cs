@@ -38,23 +38,22 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<T>  where T : class
     {
-        private             RefsTask                refsTask;
-        private             Dictionary<TKey, T>     result;
-        private   readonly  SyncTask                parent;
-        private   readonly  FlioxClient             store;
+        private             RefsTask    refsTask;
+        private             List<T>     result;
+        private   readonly  SyncTask    parent;
+        private   readonly  FlioxClient store;
             
-        public              Dictionary<TKey, T>     Result          => IsOk("ReadRefsTask.Result", out Exception e) ? result      : throw e;
-        public              T                       this[TKey key]  => IsOk("ReadRefsTask[]",      out Exception e) ? result[key] : throw e;
+        public              List<T>     Result      => IsOk("ReadRefsTask.Result", out Exception e) ? result      : throw e;
         
-        internal  override  TaskState               State       => state;
-        public    override  string                  Details     => $"{parent.GetLabel()} -> {Selector}";
+        internal  override  TaskState   State       => state;
+        public    override  string      Details     => $"{parent.GetLabel()} -> {Selector}";
             
-        internal  override  string                  Selector  { get; }
-        internal  override  string                  Container { get; }
-        internal  override  string                  KeyName   { get; }
-        internal  override  bool                    IsIntKey  { get; }
+        internal  override  string      Selector  { get; }
+        internal  override  string      Container { get; }
+        internal  override  string      KeyName   { get; }
+        internal  override  bool        IsIntKey  { get; }
         
-        internal  override  SubRefs                 SubRefs => refsTask.subRefs;
+        internal  override  SubRefs     SubRefs => refsTask.subRefs;
 
         private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
@@ -71,13 +70,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
             var entitySet = (EntitySetBase<T>) set;
-            result = SyncSet.CreateDictionary<TKey, T>(ids.Count);
+            result = new List<T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 if (peer.error == null) {
                     var key = KeyConvert.IdToKey(id);
-                    result.Add(key, peer.Entity);
+                    result.Add(peer.Entity);
                 } else {
                     entityErrorInfo.AddEntityError(peer.error);
                 }

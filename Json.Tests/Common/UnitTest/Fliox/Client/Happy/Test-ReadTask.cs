@@ -13,6 +13,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable PossibleNullReferenceException
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
@@ -54,8 +55,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 
-            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires SyncTasks(). readOrders -> .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Result; });
             AreEqual("ReadRefsTask.Result requires SyncTasks(). readOrders -> .items[*].article", e.Message);
 
@@ -79,11 +78,11 @@ articleSet", string.Join("\n", store.Tasks));
             await store.SyncTasks(); // ----------------
         
             AreEqual(2,                 articleRefsTask.Result.Count);
-            AreEqual("Changed name",    articleRefsTask["article-1"].name);
-            AreEqual("Smartphone",      articleRefsTask["article-2"].name);
+            AreEqual("Changed name",    articleRefsTask.Result.Find(i => i.id == "article-1").name);
+            AreEqual("Smartphone",      articleRefsTask.Result.Find(i => i.id == "article-2").name);
             
             AreEqual(1,                 articleProducerTask.Result.Count);
-            AreEqual("Canon",           articleProducerTask["producer-canon"].name);
+            AreEqual("Canon",           articleProducerTask.Result.Find(i => i.id == "producer-canon").name);
 
             AreEqual(2,                 articleSet.Result.Count);
             AreEqual("Galaxy S10",      articleSet["article-galaxy"].name);

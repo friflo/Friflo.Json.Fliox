@@ -360,12 +360,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 IsTrue(stringId ==  customIdRef.Key);
                 
                 AreEqual (1,        intRefs.Result.Count);
-                IsNotNull(          intRefs.Result[intId]);
-                IsNotNull(          intRefs[intId]);
+                IsNotNull(          intRefs.Result.Find(i => i.id == intId));
                 
                 AreEqual (1,        intNullRefs.Result.Count);
-                IsNotNull(          intNullRefs.Result[intId]);
-                IsNotNull(          intNullRefs[intId]);
+                IsNotNull(          intNullRefs.Result.Find(i => i.id == intId));
             }
             
             // ensure QueryTask<> results enables type-safe key access
