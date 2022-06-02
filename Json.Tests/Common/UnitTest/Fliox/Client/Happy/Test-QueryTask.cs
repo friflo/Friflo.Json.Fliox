@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
 
             var orderCustomer2          = orders.RelationPath(customers, o => o.customer2);
-            var customer2_0             = readOrders.ReadRelation(orderCustomer2);
+            var customer2_0             = readOrders.ReadRelation(customers, orderCustomer2);
 
             var orderCustomer           = orders.RefPath(o => o.customer);
             var customer                = readOrders.ReadRefPath(orderCustomer);

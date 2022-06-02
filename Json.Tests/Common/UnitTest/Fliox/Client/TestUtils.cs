@@ -129,22 +129,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
 #if !UNITY_2020_1_OR_NEWER
         [Test]
-        public void TestDictionaryValueIterator() {
+        public void TestReadRelationTypeSafety() {
             var env     = new SharedEnv();
             var hub     = new FlioxHub(new MemoryDatabase("db"), env);
             var store   = new PocStore(hub) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
-                        readArticles.Find("missing-id");
-            var task =  readArticles.ReadRef(a => a.producer);
-            SubRefs subRefs = new SubRefs();
-            subRefs.AddTask("someTask", task);
-
-            // ensure iterator does not allocate something on heap by boxing
-            var startBytes = GC.GetAllocatedBytesForCurrentThread();
-            foreach (var _ in subRefs) {
-            }
-            var endBytes = GC.GetAllocatedBytesForCurrentThread();
-            AreEqual(startBytes, endBytes);
+            var relationSelector = store.articles.RelationPath(store.producers, o => o.producer2);
+            readArticles.ReadRelation(store.producers, relationSelector);
         }
         
         /// <summary>

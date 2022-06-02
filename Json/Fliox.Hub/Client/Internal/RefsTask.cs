@@ -35,15 +35,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
     }
     
-    public struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
+    internal struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
         /// key: <see cref="ReadRefsTask.Selector"/>
-        private     Dictionary<string, ReadRefsTask>  map; // map == null if no tasks added
+        private     Dictionary<string, ReadRefsTask>    map; // map == null if no tasks added
         
-        public    int                                 Count => map?.Count ?? 0;
-        public    ReadRefsTask                        this[string key] => map[key];
+        internal    int                                 Count => map?.Count ?? 0;
+        internal    ReadRefsTask                        this[string key] => map[key];
         
-        public bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
+        internal bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
             if (map == null) {
                 subRefsTask = null;
                 return false;
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return map.TryGetValue(selector, out subRefsTask);
         }
         
-        public void AddTask(string selector, ReadRefsTask subRefsTask) {
+        internal void AddTask(string selector, ReadRefsTask subRefsTask) {
             if (map == null) {
                 map = new Dictionary<string, ReadRefsTask>();
             }

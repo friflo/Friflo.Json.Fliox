@@ -101,6 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Required]  public  string                  id { get; set; }
         [Required]  public  string                  name;
                     public  Ref<string, Producer>   producer;
+        [Ignore]    public  string                  producer2;
                         
         public override     string                  ToString() => JsonSerializer.Serialize(this);
     }
