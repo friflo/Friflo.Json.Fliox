@@ -255,6 +255,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             query.resultCursor  = queryResult.cursor;
             var entityErrorInfo = new TaskErrorInfo();
             var entities        = queryEntities.entityMap;
+            query.entities      = entities;
+            query.ids           = queryResult.ids;
             var results         = query.result = new List<T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 
 // ReSharper disable once CheckNamespace
@@ -32,10 +33,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   FilterOperation filter;
         internal readonly   string          filterLinq; // use as string identifier of a filter 
         internal            List<T>         result;
+        internal            IReadOnlyCollection<JsonKey>        ids;
+        internal            Dictionary<JsonKey, EntityValue>    entities;
         internal            string          resultCursor;
         private  readonly   FlioxClient     store;
 
         public              List<T>         Result          => IsOk("QueryTask.Result",  out Exception e) ? result : throw e;
+        public              List<JsonValue> JsonResult      => IsOk("QueryTask.JsonResult",  out Exception e) ? GetJsonValues() : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>
@@ -51,6 +55,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.filter     = filter;
             this.filterLinq = filter.Linq;
             this.store      = store;
+        }
+
+        private List<JsonValue> GetJsonValues() {
+            var jsonResult = new List<JsonValue> (ids.Count);
+            foreach (var id in ids) {
+                var entity = entities[id];
+                jsonResult.Add(entity.Json);
+            }
+            return jsonResult;
         }
 
         public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
