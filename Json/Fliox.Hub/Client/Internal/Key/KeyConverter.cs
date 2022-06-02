@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
     internal abstract class KeyConverter {
         private static readonly   Dictionary<Type, KeyConverter> Map = new Dictionary<Type, KeyConverter>();
 
-        internal static KeyConverter<TKey> GetRefKey<TKey> () {
+        internal static KeyConverter<TKey> GetConverter<TKey> () {
             var keyType = typeof(TKey);
             if (Map.TryGetValue(keyType, out KeyConverter id)) {
                 return (KeyConverter<TKey>)id;
