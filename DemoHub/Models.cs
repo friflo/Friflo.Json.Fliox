@@ -6,6 +6,10 @@ using Friflo.Json.Fliox;
 // ReSharper disable All
 namespace Fliox.DemoHub
 {
+    // Note: Main property of all model classes
+    // They are all POCO's aka Plain Old Class Objects. See https://en.wikipedia.org/wiki/Plain_old_CLR_object
+    // As a result integration of these classes in other modules or libraries is comparatively easy.
+
     // ------------------------------ entity models ------------------------------
     public class Article {
         [Required]  public  long            id { get; set; }
