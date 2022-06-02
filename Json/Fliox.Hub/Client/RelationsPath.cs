@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Hub.Client.Internal;
 namespace Friflo.Json.Fliox.Hub.Client
 {
     // --- Relation
-    public class RelationsPath<TKey, T>   where T : class
+    public class RelationsPath<T>   where T : class
     {
         public readonly string path;
 
@@ -19,19 +19,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.path = path;
         }
         
-        public static RelationsPath<TKey, T> MemberRefs(Expression<Func<T, IEnumerable<TKey>>> selector)  {
+        /* public static RelationsPath<TKey, T> MemberRefs(Expression<Func<T, IEnumerable<TKey>>> selector)  {
             string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
             return new RelationsPath<TKey, T>(selectorPath);
-        }
+        } */
     }
     
-    public sealed class RelationPath<TKey, T> : RelationsPath<TKey, T> where T : class
+    public sealed class RelationPath<T> : RelationsPath<T> where T : class
     {
         internal RelationPath(string path) : base (path) { }
         
-        public static RelationPath<TKey, T> MemberRef(Expression<Func<T, TKey>> selector) {
+        /* public static RelationPath<TKey, T> MemberRef(Expression<Func<T, TKey>> selector) {
             string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
             return new RelationPath<TKey, T>(selectorPath);
-        }
+        } */
     }
 }

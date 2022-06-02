@@ -87,8 +87,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("readOrders2 -> .customer",        order2Customer  .Details);
 
             Exception e;
-            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Key requires SyncTasks(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
@@ -145,7 +143,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual(1,                 hasOrderCamera.Result.Count);
             AreEqual(3,                 hasOrderCamera.Result.Find(i => i.id == "order-1").items.Count);
     
-            AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
             IsFalse(articleProducer.Success);

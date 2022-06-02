@@ -341,23 +341,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 IsNotNull(result.intEntities[0].Entity);
                 
                 IsNotNull(guidRef.Result);
-                IsTrue(guidId   ==  guidRef.Key);
-                IsTrue(guidId2  ==  guidNullRef.Key);
                 
-                IsTrue(intId    ==  intRef.Key);
                 IsNull(             intNullRef.Result);
-                IsTrue(intId2   ==  intNullRef2.Key);
                 
-                IsTrue(longId   ==  longRef.Key);
                 IsNull(             longNullRef.Result);
                 
-                IsTrue(shortId  ==  shortRef.Key);
                 IsNull(             shortNullRef.Result);
                 
-                IsTrue(byteId   ==  byteRef.Key);
                 IsNull(             byteNullRef.Result);
-                
-                IsTrue(stringId ==  customIdRef.Key);
                 
                 AreEqual (1,        intRefs.Result.Count);
                 IsNotNull(          intRefs.Result.Find(i => i.id == intId));

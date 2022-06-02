@@ -155,14 +155,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- Relation
-        public ReadRefTask<TRefKey, TRef> ReadRelation<TRefKey, TRef>(
+        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(
             EntitySet<TRefKey, TRef>        relation,
             Expression<Func<T, TRefKey>>    selector) where TRef : class
         {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return ReadRefByPath<TRefKey, TRef>(relation, path);
+            return ReadRefByPath<TRef>(relation, path);
         }
         
         // --- Relations
@@ -175,13 +175,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRefTask<TRefKey, TRef> ReadRelation<TRefKey, TRef>(
+        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(
                 EntitySet<TRefKey, TRef>    relation,
-                RelationPath<TRefKey, TRef> selector
+                RelationPath<TRef>          selector
             ) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return ReadRefByPath<TRefKey, TRef>(relation, selector.path);
+            return ReadRefByPath<TRef>(relation, selector.path);
         }
 
         // lab - ReadRefs by Entity Type
@@ -197,28 +197,28 @@ namespace Friflo.Json.Fliox.Hub.Client
         } */
         
         // --- Ref
-        public ReadRefTask<TRefKey, TRef> ReadRef<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
+        public ReadRefTask<TRef> ReadRef<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
-            return ReadRefByPath<TRefKey, TRef>(relation, path);
+            return ReadRefByPath<TRef>(relation, path);
         }
         
-        public ReadRefTask<TRefKey, TRef> ReadRefPath<TRefKey, TRef>(RefPath<T, TRefKey, TRef> selector) where TRef : class {
+        public ReadRefTask<TRef> ReadRefPath<TRefKey, TRef>(RefPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
             var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
-            return ReadRefByPath<TRefKey, TRef>(relation, selector.path);
+            return ReadRefByPath<TRef>(relation, selector.path);
         }
         
-        private ReadRefTask<TRefKey, TRef> ReadRefByPath<TRefKey, TRef>(EntitySet relation, string path) where TRef : class {
+        private ReadRefTask<TRef> ReadRefByPath<TRef>(EntitySet relation, string path) where TRef : class {
             if (refsTask.subRefs.TryGetTask(path, out ReadRefsTask subRefsTask))
-                return (ReadRefTask<TRefKey, TRef>)subRefsTask;
+                return (ReadRefTask<TRef>)subRefsTask;
             // var relation = set.intern.store._intern.GetSetByType(typeof(TRef));
             var keyName     = relation.GetKeyName();
             var isIntKey    = relation.IsIntKey();
-            var newQueryRefs = new ReadRefTask<TRefKey, TRef>(this, path, relation.name, keyName, isIntKey, set.intern.store);
+            var newQueryRefs = new ReadRefTask<TRef>(this, path, relation.name, keyName, isIntKey, set.intern.store);
             refsTask.subRefs.AddTask(path, newQueryRefs);
             set.intern.store.AddTask(newQueryRefs);
             return newQueryRefs;

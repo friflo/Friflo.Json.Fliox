@@ -49,7 +49,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
 
             var orderCustomer2          = orders.RelationPath(customers, o => o.customer2);
+            AreEqual(".customer2", orderCustomer2.ToString());
             var customer2_0             = readOrders.ReadRelation(customers, orderCustomer2);
+            AreEqual("readOrders -> .customer2", customer2_0.ToString());
 
             var orderCustomer           = orders.RefPath(o => o.customer);
             var customer                = readOrders.ReadRefPath(orderCustomer);
@@ -63,8 +65,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("readOrders -> .customer2", customer4.Details);
 
             Exception e;
-            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Key requires SyncTasks(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
@@ -102,10 +102,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(1,                 hasOrderCamera.Result.Count);
             AreEqual(3,                 hasOrderCamera.Result.Find(i => i.id == "order-1").items.Count);
     
-            AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);
             
-            AreEqual("customer-2",      customer4.Key);
             AreEqual("Armstrong Inc.",  customer4.Result.name);
 
                 

@@ -111,15 +111,13 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<T> where T : class
+    public sealed class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : class
     {
         private             RefsTask        refsTask;
-        private             TKey            key;
         private             T               entity;
         private   readonly  SyncTask        parent;
         private   readonly  FlioxClient     store;
     
-        public              TKey            Key     => IsOk("ReadRefTask.Key",    out Exception e) ? key     : throw e;
         public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
         internal  override  TaskState       State       => state;
@@ -131,8 +129,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  override  bool            IsIntKey    { get; }
 
         internal override   SubRefs         SubRefs => refsTask.subRefs;
-
-        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
@@ -154,7 +150,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var id = ids.First();
             var peer = entitySet.GetPeerById(id);
             if (peer.error == null) {
-                key     = KeyConvert.IdToKey(id);
                 entity  = peer.Entity;
             } else {
                 var entityErrorInfo = new TaskErrorInfo();
