@@ -377,11 +377,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
                 await store.SyncTasks();
                
-                IsNotNull(guidEntities  [guidId]);
-                IsNotNull(guidEntities  [guidId2]);
-                IsNotNull(intEntities   [intId]);
-                IsNotNull(longEntities  [longId]);
-                IsNotNull(shortEntities [shortId]);
+                IsNotNull(guidEntities.Result.Find  (i => i.id == guidId));
+                IsNotNull(guidEntities.Result.Find  (i => i.id == guidId2));
+                IsNotNull(intEntities.Result.Find   (i => i.id == intId));
+                IsNotNull(longEntities.Result.Find  (i => i.Id == longId));
+                IsNotNull(shortEntities.Result.Find (i => i.id == shortId));
             }
             
             // --- string as custom entity id ---

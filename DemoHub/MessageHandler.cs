@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 
@@ -117,11 +116,11 @@ namespace Fliox.DemoHub
             };
             var result = new Records {
                 counts      = counts,
-                articles    = articleCount. Result.Values.ToArray(),
-                customers   = customerCount.Result.Values.ToArray(),
-                employees   = employeeCount.Result.Values.ToArray(),
-                orders      = orderCount.   Result.Values.ToArray(),
-                producers   = producerCount.Result.Values.ToArray(),
+                articles    = articleCount. Result.ToArray(),
+                customers   = customerCount.Result.ToArray(),
+                employees   = employeeCount.Result.ToArray(),
+                orders      = orderCount.   Result.ToArray(),
+                producers   = producerCount.Result.ToArray(),
             };
             return result;
         }

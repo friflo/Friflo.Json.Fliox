@@ -14,6 +14,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable PossibleNullReferenceException
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 {
@@ -93,8 +94,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
             var producerEmployees = articleProducer.ReadArrayRefs(p => p.employeeList)              .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
@@ -121,13 +120,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual(msg, sync.Message);
             
             AreEqual(1,                 ordersWithCustomer1.Result.Count);
-            NotNull(ordersWithCustomer1["order-1"]);
+            NotNull(ordersWithCustomer1.Result.Find(i => i.id == "order-1"));
             
             AreEqual(1,                 ordersAnyAmountLower2.Result.Count);
-            NotNull(ordersAnyAmountLower2["order-1"]);
+            NotNull(ordersAnyAmountLower2.Result.Find(i => i.id == "order-1"));
             
             AreEqual(2,                 ordersAllAmountGreater0.Result.Count);
-            NotNull(ordersAllAmountGreater0["order-1"]);
+            NotNull(ordersAllAmountGreater0.Result.Find(i => i.id == "order-1"));
 
 
             IsFalse(allArticles.Success);
@@ -139,12 +138,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
-            te = Throws<TaskResultException>(() => { var _ = allArticles.Result["article-galaxy"]; });
+            te = Throws<TaskResultException>(() => { var _ = allArticles.Result.Find(i => i.id == "article-galaxy"); });
             AreEqual(articleError, te.Message);
             AreEqual(2, te.error.entityErrors.Count);
             
             AreEqual(1,                 hasOrderCamera.Result.Count);
-            AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
+            AreEqual(3,                 hasOrderCamera.Result.Find(i => i.id == "order-1").items.Count);
     
             AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);
@@ -168,7 +167,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             IsTrue(orders2WithTaskError.Success);
             IsFalse(order2CustomerError.Success);
-            AreEqual("read-task-error", orders2WithTaskError.Result["order-2"].customer.Key);
+            AreEqual("read-task-error", orders2WithTaskError.Result.Find(i => i.id == "order-2").customer.Key);
             AreEqual("DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
             
             // --- Test invalid response

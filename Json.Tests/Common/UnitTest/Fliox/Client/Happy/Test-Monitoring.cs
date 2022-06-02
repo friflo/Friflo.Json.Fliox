@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
@@ -19,6 +20,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable PossibleNullReferenceException
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
@@ -129,30 +131,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var hosts   = result.hosts.Result;
             AreEqual(1, hosts.Count);
             
-            var host    = hosts[new JsonKey("Test")];
+            var host    = hosts.Find(i => i.id.IsEqual(new JsonKey("Test")));
             AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
             
             // --- users
             var users   = result.users.Result;
             AreEqual(3, users.Count);
             
-            var anonymousInfo = users[User.AnonymousId].ToString();
+            var anonymousInfo = users.Find(i => i.id.IsEqual(User.AnonymousId)).ToString();
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     anonymousInfo);
             
-            var adminInfo = users[new JsonKey("monitor-admin")].ToString();
+            var adminInfo = users.Find(i => i.id.IsEqual(new JsonKey("monitor-admin"))).ToString();
             AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
             
-            var pocAdmin = users[new JsonKey("poc-admin")].ToString();
+            var pocAdmin = users.Find(i => i.id.IsEqual(new JsonKey("poc-admin"))).ToString();
             AreEqual("{'id':'poc-admin','clients':['poc-client'],'counts':[{'db':'main_db','requests':1,'tasks':2}]}", pocAdmin);
             
             // --- clients
             var clients = result.clients.Result;
             AreEqual(2, clients.Count);
             
-            var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
+            var pocClientInfo = clients.Find(i => i.id.IsEqual(new JsonKey("poc-client"))).ToString();
             AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'main_db','requests':1,'tasks':2}]}", pocClientInfo);
             
-            var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
+            var monitorClientInfo = clients.Find(i => i.id.IsEqual(new JsonKey("monitor-client"))).ToString();
             AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             
             NotNull(result.user.Result);

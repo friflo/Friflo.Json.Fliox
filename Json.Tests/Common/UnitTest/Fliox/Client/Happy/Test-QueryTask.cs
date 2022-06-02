@@ -12,6 +12,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable PossibleNullReferenceException
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
@@ -69,8 +70,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
             AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.ToString());
@@ -83,25 +82,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             await store.SyncTasks(); // ----------------
             AreEqual(1,                 ordersWithCustomer1.Result.Count);
-            NotNull(ordersWithCustomer1["order-1"]);
+            NotNull(ordersWithCustomer1.Result.Find(i => i.id == "order-1"));
             
             AreEqual(1,                 ordersItemsAmount.Result.Count);
-            NotNull(ordersItemsAmount["order-1"]);
+            NotNull(ordersItemsAmount.Result.Find(i => i.id == "order-1"));
 
             AreEqual(1,                 ordersAnyAmountLower2.Result.Count);
-            NotNull(ordersAnyAmountLower2["order-1"]);
+            NotNull(ordersAnyAmountLower2.Result.Find(i => i.id == "order-1"));
             
             AreEqual(2,                 ordersAllAmountGreater0.Result.Count);
-            NotNull(ordersAllAmountGreater0["order-1"]);
+            NotNull(ordersAllAmountGreater0.Result.Find(i => i.id == "order-1"));
 
             AreEqual(6,                 allArticles.Result.Count);
-            AreEqual("Galaxy S10",      allArticles.Result["article-galaxy"].name);
-            AreEqual("iPad Pro",        allArticles.Result["article-ipad"].name);
+            AreEqual("Galaxy S10",      allArticles.Result.Find(i => i.id =="article-galaxy").name);
+            AreEqual("iPad Pro",        allArticles.Result.Find(i => i.id =="article-ipad").name);
             
             AreEqual(2,                 allArticlesLimit.Result.Count);
             
             AreEqual(1,                 hasOrderCamera.Result.Count);
-            AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
+            AreEqual(3,                 hasOrderCamera.Result.Find(i => i.id == "order-1").items.Count);
     
             AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);

@@ -16,35 +16,34 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
-        public              int?                    limit;
+        public              int?            limit;
         /// <summary> return <see cref="maxCount"/> number of entities within <see cref="Result"/>.
         /// After task execution <see cref="ResultCursor"/> is not null if more entities available.
         /// To access them create new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>.   
         /// </summary>
-        public              int?                    maxCount;
+        public              int?            maxCount;
         /// <summary> <see cref="cursor"/> is used to proceed iterating entities of a previous query
         /// which set <see cref="maxCount"/>. <br/>
         /// Therefore assign <see cref="ResultCursor"/> of the previous to <see cref="cursor"/>. </summary>
-        public              string                  cursor;
+        public              string          cursor;
         
-        internal            TaskState               state;
-        internal            RefsTask                refsTask;
-        internal readonly   FilterOperation         filter;
-        internal readonly   string                  filterLinq; // use as string identifier of a filter 
-        internal            Dictionary<TKey, T>     result;
-        internal            string                  resultCursor;
-        private  readonly   FlioxClient             store;
+        internal            TaskState       state;
+        internal            RefsTask        refsTask;
+        internal readonly   FilterOperation filter;
+        internal readonly   string          filterLinq; // use as string identifier of a filter 
+        internal            List<T>         result;
+        internal            string          resultCursor;
+        private  readonly   FlioxClient     store;
 
-        public              Dictionary<TKey, T>     Result          => IsOk("QueryTask.Result",  out Exception e) ? result      : throw e;
-        public              T                       this[TKey key]  => IsOk("QueryTask[]",       out Exception e) ? result[key] : throw e;
+        public              List<T>         Result          => IsOk("QueryTask.Result",  out Exception e) ? result      : throw e;
         
         /// <summary> Is not null after task execution if more entities available.
         /// To access them create a new query and assign <see cref="ResultCursor"/> to its <see cref="cursor"/>. </summary>
-        public              string                  ResultCursor    => IsOk("QueryTask.ResultCursor", out Exception e) ? resultCursor : throw e;
+        public              string          ResultCursor    => IsOk("QueryTask.ResultCursor", out Exception e) ? resultCursor : throw e;
             
-        internal override   TaskState               State           => state;
-        public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
-        public              QueryFormat             DebugQuery      => filter.query;
+        internal override   TaskState       State           => state;
+        public   override   string          Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
+        public              QueryFormat     DebugQuery      => filter.query;
         
 
         internal QueryTask(FilterOperation filter, FlioxClient store) {

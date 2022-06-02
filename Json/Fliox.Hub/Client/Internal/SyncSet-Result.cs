@@ -258,7 +258,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             query.resultCursor  = queryResult.cursor;
             var entityErrorInfo = new TaskErrorInfo();
             var entities        = queryEntities.entityMap;
-            var results         = query.result = CreateDictionary<TKey, T>(queryResult.ids.Count);
+            var results         = query.result = new List<T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
                     AddEntityResponseError(id, entities, ref entityErrorInfo);
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 var key = KeyConvert.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
-                results.Add(key, peer.Entity);
+                results.Add(peer.Entity);
             }
             if (entityErrorInfo.HasErrors) {
                 query.state.SetError(entityErrorInfo);
