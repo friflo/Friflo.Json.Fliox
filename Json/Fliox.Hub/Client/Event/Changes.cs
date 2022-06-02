@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -76,6 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)] private          List<T>         creates;
         [DebuggerBrowsable(Never)] private          List<T>         upserts;
         [DebuggerBrowsable(Never)] private readonly ObjectMapper    objectMapper;
+        
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
 
         /// <summary> called via <see cref="SubscriptionProcessor.GetChanges"/> </summary>
         internal Changes(EntitySet<TKey, T> entitySet, ObjectMapper mapper) {
@@ -126,7 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override void AddDeletes  (HashSet<JsonKey> ids) {
             foreach (var id in ids) {
-                TKey    key      = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                TKey    key      = KeyConvert.IdToKey(id);
                 Deletes.Add(key);
             }
             changeInfo.deletes += ids.Count;
@@ -136,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var pair in entityPatches) {
                 var     id          = pair.Key;
                 var     entityPatch = pair.Value;
-                TKey    key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                TKey    key         = KeyConvert.IdToKey(id);
                 var     patch       = new Patch<TKey>(key, id, entityPatch.patches);
                 Patches.Add(patch);
             }

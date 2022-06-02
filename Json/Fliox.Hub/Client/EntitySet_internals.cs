@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -95,6 +96,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     public partial class EntitySet<TKey, T>
     {
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        
         internal override void Init(FlioxClient store) {
             intern      = new SetIntern<TKey, T>(store);
         }
@@ -141,14 +144,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal void DeletePeer (in JsonKey id) {
-            var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var key = KeyConvert.IdToKey(id);
             var peers = Peers();
             peers.Remove(key);
         }
         
         [Conditional("DEBUG")]
         private static void AssertId(TKey key, in JsonKey id) {
-            var expect = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+            var expect = KeyConvert.KeyToId(key);
             if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
@@ -176,7 +179,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override Peer<T> GetOrCreatePeerById(JsonKey id) {
-            var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var key = KeyConvert.IdToKey(id);
             return GetOrCreatePeerByKey(key, id);
         }
         
@@ -186,7 +189,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return peer;
             }
             if (id.IsNull()) {
-                id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+                id = KeyConvert.KeyToId(key);
             } else {
                 AssertId(key, id);
             }
@@ -197,7 +200,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// use <see cref="GetOrCreatePeerByKey"/> is possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
-            var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var key = KeyConvert.IdToKey(id);
             var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
@@ -213,7 +216,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
-            var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+            var id = KeyConvert.KeyToId(key);
             peer = new Peer<T>(id);
             peers.Add(key, peer);
             return peer;

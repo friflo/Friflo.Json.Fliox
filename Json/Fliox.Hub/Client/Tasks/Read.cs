@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 // ReSharper disable once CheckNamespace
@@ -31,14 +32,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState   State       => findState;
         public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{key}')";
         
-
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        
         internal Find(TKey key) {
             this.key     = key;
         }
         
         internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> keysBuf) {
             TaskErrorInfo error = new TaskErrorInfo();
-            var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+            var id          = KeyConvert.KeyToId(key);
             var entityError = entities[id].Error;
             if (entityError == null) {
                 findState.Executed = true;
@@ -67,7 +69,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState       State       => findState;
         public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
         
-
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        
         internal FindRange(ICollection<TKey> keys) {
             results = SyncSet.CreateDictionary<TKey, T>(keys.Count);
             foreach (var key in keys) {
@@ -80,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             keysBuf.Clear();
             foreach (var result in results) {
                 var key = result.Key;
-                var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+                var id  = KeyConvert.KeyToId(key);
                 var entityError = entities[id].Error;
                 if (entityError == null) {
                     keysBuf.Add(key);

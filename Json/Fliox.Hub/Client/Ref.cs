@@ -83,11 +83,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  private             Peer<T>     peer;    // alternatively a EntitySetBase<T> could be used 
 
         public   override           string              ToString()  => AsString();
-        private                     string              AsString()  => IsKeyNull() ? "null" : RefKeyMap.KeyToId(key).AsString();
+        private                     string              AsString()  => IsKeyNull() ? "null" : KeyConvert.KeyToId(key).AsString();
         internal                    T                   GetEntity() => entity;
         internal                    Peer<T>             GetPeer()   => peer;
 
-        internal static readonly    RefKey<TKey>        RefKeyMap = RefKey.GetRefKey<TKey>();
+        internal static readonly     RefKey<TKey>       KeyConvert = RefKey.GetRefKey<TKey>();
         
         
         public Ref(TKey key) {
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal Ref(Peer<T> peer) {
-            key             = RefKeyMap.IdToKey(peer.id);      // peer.id is never null
+            key             = KeyConvert.IdToKey(peer.id);      // peer.id is never null
             entity          = null;
             entityAssigned  = false;
             this.peer       = peer;
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyNull () {
-            return RefKeyMap.IsKeyNull(key);
+            return KeyConvert.IsKeyNull(key);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

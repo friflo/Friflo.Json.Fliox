@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
@@ -151,6 +152,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
     // ----------------------------------------- EntityKeyT<TKey, T> -----------------------------------------
     internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
         internal readonly   bool        autoIncrement;
+        
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
             
         internal abstract   TKey        GetKey      (T entity);
         internal abstract   void        SetKey      (T entity, TKey id);
@@ -166,11 +169,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity
 
         internal override   JsonKey GetId   (T entity) {
             TKey key = GetKey(entity);
-            return Ref<TKey,T>.RefKeyMap.KeyToId(key);
+            return KeyConvert.KeyToId(key);
         }
         
         internal override   void    SetId   (T entity, in JsonKey id) {
-            TKey key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            TKey key = KeyConvert.IdToKey(id);
             SetKey(entity, key);
         }
     }

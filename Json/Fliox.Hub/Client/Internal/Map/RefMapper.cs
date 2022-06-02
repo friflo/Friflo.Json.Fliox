@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 if (reader.tracerContext != null) {
                     var store   = reader.tracerContext.Store();
                     var set     = store.GetEntitySetBase<T>();
-                    var id      = Ref<TKey, T>.RefKeyMap.KeyToId(key);  // TAG_NULL_REF
+                    var id      = Ref<TKey, T>.KeyConvert.KeyToId(key);  // TAG_NULL_REF
                     var peer    = set.GetOrCreatePeerById(id);
                     return new Ref<TKey, T> (peer);
                 }

@@ -351,7 +351,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 long autoId = -1;   // todo use reserved keys
                 foreach (var entity in _autos) {
                     var id      = new JsonKey(autoId);
-                    var key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                    var key     = KeyConvert.IdToKey(id);
                     EntityKeyTMap.SetKey(entity, key);
                     var json    = writer.WriteAsArray(entity);
                     var entry   = new JsonValue(json);
@@ -412,7 +412,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
                 var ids = Helper.CreateHashSet(read.result.Keys.Count, JsonKey.Equality);
                 foreach (var key in read.result.Keys) {
-                    var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+                    var id = KeyConvert.KeyToId(key);
                     ids.Add(id);
                 }
                 var req = new ReadEntitiesSet {
@@ -547,7 +547,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             var ids = Helper.CreateHashSet (deletes.Count, JsonKey.Equality);
             foreach (var key in deletes) {
-                var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+                var id = KeyConvert.KeyToId(key);
                 ids.Add(id);
             }
             var req = new DeleteEntities {

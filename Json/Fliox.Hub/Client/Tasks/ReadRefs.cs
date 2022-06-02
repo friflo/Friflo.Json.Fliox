@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -55,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
 
         internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
@@ -74,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 if (peer.error == null) {
-                    var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                    var key = KeyConvert.IdToKey(id);
                     result.Add(key, peer.Entity);
                 } else {
                     entityErrorInfo.AddEntityError(peer.error);
@@ -131,9 +133,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  override  string          KeyName     { get; }
         internal  override  bool            IsIntKey    { get; }
 
-            
         internal override   SubRefs         SubRefs => refsTask.subRefs;
 
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
 
         internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
@@ -155,7 +157,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var id = ids.First();
             var peer = entitySet.GetPeerById(id);
             if (peer.error == null) {
-                key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                key     = KeyConvert.IdToKey(id);
                 entity  = peer.Entity;
             } else {
                 var entityErrorInfo = new TaskErrorInfo();

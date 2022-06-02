@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -59,6 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
     internal partial class SyncSet<TKey, T>
     {
+        private static readonly     RefKey<TKey>  KeyConvert = RefKey.GetRefKey<TKey>();
+        
         internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = _reserveKeys;
             if (result is TaskErrorResult taskError) {
@@ -137,7 +140,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
-                var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                var key = KeyConvert.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
@@ -208,7 +211,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
                     continue;
                 }
-                var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                var key = KeyConvert.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 read.result[key] = peer.Entity;
             }
@@ -266,7 +269,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     entityErrorInfo.AddEntityError(error);
                     continue;
                 }
-                var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                var key = KeyConvert.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 results.Add(key, peer.Entity);
             }
@@ -407,7 +410,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 keysBuf.Clear();
                 deleteTask.GetKeys(keysBuf);
                 foreach (var key in keysBuf) {
-                    var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
+                    var id = KeyConvert.KeyToId(key);
                     if (errorsDelete.TryGetValue(id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
                     }
