@@ -55,7 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal  override  SubRefs     SubRefs => refsTask.subRefs;
 
-        private static readonly     KeyConverter<TKey>  KeyConvert = KeyConverter.GetConverter<TKey>();
 
         internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
@@ -75,7 +74,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 if (peer.error == null) {
-                    var key = KeyConvert.IdToKey(id);
                     result.Add(peer.Entity);
                 } else {
                     entityErrorInfo.AddEntityError(peer.error);
