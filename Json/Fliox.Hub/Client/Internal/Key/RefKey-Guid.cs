@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
+namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
 {
     internal sealed class RefKeyGuid : RefKey<Guid>
     {

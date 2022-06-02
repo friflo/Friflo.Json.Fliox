@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;

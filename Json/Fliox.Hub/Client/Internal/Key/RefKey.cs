@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
+namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
 {
     // -------------------------------------------- RefKey -----------------------------------------------
     internal abstract class RefKey {

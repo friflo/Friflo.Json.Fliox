@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 
-namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyRef
+namespace Friflo.Json.Fliox.Hub.Client.Internal.Key
 {
     internal sealed class RefKeyByte : RefKey<byte>
     {

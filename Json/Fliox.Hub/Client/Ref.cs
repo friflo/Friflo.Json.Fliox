@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using static System.Diagnostics.DebuggerBrowsableState;
 

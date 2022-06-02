@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity

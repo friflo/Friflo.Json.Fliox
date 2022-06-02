@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
-using Friflo.Json.Fliox.Hub.Client.Internal.KeyRef;
+using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
