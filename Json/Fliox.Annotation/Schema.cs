@@ -5,7 +5,8 @@ using System;
 
 namespace Friflo.Json.Fliox
 {
-    // --- Schema generation - used by: Friflo.Json.Fliox.Schema
+    // --- schema generation Attributes
+    // used by Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// <a href="https://spec.openapis.org/oas/v3.0.0#openapi-object">OpenAPI Object specification</a>
