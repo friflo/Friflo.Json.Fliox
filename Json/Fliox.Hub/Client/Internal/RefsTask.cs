@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.subRefs    = new SubRefs();
         }
 
-        internal ReadRefsTask<TValue> ReadRefsByExpression<TKey, TValue>(EntitySet relation, Expression expression, FlioxClient store) where TValue : class {
+        internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(EntitySet relation, Expression expression, FlioxClient store) where TValue : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TValue>(relation, path, store);
         }

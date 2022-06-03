@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
+            return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
         public ReadRefsTask<TRef> ReadRelationsArray<TRefKey, TRef>(
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
+            return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
         
