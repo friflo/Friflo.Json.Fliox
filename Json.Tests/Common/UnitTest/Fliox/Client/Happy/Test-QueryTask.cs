@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             allArticlesLimit.limit      = 2;
 
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
-            var ordersWithCustomer1     = orders.Query(o => o.customer.Key == "customer-1")         .TaskName("ordersWithCustomer1");
+            var ordersWithCustomer1     = orders.Query(o => o.customer == "customer-1")             .TaskName("ordersWithCustomer1");
             var ordersItemsAmount       = orders.Query(o => o.items.Count(i => i.amount < 2) > 0)   .TaskName("read3");
             var ordersAnyAmountLowerFilter = new EntityFilter<Order>(o => o.items.Any(i => i.amount < 2));
             var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter)          .TaskName("ordersAnyAmountLower2");
@@ -54,11 +54,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var customer2_0             = readOrders.ReadRelation(customers, orderCustomer2);
             AreEqual("readOrders -> .customer2", customer2_0.ToString());
 
-            var orderCustomer           = orders.RefPath(o => o.customer);
-            var customer                = readOrders.ReadRefPath(orderCustomer);
-            var customer2               = readOrders.ReadRefPath(orderCustomer);
+            var orderCustomer           = orders.RelationPath(customers, o => o.customer);
+            var customer                = readOrders.ReadRelation(customers, orderCustomer);
+            var customer2               = readOrders.ReadRelation(customers, orderCustomer);
             AreSame(customer, customer2);
-            var customer3               = readOrders.ReadRef(o => o.customer);
+            var customer3               = readOrders.ReadRelation(customers, o => o.customer);
             AreSame(customer, customer3);
             AreEqual("readOrders -> .customer", customer.Details);
             

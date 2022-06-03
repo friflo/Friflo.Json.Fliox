@@ -45,15 +45,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             var orders      = store.orders;
             var articles    = store.articles;
-            var producers   = store.producers;            
+            var producers   = store.producers;
+            var customers   = store.customers;  
+            
             var readOrders  = orders.Read();
             var order1Task  = readOrders.Find("order-1");
             await store.SyncTasks();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
-            var orderCustomer = orders.RefPath(o => o.customer);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            var orderCustomer = orders.RelationPath(customers, o => o.customer);
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelation(customers, orderCustomer); });
             AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
             var itemsArticle = orders.RelationsPath(articles, o => o.items.Select(a => a.article));
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelations(articles, itemsArticle); });

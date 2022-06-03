@@ -31,12 +31,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (var hub      = new FlioxHub(database, env))
             using (var store    = new PocStore(hub) { UserId = "TestQueryRef"}) {
                 var orders = store.orders;
-                var customerId = orders.Query(o => o.customer.Key == "customer-1");
+                var customerId = orders.Query(o => o.customer == "customer-1");
                 AreEqual("QueryTask<Order> (filter: o => o.customer == 'customer-1')", customerId.ToString());
                 
-                var e = Throws<NotSupportedException>(() => { var _ = orders.Query(o => o.customer.Entity == null); });
-                AreEqual("Query using Ref<>.Entity intentionally not supported. Only Ref<>.id is valid: o.customer.Entity, expression: o => (o.customer.Entity == null)", e.Message);
-
                 store.SyncTasks().Wait();
             }
         }

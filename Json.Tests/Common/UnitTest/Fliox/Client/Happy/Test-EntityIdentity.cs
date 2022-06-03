@@ -54,9 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // AreEqual(1, store.orders.Count);
 
             AreSame(order1Task.     Result,   order);
-            AreSame(customer1Task.  Result,   order.customer.Entity);
-        //  AreSame(article1Task.   Result,   order.items[0].article.Entity); - was used for Ref<,>
-        //  AreSame(article2Task.   Result,   order.items[1].article.Entity); - was used for Ref<,>
+        //  AreSame(customer1Task.  Result,   order.customer.Entity);           - was used for Ref<,>
+        //  AreSame(article1Task.   Result,   order.items[0].article.Entity);   - was used for Ref<,>
+        //  AreSame(article2Task.   Result,   order.items[1].article.Entity);   - was used for Ref<,>
             IsNull(unknownTask.     Result);
         }
     }

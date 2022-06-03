@@ -24,13 +24,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// Optimization: <see cref="RefPath{TEntity,TRefKey,TRef}"/> and <see cref="RefsPath{TEntity,TRefKey,TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
          
-        private static readonly RefPath <Order, string, Customer> OrderCustomer = RefPath<Order, string, Customer>.MemberRef(o => o.customer);
-        private static readonly RelationsPath<Article> ItemsArticle  =  RelationsPath<Article>.MemberRefs<string,Order>(o => o.items.Select(a => a.article));
+        private static readonly RelationPath <Customer> OrderCustomer = RelationPath<Customer>.MemberRef <string,Order>(o => o.customer);
+        private static readonly RelationsPath<Article>  ItemsArticle  = RelationsPath<Article>.MemberRefs<string,Order>(o => o.items.Select(a => a.article));
         
         private static async Task AssertRead(PocStore store) {
             var orders      = store.orders;
             var articles    = store.articles;
             var producers   = store.producers;
+            var customers   = store.customers;
             
             var readOrders  = orders.Read()                                      .TaskName("readOrders");
             var order1Task  = readOrders.Find("order-1")                         .TaskName("order1Task");
@@ -38,9 +39,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
-            var orderCustomer = orders.RefPath(o => o.customer);
+            var orderCustomer = orders.RelationPath(customers, o => o.customer);
             AreEqual(OrderCustomer.path, orderCustomer.path);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelation(customers, orderCustomer); });
             AreEqual("Task already executed. readOrders", e.Message);
             var itemsArticle = orders.RelationsPath(articles, o => o.items.Select(a => a.article));
             AreEqual(ItemsArticle.path, itemsArticle.path);

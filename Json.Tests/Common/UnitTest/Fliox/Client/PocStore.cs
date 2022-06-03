@@ -77,7 +77,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     /// Check some new lines
                     /// in documentation
                     /// </summary>
-                    public  Ref<string, Customer>   customer;
+        [Relation(nameof(PocStore.customers))]
+                    public  string                  customer;
         [Relation(nameof(PocStore.customers))]
                     public  string                  customer2;
                     /// <summary>single line documentation</summary>
