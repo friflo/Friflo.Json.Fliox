@@ -74,9 +74,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(intEntity == find.Result);
-                entityRef.intEntity         = intEntity;
+                entityRef.intEntity         = intEntity.id;
                 entityRef.intNullEntity     = default;
-                entityRef.intNullEntity2    = intEntity2;
+                entityRef.intNullEntity2    = intEntity2.id;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore" }) {
@@ -108,9 +108,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.guidEntity        = entity;
-                entityRef.intEntities       = new List<Ref<int, IntEntity>> { intEntity };
-                entityRef.intNullEntities   = new List<Ref<int?, IntEntity>> { intEntity, default };
+                entityRef.guidEntity        = entity.id;
+                entityRef.intEntities       = new List<int>     { intEntity.id };
+                entityRef.intNullEntities   = new List<int?>    { intEntity.id, default };
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore"}) {
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.guidNullEntity = entity;
+                entityRef.guidNullEntity = entity.id;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore"}) {
@@ -173,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.longEntity        = entity;
+                entityRef.longEntity        = entity.Id;
                 entityRef.longNullEntity    = default;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.shortEntity       = entity;
+                entityRef.shortEntity       = entity.id;
                 entityRef.shortNullEntity   = default;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
@@ -237,7 +237,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.byteEntity        = entity;
+                entityRef.byteEntity        = entity.id;
                 entityRef.byteNullEntity    = default;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
@@ -269,7 +269,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.customIdEntity = entity;
+                entityRef.customIdEntity = entity.customId;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore"}) {
@@ -284,6 +284,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             // --- write and read Ref<>'s
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore"}) {
+                store.WriteNull = true;
                 var create = store.entityRefs.Upsert(entityRef);
                 
                 await store.SyncTasks();
@@ -294,51 +295,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.entityRefs.Read();
                 
                 var find = read.Find(entityRef.id);
-                var guidRef      = read.ReadRef        (er => er.guidEntity);
-                var guidNullRef  = read.ReadRef        (er => er.guidNullEntity);
+                var guidRef      = read.ReadRelation(store.guidEntities, er => er.guidEntity);
+                var guidNullRef  = read.ReadRelation(store.guidEntities, er => er.guidNullEntity);
                 
-                var intRef       = read.ReadRef        (er => er.intEntity);
-                var intNullRef   = read.ReadRef        (er => er.intNullEntity);
-                var intNullRef2  = read.ReadRef        (er => er.intNullEntity2);
+                var intRef       = read.ReadRelation(store.intEntities, er => er.intEntity);
+                var intNullRef   = read.ReadRelation(store.intEntities, er => er.intNullEntity);
+                var intNullRef2  = read.ReadRelation(store.intEntities, er => er.intNullEntity2);
                 
-                var longRef      = read.ReadRef        (er => er.longEntity);
-                var longNullRef  = read.ReadRef        (er => er.longNullEntity);
+                var longRef      = read.ReadRelation(store.longEntities, er => er.longEntity);
+                var longNullRef  = read.ReadRelation(store.longEntities, er => er.longNullEntity);
                 
-                var shortRef     = read.ReadRef        (er => er.shortEntity);
-                var shortNullRef = read.ReadRef        (er => er.shortNullEntity);
+                var shortRef     = read.ReadRelation(store.shortEntities, er => er.shortEntity);
+                var shortNullRef = read.ReadRelation(store.shortEntities, er => er.shortNullEntity);
                 
-                var byteRef      = read.ReadRef        (er => er.byteEntity);
-                var byteNullRef  = read.ReadRef        (er => er.byteNullEntity);
+                var byteRef      = read.ReadRelation(store.byteEntities, er => er.byteEntity);
+                var byteNullRef  = read.ReadRelation(store.byteEntities,er => er.byteNullEntity);
                 
-                var customIdRef  = read.ReadRef        (er => er.customIdEntity);
+                var customIdRef  = read.ReadRelation(store.customIdEntities,er => er.customIdEntity);
                 
-                var intRefs      = read.ReadArrayRefs  (er => er.intEntities);
-                var intNullRefs  = read.ReadArrayRefs  (er => er.intNullEntities);
+                var intRefs      = read.ReadRelations(store.intEntities,er => er.intEntities);
+                var intNullRefs  = read.ReadRelations(store.intEntities,er => er.intNullEntities);
 
                 await store.SyncTasks();                   
                
                 IsTrue(find.Success);
                 var result = find.Result;
                 AreEqual(entityRef.id, result.id);
-                IsNotNull(result.guidEntity.Entity);
-                IsNotNull(result.guidNullEntity.Entity);
+                IsNotNull(result.guidEntity);
+                IsNotNull(result.guidNullEntity);
                 
-                IsNotNull(result.intEntity.Entity);
-                IsNull   (result.intNullEntity.Entity);
-                IsTrue   (result.intNullEntity.TryEntity(out _));
-                IsNotNull(result.intNullEntity2.Entity);
+                IsNotNull(result.intEntity);
+                IsNull   (result.intNullEntity);
+                IsNotNull(result.intNullEntity2);
                 
-                IsNotNull(result.longEntity.Entity);
-                IsNull   (result.longNullEntity.Entity);
+                IsNotNull(result.longEntity);
+                IsNull   (result.longNullEntity);
                 
-                IsNotNull(result.shortEntity.Entity);
-                IsNull   (result.shortNullEntity.Entity);
+                IsNotNull(result.shortEntity);
+                IsNull   (result.shortNullEntity);
                 
-                IsNotNull(result.byteEntity.Entity);
-                IsNull   (result.byteNullEntity.Entity);
+                IsNotNull(result.byteEntity);
+                IsNull   (result.byteNullEntity);
                 
-                IsNotNull(result.customIdEntity.Entity);
-                IsNotNull(result.intEntities[0].Entity);
+                IsNotNull(result.customIdEntity);
+                IsNotNull(result.intEntities[0]);
                 
                 IsNotNull(guidRef.Result);
                 

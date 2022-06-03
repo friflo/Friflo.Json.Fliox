@@ -60,23 +60,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     
     public class EntityRefs {
         [Required]
-        public  string                              id;
-        public  Ref      <Guid,   GuidEntity>       guidEntity;
-        public  Ref      <Guid?,  GuidEntity>       guidNullEntity;
-        public  Ref      <int,    IntEntity>        intEntity;
-        public  Ref      <int?,   IntEntity>        intNullEntity;
-        public  Ref      <int?,   IntEntity>        intNullEntity2;
-        public  Ref      <long,   LongEntity>       longEntity;
-        public  Ref      <long?,  LongEntity>       longNullEntity;
-        public  Ref      <short,  ShortEntity>      shortEntity;
-        public  Ref      <short?, ShortEntity>      shortNullEntity;
-        public  Ref      <byte,   ByteEntity>       byteEntity;
-        public  Ref      <byte?,  ByteEntity>       byteNullEntity;
-        public  Ref      <string, CustomIdEntity>   customIdEntity;
-        public  List<Ref <int,    IntEntity>>       intEntities;
+                                                            public  string      id;
+        [Relation(nameof(EntityIdStore.guidEntities))]      public  Guid        guidEntity;
+        [Relation(nameof(EntityIdStore.guidEntities))]      public  Guid?       guidNullEntity;
+        [Relation(nameof(EntityIdStore.intEntities))]       public  int         intEntity;
+        [Relation(nameof(EntityIdStore.intEntities))]       public  int?        intNullEntity;
+        [Relation(nameof(EntityIdStore.intEntities))]       public  int?        intNullEntity2;
+        [Relation(nameof(EntityIdStore.longEntities))]      public  long        longEntity;
+        [Relation(nameof(EntityIdStore.longEntities))]      public  long?       longNullEntity;
+        [Relation(nameof(EntityIdStore.shortEntities))]     public  short       shortEntity;
+        [Relation(nameof(EntityIdStore.shortEntities))]     public  short?      shortNullEntity;
+        [Relation(nameof(EntityIdStore.byteEntities))]      public  byte        byteEntity;
+        [Relation(nameof(EntityIdStore.byteEntities))]      public  byte?       byteNullEntity;
+        [Relation(nameof(EntityIdStore.customIdEntities))]  public  string      customIdEntity;
+        [Relation(nameof(EntityIdStore.intEntities))]       public  List<int>   intEntities;
         // arrays with nullable references are supported, but bot recommended. It forces the application
         // for null checks, which can simply omitted by not using an array with nullable references.
-        public  List<Ref <int?,   IntEntity>>       intNullEntities;
+        [Relation(nameof(EntityIdStore.intEntities))]       public  List<int?>  intNullEntities;
     }
 
     public class CustomIdEntity2 {

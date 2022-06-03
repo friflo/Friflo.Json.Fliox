@@ -186,7 +186,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         throw new InvalidTypeException($"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} not found");
                     }
                     var fieldMapper     = field.fieldType;
-                    var relationType    = fieldMapper.GetElementMapper()?.type ?? fieldMapper.type;
+                    var relationMapper  = fieldMapper.GetElementMapper() ?? fieldMapper;
+                    var relationType    = relationMapper.nullableUnderlyingType ?? relationMapper.type;
                     var setKeyType      = entitySet.KeyType;
                     if (setKeyType != relationType) {
                         throw new InvalidTypeException($"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} invalid type. Expect: {setKeyType.Name}");
