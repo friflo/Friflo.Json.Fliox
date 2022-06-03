@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Stats;
@@ -120,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Monitor
 
                 var userClients = user.clients;
                 if (userHits.clients == null) {
-                    userHits.clients = new List<Ref<JsonKey, ClientHits>>(userClients.Count);
+                    userHits.clients = new List<JsonKey>(userClients.Count);
                 } else {
                     userHits.clients.Clear();
                 }
