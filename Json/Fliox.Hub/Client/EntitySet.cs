@@ -388,16 +388,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // from Ref<,>
-        // -> RelationPath()
-        public RefPath<T, TKey, TRef> RefPath<TRef>(Expression<Func<T, Ref<TKey, TRef>>> selector) where TRef : class {
-            string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<T, TKey, TRef>(path);
-        }
-        
-        // -> RelationsPath()
-        public RefsPath<T, TKey, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TKey, TRef>>>> selector) where TRef : class {
-            string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<T, TKey, TRef>(path);
-        }
+        public RefPath<T, TKey, TRef>  RefPath<TRef> (Expression<Func<T, Ref<TKey, TRef>>> selector)              where TRef : class => throw new InvalidOperationException("obsolete");
+        public RefsPath<T, TKey, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TKey, TRef>>>> selector) where TRef : class => throw new InvalidOperationException("obsolete");
     }
 }

@@ -112,26 +112,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         
         // --- Refs
-        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
-            var relation = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByPath<TRef>(relation, selector.path, store);
-        }
-        
-        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
-            var relation = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
-        }
-        
-        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey,TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
-            var relation = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
-        }
+        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector)                           where TRef : class => throw new InvalidOperationException("obsolete");
+        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>    (Expression<Func<T, Ref<TRefKey, TRef>>> selector)              where TRef : class => throw new InvalidOperationException("obsolete");
+        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey,TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class => throw new InvalidOperationException("obsolete");
     }
     
     // ----------------------------------------- ReadRefTask<T> -----------------------------------------
@@ -185,25 +168,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
-            var relation = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByPath<TRef>(relation, selector.path, store);
-        }
-        
-        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
-            var relation = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
-        }
-        
-        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
-            var relation = store._intern.GetSetByType(typeof(TRef));
-            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
-        }
+        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef> (RefsPath<T, TRefKey, TRef> selector)                           where TRef : class => throw new InvalidOperationException("obsolete");
+        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>     (Expression<Func<T, Ref<TRefKey, TRef>>> selector)              where TRef : class => throw new InvalidOperationException("obsolete");
+        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class => throw new InvalidOperationException("obsolete");
     }
 }
