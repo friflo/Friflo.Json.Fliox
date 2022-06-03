@@ -209,6 +209,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         } */
         
         // --- Ref
+        // -> ReadRelation()
         public ReadRefTask<TRef> ReadRef<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
@@ -217,6 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return ReadRefByPath<TRef>(relation, path);
         }
         
+        // -> ReadRelations()
         public ReadRefTask<TRef> ReadRefPath<TRefKey, TRef>(RefPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
