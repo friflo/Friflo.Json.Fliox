@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                                 relationType    = propField.fieldType.RelationType();
                             }
                             string relation     = ContainerFromType(rootTypeMapper, relationType);
-                            relation            = relation ?? propField.GetRelationAttributeType();
+                            relation            = relation ?? propField.relation;
                             var required        = propField.required || !isNullable;
                             var isKey           = propField.isKey;
                             if (isKey) {

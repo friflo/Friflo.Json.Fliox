@@ -168,6 +168,31 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 setByName[name]                     = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
+            ValidateMappers(mappers);
+        }
+        
+        // Validate [Relation(<container>)] fields / properties
+        // todo this validation can be done once per FlioxClient type
+        private void ValidateMappers(IEntitySetMapper[] mappers) {
+            foreach (var mapper in mappers) {
+                var typeMapper      = (TypeMapper)mapper;
+                var entityMapper    = typeMapper.GetElementMapper();
+                var fields          = entityMapper.propFields.fields;
+                foreach (var field in fields) {
+                    var relation = field.relation;
+                    if (relation == null)
+                        continue;
+                    if (!TryGetSetByName(relation, out var entitySet)) {
+                        throw new InvalidTypeException($"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} not found");
+                    }
+                    var fieldMapper     = field.fieldType;
+                    var relationType    = fieldMapper.GetElementMapper()?.type ?? fieldMapper.type;
+                    var setKeyType      = entitySet.KeyType;
+                    if (setKeyType != relationType) {
+                        throw new InvalidTypeException($"[Relation('{relation}')] at {entityMapper.type.Name}.{field.name} invalid type. Expect: {setKeyType.Name}");
+                    }
+                }
+            }
         }
         
         private IEntitySetMapper[] GetEntitySetMappers (Type clientType, EntityInfo[] entityInfos) {

@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public   readonly   bool            required;
         public   readonly   string          docs;
         public   readonly   bool            isKey;
+        public   readonly   string          relation;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
         public              Bytes           subSeqMember;       // don't mutate
@@ -70,6 +71,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             this.objIndex   = objIndex;
             this.required   = required;
             this.docs       = docs;
+            this.relation   = GetRelationAttributeType();
         }
         
         public MemberInfo   Member { get {
@@ -122,7 +124,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             return name;
         }
         
-        public string GetRelationAttributeType() {
+        private string GetRelationAttributeType() {
             foreach (var attr in customAttributes) {
                 if (attr.AttributeType == typeof(RelationAttribute))
                     return (string)attr.ConstructorArguments[0].Value;

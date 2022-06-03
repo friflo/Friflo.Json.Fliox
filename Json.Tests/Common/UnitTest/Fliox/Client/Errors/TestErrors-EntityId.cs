@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -51,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<InvalidTypeException>(() => {
                 _ = new InvalidMemberStore(hub) { ClientId = "store"};
             });
-            AreEqual("Invalid member: StringEntity.entityRef - Ref<Int32, StringEntity> != EntitySet<String, StringEntity>", e.Message);
+            AreEqual("[Relation('stringEntities')] at StringEntity.entityRef invalid type. Expect: String", e.Message);
         }
     }
 
@@ -91,8 +92,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     
     // --------
     public class StringEntity {
-        public  string                  id;
-        public  Ref<int, StringEntity>  entityRef;
+        public  string      id;
+        [Relation(nameof(InvalidMemberStore.stringEntities))]
+        public  int         entityRef;
     }
     
     public class InvalidMemberStore : FlioxClient {
