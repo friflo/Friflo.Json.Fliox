@@ -107,8 +107,7 @@ GET {{base}}/rest/main_db/articles
 },
     {
     "id": "article-2",
-    "name": "Smartphone",
-    "producer": null
+    "name": "Smartphone"
 },
     {
     "id": "article-galaxy",
@@ -127,8 +126,7 @@ GET {{base}}/rest/main_db/articles
 },
     {
     "id": "log-create-read-error",
-    "name": "used for successful read",
-    "producer": null
+    "name": "used for successful read"
 }
 ]
 
@@ -174,8 +172,7 @@ GET {{base}}/rest/main_db/articles?ids=article-1,article-2
 },
     {
     "id": "article-2",
-    "name": "Smartphone",
-    "producer": null
+    "name": "Smartphone"
 }
 ]
 
@@ -192,8 +189,7 @@ POST {{base}}/rest/main_db/articles/bulk-get
 },
     {
     "id": "article-2",
-    "name": "Smartphone",
-    "producer": null
+    "name": "Smartphone"
 }
 ]
 

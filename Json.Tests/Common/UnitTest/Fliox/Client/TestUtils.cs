@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var hub     = new FlioxHub(new MemoryDatabase("db"), env);
             var store   = new PocStore(hub) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
-            var relationSelector = store.articles.RelationPath(store.producers, o => o.producer2);
+            var relationSelector = store.articles.RelationPath(store.producers, o => o.producer);
             readArticles.ReadRelation(store.producers, relationSelector);
         }
         

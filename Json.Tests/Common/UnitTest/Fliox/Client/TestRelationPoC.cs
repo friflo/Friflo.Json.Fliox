@@ -35,15 +35,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             await store.SyncTasks();
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
+            producers.Create(samsung);
             var samsungJson     = samsung.ToString();
             AreEqual("{\"id\":\"producer-samsung\",\"name\":\"Samsung\"}", samsungJson);
             
-            var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
+            var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung.id};
             var createGalaxy    = articles.Upsert(galaxy);
-            AreSimilar("entities: 1, tasks: 1",                         store);
+            AreSimilar("entities: 2, tasks: 2",                         store);
             AreSimilar("articles: 1, tasks: 1 >> upsert #1",            articles);
 
-            var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 1);
+            var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 0);
             
             AreSimilar("entities:  2, tasks: 2",                         store);
             AreSimilar("producers: 1, tasks: 1 >> create #1",            producers); // created samsung implicit
@@ -51,11 +52,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
             var appleEmployees  = new List<Ref<string, Employee>>{ steveJobs };
             var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees}; // steveJobs created implicit
-            var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
+            producers.Create(apple);
+            var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple.id};
             var createIPad      = articles.Upsert(ipad);
             AreSimilar("articles: 2, tasks: 1 >> upsert #2",                        articles);
             
-            var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 2);
+            var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 1);
             AreSimilar("entities:  5, tasks: 3",                                     store);
             AreSimilar("articles:  2, tasks: 1 >> upsert #2",                        articles);
             AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
@@ -70,11 +72,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             IsTrue(createIPad.Success);
             IsNull(createIPad.Error); // error is null if successful
             
-            var canon           = new Producer { id = "producer-canon", name = "Canon"}; // created implicit & explicit
-            var createCanon     = producers.Create(canon); // created explicit
+            var canon           = new Producer { id = "producer-canon", name = "Canon"};
+            var createCanon     = producers.Create(canon);
             var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
-            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon }; // created implicit
-            var notebook        = new Article { id = "article-notebook-💻-unicode", name = "Notebook", producer = samsung };
+            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon.id };
+            var notebook        = new Article { id = "article-notebook-💻-unicode", name = "Notebook", producer = samsung.id };
             var derivedClass    = new DerivedClass{ article = cameraCreate.id };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);

@@ -45,6 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             var orders      = store.orders;
             var articles    = store.articles;
+            var producers   = store.producers;            
             var readOrders  = orders.Read();
             var order1Task  = readOrders.Find("order-1");
             await store.SyncTasks();
@@ -73,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Result; });
             AreEqual("ReadRefsTask.Result requires SyncTasks(). orderArticles", e.Message);
 
-            var articleProducer = orderArticles.ReadRefs(a => a.producer)                           .TaskName("articleProducer");
+            var articleProducer = orderArticles.ReadRelations(producers, a => a.producer)           .TaskName("articleProducer");
             AreEqual("orderArticles -> .producer", articleProducer.Details);
 
             var duplicateId     = "article-galaxy"; // support duplicate ids

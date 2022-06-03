@@ -41,14 +41,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testArticles.readEntityErrors.Add(article1ReadError, (value) => value.SetError(testArticles.ReadError(article1ReadError)));
             testCustomers.readTaskErrors. Add(readTaskError,     () => new CommandError("simulated read task error"));
 
-            var orders = store.orders;
-            var articles = store.articles;
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var producers   = store.producers;
 
             var readOrders  = orders.Read()                                                         .TaskName("readOrders");
             var order1      = readOrders.Find("order-1")                                            .TaskName("order1");
             AreEqual("Find<Order> (id: 'order-1')", order1.Details);
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
-            var articleProducer         = allArticles.ReadRefs(a => a.producer)                     .TaskName("articleProducer");
+            var articleProducer         = allArticles.ReadRefs(producers, a => a.producer)          .TaskName("articleProducer");
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer.Key == "customer-1")         .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");

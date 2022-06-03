@@ -65,7 +65,37 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             return jsonResult;
         }
-
+        
+        // --- Relations
+        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>        relation,
+            RelationsPath<TRef>             selector) where TRef : class
+        {
+            if (State.IsExecuted())
+                throw AlreadySyncedError();
+            return refsTask.ReadRefsByPath<TRef>(relation, selector.path, store);
+        }
+        
+        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>        relation,
+            Expression<Func<T, TRefKey>>    selector) where TRef : class
+        {
+            if (State.IsExecuted())
+                throw AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
+        }
+        
+        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>                    relation,
+            Expression<Func<T, IEnumerable<TRefKey>>>   selector) where TRef : class
+        {
+            if (State.IsExecuted())
+                throw AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, store);
+        }
+        
+        
+        // --- Refs<,>
         public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();

@@ -30,6 +30,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertRead(PocStore store) {
             var orders      = store.orders;
             var articles    = store.articles;
+            var producers   = store.producers;
+            
             var readOrders  = orders.Read()                                      .TaskName("readOrders");
             var order1Task  = readOrders.Find("order-1")                         .TaskName("order1Task");
             await store.SyncTasks();
@@ -60,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Result; });
             AreEqual("ReadRefsTask.Result requires SyncTasks(). readOrders -> .items[*].article", e.Message);
 
-            var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
+            var articleProducerTask = articleRefsTask.ReadRelations(producers, a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
 
             var readTask        = store.articles.Read()                                     .TaskName("readTask");

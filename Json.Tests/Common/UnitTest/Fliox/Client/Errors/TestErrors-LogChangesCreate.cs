@@ -33,32 +33,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var createError = "create-error";
                 testProducers.writeTaskErrors.Add(createError, () => new CommandError("simulated create task error"));
-                patchArticle.Result.producer = new Producer {id = createError};
+                var producer1 = new Producer {id = createError};
+                var producerError = store.producers.Create(producer1);
+                patchArticle.Result.producer = producer1.id;
 
                 var logChanges = store.LogChanges();
-                AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
+                AreEqual("LogTask (patches: 1, creates: 0)", logChanges.ToString());
 
                 var sync = await store.TrySyncTasks();
 
-                AreEqual("tasks: 1, failed: 1", sync.ToString());
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors ~ count: 1
-| WriteError: producers [create-error], DatabaseError - simulated create task error", logChanges.Error.Message);
+                AreEqual("tasks: 2, failed: 1", sync.ToString());
+                AreEqual(TaskErrorType.DatabaseError, producerError.Error.type);
+                AreEqual(@"DatabaseError ~ simulated create task error", producerError.Error.Message);
             } {
                 var createException = "create-exception";
                 testProducers.writeTaskErrors.Add(createException, () => throw new SimulationException("simulated create task exception"));
-                patchArticle.Result.producer = new Producer {id = createException};
+                var producer2 = new Producer {id = createException};
+                var producerException = store.producers.Create(producer2);
+                patchArticle.Result.producer = producer2.id;
 
                 var logChanges = store.LogChanges();
-                AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
+                AreEqual("LogTask (patches: 1, creates: 0)", logChanges.ToString());
 
-                AreEqual(1, store.Tasks.Count);
+                AreEqual(2, store.Tasks.Count);
                 var sync = await store.TrySyncTasks(); // ----------------
 
-                AreEqual("tasks: 1, failed: 1", sync.ToString());
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqualTrimStack(@"EntityErrors ~ count: 1
-| WriteError: producers [create-exception], UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
+                AreEqual("tasks: 2, failed: 1", sync.ToString());
+                AreEqual(TaskErrorType.UnhandledException, producerException.Error.type);
+                AreEqualTrimStack(@"UnhandledException ~ SimulationException: simulated create task exception", producerException.Error.Message);
             }
 
             /*  // not required as TestContainer as database doesnt mutate

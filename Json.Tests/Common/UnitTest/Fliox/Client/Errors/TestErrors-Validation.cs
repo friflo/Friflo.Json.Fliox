@@ -57,11 +57,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             IsFalse(sync.Success);
             IsFalse(createTask.Success);
             var errors = createTask.Error.entityErrors;
-            AreEqual("Missing required fields: [name] at Article > (root), pos: 45", errors[new JsonKey("article-missing-name")].message);
+            AreEqual("Missing required fields: [name] at Article > (root), pos: 29", errors[new JsonKey("article-missing-name")].message);
             const string expectError = @"EntityErrors ~ count: 3
 | WriteError: articles [article-incorrect-type], Incorrect type. was: 123, expect: string at Article > name, pos: 41
 | WriteError: articles [article-missing-id], Missing required fields: [name] at Article > (root), pos: 29
-| WriteError: articles [article-missing-name], Missing required fields: [name] at Article > (root), pos: 45";
+| WriteError: articles [article-missing-name], Missing required fields: [name] at Article > (root), pos: 29";
             AreEqual(expectError, createTask.Error.Message);
             
             // --- test validation errors for upserts
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             IsFalse(sync.Success);
             IsFalse(upsertTask.Success);
             errors = upsertTask.Error.entityErrors;
-            AreEqual("Missing required fields: [name] at Article > (root), pos: 45", errors[new JsonKey("article-missing-name")].message);
+            AreEqual("Missing required fields: [name] at Article > (root), pos: 29", errors[new JsonKey("article-missing-name")].message);
             AreEqual(expectError, upsertTask.Error.Message);
             
             

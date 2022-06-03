@@ -26,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var orders      = store.orders;
             var articles    = store.articles;
             var customers   = store.customers;
+            var producers   = store.producers;
 
             var readOrders              = orders.Read()                                             .TaskName("readOrders");
             var order1                  = readOrders.Find("order-1")                                .TaskName("order1");
@@ -33,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
             var filterAll               = new EntityFilter<Article>(a => true);
             var allArticles2            = articles.QueryByFilter(filterAll)                         .TaskName("allArticles2");
-            var producersTask           = allArticles.ReadRefs(a => a.producer);
+            var producersTask           = allArticles.ReadRefs(producers, a => a.producer);
             var allArticlesLimit        = articles.QueryAll();
             allArticlesLimit.limit      = 2;
 

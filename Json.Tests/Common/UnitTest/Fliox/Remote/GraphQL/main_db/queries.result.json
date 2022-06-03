@@ -9,8 +9,7 @@
 }],
         "readArticlesWithSelectAllVar": [{
     "id": "article-2",
-    "name": "Smartphone",
-    "producer": null
+    "name": "Smartphone"
 }],
         "readEmpty": [
 ],
@@ -31,8 +30,7 @@
     "producer": "producer-canon"
 },{
     "id": "article-2",
-    "name": "Smartphone",
-    "producer": null
+    "name": "Smartphone"
 },{
     "id": "article-galaxy",
     "name": "Galaxy S10",
@@ -47,8 +45,7 @@
     "producer": "producer-samsung"
 },{
     "id": "log-create-read-error",
-    "name": "used for successful read",
-    "producer": null
+    "name": "used for successful read"
 }]},
         "queryAllVariable": {
     "count": 3
