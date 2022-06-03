@@ -14,12 +14,12 @@ namespace Fliox.DemoHub
     /// </summary>
     /// <remarks>
     /// <see cref="DemoStore"/> containers are fields or properties of type <see cref="EntitySet{TKey,T}"/>. <br/>
-    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. See ./DemoStore-commands.cs <br/>
+    /// Its commands are methods returning a <see cref="CommandTask{TResult}"/>. <br/>
     /// Its messages are methods returning a <see cref="MessageTask"/>. <br/>
     /// <br/>
     /// <see cref="DemoStore"/> instances can be used on client and server side. <br/>
-    /// The <see cref="MessageHandler"/> demonstrates how to use a <see cref="DemoStore"/> instances as client to execute
-    /// common database operations like: Upsert, Count and Query. <br/>
+    /// The <see cref="MessageHandler"/> demonstrates how to use a <see cref="DemoStore"/> instances as client to
+    /// execute common database operations like: Upsert, Count and Query. <br/>
     /// </remarks>
     [OpenAPI(Version = "1.0.0",
         ContactName = "Ullrich Praetz", ContactUrl = "https://github.com/friflo/Friflo.Json.Fliox/issues",
