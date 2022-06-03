@@ -15,6 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         private  readonly   List<LogChange>     creates = new List<LogChange>();
         
         public              int                 GetPatchCount()   => patches.Count; // count as method to avoid flooding properties
+        
+        /// Since removing Ref<,> <see cref="creates"/> is always empty (its Count == 0). No entities are created implicit anymore
         public              int                 GetCreateCount()  => creates.Count; // count as method to avoid flooding properties
 
         internal            TaskState           state;

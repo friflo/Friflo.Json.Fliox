@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var types       = store.types;
             store.types.WriteNull = true;
             
-            // delete stored (persisted) entities to enable implicit or explicit creation below
+            // delete stored (persisted) entities to enable creation below
             // Create() entity will fail, if already stored (persisted) 
             producers.Delete("producer-samsung");
             producers.Delete("producer-apple");
@@ -47,21 +47,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 0);
             
             AreSimilar("entities:  2, tasks: 2",                         store);
-            AreSimilar("producers: 1, tasks: 1 >> create #1",            producers); // created samsung implicit
+            AreSimilar("producers: 1, tasks: 1 >> create #1",            producers);
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
-            var appleEmployees  = new List<Ref<string, Employee>>{ steveJobs };
-            var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees}; // steveJobs created implicit
+            employees.Create(steveJobs);
+            var appleEmployees  = new List<string>{ steveJobs.id };
+            var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees};
             producers.Create(apple);
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple.id};
             var createIPad      = articles.Upsert(ipad);
             AreSimilar("articles: 2, tasks: 1 >> upsert #2",                        articles);
             
-            var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 1);
+            var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 0);
             AreSimilar("entities:  5, tasks: 3",                                     store);
             AreSimilar("articles:  2, tasks: 1 >> upsert #2",                        articles);
-            AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
-            AreSimilar("producers: 2, tasks: 1 >> create #2",                        producers); // created apple implicit
+            AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees);
+            AreSimilar("producers: 2, tasks: 1 >> create #2",                        producers);
 
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
@@ -178,8 +179,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);
             var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 0);
             AreSimilar("entities: 13, tasks: 5",                        store);
-            AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);   // created smartphone (implicit)
-            AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);  // created customer (implicit)
+            AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);
+            AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);
             
             AreSimilar("entities: 13, tasks: 5",                        store);
             var logStore5 = store.LogChanges();     AssertLog(logStore5, 0, 0);

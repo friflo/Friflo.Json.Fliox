@@ -45,6 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var articles    = store.articles;
             var producers   = store.producers;
             var customers   = store.customers;
+            var employees   = store.employees;
 
             var readOrders  = orders.Read()                                                         .TaskName("readOrders");
             var order1      = readOrders.Find("order-1")                                            .TaskName("order1");
@@ -95,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
 
-            var producerEmployees = articleProducer.ReadArrayRefs(p => p.employeeList)              .TaskName("producerEmployees");
+            var producerEmployees = articleProducer.ReadRelationsArray(employees, p => p.employeeList)   .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
             AreEqual(14, store.Tasks.Count);

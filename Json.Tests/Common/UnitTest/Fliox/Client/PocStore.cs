@@ -71,74 +71,75 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// </code>
     /// Test type reference '<see cref="OrderItem"/>' </summary>
     public class Order {
-        [Required]  public  string                  id { get; set; }
+        [Required]  public  string          id { get; set; }
                     /// <summary>
                     /// Some <b>useful</b> field documentation 🙂
                     /// Check some new lines
                     /// in documentation
                     /// </summary>
         [Relation(nameof(PocStore.customers))]
-                    public  string                  customer;
+                    public  string          customer;
         [Relation(nameof(PocStore.customers))]
-                    public  string                  customer2;
+                    public  string          customer2;
                     /// <summary>single line documentation</summary>
-                    public  DateTime                created;
+                    public  DateTime        created;
                     /// <summary><code>single line code documentation</code></summary>
-                    public  List<OrderItem>         items = new List<OrderItem>();
+                    public  List<OrderItem> items = new List<OrderItem>();
                         
-        public override string                      ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
 
     public class OrderItem {
         [Relation(nameof(PocStore.articles))]
-        [Required]  public  string                  article;
-                    public  int                     amount;
-                    public  string                  name;
+        [Required]  public  string          article;
+                    public  int             amount;
+                    public  string          name;
                         
-        public  override    string                  ToString() => JsonSerializer.Serialize(this);
+        public  override    string          ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Article
     {
-        [Required]  public  string                  id { get; set; }
-        [Required]  public  string                  name;
+        [Required]  public  string          id { get; set; }
+        [Required]  public  string          name;
         [Relation(nameof(PocStore.producers))]
-                    public  string                  producer;
+                    public  string          producer;
 
                         
-        public override     string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Customer {
-        [Required]  public  string                  id { get; set; }
-        [Required]  public  string                  name;
+        [Required]  public  string          id { get; set; }
+        [Required]  public  string          name;
         
-        public override     string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Producer {
-        [Required]  public  string                  id { get; set; }
-        [Required]  public  string                  name;
-        [Serialize (Name =                             "employees")]
-                    public  List<Ref<string, Employee>> employeeList;
+        [Required]  public  string          id { get; set; }
+        [Required]  public  string          name;
+        [Relation(nameof(PocStore.employees))]
+        [Serialize (Name =                 "employees")]
+                    public  List<string>    employeeList;
                         
-        public override string                      ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Employee {
-        [Required]  public  string                  id { get; set; }
-        [Required]  public  string                  firstName;
-                    public  string                  lastName;
+        [Required]  public  string          id { get; set; }
+        [Required]  public  string          firstName;
+                    public  string          lastName;
                         
-        public override     string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     // test case: using abstract class containing the id 
     public abstract class PocEntity
     {
-        [Required]  public   string                 id { get; set; } // defining as property ensures "id" is first JSON member
+        [Required]  public  string          id { get; set; } // defining as property ensures "id" is first JSON member
 
-        public override string                  ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     public class TestType : PocEntity {

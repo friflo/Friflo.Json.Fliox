@@ -27,6 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var articles    = store.articles;
             var customers   = store.customers;
             var producers   = store.producers;
+            var employees   = store.employees;
 
             var readOrders              = orders.Read()                                             .TaskName("readOrders");
             var order1                  = readOrders.Find("order-1")                                .TaskName("order1");
@@ -72,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
 
-            var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
+            var producerEmployees = producersTask.ReadRelationsArray(employees, p => p.employeeList);
             AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.ToString());
 
             // lab - test ReadRef expressions
