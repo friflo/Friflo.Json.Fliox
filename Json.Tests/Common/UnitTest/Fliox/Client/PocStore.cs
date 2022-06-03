@@ -89,7 +89,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
 
     public class OrderItem {
-        [Required]  public  Ref<string, Article>    article;
+        [Relation(nameof(PocStore.articles))]
+        [Required]  public  string                  article;
                     public  int                     amount;
                     public  string                  name;
                         

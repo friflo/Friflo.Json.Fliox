@@ -177,6 +177,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             return ReadRefByPath<TRef>(relation, path);
         }
         
+        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>    relation,
+            RelationPath<TRef>          selector
+        ) where TRef : class {
+            if (State.IsExecuted())
+                throw AlreadySyncedError();
+            return ReadRefByPath<TRef>(relation, selector.path);
+        }
+        
         // --- Relations
         public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(
             EntitySet<TRefKey, TRef>                    relation,
@@ -187,14 +196,16 @@ namespace Friflo.Json.Fliox.Hub.Client
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(
-                EntitySet<TRefKey, TRef>    relation,
-                RelationPath<TRef>          selector
-            ) where TRef : class {
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(
+            EntitySet<TRefKey, TRef>    relation,
+            RelationsPath<TRef>         selector
+        ) where TRef : class {
             if (State.IsExecuted())
                 throw AlreadySyncedError();
-            return ReadRefByPath<TRef>(relation, selector.path);
+            return refsTask.ReadRefsByPath<TRef>(relation, selector.path, set.intern.store);
         }
+        
+
 
         // lab - ReadRefs by Entity Type
         /*

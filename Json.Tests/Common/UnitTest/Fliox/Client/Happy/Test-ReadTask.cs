@@ -23,13 +23,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// Optimization: <see cref="RefPath{TEntity,TRefKey,TRef}"/> and <see cref="RefsPath{TEntity,TRefKey,TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
+         
         private static readonly RefPath <Order, string, Customer> OrderCustomer = RefPath<Order, string, Customer>.MemberRef(o => o.customer);
-        private static readonly RefsPath<Order, string, Article> ItemsArticle  =  RefsPath<Order, string, Article>.MemberRefs(o => o.items.Select(a => a.article));
+        private static readonly RelationsPath<Article> ItemsArticle  =  RelationsPath<Article>.MemberRefs<string,Order>(o => o.items.Select(a => a.article));
         
         private static async Task AssertRead(PocStore store) {
-            var orders = store.orders;
-            var readOrders = orders.Read()                                      .TaskName("readOrders");
-            var order1Task = readOrders.Find("order-1")                         .TaskName("order1Task");
+            var orders      = store.orders;
+            var articles    = store.articles;
+            var readOrders  = orders.Read()                                      .TaskName("readOrders");
+            var order1Task  = readOrders.Find("order-1")                         .TaskName("order1Task");
             await store.SyncTasks();
             
             // schedule ReadRefs on an already synced Read operation
@@ -38,20 +40,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual(OrderCustomer.path, orderCustomer.path);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already executed. readOrders", e.Message);
-            var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
+            var itemsArticle = orders.RelationsPath(articles, o => o.items.Select(a => a.article));
             AreEqual(ItemsArticle.path, itemsArticle.path);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelations(articles, itemsArticle); });
             AreEqual("Task already executed. readOrders", e.Message);
             
             // todo add Read() without ids 
 
             readOrders              = orders.Read()                                             .TaskName("readOrders");
             var order1              = readOrders.Find("order-1")                                .TaskName("order1");
-            var articleRefsTask     = readOrders.ReadRefsPath(itemsArticle);
-            var articleRefsTask2    = readOrders.ReadRefsPath(itemsArticle);
+            var articleRefsTask     = readOrders.ReadRelations(articles, itemsArticle);
+            var articleRefsTask2    = readOrders.ReadRelations(articles, itemsArticle);
             AreSame(articleRefsTask, articleRefsTask2);
             
-            var articleRefsTask3 = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
+            var articleRefsTask3 = readOrders.ReadRelations(articles, o => o.items.Select(a => a.article));
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 

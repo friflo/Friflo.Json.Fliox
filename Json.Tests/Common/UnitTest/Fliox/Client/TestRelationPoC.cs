@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon }; // created implicit
             var notebook        = new Article { id = "article-notebook-💻-unicode", name = "Notebook", producer = samsung };
-            var derivedClass    = new DerivedClass{ article = cameraCreate };
+            var derivedClass    = new DerivedClass{ article = cameraCreate.id };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Upsert(notebook);
@@ -155,26 +155,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             // customers.Create(customer);    // redundant - implicit tracked by order
             
             var smartphone  = new Article { id = "article-2", name = "Smartphone" };
-            // articles.Create(smartphone);   // redundant - implicit tracked by order
+            articles.Create(smartphone);
             
-            var item1 = new OrderItem { article = camera.Result, amount = 1, name = "Camera" };
-            var item2 = new OrderItem { article = smartphone,    amount = 2, name = smartphone.name }; // smartphone created implicit
-            var item3 = new OrderItem { article = camera.Result, amount = 3, name = "Camera" };
+            var item1 = new OrderItem { article = camera.Result.id, amount = 1, name = "Camera" };
+            var item2 = new OrderItem { article = smartphone.id,    amount = 2, name = smartphone.name };
+            var item3 = new OrderItem { article = camera.Result.id, amount = 3, name = "Camera" };
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;  // customer created implicit
             order.customer2 = "customer-2";
             
-            AreSimilar("entities:  9, tasks: 1",                        store);
+            AreSimilar("entities: 10, tasks: 2",                        store);
             
             AreSimilar("orders:    0",                                  orders);
             orders.Upsert(order);
             types.Upsert(type1);
-            AreSimilar("entities: 11, tasks: 3",                        store);
+            AreSimilar("entities: 12, tasks: 4",                        store);
             AreSimilar("orders:    1, tasks: 1 >> upsert #1",           orders);     // created order
             
-            AreSimilar("articles:  5, tasks: 1 >> reads: 1", articles);
+            AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);
             AreSimilar("customers: 0",                                  customers);
-            var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 2);
+            var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 1);
             AreSimilar("entities: 13, tasks: 5",                        store);
             AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);   // created smartphone (implicit)
             AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);  // created customer (implicit)

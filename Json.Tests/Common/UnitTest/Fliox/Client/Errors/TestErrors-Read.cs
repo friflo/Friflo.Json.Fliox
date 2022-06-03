@@ -54,19 +54,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var orderCustomer = orders.RefPath(o => o.customer);
             e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
-            var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            var itemsArticle = orders.RelationsPath(articles, o => o.items.Select(a => a.article));
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRelations(articles, itemsArticle); });
             AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
             
             // todo add Read() without ids 
 
             readOrders              = orders.Read()                                                 .TaskName("readOrders");
             var order1              = readOrders.Find("order-1")                                    .TaskName("order1");
-            var orderArticles       = readOrders.ReadRefsPath(itemsArticle)                         .TaskName("orderArticles");
-            var orderArticles2      = readOrders.ReadRefsPath(itemsArticle);
+            var orderArticles       = readOrders.ReadRelations(articles, itemsArticle)              .TaskName("orderArticles");
+            var orderArticles2      = readOrders.ReadRelations(articles, itemsArticle);
             AreSame(orderArticles, orderArticles2);
             
-            var orderArticles3      = readOrders.ReadArrayRefs(o => o.items.Select(a => a.article));
+            var orderArticles3      = readOrders.ReadRelations(articles, o => o.items.Select(a => a.article));
             AreSame(orderArticles, orderArticles3);
             AreEqual("readOrders -> .items[*].article", orderArticles.Details);
 
