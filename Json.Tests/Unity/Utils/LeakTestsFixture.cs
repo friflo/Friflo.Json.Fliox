@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;

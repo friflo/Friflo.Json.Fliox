@@ -3,9 +3,11 @@
 
 using System;
 using System.IO;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Mapper
+// ReSharper disable once CheckNamespace
+namespace Friflo.Json.Fliox
 {
     public class SerializerOptions {
         public  bool    Pretty              { get; set; }
