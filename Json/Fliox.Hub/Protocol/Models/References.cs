@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
     public sealed class References
     {
         /// <remarks>
-        /// Path to a <see cref="Client.Ref{TKey,T}"/> field referencing an entity.
-        /// These referenced entities are also loaded via the next <see cref="FlioxClient.SyncTasks"/> request.
+        /// Path to a field used as entity reference (secondary key). This field should be annotated with <see cref="RelationAttribute"/>
+        /// The referenced entities are also loaded via the next <see cref="FlioxClient.SyncTasks"/> request.
         /// </remarks>
         /// <summary>the field path used as a reference to an entity in the specified <see cref="container"/></summary>
         [Required]  public  string              selector; // e.g. ".items[*].article"
