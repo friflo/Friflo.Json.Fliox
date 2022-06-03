@@ -7,17 +7,6 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public sealed class UnresolvedRefException : Exception
-    {
-        public readonly     string          key;
-        
-        internal UnresolvedRefException(string message, Type type, string key)
-            : base ($"{message} Ref<{type.Name}> (Key: '{key}')")
-        {
-            this.key = key;
-        }
-    }
-    
     public sealed class TaskNotSyncedException : Exception
     {
         internal TaskNotSyncedException(string message) : base (message) { }

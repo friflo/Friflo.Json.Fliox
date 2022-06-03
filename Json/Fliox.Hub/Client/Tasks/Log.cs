@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                 GetPatchCount()   => patches.Count; // count as method to avoid flooding properties
         
-        /// Since removing Ref <see cref="creates"/> is always empty (its Count == 0). No entities are created implicit anymore
+        /// Since removing <see cref="Ref{TKey,T}"/> <see cref="creates"/> is always empty (its Count == 0). No entities are created implicit anymore
         public              int                 GetCreateCount()  => creates.Count; // count as method to avoid flooding properties
 
         internal            TaskState           state;

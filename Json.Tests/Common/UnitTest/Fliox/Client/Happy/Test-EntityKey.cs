@@ -282,7 +282,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual(stringId, find.Result.customId);
             }
             
-            // --- write and read Ref<>'s
+            // --- write and read a records using references
             using (var store    = new EntityIdStore(database) { ClientId = "guidStore"}) {
                 store.WriteNull = true;
                 var create = store.entityRefs.Upsert(entityRef);
