@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <summary>user token</summary>
                     public  string          token;
                         
-        public override string          ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     /// <summary>Set of <see cref="roles"/> assigned to a user used for authorization</summary>
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         [Relation(nameof(UserStore.roles))]
                     public  List<string>    roles;
 
-        public override string          ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     /// <summary>Contains a set of <see cref="rights"/> used for task authorization</summary>
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         /// <summary>optional <see cref="description"/> explaining a <see cref="Role"/></summary>
                     public  string          description;
                         
-        public override string          ToString() => JsonSerializer.Serialize(this);
+        public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
     // -------------------------------------- command models -------------------------------------
@@ -102,13 +102,13 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
     /// <summary>Result of <see cref="UserStore.AuthenticateUser"/> command</summary>
     public sealed class AuthResult {
         /// <summary>true if authentication was successful</summary>
-        public          bool            isValid;
+                    public  bool            isValid;
 
-        public override string          ToString() => $"isValid: {isValid}";
+        public override     string          ToString() => $"isValid: {isValid}";
     }
     
     public sealed class ValidateUserDbResult {
-        public          string[]        errors;
+                    public  string[]        errors;
     }
     
 }

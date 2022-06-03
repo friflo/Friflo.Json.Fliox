@@ -26,8 +26,8 @@ namespace Friflo.Json.Fliox.Transform
         [Required]  public  string      path;
         [Required]  public  JsonValue   value;
 
-        public override         PatchType   PatchType   => PatchType.Replace;
-        public override         string      ToString()  => path;
+        public override     PatchType   PatchType   => PatchType.Replace;
+        public override     string      ToString()  => path;
     }
     
     public sealed class PatchAdd : JsonPatch
@@ -35,8 +35,8 @@ namespace Friflo.Json.Fliox.Transform
         [Required]  public  string      path;
         [Required]  public  JsonValue   value;
 
-        public override         PatchType   PatchType   => PatchType.Add;
-        public override         string      ToString()  => path;
+        public override     PatchType   PatchType   => PatchType.Add;
+        public override     string      ToString()  => path;
     }
     
     public sealed class PatchRemove : JsonPatch

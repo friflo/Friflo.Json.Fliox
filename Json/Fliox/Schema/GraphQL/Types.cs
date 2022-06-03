@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         [Required]  public  List<GqlDirectiveLocation>  locations;
         [Required]  public  List<GqlInputValue>         args;
         
-        public override string                      ToString() => name;
+        public override     string                      ToString() => name;
     }
     
     public sealed class GqlInputValue {
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Schema.GraphQL
         [Required]  public  GqlType     type;
                     public  string      defaultValue;
                 
-        public override string      ToString() => name;
+        public override     string      ToString() => name;
     }
     
     public enum GqlDirectiveLocation {

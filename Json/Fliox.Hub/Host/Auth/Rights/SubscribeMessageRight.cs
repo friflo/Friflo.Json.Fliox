@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
         /// <summary>a specific message: 'std.Echo', multiple messages by prefix: 'std.*', all messages: '*'</summary>
         [Required]  public  List<string>    names;
         
-                    public  override        RightType       RightType => RightType.subscribeMessage;
+        public  override    RightType       RightType => RightType.subscribeMessage;
         
         public override Authorizer ToAuthorizer() {
             var databaseName = database;

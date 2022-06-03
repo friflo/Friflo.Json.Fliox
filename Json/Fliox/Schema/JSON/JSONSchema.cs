@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Required]  public  string      reference;
         //      public  string          type;   // not used - was used for nullable array elements
 
-        public override string          ToString() => reference;
+        public override     string      ToString() => reference;
     }
 
     /// <summary>

@@ -73,44 +73,44 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     /// <summary>list of container statistics. E.g. the number of entities per container</summary>
     public sealed class DbStats {
         /// <summary>list of container statistics - number of entities per container</summary>
-                public  ContainerStats[]                containers;
+                    public  ContainerStats[]    containers;
     }
     
     /// <summary>statistics of a single container. E.g. the number of entities in a container</summary>
     public sealed class ContainerStats {
         /// <summary>container name</summary>
-        [Required]  public  string                          name;
+        [Required]  public  string              name;
         /// <summary>number of entities / records within a container</summary>
-                    public  long                            count;
+                    public  long                count;
             
-        public override string  ToString() => $"{name} - count: {count}";
+        public override     string              ToString() => $"{name} - count: {count}";
     }
     
     /// <summary>general information about a Hub</summary>
     public sealed class HostDetails {
         /// <summary>host version</summary>
-        [Required]  public  string                          version;
+        [Required]  public  string              version;
         /// <summary>host name. Used as <see cref="DB.Monitor.HostHits.id"/> in
         /// <see cref="DB.Monitor.MonitorStore.hosts"/> of database <b>monitor</b></summary>
-                    public  string                          hostName;
+                    public  string              hostName;
         /// <summary>project name</summary>
-                    public  string                          projectName;
+                    public  string              projectName;
         /// <summary>link to a website describing project and Hub</summary>
-                    public  string                          projectWebsite;
+                    public  string              projectWebsite;
         /// <summary>environment name. e.g. 'dev', 'test', 'staging', 'prod'</summary>
-                    public  string                          envName;
+                    public  string              envName;
         /// <summary>
         /// the color used to display the environment name in GUI's using CSS color format.<br/>
         /// E.g. using red for a production environment: "#ff0000" or "rgb(255 0 0)"
         /// </summary>
-                    public  string                          envColor;
+                    public  string              envColor;
         /// <summary>routes configures by <see cref="Remote.HttpHost"/> - commonly below <c>/fliox</c></summary>
-        [Required]  public  List<string>                    routes; 
+        [Required]  public  List<string>        routes; 
     }
     
     /// <summary>All <see cref="databases"/> hosted by Hub</summary>
     public sealed class HostCluster {
         /// <summary>list of <see cref="databases"/> hosted by Hub</summary>
-        [Required]  public  List<DbContainers>              databases;
+        [Required]  public  List<DbContainers>  databases;
     }
 }

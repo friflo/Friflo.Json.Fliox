@@ -69,22 +69,22 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>container name the of the returned <see cref="entities"/> </summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-        [Required]  public  string                              container;
+        [Required]  public  string              container;
         /// <summary>number of <see cref="entities"/> - not utilized by Protocol</summary>
-        [DebugInfo] public  int?                                count;
+        [DebugInfo] public  int?                count;
         /// <summary>all <see cref="entities"/> as results from <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/></summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-        [Required]  public  List<JsonValue>                     entities;
+        [Required]  public  List<JsonValue>     entities;
         /// <summary>list of entities not found by <see cref="ReadEntities"/> tasks</summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-                    public  List<JsonKey>                       notFound;
+                    public  List<JsonKey>       notFound;
         /// <summary>list of entity errors read from <see cref="container"/></summary>
         /// Required only by <see cref="RemoteHost"/> for serialization
-                    public  List<EntityError>                   errors;
+                    public  List<EntityError>   errors;
         
         [Ignore]    public readonly Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 
-        public override         string                              ToString() => container;
+        public override     string              ToString() => container;
 
         internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
             entityMap.EnsureCapacity(entityMap.Count + add.Count);
