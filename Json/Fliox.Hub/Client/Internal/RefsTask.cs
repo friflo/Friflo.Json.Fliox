@@ -17,18 +17,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.subRefs    = new SubRefs();
         }
 
-        internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(EntitySet relation, Expression expression, FlioxClient store) where TValue : class {
+        internal ReadRefsTask<TRef> ReadRefsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
-            return ReadRefsByPath<TValue>(relation, path, store);
+            return ReadRefsByPath<TRef>(relation, path, store);
         }
         
-        internal ReadRefsTask<TValue> ReadRefsByPath<TValue>(EntitySet relation, string selector, FlioxClient store) where TValue : class {
+        internal ReadRefsTask<TRef> ReadRefsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
             if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
-                return (ReadRefsTask<TValue>)subRefsTask;
+                return (ReadRefsTask<TRef>)subRefsTask;
             // var relation = store._intern.GetSetByType(typeof(TValue));
             var keyName     = relation.GetKeyName();
             var isIntKey    = relation.IsIntKey();
-            var newQueryRefs = new ReadRefsTask<TValue>(task, selector, relation.name, keyName, isIntKey, store);
+            var newQueryRefs = new ReadRefsTask<TRef>(task, selector, relation.name, keyName, isIntKey, store);
             subRefs.AddTask(selector, newQueryRefs);
             store.AddTask(newQueryRefs);
             return newQueryRefs;
