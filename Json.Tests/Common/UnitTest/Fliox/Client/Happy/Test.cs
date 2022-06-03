@@ -283,7 +283,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestStores(PocStore createStore, PocStore useStore) {
             AreEqual(TestGlobals.DB, createStore.DatabaseName);
             AreEqual(TestGlobals.DB, useStore.DatabaseName);
-            await AssertRefAssignment   (useStore);
             await AssertWriteRead       (createStore);
             await AssertEntityIdentity  (createStore);
             await AssertQuery           (createStore);
