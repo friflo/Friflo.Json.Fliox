@@ -53,6 +53,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 _ = new InvalidMemberStore(hub) { ClientId = "store"};
             });
             AreEqual("[Relation('stringEntities')] at StringEntity.entityRef invalid type. Expect: String", e.Message);
+            
+            e = Throws<InvalidTypeException>(() => {
+                _ = new ContainerNotFoundStore(hub) { ClientId = "store"};
+            });
+            AreEqual("[Relation('unknown')] at ContainerNotFound.reference not found", e.Message);
         }
     }
 
@@ -101,5 +106,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
         public InvalidMemberStore(FlioxHub hub) : base(hub) { }
+    }
+    
+    // --------
+    public class ContainerNotFound {
+        public  string      id;
+        [Relation("unknown")]
+        public  int         reference;
+    }
+    
+    public class ContainerNotFoundStore : FlioxClient {
+        public  readonly    EntitySet <string, ContainerNotFound> entities;
+
+        public ContainerNotFoundStore(FlioxHub hub) : base(hub) { }
     }
 }
