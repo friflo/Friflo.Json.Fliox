@@ -22,57 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static  Task AssertRefAssignment(PocStore store) {
             return Task.CompletedTask;
         }
-        
-        [Test]
-        // ReSharper disable ExpressionIsAlwaysNull
-        public void TestRefBasicAssignment () {
-            // ReSharper disable once InlineOutVariableDeclaration
-            Article result;
-            
-            // --- assign default Ref<string, Article>
-            Ref<string, Article> reference = default;
-            IsNull  (reference.Key);
-            IsNull  (reference.Entity);
-            IsTrue  (reference.TryEntity(out result));
-            IsNull  (result);
-            
-            // all assignments are using the implicit conversion operators from Ref<,>
-            
-            // --- assign entity reference (Article)
-            var article = new Article { id = "some-id" };
-            reference = article;
-            AreEqual("some-id", reference.Key);
-            IsTrue  (article == reference.Entity);
-            IsTrue  (reference.TryEntity(out result));
-            IsTrue  (article == result);
-            
-            Article nullArticle = null;
-            reference = nullArticle;
-            IsNull  (reference.Key);
-            IsNull  (reference.Entity);
-            IsTrue  (reference.TryEntity(out result));
-            IsNull  (result);
-            
-            var invalidArticle = new Article(); // entity id = null
-            var argEx = Throws<ArgumentException>(() => _ = reference = invalidArticle );
-            AreEqual("cannot assign entity with Key = null to Ref<String,Article>", argEx.Message);
-            
-            // --- assign entity key (string)
-            string nullKey = null;
-            reference = nullKey;
-            IsNull  (reference.Key);
-            IsNull  (reference.Entity);
-            IsTrue  (reference.TryEntity(out result));
-            IsNull  (result);
-            
-            reference = "ref-id";
-            AreEqual("ref-id", reference.Key);
-            IsFalse (reference.TryEntity(out result));
-            IsNull  (result);
-            var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
-            AreEqual("Accessed unresolved reference. Ref<Article> (Key: 'ref-id')", e.Message);
-            AreEqual("ref-id", e.key);
-        }
+
         
 #if !DEBUG && !UNITY_5_3_OR_NEWER
         /// Test boxing behavior of <b>EntityKeyT{TKey,T}.GetKeyAsType{TAsType}</b>/>
