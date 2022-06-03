@@ -309,14 +309,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await test(createStore);
             }
         }
-        
-        private static async Task TestUse(Func<PocStore, Task> test) {
-            using (var _            = SharedEnv.Default) // for LeakTestsFixture
-            using (var database     = new FileDatabase(TestGlobals.DB, TestGlobals.PocStoreFolder))
-            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
-            using (var createStore  = new PocStore(hub) { UserId = "createStore"}) {
-                await test(createStore);
-            }
-        }
     }
 }
