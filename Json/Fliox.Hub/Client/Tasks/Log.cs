@@ -12,17 +12,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class LogTask : SyncTask
     {
         private  readonly   List<LogChange>     patches = new List<LogChange>();
-        private  readonly   List<LogChange>     creates = new List<LogChange>();
         
         public              int                 GetPatchCount()   => patches.Count; // count as method to avoid flooding properties
         
-        /// Since removing <see cref="Ref{TKey,T}"/> <see cref="creates"/> is always empty (its Count == 0). No entities are created implicit anymore
-        public              int                 GetCreateCount()  => creates.Count; // count as method to avoid flooding properties
-
         internal            TaskState           state;
         internal override   TaskState           State   => state;
         
-        public   override   string              Details   => $"LogTask (patches: {patches.Count}, creates: {creates.Count})";
+        public   override   string              Details   => $"LogTask (patches: {patches.Count})";
         
 
         internal LogTask() { }
@@ -35,23 +31,10 @@ namespace Friflo.Json.Fliox.Hub.Client
             patches.Add(change);
         }
         
-        /// <summary>Log created entity previously added to <see cref="SyncSet{TKey,T}.Creates"/></summary>
-        internal void AddCreate(SyncSet sync, in JsonKey id) {
-            if (id.IsNull())
-                throw new ArgumentException("id must not be null");
-            var change = new LogChange(sync, id);
-            creates.Add(change);
-        }
-
         internal void SetResult() {
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var patch in patches) {
                 if (patch.sync.errorsPatch.TryGetValue(patch.id, out EntityError error)) {
-                    entityErrorInfo.AddEntityError(error);
-                }
-            }
-            foreach (var create in creates) {
-                if (create.sync.errorsCreate.TryGetValue(create.id, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }
