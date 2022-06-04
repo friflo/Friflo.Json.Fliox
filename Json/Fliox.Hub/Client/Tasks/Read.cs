@@ -166,64 +166,51 @@ namespace Friflo.Json.Fliox.Hub.Client
             return find;
         }
         
+        
         // --- Relation
-        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(
-            EntitySet<TRefKey, TRef>        relation,
-            Expression<Func<T, TRefKey>>    selector) where TRef : class
-        {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
+        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
+            if (State.IsExecuted()) throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TRef>(relation, path);
         }
         
-        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef> (
-            EntitySet<TRefKey, TRef>        relation,
-            Expression<Func<T, TRefKey?>>    selector) where TRef : class   where TRefKey : struct 
-        {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
+        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef> (EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class   where TRefKey : struct {
+            if (State.IsExecuted()) throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TRef>(relation, path);
         }
         
-        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(
-            EntitySet<TRefKey, TRef>    relation,
-            RelationPath<TRef>          selector
-        ) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
+        public ReadRefTask<TRef> ReadRelation<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationPath<TRef> selector) where TRef : class {
+            if (State.IsExecuted()) throw AlreadySyncedError();
             return ReadRefByPath<TRef>(relation, selector.path);
         }
         
-        // --- Relations
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(
-            EntitySet<TRefKey, TRef>                    relation,
-            Expression<Func<T, IEnumerable<TRefKey>>>   selector) where TRef : class
-        {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
+        
+        // --- IReadRefsTask<T>
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
+            if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(
-            EntitySet<TRefKey, TRef>                    relation,
-            Expression<Func<T, IEnumerable<TRefKey?>>>   selector) where TRef : class  where TRefKey : struct 
-        {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
+            if (State.IsExecuted()) throw AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
+        }
+       
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
+            if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
         }
         
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(
-            EntitySet<TRefKey, TRef>    relation,
-            RelationsPath<TRef>         selector
-        ) where TRef : class {
-            if (State.IsExecuted())
-                throw AlreadySyncedError();
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class  where TRefKey : struct {
+            if (State.IsExecuted()) throw AlreadySyncedError();
+            return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
+        }
+        
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
+            if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(relation, selector.path, set.intern.store);
         }
-        
 
 
         // lab - ReadRefs by Entity Type
@@ -249,11 +236,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             set.intern.store.AddTask(newQueryRefs);
             return newQueryRefs;
         }
-        
-        // --- Refs
-        public ReadRefsTask<TRef> ReadRefsPath<TRefKey, TRef>   (RefsPath<T, TRefKey, TRef> selector)                           where TRef : class => throw new InvalidOperationException("obsolete");
-        public ReadRefsTask<TRef> ReadRefs<TRefKey, TRef>       (Expression<Func<T, Ref<TRefKey, TRef>>> selector)              where TRef : class => throw new InvalidOperationException("obsolete");
-        public ReadRefsTask<TRef> ReadArrayRefs<TRefKey, TRef>  (Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class => throw new InvalidOperationException("obsolete");
         
         internal override void AddFailedTask(List<SyncTask> failed) {
             /*foreach (var findTask in findTasks) {
