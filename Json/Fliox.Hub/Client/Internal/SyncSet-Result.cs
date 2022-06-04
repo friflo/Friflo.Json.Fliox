@@ -137,10 +137,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
-                var key = KeyConvert.IdToKey(id);
-                var peer = set.GetOrCreatePeerByKey(key, id);
-                peer.created = false;
-                peer.updated = false;
+                var key     = KeyConvert.IdToKey(id);
+                var peer    = set.GetOrCreatePeerByKey(key, id);
+                peer.state  = PeerState.None;
                 peer.SetPatchSource(reader.Read<T>(entity));
             }
             foreach (var writeTask in writeTasks) {

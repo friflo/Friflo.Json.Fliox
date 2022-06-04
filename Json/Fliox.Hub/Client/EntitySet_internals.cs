@@ -219,24 +219,23 @@ namespace Friflo.Json.Fliox.Hub.Client
 
                 peer.error = null;
                 var json = value.Json;
-                if (!json.IsNull()) {
-                    var entity = peer.NullableEntity;
-                    if (entity == null) {
-                        entity = (T)intern.GetMapper().CreateInstance();
-                        SetEntityId(entity, id);
-                        peer.SetEntity(entity);
-                    }
-                    reader.ReadTo(json, entity);
-                    if (reader.Success) {
-                        peer.SetPatchSource(reader.Read<T>(json));
-                    } else {
-                        var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                        entities[id].SetError(entityError);
-                    }
-                } else {
+                if (json.IsNull()) {
                     peer.SetPatchSourceNull();
+                    continue;    
                 }
-                peer.assigned = true;
+                var entity = peer.NullableEntity;
+                if (entity == null) {
+                    entity = (T)intern.GetMapper().CreateInstance();
+                    SetEntityId(entity, id);
+                    peer.SetEntity(entity);
+                }
+                reader.ReadTo(json, entity);
+                if (reader.Success) {
+                    peer.SetPatchSource(reader.Read<T>(json));
+                } else {
+                    var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
+                    entities[id].SetError(entityError);
+                }
             }
         }
         

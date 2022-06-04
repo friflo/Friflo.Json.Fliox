@@ -15,13 +15,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     // neither Peer<T> is a class nor a struct.
     internal sealed class Peer<T> where T : class
     {
-        internal  readonly  JsonKey         id;      // never null
-        private             T               entity;
+        internal  readonly  JsonKey         id;     // never null
+        private             T               entity; // can be null 
         internal            EntityError     error;
-        
-        internal            bool            assigned;
-        internal            bool            created;
-        internal            bool            updated;
+        internal            PeerState       state;
 
         internal            T               PatchSource     { get; private set; }
         internal            T               NextPatchSource { get; private set; }
@@ -75,5 +72,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal void SetNextPatchSourceNull() {
             NextPatchSource = null;
         }
+    }
+    
+    [Flags]
+    internal enum PeerState {
+        None    = 0,
+        Created = 1,
+        Updated = 2
     }
 }

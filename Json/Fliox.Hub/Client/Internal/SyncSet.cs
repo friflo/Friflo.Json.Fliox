@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal abstract class SyncSetBase <T> : SyncSet where T : class
     {
         internal abstract void AddUpsert (Peer<T> peer);
-        internal abstract bool AddCreate (Peer<T> peer);
+        internal abstract void AddCreate (Peer<T> peer);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -96,22 +96,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.set = set;
         }
 
-        internal override bool AddCreate (Peer<T> peer) {
-            peer.assigned = true;
+        internal override void AddCreate (Peer<T> peer) {
             Creates().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
-            if (!peer.created) {
-                peer.created = true;            // sole place created set to true
-                return true;
-            }
-            return false;
+            peer.state = PeerState.Created;     // sole place Created is set
         }
 
         internal override void AddUpsert (Peer<T> peer) {
-            peer.assigned = true;
-            Upserts().TryAdd(peer.id, peer);      // sole place a peer (entity) is added
-            if (!peer.updated) {
-                peer.updated = true;            // sole place created set to true
-            }
+            Upserts().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
+            peer.state = PeerState.Updated;     // sole place Updated is set
         }
 
         internal void AddDelete (TKey id) {
@@ -276,7 +268,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   which is not already assigned)
         private void GetEntityChanges(Peer<T> peer, LogTask logTask, ObjectMapper mapper) {
             ref var intern = ref set.intern;
-            if (peer.created || peer.updated) {
+            if ((peer.state & (PeerState.Created | PeerState.Updated)) != 0) {
                 // tracer.Trace(peer.Entity);
                 return;
             }
