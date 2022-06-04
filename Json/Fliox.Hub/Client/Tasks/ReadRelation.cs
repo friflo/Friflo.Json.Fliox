@@ -13,14 +13,14 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : class
+    public sealed class ReadRelationTask<T> : ReadRelationsTask, IReadRefsTask<T> where T : class
     {
         private             RefsTask    refsTask;
         private             T           entity;
         private   readonly  SyncTask    parent;
         private   readonly  FlioxClient store;
     
-        public              T           Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
+        public              T           Result  => IsOk("ReadRelationTask.Result", out Exception e) ? entity  : throw e;
                 
         internal  override  TaskState   State   => state;
         public    override  string      Details => $"{parent.GetLabel()} -> {Selector}";
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SubRefs     SubRefs => refsTask.subRefs;
 
-        internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
+        internal ReadRelationTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
@@ -61,27 +61,27 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- IReadRefsTask<T>
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
+        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
+        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
+        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey>>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class where TRefKey : struct {
+        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, IEnumerable<TRefKey?>>> selector) where TRef : class where TRefKey : struct {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
+        public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, RelationsPath<TRef> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(relation, selector.path, store);
         }

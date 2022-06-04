@@ -17,18 +17,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.subRefs    = new SubRefs();
         }
 
-        internal ReadRefsTask<TRef> ReadRefsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
+        internal ReadRelationsTask<TRef> ReadRefsByExpression<TRef>(EntitySet relation, Expression expression, FlioxClient store) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TRef>(relation, path, store);
         }
         
-        internal ReadRefsTask<TRef> ReadRefsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
-            if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
-                return (ReadRefsTask<TRef>)subRefsTask;
+        internal ReadRelationsTask<TRef> ReadRefsByPath<TRef>(EntitySet relation, string selector, FlioxClient store) where TRef : class {
+            if (subRefs.TryGetTask(selector, out ReadRelationsTask subRelationsTask))
+                return (ReadRelationsTask<TRef>)subRelationsTask;
             // var relation = store._intern.GetSetByType(typeof(TValue));
             var keyName     = relation.GetKeyName();
             var isIntKey    = relation.IsIntKey();
-            var newQueryRefs = new ReadRefsTask<TRef>(task, selector, relation.name, keyName, isIntKey, store);
+            var newQueryRefs = new ReadRelationsTask<TRef>(task, selector, relation.name, keyName, isIntKey, store);
             subRefs.AddTask(selector, newQueryRefs);
             store.AddTask(newQueryRefs);
             return newQueryRefs;
@@ -37,30 +37,30 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     
     internal struct SubRefs // : IEnumerable <BinaryPair>   <- not implemented to avoid boxing
     {
-        /// key: <see cref="ReadRefsTask.Selector"/>
-        private     Dictionary<string, ReadRefsTask>    map; // map == null if no tasks added
+        /// key: <see cref="ReadRelationsTask.Selector"/>
+        private     Dictionary<string, ReadRelationsTask>   map; // map == null if no tasks added
         
-        internal    int                                 Count => map?.Count ?? 0;
-        internal    ReadRefsTask                        this[string key] => map[key];
+        internal    int                                     Count => map?.Count ?? 0;
+        internal    ReadRelationsTask                       this[string key] => map[key];
         
-        internal bool TryGetTask(string selector, out ReadRefsTask subRefsTask) {
+        internal bool TryGetTask(string selector, out ReadRelationsTask subRelationsTask) {
             if (map == null) {
-                subRefsTask = null;
+                subRelationsTask = null;
                 return false;
             }
-            return map.TryGetValue(selector, out subRefsTask);
+            return map.TryGetValue(selector, out subRelationsTask);
         }
         
-        internal void AddTask(string selector, ReadRefsTask subRefsTask) {
+        internal void AddTask(string selector, ReadRelationsTask subRelationsTask) {
             if (map == null) {
-                map = new Dictionary<string, ReadRefsTask>();
+                map = new Dictionary<string, ReadRelationsTask>();
             }
-            map.Add(selector, subRefsTask);
+            map.Add(selector, subRelationsTask);
         }
 
         // return ValueIterator instead of IEnumerator<ReadRefsTask> to avoid boxing 
-        public ValueIterator<string, ReadRefsTask> GetEnumerator() {
-            return new ValueIterator<string, ReadRefsTask>(map);
+        public ValueIterator<string, ReadRelationsTask> GetEnumerator() {
+            return new ValueIterator<string, ReadRelationsTask>(map);
         }
     }
 }

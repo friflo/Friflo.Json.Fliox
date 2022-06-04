@@ -289,26 +289,26 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 References          reference    = references[n];
                 ReferencesResult    refResult    = referencesResult[n];
                 EntitySet           refContainer = set.intern.store._intern.GetSetByName(reference.container);
-                ReadRefsTask        subRef       = refs[reference.selector];
+                ReadRelationsTask   subRelation  = refs[reference.selector];
                 if (refResult.error != null) {
                     var taskError       = new TaskErrorResult (TaskErrorResultType.DatabaseError, refResult.error);
                     var taskErrorInfo   = new TaskErrorInfo (taskError);
-                    subRef.state.SetError(taskErrorInfo);
+                    subRelation.state.SetError(taskErrorInfo);
                     continue;
                 }
-                subRef.SetResult(refContainer, refResult.ids);
+                subRelation.SetResult(refContainer, refResult.ids);
                 // handle entity errors of subRef task
-                var subRefError = subRef.state.Error;
+                var subRefError = subRelation.state.Error;
                 if (subRefError.HasErrors) {
                     if (subRefError.TaskError.type != TaskErrorType.EntityErrors)
                         throw new InvalidOperationException("Expect subRef Error.type == EntityErrors");
-                    SetSubRefsError(subRef.SubRefs, subRefError);
+                    SetSubRefsError(subRelation.SubRefs, subRefError);
                     continue;
                 }
-                subRef.state.Executed = true;
+                subRelation.state.Executed = true;
                 var subReferences = reference.references;
                 if (subReferences != null) {
-                    var readRefs = subRef.SubRefs;
+                    var readRefs = subRelation.SubRefs;
                     AddReferencesResult(subReferences, refResult.references, readRefs);
                 }
             }
