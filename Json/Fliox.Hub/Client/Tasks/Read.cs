@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     public sealed class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
-        internal readonly   EntitySet<TKey, T>      set;
+        private  readonly   EntitySet<TKey, T>      set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<TKey, T>     result      = SyncSet.CreateDictionary<TKey,T>();
         internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
