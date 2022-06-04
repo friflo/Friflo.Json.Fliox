@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 
 // ReSharper disable JoinNullCheckWithUsage
@@ -39,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         /// Using the the unchecked <see cref="NullableEntity"/> must be an exception. Use <see cref="Entity"/> by default.
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal T NullableEntity   => entity;
         internal T Entity           => entity ?? throw new InvalidOperationException($"Caller ensure & expect entity not null. id: '{id}'");
         
