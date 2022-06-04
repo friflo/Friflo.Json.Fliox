@@ -13,6 +13,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
+// ReSharper disable RedundantArgumentDefaultValue
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
