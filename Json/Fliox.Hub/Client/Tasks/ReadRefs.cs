@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadRelationsArray<TRefKey, TRef>(
+        public ReadRefsTask<TRef> ReadRelations<TRefKey, TRef>(
             EntitySet<TRefKey, TRef>                    relation,
             Expression<Func<T, IEnumerable<TRefKey>>>   selector) where TRef : class
         {

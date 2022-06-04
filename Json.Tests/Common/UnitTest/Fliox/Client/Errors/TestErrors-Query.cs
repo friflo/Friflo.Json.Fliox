@@ -51,14 +51,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var order1      = readOrders.Find("order-1")                                            .TaskName("order1");
             AreEqual("Find<Order> (id: 'order-1')", order1.Details);
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
-            var articleProducer         = allArticles.ReadRefs(producers, a => a.producer)          .TaskName("articleProducer");
+            var articleProducer         = allArticles.ReadRelations(producers, a => a.producer)     .TaskName("articleProducer");
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer == "customer-1")             .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
             var orders2WithTaskError    = orders.Query(o => o.customer == readTaskError)            .TaskName("orders2WithTaskError");
-            var order2CustomerError     = orders2WithTaskError.ReadRefs(customers, o => o.customer) .TaskName("order2CustomerError");
+            var order2CustomerError     = orders2WithTaskError.ReadRelations(customers, o => o.customer) .TaskName("order2CustomerError");
             
             AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
             AreEqual("Find<Order> (id: 'order-1')",                                     order1                  .Details);
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
 
-            var producerEmployees = articleProducer.ReadRelationsArray(employees, p => p.employeeList)   .TaskName("producerEmployees");
+            var producerEmployees = articleProducer.ReadRelations(employees, p => p.employeeList)   .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
             AreEqual(14, store.Tasks.Count);

@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
             var filterAll               = new EntityFilter<Article>(a => true);
             var allArticles2            = articles.QueryByFilter(filterAll)                         .TaskName("allArticles2");
-            var producersTask           = allArticles.ReadRefs(producers, a => a.producer);
+            var producersTask           = allArticles.ReadRelations(producers, a => a.producer);
             var allArticlesLimit        = articles.QueryAll();
             allArticlesLimit.limit      = 2;
 
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Result; });
             AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
 
-            var producerEmployees = producersTask.ReadRelationsArray(employees, p => p.employeeList);
+            var producerEmployees = producersTask.ReadRelations(employees, p => p.employeeList);
             AreEqual("allArticles -> .producer -> .employees[*]", producerEmployees.ToString());
 
             // lab - test ReadRef expressions
