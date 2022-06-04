@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
+    public sealed class ReadTask<TKey, T> : SyncTask, IReadRelationsTask<T> where T : class
     {
         internal            TaskState               state;
         private  readonly   EntitySet<TKey, T>      set;

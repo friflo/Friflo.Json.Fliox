@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class QueryTask<T> : SyncTask, IReadRefsTask<T> where T : class
+    public sealed class QueryTask<T> : SyncTask, IReadRelationsTask<T> where T : class
     {
         public              int?            limit;
         /// <summary> return <see cref="maxCount"/> number of entities within <see cref="Result"/>.

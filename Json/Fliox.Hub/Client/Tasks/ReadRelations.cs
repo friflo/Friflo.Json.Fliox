@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
 
     /// ensure all tasks returning <see cref="ReadRelationsTask{T}"/>'s provide the same interface
-    public interface IReadRefsTask<T> where T : class
+    public interface IReadRelationsTask<T> where T : class
     {
         ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>>              selector) where TRef : class;
         ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey?>>             selector) where TRef : class  where TRefKey : struct;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ReadRelationsTask<T> : ReadRelationsTask, IReadRefsTask<T>  where T : class
+    public sealed class ReadRelationsTask<T> : ReadRelationsTask, IReadRelationsTask<T>  where T : class
     {
         private             RefsTask    refsTask;
         private             List<T>     result;

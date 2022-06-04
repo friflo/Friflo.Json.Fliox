@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ReadRelationTask<T> : ReadRelationsTask, IReadRefsTask<T> where T : class
+    public sealed class ReadRelationTask<T> : ReadRelationsTask, IReadRelationsTask<T> where T : class
     {
         private             RefsTask    refsTask;
         private             T           entity;
