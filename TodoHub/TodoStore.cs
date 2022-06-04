@@ -23,7 +23,7 @@ namespace Fliox.TodoHub
         public TodoStore(FlioxHub hub) : base (hub) { }
     }
     
-    // ------------------------------ entity models ------------------------------
+    // ---------------------------------- entity models ----------------------------------
     public class Todo {
         [Required]  public  long                id { get; set; }
         [Required]  public  string              title;

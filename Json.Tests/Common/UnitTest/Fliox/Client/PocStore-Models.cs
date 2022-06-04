@@ -11,7 +11,7 @@ using Friflo.Json.Fliox;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    //  ---------------------------------------- entity models  ----------------------------------------
+    // ---------------------------------- entity models ----------------------------------
     /// <summary>
     /// Some useful class documentation :)
     /// <code>
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     
-    //  ---------------------------------------- command models  ----------------------------------------
+    // ---------------------------- command models - aka DTO's ---------------------------
     public class TestCommand {
         public          string  text;
 

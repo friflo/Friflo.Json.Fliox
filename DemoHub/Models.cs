@@ -10,7 +10,7 @@ namespace Fliox.DemoHub
     // They are all POCO's aka Plain Old Class Objects. See https://en.wikipedia.org/wiki/Plain_old_CLR_object
     // As a result integration of these classes in other modules or libraries is comparatively easy.
 
-    // ------------------------------ entity models ------------------------------
+    // ---------------------------------- entity models ----------------------------------
     public class Article {
         [Required]  public  long            id { get; set; }
         [Required]  public  string          name;
@@ -56,7 +56,7 @@ namespace Fliox.DemoHub
     }
     
     
-    // ------------------------------ command models ------------------------------
+    // ---------------------------- command models - aka DTO's ---------------------------
     public class Operands {
         public  double      left;
         public  double      right;

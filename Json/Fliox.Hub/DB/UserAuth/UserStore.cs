@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         }
     }
 
-    // -------------------------------------- models ---------------------------------------
+    // ---------------------------------- entity models ----------------------------------
     /// <summary>contains a <see cref="token"/> assigned to a user used for authentication</summary>
     public sealed class UserCredential {
         /// <summary>user name</summary>
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         public override     string          ToString() => JsonSerializer.Serialize(this);
     }
     
-    // -------------------------------------- command models -------------------------------------
+    // ---------------------------- command models - aka DTO's ---------------------------
     /// <summary>user <see cref="Credentials"/> used for authentication</summary>
     public sealed class Credentials {
         [Required]  public  JsonKey         userId;
