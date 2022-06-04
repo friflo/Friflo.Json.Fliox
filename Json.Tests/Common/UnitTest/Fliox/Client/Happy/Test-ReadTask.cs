@@ -24,8 +24,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// Optimization: <see cref="RelationPath{TRef}"/> and <see cref="RelationsPath{TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
          
-        private static readonly RelationPath <Customer> OrderCustomer = RelationPath<Customer>.MemberRef <string,Order>(o => o.customer);
-        private static readonly RelationsPath<Article>  ItemsArticle  = RelationsPath<Article>.MemberRefs<string,Order>(o => o.items.Select(a => a.article));
+        private static readonly RelationPath <Customer> OrderCustomer = RelationPath<Customer>.Create <string,Order>(o => o.customer);
+        private static readonly RelationsPath<Article>  ItemsArticle  = RelationsPath<Article>.Create<string,Order>(o => o.items.Select(a => a.article));
         
         private static async Task AssertRead(PocStore store) {
             var orders      = store.orders;

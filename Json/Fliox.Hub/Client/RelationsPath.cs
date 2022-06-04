@@ -19,7 +19,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.path = path;
         }
         
-        public static RelationsPath<TRef> MemberRefs<TKey,T>(Expression<Func<T, IEnumerable<TKey>>> selector)  {
+        public static RelationsPath<TRef> Create<TKey,T>(Expression<Func<T, IEnumerable<TKey>>> selector)  {
+            string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RelationsPath<TRef>(selectorPath);
+        }
+        
+        public static RelationsPath<TRef> Create<TKey,T>(Expression<Func<T, IEnumerable<TKey?>>> selector) where TKey : struct {
             string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
             return new RelationsPath<TRef>(selectorPath);
         }
@@ -29,7 +34,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         internal RelationPath(string path) : base (path) { }
         
-        public static RelationPath<TRef> MemberRef<TKey,T>(Expression<Func<T, TKey>> selector) {
+        public static RelationPath<TRef> Create<TKey,T>(Expression<Func<T, TKey>> selector) {
+            string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
+            return new RelationPath<TRef>(selectorPath);
+        }
+        
+        public static RelationPath<TRef> Create<TKey,T>(Expression<Func<T, TKey?>> selector) where TKey : struct {
             string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
             return new RelationPath<TRef>(selectorPath);
         }
