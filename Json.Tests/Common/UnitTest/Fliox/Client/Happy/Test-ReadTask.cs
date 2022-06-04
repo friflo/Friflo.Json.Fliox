@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         [Test] public async Task TestRead       () { await TestCreate(async (store) => await AssertRead             (store)); }
         
-        /// Optimization: <see cref="RefPath{TEntity,TRefKey,TRef}"/> and <see cref="RefsPath{TEntity,TRefKey,TRef}"/> can be created static as creating
+        /// Optimization: <see cref="RelationPath{TRef}"/> and <see cref="RelationsPath{TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
          
         private static readonly RelationPath <Customer> OrderCustomer = RelationPath<Customer>.MemberRef <string,Order>(o => o.customer);
