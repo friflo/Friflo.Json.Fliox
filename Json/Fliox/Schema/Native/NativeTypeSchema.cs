@@ -110,7 +110,6 @@ namespace Friflo.Json.Fliox.Schema.Native
                             var isDictionary    = fieldMapper.IsDictionary;
                             NativeTypeDef type;
                             bool isNullableElement = false;
-                            Type    relationType;
                             if (isArray || isDictionary) {
                                 var elementMapper       = fieldMapper.GetElementMapper();
                                 var underlyingMapper    = elementMapper.GetUnderlyingMapper();
@@ -121,15 +120,12 @@ namespace Friflo.Json.Fliox.Schema.Native
                                 } else {
                                     type = nativeTypes[underlyingMapper.type];
                                 }
-                                relationType    = elementMapper.RelationType();
                             } else {
                                 type            = nativeTypes[nonNullableType];
-                                relationType    = propField.fieldType.RelationType();
                             }
-                            string relation     = ContainerFromType(rootTypeMapper, relationType);
-                            relation            = relation ?? propField.relation;
-                            var required        = propField.required || !isNullable;
-                            var isKey           = propField.isKey;
+                            var relation    = propField.relation;
+                            var required    = propField.required || !isNullable;
+                            var isKey       = propField.isKey;
                             if (isKey) {
                                 typeDef.keyField = propField.jsonName;
                             }
@@ -259,18 +255,6 @@ namespace Friflo.Json.Fliox.Schema.Native
             }
             nonNullableType = mapper.type;
             return isNullable;
-        }
-        
-        private static string ContainerFromType(TypeMapper rootTypeMapper, Type relationType) {
-            if (rootTypeMapper == null || relationType == null)
-                return null;
-            foreach (var field in rootTypeMapper.propFields.fields) {
-                var elementMapper = field.fieldType.GetElementMapper();
-                if (elementMapper.type == relationType) {
-                    return field.name;
-                } 
-            }
-            return null;
         }
         
         public ICollection<TypeDef> TypesAsTypeDefs(ICollection<Type> types) {

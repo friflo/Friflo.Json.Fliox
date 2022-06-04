@@ -32,8 +32,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual      bool            IsDictionary    => false;
         public virtual      Type            BaseType        => null;
         public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
-        [Obsolete]
-        public virtual      Type            RelationType()  => null;
 
 
         // ReSharper disable once UnassignedReadonlyField - field ist set via reflection below to use make field readonly
