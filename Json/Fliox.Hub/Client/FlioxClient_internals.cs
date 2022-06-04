@@ -92,7 +92,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
-            mapper.TracerContext = _intern.tracerContext;
             syncStore = _intern.syncStore;
             syncStore.SetSyncSets(this);
             
@@ -273,9 +272,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
-            mapper.TracerContext = _intern.tracerContext;
-            
+        private void ProcessSyncTasks(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper)
+        {
             var             tasks           = syncRequest.tasks;
             ErrorResponse   error           = response.error;
             

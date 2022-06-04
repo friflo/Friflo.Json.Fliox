@@ -72,8 +72,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             throw new InvalidOperationException("MemberObject() is intended only for classes");
         }
 
-        public abstract void            TraceObject(Tracer tracer, object slot);
-        
         public abstract void            WriteObject(ref Writer writer, object slot);
         public abstract object          ReadObject(ref Reader reader, object slot, out bool success);
         
@@ -116,7 +114,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             base(null, typeof(TVal), TypeUtils.IsNullable(typeof(TVal)), false) {
         }
 
-        public virtual  void        Trace       (Tracer     tracer, TVal slot) { }
         public abstract void        Write       (ref Writer writer, TVal slot);
         public abstract TVal        Read        (ref Reader reader, TVal slot, out bool success);
 
@@ -129,10 +126,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         public override DiffNode    DiffObject  (Differ differ, object left, object right) {
             return Diff(differ, (TVal)left, (TVal)right);
-        }
-
-        public override void TraceObject(Tracer tracer, object slot) {
-            Trace(tracer, (TVal)slot);
         }
 
         public override bool IsValueNullIL(ClassMirror mirror, int primPos, int objPos) {

@@ -11,7 +11,6 @@ using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Utils;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -45,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [CLSCompliant(true)]
 #endif
     [TypeMapper(typeof(FlioxClientMatcher))]
-    public partial class FlioxClient : ITracerContext, IDisposable, IResetable, ILogSource
+    public partial class FlioxClient : IDisposable, IResetable, ILogSource
     {
         // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
         // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
@@ -75,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             type    = GetType();
             var eventTarget = new EventTarget(this);
-            _intern = new ClientIntern(this, hub, database, this, eventTarget);
+            _intern = new ClientIntern(this, hub, database, eventTarget);
             std     = new StdCommands  (this);
             hub.sharedEnv.sharedCache.AddRootType(type);
         }
@@ -336,12 +335,5 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// This ensures modifications to entities are applied on the same context used by the caller. 
         /// </summary>
         internal const bool OriginalContext = true;       
-    }
-    
-    public static class StoreExtension
-    {
-        public static FlioxClient Store(this ITracerContext store) {
-            return (FlioxClient)store;
-        }
     }
 }

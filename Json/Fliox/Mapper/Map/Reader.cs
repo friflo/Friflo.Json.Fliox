@@ -33,7 +33,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         /// without creating a string on the heap.</summary>
         internal readonly   BytesString         keyRef;
         public   readonly   TypeCache           typeCache;
-        public              ITracerContext      tracerContext;
         public              Utf8JsonWriterStub  jsonWriterStub;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
@@ -46,9 +45,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         public Reader(TypeStore typeStore) {
-            parser = new Utf8JsonParser();
-            tracerContext   = null;
-
+            parser          = new Utf8JsonParser();
             typeCache       = new TypeCache(typeStore);
             strBuf          = new Bytes(0);
             searchKey       = new Bytes32();

@@ -268,16 +268,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        /// In case the given entity is already <see cref="Peer{T}.created"/> or <see cref="Peer{T}.updated"/> trace
-        /// the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
-        /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
-        /// which is not already assigned)
+        // Deprecated comment - preserve for now to remember history of Ref{TKey,T} and Tracer
+        //   In case the given entity is already <see cref="Peer{T}.created"/> or <see cref="Peer{T}.updated"/> trace
+        //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
+        //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
+        //   which is not already assigned)
         private void GetEntityChanges(Peer<T> peer, LogTask logTask, ObjectMapper mapper) {
             ref var intern = ref set.intern;
-            var tracer = intern.GetTracer();
             if (peer.created || peer.updated) {
-                intern.store._intern.tracerLogTask = logTask;
-                tracer.Trace(peer.Entity);
+                // tracer.Trace(peer.Entity);
                 return;
             }
             var patchSource = peer.PatchSource;
@@ -295,9 +294,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var id = peer.id;
                 Patches()[id] = entityPatch;
                 logTask.AddPatch(this, id);
-
-                intern.store._intern.tracerLogTask = logTask;
-                tracer.Trace(entity);
+                
+                // tracer.Trace(entity);
             }
         }
 

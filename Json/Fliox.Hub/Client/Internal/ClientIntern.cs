@@ -26,7 +26,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   FlioxHub                                hub;
         internal readonly   string                                  database;
         internal readonly   EventTarget                             eventTarget;
-        internal readonly   ITracerContext                          tracerContext;
         
         // --- readonly / private - owned
         private             ObjectPatcher                           objectPatcher;  // create on demand
@@ -40,7 +39,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // --- mutable state
         internal            SyncStore                   syncStore;
-        internal            LogTask                     tracerLogTask;
         internal            IEventProcessor             eventProcessor;         // never null
         private             SubscriptionProcessor       subscriptionProcessor;  // lazy creation. Needed only if dealing with subscriptions 
         internal            ChangeSubscriptionHandler   changeSubscriptionHandler;
@@ -85,7 +83,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             FlioxClient     client,
             FlioxHub        hub,
             string          database,
-            ITracerContext  tracerContext,
             EventTarget     eventTarget)
         {
             var entityInfos         = ClientEntityUtils.GetEntityInfos (client.type);
@@ -99,7 +96,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.hub                = hub;
             this.database           = database;
             this.eventTarget        = eventTarget;
-            this.tracerContext      = tracerContext;
             
             // --- readonly / private - owned
             objectPatcher           = null;
@@ -113,7 +109,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
             // --- mutable state
             syncStore                   = new SyncStore();
-            tracerLogTask               = null;
             eventProcessor              = DefaultEventProcessor;
             changeSubscriptionHandler   = null;
             subscriptionEventHandler    = null;

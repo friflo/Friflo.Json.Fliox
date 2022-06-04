@@ -63,16 +63,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             }
         }
         
-        public override void Trace(Tracer tracer, List<TElm> slot) {
-            var list = slot;
-            for (int n = 0; n < list.Count; n++) {
-                TElm item = list[n];
-                if (!elementType.IsNull(ref item)) {
-                    elementType.Trace(tracer, item);
-                }
-            }
-        }
-
         public override void Write(ref Writer writer, List<TElm> slot) {
             int startLevel = writer.IncLevel();
             var list = slot;

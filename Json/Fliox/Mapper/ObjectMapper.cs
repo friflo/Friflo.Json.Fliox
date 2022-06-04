@@ -37,14 +37,6 @@ namespace Friflo.Json.Fliox.Mapper
             set => writer.Pretty = value;
         }
         
-        public      ITracerContext TracerContext {
-            get => writer.TracerContext;
-            set {
-                writer.TracerContext = value;
-                reader.TracerContext = value;
-            }
-        }
-        
         public              IErrorHandler       ErrorHandler {
             get => reader.ErrorHandler;
             set => reader.ErrorHandler = value;
@@ -65,7 +57,6 @@ namespace Friflo.Json.Fliox.Mapper
         
         public void Reset() {
             ErrorHandler        = Reader.DefaultErrorHandler;
-            TracerContext       = null;
             MaxDepth            = Utf8JsonParser.DefaultMaxDepth;
             WriteNullMembers    = true;
             Pretty              = false;

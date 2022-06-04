@@ -52,15 +52,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
             keyMapper       = (KeyMapper<TKey>)config.keyMappers[typeof(TKey)];
         }
         
-        public override void Trace(Tracer tracer, TMap map) {
-            foreach (var entry in map) {
-                var elemVar = entry.Value;
-                if (!EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
-                    elementType.Trace(tracer, elemVar);
-                }
-            }
-        }
-        
         public override DiffNode Diff(Differ differ, TMap left, TMap right) {
             differ.PushParent(left, right);
             foreach (var leftPair in left) {

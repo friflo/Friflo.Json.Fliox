@@ -32,7 +32,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public              int                 maxDepth;
         public              bool                pretty;
         public              bool                writeNullMembers;
-        public              ITracerContext      tracerContext;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -58,7 +57,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             outputType      = OutputType.ByteList;
             pretty          = false;
             writeNullMembers= true;
-            tracerContext     = null;
 #if JSON_BURST
             writerHandle    = -1;
 #else

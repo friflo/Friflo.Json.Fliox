@@ -53,11 +53,6 @@ namespace Friflo.Json.Fliox.Mapper
             set => intern.writeNullMembers = value;
         }
         
-        public      ITracerContext TracerContext {
-            get => intern.tracerContext;
-            set => intern.tracerContext = value;
-        }
-        
         public      TypeCache TypeCache => intern.typeCache;
 
         public ObjectWriter(TypeStore typeStore) {

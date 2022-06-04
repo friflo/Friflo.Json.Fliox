@@ -68,11 +68,6 @@ namespace Friflo.Json.Fliox.Mapper
             set => maxDepth = value;
         }
         
-        public              ITracerContext      TracerContext {
-            get => intern.tracerContext;
-            set => intern.tracerContext = value;
-        }
-        
         public              IErrorHandler       ErrorHandler {
             get => intern.ErrorHandler;
             set => intern.ErrorHandler = value;
