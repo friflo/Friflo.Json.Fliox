@@ -171,10 +171,10 @@ $@"        <tr>
                     fieldTag    = "key";
                 }
                 var reference   = "";
-                var relation    = field.RelationType;
-                if (relation != null) {
+                var relationType= field.RelationType;
+                if (relationType != null) {
                     fieldTag    = "ref";
-                    reference   = $"<rel></rel>{GetTypeName(relation, context)}";
+                    reference   = $"<rel></rel><a href='#{relationType.Namespace}.{relationType.Name}'>{field.relation}</a>";
                 }
                 var fieldDoc    = GetDoc("\n            <td><docs>", field.doc, "</docs></td>");
                 var oasContainer= type.IsSchema ? $"\n            <td>{GetOasLink("/", $"open {field.name} API", field.name)}</td>" : "";
