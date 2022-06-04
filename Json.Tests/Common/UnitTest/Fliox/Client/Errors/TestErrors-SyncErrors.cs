@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             AreEqual("Hello World 1",       helloTask1.Result);
             AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
-            AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
+            AreEqual("\"Hello World 1\"",   helloTask1.RawResult.AsString());
             
             IsTrue(helloTask1.TryReadResult<string>(out var helloTask1Result, out _));
             AreEqual("Hello World 1",       helloTask1Result);

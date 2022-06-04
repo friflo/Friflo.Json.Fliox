@@ -73,8 +73,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg, context) => {
                 AreEqual("EndCreate(param: null)", msg.ToString());
                 subscriber.receivedAll = true;
-                IsTrue(                     msg.JsonParam.IsNull());
-                AreEqual("null",            msg.JsonParam.AsString());
+                IsTrue(                     msg.RawParam.IsNull());
+                AreEqual("null",            msg.RawParam.AsString());
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg, context) => {
                 AreEqual(@"TestCommand(param: {""text"":""test message""})", msg.ToString());
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 subscriber.testMessageIntCalls++;
                 msg.GetParam(out int param, out _);
                 AreEqual(42,                            param);
-                AreEqual("42",                          msg.JsonParam.AsString());
+                AreEqual("42",                          msg.RawParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
                 IsTrue(msg.GetParam(out int result, out _));
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 subscriber.testMessageIntCalls++;
                 msg.GetParam(out int val, out _);
                 AreEqual(42,                            val);
-                AreEqual("42",                          msg.JsonParam.AsString());
+                AreEqual("42",                          msg.RawParam.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
                 IsTrue(msg.GetParam(out int result, out _));
@@ -205,8 +205,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             foreach (var message in messages) {
                 switch (message.Name) {
                     case nameof(TestRelationPoC.EndCreate):
-                        IsTrue  (        message.JsonParam.IsNull());
-                        AreEqual("null", message.JsonParam.AsString());
+                        IsTrue  (        message.RawParam.IsNull());
+                        AreEqual("null", message.RawParam.AsString());
                         break;
                     case nameof(TestRelationPoC.TestMessageInt):
                         message.GetParam(out int intVal, out _);

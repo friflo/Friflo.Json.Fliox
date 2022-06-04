@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// A <see cref="CommandTask"/> is created when a command is send to an <see cref="EntityDatabase"/> by
     /// <see cref="FlioxClient.SendCommand{TResult}"/>.<br/>
-    /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="ResultJson"/>
+    /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="RawResult"/>
     /// after the task is synced successful.
     /// <br/>
     /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/> returned by
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>Return the result of a command used as a command as JSON.
         /// JSON is "null" if the command doesnt return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
-        public              JsonValue       ResultJson  => IsOk("CommandTask.ResultJson", out Exception e) ? result : throw e;
+        public              JsonValue       RawResult  => IsOk("CommandTask.RawResult", out Exception e) ? result : throw e;
         
         internal CommandTask(string name, JsonValue param, Pool pool) : base (name, param) {
             this.pool = pool;

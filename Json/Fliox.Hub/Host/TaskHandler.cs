@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         // ------------------------------ command handler methods ------------------------------
         private static JsonValue Echo (Param<JsonValue> param, MessageContext context) {
-            return param.JsonParam;
+            return param.RawParam;
         }
         
         private static HostDetails Details (Param<Empty> param, MessageContext context) {

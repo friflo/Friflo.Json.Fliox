@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Param<TParam>
     {
-        public                      JsonValue   JsonParam       => param;
+        public                      JsonValue   RawParam       => param;
         
         public    override          string      ToString() => param.AsString();
         

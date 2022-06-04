@@ -192,8 +192,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 for (int n= 0; n < requestCount; n++) {
                     var message = client.std.Echo(text);
                     await client.SyncTasks();
-                    if (!result.IsEqual(message.ResultJson))
-                        throw new TestException($"Expect result: {result}, was: {message.ResultJson}");
+                    if (!result.IsEqual(message.RawResult))
+                        throw new TestException($"Expect result: {result}, was: {message.RawResult}");
                 }
             });
         }
