@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         
-        // --- IReadRefsTask<T>
+        // --- IReadRelationsTask<T>
         public ReadRelationsTask<TRef> ReadRelations<TRefKey, TRef>(EntitySet<TRefKey, TRef> relation, Expression<Func<T, TRefKey>> selector) where TRef : class {
             if (State.IsExecuted()) throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRef>(relation, selector, set.intern.store);
