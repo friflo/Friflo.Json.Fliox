@@ -128,19 +128,17 @@ type PocStore {
 }
 
 type Order {
-    id        : String!
-    customer  : String
-    customer2 : String
-    created   : String!
-    items     : [OrderItem!]
+    id       : String!
+    customer : String
+    created  : String!
+    items    : [OrderItem!]
 }
 
 input OrderInput {
-    id        : String!
-    customer  : String
-    customer2 : String
-    created   : String!
-    items     : [OrderItemInput!]
+    id       : String!
+    customer : String
+    created  : String!
+    items    : [OrderItemInput!]
 }
 
 type Customer {

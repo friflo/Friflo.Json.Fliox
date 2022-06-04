@@ -165,7 +165,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var item3 = new OrderItem { article = camera.Result.id, amount = 3, name = "Camera" };
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer.id;
-            order.customer2 = "customer-2";
             
             AreSimilar("entities: 11, tasks: 3",                        store);
             

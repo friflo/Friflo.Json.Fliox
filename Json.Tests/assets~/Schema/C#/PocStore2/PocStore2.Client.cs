@@ -28,7 +28,6 @@ public class Order {
     [Required]
     string           id;
     string           customer;
-    string           customer2;
     DateTime         created;
     List<OrderItem>  items;
 }

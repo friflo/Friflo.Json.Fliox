@@ -62,14 +62,12 @@ PocStore *-- "0..*" TestType : types
 
 class Order:::cssEntity {
     <<Entity · id>>
-    id         : string
-    customer?  : string
-    customer2? : string
-    created    : DateTime
-    items?     : OrderItem[]
+    id        : string
+    customer? : string
+    created   : DateTime
+    items?    : OrderItem[]
 }
 Order o.. "0..1" Customer : customer
-Order o.. "0..1" Customer : customer2
 Order *-- "0..*" OrderItem : items
 
 class Customer:::cssEntity {

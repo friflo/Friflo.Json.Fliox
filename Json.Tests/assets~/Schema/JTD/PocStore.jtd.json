@@ -13,11 +13,10 @@
         },
         "Order": {
             "properties": {
-                "id":        { "type": "string" },
-                "customer":  { "type": "string", "nullable": true },
-                "customer2": { "type": "string", "nullable": true },
-                "created":   { "type": "timestamp" },
-                "items":     { "elements": { "ref":  "OrderItem" }, "nullable": true }
+                "id":       { "type": "string" },
+                "customer": { "type": "string", "nullable": true },
+                "created":  { "type": "timestamp" },
+                "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
             }
         },
         "Customer": {

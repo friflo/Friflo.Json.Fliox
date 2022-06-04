@@ -50,11 +50,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual($"c.customer = 'customer-1'",                                        ordersWithCustomer1.DebugQuery.Cosmos);
             AreEqual($"EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
 
-            var orderCustomer2          = orders.RelationPath(customers, o => o.customer2);
-            AreEqual(".customer2", orderCustomer2.ToString());
-            var customer2_0             = readOrders.ReadRelation(customers, orderCustomer2);
-            AreEqual("readOrders -> .customer2", customer2_0.ToString());
-
             var orderCustomer           = orders.RelationPath(customers, o => o.customer);
             var customer                = readOrders.ReadRelation(customers, orderCustomer);
             var customer2               = readOrders.ReadRelation(customers, orderCustomer);
@@ -62,9 +57,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var customer3               = readOrders.ReadRelation(customers, o => o.customer);
             AreSame(customer, customer3);
             AreEqual("readOrders -> .customer", customer.Details);
-            
-            var customer4               = readOrders.ReadRelation(customers, o => o.customer2);
-            AreEqual("readOrders -> .customer2", customer4.Details);
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
@@ -106,9 +98,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     
             AreEqual("Smith Ltd.",      customer.Result.name);
             
-            AreEqual("Armstrong Inc.",  customer4.Result.name);
-
-                
             AreEqual(3,                 producersTask.Result.Count);
             AreEqual("Samsung",         producersTask.Result.Find(i => i.id == "producer-samsung").name);
             AreEqual("Canon",           producersTask.Result.Find(i => i.id == "producer-canon").name);

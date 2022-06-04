@@ -40,7 +40,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                         id          = order.id,
                         created     = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc),
                         customer    = order.customer,
-                        customer2   = order.customer2,
                         items       = order.items
                     };
 

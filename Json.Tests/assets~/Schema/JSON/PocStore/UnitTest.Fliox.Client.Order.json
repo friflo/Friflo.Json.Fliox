@@ -7,11 +7,10 @@
             "type": "object",
             "description": "Some useful class documentation :)\n<code>multiline line\ncode documentation</code>\nTest type reference '<b>OrderItem</b>'",
             "properties": {
-                "id":        { "type": "string" },
-                "customer":  { "type": ["string", "null"], "relation": "customers", "description": "Some <b>useful</b> field documentation 🙂\nCheck some new lines\nin documentation" },
-                "customer2": { "type": ["string", "null"], "relation": "customers" },
-                "created":   { "$ref": "./Standard.json#/definitions/DateTime", "description": "single line documentation" },
-                "items":     { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/OrderItem" }, "description": "<code>single line code documentation</code>" }
+                "id":       { "type": "string" },
+                "customer": { "type": ["string", "null"], "relation": "customers", "description": "Some <b>useful</b> field documentation 🙂\nCheck some new lines\nin documentation" },
+                "created":  { "$ref": "./Standard.json#/definitions/DateTime", "description": "single line documentation" },
+                "items":    { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/OrderItem" }, "description": "<code>single line code documentation</code>" }
             },
             "required": [
                 "id",

@@ -28,8 +28,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     /// </summary>
         [Relation(nameof(PocStore.customers))]
                     public  string          customer;
-        [Relation(nameof(PocStore.customers))]
-                    public  string          customer2;
                     /// <summary>single line documentation</summary>
                     public  DateTime        created;
                     /// <summary><code>single line code documentation</code></summary>

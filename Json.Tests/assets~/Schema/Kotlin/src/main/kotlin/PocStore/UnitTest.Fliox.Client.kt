@@ -19,11 +19,10 @@ abstract class PocStore {
 
 @Serializable
 data class Order (
-              val id        : String,
-              val customer  : String? = null,
-              val customer2 : String? = null,
-              val created   : Instant,
-              val items     : List<OrderItem>? = null,
+              val id       : String,
+              val customer : String? = null,
+              val created  : Instant,
+              val items    : List<OrderItem>? = null,
 )
 
 @Serializable
