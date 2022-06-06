@@ -34,8 +34,7 @@ namespace Friflo.Json.Tests.Main
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("hello/", async context =>
-                {
+                endpoints.MapGet("hello/", async context => {
                     await context.Response.WriteAsync("Hello World!");
                 });
                 endpoints.Map("/", async context => {
