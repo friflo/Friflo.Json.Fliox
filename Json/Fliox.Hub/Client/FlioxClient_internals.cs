@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 SyncResult syncResult;
                 try {
                     ProcessSyncTasks(syncRequest, response, syncStore, pooled.instance);
-                    syncStore.LogResults();
+                    syncStore.DetectPatchesResults();
                 }
                 finally {
                     var failed = new List<SyncTask>();
