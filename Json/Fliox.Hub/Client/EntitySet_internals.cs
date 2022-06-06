@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
-        internal  abstract  void                LogSetChangesInternal   (LogTask logTask, ObjectMapper mapper);
+        internal  abstract  void                DetectSetPatchesInternal(DetectPatchesTask detectPatchesTask, ObjectMapper mapper);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper);
         
         internal  abstract  void                ResetSync               ();
@@ -119,9 +119,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return EntityKeyTMap.GetKey(entity);
         }
 
-        internal override void LogSetChangesInternal(LogTask logTask, ObjectMapper mapper) {
+        internal override void DetectSetPatchesInternal(DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
             var peers = Peers();
-            GetSyncSet().LogSetChanges(peers, logTask, mapper);
+            GetSyncSet().DetectSetPatches(peers, detectPatchesTask, mapper);
         }
         
         internal override Peer<T> CreatePeer (T entity) {

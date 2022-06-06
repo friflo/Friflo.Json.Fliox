@@ -172,13 +172,13 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        // --- LogChanges
-        public LogTask LogChanges() {
-            var task = _intern.syncStore.CreateLog();
+        // --- detect patches
+        public DetectPatchesTask DetectAllPatches() {
+            var task = _intern.syncStore.CreateDetectPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;
-                    set.LogSetChangesInternal(task, pooled.instance);
+                    set.DetectSetPatchesInternal(task, pooled.instance);
                 }
             }
             AddTask(task);

@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 2, tasks: 2",                         store);
             AreSimilar("articles: 1, tasks: 1 >> upsert #1",            articles);
 
-            var logStore1 = store.LogChanges();  AssertLog(logStore1, 0);
+            var storePatches = store.DetectAllPatches();  AssertLog(storePatches, 0);
             
             AreSimilar("entities:  2, tasks: 2",                         store);
             AreSimilar("producers: 1, tasks: 1 >> create #1",            producers);
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var createIPad      = articles.Upsert(ipad);
             AreSimilar("articles: 2, tasks: 1 >> upsert #2",                        articles);
             
-            var logStore2 = store.LogChanges();  AssertLog(logStore2, 0);
+            var logStore2 = store.DetectAllPatches();  AssertLog(logStore2, 0);
             AreSimilar("entities:  5, tasks: 3",                                     store);
             AreSimilar("articles:  2, tasks: 1 >> upsert #2",                        articles);
             AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees);
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
             
-            IsTrue(logStore1.Success);
+            IsTrue(storePatches.Success);
             IsTrue(logStore2.Success);
             IsTrue(createGalaxy.Success);
             IsTrue(createIPad.Success);
@@ -124,21 +124,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("articles:  6",                                  articles);
 
             cameraCreate.name = "Changed name";
-            var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1);
-            var logSet =    articles.LogSetChanges();                   AssertLog(logSet,    1);
-            AreEqual("LogTask (patches: 1)", logSet.ToString());
+            var entityPatches   = articles.DetectEntityPatches(cameraCreate);   AssertLog(entityPatches, 1);
+            var articlePatches  = articles.DetectPatches();                     AssertLog(articlePatches,    1);
+            AreEqual("LogTask (patches: 1)", articlePatches.ToString());
 
-            var logStore3 = store.LogChanges();  AssertLog(logStore3, 1);
-            var logStore4 = store.LogChanges();  AssertLog(logStore4, 1);
+            var storePatches3 = store.DetectAllPatches();  AssertLog(storePatches3, 1);
+            var storePatches4 = store.DetectAllPatches();  AssertLog(storePatches4, 1);
 
             var deleteCamera = articles.Delete(camForDelete.id);
             
             await store.SyncTasks(); // ----------------
             
-            IsTrue(logEntity.Success);
-            IsTrue(logSet.Success);
-            IsTrue(logStore3.Success);
-            IsTrue(logStore4.Success);
+            IsTrue(entityPatches.Success);
+            IsTrue(articlePatches.Success);
+            IsTrue(storePatches3.Success);
+            IsTrue(storePatches4.Success);
             IsTrue(deleteCamera.Success);
             AreSimilar("entities: 9",                           store);       // tasks executed and cleared
 
@@ -176,31 +176,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);
             AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);
-            var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0);
+            var orderPatches = orders.DetectPatches();   AssertLog(orderPatches, 0);
             AreSimilar("entities: 13, tasks: 5",                        store);
             AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);
             AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);
             
             AreSimilar("entities: 13, tasks: 5",                        store);
-            var logStore5 = store.LogChanges();     AssertLog(logStore5, 0);
-            var logStore6 = store.LogChanges();     AssertLog(logStore6, 0);
+            var storePatches1 = store.DetectAllPatches();     AssertLog(storePatches1, 0);
+            var storePatches2 = store.DetectAllPatches();     AssertLog(storePatches2, 0);
             AreSimilar("entities: 13, tasks: 5",                        store);      // no new changes
 
             await store.SyncTasks(); // ----------------
             
-            IsTrue(logSet2.Success);
-            IsTrue(logStore5.Success);
-            IsTrue(logStore6.Success);
+            IsTrue(orderPatches.Success);
+            IsTrue(storePatches1.Success);
+            IsTrue(storePatches2.Success);
             AreSimilar("entities: 13",                                  store);      // tasks executed and cleared
             
             
             notebook.name = "Galaxy Book";
             var patchNotebook = articles.Patch(notebook);
-            patchNotebook.Member(a => a.name);
+            patchNotebook.PatchMember(a => a.name);
             var patchArticles = articles.PatchRange(new Article[] {});
             patchArticles.Add(notebook);
             var producerPath = new MemberPath<Article>(a => a.producer);
-            patchArticles.MemberPath(producerPath);
+            patchArticles.PatchMember(producerPath);
             
             AreEqual(".producer",                                       producerPath.ToString());
             AreEqual("PatchTask<Article> #ids: 1, members: [.name]",    patchNotebook.ToString());
@@ -252,8 +252,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         internal const string TestRemoveHandler     = "TestRemoveHandler";
         internal const string TestRemoveAllHandler  = "TestRemoveAllHandler";
 
-        static void AssertLog(LogTask logTask, int patches) {
-            var patchCount  = logTask.GetPatchCount();
+        static void AssertLog(DetectPatchesTask detectPatchesTask, int patches) {
+            var patchCount  = detectPatchesTask.GetPatchCount();
             
             if (patchCount == patches)
                 return;

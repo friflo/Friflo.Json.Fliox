@@ -347,24 +347,24 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
-        // --- Log changes -> create patches
-        public LogTask LogSetChanges() {
-            var task = intern.store._intern.syncStore.CreateLog();
+        // --- detect patches
+        public DetectPatchesTask DetectPatches() {
+            var task = intern.store._intern.syncStore.CreateDetectPatchesTask();
             var peers = Peers();
             using (var pooled = intern.store.ObjectMapper.Get()) {
-                GetSyncSet().LogSetChanges(peers, task, pooled.instance);
+                GetSyncSet().DetectSetPatches(peers, task, pooled.instance);
             }
             intern.store.AddTask(task);
             return task;
         }
 
-        public LogTask LogEntityChanges(T entity) {
-            var task = intern.store._intern.syncStore.CreateLog();
+        public DetectPatchesTask DetectEntityPatches(T entity) {
+            var task = intern.store._intern.syncStore.CreateDetectPatchesTask();
             if (entity == null)
-                throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.DetectEntityPatches() entity must not be null. EntitySet: {name}");
             if (EntityKeyTMap.IsEntityKeyNull(entity))
-                throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
-            GetSyncSet().LogEntityChanges(entity, task);
+                throw new ArgumentException($"EntitySet.DetectEntityPatches() entity.id must not be null. EntitySet: {name}");
+            GetSyncSet().DetectEntityPatches(entity, task);
             intern.store.AddTask(task);
             return task;
         }

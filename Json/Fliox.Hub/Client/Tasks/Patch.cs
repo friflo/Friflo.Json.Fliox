@@ -67,14 +67,14 @@ namespace Friflo.Json.Fliox.Hub.Client
             peers.AddRange(newPeers);
         }
         
-        public void Member(Expression<Func<T, object>> member) {
+        public void PatchMember(Expression<Func<T, object>> member) {
             if (member == null)
                 throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
             var memberPath = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
             members.Add(memberPath);
         }
         
-        public void MemberPath(MemberPath<T> member) {
+        public void PatchMember(MemberPath<T> member) {
             if (member == null)
                 throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPath() member must not be null.");
             members.Add(member.path);

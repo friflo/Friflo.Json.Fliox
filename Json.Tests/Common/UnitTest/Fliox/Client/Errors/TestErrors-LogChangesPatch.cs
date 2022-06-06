@@ -41,64 +41,64 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
                 customerWriteError.Result.name  = "<change write 1>";
                 customerReadError.Result.name   = "<change read 1>";
-                var logChanges = customers.LogSetChanges();
+                var customerPatches = customers.DetectPatches();
 
                 var sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
-                IsFalse(logChanges.Success);
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                IsFalse(customerPatches.Success);
+                AreEqual(TaskErrorType.EntityErrors, customerPatches.Error.type);
                 AreEqual(@"EntityErrors ~ count: 2
 | ReadError: customers [log-patch-entity-read-error], simulated read entity error
-| WriteError: customers [log-patch-entity-write-error], simulated write entity error", logChanges.Error.Message);
+| WriteError: customers [log-patch-entity-write-error], simulated write entity error", customerPatches.Error.Message);
             } {
                 testCustomers.readTaskErrors [readError]    = () => throw new SimulationException("simulated read task exception");
                 customerReadError.Result.name   = "<change read 2>";
-                var logChanges = customers.LogSetChanges();
+                var customerPatches = customers.DetectPatches();
 
                 AreEqual(1, store.Tasks.Count);
                 var sync = await store.TrySyncTasks(); // ----------------
                 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(TaskErrorType.EntityErrors, customerPatches.Error.type);
                 AreEqualTrimStack(@"EntityErrors ~ count: 1
-| PatchError: customers [log-patch-entity-read-error], UnhandledException - SimulationException: simulated read task exception", logChanges.Error.Message);
+| PatchError: customers [log-patch-entity-read-error], UnhandledException - SimulationException: simulated read task exception", customerPatches.Error.Message);
             } {
                 testCustomers.readTaskErrors[readError]    = () => new CommandError("simulated read task error");
                 customerReadError.Result.name   = "<change read 3>";
-                var logChanges = customers.LogSetChanges();
+                var customerPatches = customers.DetectPatches();
 
                 var sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(TaskErrorType.EntityErrors, customerPatches.Error.type);
                 AreEqual(@"EntityErrors ~ count: 1
-| PatchError: customers [log-patch-entity-read-error], DatabaseError - simulated read task error", logChanges.Error.Message);
+| PatchError: customers [log-patch-entity-read-error], DatabaseError - simulated read task error", customerPatches.Error.Message);
             } {
                 testCustomers.readTaskErrors.Remove(readError);
                 testCustomers.writeTaskErrors [writeError]    = () => throw new SimulationException("simulated write task exception");
                 customerWriteError.Result.name   = "<change write 3>";
                 customerReadError.Result.name   = "<change read 1>"; // restore original value
-                var logChanges = customers.LogSetChanges();
+                var customerPatches = customers.DetectPatches();
 
                 var sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(TaskErrorType.EntityErrors, customerPatches.Error.type);
                 AreEqualTrimStack(@"EntityErrors ~ count: 1
-| PatchError: customers [log-patch-entity-write-error], UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
+| PatchError: customers [log-patch-entity-write-error], UnhandledException - SimulationException: simulated write task exception", customerPatches.Error.Message);
             } {
                 testCustomers.writeTaskErrors [writeError]    = () => new CommandError("simulated write task error");
                 customerWriteError.Result.name   = "<change write 4>";
-                var logChanges = customers.LogSetChanges();
+                var customerPatches = customers.DetectPatches();
 
                 var sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
-                AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
+                AreEqual(TaskErrorType.EntityErrors, customerPatches.Error.type);
                 AreEqual(@"EntityErrors ~ count: 1
-| PatchError: customers [log-patch-entity-write-error], DatabaseError - simulated write task error", logChanges.Error.Message);
+| PatchError: customers [log-patch-entity-write-error], DatabaseError - simulated write task error", customerPatches.Error.Message);
                 
                 customerWriteError.Result.name   = "<change write 1>";  // restore original value
             }

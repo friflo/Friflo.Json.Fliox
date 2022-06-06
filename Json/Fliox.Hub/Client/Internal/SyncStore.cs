@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal readonly   List<SyncTask>      appTasks            = new List<SyncTask>();
         
-        private     List<LogTask>               logTasks;
-        private     List<LogTask>               LogTasks()          => logTasks ?? (logTasks = new List<LogTask>());
+        private     List<DetectPatchesTask>     logTasks;
+        private     List<DetectPatchesTask>     LogTasks()          => logTasks ?? (logTasks = new List<DetectPatchesTask>());
         
         internal    List<MessageTask>           messageTasks;
         internal    List<MessageTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<MessageTask>());
@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             SyncSets = store._intern.CreateSyncSets();
         }
 
-        internal LogTask CreateLog() {
-            var logTask = new LogTask();
+        internal DetectPatchesTask CreateDetectPatchesTask() {
+            var logTask = new DetectPatchesTask();
             LogTasks().Add(logTask);
             return logTask;
         }

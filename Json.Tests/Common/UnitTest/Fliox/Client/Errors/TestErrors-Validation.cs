@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             });
             var articlePatch    = new Article { id = "article-2", name = "changed name"};
             var patchArticle    = articles.Patch(articlePatch);
-            patchArticle.Member(a => a.name);
+            patchArticle.PatchMember(a => a.name);
             
             sync = await store.TrySyncTasks(); // ----------------
             

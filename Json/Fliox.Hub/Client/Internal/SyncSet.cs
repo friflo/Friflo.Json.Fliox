@@ -245,19 +245,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return _deleteTaskAll;
         }
 
-        // --- Log changes -> create patches
-        internal void LogSetChanges(Dictionary<TKey, Peer<T>> peers, LogTask logTask, ObjectMapper mapper) {
+        // --- detect patches
+        internal void DetectSetPatches(Dictionary<TKey, Peer<T>> peers, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
             foreach (var peerPair in peers) {
                 Peer<T> peer = peerPair.Value;
-                GetEntityChanges(peer, logTask, mapper);
+                DetectPeerPatches(peer, detectPatchesTask, mapper);
             }
         }
 
-        internal void LogEntityChanges(T entity, LogTask logTask) {
+        internal void DetectEntityPatches(T entity, DetectPatchesTask detectPatchesTask) {
             var peer = set.GetPeerByEntity(entity);
             using (var pooled = set.intern.store.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
-                GetEntityChanges(peer, logTask, mapper);
+                DetectPeerPatches(peer, detectPatchesTask, mapper);
             }
         }
 
@@ -266,7 +266,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         //   the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         //   In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         //   which is not already assigned)
-        private void GetEntityChanges(Peer<T> peer, LogTask logTask, ObjectMapper mapper) {
+        private void DetectPeerPatches(Peer<T> peer, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
             ref var intern = ref set.intern;
             if ((peer.state & (PeerState.Created | PeerState.Updated)) != 0) {
                 // tracer.Trace(peer.Entity);
@@ -280,13 +280,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (diff == null)
                     return;
                 var patchList = objectPatcher.CreatePatches(diff, mapper);
-                var entityPatch = new EntityPatch {
-                    patches = patchList
-                };
+                var entityPatch = new EntityPatch { patches = patchList };
                 SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
                 var id = peer.id;
                 Patches()[id] = entityPatch;
-                logTask.AddPatch(this, id);
+                detectPatchesTask.AddPatch(this, id, patchList);
                 
                 // tracer.Trace(entity);
             }
