@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             cameraCreate.name = "Changed name";
             var entityPatches   = articles.DetectEntityPatches(cameraCreate);   AssertLog(entityPatches, 1);
             var articlePatches  = articles.DetectPatches();                     AssertLog(articlePatches,    1);
-            AreEqual("LogTask (patches: 1)", articlePatches.ToString());
+            AreEqual("DetectPatches (patches: 1)", articlePatches.ToString());
 
             var storePatches3 = store.DetectAllPatches();  AssertLog(storePatches3, 1);
             var storePatches4 = store.DetectAllPatches();  AssertLog(storePatches4, 1);

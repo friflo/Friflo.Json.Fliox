@@ -201,10 +201,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     }
     
     public readonly struct Patch<TKey> {
-        public    readonly  TKey                key;
-        public    readonly  List<JsonPatch>     patches;
-        
         internal  readonly  JsonKey             id;
+        public    readonly  List<JsonPatch>     patches;
+        public    readonly  TKey                key;
+        
 
         public  override    string              ToString() => key.ToString();
         

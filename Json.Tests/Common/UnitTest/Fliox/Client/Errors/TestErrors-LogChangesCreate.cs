@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 patchArticle.Result.producer = producer1.id;
 
                 var storePatches = store.DetectAllPatches();
-                AreEqual("LogTask (patches: 1)", storePatches.ToString());
+                AreEqual("DetectPatches (patches: 1)", storePatches.ToString());
 
                 var sync = await store.TrySyncTasks();
 
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 patchArticle.Result.producer = producer2.id;
 
                 var storePatches = store.DetectAllPatches();
-                AreEqual("LogTask (patches: 1)", storePatches.ToString());
+                AreEqual("DetectPatches (patches: 1)", storePatches.ToString());
 
                 AreEqual(2, store.Tasks.Count);
                 var sync = await store.TrySyncTasks(); // ----------------

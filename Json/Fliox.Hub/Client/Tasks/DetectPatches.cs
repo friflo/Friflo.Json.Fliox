@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void AddPatch(SyncSet sync, in JsonKey id, List<JsonPatch> patchList) {
             if (id.IsNull())
                 throw new ArgumentException("id must not be null");
-            var change = new LogChange(sync, id, patchList);
-            patches.Add(change);
+            var patch = new LogChange(sync, id, patchList);
+            patches.Add(patch);
         }
         
         internal void SetResult() {
@@ -49,13 +49,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// tuple <see cref="sync"/> and <see cref="id"/>
     public readonly struct LogChange {
         public      readonly    JsonKey         id;
-        public      readonly    List<JsonPatch> patchList;
+        public      readonly    List<JsonPatch> patches;
         internal    readonly    SyncSet         sync;
 
-        internal LogChange(SyncSet sync, in JsonKey id, List<JsonPatch> patchList) {
+        internal LogChange(SyncSet sync, in JsonKey id, List<JsonPatch> patches) {
             this.sync       = sync;
             this.id         = id;
-            this.patchList  = patchList;
+            this.patches    = patches;
         }
     }
     
