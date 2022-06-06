@@ -1,5 +1,6 @@
 #if !UNITY_2020_1_OR_NEWER
 
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,10 +52,9 @@ namespace Fliox.DemoHub
                 endpoints.MapGet("hello/", async context => {
                     await context.Response.WriteAsync("Hello World!");
                 });
-                endpoints.Map("/", async context => {
-                    var location = hostHub.endpoint;
-                    context.Response.Redirect(location, false);
-                    await context.Response.WriteAsync($"redirect -> {location}");
+                endpoints.Map("/", context => {
+                    context.Response.Redirect(hostHub.endpoint, false);
+                    return Task.CompletedTask;
                 });
                 endpoints.Map("/fliox/{*path}", async context => {
                     var response = await context.ExecuteFlioxRequest(hostHub).ConfigureAwait(false);
