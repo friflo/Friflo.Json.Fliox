@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
         public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, SyncContext syncContext) {
-            var entityPatches = patchEntities.patches;
+            var entityPatches = patchEntities.patches.ToDictionary(patch => patch.id, JsonKey.Equality);
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
             var readTask    = new ReadEntitiesSet { ids = ids, keyName = patchEntities.keyName };

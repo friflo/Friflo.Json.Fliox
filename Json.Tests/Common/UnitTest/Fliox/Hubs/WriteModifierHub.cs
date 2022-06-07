@@ -104,20 +104,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         public  readonly    Dictionary<string, PatchModifier>    patches    = new Dictionary<string, PatchModifier>();
         
-        internal void ModifyPatches(Dictionary<JsonKey, EntityPatch> entityPatches) {
+        internal void ModifyPatches(List<EntityPatch> entityPatches) {
             var modifications = new Dictionary<string, EntityPatch>();
-            foreach (var pair in entityPatches) {
-                var key = pair.Key.AsString();
+            foreach (var entityPatch in entityPatches) {
+                var key = entityPatch.id.AsString();
                 if (patches.TryGetValue(key, out var modifier)) {
-                    EntityPatch value       = pair.Value;
-                    EntityPatch modified    = modifier (value);
+                    EntityPatch modified    = modifier (entityPatch);
                     modifications.Add(key, modified);
                 }
             }
             foreach (var pair in modifications) {
                 var         key     = new JsonKey(pair.Key);
                 EntityPatch value   = pair.Value;
-                entityPatches[key] = value;
+                var modifiedIndex   = entityPatches.FindIndex(p => p.id.IsEqual(key));
+                entityPatches[modifiedIndex] = value;
             }
         }
     }

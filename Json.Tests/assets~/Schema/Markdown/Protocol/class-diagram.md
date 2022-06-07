@@ -200,11 +200,12 @@ class PatchEntities {
     task       : "patch"
     container  : string
     keyName?   : string
-    patches    : string ➞ EntityPatch
+    patches    : EntityPatch[]
 }
 PatchEntities *-- "0..*" EntityPatch : patches
 
 class EntityPatch {
+    id       : string
     patches  : JsonPatch[]
 }
 EntityPatch *-- "0..*" JsonPatch : patches

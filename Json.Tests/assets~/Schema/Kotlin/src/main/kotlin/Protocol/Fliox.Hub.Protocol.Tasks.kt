@@ -78,12 +78,13 @@ enum class AggregateType {
 data class PatchEntities (
               val container : String,
               val keyName   : String? = null,
-              val patches   : HashMap<String, EntityPatch>,
+              val patches   : List<EntityPatch>,
     override  val info      : JsonElement? = null,
 ) : SyncRequestTask()
 
 @Serializable
 data class EntityPatch (
+              val id      : String,
               val patches : List<JsonPatch>,
 )
 

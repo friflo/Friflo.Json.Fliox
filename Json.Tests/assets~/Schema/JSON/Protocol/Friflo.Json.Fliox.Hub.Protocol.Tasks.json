@@ -143,7 +143,7 @@
                 "task":      { "enum": ["patch"] },
                 "container": { "type": "string", "description": "container name" },
                 "keyName":   { "type": ["string", "null"], "description": "name of the primary key property of the entity <b>patches</b>" },
-                "patches":   { "additionalProperties": { "$ref": "#/definitions/EntityPatch" }, "type": "object", "description": "set of patches for each entity identified by its primary key" },
+                "patches":   { "type": "array", "items": { "$ref": "#/definitions/EntityPatch" }, "description": "list of patches for each entity" },
                 "info":      {  }
             },
             "required": [
@@ -157,9 +157,11 @@
             "type": "object",
             "description": "Contains the <b>patches</b> applied to an entity. Used by <b>PatchEntities</b>",
             "properties": {
+                "id":      { "type": "string" },
                 "patches": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/JsonPatch" }, "description": "list of patches applied to an entity" }
             },
             "required": [
+                "id",
                 "patches"
             ],
             "additionalProperties": false

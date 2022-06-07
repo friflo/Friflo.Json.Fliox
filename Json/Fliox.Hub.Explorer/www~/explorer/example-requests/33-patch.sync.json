@@ -4,8 +4,9 @@
     {
       "task":       "patch",
       "container":  "articles",
-      "patches": {
-        "new-article": {
+      "patches": [
+        {
+          "id": "new-article",  
           "patches": [
             {
               "op":"replace",
@@ -14,7 +15,7 @@
             }
           ]
         }
-      }
+      ]
     }
   ],
   "info": "patch article member .name (article need to be present)"

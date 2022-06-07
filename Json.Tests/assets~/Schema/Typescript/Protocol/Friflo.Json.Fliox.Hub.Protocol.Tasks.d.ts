@@ -164,12 +164,13 @@ export class PatchEntities extends SyncRequestTask {
     container  : string;
     /** name of the primary key property of the entity **patches** */
     keyName?   : string | null;
-    /** set of patches for each entity identified by its primary key */
-    patches    : { [key: string]: EntityPatch };
+    /** list of patches for each entity */
+    patches    : EntityPatch[];
 }
 
 /** Contains the **patches** applied to an entity. Used by **PatchEntities** */
 export class EntityPatch {
+    id       : string;
     /** list of patches applied to an entity */
     patches  : JsonPatch_Union[];
 }

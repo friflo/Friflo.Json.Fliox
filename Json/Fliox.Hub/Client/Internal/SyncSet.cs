@@ -280,9 +280,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 if (diff == null)
                     return;
                 var patchList = objectPatcher.CreatePatches(diff, mapper);
-                var entityPatch = new EntityPatch { patches = patchList };
-                SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
                 var id = peer.id;
+                var entityPatch = new EntityPatch { id = id, patches = patchList };
+                SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
                 Patches()[id] = entityPatch;
                 detectPatchesTask.AddPatch(this, id, patchList);
                 
@@ -505,6 +505,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         var id      = peer.id;
                         if (!patches.TryGetValue(id, out EntityPatch patch)) {
                             patch = new EntityPatch {
+                                id      = id,
                                 patches = new List<JsonPatch>()
                             };
                             patches.Add(id, patch);
@@ -524,10 +525,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             }
             if (patches != null && patches.Count > 0) {
+                var list = new List<EntityPatch>(patches.Count);
+                foreach (var pair in patches) { list.Add(pair.Value); }
                 var req = new PatchEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
-                    patches     = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
+                    patches     = list
                 };
                 tasks.Add(req);
             }

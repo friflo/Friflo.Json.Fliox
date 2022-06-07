@@ -18,14 +18,14 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     public sealed class PatchEntities : SyncRequestTask
     {
         /// <summary>container name</summary>
-        [Required]  public  string                              container;
+        [Required]  public  string              container;
         /// <summary>name of the primary key property of the entity <see cref="patches"/></summary>
-                    public  string                              keyName;
-        /// <summary>set of patches for each entity identified by its primary key</summary>
-        [Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
+                    public  string              keyName;
+        /// <summary>list of patches for each entity</summary>
+        [Required]  public  List<EntityPatch>   patches = new List<EntityPatch>();
         
-        internal override   TaskType                            TaskType => TaskType.patch;
-        public   override   string                              TaskName =>  $"container: '{container}'";
+        internal override   TaskType            TaskType => TaskType.patch;
+        public   override   string              TaskName =>  $"container: '{container}'";
         
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             if (container == null)
@@ -46,8 +46,9 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     /// </summary>
     public sealed class EntityPatch
     {
+        [Required]  public  JsonKey             id;
         /// <summary>list of patches applied to an entity</summary>
-        [Required]  public  List<JsonPatch>      patches;
+        [Required]  public  List<JsonPatch>     patches;
     }
 
     // ----------------------------------- task result -----------------------------------

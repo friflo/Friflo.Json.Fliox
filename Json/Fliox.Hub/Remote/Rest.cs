@@ -382,9 +382,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var entityId    = new JsonKey(id);
             keyName         = keyName ?? "id";
-            var entityPatch = new EntityPatch { patches = patches };
+            var entityPatch = new EntityPatch { id = entityId, patches = patches };
             var task        = new PatchEntities { container = container, keyName = keyName };
-            task.patches.Add(entityId, entityPatch);
+            task.patches.Add(entityPatch);
             var syncRequest = CreateSyncRequest(context, database, task, out var syncContext);
             var syncResult  = await context.hub.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             

@@ -73,8 +73,9 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task":         "patch",
             "container":    "Article",
-            "patches": {
-                "new-article": {
+            "patches": [
+                {
+                    "id": "new-article",
                     "patches": [
                         {
                             "op":"replace",
@@ -83,7 +84,7 @@ var exampleSync: ProtocolMessage_Union =
                         }
                     ]
                 }
-            }
+            ]
         },
         {
             "task":         "subscribeMessage",
