@@ -60,6 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
+    public delegate void MemberSelectionBuilder<T>(MemberSelection<T> member) where T : class;
+    
     public class MemberSelection<T> where T : class
     {
         internal readonly   List<string>        members = new List<string>();
