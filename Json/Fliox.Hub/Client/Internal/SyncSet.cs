@@ -240,7 +240,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- Patch
         // - assign patches
         internal PatchTask<TKey, T> Patch(PatchMember<T> member) {
-            var patchTask  = new PatchTask<TKey, T>(set, member);
+            var patchTask  = new PatchTask<TKey, T>(this, member);
             PatchTasks().Add(patchTask);
             return patchTask;
         }

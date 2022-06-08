@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        internal PatchTask(EntitySet<TKey,T> set, PatchMember<T> patchMember) {
-            syncSet    = set.GetSyncSet();
-            members    = patchMember.members;
+        internal PatchTask(SyncSet<TKey,T> syncSet, PatchMember<T> patchMember) {
+            this.syncSet    = syncSet;
+            members         = patchMember.members;
         }
 
         public PatchTask<TKey, T> Add(T entity) {
