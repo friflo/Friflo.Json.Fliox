@@ -487,23 +487,27 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        internal void CreatePatch(PatchTask<TKey, T> patchTask, T entity, ObjectMapper mapper) {
-            var members = patchTask.members;
+        internal void CreatePatch(PatchTask<TKey, T> patchTask, ICollection<T> entities, ObjectMapper mapper) {
+            var members         = patchTask.members;
             // todo performance: cache MemberAccess instances with members as key
             var memberAccess    = new MemberAccess(members);
             var memberAccessor  = new MemberAccessor(mapper.writer);
             var entityPatches   = Patches();
+            var taskPatches     = patchTask.patches;
+            taskPatches.Capacity= taskPatches.Count + entities.Count;
 
-            foreach (var key in patchTask.keys) {
-                var id = KeyConvert.KeyToId(key);
+            foreach (var entity in entities) {
+                var id = EntityKeyTMap.GetId(entity);
                 if (!entityPatches.TryGetValue(id, out EntityPatch patch)) {
                     patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
                     entityPatches.Add(id, patch);
                 }
+                taskPatches.Add(patch);
+                var key = KeyConvert.IdToKey(id);
                 if (set.TryGetPeerByKey(key, out var peer)) {
                     SetNextPatchSource(peer, mapper);
                 }
-                var patches   = patch.patches;
+                var patches         = patch.patches;
                 var selectResults   = memberAccessor.GetValues(entity, memberAccess);
                 int n = 0;
                 foreach (var path in members) {

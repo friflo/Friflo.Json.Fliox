@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
 
 // ReSharper disable once CheckNamespace
@@ -18,22 +18,20 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class PatchTask<TKey, T> : SyncTask where T : class
     {
-        internal readonly   List<string>                members;
-        internal readonly   List<TKey>                  keys   = new List<TKey>();
-        private  readonly   SyncSet<TKey,T>             syncSet;
+        internal readonly   List<string>        members;
+        internal readonly   List<EntityPatch>   patches = new List<EntityPatch>();
+        private  readonly   SyncSet<TKey,T>     syncSet;
 
-        internal            TaskState                   state;
-        internal override   TaskState                   State      => state;
-        
-        private static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+        internal            TaskState           state;
+        internal override   TaskState           State      => state;
         
         public   override   string              Details {
             get {
                 var sb = new StringBuilder();
                 sb.Append("PatchTask<");
                 sb.Append(typeof(T).Name);
-                sb.Append("> #ids: ");
-                sb.Append(keys.Count);
+                sb.Append("> patches: ");
+                sb.Append(patches.Count);
                 sb.Append(", members: [");
                 for (int n = 0; n < members.Count; n++) {
                     if (n > 0)
@@ -51,22 +49,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         public PatchTask<TKey, T> Add(T entity) {
-            var key = EntityKeyTMap.GetKey(entity);
-            keys.Add(key);
             using (var pooled = syncSet.ObjectMapper.Get()) {
-                syncSet.CreatePatch(this, entity, pooled.instance);
+                var entities = new List<T> { entity };
+                syncSet.CreatePatch(this, entities, pooled.instance);
             }
             return this;
         }
         
         public PatchTask<TKey, T> AddRange(ICollection<T> entities) {
-            keys.Capacity = keys.Count + entities.Count;
             using (var pooled = syncSet.ObjectMapper.Get()) {
-                foreach (var entity in entities) {
-                    var key = EntityKeyTMap.GetKey(entity);
-                    keys.Add(key);
-                    syncSet.CreatePatch(this, entity, pooled.instance);
-                }
+                syncSet.CreatePatch(this, entities, pooled.instance);
             }
             return this;
         }
