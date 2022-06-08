@@ -12,7 +12,6 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
-using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable RedundantArgumentDefaultValue
 // ReSharper disable InconsistentNaming
@@ -22,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal abstract void AddUpsert (Peer<T> peer);
         internal abstract void AddCreate (Peer<T> peer);
+        internal abstract void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities);
     }
 
     /// Multiple instances of this class can be created when calling <see cref="FlioxClient.SyncTasks"/> without
@@ -30,9 +30,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         private static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
-
-        // --- internal members
-        internal   ObjectPool<ObjectMapper>         ObjectMapper => set.intern.store.ObjectMapper;
 
         // --- private members
         // Note!
@@ -64,7 +61,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<WriteTask>                 _upsertTasks;
 
         private     Dictionary<JsonKey, EntityPatch>_patches;
-        private     List<PatchTask<TKey, T>>        _patchTasks;
+        private     List<PatchTask<T>>              _patchTasks;
 
         private     HashSet<TKey>                   _deletes;
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
@@ -89,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<WriteTask>                 UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
 
         private     Dictionary<JsonKey, EntityPatch>Patches()       => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
-        private     List<PatchTask<TKey, T>>        PatchTasks()    => _patchTasks  ?? (_patchTasks  = new List<PatchTask<TKey, T>>());
+        private     List<PatchTask<T>>              PatchTasks()    => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
 
         private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
         private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
@@ -239,8 +236,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // --- Patch
         // - assign patches
-        internal PatchTask<TKey, T> Patch(PatchMember<T> member) {
-            var patchTask  = new PatchTask<TKey, T>(this, member);
+        internal PatchTask<T> Patch(PatchMember<T> member) {
+            var patchTask  = new PatchTask<T>(this, member);
             PatchTasks().Add(patchTask);
             return patchTask;
         }
@@ -487,32 +484,35 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        internal void CreatePatch(PatchTask<TKey, T> patchTask, ICollection<T> entities, ObjectMapper mapper) {
-            var members         = patchTask.members;
-            // todo performance: cache MemberAccess instances with members as key
-            var memberAccess    = new MemberAccess(members);
-            var memberAccessor  = new MemberAccessor(mapper.writer);
-            var entityPatches   = Patches();
-            var taskPatches     = patchTask.patches;
-            taskPatches.Capacity= taskPatches.Count + entities.Count;
+        internal override void AddEntityPatches(PatchTask<T> patchTask, ICollection<T> entities) {
+            using (var pooled = set.intern.store.ObjectMapper.Get()) {
+                var mapper          = pooled.instance;
+                // todo performance: cache MemberAccess instances with members as key
+                var members         = patchTask.members;
+                var memberAccess    = new MemberAccess(members);
+                var memberAccessor  = new MemberAccessor(mapper.writer);
+                var entityPatches   = Patches();
+                var taskPatches     = patchTask.patches;
+                taskPatches.Capacity= taskPatches.Count + entities.Count;
 
-            foreach (var entity in entities) {
-                var id = EntityKeyTMap.GetId(entity);
-                if (!entityPatches.TryGetValue(id, out EntityPatch patch)) {
-                    patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
-                    entityPatches.Add(id, patch);
-                }
-                taskPatches.Add(patch);
-                var key = KeyConvert.IdToKey(id);
-                if (set.TryGetPeerByKey(key, out var peer)) {
-                    SetNextPatchSource(peer, mapper);
-                }
-                var patches         = patch.patches;
-                var selectResults   = memberAccessor.GetValues(entity, memberAccess);
-                int n = 0;
-                foreach (var path in members) {
-                    var value = selectResults[n++].Json;
-                    patches.Add(new PatchReplace { path = path, value = value });
+                foreach (var entity in entities) {
+                    var id = EntityKeyTMap.GetId(entity);
+                    if (!entityPatches.TryGetValue(id, out EntityPatch patch)) {
+                        patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
+                        entityPatches.Add(id, patch);
+                    }
+                    taskPatches.Add(patch);
+                    var key = KeyConvert.IdToKey(id);
+                    if (set.TryGetPeerByKey(key, out var peer)) {
+                        SetNextPatchSource(peer, mapper);
+                    }
+                    var patches         = patch.patches;
+                    var selectResults   = memberAccessor.GetValues(entity, memberAccess);
+                    int n = 0;
+                    foreach (var path in members) {
+                        var value = selectResults[n++].Json;
+                        patches.Add(new PatchReplace { path = path, value = value });
+                    }
                 }
             }
         }

@@ -16,11 +16,11 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class PatchTask<TKey, T> : SyncTask where T : class
+    public sealed class PatchTask<T> : SyncTask where T : class
     {
         internal readonly   List<string>        members;
         internal readonly   List<EntityPatch>   patches = new List<EntityPatch>();
-        private  readonly   SyncSet<TKey,T>     syncSet;
+        private  readonly   SyncSetBase<T>      syncSet;
 
         internal            TaskState           state;
         internal override   TaskState           State      => state;
@@ -43,23 +43,19 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        internal PatchTask(SyncSet<TKey,T> syncSet, PatchMember<T> patchMember) {
+        internal PatchTask(SyncSetBase<T> syncSet, PatchMember<T> patchMember) {
             this.syncSet    = syncSet;
             members         = patchMember.members;
         }
 
-        public PatchTask<TKey, T> Add(T entity) {
-            using (var pooled = syncSet.ObjectMapper.Get()) {
-                var entities = new List<T> { entity };
-                syncSet.CreatePatch(this, entities, pooled.instance);
-            }
+        public PatchTask<T> Add(T entity) {
+            var entities = new List<T> { entity };
+            syncSet.AddEntityPatches(this, entities);
             return this;
         }
         
-        public PatchTask<TKey, T> AddRange(ICollection<T> entities) {
-            using (var pooled = syncSet.ObjectMapper.Get()) {
-                syncSet.CreatePatch(this, entities, pooled.instance);
-            }
+        public PatchTask<T> AddRange(ICollection<T> entities) {
+            syncSet.AddEntityPatches(this, entities);
             return this;
         }
     }
