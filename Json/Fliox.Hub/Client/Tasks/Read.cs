@@ -2,16 +2,19 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Key;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     
     public abstract  class FindTask<TKey, T> : SyncTask where T : class {
+        [DebuggerBrowsable(Never)]
         internal                    TaskState   findState;
         
         public   abstract override  string      Details { get; }
@@ -120,6 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class ReadTask<TKey, T> : SyncTask, IReadRelationsTask<T> where T : class
     {
+        [DebuggerBrowsable(Never)]
         internal            TaskState               state;
         private  readonly   EntitySet<TKey, T>      set;
         internal            RefsTask                refsTask;

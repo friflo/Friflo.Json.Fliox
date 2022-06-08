@@ -2,9 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -15,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public abstract class AggregateTask : SyncTask
     {
+        [DebuggerBrowsable(Never)]
         internal            TaskState       state;
         internal readonly   FilterOperation filter;
         internal readonly   string          filterLinq; // use as string identifier of a filter 

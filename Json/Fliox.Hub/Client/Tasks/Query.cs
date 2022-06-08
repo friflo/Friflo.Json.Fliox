@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -28,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// Therefore assign <see cref="ResultCursor"/> of the previous to <see cref="cursor"/>. </summary>
         public              string          cursor;
         
+        [DebuggerBrowsable(Never)]
         internal            TaskState       state;
         internal            RefsTask        refsTask;
         internal readonly   FilterOperation filter;

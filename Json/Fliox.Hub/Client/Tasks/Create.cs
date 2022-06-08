@@ -3,12 +3,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public abstract class WriteTask : SyncTask {
+        [DebuggerBrowsable(Never)]
         internal            TaskState   state;
         internal override   TaskState   State   => state;
 

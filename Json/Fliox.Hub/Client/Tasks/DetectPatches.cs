@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -16,6 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public              int                 GetPatchCount()   => patches.Count; // count as method to avoid flooding properties
         
+        [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State   => state;
         

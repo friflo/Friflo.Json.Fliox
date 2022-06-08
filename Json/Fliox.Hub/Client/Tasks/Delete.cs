@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -15,6 +17,8 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         private  readonly   SyncSet<TKey, T>    syncSet;
         private  readonly   List<TKey>          keys;
+        
+        [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
 
@@ -43,6 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public sealed class DeleteAllTask<TKey, T> : SyncTask where T : class
     {
+        [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State       => state;
 

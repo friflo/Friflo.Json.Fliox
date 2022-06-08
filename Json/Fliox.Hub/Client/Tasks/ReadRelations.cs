@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -13,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 
     public abstract class ReadRelationsTask : SyncTask
     {
+        [DebuggerBrowsable(Never)]
         internal            TaskState   state;
         internal abstract   string      Selector    { get; }
         internal abstract   string      Container   { get; }

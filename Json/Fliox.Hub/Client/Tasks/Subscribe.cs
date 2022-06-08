@@ -2,16 +2,19 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class SubscribeChangesTask<T> : SyncTask where T : class
     {
+        [DebuggerBrowsable(Never)]
         internal            TaskState       state;
         internal            List<Change>    changes;
         internal            FilterOperation filter;
@@ -33,6 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         internal readonly   string      name;
         internal readonly   bool?       remove;
+        [DebuggerBrowsable(Never)]
         internal            TaskState   state;
             
         internal override   TaskState   State   => state;

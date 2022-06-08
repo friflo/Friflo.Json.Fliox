@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -22,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   string          name;
         internal readonly   JsonValue       param;
         
+        [DebuggerBrowsable(Never)]
         internal            TaskState       state;
         internal override   TaskState       State       => state;
         

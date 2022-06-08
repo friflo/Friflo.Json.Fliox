@@ -3,11 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Transform;
+using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -22,6 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal readonly   List<EntityPatch>   patches = new List<EntityPatch>();
         private  readonly   SyncSetBase<T>      syncSet;
 
+        [DebuggerBrowsable(Never)]
         internal            TaskState           state;
         internal override   TaskState           State      => state;
         
