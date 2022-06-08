@@ -49,6 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Required]  public  JsonKey             id;
         /// <summary>list of patches applied to an entity</summary>
         [Required]  public  List<JsonPatch>     patches;
+
+        public override     string              ToString() => id.AsString();
     }
 
     // ----------------------------------- task result -----------------------------------
