@@ -7,9 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
-using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -22,8 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         internal readonly   List<string>                members;
         internal readonly   List<TKey>                  keys   = new List<TKey>();
-        private  readonly   SyncSet<TKey,T>             set;
-        private  readonly   ObjectPool<ObjectMapper>    objectMapper;
+        private  readonly   SyncSet<TKey,T>             syncSet;
 
         internal            TaskState                   state;
         internal override   TaskState                   State      => state;
@@ -47,30 +44,28 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return sb.ToString();
             }
         }
-        
 
         internal PatchTask(EntitySet<TKey,T> set, PatchMember<T> patchMember) {
-            this.set        = set.GetSyncSet();
-            objectMapper    = set.intern.store.ObjectMapper;
-            this.members    = patchMember.members;
+            syncSet    = set.GetSyncSet();
+            members    = patchMember.members;
         }
 
         public PatchTask<TKey, T> Add(T entity) {
             var key = EntityKeyTMap.GetKey(entity);
             keys.Add(key);
-            using (var pooled = objectMapper.Get()) {
-                set.CreatePatch(this, entity, pooled.instance);
+            using (var pooled = syncSet.ObjectMapper.Get()) {
+                syncSet.CreatePatch(this, entity, pooled.instance);
             }
             return this;
         }
         
         public PatchTask<TKey, T> AddRange(ICollection<T> entities) {
             keys.Capacity = keys.Count + entities.Count;
-            using (var pooled = objectMapper.Get()) {
+            using (var pooled = syncSet.ObjectMapper.Get()) {
                 foreach (var entity in entities) {
                     var key = EntityKeyTMap.GetKey(entity);
                     keys.Add(key);
-                    set.CreatePatch(this, entity, pooled.instance);
+                    syncSet.CreatePatch(this, entity, pooled.instance);
                 }
             }
             return this;

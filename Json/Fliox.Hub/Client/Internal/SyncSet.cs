@@ -12,6 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query.Ops;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable RedundantArgumentDefaultValue
 // ReSharper disable InconsistentNaming
@@ -30,7 +31,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
         private static readonly KeyConverter<TKey>  KeyConvert      = KeyConverter.GetConverter<TKey>();
 
+        // --- internal members
+        internal   ObjectPool<ObjectMapper>         ObjectMapper => set.intern.store.ObjectMapper;
 
+        // --- private members
         // Note!
         // All fields & getters must be private by all means to ensure that all scheduled tasks of a SyncTasks() call
         // managed by this instance can be mapped to their task results safely.
@@ -91,6 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
 
         private     DeleteAllTask<TKey, T>          _deleteTaskAll;
+        
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
