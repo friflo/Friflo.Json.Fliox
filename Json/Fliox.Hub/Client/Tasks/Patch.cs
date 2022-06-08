@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        internal PatchTask(SyncSetBase<T> syncSet, PatchMember<T> patchMember) {
+        internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> patchMember) {
             this.syncSet    = syncSet;
             members         = patchMember.members;
         }
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
     }
     
-    public class PatchMember<T> where T : class
+    public class MemberSelection<T> where T : class
     {
         internal readonly   List<string>        members = new List<string>();
         
