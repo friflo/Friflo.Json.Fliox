@@ -370,13 +370,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 foreach (var entityPatch in entityPatches) {
                     var id = entityPatch.id;
                     var peer = set.GetPeerById(id);
-                    peer.SetPatchSource(peer.NextPatchSource);
+                    var  nextPatchSource = peer.NextPatchSource;
+                    if (nextPatchSource == null)
+                        continue;
+                    // set patch source (diff reference) only if entity is tracked
+                    peer.SetPatchSource(nextPatchSource);
                     peer.SetNextPatchSourceNull();
                 }
                 foreach (var patchTask in patchTasks) {
                     var entityErrorInfo = new TaskErrorInfo();
-                    foreach (var peer in patchTask.peers) {
-                        if (errorsPatch.TryGetValue(peer.id, out EntityError error)) {
+                    foreach (var key in patchTask.keys) {
+                        var id = KeyConvert.KeyToId(key);
+                        if (errorsPatch.TryGetValue(id, out EntityError error)) {
                             entityErrorInfo.AddEntityError(error);
                         }
                     }

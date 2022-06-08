@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<WriteTask>                 _upsertTasks;
 
         private     Dictionary<JsonKey, EntityPatch>_patches;
-        private     List<PatchTask<T>>              _patchTasks;
+        private     List<PatchTask<TKey, T>>        _patchTasks;
 
         private     HashSet<TKey>                   _deletes;
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     List<WriteTask>                 UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
 
         private     Dictionary<JsonKey, EntityPatch>Patches()       => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
-        private     List<PatchTask<T>>              PatchTasks()    => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
+        private     List<PatchTask<TKey, T>>        PatchTasks()    => _patchTasks  ?? (_patchTasks  = new List<PatchTask<TKey, T>>());
 
         private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
         private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
@@ -210,19 +210,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             return upsert;
         }
 
-        // --- Patch
-        internal PatchTask<T> Patch(Peer<T> peer) {
-            var patchTask  = new PatchTask<T>(peer, set);
-            PatchTasks().Add(patchTask);
-            return patchTask;
-        }
-
-        internal PatchTask<T> PatchRange(ICollection<Peer<T>> peers) {
-            var patchTask  = new PatchTask<T>(peers, set);
-            PatchTasks().Add(patchTask);
-            return patchTask;
-        }
-
         // --- Delete
         internal DeleteTask<TKey, T> Delete(TKey key) {
             AddDelete(key);
@@ -244,8 +231,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             _deleteTaskAll = new DeleteAllTask<TKey, T>();
             return _deleteTaskAll;
         }
+        
+        // --- Patch
+        // - assign patches
+        internal PatchTask<TKey, T> Patch(PatchMember<T> member) {
+            var patchTask  = new PatchTask<TKey, T>(set, member);
+            PatchTasks().Add(patchTask);
+            return patchTask;
+        }
 
-        // --- detect patches
+        // - detect patches
         internal void DetectSetPatches(Dictionary<TKey, Peer<T>> peers, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
             foreach (var peerPair in peers) {
                 Peer<T> peer = peerPair.Value;
@@ -486,44 +481,37 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 tasks.Add(req);
             }
         }
+        
+        internal void CreatePatch(PatchTask<TKey, T> patchTask, T entity, ObjectMapper mapper) {
+            var members = patchTask.members;
+            // todo performance: cache MemberAccess instances with members as key
+            var memberAccess    = new MemberAccess(members);
+            var memberAccessor  = new MemberAccessor(mapper.writer);
+            var entityPatches   = Patches();
+
+            foreach (var key in patchTask.keys) {
+                var id = KeyConvert.KeyToId(key);
+                if (!entityPatches.TryGetValue(id, out EntityPatch patch)) {
+                    patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
+                    entityPatches.Add(id, patch);
+                }
+                if (set.TryGetPeerByKey(key, out var peer)) {
+                    SetNextPatchSource(peer, mapper);
+                }
+                var patches   = patch.patches;
+                var selectResults   = memberAccessor.GetValues(entity, memberAccess);
+                int n = 0;
+                foreach (var path in members) {
+                    var value = selectResults[n++].Json;
+                    patches.Add(new PatchReplace { path = path, value = value });
+                }
+            }
+        }
+    
 
         private void PatchEntities(List<SyncRequestTask> tasks, ObjectMapper mapper)
         {
             var patches     = _patches;
-            var patchTasks  = _patchTasks;
-
-            if (patchTasks != null && patchTasks.Count > 0) {
-                patches = Patches();
-                var writer = mapper.writer;
-                foreach (var patchTask in patchTasks) {
-                    // todo performance: cache MemberAccess instances with members as key
-                    var memberAccess    = new MemberAccess(patchTask.members);
-                    var memberAccessor  = new MemberAccessor(writer);
-
-                    foreach (var peer in patchTask.peers) {
-                        var entity  = peer.Entity;
-                        var id      = peer.id;
-                        if (!patches.TryGetValue(id, out EntityPatch patch)) {
-                            patch = new EntityPatch {
-                                id      = id,
-                                patches = new List<JsonPatch>()
-                            };
-                            patches.Add(id, patch);
-                            SetNextPatchSource(peer, mapper);
-                        }
-                        var entityPatches   = patch.patches;
-                        var selectResults   = memberAccessor.GetValues(entity, memberAccess);
-                        int n = 0;
-                        foreach (var path in patchTask.members) {
-                            var value = selectResults[n++].Json;
-                            entityPatches.Add(new PatchReplace {
-                                path    = path,
-                                value   = value
-                            });
-                        }
-                    }
-                }
-            }
             if (patches != null && patches.Count > 0) {
                 var list = new List<EntityPatch>(patches.Count);
                 foreach (var pair in patches) { list.Add(pair.Value); }
@@ -610,7 +598,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 SetInfo.Count(_closeCursors)+
                 SetInfo.Any  (_creates)     +  SetInfo.Any  (_autos) +
                 SetInfo.Any  (_upserts)     +
-                SetInfo.Any  (_patches)     + SetInfo.Any(_patchTasks) +
+                SetInfo.Any  (_patches)     +
                 SetInfo.Any  (_deletes)     +
                 (_deleteTaskAll   != null ? 1 : 0) +
                 (subscribeChanges != null ? 1 : 0);
@@ -621,7 +609,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             info.closeCursors   = SetInfo.Count(_closeCursors);
             info.create         = SetInfo.Count(_creates) + SetInfo.Count(_autos);
             info.upsert         = SetInfo.Count(_upserts);
-            info.patch          = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);
+            info.patch          = SetInfo.Count(_patches);
             info.delete         = SetInfo.Count(_deletes);
             // info.readRefs    = readRefsMap.Count;
         }

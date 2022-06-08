@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Client.Internal.KeyEntity;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.Hub.Client
@@ -15,14 +18,17 @@ namespace Friflo.Json.Fliox.Hub.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class PatchTask<T> : SyncTask where T : class
+    public sealed class PatchTask<TKey, T> : SyncTask where T : class
     {
-        internal readonly   List<string>        members = new List<string>();
-        internal readonly   List<Peer<T>>       peers   = new List<Peer<T>>();
-        private  readonly   EntitySetBase<T>    set;
+        internal readonly   List<string>                members;
+        internal readonly   List<TKey>                  keys   = new List<TKey>();
+        private  readonly   SyncSet<TKey,T>             set;
+        private  readonly   ObjectPool<ObjectMapper>    objectMapper;
 
-        internal            TaskState           state;
-        internal override   TaskState           State      => state;
+        internal            TaskState                   state;
+        internal override   TaskState                   State      => state;
+        
+        private static readonly EntityKeyT<TKey, T> EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
         
         public   override   string              Details {
             get {
@@ -30,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 sb.Append("PatchTask<");
                 sb.Append(typeof(T).Name);
                 sb.Append("> #ids: ");
-                sb.Append(peers.Count);
+                sb.Append(keys.Count);
                 sb.Append(", members: [");
                 for (int n = 0; n < members.Count; n++) {
                     if (n > 0)
@@ -43,53 +49,48 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
 
-        internal PatchTask(Peer<T> peer, EntitySetBase<T> set) {
-            this.set = set;
-            peers.Add(peer);
-        }
-        
-        internal PatchTask(ICollection<Peer<T>> peers, EntitySetBase<T> set) {
-            this.set = set;
-            this.peers.AddRange(peers);
+        internal PatchTask(EntitySet<TKey,T> set, PatchMember<T> patchMember) {
+            this.set        = set.GetSyncSet();
+            objectMapper    = set.intern.store.ObjectMapper;
+            this.members    = patchMember.members;
         }
 
-        public void Add(T entity) {
-            var peer = set.GetPeerByEntity(entity);
-            peers.Add(peer);
-        }
-        
-        public void AddRange(ICollection<T> entities) {
-            var newPeers = new List<Peer<T>>(entities.Count);
-            foreach (var entity in entities) {
-                var peer = set.GetPeerByEntity(entity);
-                newPeers.Add(peer);
+        public PatchTask<TKey, T> Add(T entity) {
+            var key = EntityKeyTMap.GetKey(entity);
+            keys.Add(key);
+            using (var pooled = objectMapper.Get()) {
+                set.CreatePatch(this, entity, pooled.instance);
             }
-            peers.AddRange(newPeers);
+            return this;
         }
         
-        public void PatchMember(Expression<Func<T, object>> member) {
+        public PatchTask<TKey, T> AddRange(ICollection<T> entities) {
+            keys.Capacity = keys.Count + entities.Count;
+            using (var pooled = objectMapper.Get()) {
+                foreach (var entity in entities) {
+                    var key = EntityKeyTMap.GetKey(entity);
+                    keys.Add(key);
+                    set.CreatePatch(this, entity, pooled.instance);
+                }
+            }
+            return this;
+        }
+    }
+    
+    public class PatchMember<T> where T : class
+    {
+        internal readonly   List<string>        members = new List<string>();
+        
+        public void Add(Expression<Func<T, object>> member) {
             if (member == null)
-                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.Member() member must not be null.");
+                throw new ArgumentNullException(nameof(member));
             var memberPath = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
             members.Add(memberPath);
         }
-        
-        public void PatchMember(MemberPath<T> member) {
-            if (member == null)
-                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPath() member must not be null.");
-            members.Add(member.path);
-        }
-        
-        public void MemberPaths(ICollection<MemberPath<T>> members) {
-            if (members == null)
-                throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPaths() members must not be null.");
-            int n = 0;
-            foreach (var member in members) {
-                if (member == null)
-                    throw new ArgumentException($"PatchTask<{typeof(T).Name}>.MemberPaths() members[{n}] must not be null.");
-                n++;
-                this.members.Add(member.path);
-            }
+        public void Add(MemberPath<T> memberPath) {
+            if (memberPath == null)
+                throw new ArgumentNullException(nameof(memberPath));
+            members.Add(memberPath.path);
         }
     }
     

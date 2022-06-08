@@ -273,27 +273,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
-        // --- Patch
-        public PatchTask<T> Patch(T entity) {
-            var peer = GetPeerByEntity(entity);
-            peer.SetEntity(entity);
-            var task = GetSyncSet().Patch(peer);
-            intern.store.AddTask(task);
-            return task;
-        }
-        
-        public PatchTask<T> PatchRange(ICollection<T> entities) {
-            var peerList = new List<Peer<T>>(entities.Count);
-            foreach (var entity in entities) {
-                var peer = GetPeerByEntity(entity);
-                peer.SetEntity(entity);
-                peerList.Add(peer);
-            }
-            var task = GetSyncSet().PatchRange(peerList);
-            intern.store.AddTask(task);
-            return task;
-        }
-
         // --- Delete
         public DeleteTask<TKey, T> Delete(T entity) {
             if (entity == null)
@@ -347,7 +326,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
-        // --- detect patches
+        // --- Patch
+        // - assign patches
+        public PatchTask<TKey, T> Patch(Action<PatchMember<T>> member) {
+            var patchMember = new PatchMember<T>();
+            member(patchMember);
+            var task = GetSyncSet().Patch(patchMember);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        // - detect patches
         public DetectPatchesTask DetectPatches() {
             var task = intern.store._intern.syncStore.CreateDetectPatchesTask();
             var peers = Peers();

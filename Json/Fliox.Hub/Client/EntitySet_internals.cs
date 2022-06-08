@@ -150,9 +150,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
         
-        internal Peer<T> GetPeerByKey(TKey key) {
+        internal bool TryGetPeerByKey(TKey key, out Peer<T> value) {
             var peers = Peers();
-            return peers[key];
+            return peers.TryGetValue(key, out value);
         }
         
         internal override Peer<T> GetOrCreatePeerById(JsonKey id) {

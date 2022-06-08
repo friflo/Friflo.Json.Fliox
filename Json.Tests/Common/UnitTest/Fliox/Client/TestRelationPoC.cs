@@ -194,19 +194,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 13",                                  store);      // tasks executed and cleared
             
             
+            // patch the same article with two Patch methods   
             notebook.name = "Galaxy Book";
-            var patchNotebook = articles.Patch(notebook);
-            patchNotebook.PatchMember(a => a.name);
-            var patchArticles = articles.PatchRange(new Article[] {});
-            patchArticles.Add(notebook);
+            var patchNotebook = articles.Patch(m => m.Add(a => a.name));
+            patchNotebook.Add(notebook);
             var producerPath = new MemberPath<Article>(a => a.producer);
-            patchArticles.PatchMember(producerPath);
+            var patchArticles = articles.Patch(m => m.Add(producerPath));
+            patchArticles.Add(notebook);
             
             AreEqual(".producer",                                       producerPath.ToString());
             AreEqual("PatchTask<Article> #ids: 1, members: [.name]",    patchNotebook.ToString());
             AreEqual("PatchTask<Article> #ids: 1, members: [.producer]",patchArticles.ToString());
             
-            AreSimilar("articles:  6, tasks: 1 >> patch #2",            articles);
+            AreSimilar("articles:  6, tasks: 1 >> patch #1",            articles);
             AreSimilar("entities: 13, tasks: 1",                        store);      // tasks executed and cleared
             
             await store.SyncTasks(); // ----------------

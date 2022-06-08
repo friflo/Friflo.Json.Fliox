@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Threading.Tasks;
 using Friflo.Json.Fliox;
 using Friflo.Json.Fliox.Hub.Client;
@@ -41,11 +42,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
-            var patchNotFound       = customers.Patch (new Customer{id = unknownId})            .TaskName("patchNotFound");
+            var patchNotFound       = customers.Patch(member => {}).Add(new Customer{id = unknownId})            .TaskName("patchNotFound");
             
-            var patchReadError      = customers.Patch (new Customer{id = patchReadEntityError}) .TaskName("patchReadError");
+            var patchReadError      = customers.Patch(member => {}).Add(new Customer{id = patchReadEntityError}) .TaskName("patchReadError");
             
-            var patchWriteError     = customers.Patch (new Customer{id = patchWriteEntityError}).TaskName("patchWriteError");
+            var patchWriteError     = customers.Patch(member => {}).Add(new Customer{id = patchWriteEntityError}).TaskName("patchWriteError");
             
             AreEqual(3, store.Tasks.Count);
             var sync = await store.TrySyncTasks(); // ----------------
@@ -78,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             // --- test read task error
             {
-                var patchTaskReadError = customers.Patch(new Customer {id = readTaskError});
+                var patchTaskReadError = customers.Patch(member => {}).Add(new Customer {id = readTaskError});
 
                 sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -89,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             // --- test read task exception
             {
-                var patchTaskReadException = customers.Patch(new Customer {id = readTaskException});
+                var patchTaskReadException = customers.Patch(member => {}).Add(new Customer {id = readTaskException});
 
                 sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -100,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             // --- test write task error
             {
-                var patchTaskWriteError = customers.Patch(new Customer {id = patchTaskError});
+                var patchTaskWriteError = customers.Patch(member => {}).Add(new Customer {id = patchTaskError});
 
                 sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
@@ -111,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             // --- test write task exception
             {
-                var patchTaskWriteException = customers.Patch(new Customer {id = patchTaskException});
+                var patchTaskWriteException = customers.Patch(member => {}).Add(new Customer {id = patchTaskException});
 
                 sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
