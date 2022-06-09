@@ -498,7 +498,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var memberAccessor  = new MemberAccessor(mapper.writer);
                 var entityPatches   = Patches();
                 var taskPatches     = patchTask.patches;
-                taskPatches.Capacity= taskPatches.Count + entities.Count;
+                // taskPatches.Capacity= taskPatches.Count + entities.Count;    -> degrade performance
 
                 foreach (var entity in entities) {
                     var id = EntityKeyTMap.GetId(entity);
