@@ -225,9 +225,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(".name",     patchMembers[0].path); AreEqual("\"Galaxy Book\"",      patchMembers[0].value.AsString());
             AreEqual(".producer", patchMembers[1].path); AreEqual("\"producer-samsung\"", patchMembers[1].value.AsString());
             
-            AreEqual(".producer",                                           producerPath.ToString());
-            AreEqual("PatchTask<Article> patches: 1, members: [.name]",     patchNotebook.ToString());
-            AreEqual("PatchTask<Article> patches: 1, members: [.producer]", patchArticles.ToString());
+            AreEqual(".producer",                                               producerPath.ToString());
+            AreEqual("PatchTask<Article> patches: 1, selection: [.name]",       patchNotebook.ToString());
+            AreEqual("PatchTask<Article> patches: 1, selection: [.producer]",   patchArticles.ToString());
             
             AreSimilar("articles:  6, tasks: 1 >> patch #1",            articles);
             AreSimilar("entities: 13, tasks: 1",                        store);      // tasks executed and cleared

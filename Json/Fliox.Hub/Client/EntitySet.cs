@@ -329,9 +329,15 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- Patch
         // - assign patches
         public PatchTask<T> Patch(MemberSelectionBuilder<T> member) {
-            var patchMember = new MemberSelection<T>();
-            member(patchMember);
-            var task = GetSyncSet().Patch(patchMember);
+            var memberSelection = new MemberSelection<T>();
+            member(memberSelection);
+            var task = GetSyncSet().Patch(memberSelection);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        public PatchTask<T> Patch(MemberSelection<T> memberSelection) {
+            var task = GetSyncSet().Patch(memberSelection);
             intern.store.AddTask(task);
             return task;
         }

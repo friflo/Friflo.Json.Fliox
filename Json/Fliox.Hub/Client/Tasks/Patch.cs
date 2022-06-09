@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -22,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              IReadOnlyList<EntityPatchInfo>  Patches => patches;
         
-        internal readonly   List<string>                    members;
+        internal readonly   MemberSelection<T>              selection;
         [DebuggerBrowsable(Never)]
         internal readonly   List<EntityPatchInfo>           patches;
         private  readonly   SyncSetBase<T>                  syncSet;
@@ -32,10 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override   TaskState                       State   => state;
         public   override   string                          Details => GetDetails();
         
-        internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> patchMember) {
+        internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> selection) {
             patches         = new List<EntityPatchInfo>();
             this.syncSet    = syncSet;
-            members         = patchMember.members;
+            this.selection  = selection;
         }
 
         public PatchTask<T> Add(T entity) {
@@ -69,12 +70,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             sb.Append(typeof(T).Name);
             sb.Append("> patches: ");
             sb.Append(patches.Count);
-            sb.Append(", members: [");
-            for (int n = 0; n < members.Count; n++) {
-                if (n > 0)
-                    sb.Append(", ");
-                sb.Append(members[n]);
-            }
+            sb.Append(", selection: [");
+            selection.FormatToString(sb);
             sb.Append(']');
             return sb.ToString();
         }
@@ -84,18 +81,40 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public class MemberSelection<T> where T : class
     {
-        internal readonly   List<string>        members = new List<string>();
+        public              IReadOnlyList<string>   Members     => members;
+        private  readonly   List<string>            members     = new List<string>();
+        private             MemberAccess            memberAccess;   // cached MemberAccess
         
+        public   override   string                  ToString()  => FormatToString(new StringBuilder());
+
         public void Add(Expression<Func<T, object>> member) {
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
             var memberPath = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
+            memberAccess = null;
             members.Add(memberPath);
         }
+        
         public void Add(MemberPath<T> memberPath) {
             if (memberPath == null)
                 throw new ArgumentNullException(nameof(memberPath));
+            memberAccess = null;
             members.Add(memberPath.path);
+        }
+        
+        internal MemberAccess GetMemberAccess() {
+            if (memberAccess != null)
+                return memberAccess;
+            return memberAccess = new MemberAccess(members);
+        }
+
+        internal string FormatToString(StringBuilder sb) {
+            for (int n = 0; n < members.Count; n++) {
+                if (n > 0)
+                    sb.Append(", ");
+                sb.Append(members[n]);
+            }
+            return sb.ToString();
         }
     }
     

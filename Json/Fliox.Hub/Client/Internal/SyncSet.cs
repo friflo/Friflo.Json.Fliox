@@ -493,8 +493,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             using (var pooled = set.intern.store.ObjectMapper.Get()) {
                 var mapper          = pooled.instance;
                 // todo performance: cache MemberAccess instances with members as key
-                var members         = patchTask.members;
-                var memberAccess    = new MemberAccess(members);
+                var members         = patchTask.selection.Members;
+                var memberAccess    = patchTask.selection.GetMemberAccess();
                 var memberAccessor  = new MemberAccessor(mapper.writer);
                 var entityPatches   = Patches();
                 var taskPatches     = patchTask.patches;
