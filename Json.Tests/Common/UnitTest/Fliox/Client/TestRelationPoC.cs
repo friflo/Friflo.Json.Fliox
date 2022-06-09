@@ -44,7 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 2, tasks: 2",                         store);
             AreSimilar("articles: 1, tasks: 1 >> upsert #1",            articles);
 
-            var storePatches = store.DetectAllPatches();  AssertLog(storePatches, 0);
+            var storePatches = store.DetectAllPatches();
+            AreEqual(0, storePatches.GetPatchCount());
             
             AreSimilar("entities:  2, tasks: 2",                         store);
             AreSimilar("producers: 1, tasks: 1 >> create #1",            producers);
@@ -58,7 +59,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var createIPad      = articles.Upsert(ipad);
             AreSimilar("articles: 2, tasks: 1 >> upsert #2",                        articles);
             
-            var logStore2 = store.DetectAllPatches();  AssertLog(logStore2, 0);
+            var logStore2 = store.DetectAllPatches();
+            AreEqual(0, logStore2.GetPatchCount());
             AreSimilar("entities:  5, tasks: 3",                                     store);
             AreSimilar("articles:  2, tasks: 1 >> upsert #2",                        articles);
             AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees);
@@ -124,12 +126,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("articles:  6",                                  articles);
 
             cameraCreate.name = "Changed name";
-            var entityPatches   = articles.DetectEntityPatches(cameraCreate);   AssertLog(entityPatches, 1);
-            var articlePatches  = articles.DetectPatches();                     AssertLog(articlePatches,    1);
-            AreEqual("DetectPatches (patches: 1)", articlePatches.ToString());
+            var entityPatches   = articles.DetectEntityPatches(cameraCreate);
+            AreEqual(1, entityPatches.Patches.Count);
+            
+            var articlePatches  = articles.DetectPatches();
+            AreEqual(1, articlePatches.Patches.Count);
+            AreEqual("DetectPatchesTask (patches: 1)", articlePatches.ToString());
 
-            var storePatches3 = store.DetectAllPatches();  AssertLog(storePatches3, 1);
-            var storePatches4 = store.DetectAllPatches();  AssertLog(storePatches4, 1);
+            var storePatches3 = store.DetectAllPatches();
+            AreEqual(1, storePatches3.GetPatchCount());
+            
+            var storePatches4 = store.DetectAllPatches();
+            AreEqual(1, storePatches4.GetPatchCount());
+
 
             var deleteCamera = articles.Delete(camForDelete.id);
             
@@ -176,14 +185,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);
             AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);
-            var orderPatches = orders.DetectPatches();   AssertLog(orderPatches, 0);
+            var orderPatches = orders.DetectPatches();
+            AreEqual(0, orderPatches.Patches.Count);
             AreSimilar("entities: 13, tasks: 5",                        store);
             AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);
             AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);
             
             AreSimilar("entities: 13, tasks: 5",                        store);
-            var storePatches1 = store.DetectAllPatches();     AssertLog(storePatches1, 0);
-            var storePatches2 = store.DetectAllPatches();     AssertLog(storePatches2, 0);
+            var storePatches1 = store.DetectAllPatches();
+            AreEqual(0, storePatches1.GetPatchCount());
+            
+            var storePatches2 = store.DetectAllPatches();
+            AreEqual(0, storePatches2.GetPatchCount());
+            
             AreSimilar("entities: 13, tasks: 5",                        store);      // no new changes
 
             await store.SyncTasks(); // ----------------
@@ -259,13 +273,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         internal const string TestMessageInt        = "TestMessageInt";
         internal const string TestRemoveHandler     = "TestRemoveHandler";
         internal const string TestRemoveAllHandler  = "TestRemoveAllHandler";
-
-        static void AssertLog(DetectPatchesTask detectPatchesTask, int patches) {
-            var patchCount  = detectPatchesTask.GetPatchCount();
-            
-            if (patchCount == patches)
-                return;
-            Fail($"Expect:  patches: {patches}\nbut was: patches: {patchCount}");
-        }
     }
 }

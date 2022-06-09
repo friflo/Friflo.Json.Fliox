@@ -347,11 +347,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
         /// <see cref="Patches"/> to enable setting <see cref="DetectPatchesTask"/> to error state via <see cref="DetectPatchesTask.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
-            var patchTasks  = PatchTasks();
-            var patches     = Patches();
+            var patchTasks          = PatchTasks();
+            var detectPatchesTasks  = DetectPatchesTasks();
+            var patches             = Patches();
             if (result is TaskErrorResult taskError) {
                 foreach (var patchTask in patchTasks) {
                     patchTask.state.SetError(new TaskErrorInfo(taskError));
+                }
+                foreach (var detectPatches in detectPatchesTasks) {
+                    detectPatches.state.SetError(new TaskErrorInfo(taskError));
                 }
                 if (errorsPatch == NoErrors) {
                     errorsPatch = new Dictionary<JsonKey, EntityError>(patches.Count, JsonKey.Equality);
@@ -378,6 +382,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     peer.SetNextPatchSourceNull();
                 }
                 foreach (var patchTask in patchTasks) {
+                    // todo extract as PatchTask<> method
                     var entityErrorInfo = new TaskErrorInfo();
                     foreach (var patch in patchTask.patches) {
                         if (errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
@@ -390,10 +395,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         patchTask.state.Executed = true;
                     }
                 }
+                foreach (var detectPatches in detectPatchesTasks) {
+                    detectPatches.SetResult();
+                }
             }
             // enable GC to collect references in containers which are not needed anymore
             patches.Clear();
             patchTasks.Clear();
+            detectPatchesTasks.Clear();
         }
 
         internal override void DeleteEntitiesResult(DeleteEntities task, SyncTaskResult result) {

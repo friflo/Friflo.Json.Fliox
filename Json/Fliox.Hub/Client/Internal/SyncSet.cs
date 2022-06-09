@@ -62,6 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         private     Dictionary<JsonKey, EntityPatch>_patches;
         private     List<PatchTask<T>>              _patchTasks;
+        private     List<DetectPatchesTask>         _detectPatchesTasks;
 
         private     HashSet<TKey>                   _deletes;
         private     List<DeleteTask<TKey, T>>       _deleteTasks;
@@ -85,8 +86,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     Dictionary<JsonKey, Peer<T>>    Upserts()       => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                 UpsertTasks()   => _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
 
-        private     Dictionary<JsonKey, EntityPatch>Patches()       => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
-        private     List<PatchTask<T>>              PatchTasks()    => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
+        private     Dictionary<JsonKey, EntityPatch>Patches()           => _patches            ?? (_patches           = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
+        private     List<PatchTask<T>>              PatchTasks()        => _patchTasks         ?? (_patchTasks         = new List<PatchTask<T>>());
+        private     List<DetectPatchesTask>         DetectPatchesTasks()=> _detectPatchesTasks ?? (_detectPatchesTasks = new List<DetectPatchesTask>());
 
         private     HashSet<TKey>                   Deletes()       => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
         private     List<DeleteTask<TKey, T>>       DeleteTasks()   => _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
@@ -244,6 +246,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         // - detect patches
         internal void DetectSetPatches(Dictionary<TKey, Peer<T>> peers, DetectPatchesTask detectPatchesTask, ObjectMapper mapper) {
+            DetectPatchesTasks().Add(detectPatchesTask);
             foreach (var peerPair in peers) {
                 Peer<T> peer = peerPair.Value;
                 DetectPeerPatches(peer, detectPatchesTask, mapper);
@@ -251,6 +254,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal void DetectEntityPatches(T entity, DetectPatchesTask detectPatchesTask) {
+            DetectPatchesTasks().Add(detectPatchesTask);
             var peer = set.GetPeerByEntity(entity);
             using (var pooled = set.intern.store.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
@@ -531,6 +535,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     patches     = list
                 };
                 tasks.Add(req);
+            }
+            if (_patchTasks != null) {
+                foreach (var task in _patchTasks) {
+                    if (task.patches.Count == 0)
+                        task.state.Executed = true;
+                }
+            }
+            if (_detectPatchesTasks != null) {
+                foreach (var task in _detectPatchesTasks) {
+                    if (task.patches.Count == 0)
+                        task.state.Executed = true;
+                }
             }
         }
 

@@ -173,8 +173,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --- detect patches
-        public DetectPatchesTask DetectAllPatches() {
-            var task = _intern.syncStore.CreateDetectPatchesTask();
+        public DetectAllPatchesTask DetectAllPatches() {
+            var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;

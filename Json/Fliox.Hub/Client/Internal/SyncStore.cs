@@ -12,32 +12,31 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal readonly   List<SyncTask>      appTasks            = new List<SyncTask>();
         
-        private     List<DetectPatchesTask>     detectPatchesTasks;
-        private     List<DetectPatchesTask>     DetectPatchesTasks()=> detectPatchesTasks ?? (detectPatchesTasks = new List<DetectPatchesTask>());
+        private     List<DetectAllPatchesTask>  detectAllPatchesTasks;
+        private     List<DetectAllPatchesTask>  DetectAllPatchesTasks() => detectAllPatchesTasks ?? (detectAllPatchesTasks = new List<DetectAllPatchesTask>());
         
         internal    List<MessageTask>           messageTasks;
-        internal    List<MessageTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<MessageTask>());
+        internal    List<MessageTask>           MessageTasks()          => messageTasks ?? (messageTasks = new List<MessageTask>());
         private     int                         messageTasksIndex;
         
         private     List<SubscribeMessageTask>  subscribeMessage;
-        internal    List<SubscribeMessageTask>  SubscribeMessage()  => subscribeMessage ?? (subscribeMessage = new List<SubscribeMessageTask>());
+        internal    List<SubscribeMessageTask>  SubscribeMessage()      => subscribeMessage ?? (subscribeMessage = new List<SubscribeMessageTask>());
         private     int                         subscribeMessageIndex;
         
         internal void SetSyncSets(FlioxClient store) {
             SyncSets = store._intern.CreateSyncSets();
         }
 
-        internal DetectPatchesTask CreateDetectPatchesTask() {
-            var logTask = new DetectPatchesTask();
-            DetectPatchesTasks().Add(logTask);
-            return logTask;
+        internal DetectAllPatchesTask CreateDetectAllPatchesTask() {
+            var task = new DetectAllPatchesTask();
+            DetectAllPatchesTasks().Add(task);
+            return task;
         }
 
         internal void DetectPatchesResults() {
-            if (detectPatchesTasks == null)
+            if (detectAllPatchesTasks == null)
                 return;
-            foreach (var logTask in detectPatchesTasks) {
-                logTask.state.Executed = true;
+            foreach (var logTask in detectAllPatchesTasks) {
                 logTask.SetResult();
             }
         }
