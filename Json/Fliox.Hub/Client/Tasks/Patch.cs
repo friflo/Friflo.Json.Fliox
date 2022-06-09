@@ -67,9 +67,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             sb.Append(typeof(T).Name);
             sb.Append("> patches: ");
             sb.Append(patches.Count);
-            sb.Append(", selection: [");
+            sb.Append(", selection: ");
             selection.FormatToString(sb);
-            sb.Append(']');
             return sb.ToString();
         }
     }

@@ -43,11 +43,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         internal string FormatToString(StringBuilder sb) {
+            sb.Append('[');
             for (int n = 0; n < members.Count; n++) {
                 if (n > 0)
                     sb.Append(", ");
                 sb.Append(members[n]);
             }
+            sb.Append(']');
             return sb.ToString();
         }
     }
