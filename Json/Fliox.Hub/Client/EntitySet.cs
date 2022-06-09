@@ -39,6 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(EntitySetMatcher))]
     public sealed partial class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
+    #region - Members    
         // Keep all utility related fields of EntitySet in SetIntern (intern) to enhance debugging overview.
         // Reason:  EntitySet<,> is used as field or property by an application which is mainly interested
         //          in following fields or properties while debugging:
@@ -72,6 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncSet?.SetTaskInfo(ref info);
             return info;
         }}
+        #endregion
         
         /// constructor is called via <see cref="EntitySetMapper{T,TKey,TEntity}.CreateEntitySet"/> 
         internal EntitySet(string name) : base (name) {
@@ -79,6 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --------------------------------------- public interface ---------------------------------------
+    #region - Cache    
         public bool TryGet (TKey key, out T entity) {
             var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
@@ -105,16 +108,18 @@ namespace Friflo.Json.Fliox.Hub.Client
             var peers = Peers();
             return peers.ContainsKey(key);
         }
+        #endregion
         
-        // --- Read
+    #region - Read
         public ReadTask<TKey, T> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
             // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
             // A ReadTask<> its self cannot fail.
             return GetSyncSet().Read();
         }
+        #endregion
 
-        // --- Query
+    #region - Query
         public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
@@ -144,8 +149,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
-        
-        // --- Aggregate
+        #endregion
+
+    #region - Aggregate
         public CountTask<T> Count(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Aggregate() filter must not be null. EntitySet: {name}");
@@ -170,9 +176,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
         
-        
-        // --- SubscribeChanges
+    #region - SubscribeChanges
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
@@ -221,15 +227,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeCallback = new GenericChangeCallback<TKey,T>(handler);
             return task;
         }
+        #endregion
         
-        // --- ReserveKeys
+    #region - ReserveKeys
         public ReserveKeysTask<TKey, T> ReserveKeys(int count) {
             var task = GetSyncSet().ReserveKeys(count);
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
 
-        // --- Create
+    #region - Create
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
@@ -249,8 +257,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
         
-        // --- Upsert
+    #region - Upsert
         public UpsertTask<T> Upsert(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Upsert() entity must not be null. EntitySet: {name}");
@@ -272,8 +281,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
         
-        // --- Delete
+    #region - Delete
         public DeleteTask<TKey, T> Delete(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
@@ -325,8 +335,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
 
-        // --- Patch
+    #region - Patch
         // - assign patches
         public PatchTask<T> Patch(MemberSelectionBuilder<T> selection) {
             var memberSelection = new MemberSelection<T>();
@@ -363,9 +374,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
         
-        // --- create RefPath / RefsPath
-        // Relation
+    #region - Relation
         public RelationPath<TRef> RelationPath<TRefKey, TRef>(
             EntitySet<TRefKey, TRef>        relation,
             Expression<Func<T, TRefKey>>    selector) where TRef : class
@@ -381,5 +392,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return new RelationPath<TRef>(path);
         }
+        #endregion
     }
 }
