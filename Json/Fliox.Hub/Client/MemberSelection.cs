@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.Hub.Client
 {
-    public delegate void MemberSelectionBuilder<T>(MemberSelection<T> member) where T : class;
+    public delegate void MemberSelectionBuilder<T>(MemberSelection<T> selection) where T : class;
     
     public class MemberSelection<T> where T : class
     {

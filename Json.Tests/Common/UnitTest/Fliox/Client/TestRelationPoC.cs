@@ -211,10 +211,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             // patch the same article with two Patch methods   
             notebook.name = "Galaxy Book";
-            var patchNotebook = articles.Patch(member => member.Add(a => a.name));
+            var patchNotebook = articles.Patch(selection => selection.Add(a => a.name));
             patchNotebook.Add(notebook);
             var producerPath = new MemberPath<Article>(a => a.producer);
-            var patchArticles = articles.Patch(member => member.Add(producerPath));
+            var patchArticles = articles.Patch(selection => selection.Add(producerPath));
             patchArticles.Add(notebook);
             
             var patches = patchNotebook.Patches;
