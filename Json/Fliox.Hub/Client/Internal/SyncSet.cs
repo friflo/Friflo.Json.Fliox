@@ -501,7 +501,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                         patch = new EntityPatch { id = id, patches = new List<JsonPatch>() };
                         entityPatches.Add(id, patch);
                     }
-                    taskPatches.Add(patch);
+                    var patchInfo = new EntityPatchInfo(patch);
+                    taskPatches.Add(patchInfo);
                     var key = KeyConvert.IdToKey(id);
                     if (set.TryGetPeerByKey(key, out var peer)) {
                         SetNextPatchSource(peer, mapper);

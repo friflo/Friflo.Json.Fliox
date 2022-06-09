@@ -20,33 +20,20 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public sealed class PatchTask<T> : SyncTask where T : class
     {
-        internal readonly   List<string>        members;
-        internal readonly   List<EntityPatch>   patches = new List<EntityPatch>();
-        private  readonly   SyncSetBase<T>      syncSet;
+        public              IReadOnlyList<EntityPatchInfo>  Patches => patches;
+        
+        internal readonly   List<string>                    members;
+        [DebuggerBrowsable(Never)]
+        internal readonly   List<EntityPatchInfo>           patches;
+        private  readonly   SyncSetBase<T>                  syncSet;
 
         [DebuggerBrowsable(Never)]
-        internal            TaskState           state;
-        internal override   TaskState           State      => state;
+        internal            TaskState                       state;
+        internal override   TaskState                       State   => state;
+        public   override   string                          Details => GetDetails();
         
-        public   override   string              Details {
-            get {
-                var sb = new StringBuilder();
-                sb.Append("PatchTask<");
-                sb.Append(typeof(T).Name);
-                sb.Append("> patches: ");
-                sb.Append(patches.Count);
-                sb.Append(", members: [");
-                for (int n = 0; n < members.Count; n++) {
-                    if (n > 0)
-                        sb.Append(", ");
-                    sb.Append(members[n]);
-                }
-                sb.Append(']');
-                return sb.ToString();
-            }
-        }
-
         internal PatchTask(SyncSetBase<T> syncSet, MemberSelection<T> patchMember) {
+            patches         = new List<EntityPatchInfo>();
             this.syncSet    = syncSet;
             members         = patchMember.members;
         }
@@ -60,6 +47,48 @@ namespace Friflo.Json.Fliox.Hub.Client
         public PatchTask<T> AddRange(ICollection<T> entities) {
             syncSet.AddEntityPatches(this, entities);
             return this;
+        }
+        
+        private string GetDetails() { 
+            var sb = new StringBuilder();
+            sb.Append("PatchTask<");
+            sb.Append(typeof(T).Name);
+            sb.Append("> patches: ");
+            sb.Append(patches.Count);
+            sb.Append(", members: [");
+            for (int n = 0; n < members.Count; n++) {
+                if (n > 0)
+                    sb.Append(", ");
+                sb.Append(members[n]);
+            }
+            sb.Append(']');
+            return sb.ToString();
+        }
+    }
+    
+    /// <summary>
+    /// Contain the patches applied to the <see cref="Members"/> of an entity identified by its <see cref="Id"/>
+    /// </summary>
+    public readonly struct EntityPatchInfo {
+        public              JsonKey                     Id          => entityPatch.id;
+        public              IReadOnlyList<PatchReplace> Members     => GetMembers();
+        
+        [DebuggerBrowsable(Never)]
+        internal  readonly  EntityPatch                 entityPatch;
+        public    override  string                      ToString()  => entityPatch.id.AsString();
+
+        internal EntityPatchInfo (EntityPatch entityPatch) {
+            this.entityPatch = entityPatch;   
+        }
+        
+        /// creation of new array is okay, as it is expected to be used mainly for debugging 
+        private PatchReplace[]  GetMembers() {
+            var patches = entityPatch.patches;
+            var result = new PatchReplace[patches.Count];
+            for (int n = 0; n < patches.Count; n++) {
+                result[n] = (PatchReplace)patches[n];
+            }
+            return result;
         }
     }
     
@@ -94,5 +123,4 @@ namespace Friflo.Json.Fliox.Hub.Client
             path = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
         }
     }
-
 }

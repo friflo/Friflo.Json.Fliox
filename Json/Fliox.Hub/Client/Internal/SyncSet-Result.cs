@@ -380,7 +380,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 foreach (var patchTask in patchTasks) {
                     var entityErrorInfo = new TaskErrorInfo();
                     foreach (var patch in patchTask.patches) {
-                        if (errorsPatch.TryGetValue(patch.id, out EntityError error)) {
+                        if (errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
                             entityErrorInfo.AddEntityError(error);
                         }
                     }

@@ -203,7 +203,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal  readonly  JsonKey             id;
         public    readonly  List<JsonPatch>     patches;
         public    readonly  TKey                key;
-        
 
         public  override    string              ToString() => key.ToString();
         

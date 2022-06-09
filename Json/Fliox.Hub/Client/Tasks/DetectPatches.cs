@@ -61,5 +61,4 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.patches    = patches;
         }
     }
-    
 }

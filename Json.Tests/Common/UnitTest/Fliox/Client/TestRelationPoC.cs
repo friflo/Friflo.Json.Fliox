@@ -202,6 +202,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var patchArticles = articles.Patch(member => member.Add(producerPath));
             patchArticles.Add(notebook);
             
+            var patches = patchNotebook.Patches;
+            AreEqual(1, patches.Count);
+            AreEqual("article-notebook-💻-unicode", patches[0].Id.AsString());
+            var patchMembers = patches[0].Members;
+            AreEqual(2, patchMembers.Count);
+            AreEqual(".name",     patchMembers[0].path); AreEqual("\"Galaxy Book\"",      patchMembers[0].value.AsString());
+            AreEqual(".producer", patchMembers[1].path); AreEqual("\"producer-samsung\"", patchMembers[1].value.AsString());
+            
             AreEqual(".producer",                                           producerPath.ToString());
             AreEqual("PatchTask<Article> patches: 1, members: [.name]",     patchNotebook.ToString());
             AreEqual("PatchTask<Article> patches: 1, members: [.producer]", patchArticles.ToString());
