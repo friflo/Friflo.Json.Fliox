@@ -12,15 +12,16 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class DetectAllPatchesTask : SyncTask
     {
-        public              IReadOnlyList<DetectPatchesTask>    ContainerPatches => entitySetPatches;
-        
+        public              IReadOnlyList<DetectPatchesTask>    EntitySetPatches => entitySetPatches;
+        public              int                                 PatchCount       => GetPatchCount();
+
+        [DebuggerBrowsable(Never)]
         internal readonly   List<DetectPatchesTask>             entitySetPatches = new List<DetectPatchesTask>();
         
         [DebuggerBrowsable(Never)]
         private             TaskState                           state;
         internal override   TaskState                           State   => state;
-        
-        public   override   string                              Details   => $"DetectAllPatchesTask (patches: {GetPatchCount()})";
+        public   override   string                              Details => $"DetectAllPatchesTask (patches: {GetPatchCount()})";
 
         internal DetectAllPatchesTask() { }
 
@@ -41,8 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        // count as method to avoid flooding properties
-        public int GetPatchCount() {
+        private int GetPatchCount() {
             int result = 0;
             foreach (var patchesTask in entitySetPatches) {
                 result += patchesTask.patches.Count;

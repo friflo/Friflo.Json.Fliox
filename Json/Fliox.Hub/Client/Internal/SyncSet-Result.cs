@@ -19,6 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
+        internal  abstract  EntitySet EntitySet { get; }
+
         internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks, ObjectMapper mapper);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);

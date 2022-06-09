@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("articles: 1, tasks: 1 >> upsert #1",            articles);
 
             var storePatches = store.DetectAllPatches();
-            AreEqual(0, storePatches.GetPatchCount());
+            AreEqual(0, storePatches.PatchCount);
             
             AreSimilar("entities:  2, tasks: 2",                         store);
             AreSimilar("producers: 1, tasks: 1 >> create #1",            producers);
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("articles: 2, tasks: 1 >> upsert #2",                        articles);
             
             var logStore2 = store.DetectAllPatches();
-            AreEqual(0, logStore2.GetPatchCount());
+            AreEqual(0, logStore2.PatchCount);
             AreSimilar("entities:  5, tasks: 3",                                     store);
             AreSimilar("articles:  2, tasks: 1 >> upsert #2",                        articles);
             AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees);
@@ -131,13 +131,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             var articlePatches  = articles.DetectPatches();
             AreEqual(1, articlePatches.Patches.Count);
-            AreEqual("DetectPatchesTask (patches: 1)", articlePatches.ToString());
+            AreEqual("DetectPatchesTask (container: articles, patches: 1)", articlePatches.ToString());
 
             var storePatches3 = store.DetectAllPatches();
-            AreEqual(1, storePatches3.GetPatchCount());
+            AreEqual(1, storePatches3.PatchCount);
             
             var storePatches4 = store.DetectAllPatches();
-            AreEqual(1, storePatches4.GetPatchCount());
+            AreEqual(1, storePatches4.PatchCount);
 
 
             var deleteCamera = articles.Delete(camForDelete.id);
@@ -193,10 +193,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             AreSimilar("entities: 13, tasks: 5",                        store);
             var storePatches1 = store.DetectAllPatches();
-            AreEqual(0, storePatches1.GetPatchCount());
+            AreEqual(0, storePatches1.PatchCount);
             
             var storePatches2 = store.DetectAllPatches();
-            AreEqual(0, storePatches2.GetPatchCount());
+            AreEqual(0, storePatches2.PatchCount);
             
             AreSimilar("entities: 13, tasks: 5",                        store);      // no new changes
 

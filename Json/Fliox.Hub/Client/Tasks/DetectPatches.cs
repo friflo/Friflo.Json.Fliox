@@ -14,7 +14,8 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public sealed class DetectPatchesTask : SyncTask
     {
-        public              IReadOnlyList<EntityPatchInfo>  Patches => patches;
+        public              IReadOnlyList<EntityPatchInfo>  Patches     => patches;
+        public              string                          Container   => syncSet.EntitySet.name;
         [DebuggerBrowsable(Never)]
         internal readonly   List<EntityPatchInfo>           patches;
         internal readonly   SyncSet                         syncSet;
@@ -22,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]
         internal            TaskState                       state;
         internal override   TaskState                       State   => state;
-        public   override   string                          Details => $"DetectPatchesTask (patches: {patches.Count})";
+        public   override   string                          Details => $"DetectPatchesTask (container: {Container}, patches: {patches.Count})";
         
 
         internal DetectPatchesTask(SyncSet syncSet) {

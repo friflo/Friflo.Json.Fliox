@@ -99,6 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }
+        internal  override  EntitySet EntitySet => set;
 
         internal override void AddCreate (Peer<T> peer) {
             Creates().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
@@ -298,7 +299,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- mutate tasks
             CreateEntities      (tasks, mapper);
             UpsertEntities      (tasks, mapper);
-            PatchEntities       (tasks, mapper);
+            PatchEntities       (tasks);
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
             // --- read tasks
@@ -521,9 +522,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 }
             }
         }
-    
 
-        private void PatchEntities(List<SyncRequestTask> tasks, ObjectMapper mapper)
+        private void PatchEntities(List<SyncRequestTask> tasks)
         {
             var patches     = _patches;
             if (patches != null && patches.Count > 0) {
