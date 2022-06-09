@@ -18,22 +18,30 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<string>   Members     => members;
         private  readonly   List<string>            members     = new List<string>();
         private             MemberAccess            memberAccess;   // cached MemberAccess
+        private             bool                    isFrozen;
         
         public   override   string                  ToString()  => FormatToString(new StringBuilder());
 
-        public void Add(Expression<Func<T, object>> member) {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
+        public MemberSelection<T> Add(Expression<Func<T, object>> member) {
+            if (member == null)     throw new ArgumentNullException(nameof(member));
+            if (isFrozen)           throw new InvalidOperationException("MemberSelection is already frozen");
             var memberPath = Operation.PathFromLambda(member, EntitySet.RefQueryPath);
             memberAccess = null;
             members.Add(memberPath);
+            return this;
         }
         
-        public void Add(MemberPath<T> memberPath) {
-            if (memberPath == null)
-                throw new ArgumentNullException(nameof(memberPath));
+        public MemberSelection<T> Add(MemberPath<T> memberPath) {
+            if (memberPath == null) throw new ArgumentNullException(nameof(memberPath));
+            if (isFrozen)           throw new InvalidOperationException("MemberSelection is already frozen");
             memberAccess = null;
             members.Add(memberPath.path);
+            return this;
+        }
+        
+        public MemberSelection<T> Freeze() {
+            isFrozen = true;
+            return this;
         }
         
         internal MemberAccess GetMemberAccess() {

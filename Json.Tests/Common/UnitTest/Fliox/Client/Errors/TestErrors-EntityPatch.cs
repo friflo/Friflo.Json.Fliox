@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var customers = store.customers;
             const string unknownId = "unknown-id";
             
-            var selection       = new MemberSelection<Customer>();
+            var selection       = new MemberSelection<Customer>().Freeze();
             
             var patchNotFound   = customers.Patch(selection).Add(new Customer{id = unknownId})            .TaskName("patchNotFound");
             
