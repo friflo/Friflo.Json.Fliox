@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Transform;
+using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 // ReSharper disable once CheckNamespace
@@ -28,17 +28,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal DetectPatchesTask() { }
 
         /// <summary>Log entity patch previously added to <see cref="SyncSet{TKey,T}.Patches"/></summary>
-        internal void AddPatch(SyncSet sync, in JsonKey id, List<JsonPatch> patchList) {
-            if (id.IsNull())
+        internal void AddPatch(SyncSet sync, EntityPatch entityPatch) {
+            if (entityPatch.id.IsNull())
                 throw new ArgumentException("id must not be null");
-            var patch = new LogChange(sync, id, patchList);
+            var patch = new LogChange(sync, entityPatch);
             patches.Add(patch);
         }
         
         internal void SetResult() {
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var patch in patches) {
-                if (patch.sync.errorsPatch.TryGetValue(patch.id, out EntityError error)) {
+                if (patch.sync.errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }
@@ -50,15 +50,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     /// Identify entries in <see cref="SyncSet{TKey,T}.Patches"/> and <see cref="SyncSet{TKey,T}.Creates"/> by
     /// tuple <see cref="sync"/> and <see cref="id"/>
-    public readonly struct LogChange {
-        public      readonly    JsonKey         id;
-        public      readonly    List<JsonPatch> patches;
+    internal readonly struct LogChange {
+        internal    readonly    EntityPatch     entityPatch;
         internal    readonly    SyncSet         sync;
 
-        internal LogChange(SyncSet sync, in JsonKey id, List<JsonPatch> patches) {
-            this.sync       = sync;
-            this.id         = id;
-            this.patches    = patches;
+        internal LogChange(SyncSet sync, EntityPatch     entityPatch) {
+            this.entityPatch    = entityPatch;
+            this.sync           = sync;
         }
     }
 }
