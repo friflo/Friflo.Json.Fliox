@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
 using Friflo.Json.Fliox.Hub.Client.Internal;
+using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Transform;
 using static System.Diagnostics.DebuggerBrowsableState;
 
@@ -46,6 +47,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         public PatchTask<T> AddRange(ICollection<T> entities) {
             syncSet.AddEntityPatches(this, entities);
             return this;
+        }
+        
+        internal void SetResult(IDictionary<JsonKey, EntityError> errorsPatch) {
+            var entityErrorInfo = new TaskErrorInfo();
+            foreach (var patch in patches) {
+                if (errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
+                    entityErrorInfo.AddEntityError(error);
+                }
+            }
+            if (entityErrorInfo.HasErrors) {
+                state.SetError(entityErrorInfo);
+            } else {
+                state.Executed = true;
+            }
         }
         
         private string GetDetails() { 

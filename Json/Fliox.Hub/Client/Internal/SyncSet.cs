@@ -286,7 +286,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var entityPatch = new EntityPatch { id = id, patches = patchList };
                 SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
                 Patches()[id] = entityPatch;
-                detectPatchesTask.AddPatch(this, entityPatch);
+                detectPatchesTask.AddPatch(entityPatch);
                 
                 // tracer.Trace(entity);
             }

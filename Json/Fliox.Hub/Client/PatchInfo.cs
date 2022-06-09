@@ -12,7 +12,6 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// Contain the patches applied to the <see cref="Members"/> of an entity identified by its <see cref="Id"/>
     /// </summary>
-    // todo rename -> PatchInfo
     public readonly struct EntityPatchInfo {
         public              JsonKey                     Id          => entityPatch.id;
         public              IReadOnlyList<PatchReplace> Members     => GetMembers();

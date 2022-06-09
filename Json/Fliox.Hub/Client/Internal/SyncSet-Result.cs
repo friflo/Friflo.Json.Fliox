@@ -384,18 +384,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     peer.SetNextPatchSourceNull();
                 }
                 foreach (var patchTask in patchTasks) {
-                    // todo extract as PatchTask<> method
-                    var entityErrorInfo = new TaskErrorInfo();
-                    foreach (var patch in patchTask.patches) {
-                        if (errorsPatch.TryGetValue(patch.entityPatch.id, out EntityError error)) {
-                            entityErrorInfo.AddEntityError(error);
-                        }
-                    }
-                    if (entityErrorInfo.HasErrors) {
-                        patchTask.state.SetError(entityErrorInfo);
-                    } else {
-                        patchTask.state.Executed = true;
-                    }
+                    patchTask.SetResult(errorsPatch);
                 }
                 foreach (var detectPatches in detectPatchesTasks) {
                     detectPatches.SetResult();

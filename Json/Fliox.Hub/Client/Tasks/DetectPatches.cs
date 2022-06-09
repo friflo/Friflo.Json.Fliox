@@ -31,8 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             this.syncSet    = syncSet;
         }
 
-        /// <summary>Log entity patch previously added to <see cref="SyncSet{TKey,T}.Patches"/></summary>
-        internal void AddPatch(SyncSet sync, EntityPatch entityPatch) {
+        internal void AddPatch(EntityPatch entityPatch) {
             if (entityPatch.id.IsNull())
                 throw new ArgumentException("id must not be null");
             var patch = new EntityPatchInfo(entityPatch);
