@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         [DebuggerBrowsable(Never)]
         private             SyncSet<TKey, T>            syncSet;
-        internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
+        private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
 
         internal override   SyncSet                     SyncSet         => syncSet;

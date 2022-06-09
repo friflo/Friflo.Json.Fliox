@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public    override  string                      ToString()  => entityPatch.id.AsString();
 
         internal EntityPatchInfo (EntityPatch entityPatch) {
-            this.entityPatch = entityPatch;   
+            this.entityPatch = entityPatch;
         }
         
         /// creation of new array is okay, as it is expected to be used mainly for debugging 
