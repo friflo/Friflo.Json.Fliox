@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Main
         public class Config {
             internal readonly   SharedEnv   env; 
             private  readonly   string      rootPath;
-            internal            string      DbPath      => rootPath + "./Json.Tests/assets~/DB/PocStore";
+            internal            string      DbPath      => rootPath + "./Json.Tests/assets~/DB/main_db";
             internal            string      UserDbPath  => rootPath + "./Json.Tests/assets~/DB/user_db";
             internal            string      Www         => rootPath + "./Json/Fliox.Hub.Explorer/www~"; // HubExplorer.Path;
             internal readonly   string      cache       = null; // "max-age=600"; // HTTP Cache-Control
