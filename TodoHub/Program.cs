@@ -36,7 +36,7 @@ namespace Fliox.TodoHub
         }
         
         private class Config {
-            internal readonly string  dbPath              = "./DB~/TodoStore";
+            internal readonly string  dbPath              = "./DB~/todo_db";
             internal readonly string  www                 = HubExplorer.Path;
             internal readonly string  cache               = null; // "max-age=600"; // HTTP Cache-Control
             internal readonly bool    useMemoryDbClone    = false;
