@@ -46,11 +46,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          name, _peers & SetInfo
         internal            SetIntern<TKey, T>          intern;
         [DebuggerBrowsable(Never)]
-        private             SyncSet<TKey, T>            syncSet;
-
-        /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
-        private             Dictionary<TKey, Peer<T>>   _peers;
-        /// create peers map on demand.                 Note: must be private by all means
+        private             SyncSet<TKey, T>            syncSet;        //  Note: must be private by all means
+        /// <summary> key: <see cref="Peer{T}.entity"/>.id </summary>
+        private             Dictionary<TKey, Peer<T>>   _peers;         //  Note: must be private by all means
+        // create _peers map on demand                                  //  Note: must be private by all means
         private             Dictionary<TKey, Peer<T>>   Peers() => _peers ?? (_peers = SyncSet.CreateDictionary<TKey,Peer<T>>());
         
         private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
