@@ -88,7 +88,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return false;
         }
         
-        public List<T> AsList() {
+        public bool Contains (TKey key) {
+            var peers = Peers();
+            return peers.ContainsKey(key);
+        }
+        
+        public List<T> ToList() {
             var peers   = Peers();
             var result  = new List<T>(peers.Count);
             foreach (var pair in peers) {
@@ -98,11 +103,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 result.Add(entity);
             }
             return result;
-        }
-        
-        public bool Contains (TKey key) {
-            var peers = Peers();
-            return peers.ContainsKey(key);
         }
         #endregion
         
