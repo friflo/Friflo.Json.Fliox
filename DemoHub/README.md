@@ -51,14 +51,14 @@ The main features of a [**HTTP Fliox Hub**](https://github.com/friflo/Friflo.Jso
 
 ## Files
 
-|                      file                     |                   description                             
-|-----------------------------------------------|-----------------------------------------------
-|[DemoStore.cs](DemoStore.cs)                   | is the database client <br/> declares database containers
-|[DemoStore_commands.cs](DemoStore_commands.cs) | declares database commands
-|[MessageHandler.cs](MessageHandler.cs)         | implement custom database commands by utilizing **DemoStore** clients
-|[Program.cs](Program.cs)                       | bootstrapping & configuration of host
-|[Startup.cs](Startup.cs)                       | **ASP.NET Core** configuration and host integration
-|[Utils.cs](Utils.cs)                           | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records
+| file                                   | description                                                                |                             
+|----------------------------------------|----------------------------------------------------------------------------|
+| [DemoStore.cs](DemoStore.cs)           | is the database client <br/> declares database containers & commands       |
+| [Models.cs](Models.cs)                 | contain entity types & command models (DTO's)                              |
+| [MessageHandler.cs](MessageHandler.cs) | implement custom database commands by utilizing **DemoStore** clients      |
+| [Program.cs](Program.cs)               | bootstrapping & configuration of host                                      |
+| [Startup.cs](Startup.cs)               | **ASP.NET Core** configuration and host integration                        |
+| [Utils.cs](Utils.cs)                   | utilize [Bogus](https://github.com/bchavez/Bogus) to generate fake records |
 
 
 
