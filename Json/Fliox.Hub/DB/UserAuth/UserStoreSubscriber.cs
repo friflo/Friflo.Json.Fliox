@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.DB.UserAuth
         //  store.credentials.SubscribeChanges  (ChangeFlags.All, CredentialChange);
             store.permissions.SubscribeChanges  (ChangeFlags.All, PermissionChange);
             store.roles.SubscribeChanges        (ChangeFlags.All, RoleChange);
-            await store.SyncTasks();
+            await store.SyncTasks().ConfigureAwait(false);
         }
         
         private void CredentialChange(Changes<JsonKey, UserCredential> changes, EventContext context) {
