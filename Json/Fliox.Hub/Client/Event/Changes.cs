@@ -66,6 +66,10 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public sealed class Changes<TKey, T> : Changes where T : class
     {
+        /// <summary> return the entities created in a container </summary>
+        public              List<T>             Creates         => GetCreates();
+        /// <summary> return the entities upserted in a container </summary>
+        public              List<T>             Upserts         => GetUpserts();
         /// <summary> return the keys of removed container entities </summary>
         public              List<TKey>          Deletes { get; } = new List<TKey>();
         /// <summary> return patches applied to container entities </summary>
@@ -99,8 +103,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             changeInfo.Clear();
         }
         
-        /// <summary> return the entities created in a container </summary>
-        public List<T> Creates { get {
+        private List<T> GetCreates() {
             if (creates != null)
                 return creates;
             // create entities on demand
@@ -111,10 +114,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 creates.Add(entity);
             }
             return creates;
-        } }
+        }
         
-        /// <summary> return the entities upserted in a container </summary>
-        public List<T> Upserts { get {
+        private List<T> GetUpserts() {
             if (upserts != null)
                 return upserts;
             // create entities on demand
@@ -125,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 upserts.Add(entity);
             }
             return upserts;
-        } }
+        }
 
         internal override void AddDeletes  (HashSet<JsonKey> ids) {
             foreach (var id in ids) {

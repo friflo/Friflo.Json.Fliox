@@ -45,34 +45,30 @@ namespace Friflo.Json.Fliox.Hub.Client
         //          in following fields or properties while debugging:
         //          name, _peers & SetInfo
         internal            SetIntern<TKey, T>          intern;
-        
+        [DebuggerBrowsable(Never)]
+        private             SyncSet<TKey, T>            syncSet;
+
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
         private             Dictionary<TKey, Peer<T>>   _peers;
         /// create peers map on demand.                 Note: must be private by all means
         private             Dictionary<TKey, Peer<T>>   Peers() => _peers ?? (_peers = SyncSet.CreateDictionary<TKey,Peer<T>>());
         
-        internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
-        private  static readonly KeyConverter<TKey>     KeyConvert      = KeyConverter.GetConverter<TKey>();
-
-        [DebuggerBrowsable(Never)]
-        private             SyncSet<TKey, T>            syncSet;
         private             SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
         internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
+        public   override   string                      ToString()      => SetInfo.ToString();
 
         internal override   SyncSet                     SyncSet         => syncSet;
-        public   override   string                      ToString()      => SetInfo.ToString();
+        internal override   SetInfo                     SetInfo         => GetSetInfo();
 
         [DebuggerBrowsable(Never)] internal override    Type    KeyType      => typeof(TKey);
         [DebuggerBrowsable(Never)] internal override    Type    EntityType   => typeof(T);
         
         [DebuggerBrowsable(Never)] public   override    bool    WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
         [DebuggerBrowsable(Never)] public   override    bool    WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
-
-        internal override   SetInfo                     SetInfo { get {
-            var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
-            syncSet?.SetTaskInfo(ref info);
-            return info;
-        }}
+        
+        internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
+        private  static readonly KeyConverter<TKey>     KeyConvert      = KeyConverter.GetConverter<TKey>();
+        
         #endregion
         
         /// constructor is called via <see cref="EntitySetMapper{T,TKey,TEntity}.CreateEntitySet"/> 

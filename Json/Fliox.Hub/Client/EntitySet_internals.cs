@@ -92,6 +92,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     public partial class EntitySet<TKey, T>
     {
+        internal SetInfo GetSetInfo() {
+            var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
+            syncSet?.SetTaskInfo(ref info);
+            return info;
+        }
+        
         internal override void Init(FlioxClient store) {
             intern      = new SetIntern<TKey, T>(store);
         }
