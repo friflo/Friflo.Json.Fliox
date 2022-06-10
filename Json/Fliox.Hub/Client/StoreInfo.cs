@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 #endif
     public struct SetInfo
     {
-        public readonly string name;
+        public  string  Name  { get; }  // used property to show on top of all members
         
         public  int     peers;
         public  int     tasks;
@@ -29,9 +29,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public  int     delete;
 
         internal SetInfo(string name) {
-            this.name = name;
-            peers   = 0;
-            tasks   = 0;
+            Name        = name;
+            peers       = 0;
+            tasks       = 0;
             //
             create      = 0;
             upsert      = 0;
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public override string ToString() {
             var sb = new StringBuilder();
-            AppendName(sb, name);
+            AppendName(sb, Name);
             sb.Append(peers);
             
             if (tasks > 0) {
