@@ -18,7 +18,7 @@ namespace Friflo.Json.Burst.Utils
         int Read(ref ByteList dst, int count);
     }
     
-    public class StreamBytesReader: IBytesReader {
+    public sealed class StreamBytesReader: IBytesReader {
         private readonly Stream stream;
 #if JSON_BURST
         private readonly byte[] buffer = new byte[4096];
@@ -45,7 +45,7 @@ namespace Friflo.Json.Burst.Utils
         }
     }
     
-    public class ByteArrayReader: IBytesReader {
+    public sealed class ByteArrayReader: IBytesReader {
         private readonly    byte[]  array;
         private             int     pos;
         private readonly    int     end;

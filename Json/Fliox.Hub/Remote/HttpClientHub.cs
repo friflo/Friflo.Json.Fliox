@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class HttpClientHub : RemoteClientHub
+    public sealed class HttpClientHub : RemoteClientHub
     {
         private  readonly   string          endpoint;
         private  readonly   HttpClient      httpClient;

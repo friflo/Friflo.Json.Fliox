@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     ///   <item>Common REST API to POST, GET, PUT, DELETE and PATCH with via a path like ./rest/database/container/id </item>
     /// </list>
     /// </summary>
-    public class HttpHost : RemoteHost
+    public sealed class HttpHost : RemoteHost
     {
         /// <summary>never null, ends with '/'</summary>
         public   readonly   string                  endpoint; 

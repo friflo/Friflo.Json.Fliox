@@ -59,9 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// <summary>
     /// Contains standard database commands. Its commands are prefixed with <b>std.*</b>
     /// </summary>
-    public class StdCommands : HubMessages
+    public sealed class StdCommands : HubMessages
     {
-        protected internal StdCommands(FlioxClient client) : base(client) { }
+        internal StdCommands(FlioxClient client) : base(client) { }
         
         // Declared only to generate command in Schema
         /// <summary>echos the given parameter to assure the database is working appropriately. </summary>

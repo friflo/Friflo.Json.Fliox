@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 {
     public delegate void MemberSelectionBuilder<T>(MemberSelection<T> selection) where T : class;
     
-    public class MemberSelection<T> where T : class
+    public sealed class MemberSelection<T> where T : class
     {
         public              IReadOnlyList<string>   Members     => members;
         private  readonly   List<string>            members     = new List<string>();

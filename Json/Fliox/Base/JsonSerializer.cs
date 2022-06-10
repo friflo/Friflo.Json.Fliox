@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Utils;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox
 {
-    public class SerializerOptions {
+    public sealed class SerializerOptions {
         public  bool    Pretty              { get; set; }
         public  bool    WriteNullMembers    { get; set; }
         public  int     MaxDepth            { get; set; } = 100;

@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Utils
     
     // Could be a readonly struct but don't see a real advantage.
     // Instances of this are intended to be created rarely as they are used as long lived pools.
-    public class ObjectPool<T> : IDisposable where T : IDisposable
+    public sealed class ObjectPool<T> : IDisposable where T : IDisposable
     {
         private readonly    Action<T>           init;
         private readonly    ConcurrentStack<T>  stack;

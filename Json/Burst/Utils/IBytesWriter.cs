@@ -15,7 +15,7 @@ namespace Friflo.Json.Burst.Utils
         void Write(ref ByteList src, int count);
     }
     
-    public class StreamBytesWriter: IBytesWriter {
+    public sealed class StreamBytesWriter: IBytesWriter {
         private readonly Stream stream;
 #if JSON_BURST
         private byte[] buffer = new byte[4096];
