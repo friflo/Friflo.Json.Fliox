@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 bool first = false;
                 AppendTasks(sb, "tasks",        tasks,          ref first);
                 first = true;
-                sb.Append(" >> ");
+                sb.Append(" [");
                 Append(sb,  "create",           create,         ref first);
                 Append(sb,  "upsert",           upsert,         ref first);
                 AppendTasks(sb,  "reads",       reads,          ref first);
@@ -99,6 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 AppendTasks(sb, "closeCursors", closeCursors,   ref first);
                 Append(sb,  "patch",            patch,          ref first);
                 Append(sb,  "delete",           delete,         ref first);
+                sb.Append(']');
             }
             return sb.ToString();
         }
