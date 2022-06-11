@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [TypeMapper(typeof(FlioxClientMatcher))]
     public partial class FlioxClient : IDisposable, IResetable, ILogSource
     {
+    #region - members   
         // Keep all FlioxClient fields in ClientIntern (_intern) to enhance debugging overview.
         // Reason:  FlioxClient is extended by application and add multiple EntitySet fields or properties.
         //          This ensures focus on fields / properties relevant for an application which are:
@@ -66,8 +67,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
+        
+        public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
+        #endregion
 
-
+        // --------------------------------------- public methods ---------------------------------------
+    #region - initialize    
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <paramref name="hub"/>.
         /// </summary>
@@ -84,11 +89,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.Dispose();
         }
         
-        public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient {
-            return ClientEntityUtils.GetEntityTypes<TFlioxClient>();
-        }
-
-        // --------------------------------------- public interface ---------------------------------------
         public void Reset() {
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
@@ -96,8 +96,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             _intern.Reset();
         }
-        
-        // --- SyncTasks() / TrySyncTasks()
+        #endregion
+
+    #region - sync tasks
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
@@ -119,7 +120,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncContext.Release();
             return result;
         }
+        
+        public async Task CancelPendingSyncs() {
+            foreach (var pair in _intern.pendingSyncs) {
+                var syncContext = pair.Value;
+                syncContext.Cancel();
+            }
+            await Task.WhenAll(_intern.pendingSyncs.Keys).ConfigureAwait(false);
+        }
+        #endregion
 
+    #region - user id, client id, token
         [DebuggerBrowsable(Never)]
         public string UserId {
             get => _intern.userId.AsString();
@@ -158,8 +169,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 SetClientId      (value.clientId);
             }
         }
+        #endregion
 
-        // --- detect patches
+    #region - detect all patches
         public DetectAllPatchesTask DetectAllPatches() {
             var task = _intern.syncStore.CreateDetectAllPatchesTask();
             using (var pooled = ObjectMapper.Get()) {
@@ -171,9 +183,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             AddTask(task);
             return task;
         }
-        
-        
-        // --- SubscribeAllChanges
+        #endregion
+
+    #region - subscribe all changes
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
         /// By default these changes are applied to the <see cref="FlioxClient"/>.
@@ -192,7 +204,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern.changeSubscriptionHandler = handler; 
             return tasks;
         }
-        
+        #endregion
+
+    #region - subscrition event handling
         /// <summary> <see cref="SubscriptionEventHandler"/> is called for all events received by a <see cref="FlioxClient"/></summary>
         [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
             get => _intern.subscriptionEventHandler;
@@ -221,8 +235,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
             _intern.SetSubscriptionProcessor(processor);
         }
-        
-        // --- SendMessage
+        #endregion
+
+    #region - send message
         public MessageTask SendMessage(string name) {
             var task = new MessageTask(name, new JsonValue());
             _intern.syncStore.MessageTasks().Add(task);
@@ -240,8 +255,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return task;
             }
         }
-        
-        // --- SendCommand
+        #endregion
+
+    #region - send command
         /// <summary>
         /// Send a command with the given <paramref name="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.
         /// The method can be used directly for rapid prototyping. For production grade encapsulate call by a command method to
@@ -269,8 +285,9 @@ namespace Friflo.Json.Fliox.Hub.Client
                 return task;
             }
         }
+        #endregion
 
-        // --- SubscribeMessage
+    #region - subscribe message / command
         /// <seealso cref="FlioxClient.SetEventProcessor"/>
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
             AssertSubscription();
@@ -301,22 +318,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             AddTask(task);
             return task;
         }
-
-        public async Task CancelPendingSyncs() {
-            foreach (var pair in _intern.pendingSyncs) {
-                var syncContext = pair.Value;
-                syncContext.Cancel();
-            }
-            await Task.WhenAll(_intern.pendingSyncs.Keys).ConfigureAwait(false);
-        }
-    }
-
-    /// Add const / static members here instead of <see cref="FlioxClient"/> to avoid showing members in debugger.
-    internal static class ClientUtils {
-        /// <summary>
-        /// Process continuation of <see cref="FlioxClient.ExecuteSync"/> on caller context.
-        /// This ensures modifications to entities are applied on the same context used by the caller. 
-        /// </summary>
-        internal const bool OriginalContext = true;       
+        #endregion
     }
 }

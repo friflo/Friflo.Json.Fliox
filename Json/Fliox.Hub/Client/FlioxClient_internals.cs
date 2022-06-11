@@ -17,13 +17,13 @@ namespace Friflo.Json.Fliox.Hub.Client
     // --------------------------------- FlioxClient internals ---------------------------------
     public partial class FlioxClient
     {
-        public void SetWritePretty (bool value) {
+        private void SetWritePretty (bool value) {
             foreach (var setPair in _intern.setByType) {
                 setPair.Value.WritePretty = value;
             }
         }
 
-        public void SetWriteNull (bool value){
+        private void SetWriteNull (bool value){
             foreach (var setPair in _intern.setByType) {
                 setPair.Value.WriteNull = value;
             }
@@ -412,5 +412,14 @@ namespace Friflo.Json.Fliox.Hub.Client
                     break;
             }
         }
+    }
+    
+    /// Add const / static members here instead of <see cref="FlioxClient"/> to avoid showing members in debugger.
+    internal static class ClientUtils {
+        /// <summary>
+        /// Process continuation of <see cref="FlioxClient.ExecuteSync"/> on caller context.
+        /// This ensures modifications to entities are applied on the same context used by the caller. 
+        /// </summary>
+        internal const bool OriginalContext = true;       
     }
 }
