@@ -334,6 +334,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
     #region - Patch
         // - assign patches
+        /// <summary> Create <see cref="PatchTask{T}.Patches"/> for the fields of the passed <paramref name="selection"/>
+        /// and the entities added with <see cref="PatchTask{T}.Add"/> subsequently </summary>
+        /// <remarks> is applicable for tracked and untracked entities </remarks>
         public PatchTask<T> Patch(MemberSelectionBuilder<T> selection) {
             var memberSelection = new MemberSelection<T>();
             selection(memberSelection);
@@ -342,6 +345,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary> Create <see cref="PatchTask{T}.Patches"/> for the fields of the passed <paramref name="memberSelection"/>
+        /// and the entities added with <see cref="PatchTask{T}.Add"/> subsequently </summary>
+        /// <remarks> is applicable for tracked and untracked entities </remarks>
         public PatchTask<T> Patch(MemberSelection<T> memberSelection) {
             var task = GetSyncSet().Patch(memberSelection);
             intern.store.AddTask(task);
@@ -349,6 +355,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // - detect patches
+        /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for all tracked entities </summary>
+        /// <remarks> Consider using <see cref="DetectPatches(T)"/> <see cref="DetectPatches(ICollection{T})"/>
+        /// as this method run detection on all tracked entities </remarks>
         public DetectPatchesTask DetectPatches() {
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
@@ -360,6 +369,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
+        /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for the passed tracked <paramref name="entity"/> </summary>
         public DetectPatchesTask DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
             var key     = EntityKeyTMap.GetKey(entity);
@@ -372,6 +382,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
         
+        /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for the passed tracked <paramref name="entities"/> </summary>
         public DetectPatchesTask DetectPatches(ICollection<T> entities) {
             if(entities == null)                            throw new ArgumentNullException(nameof(entities));
             var peers = new List<Peer<T>>(entities.Count);
