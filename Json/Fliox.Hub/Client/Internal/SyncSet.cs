@@ -615,7 +615,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        private void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
+        private static void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
             var jsonArray   = mapper.writer.WriteAsArray(peer.Entity);
             var json        = new JsonValue(jsonArray);
             peer.SetNextPatchSource(mapper.Read<T>(json));

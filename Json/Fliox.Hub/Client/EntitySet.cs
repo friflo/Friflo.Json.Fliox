@@ -362,11 +362,9 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         public DetectPatchesTask DetectPatches(T entity) {
             if (entity == null)                             throw new ArgumentNullException(nameof(entity));
-            if (EntityKeyTMap.IsEntityKeyNull(entity))      throw new ArgumentException($"entity key must not be null.");
-            if (!TryGetPeerByEntity(entity, out var peer)) {
-                var key     = EntityKeyTMap.GetKey(entity);
-                throw new ArgumentException($"entity is not tracked. key: {key}");
-            }
+            var key     = EntityKeyTMap.GetKey(entity);
+            if (KeyConvert.IsKeyNull(key))                  throw new ArgumentException($"entity key must not be null.");
+            if (!TryGetPeerByKey(key, out var peer))        throw new ArgumentException($"entity is not tracked. key: {key}");
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
             set.DetectEntityPatches(peer, task);
@@ -380,11 +378,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             int n = 0;
             foreach (var entity in entities) {
                 if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
-                if (EntityKeyTMap.IsEntityKeyNull(entity))  throw new ArgumentException($"entities[{n}] key must not be null.");
-                if (!TryGetPeerByEntity(entity, out var peer)) {
-                    var key     = EntityKeyTMap.GetKey(entity);
-                    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
-                }
+                var key     = EntityKeyTMap.GetKey(entity);
+                if (KeyConvert.IsKeyNull(key))              throw new ArgumentException($"entity key must not be null. entities[{n}]");
+                if (!TryGetPeerByKey(key, out var peer))    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
                 peers.Add(peer);
                 n++;
             }
