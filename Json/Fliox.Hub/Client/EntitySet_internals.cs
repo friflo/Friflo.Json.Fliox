@@ -198,6 +198,12 @@ namespace Friflo.Json.Fliox.Hub.Client
             return peer;
         }
         
+        private bool TryGetPeerByEntity(T entity, out Peer<T> value) {
+            var key     = EntityKeyTMap.GetKey(entity); 
+            var peers   = Peers();
+            return peers.TryGetValue(key, out value);
+        }
+        
         internal override Peer<T> GetPeerByEntity(T entity) {
             var peers = Peers();
             var key = GetEntityKey(entity);

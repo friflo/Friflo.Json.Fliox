@@ -360,12 +360,37 @@ namespace Friflo.Json.Fliox.Hub.Client
             return task;
         }
 
-        public DetectPatchesTask DetectEntityPatches(T entity) {
-            if (entity == null)                         throw new ArgumentNullException(nameof(entity));
-            if (EntityKeyTMap.IsEntityKeyNull(entity))  throw new ArgumentException($"entity key must not be null.");
+        public DetectPatchesTask DetectPatches(T entity) {
+            if (entity == null)                             throw new ArgumentNullException(nameof(entity));
+            if (EntityKeyTMap.IsEntityKeyNull(entity))      throw new ArgumentException($"entity key must not be null.");
+            if (!TryGetPeerByEntity(entity, out var peer)) {
+                var key     = EntityKeyTMap.GetKey(entity);
+                throw new ArgumentException($"entity is not tracked. key: {key}");
+            }
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
-            set.DetectEntityPatches(entity, task);
+            set.DetectEntityPatches(peer, task);
+            intern.store.AddTask(task);
+            return task;
+        }
+        
+        public DetectPatchesTask DetectPatches(ICollection<T> entities) {
+            if(entities == null)                            throw new ArgumentNullException(nameof(entities));
+            var peers = new List<Peer<T>>(entities.Count);
+            int n = 0;
+            foreach (var entity in entities) {
+                if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
+                if (EntityKeyTMap.IsEntityKeyNull(entity))  throw new ArgumentException($"entities[{n}] key must not be null.");
+                if (!TryGetPeerByEntity(entity, out var peer)) {
+                    var key     = EntityKeyTMap.GetKey(entity);
+                    throw new ArgumentException($"entity is not tracked. entities[{n}] key: {key}");
+                }
+                peers.Add(peer);
+                n++;
+            }
+            var set     = GetSyncSet();
+            var task    = new DetectPatchesTask(set);
+            set.DetectEntitiesPatches(peers, task);
             intern.store.AddTask(task);
             return task;
         }
