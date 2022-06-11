@@ -288,13 +288,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var diff    = patcher.differ.GetDiff(patchSource, entity, mapper.writer);
             if (diff == null)
                 return;
+            var patches     = Patches();
             var patchList   = patcher.CreatePatches(diff, mapper);
             var id          = peer.id;
-            var entityPatch = new EntityPatch { id = id, patches = patchList };
             SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize()
-            Patches()[id] = entityPatch;
+            if (patches.TryGetValue(id, out var entityPatch)) {
+                entityPatch.patches.AddRange(patchList);
+            } else{
+                entityPatch = new EntityPatch { id = id, patches = patchList };
+                patches[id] = entityPatch;
+            }
             detectPatchesTask.AddPatch(entityPatch);
-            
             // tracer.Trace(entity);
         }
 
