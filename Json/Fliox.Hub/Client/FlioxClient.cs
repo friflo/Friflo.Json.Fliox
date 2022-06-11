@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
 
-    #region - subscrition event handling
+    #region - subscription event handling
         /// <summary> <see cref="SubscriptionEventHandler"/> is called for all events received by a <see cref="FlioxClient"/></summary>
         [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
             get => _intern.subscriptionEventHandler;
