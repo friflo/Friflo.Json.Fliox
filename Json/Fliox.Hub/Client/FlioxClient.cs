@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         #endregion
 
-        // --------------------------------------- public methods ---------------------------------------
+    // ----------------------------------------- public methods -----------------------------------------
     #region - initialize    
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <paramref name="hub"/>.

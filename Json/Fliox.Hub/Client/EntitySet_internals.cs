@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     // ---------------------------------- EntitySet<TKey, T> internals ----------------------------------
     public partial class EntitySet<TKey, T>
     {
-        internal SetInfo GetSetInfo() {
+        private SetInfo GetSetInfo() {
             var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
             syncSet?.SetTaskInfo(ref info);
             return info;
@@ -117,6 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return EntityKeyTMap.GetId(entity);
         }
         
+        // ReSharper disable once UnusedMember.Local
         private static void SetEntityKey (T entity, TKey key) {
             EntityKeyTMap.SetKey(entity, key);
         }
@@ -198,6 +199,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             return peer;
         }
         
+        // ReSharper disable once UnusedMember.Local
         private bool TryGetPeerByEntity(T entity, out Peer<T> value) {
             var key     = EntityKeyTMap.GetKey(entity); 
             var peers   = Peers();

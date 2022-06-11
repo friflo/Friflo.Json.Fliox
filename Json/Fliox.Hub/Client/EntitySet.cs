@@ -67,15 +67,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap   = EntityKey.GetEntityKeyT<TKey, T>();
         private  static readonly KeyConverter<TKey>     KeyConvert      = KeyConverter.GetConverter<TKey>();
-        
         #endregion
-        
+    
+    // ----------------------------------------- public methods -----------------------------------------
+    #region - initialize     
         /// constructor is called via <see cref="EntitySetMapper{T,TKey,TEntity}.CreateEntitySet"/> 
         internal EntitySet(string name) : base (name) {
             // ValidateKeyType(typeof(TKey)); // only required if constructor is public
         }
+        #endregion
         
-        // --------------------------------------- public interface ---------------------------------------
     #region - Cache    
         public bool TryGet (TKey key, out T entity) {
             var peers = Peers();
