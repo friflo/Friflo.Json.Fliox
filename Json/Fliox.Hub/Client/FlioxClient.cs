@@ -58,15 +58,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              IReadOnlyList<SyncTask>     Tasks           => _intern.syncStore.appTasks;
         public   readonly   StdCommands                 std;
         
-        public   override   string                      ToString()              => StoreInfo.ToString();
-        public              int                         GetSyncCount()          => _intern.syncCount;
-        public              int                         GetPendingSyncCount()   => _intern.pendingSyncs.Count;
-
         [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
         [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
+        public   override                       string                      ToString()      => StoreInfo.ToString();
+
         
         public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient => ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         #endregion
@@ -99,6 +97,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         #endregion
 
     #region - sync tasks
+        public  int     GetSyncCount()          => _intern.syncCount;
+        public  int     GetPendingSyncCount()   => _intern.pendingSyncs.Count;
+
         public async Task<SyncResult> SyncTasks() {
             var syncRequest = CreateSyncRequest(out SyncStore syncStore);
             var syncContext = new SyncContext(_intern.pool, _intern.eventTarget, _intern.sharedCache, _intern.clientId);
@@ -185,27 +186,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
 
-    #region - subscribe all changes
-        /// <summary>
-        /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
-        /// By default these changes are applied to the <see cref="FlioxClient"/>.
-        /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
-        /// </summary>
-        public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
-            AssertSubscription();
-            var tasks = new List<SyncTask>();
-            foreach (var setPair in _intern.setByType) {
-                var set = setPair.Value;
-                // ReSharper disable once PossibleMultipleEnumeration
-                var task = set.SubscribeChangesInternal(change);
-                tasks.Add(task);
-            }
-            _intern.changeSubscriptionHandler = handler; 
-            return tasks;
-        }
-        #endregion
-
     #region - subscrition event handling
         /// <summary> <see cref="SubscriptionEventHandler"/> is called for all events received by a <see cref="FlioxClient"/></summary>
         [DebuggerBrowsable(Never)] public SubscriptionEventHandler SubscriptionEventHandler {
@@ -234,6 +214,60 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
             var processor = subscriptionProcessor ?? throw new ArgumentNullException(nameof(subscriptionProcessor));
             _intern.SetSubscriptionProcessor(processor);
+        }
+        #endregion
+
+    #region - subscribe all changes
+        /// <summary>
+        /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <paramref name="change"/>.
+        /// By default these changes are applied to the <see cref="FlioxClient"/>.
+        /// To unsubscribe from receiving change events set <paramref name="change"/> to null.
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
+        /// </summary>
+        public List<SyncTask> SubscribeAllChanges(Change change, ChangeSubscriptionHandler handler) {
+            AssertSubscription();
+            var tasks = new List<SyncTask>();
+            foreach (var setPair in _intern.setByType) {
+                var set = setPair.Value;
+                // ReSharper disable once PossibleMultipleEnumeration
+                var task = set.SubscribeChangesInternal(change);
+                tasks.Add(task);
+            }
+            _intern.changeSubscriptionHandler = handler; 
+            return tasks;
+        }
+        #endregion
+
+    #region - subscribe messages / commands
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
+        public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
+            AssertSubscription();
+            var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
+            var task            = _intern.AddCallbackHandler(name, callbackHandler);
+            AddTask(task);
+            return task;
+        }
+        
+        /// <seealso cref="FlioxClient.SetEventProcessor"/>
+        public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
+            AssertSubscription();
+            var callbackHandler = new NonGenericMessageCallback(name, handler);
+            var task            = _intern.AddCallbackHandler(name, callbackHandler);
+            AddTask(task);
+            return task;
+        }
+        
+        // --- UnsubscribeMessage
+        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
+            var task = _intern.RemoveCallbackHandler(name, handler);
+            AddTask(task);
+            return task;
+        }
+        
+        public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
+            var task = _intern.RemoveCallbackHandler(name, handler);
+            AddTask(task);
+            return task;
         }
         #endregion
 
@@ -284,39 +318,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 AddTask(task);
                 return task;
             }
-        }
-        #endregion
-
-    #region - subscribe message / command
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
-        public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageSubscriptionHandler<TMessage> handler) {
-            AssertSubscription();
-            var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
-            var task            = _intern.AddCallbackHandler(name, callbackHandler);
-            AddTask(task);
-            return task;
-        }
-        
-        /// <seealso cref="FlioxClient.SetEventProcessor"/>
-        public SubscribeMessageTask SubscribeMessage            (string name, MessageSubscriptionHandler handler) {
-            AssertSubscription();
-            var callbackHandler = new NonGenericMessageCallback(name, handler);
-            var task            = _intern.AddCallbackHandler(name, callbackHandler);
-            AddTask(task);
-            return task;
-        }
-        
-        // --- UnsubscribeMessage
-        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageSubscriptionHandler<TMessage> handler) {
-            var task = _intern.RemoveCallbackHandler(name, handler);
-            AddTask(task);
-            return task;
-        }
-        
-        public SubscribeMessageTask UnsubscribeMessage          (string name, MessageSubscriptionHandler handler) {
-            var task = _intern.RemoveCallbackHandler(name, handler);
-            AddTask(task);
-            return task;
         }
         #endregion
     }
