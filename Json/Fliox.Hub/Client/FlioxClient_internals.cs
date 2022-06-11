@@ -17,6 +17,18 @@ namespace Friflo.Json.Fliox.Hub.Client
     // --------------------------------- FlioxClient internals ---------------------------------
     public partial class FlioxClient
     {
+        public void SetWritePretty (bool value) {
+            foreach (var setPair in _intern.setByType) {
+                setPair.Value.WritePretty = value;
+            }
+        }
+
+        public void SetWriteNull (bool value){
+            foreach (var setPair in _intern.setByType) {
+                setPair.Value.WriteNull = value;
+            }
+        }
+        
         internal void AssertSubscription() {
             if (_intern.clientId.IsNull()) {
                 var msg = $"subscriptions require a {nameof(ClientId)}. database: {DatabaseName}";

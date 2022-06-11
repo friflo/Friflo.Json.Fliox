@@ -54,18 +54,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            ClientIntern                _intern;
         public              string                      DatabaseName    => _intern.database ?? _intern.hub.DatabaseName;
         public              StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
-        public   override   string                      ToString()      => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask>     Tasks           => _intern.syncStore.appTasks;
+        public   readonly   StdCommands                 std;
         
-        public              int                         GetSyncCount()  => _intern.syncCount;
-        
+        public   override   string                      ToString()              => StoreInfo.ToString();
+        public              int                         GetSyncCount()          => _intern.syncCount;
+        public              int                         GetPendingSyncCount()   => _intern.pendingSyncs.Count;
+
+        [DebuggerBrowsable(Never)]  public      bool                        WritePretty { set => SetWritePretty(value); }
+        [DebuggerBrowsable(Never)]  public      bool                        WriteNull   { set => SetWriteNull(value); }
         [DebuggerBrowsable(Never)]  internal    readonly   Type             type;
         [DebuggerBrowsable(Never)]  internal    ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
         [DebuggerBrowsable(Never)]  public      IHubLogger                  Logger          => _intern.hubLogger;
 
-        // --- commands
-        /// standard commands
-        public readonly     StdCommands                 std;
 
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <paramref name="hub"/>.
@@ -88,20 +89,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --------------------------------------- public interface ---------------------------------------
-        [DebuggerBrowsable(Never)]
-        public bool WritePretty { set {
-            foreach (var setPair in _intern.setByType) {
-                setPair.Value.WritePretty = value;
-            }
-        } }
-        
-        [DebuggerBrowsable(Never)]
-        public bool WriteNull { set {
-            foreach (var setPair in _intern.setByType) {
-                setPair.Value.WriteNull = value;
-            }
-        } }
-
         public void Reset() {
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
@@ -321,10 +308,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 syncContext.Cancel();
             }
             await Task.WhenAll(_intern.pendingSyncs.Keys).ConfigureAwait(false);
-        }
-        
-        public int GetPendingSyncsCount() {
-            return _intern.pendingSyncs.Count;
         }
     }
 
