@@ -332,8 +332,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         #endregion
 
-    #region - Patch
-        // - assign patches
+    #region - Patch creation
         /// <summary> Create <see cref="PatchTask{T}.Patches"/> for the fields of the passed <paramref name="selection"/>
         /// and the entities added with <see cref="PatchTask{T}.Add"/> subsequently </summary>
         /// <remarks> is applicable for tracked and untracked entities </remarks>
@@ -353,8 +352,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             intern.store.AddTask(task);
             return task;
         }
+        #endregion
         
-        // - detect patches
+    #region - Patch detection
         /// <summary> Detect <see cref="DetectPatchesTask.Patches"/> for all tracked entities </summary>
         /// <remarks> Consider using <see cref="DetectPatches(T)"/> <see cref="DetectPatches(ICollection{T})"/>
         /// as this method run detection on all tracked entities </remarks>
