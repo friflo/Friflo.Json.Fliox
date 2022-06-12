@@ -60,10 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal  abstract  SyncSetBase<T>  GetSyncSetBase  ();
         
         internal  abstract  Peer<T>         GetPeerById     (in JsonKey id);
-        internal  abstract  Peer<T>         GetPeerByEntity (T entity);
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
-        internal  abstract  Peer<T>         GetOrCreatePeerById(JsonKey id); // TAG_NULL_REF
         
         protected EntitySetBase(string name) : base(name) { }
         
@@ -171,11 +169,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             return peers.TryGetValue(key, out value);
         }
         
-        internal override Peer<T> GetOrCreatePeerById(JsonKey id) {
-            var key = KeyConvert.IdToKey(id);
-            return GetOrCreatePeerByKey(key, id);
-        }
-        
         internal Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {
             var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
@@ -210,27 +203,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             return peers.TryGetValue(key, out value);
         }
         
-        internal override Peer<T> GetPeerByEntity(T entity) {
-            var peers = Peers();
-            var key = GetEntityKey(entity);
-            if (peers.TryGetValue(key, out Peer<T> peer)) {
-                return peer;
-            }
-            var id = KeyConvert.KeyToId(key);
-            peer = new Peer<T>(id);
-            peers.Add(key, peer);
-            return peer;
-        }
-        
         // --- EntitySet
         internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper) {
             var reader = mapper.reader;
 
             foreach (var entityPair in entities) {
-                var id = entityPair.Key;
-                var value = entityPair.Value;
-                var error = value.Error;
-                var peer = GetPeerById(id);
+                var id      = entityPair.Key;
+                var value   = entityPair.Value;
+                var error   = value.Error;
+                var peer    = GetPeerById(id);
                 if (error != null) {
                     // id & container are not serialized as they are redundant data.
                     // Infer their values from containing dictionary & EntitySet<>

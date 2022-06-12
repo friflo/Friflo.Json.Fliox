@@ -209,8 +209,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     // don't remove missing requested peer from EntitySet.peers to preserve info about its absence
                     continue;
                 }
-                var key = KeyConvert.IdToKey(id);
-                var peer = set.GetOrCreatePeerByKey(key, id);
+                var key     = KeyConvert.IdToKey(id);
+                var peer    = set.GetOrCreatePeerByKey(key, id);
                 read.result[key] = peer.Entity;
             }
             var keysBuf = set.intern.GetKeysBuf();
@@ -269,8 +269,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     entityErrorInfo.AddEntityError(error);
                     continue;
                 }
-                var key = KeyConvert.IdToKey(id);
-                var peer = set.GetOrCreatePeerByKey(key, id);
+                var key     = KeyConvert.IdToKey(id);
+                var peer    = set.GetOrCreatePeerByKey(key, id);
                 results.Add(peer.Entity);
             }
             if (entityErrorInfo.HasErrors) {
@@ -374,8 +374,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 // var patchResult = (PatchEntitiesResult)result;
                 var entityPatches = task.patches;
                 foreach (var entityPatch in entityPatches) {
-                    var id = entityPatch.id;
-                    var peer = set.GetPeerById(id);
+                    var id      = entityPatch.id;
+                    var peer    = set.GetPeerById(id);
                     var  nextPatchSource = peer.NextPatchSource;
                     if (nextPatchSource == null)
                         continue;

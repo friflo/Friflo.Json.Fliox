@@ -49,8 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             var entitySet = (EntitySetBase<T>) set;
-            var id = ids.First();
-            var peer = entitySet.GetPeerById(id);
+            var id      = ids.First();
+            var peer    = entitySet.GetPeerById(id);
             if (peer.error == null) {
                 entity  = peer.Entity;
             } else {
