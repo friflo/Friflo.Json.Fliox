@@ -396,6 +396,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             int n       = 0;
             var set     = GetSyncSet();
             var task    = new DetectPatchesTask(set);
+            set.AddDetectPatches(task);
             using (var pooled = intern.store.ObjectMapper.Get()) {
                 foreach (var entity in entities) {
                     if (entity == null)                         throw new ArgumentException($"entities[{n}] is null");
